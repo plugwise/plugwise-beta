@@ -1,0 +1,8 @@
+{
+  "domain": "plugwise_async",
+  "name": "Plugwise async demo",
+  "documentation": "",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@CoMPaTech","@bouwew"]
+}
