@@ -51,14 +51,14 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     await plugwise_data_connection.find_all_appliances()
 
-    await plugwise_data_connection.update_domain_objects()
+#    await plugwise_data_connection.update_domain_objects()
 
-    data = plugwise_data_connection.get_current_preset()
-    _LOGGER.debug("Plugwise current preset; %s", data)
-    data = plugwise_data_connection.get_current_temperature()
-    _LOGGER.debug("Plugwise current temperature; %s", data)
-    data = plugwise_data_connection.get_schedule_temperature()
-    _LOGGER.debug("Plugwise schedule temperature; %s", data)
+#    data = plugwise_data_connection.get_current_preset()
+#    _LOGGER.debug("Plugwise current preset; %s", data)
+#    data = plugwise_data_connection.get_current_temperature()
+#    _LOGGER.debug("Plugwise current temperature; %s", data)
+#    data = plugwise_data_connection.get_schedule_temperature()
+#    _LOGGER.debug("Plugwise schedule temperature; %s", data)
 
     dev = []
     dev.append(PlugwiseAnna(plugwise_data_connection,config[CONF_NAME]))
