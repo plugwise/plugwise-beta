@@ -2,6 +2,8 @@
 import logging 
 import voluptuous as vol
 
+from Plugwise_Smile.Smile import Smile
+
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from homeassistant.components.climate import PLATFORM_SCHEMA, ClimateDevice
@@ -37,10 +39,11 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
 
-    plugwise_data_connection = Plugwise(host=config[CONF_HOST],password=config[CONF_PASSWORD],websession=async_get_clientsession(hass))
+    plugwise_data_connection = Smile(host=config[CONF_HOST],password=config[CONF_PASSWORD],websession=async_get_clientsession(hass))
 
     if not await plugwise_data_connection.connect():
         _LOGGER.error("Failed to connect to Plugwise")
@@ -48,9 +51,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     await plugwise_data_connection.find_all_appliances()
 
-    data = plugwise_data_connection.request(PLUGWISE_DOMAIN_OBJECTS_ENDPOINT)
-
-    _LOGGER.debug("Plugwise; %s", data)
+    await plugwise_data_connection.update_domain_objects()
 
     data = plugwise_data_connection.get_current_preset()
     _LOGGER.debug("Plugwise current preset; %s", data)

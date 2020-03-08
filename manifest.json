@@ -1,8 +1,8 @@
 {
-  "domain": "plugwise_async",
-  "name": "Plugwise async demo",
+  "domain": "Plugwise-HA",
+  "name": "Plugwise for Home Assistant",
   "documentation": "",
-  "requirements": [],
+  "requirements": ["https://test-files.pythonhosted.org/packages/34/04/4a7997ac7e2908216735deddac8c4f1913c6d91e1d3bf486a2a82fa13e5c/Plugwise_Smile-0.0.6.tar.gz#Plugwise_Smile==0.0.6"],
   "dependencies": [],
   "codeowners": ["@CoMPaTech","@bouwew"]
 }
