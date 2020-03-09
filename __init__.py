@@ -6,6 +6,7 @@ import asyncio
 import voluptuous as vol
 from Plugwise_Smile.Smile import Smile
 
+
 from homeassistant.helpers import discovery
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
@@ -89,8 +90,6 @@ CONFIG_SCHEMA = vol.Schema(
 
 PLUGWISE_COMPONENTS = ["climate", "water_heater", "sensor"]
 
-
-
 @asyncio.coroutine
 async def async_setup(hass, config):
     """Add the Plugwise Gateways."""
@@ -113,7 +112,7 @@ async def async_setup(hass, config):
             _LOGGER.info('Plugwise Thermostat %s',thermostat)
             smile_config=thermostat[0]
 
-        
+
             websession = async_get_clientsession(hass, verify_ssl=False)
             plugwise_data_connection = Smile(host=smile_config[CONF_HOST],password=smile_config[CONF_PASSWORD],websession=websession)
 
