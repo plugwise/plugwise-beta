@@ -16,8 +16,11 @@ CONF_MIN_TEMP = "min_temp"
 CONF_MAX_TEMP = "max_temp"
 CONF_THERMOSTAT = "thermostat"
 
+ATTR_ILLUMINANCE = "illuminance"
+
 # Icons
 THERMOSTAT_ICON = "mdi:thermometer"
-HEATER_ICON = "mdi:heater"
+WATER_HEATER_ICON = "mdi:thermometer"
+
 
 
