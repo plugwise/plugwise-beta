@@ -2,6 +2,9 @@
 
 import logging
 import asyncio
+import async_timeout
+
+from datetime import timedelta
 
 import voluptuous as vol
 from Plugwise_Smile.Smile import Smile
@@ -9,6 +12,10 @@ from Plugwise_Smile.Smile import Smile
 
 from homeassistant.helpers import discovery
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+
+from homeassistant.helpers import entity
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+
 
 from homeassistant.helpers import config_validation as cv
 
@@ -90,6 +97,8 @@ CONFIG_SCHEMA = vol.Schema(
 
 PLUGWISE_COMPONENTS = ["climate", "water_heater", "sensor"]
 
+SCAN_INTERVAL=30
+
 @asyncio.coroutine
 async def async_setup(hass, config):
     """Add the Plugwise Gateways."""
@@ -130,6 +139,29 @@ async def async_setup(hass, config):
 
             _LOGGER.info('Plugwise Smile config: %s',config)
             _LOGGER.info('Plugwise Smile smile config: %s',smile_config)
+
+            async def async_update_data():
+                """Fetch data from Smile"""
+                try:
+                    # Note: asyncio.TimeoutError and aiohttp.ClientError are already
+                    # handled by the data update coordinator.
+                    async with async_timeout.timeout(10):
+                        return await plugwise_data_connection.update_device()
+                except ApiError as err:
+                    raise UpdateFailed(f"Error communicating with Smile: {err}")
+
+            coordinator = DataUpdateCoordinator(
+                hass,
+                _LOGGER,
+                name="sensor",
+                update_method=async_update_data,
+                # Polling interval. Will only be polled if there are subscribers.
+                update_interval=timedelta(seconds=SCAN_INTERVAL),
+            )
+
+            # Fetch initial data so we have data when entities subscribe
+            await coordinator.async_refresh()
+
     #  We should handle P1 sometime
     else:
        return False
