@@ -126,42 +126,42 @@ async def async_setup(hass, config):
     hass.data[DOMAIN] = {}
 
     for smile_type,smile_config in conf.items():
-      _LOGGER.info('Plugwise Smile type %s',smile_type)
-      _LOGGER.info('Plugwise Smile setup %s',smile_config)
-      hass.data[DOMAIN][smile_type] = {}
-      for smile in smile_config:
-        _LOGGER.info('Plugwise smile %s',smile)
-        smile=smile[0]
-        smile['type']=smile_type
+        _LOGGER.info('Plugwise Smile type %s',smile_type)
+        _LOGGER.info('Plugwise Smile setup %s',smile_config)
+        hass.data[DOMAIN][smile_type] = {}
+        for smile in smile_config:
+            _LOGGER.info('Plugwise smile %s',smile)
+            smile=smile[0]
+            smile['type']=smile_type
 
-        websession = async_get_clientsession(hass, verify_ssl=False)
-        plugwise_data_connection = Smile(host=smile[CONF_HOST],password=smile[CONF_PASSWORD],websession=websession)
+            websession = async_get_clientsession(hass, verify_ssl=False)
+            plugwise_data_connection = Smile(host=smile[CONF_HOST],password=smile[CONF_PASSWORD],websession=websession)
 
-        _LOGGER.debug("Plugwise connecting to %s",smile)
-        if not await plugwise_data_connection.connect():
-            _LOGGER.error("Failed to connect to %s Plugwise Smile",smile_type)
-            return
+            _LOGGER.debug("Plugwise connecting to %s",smile)
+            if not await plugwise_data_connection.connect():
+                _LOGGER.error("Failed to connect to %s Plugwise Smile",smile_type)
+                return
 
-        hass.data[DOMAIN][smile_type][smile[CONF_NAME]] = { 'data_connection': plugwise_data_connection, 'type': smile_type, 'water_heater': smile[CONF_HEATER] }
+            hass.data[DOMAIN][smile_type][smile[CONF_NAME]] = { 'data_connection': plugwise_data_connection, 'type': smile_type, 'water_heater': smile[CONF_HEATER] }
 
-        _LOGGER.info('Plugwise Smile smile config: %s',smile)
+            _LOGGER.info('Plugwise Smile smile config: %s',smile)
 
-        async def async_update_data():
-            """Fetch data from Smile"""
-            async with async_timeout.timeout(10):
-                return await plugwise_data_connection.update_device()
+            async def async_update_data():
+                """Fetch data from Smile"""
+                async with async_timeout.timeout(10):
+                    return await plugwise_data_connection.update_device()
 
-        _LOGGER.info('Plugwise scan interval: %s',smile[CONF_SCAN_INTERVAL])
-        coordinator = DataUpdateCoordinator(
-            hass,
-            _LOGGER,
-            name='{}_{}'.format(DOMAIN,smile[CONF_NAME]),
-            update_method=async_update_data,
-            update_interval=smile[CONF_SCAN_INTERVAL],
-        )
+            _LOGGER.info('Plugwise scan interval: %s',smile[CONF_SCAN_INTERVAL])
+            coordinator = DataUpdateCoordinator(
+                hass,
+                _LOGGER,
+                name='{}_{}'.format(DOMAIN,smile[CONF_NAME]),
+                update_method=async_update_data,
+                update_interval=smile[CONF_SCAN_INTERVAL],
+            )
 
-        # Fetch initial data so we have data when entities subscribe
-        await coordinator.async_refresh()
+            # Fetch initial data so we have data when entities subscribe
+            await coordinator.async_refresh()
 
     for component in PLUGWISE_COMPONENTS:
         hass.helpers.discovery.load_platform(
@@ -170,5 +170,4 @@ async def async_setup(hass, config):
 
 
     return True
-
 
