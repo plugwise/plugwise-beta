@@ -20,6 +20,8 @@ from homeassistant.const import (
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_ILLUMINANCE,
+    DEVICE_CLASS_PRESSURE,
+    PRESSURE_MBAR,
 )
 
 from .const import (
@@ -42,6 +44,7 @@ THERMOSTAT_SENSOR_TYPES = {
     ATTR_TEMPERATURE : [TEMP_CELSIUS, None, DEVICE_CLASS_TEMPERATURE],
     ATTR_BATTERY_LEVEL : ["%" , None, DEVICE_CLASS_BATTERY],
     ATTR_ILLUMINANCE: ["lm", None, DEVICE_CLASS_ILLUMINANCE],
+    "pressure" : [PRESSURE_MBAR , None, DEVICE_CLASS_PRESSURE],
 }
 
 THERMOSTAT_SENSORS_AVAILABLE = {
@@ -49,6 +52,7 @@ THERMOSTAT_SENSORS_AVAILABLE = {
     "battery_charge": ATTR_BATTERY_LEVEL,
     "outdoor_temperature": ATTR_TEMPERATURE,
     "illuminance": ATTR_ILLUMINANCE,
+    "water_pressure": "pressure",
 }
 
 POWER_SENSOR_TYPES = {
@@ -114,6 +118,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                         if data['boiler_temp']:
                             addSensor=True
                             _LOGGER.info('Adding boiler_temp')
+                if sensor == 'water_pressure':
+                    if 'water_pressure' in data:
+                        if data['water_pressure']:
+                            addSensor=True
+                            _LOGGER.info('Adding water_pressure')
                 if sensor == 'battery_charge':
                     if 'battery' in data:
                         if data['battery']:
@@ -123,7 +132,6 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                     if 'outdoor_temp' in data:
                         if data['outdoor_temp']:
                             addSensor=True
-                            sensor='outdoor_temp'
                             _LOGGER.info('Adding outdoor_temperature')
                 if sensor == 'illuminance':
                     if 'illuminance' in data:
@@ -132,10 +140,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                             _LOGGER.info('Adding illuminance')
                 if addSensor:
                     devices.append(PwThermostatSensor(api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
-    for device,power in hass.data[DOMAIN][CONF_POWER].items():
-        _LOGGER.info('Device %s', device)
-        _LOGGER.info('Power %s', power)
-        api = power['data_connection']
+#    for device,power in hass.data[DOMAIN][CONF_POWER].items():
+#        _LOGGER.info('Device %s', device)
+#        _LOGGER.info('Power %s', power)
+#        api = power['data_connection']
 
     async_add_entities(devices, True)
 
@@ -170,6 +178,10 @@ class PwThermostatSensor(Entity):
             return DEVICE_CLASS_TEMPERATURE
         if self._sensor_type == "battery_level":
             return DEVICE_CLASS_BATTERY
+        if self._sensor_type == "illuminance":
+            return DEVICE_CLASS_ILLUMINANCE
+        if self._sensor_type == "pressure":
+            return DEVICE_CLASS_PRESSURE
 
 #    @property
 #    def device_state_attributes(self):
@@ -183,6 +195,10 @@ class PwThermostatSensor(Entity):
             return self.hass.config.units.temperature_unit
         if self._sensor_type == "battery_level":
             return "%"
+        if self._sensor_type == "illuminance":
+            return "lm"
+        if self._sensor_type == "pressure":
+            return PRESSURE_MBAR
 
     @property
     def icon(self):
@@ -191,6 +207,10 @@ class PwThermostatSensor(Entity):
             return "mdi:thermometer"
         if self._sensor_type == "battery_level":
             return "mdi:water-battery"
+        if self._sensor_type == "illuminance":
+            return "mdi:lightbulb-on-outline"
+        if self._sensor_type == "pressure":
+            return "mdi:water"
 
     def update(self):
         """Update the data from the thermostat."""
@@ -203,14 +223,21 @@ class PwThermostatSensor(Entity):
 
         _LOGGER.info("Sensor {}".format(self._sensor))
         if self._sensor == 'boiler_temperature':
-            self._state = data['boiler_temp']
+            if 'boiler_temp' in data:
+                self._state = data['boiler_temp']
+        if self._sensor == 'water_pressure':
+            if 'water_pressure' in data:
+                self._state = data['water_pressure']
         if self._sensor == 'battery_charge':
-            value = data['battery']
-            self._state = int(round(value * 100))
-        if self._sensor == 'outdoor_temp':
-            self._state = data['outdoor_temp']
+            if 'battery' in data:
+                value = data['battery']
+                self._state = int(round(value * 100))
+        if self._sensor == 'outdoor_temperature':
+            if 'outdoor_temp' in data:
+                self._state = data['outdoor_temp']
         if self._sensor == 'illuminance':
-            self._state = data['illuminance']
+            if 'illuminance' in data:
+                self._state = data['illuminance']
 
 class PwPowerSensor(Entity):
     """Representation of a Plugwise power sensor P1."""
