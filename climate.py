@@ -270,4 +270,3 @@ class PwThermostat(ClimateDevice):
         if 'dhw_state' in data:
             self._dhw_status = data['dhw_state']
 
-
