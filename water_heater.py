@@ -37,6 +37,7 @@ from .const import (
 
 import homeassistant.helpers.config_validation as cv
 
+CURRENT_HVAC_DHW = "dhw"
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
@@ -45,7 +46,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Add the Plugwise Thermostat Sensor."""
+    """Add the Plugwise water_heater."""
 
     if discovery_info is None:
         return
@@ -56,8 +57,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         _LOGGER.info('Device %s', device)
         _LOGGER.info('Water heater (Thermostat) %s', thermostat)
 
-        if not thermostat['heater']:
-            continue
+#        if not thermostat['heater']:
+#            continue
 
         api = thermostat['data_connection']
         try:
@@ -108,17 +109,11 @@ class PwWaterHeater(Entity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        if self._heating_status or self._boiler_status or self._dhw_status:
+        if self._heating_status or self._boiler_status:
             return CURRENT_HVAC_HEAT
-        return CURRENT_HVAC_IDLE
-
-    @property
-    def device_state_attributes(self):
-        """Return the device specific state attributes."""
-        attributes = {}
         if self._dhw_status:
-            attributes["domestic_hot_water"] = self._dhw_status
-        return attributes
+            return CURRENT_HVAC_DHW
+        return CURRENT_HVAC_IDLE
 
     @property
     def icon(self):
@@ -139,5 +134,4 @@ class PwWaterHeater(Entity):
             self._boiler_status = data['boiler_state']
         if 'dhw_state' in data:
             self._dhw_status = data['dhw_state']
-
 
