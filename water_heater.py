@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import logging 
+import logging
 import voluptuous as vol
 
 from Plugwise_Smile.Smile import Smile
@@ -54,7 +54,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     ctrl_id = None
     for device,thermostat in hass.data[DOMAIN][CONF_THERMOSTAT].items():
         _LOGGER.info('Device %s', device)
-        _LOGGER.info('Thermostat %s', thermostat)
+        _LOGGER.info('Water heater (Thermostat) %s', thermostat)
+
+        if not thermostat['heater']:
+            continue
+
         api = thermostat['data_connection']
         try:
             devs = api.get_devices()
@@ -92,7 +96,7 @@ class PwWaterHeater(Entity):
         self._name = name
         self._dev_id = dev_id
         self._ctrl_id = ctlr_id
-        self._heating_status =  None 
+        self._heating_status =  None
         self._boiler_status = None
         self._dhw_status = None
 
@@ -130,10 +134,10 @@ class PwWaterHeater(Entity):
             _LOGGER.debug("Received no data for device %s.", self._name)
             return
         if 'central_heating_state' in data:
-            self._heating_status =  data['central_heating_state'] 
+            self._heating_status =  data['central_heating_state']
         if 'boiler_state' in data:
-            self._boiler_status = data['boiler_state'] 
+            self._boiler_status = data['boiler_state']
         if 'dhw_state' in data:
-            self._dhw_status = data['dhw_state'] 
+            self._dhw_status = data['dhw_state']
 
 

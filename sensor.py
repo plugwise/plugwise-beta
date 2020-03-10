@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import logging 
+import logging
 import voluptuous as vol
 
 from Plugwise_Smile.Smile import Smile
@@ -7,11 +7,6 @@ from Plugwise_Smile.Smile import Smile
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from homeassistant.helpers.entity import Entity
-
-from homeassistant.components.climate.const import (
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
 
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
@@ -30,31 +25,45 @@ from homeassistant.const import (
 from .const import (
     ATTR_ILLUMINANCE,
     CONF_THERMOSTAT,
+    CONF_POWER,
     DOMAIN,
 )
 
 import homeassistant.helpers.config_validation as cv
 
 
-SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
-
-DEFAULT_NAME = "Plugwise async Dev Thermostat"
+DEFAULT_NAME = "Plugwise async sensoj"
 DEFAULT_ICON = "mdi:thermometer"
 
 
 _LOGGER = logging.getLogger(__name__)
 
-SENSOR_TYPES = {
+THERMOSTAT_SENSOR_TYPES = {
     ATTR_TEMPERATURE : [TEMP_CELSIUS, None, DEVICE_CLASS_TEMPERATURE],
     ATTR_BATTERY_LEVEL : ["%" , None, DEVICE_CLASS_BATTERY],
     ATTR_ILLUMINANCE: ["lm", None, DEVICE_CLASS_ILLUMINANCE],
 }
 
-SENSOR_AVAILABLE = {
+THERMOSTAT_SENSORS_AVAILABLE = {
     "boiler_temperature": ATTR_TEMPERATURE,
     "battery_charge": ATTR_BATTERY_LEVEL,
     "outdoor_temperature": ATTR_TEMPERATURE,
     "illuminance": ATTR_ILLUMINANCE,
+}
+
+POWER_SENSOR_TYPES = {
+    'electricity_consumed_point': ['Current Consumed Power', 'W', 'mdi:flash'],
+    'electricity_consumed_offpeak_interval': ['Interval Off Peak Consumed Power', 'Wh', 'mdi:flash'],
+    'electricity_consumed_peak_interval': ['Interval Peak Consumed Power', 'Wh', 'mdi:flash'],
+    'electricity_consumed_offpeak_cumulative': ['Cumulative Off Peak Consumed Power', 'Wh', 'mdi:flash'],
+    'electricity_consumed_peak_cumulative': ['Cumulative Peak Consumed Power', 'Wh', 'mdi:flash'],
+    'electricity_produced_point': ['Current Produced Power', 'W', 'mdi:white-balance-sunny'],
+    'electricity_produced_offpeak_interval': ['Interval Off Peak Produced Power', 'Wh', 'mdi:white-balance-sunny'],
+    'electricity_produced_peak_interval': ['Interval Peak Produced Power', 'Wh', 'mdi:white-balance-sunny'],
+    'electricity_produced_offpeak_cumulative': ['Cumulative Off Peak Produced Power', 'Wh', 'mdi:white-balance-sunny'],
+    'electricity_produced_peak_cumulative': ['Cumulative Peak Produced Power', 'Wh', 'mdi:white-balance-sunny'],
+    'gas_consumed_interval': ['Interval Consumed Gas', 'm3', 'mdi:gas-cylinder'],
+    'gas_consumed_cumulative': ['Cumulative Consumed Gas', 'm3', 'mdi:gas-cylinder'],
 }
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -98,7 +107,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             #_LOGGER.debug("Device data %s.", data)
             # data {'type': 'thermostat', 'battery': None, 'setpoint_temp': 22.0, 'current_temp': 21.7, 'active_preset': 'home', 'presets': {'vacation': [15.0, 0], 'no_frost': [10.0, 0], 'asleep': [16.0, 0], 'away': [16.0, 0], 'home': [21.0, 0]}, 'available_schedules': ['Test', 'Thermostat schedule', 'Normaal'], 'selected_schedule': 'Normaal', 'last_used': 'Test', 'boiler_state': None, 'central_heating_state': False, 'cooling_state': None, 'dhw_state': None, 'outdoor_temp': '9.3', 'illuminance': '0.8'}.
 
-            for sensor,sensor_type in SENSOR_AVAILABLE.items():
+            for sensor,sensor_type in THERMOSTAT_SENSORS_AVAILABLE.items():
                 addSensor=False
                 if sensor == 'boiler_temperature':
                     if 'boiler_temp' in data:
@@ -123,6 +132,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                             _LOGGER.info('Adding illuminance')
                 if addSensor:
                     devices.append(PwThermostatSensor(api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+    for device,power in hass.data[DOMAIN][CONF_POWER].items():
+        _LOGGER.info('Device %s', device)
+        _LOGGER.info('Power %s', power)
+        api = power['data_connection']
+
     async_add_entities(devices, True)
 
 class PwThermostatSensor(Entity):
@@ -198,3 +212,74 @@ class PwThermostatSensor(Entity):
         if self._sensor == 'illuminance':
             self._state = data['illuminance']
 
+class PwPowerSensor(Entity):
+    """Representation of a Plugwise power sensor P1."""
+
+    def __init__(self, data, sensor_type):
+        """Initialize the sensor."""
+        self.data = data
+        self.type = sensor_type
+        self._name = POWER_SENSOR_TYPES[self.type][0]
+        self._unit_of_measurement = POWER_SENSOR_TYPES[self.type][1]
+        self._icon = POWER_SENSOR_TYPES[self.type][2]
+        self._state = None
+        self.update()
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
+    def icon(self):
+        """Icon to use in the frontend, if any."""
+        return self._icon
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._state
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit of measurement of this entity, if any."""
+        return self._unit_of_measurement
+
+    def get_power(self, power_value):
+        pvSplit = power_value.split()
+        value = float(pvSplit[0])
+        if pvSplit[1] == 'kW':
+            return value * 1000
+        else:
+            return value
+
+    def update(self):
+        """Get the latest data and use it to update our sensor state."""
+        self.data.update()
+
+        if self.type == 'electricity_consumed_point':
+            self._state = self.data.get_electricity_consumed_point()
+        elif self.type == 'electricity_consumed_offpeak_interval':
+            self._state = self.data.get_electricity_consumed_offpeak_interval()
+        elif self.type == 'electricity_consumed_peak_interval':
+            self._state = self.data.get_electricity_consumed_peak_interval()
+        elif self.type == 'electricity_consumed_offpeak_interval':
+            self._state = self.data.get_electricity_consumed_offpeak_interval()
+        elif self.type == 'electricity_consumed_offpeak_cumulative':
+            self._state = self.data.get_electricity_consumed_offpeak_cumulative()
+        elif self.type == 'electricity_consumed_peak_cumulative':
+            self._state = self.data.get_electricity_consumed_peak_cumulative()
+        elif self.type == 'electricity_produced_point':
+            self._state = self.data.get_electricity_produced_point()
+        elif self.type == 'electricity_produced_offpeak_interval':
+            self._state = self.data.get_electricity_produced_offpeak_interval()
+        elif self.type == 'electricity_produced_peak_interval':
+            self._state = self.data.get_electricity_produced_peak_interval()
+        elif self.type == 'electricity_produced_offpeak_cumulative':
+            self._state = self.data.get_electricity_produced_offpeak_cumulative()
+        elif self.type == 'electricity_produced_peak_cumulative':
+            self._state = self.data.get_electricity_produced_peak_cumulative()
+        elif self.type == 'gas_consumed_interval':
+            self._state = self.data.get_gas_consumed_interval()
+        elif self.type == 'gas_consumed_cumulative':
+            self._state = self.data.get_gas_consumed_cumulative()

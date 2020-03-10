@@ -34,6 +34,7 @@ from homeassistant.const import (
     CONF_PASSWORD,
     CONF_PORT,
     CONF_USERNAME,
+    CONF_SCAN_INTERVAL,
 )
 
 from .const import (
@@ -44,9 +45,12 @@ from .const import (
     DEFAULT_PORT,
     DEFAULT_MIN_TEMP,
     DEFAULT_MAX_TEMP,
+    DEFAULT_SCAN_INTERVAL,
     CONF_MIN_TEMP,
     CONF_MAX_TEMP,
     CONF_THERMOSTAT,
+    CONF_POWER,
+    CONF_HEATER,
 
 )
 
@@ -73,6 +77,10 @@ PLUGWISE_CONFIG = vol.Schema(
             vol.Optional(
                 CONF_USERNAME, default=DEFAULT_USERNAME
             ): cv.string,
+            vol.Optional(CONF_HEATER, default=True): cv.boolean,
+            vol.Optional(
+                CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
+            ): cv.time_period,
         }
 )
 
@@ -88,6 +96,14 @@ CONFIG_SCHEMA = vol.Schema(
                             cv.ensure_list, [PLUGWISE_CONFIG],
                         ),
                     ],
+                ),
+                vol.Optional(CONF_POWER): vol.All(
+                    cv.ensure_list,
+                    [
+                        vol.All(
+                            cv.ensure_list, [PLUGWISE_CONFIG],
+                        ),
+                    ],
                 )
             }
         )
@@ -96,8 +112,6 @@ CONFIG_SCHEMA = vol.Schema(
 )
 
 PLUGWISE_COMPONENTS = ["climate", "water_heater", "sensor"]
-
-SCAN_INTERVAL=30
 
 @asyncio.coroutine
 async def async_setup(hass, config):
@@ -111,60 +125,49 @@ async def async_setup(hass, config):
     _LOGGER.info('Plugwise %s',conf)
     hass.data[DOMAIN] = {}
 
-    if CONF_THERMOSTAT in conf:
-        thermostats = conf[CONF_THERMOSTAT]
+    for smile_type,smile_config in conf.items():
+      _LOGGER.info('Plugwise Smile type %s',smile_type)
+      _LOGGER.info('Plugwise Smile setup %s',smile_config)
+      hass.data[DOMAIN][smile_type] = {}
+      for smile in smile_config:
+        _LOGGER.info('Plugwise smile %s',smile)
+        smile=smile[0]
+        smile['type']=smile_type
 
-        _LOGGER.info('Plugwise Thermostats %s',thermostats)
-        hass.data[DOMAIN][CONF_THERMOSTAT] = {}
+        websession = async_get_clientsession(hass, verify_ssl=False)
+        plugwise_data_connection = Smile(host=smile[CONF_HOST],password=smile[CONF_PASSWORD],websession=websession)
 
-        for thermostat in thermostats:
-            _LOGGER.info('Plugwise Thermostat %s',thermostat)
-            smile_config=thermostat[0]
+        _LOGGER.debug("Plugwise connecting to %s",smile)
+        if not await plugwise_data_connection.connect():
+            _LOGGER.error("Failed to connect to %s Plugwise Smile",smile_type)
+            return
 
+        hass.data[DOMAIN][smile_type][smile[CONF_NAME]] = { 'data_connection': plugwise_data_connection, 'type': smile_type, 'water_heater': smile[CONF_HEATER] }
 
-            websession = async_get_clientsession(hass, verify_ssl=False)
-            plugwise_data_connection = Smile(host=smile_config[CONF_HOST],password=smile_config[CONF_PASSWORD],websession=websession)
+        _LOGGER.info('Plugwise Smile smile config: %s',smile)
 
-            _LOGGER.debug("Plugwise connecting %s",smile_config)
-            if not await plugwise_data_connection.connect():
-                _LOGGER.error("Failed to connect to Plugwise")
-                return
+        async def async_update_data():
+            """Fetch data from Smile"""
+            async with async_timeout.timeout(10):
+                return await plugwise_data_connection.update_device()
 
-            hass.data[DOMAIN]['thermostat'][smile_config[CONF_NAME]] = { 'data_connection': plugwise_data_connection }
+        _LOGGER.info('Plugwise scan interval: %s',smile[CONF_SCAN_INTERVAL])
+        coordinator = DataUpdateCoordinator(
+            hass,
+            _LOGGER,
+            name='{}_{}'.format(DOMAIN,smile[CONF_NAME]),
+            update_method=async_update_data,
+            update_interval=smile[CONF_SCAN_INTERVAL],
+        )
 
-            for component in PLUGWISE_COMPONENTS:
-                hass.helpers.discovery.load_platform(
-                    component, DOMAIN, {}, config,
-                )
+        # Fetch initial data so we have data when entities subscribe
+        await coordinator.async_refresh()
 
-            _LOGGER.info('Plugwise Smile config: %s',config)
-            _LOGGER.info('Plugwise Smile smile config: %s',smile_config)
+    for component in PLUGWISE_COMPONENTS:
+        hass.helpers.discovery.load_platform(
+            component, DOMAIN, {}, config,
+        )
 
-            async def async_update_data():
-                """Fetch data from Smile"""
-                try:
-                    # Note: asyncio.TimeoutError and aiohttp.ClientError are already
-                    # handled by the data update coordinator.
-                    async with async_timeout.timeout(10):
-                        return await plugwise_data_connection.update_device()
-                except ApiError as err:
-                    raise UpdateFailed(f"Error communicating with Smile: {err}")
-
-            coordinator = DataUpdateCoordinator(
-                hass,
-                _LOGGER,
-                name="sensor",
-                update_method=async_update_data,
-                # Polling interval. Will only be polled if there are subscribers.
-                update_interval=timedelta(seconds=SCAN_INTERVAL),
-            )
-
-            # Fetch initial data so we have data when entities subscribe
-            await coordinator.async_refresh()
-
-    #  We should handle P1 sometime
-    else:
-       return False
 
     return True
 

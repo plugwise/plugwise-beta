@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import logging 
+import logging
 import voluptuous as vol
 
 from Plugwise_Smile.Smile import Smile
@@ -64,7 +64,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         except RuntimeError:
             _LOGGER.error("Unable to get location info from the API")
             return
-        
+
         for dev in devs:
             if dev['name'] == 'Controlled Device':
                 ctrl_id = dev['id']
@@ -204,7 +204,7 @@ class PwThermostat(ClimateDevice):
     def temperature_unit(self):
         """Return the unit of measured temperature."""
         return TEMP_CELSIUS
-        
+
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
@@ -230,11 +230,12 @@ class PwThermostat(ClimateDevice):
     def update(self):
         """Update the data for this climate device."""
         data = self._api.get_device_data(self._dev_id, self._ctrl_id)
+        _LOGGER.info('Plugwise Smile device data: %s',data)
 
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
             return
-            
+
         _LOGGER.debug("Device data collected from Plugwise API")
         if 'type' in data:
             self._dev_type = data['type']
