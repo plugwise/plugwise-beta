@@ -149,7 +149,7 @@ async def async_setup(hass, config):
             async def async_update_data():
                 """Fetch data from Smile"""
                 async with async_timeout.timeout(10):
-                    return await plugwise_data_connection.update_device()
+                    return await plugwise_data_connection.full_update_device()
 
             _LOGGER.info('Plugwise scan interval: %s',smile[CONF_SCAN_INTERVAL])
             coordinator = DataUpdateCoordinator(

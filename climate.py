@@ -209,8 +209,8 @@ class PwThermostat(ClimateDevice):
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if (temperature is not None) and (self._min_temp < temperature < self._max_temp):
-            _LOGGER.debug("Adjusting temperature to %s degrees C.", temperature)
             await self._api.set_temperature(self._dev_id, self._dev_type, temperature)
+            self.update()
         else:
             _LOGGER.error("Invalid temperature requested")
 
