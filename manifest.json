@@ -2,7 +2,7 @@
   "domain": "Plugwise-HA",
   "name": "Plugwise for Home Assistant",
   "documentation": "",
-  "requirements": ["https://test-files.pythonhosted.org/packages/84/2e/0c1bf045fa4d520a62735579b811f8369062e07322effef875d71eb94490/Plugwise_Smile-0.0.16.tar.gz#Plugwise_Smile==0.0.16"],
+  "requirements": ["https://test-files.pythonhosted.org/packages/82/e7/19a88020b5f8fc981128f3beabcc6006d0b4fb9d8dd35e6191786df2350c/Plugwise_Smile-0.0.17.tar.gz#Plugwise_Smile==0.0.17"],
   "dependencies": [],
   "codeowners": ["@CoMPaTech","@bouwew"],
   "config_flow": true,
