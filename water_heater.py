@@ -62,7 +62,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
         api = thermostat['data_connection']
         try:
-            devs = await api.get_devices()
+            devs = api.get_devices()
         except RuntimeError:
             _LOGGER.error("Unable to get location info from the API")
             return
