@@ -18,12 +18,17 @@ CONF_MAX_TEMP = "max_temp"
 CONF_THERMOSTAT = "thermostat"
 CONF_POWER = "power"
 CONF_HEATER = "heater"
+CONF_SOLAR = "solar"
+CONF_GAS = "gas"
 
 ATTR_ILLUMINANCE = "illuminance"
 
 # Icons
 THERMOSTAT_ICON = "mdi:thermometer"
 WATER_HEATER_ICON = "mdi:thermometer"
-
+GAS_ICON = "mdi:fire"
+POWER_ICON = "mdi:flash"
+POWER_FAILURE_ICON = "mdi:flash-off"
+SWELL_SAG_ICON = "mdi:pulse"
 
 

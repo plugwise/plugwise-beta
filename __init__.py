@@ -51,6 +51,8 @@ from .const import (
     CONF_THERMOSTAT,
     CONF_POWER,
     CONF_HEATER,
+    CONF_SOLAR,
+    CONF_GAS,
 
 )
 
@@ -78,6 +80,8 @@ PLUGWISE_CONFIG = vol.Schema(
                 CONF_USERNAME, default=DEFAULT_USERNAME
             ): cv.string,
             vol.Optional(CONF_HEATER, default=True): cv.boolean,
+            vol.Optional(CONF_GAS, default=True): cv.boolean,
+            vol.Optional(CONF_SOLAR, default=True): cv.boolean,
             vol.Optional(
                 CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
             ): cv.time_period,
@@ -135,14 +139,17 @@ async def async_setup(hass, config):
             smile['type']=smile_type
 
             websession = async_get_clientsession(hass, verify_ssl=False)
-            plugwise_data_connection = Smile(host=smile[CONF_HOST],password=smile[CONF_PASSWORD],websession=websession)
+            plugwise_data_connection = Smile(host=smile[CONF_HOST],password=smile[CONF_PASSWORD],websession=websession, smile_type=smile_type)
 
             _LOGGER.debug("Plugwise connecting to %s",smile)
             if not await plugwise_data_connection.connect():
                 _LOGGER.error("Failed to connect to %s Plugwise Smile",smile_type)
                 return
 
-            hass.data[DOMAIN][smile_type][smile[CONF_NAME]] = { 'data_connection': plugwise_data_connection, 'type': smile_type, 'water_heater': smile[CONF_HEATER] }
+            if smile_type != 'thermostat':
+                smile[CONF_HEATER] = False
+
+            hass.data[DOMAIN][smile_type][smile[CONF_NAME]] = { 'data_connection': plugwise_data_connection, 'type': smile_type, 'water_heater': smile[CONF_HEATER], 'solar': smile[CONF_SOLAR], 'gas': smile[CONF_GAS] }
 
             _LOGGER.info('Plugwise Smile smile config: %s',smile)
 

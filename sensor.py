@@ -56,18 +56,16 @@ THERMOSTAT_SENSORS_AVAILABLE = {
 }
 
 POWER_SENSOR_TYPES = {
-    'electricity_consumed_point': ['Current Consumed Power', 'W', 'mdi:flash'],
-    'electricity_consumed_offpeak_interval': ['Interval Off Peak Consumed Power', 'Wh', 'mdi:flash'],
-    'electricity_consumed_peak_interval': ['Interval Peak Consumed Power', 'Wh', 'mdi:flash'],
-    'electricity_consumed_offpeak_cumulative': ['Cumulative Off Peak Consumed Power', 'Wh', 'mdi:flash'],
-    'electricity_consumed_peak_cumulative': ['Cumulative Peak Consumed Power', 'Wh', 'mdi:flash'],
-    'electricity_produced_point': ['Current Produced Power', 'W', 'mdi:white-balance-sunny'],
-    'electricity_produced_offpeak_interval': ['Interval Off Peak Produced Power', 'Wh', 'mdi:white-balance-sunny'],
-    'electricity_produced_peak_interval': ['Interval Peak Produced Power', 'Wh', 'mdi:white-balance-sunny'],
-    'electricity_produced_offpeak_cumulative': ['Cumulative Off Peak Produced Power', 'Wh', 'mdi:white-balance-sunny'],
-    'electricity_produced_peak_cumulative': ['Cumulative Peak Produced Power', 'Wh', 'mdi:white-balance-sunny'],
-    'gas_consumed_interval': ['Interval Consumed Gas', 'm3', 'mdi:gas-cylinder'],
-    'gas_consumed_cumulative': ['Cumulative Consumed Gas', 'm3', 'mdi:gas-cylinder'],
+    'electricity_consumed_offpeak_point': ['Current Consumed Power (off peak)', 'W', 'mdi:flash'],
+    'electricity_consumed_peak_point': ['Current Consumed Power', 'W', 'mdi:flash'],
+    'electricity_consumed_offpeak_cumulative': ['Cumulative Consumed Power (off peak)', 'kW', 'mdi:flash'],
+    'electricity_consumed_peak_cumulative': ['Cumulative Consumed Power', 'kW', 'mdi:flash'],
+    'electricity_produced_offpeak_point': ['Current Consumed Power (off peak)', 'W', 'mdi:white-balance-synny'],
+    'electricity_produced_peak_point': ['Current Consumed Power', 'W', 'mdi:white-balance-synny'],
+    'electricity_produced_offpeak_cumulative': ['Cumulative Consumed Power (off peak)', 'kW', 'mdi:white-balance-synny'],
+    'electricity_produced_peak_cumulative': ['Cumulative Consumed Power', 'kW', 'mdi:white-balance-synny'],
+    'gas_consumed_point_peak_point': ['Current Consumed Gas', 'm3', 'mdi:gas-cylinder'],
+    'gas_consumed_point_peak_cumulative': ['Cumulative Consumed Gas', 'm3', 'mdigas-cylinder'],
 }
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -141,11 +139,48 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                                 _LOGGER.info('Adding illuminance')
                     if addSensor:
                         devices.append(PwThermostatSensor(api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+
     if CONF_POWER in hass.data[DOMAIN]:
         for device,power in hass.data[DOMAIN][CONF_POWER].items():
             _LOGGER.info('Device %s', device)
             _LOGGER.info('Power %s', power)
             api = power['data_connection']
+            try:
+                devs = await api.get_devices()
+            except RuntimeError:
+                _LOGGER.error("Unable to get location info from the API")
+                return
+
+            data = None
+            _LOGGER.info('Dev %s', devs)
+            for dev in devs:
+                _LOGGER.info('Dev %s', dev)
+                if dev['name'] == 'Home':
+                    ctrl_id = dev['id']
+                    dev_id = None
+                    name = dev['name']
+                    _LOGGER.info('Name %s', name)
+                    data = api.get_device_data(dev_id, ctrl_id)
+
+                if data is None:
+                    _LOGGER.debug("Received no data for device %s.", name)
+                    return
+
+                for sensor,sensor_type in POWER_SENSOR_TYPES.items():
+                    _LOGGER.debug("sensor %s",sensor)
+                    _LOGGER.debug("sensortype %s",sensor_type)
+                    addSensor=True
+                    if 'off' in sensor and api._power_tariff['electricity_consumption_tariff_structure'] == 'single':
+                        addSensor=False
+                    _LOGGER.debug(sensor)
+                    _LOGGER.debug(power['gas'])
+                    if 'gas_' in sensor and not power['gas']:
+                        addSensor=False
+                    if 'produced' in sensor and not power['solar']:
+                        addSensor=False
+
+                    if addSensor:
+                        devices.append(PwPowerSensor(api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
 
     async_add_entities(devices, True)
 
@@ -244,15 +279,17 @@ class PwThermostatSensor(Entity):
 class PwPowerSensor(Entity):
     """Representation of a Plugwise power sensor P1."""
 
-    def __init__(self, data, sensor_type):
+    def __init__(self, api, name, dev_id, ctlr_id, sensor, sensor_type):
         """Initialize the sensor."""
-        self.data = data
-        self.type = sensor_type
-        self._name = POWER_SENSOR_TYPES[self.type][0]
-        self._unit_of_measurement = POWER_SENSOR_TYPES[self.type][1]
-        self._icon = POWER_SENSOR_TYPES[self.type][2]
+        self._api = api
+        self._name = name
+        self._dev_id = dev_id
+        self._ctrl_id = ctlr_id
+        self._device = sensor_type[0]
+        self._unit_of_measurement = sensor_type[1]
+        self._icon = sensor_type[2]
+        self._sensor = sensor
         self._state = None
-        self.update()
 
     @property
     def name(self):
@@ -274,41 +311,20 @@ class PwPowerSensor(Entity):
         """Return the unit of measurement of this entity, if any."""
         return self._unit_of_measurement
 
-    def get_power(self, power_value):
-        pvSplit = power_value.split()
-        value = float(pvSplit[0])
-        if pvSplit[1] == 'kW':
-            return value * 1000
-        else:
-            return value
-
     def update(self):
-        """Get the latest data and use it to update our sensor state."""
-        self.data.update()
+        """Update the data from the thermostat."""
+        _LOGGER.debug("Update sensor called")
+        data = self._api.get_device_data(self._dev_id, self._ctrl_id)
 
-        if self.type == 'electricity_consumed_point':
-            self._state = self.data.get_electricity_consumed_point()
-        elif self.type == 'electricity_consumed_offpeak_interval':
-            self._state = self.data.get_electricity_consumed_offpeak_interval()
-        elif self.type == 'electricity_consumed_peak_interval':
-            self._state = self.data.get_electricity_consumed_peak_interval()
-        elif self.type == 'electricity_consumed_offpeak_interval':
-            self._state = self.data.get_electricity_consumed_offpeak_interval()
-        elif self.type == 'electricity_consumed_offpeak_cumulative':
-            self._state = self.data.get_electricity_consumed_offpeak_cumulative()
-        elif self.type == 'electricity_consumed_peak_cumulative':
-            self._state = self.data.get_electricity_consumed_peak_cumulative()
-        elif self.type == 'electricity_produced_point':
-            self._state = self.data.get_electricity_produced_point()
-        elif self.type == 'electricity_produced_offpeak_interval':
-            self._state = self.data.get_electricity_produced_offpeak_interval()
-        elif self.type == 'electricity_produced_peak_interval':
-            self._state = self.data.get_electricity_produced_peak_interval()
-        elif self.type == 'electricity_produced_offpeak_cumulative':
-            self._state = self.data.get_electricity_produced_offpeak_cumulative()
-        elif self.type == 'electricity_produced_peak_cumulative':
-            self._state = self.data.get_electricity_produced_peak_cumulative()
-        elif self.type == 'gas_consumed_interval':
-            self._state = self.data.get_gas_consumed_interval()
-        elif self.type == 'gas_consumed_cumulative':
-            self._state = self.data.get_gas_consumed_cumulative()
+        if data is None:
+            _LOGGER.debug("Received no data for device %s.", self._name)
+
+        _LOGGER.info("Sensor {}".format(self._sensor))
+
+        if self._sensor in data:
+            measurement = data[self._sensor]
+            if 'cumulative' in self._sensor:
+                measurement = int(data[self._sensor]/1000)
+            self._state = measurement
+
+

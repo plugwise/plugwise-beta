@@ -54,26 +54,27 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     devices = []
     ctrl_id = None
-    for device,thermostat in hass.data[DOMAIN][CONF_THERMOSTAT].items():
-        _LOGGER.info('Device %s',device)
-        _LOGGER.info('Thermostat %s',thermostat)
-        api = thermostat['data_connection']
-        try:
-            devs = await api.get_devices()
-            _LOGGER.debug("Plugwise devs : %s",devs)
-        except RuntimeError:
-            _LOGGER.error("Unable to get location info from the API")
-            return
+    if CONF_THERMOSTAT in hass.data[DOMAIN]:
+        for device,thermostat in hass.data[DOMAIN][CONF_THERMOSTAT].items():
+            _LOGGER.info('Device %s',device)
+            _LOGGER.info('Thermostat %s',thermostat)
+            api = thermostat['data_connection']
+            try:
+                devs = await api.get_devices()
+                _LOGGER.debug("Plugwise devs : %s",devs)
+            except RuntimeError:
+                _LOGGER.error("Unable to get location info from the API")
+                return
 
-        for dev in devs:
-            if dev['name'] == 'Controlled Device':
-                ctrl_id = dev['id']
-            else:
-                device = PwThermostat(api,dev['name'], dev['id'], ctrl_id, 4, 30)
-                _LOGGER.debug("Plugwise device : %s",device)
-                if not device:
-                    continue
-                devices.append(device)
+            for dev in devs:
+                if dev['name'] == 'Controlled Device':
+                    ctrl_id = dev['id']
+                else:
+                    device = PwThermostat(api,dev['name'], dev['id'], ctrl_id, 4, 30)
+                    _LOGGER.debug("Plugwise device : %s",device)
+                    if not device:
+                        continue
+                    devices.append(device)
     async_add_entities(devices, True)
 
 
@@ -209,7 +210,8 @@ class PwThermostat(ClimateDevice):
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if (temperature is not None) and (self._min_temp < temperature < self._max_temp):
-            await self._api.set_temperature(self._dev_id, self._dev_type, temperature)
+            _LOGGER.debug("Set temp dev_id = %s",self._dev_id)
+            await self._api.set_temperature(self._dev_id, temperature)
             self.update()
         else:
             _LOGGER.error("Invalid temperature requested")
@@ -225,7 +227,7 @@ class PwThermostat(ClimateDevice):
     async def async_set_preset_mode(self, preset_mode):
         _LOGGER.debug("Changing preset mode to %s.", preset_mode)
         """Set the preset mode."""
-        await self._api.set_preset(self._dev_id, self._dev_type, preset_mode)
+        await self._api.set_preset(self._dev_id, preset_mode)
 
     def update(self):
         """Update the data for this climate device."""

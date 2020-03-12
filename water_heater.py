@@ -53,39 +53,40 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     devices = []
     ctrl_id = None
-    for device,thermostat in hass.data[DOMAIN][CONF_THERMOSTAT].items():
-        _LOGGER.info('Device %s', device)
-        _LOGGER.info('Water heater (Thermostat) %s', thermostat)
+    if CONF_THERMOSTAT in hass.data[DOMAIN]:
+        for device,thermostat in hass.data[DOMAIN][CONF_THERMOSTAT].items():
+            _LOGGER.info('Device %s', device)
+            _LOGGER.info('Water heater (Thermostat) %s', thermostat)
 
-#        if not thermostat['heater']:
-#            continue
+    #        if not thermostat['heater']:
+    #            continue
 
-        api = thermostat['data_connection']
-        try:
-            devs = await api.get_devices()
-        except RuntimeError:
-            _LOGGER.error("Unable to get location info from the API")
-            return
+            api = thermostat['data_connection']
+            try:
+                devs = await api.get_devices()
+            except RuntimeError:
+                _LOGGER.error("Unable to get location info from the API")
+                return
 
-        data = None
-        _LOGGER.info('Dev %s', devs)
-        for dev in devs:
-            _LOGGER.info('Dev %s', dev)
-            if dev['name'] == 'Controlled Device':
-                ctrl_id = dev['id']
-                dev_id = None
-                name = dev['name']
-                _LOGGER.info('Name %s', name)
-                data = api.get_device_data(dev_id, ctrl_id)
+            data = None
+            _LOGGER.info('Dev %s', devs)
+            for dev in devs:
+                _LOGGER.info('Dev %s', dev)
+                if dev['name'] == 'Controlled Device':
+                    ctrl_id = dev['id']
+                    dev_id = None
+                    name = dev['name']
+                    _LOGGER.info('Name %s', name)
+                    data = api.get_device_data(dev_id, ctrl_id)
 
-                if data is None:
-                    _LOGGER.debug("Received no data for device %s.", name)
-                    return
+                    if data is None:
+                        _LOGGER.debug("Received no data for device %s.", name)
+                        return
 
-                device = PwWaterHeater(api, dev['name'], dev_id, ctrl_id)
-                if not device:
-                    continue
-                devices.append(device)
+                    device = PwWaterHeater(api, dev['name'], dev_id, ctrl_id)
+                    if not device:
+                        continue
+                    devices.append(device)
     async_add_entities(devices, True)
 
 class PwWaterHeater(Entity):
