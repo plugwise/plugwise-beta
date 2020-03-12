@@ -66,7 +66,7 @@ HVAC_MODES_2 = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
 
 SUPPORT_FLAGS = (SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE)
 
-PLUGWISE_CONFIG = vol.Schema(
+THERMOSTAT_CONFIG = vol.Schema(
         {
             vol.Optional(
                 CONF_NAME, default=DEFAULT_NAME
@@ -80,10 +80,29 @@ PLUGWISE_CONFIG = vol.Schema(
                 CONF_USERNAME, default=DEFAULT_USERNAME
             ): cv.string,
             vol.Optional(CONF_HEATER, default=True): cv.boolean,
+            vol.Optional(
+                CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL['thermostat']
+            ): cv.time_period,
+        }
+)
+
+POWER_CONFIG = vol.Schema(
+        {
+            vol.Optional(
+                CONF_NAME, default=DEFAULT_NAME
+            ): cv.string,
+            vol.Required(CONF_PASSWORD): cv.string,
+            vol.Required(CONF_HOST): cv.string,
+            vol.Optional(
+                CONF_PORT, default=DEFAULT_PORT
+            ): cv.port,
+            vol.Optional(
+                CONF_USERNAME, default=DEFAULT_USERNAME
+            ): cv.string,
             vol.Optional(CONF_GAS, default=True): cv.boolean,
             vol.Optional(CONF_SOLAR, default=True): cv.boolean,
             vol.Optional(
-                CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
+                CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL['power']
             ): cv.time_period,
         }
 )
@@ -97,7 +116,7 @@ CONFIG_SCHEMA = vol.Schema(
                     cv.ensure_list,
                     [
                         vol.All(
-                            cv.ensure_list, [PLUGWISE_CONFIG],
+                            cv.ensure_list, [THERMOSTAT_CONFIG],
                         ),
                     ],
                 ),
@@ -105,7 +124,7 @@ CONFIG_SCHEMA = vol.Schema(
                     cv.ensure_list,
                     [
                         vol.All(
-                            cv.ensure_list, [PLUGWISE_CONFIG],
+                            cv.ensure_list, [POWER_CONFIG],
                         ),
                     ],
                 )
@@ -139,7 +158,7 @@ async def async_setup(hass, config):
             smile['type']=smile_type
 
             websession = async_get_clientsession(hass, verify_ssl=False)
-            plugwise_data_connection = Smile(host=smile[CONF_HOST],password=smile[CONF_PASSWORD],websession=websession, smile_type=smile_type)
+            plugwise_data_connection = Smile(host=smile[CONF_HOST], password=smile[CONF_PASSWORD], websession=websession, smile_type=smile_type)
 
             _LOGGER.debug("Plugwise connecting to %s",smile)
             if not await plugwise_data_connection.connect():
@@ -148,6 +167,9 @@ async def async_setup(hass, config):
 
             if smile_type != 'thermostat':
                 smile[CONF_HEATER] = False
+            if smile_type != 'power':
+                smile[CONF_GAS] = False
+                smile[CONF_SOLAR] = False
 
             hass.data[DOMAIN][smile_type][smile[CONF_NAME]] = { 'data_connection': plugwise_data_connection, 'type': smile_type, 'water_heater': smile[CONF_HEATER], 'solar': smile[CONF_SOLAR], 'gas': smile[CONF_GAS] }
 
