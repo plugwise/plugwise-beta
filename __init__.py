@@ -175,22 +175,22 @@ async def async_setup(hass, config):
 
             _LOGGER.info('Plugwise Smile smile config: %s',smile)
 
-            async def async_update_data():
-                """Fetch data from Smile"""
-                async with async_timeout.timeout(10):
-                    return await plugwise_data_connection.full_update_device()
-
-            _LOGGER.info('Plugwise scan interval: %s',smile[CONF_SCAN_INTERVAL])
-            coordinator = DataUpdateCoordinator(
-                hass,
-                _LOGGER,
-                name='{}_{}'.format(DOMAIN,smile[CONF_NAME]),
-                update_method=async_update_data,
-                update_interval=smile[CONF_SCAN_INTERVAL],
-            )
-
-            # Fetch initial data so we have data when entities subscribe
-            await coordinator.async_refresh()
+#            async def async_update_data():
+#                """Fetch data from Smile"""
+#                async with async_timeout.timeout(10):
+#                    return await plugwise_data_connection.full_update_device()
+#
+#            _LOGGER.info('Plugwise scan interval: %s',smile[CONF_SCAN_INTERVAL])
+#            coordinator = DataUpdateCoordinator(
+#                hass,
+#                _LOGGER,
+#                name='{}_{}'.format(DOMAIN,smile[CONF_NAME]),
+#                update_method=async_update_data,
+#                update_interval=smile[CONF_SCAN_INTERVAL],
+#            )
+#
+#            # Fetch initial data so we have data when entities subscribe
+#            await coordinator.async_refresh()
 
     for component in PLUGWISE_COMPONENTS:
         hass.helpers.discovery.load_platform(

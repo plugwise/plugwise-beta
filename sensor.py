@@ -87,6 +87,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 _LOGGER.error("Unable to get location info from the API")
                 return
 
+            devices.append(PwSmile(api,'{}_thermostat'.format(device)))
             data = None
             _LOGGER.info('Dev %s', devs)
             for dev in devs:
@@ -151,6 +152,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 _LOGGER.error("Unable to get location info from the API")
                 return
 
+            devices.append(PwSmile(api,'{}_power'.format(device)))
             data = None
             _LOGGER.info('Dev %s', devs)
             for dev in devs:
@@ -326,5 +328,44 @@ class PwPowerSensor(Entity):
             if 'cumulative' in self._sensor:
                 measurement = int(data[self._sensor]/1000)
             self._state = measurement
+
+
+class PwSmile(Entity):
+    """Representation of a Plugwise Smile."""
+
+    def __init__(self, api, name):
+        """Initialize the sensor."""
+        self._api = api
+        self._name = name
+        self._icon = 'mdi:flash'
+        self._state = None
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
+    def icon(self):
+        """Icon to use in the frontend, if any."""
+        return self._icon
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._state
+
+    async def async_update(self):
+        """Update the data from the thermostat."""
+        _LOGGER.debug("Update smile called")
+        _LOGGER.debug("API looks like %s",self._api)
+        data = await self._api.full_update_device()
+
+        if data is None:
+            _LOGGER.debug("Received no data from smile %s.", self._name)
+            return False
+
+        _LOGGER.debug("Data looks like %s",data)
+        return True
 
 
