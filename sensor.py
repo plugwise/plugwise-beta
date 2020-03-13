@@ -77,6 +77,107 @@ POWER_SENSOR_TYPES = {
 # Smile communication is set using configuration directives
 SCAN_INTERVAL = timedelta(seconds=10)
 
+
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    """Set up the Smile sensors from a config entry."""
+    api = hass.data[DOMAIN][config_entry.entry_id]
+
+    sensor_coordinator = DataUpdateCoordinator(
+        hass,
+        _LOGGER,
+        name="sensor",
+        update_method=async_safe_fetch,
+        update_interval=10
+    )
+
+    # First do a refresh to see if we can reach the hub.
+    # Otherwise we will declare not ready.
+    await sensor_coordinator.async_refresh()
+
+    if not sensor_coordinator.last_update_success:
+        raise PlatformNotReady
+
+    async_add_entities(PwThermostatSensor(coordinator, idx) for idx, ent
+                       in enumerate(coordinator.data))
+
+async def async_safe_fetch(api):
+    """Safely fetch data."""
+    with async_timeout.timeout(4):
+        return await api.full_update_devices()
+
+class PwThermostatSensor(Entity):
+    """Safely fetch data."""
+
+    def __init__(self, coordinator, idx):
+        self.coordinator = coordinator
+        self.idx = idx
+
+    @property
+    def is_on(self):
+      """Return entity state.
+
+      Example to show how we fetch data from coordinator.
+      """
+      self.coordinator.data[self.idx]['state']
+
+    @property
+    def should_poll(self):
+        """No need to poll. Coordinator notifies entity of updates."""
+        return False
+
+    @property
+    def available(self):
+        """Return if entity is available."""
+        return self.coordinator.last_update_success
+
+    async def async_added_to_hass(self):
+        """When entity is added to hass."""
+        self.coordinator.async_add_listener(
+            self.async_write_ha_state
+        )
+
+    async def async_will_remove_from_hass(self):
+        """When entity will be removed from hass."""
+        self.coordinator.async_remove_listener(
+            self.async_write_ha_state
+        )
+
+    async def async_turn_on(self, **kwargs):
+        """Turn the light on.
+
+        Example method how to request data updates.
+        """
+        # Do the turning on.
+        # ...
+
+        # Update the data
+        await self.coordinator.async_request_refresh()
+
+    async def async_update(self):
+        """Update the entity.
+
+        Only used by the generic entity update service.
+        """
+        await self.coordinator.async_request_refresh()
+
+
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+# ----- TOT HIER ----------
+
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Add the Plugwise Thermostat Sensor."""
 
@@ -148,7 +249,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                                 addSensor=True
                                 _LOGGER.info('Adding illuminance')
                     if addSensor:
-                        devices.append(PwThermostatSensor(api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+                        devices.append(PwThermostatSensorx(api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
 
     if CONF_POWER in hass.data[DOMAIN]:
         for device,power in hass.data[DOMAIN][CONF_POWER].items():
@@ -195,7 +296,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     async_add_entities(devices, True)
 
-class PwThermostatSensor(Entity):
+class PwThermostatSensorx(Entity):
     """Representation of a Plugwise thermostat sensor."""
 
     def __init__(self, api, name, dev_id, ctlr_id, sensor, sensor_type):

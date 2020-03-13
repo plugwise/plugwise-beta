@@ -4,7 +4,7 @@ DOMAIN = "Plugwise-HA"
 
 
 # Default directives
-DEFAULT_NAME = "Plugwise"
+DEFAULT_NAME = "Smile"
 DEFAULT_USERNAME = "smile"
 DEFAULT_TIMEOUT = 10
 DEFAULT_PORT = 80

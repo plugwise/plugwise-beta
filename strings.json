@@ -1,0 +1,25 @@
+{
+  "config": {
+    "title": "Plugwise Smile",
+    "step": {
+      "user": {
+        "title": "Connect to the device",
+        "data": {
+          "name": "Name of your device",
+          "host": "Smile's IP address",
+          "password": "Smile ID",
+          "smile_type": "Type of Smile",
+          "timeout": "Timeout"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect, please try again",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  }
+}

@@ -4,5 +4,6 @@
   "documentation": "",
   "requirements": ["https://test-files.pythonhosted.org/packages/a6/8d/f53dca99643f5620a6c76c7940619d0e4149d5926028677f3a01f34c2322/Plugwise_Smile-0.0.24.tar.gz#Plugwise_Smile==0.0.24"],
   "dependencies": [],
-  "codeowners": ["@CoMPaTech","@bouwew"]
+  "codeowners": ["@CoMPaTech","@bouwew"],
+  "config_flow": true
 }
