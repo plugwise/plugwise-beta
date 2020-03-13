@@ -121,7 +121,7 @@ class PwWaterHeater(Entity):
         """Return the icon to use in the frontend."""
         return WATER_HEATER_ICON
 
-    def update(self):
+    async def async_update(self):
         """Update the data from the water_heater."""
         _LOGGER.debug("Update water_heater called")
         data = self._api.get_device_data(self._dev_id, self._ctrl_id)

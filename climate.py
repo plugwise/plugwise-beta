@@ -229,7 +229,7 @@ class PwThermostat(ClimateDevice):
         """Set the preset mode."""
         await self._api.set_preset(self._dev_id, preset_mode)
 
-    def update(self):
+    async def async_update(self):
         """Update the data for this climate device."""
         data = self._api.get_device_data(self._dev_id, self._ctrl_id)
         _LOGGER.info('Plugwise Smile device data: %s',data)

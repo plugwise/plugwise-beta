@@ -13,10 +13,6 @@ from Plugwise_Smile.Smile import Smile
 from homeassistant.helpers import discovery
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from homeassistant.helpers import entity
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-
-
 from homeassistant.helpers import config_validation as cv
 
 from homeassistant.components.climate.const import (
@@ -171,7 +167,7 @@ async def async_setup(hass, config):
                 smile[CONF_GAS] = False
                 smile[CONF_SOLAR] = False
 
-            hass.data[DOMAIN][smile_type][smile[CONF_NAME]] = { 'data_connection': plugwise_data_connection, 'type': smile_type, 'water_heater': smile[CONF_HEATER], 'solar': smile[CONF_SOLAR], 'gas': smile[CONF_GAS] }
+            hass.data[DOMAIN][smile_type][smile[CONF_NAME]] = { 'data_connection': plugwise_data_connection, 'type': smile_type, 'water_heater': smile[CONF_HEATER], 'solar': smile[CONF_SOLAR], 'gas': smile[CONF_GAS], CONF_SCAN_INTERVAL: smile[CONF_SCAN_INTERVAL] }
 
             _LOGGER.info('Plugwise Smile smile config: %s',smile)
 

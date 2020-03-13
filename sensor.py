@@ -7,6 +7,7 @@ from Plugwise_Smile.Smile import Smile
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
@@ -87,7 +88,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 _LOGGER.error("Unable to get location info from the API")
                 return
 
-            devices.append(PwSmile(api,'{}_thermostat'.format(device)))
+            devices.append(PwSmile(hass, api,'{}_thermostat'.format(device),thermostat['scan_interval']))
             data = None
             _LOGGER.info('Dev %s', devs)
             for dev in devs:
@@ -152,7 +153,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 _LOGGER.error("Unable to get location info from the API")
                 return
 
-            devices.append(PwSmile(api,'{}_power'.format(device)))
+            devices.append(PwSmile(hass, api,'{}_power'.format(device),power['scan_interval']))
             data = None
             _LOGGER.info('Dev %s', devs)
             for dev in devs:
@@ -251,7 +252,7 @@ class PwThermostatSensor(Entity):
         if self._sensor_type == "pressure":
             return "mdi:water"
 
-    def update(self):
+    async def async_update(self):
         """Update the data from the thermostat."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id, self._ctrl_id)
@@ -313,7 +314,7 @@ class PwPowerSensor(Entity):
         """Return the unit of measurement of this entity, if any."""
         return self._unit_of_measurement
 
-    def update(self):
+    async def async_update(self):
         """Update the data from the thermostat."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id, self._ctrl_id)
@@ -333,12 +334,27 @@ class PwPowerSensor(Entity):
 class PwSmile(Entity):
     """Representation of a Plugwise Smile."""
 
-    def __init__(self, api, name):
+    def __init__(self, hass, api, name, update_interval):
         """Initialize the sensor."""
         self._api = api
         self._name = name
         self._icon = 'mdi:flash'
         self._state = None
+        self._coordinator = None
+
+        async def async_update_data():
+            """Fetch data from API endpoint."""
+            _LOGGER.debug("Smile coordinator called")
+            return await self._api.full_update_device()
+
+        self._coordinator = DataUpdateCoordinator(
+            hass,
+            _LOGGER,
+            name=self._name,
+            update_method=async_update_data,
+            # Polling interval. Will only be polled if there are subscribers.
+            update_interval=update_interval
+        )
 
     @property
     def name(self):
@@ -357,15 +373,14 @@ class PwSmile(Entity):
 
     async def async_update(self):
         """Update the data from the thermostat."""
-        _LOGGER.debug("Update smile called")
-        _LOGGER.debug("API looks like %s",self._api)
-        data = await self._api.full_update_device()
+        _LOGGER.debug("Update smile called - checking coordinator")
+        await self._coordinator.async_request_refresh()
+        #data = await self._api.full_update_device()
 
-        if data is None:
-            _LOGGER.debug("Received no data from smile %s.", self._name)
-            return False
+        #if data is None:
+        #    _LOGGER.debug("Received no data from smile %s.", self._name)
+        #    return False
 
-        _LOGGER.debug("Data looks like %s",data)
         return True
 
 
