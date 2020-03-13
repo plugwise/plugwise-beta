@@ -218,7 +218,6 @@ class PwThermostat(ClimateDevice):
         if (temperature is not None) and (self._min_temp < temperature < self._max_temp):
             _LOGGER.debug("Set temp dev_id = %s",self._dev_id)
             await self._api.set_temperature(self._dev_id, temperature)
-            await self.async_update()
         else:
             _LOGGER.error("Invalid temperature requested")
 
