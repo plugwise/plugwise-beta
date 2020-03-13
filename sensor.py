@@ -2,6 +2,8 @@
 import logging
 import voluptuous as vol
 
+from datetime import timedelta
+
 from Plugwise_Smile.Smile import Smile
 
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -22,6 +24,7 @@ from homeassistant.const import (
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_ILLUMINANCE,
     DEVICE_CLASS_PRESSURE,
+    DEVICE_CLASS_POWER,
     PRESSURE_MBAR,
 )
 
@@ -30,6 +33,7 @@ from .const import (
     CONF_THERMOSTAT,
     CONF_POWER,
     DOMAIN,
+    DEVICE_CLASS_GAS,
 )
 
 import homeassistant.helpers.config_validation as cv
@@ -57,17 +61,21 @@ THERMOSTAT_SENSORS_AVAILABLE = {
 }
 
 POWER_SENSOR_TYPES = {
-    'electricity_consumed_offpeak_point': ['Current Consumed Power (off peak)', 'W', 'mdi:flash'],
-    'electricity_consumed_peak_point': ['Current Consumed Power', 'W', 'mdi:flash'],
-    'electricity_consumed_offpeak_cumulative': ['Cumulative Consumed Power (off peak)', 'kW', 'mdi:flash'],
-    'electricity_consumed_peak_cumulative': ['Cumulative Consumed Power', 'kW', 'mdi:flash'],
-    'electricity_produced_offpeak_point': ['Current Consumed Power (off peak)', 'W', 'mdi:white-balance-synny'],
-    'electricity_produced_peak_point': ['Current Consumed Power', 'W', 'mdi:white-balance-synny'],
-    'electricity_produced_offpeak_cumulative': ['Cumulative Consumed Power (off peak)', 'kW', 'mdi:white-balance-synny'],
-    'electricity_produced_peak_cumulative': ['Cumulative Consumed Power', 'kW', 'mdi:white-balance-synny'],
-    'gas_consumed_point_peak_point': ['Current Consumed Gas', 'm3', 'mdi:gas-cylinder'],
-    'gas_consumed_point_peak_cumulative': ['Cumulative Consumed Gas', 'm3', 'mdigas-cylinder'],
+    'electricity_consumed_offpeak_point': ['Current Consumed Power (off peak)', 'W', 'mdi:flash', DEVICE_CLASS_POWER],
+    'electricity_consumed_peak_point': ['Current Consumed Power', 'W', 'mdi:flash', DEVICE_CLASS_POWER],
+    'electricity_consumed_offpeak_cumulative': ['Cumulative Consumed Power (off peak)', 'kW', 'mdi:flash', DEVICE_CLASS_POWER],
+    'electricity_consumed_peak_cumulative': ['Cumulative Consumed Power', 'kW', 'mdi:flash', DEVICE_CLASS_POWER],
+    'electricity_produced_offpeak_point': ['Current Consumed Power (off peak)', 'W', 'mdi:white-balance-synny', DEVICE_CLASS_POWER],
+    'electricity_produced_peak_point': ['Current Consumed Power', 'W', 'mdi:white-balance-synny', DEVICE_CLASS_POWER],
+    'electricity_produced_offpeak_cumulative': ['Cumulative Consumed Power (off peak)', 'kW', 'mdi:white-balance-synny', DEVICE_CLASS_POWER],
+    'electricity_produced_peak_cumulative': ['Cumulative Consumed Power', 'kW', 'mdi:white-balance-synny', DEVICE_CLASS_POWER],
+    'gas_consumed_point_peak_point': ['Current Consumed Gas', 'm3', 'mdi:gas-cylinder', DEVICE_CLASS_GAS],
+    'gas_consumed_point_peak_cumulative': ['Cumulative Consumed Gas', 'm3', 'mdigas-cylinder', DEVICE_CLASS_GAS],
 }
+
+# Scan interval for updating sensor values
+# Smile communication is set using configuration directives
+SCAN_INTERVAL = timedelta(seconds=10)
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Add the Plugwise Thermostat Sensor."""
@@ -88,7 +96,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 _LOGGER.error("Unable to get location info from the API")
                 return
 
-            devices.append(PwSmile(hass, api,'{}_thermostat'.format(device),thermostat['scan_interval']))
+            devices.append(PwSmile(hass, api,'{}_thermostat'.format(device),thermostat['scan_interval'],'thermostat'))
             data = None
             _LOGGER.info('Dev %s', devs)
             for dev in devs:
@@ -153,7 +161,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 _LOGGER.error("Unable to get location info from the API")
                 return
 
-            devices.append(PwSmile(hass, api,'{}_power'.format(device),power['scan_interval']))
+            devices.append(PwSmile(hass, api,'{}_power'.format(device),power['scan_interval'],'power'))
             data = None
             _LOGGER.info('Dev %s', devs)
             for dev in devs:
@@ -291,6 +299,7 @@ class PwPowerSensor(Entity):
         self._device = sensor_type[0]
         self._unit_of_measurement = sensor_type[1]
         self._icon = sensor_type[2]
+        self._class = sensor_type[3]
         self._sensor = sensor
         self._state = None
 
@@ -303,6 +312,11 @@ class PwPowerSensor(Entity):
     def icon(self):
         """Icon to use in the frontend, if any."""
         return self._icon
+
+    @property
+    def device_class(self):
+        """Device class of this entity."""
+        return self._class
 
     @property
     def state(self):
@@ -334,13 +348,14 @@ class PwPowerSensor(Entity):
 class PwSmile(Entity):
     """Representation of a Plugwise Smile."""
 
-    def __init__(self, hass, api, name, update_interval):
+    def __init__(self, hass, api, name, update_interval, smile_type):
         """Initialize the sensor."""
         self._api = api
         self._name = name
-        self._icon = 'mdi:flash'
-        self._state = None
+        self._icon = 'mdi:eye'
+        self._state = 'ready'
         self._coordinator = None
+        self._smile_type = smile_type
 
         async def async_update_data():
             """Fetch data from API endpoint."""
@@ -357,6 +372,12 @@ class PwSmile(Entity):
         )
 
     @property
+    def device_state_attributes(self):
+        """Return the device specific state attributes."""
+        attributes = {}
+        return attributes
+
+    @property
     def name(self):
         """Return the name of the sensor."""
         return self._name
@@ -364,6 +385,10 @@ class PwSmile(Entity):
     @property
     def icon(self):
         """Icon to use in the frontend, if any."""
+        if self._smile_type == 'thermostat':
+            return 'mdi:thermostat'
+        if self._smile_type == 'power':
+            return 'mdi:power-plug'
         return self._icon
 
     @property

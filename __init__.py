@@ -132,6 +132,10 @@ CONFIG_SCHEMA = vol.Schema(
 
 PLUGWISE_COMPONENTS = ["climate", "water_heater", "sensor"]
 
+# Scan interval for updating sensor values
+# Smile communication is set using configuration directives
+SCAN_INTERVAL = timedelta(seconds=10)
+
 @asyncio.coroutine
 async def async_setup(hass, config):
     """Add the Plugwise Gateways."""

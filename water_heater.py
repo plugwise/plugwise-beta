@@ -4,6 +4,8 @@ import voluptuous as vol
 
 from Plugwise_Smile.Smile import Smile
 
+from datetime import timedelta
+
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from homeassistant.helpers.entity import Entity
@@ -44,6 +46,9 @@ SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
 _LOGGER = logging.getLogger(__name__)
 
+# Scan interval for updating sensor values
+# Smile communication is set using configuration directives
+SCAN_INTERVAL = timedelta(seconds=10)
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Add the Plugwise water_heater."""

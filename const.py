@@ -12,6 +12,8 @@ DEFAULT_MIN_TEMP = 4
 DEFAULT_MAX_TEMP = 30
 DEFAULT_SCAN_INTERVAL = { 'thermostat': 60, 'power': 10 }
 
+DEVICE_CLASS_GAS = "gas"
+
 # Configuration directives
 CONF_MIN_TEMP = "min_temp"
 CONF_MAX_TEMP = "max_temp"
