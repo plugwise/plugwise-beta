@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import logging
 import voluptuous as vol
+from functools import partial
 
 from datetime import timedelta
+import async_timeout
 
 from Plugwise_Smile.Smile import Smile
 
@@ -86,8 +88,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         hass,
         _LOGGER,
         name="sensor",
-        update_method=async_safe_fetch,
-        update_interval=10
+        update_method=partial(async_safe_fetch,api),
+        update_interval=timedelta(seconds=30)
     )
 
     # First do a refresh to see if we can reach the hub.
@@ -97,13 +99,17 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     if not sensor_coordinator.last_update_success:
         raise PlatformNotReady
 
-    async_add_entities(PwThermostatSensor(coordinator, idx) for idx, ent
-                       in enumerate(coordinator.data))
+    _LOGGER.debug('Sensorcoordinator %s',sensor_coordinator)
+    _LOGGER.debug('Sensorcoordinator data %s',sensor_coordinator.data)
+    _LOGGER.debug('Sensorcoordinator data enum %s',enumerate(sensor_coordinator.data))
+
+    async_add_entities(PwThermostatSensor(sensor_coordinator, idx) for idx, ent
+                       in enumerate(sensor_coordinator.data))
 
 async def async_safe_fetch(api):
     """Safely fetch data."""
     with async_timeout.timeout(4):
-        return await api.full_update_devices()
+        return await api.full_update_device()
 
 class PwThermostatSensor(Entity):
     """Safely fetch data."""

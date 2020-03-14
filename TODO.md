@@ -24,10 +24,22 @@ Volgorde is `config_flow` die roept de setup entry in `__init__` aan en die doet
 Foutmelding:
 
 ```
+enumerate van data gaat niet goed
+
+2020-03-14 10:18:06 DEBUG (MainThread) [custom_components.Plugwise-HA.sensor] Finished fetching sensor data in 0.169 seconds
+2020-03-14 10:18:06 DEBUG (MainThread) [custom_components.Plugwise-HA.sensor] Sensorcoordinator <homeassistant.helpers.update_coordinator.DataUpdateCoordinator object at 0x7fe4b6cb7d50>
+2020-03-14 10:18:06 DEBUG (MainThread) [custom_components.Plugwise-HA.sensor] Sensorcoordinator data True
+2020-03-14 10:18:06 ERROR (MainThread) [homeassistant.components.sensor] Error while setting up Plugwise-HA platform for sensor
 Traceback (most recent call last):
-  File "/usr/src/homeassistant/homeassistant/helpers/update_coordinator.py", line 115, in async_refresh
-    self.data = await self.update_method()
-TypeError: async_safe_fetch() missing 1 required positional argument: 'api'
+  File "/usr/src/homeassistant/homeassistant/helpers/entity_platform.py", line 179, in _async_setup_platform
+    await asyncio.wait_for(asyncio.shield(task), SLOW_SETUP_MAX_WAIT)
+  File "/usr/local/lib/python3.7/asyncio/tasks.py", line 442, in wait_for
+    return fut.result()
+  File "/config/custom_components/Plugwise-HA/sensor.py", line 104, in async_setup_entry
+    _LOGGER.debug('Sensorcoordinator data enum %s',enumerate(sensor_coordinator.data))
+TypeError: 'bool' object is not iterable
+
+diffen https://developers.home-assistant.io/docs/integration_fetching_data/#coordinated-single-api-poll-for-data-for-all-entities vs hue/light.py
 
 ```
 

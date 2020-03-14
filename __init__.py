@@ -1,4 +1,4 @@
--"""Plugwise components for Home Assistant Core."""
+"""Plugwise components for Home Assistant Core."""
 import asyncio
 
 import voluptuous as vol
