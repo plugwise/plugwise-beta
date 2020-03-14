@@ -101,22 +101,142 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     _LOGGER.debug('Sensorcoordinator %s',sensor_coordinator)
     _LOGGER.debug('Sensorcoordinator data %s',sensor_coordinator.data)
-    _LOGGER.debug('Sensorcoordinator data enum %s',enumerate(sensor_coordinator.data))
 
-    async_add_entities(PwThermostatSensor(sensor_coordinator, idx) for idx, ent
-                       in enumerate(sensor_coordinator.data))
+    devices = []
+    ctrl_id = None
+    # devices.append(PwSmile(hass, api,'{}_thermostat'.format(device),thermostat['scan_interval'],'thermostat'))
+    data = None
+    idx = 0
+    _LOGGER.info('Plugwise sensor Devices %s', sensor_coordinator.data)
+    for dev in sensor_coordinator.data:
+        _LOGGER.info('Plugwise sensor Dev %s', dev)
+        if dev['name'] == 'Controlled Device':
+            ctrl_id = dev['id']
+            dev_id = None
+            name = dev['name']
+            _LOGGER.info('Plugwise sensor Name %s', name)
+            data = api.get_device_data(dev_id, ctrl_id)
+        else:
+            name = dev['name']
+            dev_id = dev['id']
+            _LOGGER.info('Plugwise sensor Name %s', name)
+            data = api.get_device_data(dev_id, ctrl_id)
+
+        if data is None:
+            _LOGGER.debug("Received no data for device %s.", name)
+            continue
+
+        _LOGGER.debug("Device data %s.", data)
+        # data {'type': 'thermostat', 'battery': None, 'setpoint_temp': 22.0, 'current_temp': 21.7, 'active_preset': 'home', 'presets': {'vacation': [15.0, 0], 'no_frost': [10.0, 0], 'asleep': [16.0, 0], 'away': [16.0, 0], 'home': [21.0, 0]}, 'available_schedules': ['Test', 'Thermostat schedule', 'Normaal'], 'selected_schedule': 'Normaal', 'last_used': 'Test', 'boiler_state': None, 'central_heating_state': False, 'cooling_state': None, 'dhw_state': None, 'outdoor_temp': '9.3', 'illuminance': '0.8'}.
+
+        for sensor,sensor_type in THERMOSTAT_SENSORS_AVAILABLE.items():
+            addSensor=False
+            if sensor == 'boiler_temperature':
+                if 'boiler_temp' in data:
+                    if data['boiler_temp']:
+                        addSensor=True
+                        _LOGGER.info('Adding boiler_temp')
+            if sensor == 'water_pressure':
+                if 'water_pressure' in data:
+                    if data['water_pressure']:
+                        addSensor=True
+                        _LOGGER.info('Adding water_pressure')
+            if sensor == 'battery_charge':
+                if 'battery' in data:
+                    if data['battery']:
+                        addSensor=True
+                        _LOGGER.info('Adding battery_charge')
+            if sensor == 'outdoor_temperature':
+                if 'outdoor_temp' in data:
+                    if data['outdoor_temp']:
+                        addSensor=True
+                        _LOGGER.info('Adding outdoor_temperature')
+            if sensor == 'illuminance':
+                if 'illuminance' in data:
+                    if data['illuminance']:
+                        addSensor=True
+                        _LOGGER.info('Adding illuminance')
+            if addSensor:
+                devices.append(PwThermostatSensor(sensor_coordinator, idx, api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+                idx += 1
+
+    # async_add_entities(PwThermostatSensor(sensor_coordinator, idx) for idx, ent
+    #                    in enumerate(sensor_coordinator.data))
+    async_add_entities(devices, True)
 
 async def async_safe_fetch(api):
     """Safely fetch data."""
     with async_timeout.timeout(4):
-        return await api.full_update_device()
+        await api.full_update_device()
+        return await api.get_devices()
 
 class PwThermostatSensor(Entity):
     """Safely fetch data."""
 
-    def __init__(self, coordinator, idx):
+    def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, sensor, sensor_type):
+        """Set up the Plugwise API."""
         self.coordinator = coordinator
         self.idx = idx
+        self._api = api
+        self._name = name
+        self._dev_id = dev_id
+        self._ctrl_id = ctlr_id
+        self._device = sensor_type[2]
+        self._sensor = sensor
+        self._sensor_type = sensor_type
+        self._state = None
+
+
+    @property
+    def device_class(self):
+        """Device class of this entity."""
+        if self._sensor_type == "temperature":
+            return DEVICE_CLASS_TEMPERATURE
+        if self._sensor_type == "battery_level":
+            return DEVICE_CLASS_BATTERY
+        if self._sensor_type == "illuminance":
+            return DEVICE_CLASS_ILLUMINANCE
+        if self._sensor_type == "pressure":
+            return DEVICE_CLASS_PRESSURE
+
+    @property
+    def name(self):
+        """Return the name of the thermostat, if any."""
+        return self._name
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._state
+
+#    @property
+#    def device_state_attributes(self):
+#        """Return the state attributes."""
+#        return self._state_attributes
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit of measurement."""
+        if self._sensor_type == "temperature":
+            return self.hass.config.units.temperature_unit
+        if self._sensor_type == "battery_level":
+            return "%"
+        if self._sensor_type == "illuminance":
+            return "lm"
+        if self._sensor_type == "pressure":
+            return PRESSURE_MBAR
+
+    @property
+    def icon(self):
+        """Icon for the sensor."""
+        if self._sensor_type == "temperature":
+            return "mdi:thermometer"
+        if self._sensor_type == "battery_level":
+            return "mdi:water-battery"
+        if self._sensor_type == "illuminance":
+            return "mdi:lightbulb-on-outline"
+        if self._sensor_type == "pressure":
+            return "mdi:water"
 
     @property
     def is_on(self):
@@ -166,6 +286,32 @@ class PwThermostatSensor(Entity):
         """
         await self.coordinator.async_request_refresh()
 
+        _LOGGER.debug("Update sensor called")
+        data = self._api.get_device_data(self._dev_id, self._ctrl_id)
+
+        if data is None:
+            _LOGGER.debug("Received no data for device %s.", self._name)
+            return
+
+        _LOGGER.info("Sensor {}".format(self._sensor))
+        if self._sensor == 'boiler_temperature':
+            if 'boiler_temp' in data:
+                self._state = data['boiler_temp']
+        if self._sensor == 'water_pressure':
+            if 'water_pressure' in data:
+                self._state = data['water_pressure']
+        if self._sensor == 'battery_charge':
+            if 'battery' in data:
+                value = data['battery']
+                self._state = int(round(value * 100))
+        if self._sensor == 'outdoor_temperature':
+            if 'outdoor_temp' in data:
+                self._state = data['outdoor_temp']
+        if self._sensor == 'illuminance':
+            if 'illuminance' in data:
+                self._state = data['illuminance']
+
+
 
 # ----- TOT HIER ----------
 # ----- TOT HIER ----------
@@ -190,72 +336,6 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if discovery_info is None:
         return
 
-    devices = []
-    ctrl_id = None
-    if CONF_THERMOSTAT in hass.data[DOMAIN]:
-        for device,thermostat in hass.data[DOMAIN][CONF_THERMOSTAT].items():
-            _LOGGER.info('Device %s', device)
-            _LOGGER.info('Thermostat %s', thermostat)
-            api = thermostat['data_connection']
-            try:
-                devs = await api.get_devices()
-            except RuntimeError:
-                _LOGGER.error("Unable to get location info from the API")
-                return
-
-            devices.append(PwSmile(hass, api,'{}_thermostat'.format(device),thermostat['scan_interval'],'thermostat'))
-            data = None
-            _LOGGER.info('Dev %s', devs)
-            for dev in devs:
-                _LOGGER.info('Dev %s', dev)
-                if dev['name'] == 'Controlled Device':
-                    ctrl_id = dev['id']
-                    dev_id = None
-                    name = dev['name']
-                    _LOGGER.info('Name %s', name)
-                    data = api.get_device_data(dev_id, ctrl_id)
-                else:
-                    name = dev['name']
-                    dev_id = dev['id']
-                    _LOGGER.info('Name %s', name)
-                    data = api.get_device_data(dev_id, ctrl_id)
-
-                if data is None:
-                    _LOGGER.debug("Received no data for device %s.", name)
-                    return
-
-                #_LOGGER.debug("Device data %s.", data)
-                # data {'type': 'thermostat', 'battery': None, 'setpoint_temp': 22.0, 'current_temp': 21.7, 'active_preset': 'home', 'presets': {'vacation': [15.0, 0], 'no_frost': [10.0, 0], 'asleep': [16.0, 0], 'away': [16.0, 0], 'home': [21.0, 0]}, 'available_schedules': ['Test', 'Thermostat schedule', 'Normaal'], 'selected_schedule': 'Normaal', 'last_used': 'Test', 'boiler_state': None, 'central_heating_state': False, 'cooling_state': None, 'dhw_state': None, 'outdoor_temp': '9.3', 'illuminance': '0.8'}.
-
-                for sensor,sensor_type in THERMOSTAT_SENSORS_AVAILABLE.items():
-                    addSensor=False
-                    if sensor == 'boiler_temperature':
-                        if 'boiler_temp' in data:
-                            if data['boiler_temp']:
-                                addSensor=True
-                                _LOGGER.info('Adding boiler_temp')
-                    if sensor == 'water_pressure':
-                        if 'water_pressure' in data:
-                            if data['water_pressure']:
-                                addSensor=True
-                                _LOGGER.info('Adding water_pressure')
-                    if sensor == 'battery_charge':
-                        if 'battery' in data:
-                            if data['battery']:
-                                addSensor=True
-                                _LOGGER.info('Adding battery_charge')
-                    if sensor == 'outdoor_temperature':
-                        if 'outdoor_temp' in data:
-                            if data['outdoor_temp']:
-                                addSensor=True
-                                _LOGGER.info('Adding outdoor_temperature')
-                    if sensor == 'illuminance':
-                        if 'illuminance' in data:
-                            if data['illuminance']:
-                                addSensor=True
-                                _LOGGER.info('Adding illuminance')
-                    if addSensor:
-                        devices.append(PwThermostatSensorx(api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
 
     if CONF_POWER in hass.data[DOMAIN]:
         for device,power in hass.data[DOMAIN][CONF_POWER].items():
@@ -301,98 +381,6 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                         devices.append(PwPowerSensor(api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
 
     async_add_entities(devices, True)
-
-class PwThermostatSensorx(Entity):
-    """Representation of a Plugwise thermostat sensor."""
-
-    def __init__(self, api, name, dev_id, ctlr_id, sensor, sensor_type):
-        """Set up the Plugwise API."""
-        self._api = api
-        self._name = name
-        self._dev_id = dev_id
-        self._ctrl_id = ctlr_id
-        self._device = sensor_type[2]
-        self._sensor = sensor
-        self._sensor_type = sensor_type
-        self._state = None
-
-    @property
-    def name(self):
-        """Return the name of the thermostat, if any."""
-        return self._name
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def device_class(self):
-        """Device class of this entity."""
-        if self._sensor_type == "temperature":
-            return DEVICE_CLASS_TEMPERATURE
-        if self._sensor_type == "battery_level":
-            return DEVICE_CLASS_BATTERY
-        if self._sensor_type == "illuminance":
-            return DEVICE_CLASS_ILLUMINANCE
-        if self._sensor_type == "pressure":
-            return DEVICE_CLASS_PRESSURE
-
-#    @property
-#    def device_state_attributes(self):
-#        """Return the state attributes."""
-#        return self._state_attributes
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        if self._sensor_type == "temperature":
-            return self.hass.config.units.temperature_unit
-        if self._sensor_type == "battery_level":
-            return "%"
-        if self._sensor_type == "illuminance":
-            return "lm"
-        if self._sensor_type == "pressure":
-            return PRESSURE_MBAR
-
-    @property
-    def icon(self):
-        """Icon for the sensor."""
-        if self._sensor_type == "temperature":
-            return "mdi:thermometer"
-        if self._sensor_type == "battery_level":
-            return "mdi:water-battery"
-        if self._sensor_type == "illuminance":
-            return "mdi:lightbulb-on-outline"
-        if self._sensor_type == "pressure":
-            return "mdi:water"
-
-    async def async_update(self):
-        """Update the data from the thermostat."""
-        _LOGGER.debug("Update sensor called")
-        data = self._api.get_device_data(self._dev_id, self._ctrl_id)
-
-        if data is None:
-            _LOGGER.debug("Received no data for device %s.", self._name)
-            return
-
-        _LOGGER.info("Sensor {}".format(self._sensor))
-        if self._sensor == 'boiler_temperature':
-            if 'boiler_temp' in data:
-                self._state = data['boiler_temp']
-        if self._sensor == 'water_pressure':
-            if 'water_pressure' in data:
-                self._state = data['water_pressure']
-        if self._sensor == 'battery_charge':
-            if 'battery' in data:
-                value = data['battery']
-                self._state = int(round(value * 100))
-        if self._sensor == 'outdoor_temperature':
-            if 'outdoor_temp' in data:
-                self._state = data['outdoor_temp']
-        if self._sensor == 'illuminance':
-            if 'illuminance' in data:
-                self._state = data['illuminance']
 
 class PwPowerSensor(Entity):
     """Representation of a Plugwise power sensor P1."""

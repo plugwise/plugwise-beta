@@ -19,28 +19,6 @@ Volgorde is `config_flow` die roept de setup entry in `__init__` aan en die doet
  - [ ] Todo: In `config_flow.py` in de validatie zorgen dat je alleen thermostaat of power kunt kiezen
  - [ ] Todo: In `config_flow.py` later nog een keer zorgen dat legacy er bij komt
 
- - [ ] FIXME: In `sensor.py` ben ik ergens met scaffolding gestopt, onderstaande foutmelding was er nu nog maar het was stoptijd voor vanavond
+ - [ ] Sensors van thermostat werken, maar nog zorgen dat de sensor.py code meekrijgt of het thermostat of power is (en/of dat in Smile.py fietsen)
+ - [ ] Sensors testen met power (maar daarvoor eerst bovenstaande oplossen)
 
-Foutmelding:
-
-```
-enumerate van data gaat niet goed
-
-2020-03-14 10:18:06 DEBUG (MainThread) [custom_components.Plugwise-HA.sensor] Finished fetching sensor data in 0.169 seconds
-2020-03-14 10:18:06 DEBUG (MainThread) [custom_components.Plugwise-HA.sensor] Sensorcoordinator <homeassistant.helpers.update_coordinator.DataUpdateCoordinator object at 0x7fe4b6cb7d50>
-2020-03-14 10:18:06 DEBUG (MainThread) [custom_components.Plugwise-HA.sensor] Sensorcoordinator data True
-2020-03-14 10:18:06 ERROR (MainThread) [homeassistant.components.sensor] Error while setting up Plugwise-HA platform for sensor
-Traceback (most recent call last):
-  File "/usr/src/homeassistant/homeassistant/helpers/entity_platform.py", line 179, in _async_setup_platform
-    await asyncio.wait_for(asyncio.shield(task), SLOW_SETUP_MAX_WAIT)
-  File "/usr/local/lib/python3.7/asyncio/tasks.py", line 442, in wait_for
-    return fut.result()
-  File "/config/custom_components/Plugwise-HA/sensor.py", line 104, in async_setup_entry
-    _LOGGER.debug('Sensorcoordinator data enum %s',enumerate(sensor_coordinator.data))
-TypeError: 'bool' object is not iterable
-
-diffen https://developers.home-assistant.io/docs/integration_fetching_data/#coordinated-single-api-poll-for-data-for-all-entities vs hue/light.py
-
-```
-
-En dan van hieruit moeten we `PwThermostatSensor` weer proberen op te bouwen. Ik denk deels door de setup-code die er nog staat (maar niet meer gebruikt wordt) in de entry code te zetten, maar zo ver was ik dus nog niet
