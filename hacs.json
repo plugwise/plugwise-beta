@@ -1,5 +1,5 @@
 {
-  "name": "Plugwise HA custom component",
+  "name": "Plugwise beta custom component",
   "domains": ["climate","sensor","water_heater"],
   "homeassistant": "0.106.2",
   "render_readme": true

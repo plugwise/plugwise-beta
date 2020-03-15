@@ -1,6 +1,6 @@
-"""Constant for Plugwise component."""
+"""Constant for Plugwise beta component."""
 
-DOMAIN = "Plugwise-HA"
+DOMAIN = "plugwise-beta"
 
 
 # Default directives
