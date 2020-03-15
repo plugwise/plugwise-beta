@@ -12,7 +12,8 @@ from Plugwise_Smile.Smile import Smile
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from homeassistant.components.climate import ClimateDevice
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.core import callback
 
 from homeassistant.exceptions import PlatformNotReady
 
@@ -60,39 +61,41 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile Thermostats from a config entry."""
-    api = hass.data[DOMAIN][config_entry.entry_id]
+    api = hass.data[DOMAIN][config_entry.entry_id]['api']
+    updater = hass.data[DOMAIN][config_entry.entry_id]['updater']
 
-    if api._smile_type == 'power':
-        update_interval=timedelta(seconds=10)
-    else:
-        update_interval=timedelta(seconds=60)
-
-    climate_coordinator = DataUpdateCoordinator(
-        hass,
-        _LOGGER,
-        name="climate",
-        update_method=partial(async_safe_fetch,api),
-        update_interval=update_interval
-    )
-
-    # First do a refresh to see if we can reach the hub.
-    # Otherwise we will declare not ready.
-    await climate_coordinator.async_refresh()
-
-    if not climate_coordinator.last_update_success:
-        raise PlatformNotReady
+#    if api._smile_type == 'power':
+#        update_interval=timedelta(seconds=10)
+#    else:
+#        update_interval=timedelta(seconds=60)
+#
+#    climate_coordinator = DataUpdateCoordinator(
+#        hass,
+#        _LOGGER,
+#        name="climate",
+#        update_method=partial(async_safe_fetch,api),
+#        update_interval=update_interval
+#    )
+#
+#    # First do a refresh to see if we can reach the hub.
+#    # Otherwise we will declare not ready.
+#    await climate_coordinator.async_refresh()
+#
+#    if not climate_coordinator.last_update_success:
+#        raise PlatformNotReady
 
     devices = []
     ctrl_id = None
     data = None
     idx = 0
-    _LOGGER.info('Plugwise thermostat Devices %s', climate_coordinator.data)
+    # _LOGGER.info('Plugwise thermostat Devices %s', climate_coordinator.data)
     if api._smile_type == 'thermostat':
-       for dev in climate_coordinator.data:
+       for dev in await api.get_devices():
           if dev['name'] == 'Controlled Device':
               ctrl_id = dev['id']
           else:
-              device = PwThermostat(climate_coordinator, idx, api,dev['name'], dev['id'], ctrl_id, 4, 30)
+              # device = PwThermostat(climate_coordinator, idx, api,dev['name'], dev['id'], ctrl_id, 4, 30)
+              device = PwThermostat(api, updater, dev['name'], dev['id'], ctrl_id, 4, 30)
               _LOGGER.debug("Plugwise device : %s",device)
               if not device:
                   continue
@@ -100,20 +103,20 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(devices, True)
 
 
-async def async_safe_fetch(api):
-    """Safely fetch data."""
-    with async_timeout.timeout(10):
-        await api.full_update_device()
-        return await api.get_devices()
+#async def async_safe_fetch(api):
+#    """Safely fetch data."""
+#    with async_timeout.timeout(10):
+#        await api.full_update_device()
+#        return await api.get_devices()
 
 class PwThermostat(ClimateDevice):
     """Representation of an Plugwise thermostat."""
 
-    def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, min_temp, max_temp):
+    # def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, min_temp, max_temp):
+    def __init__(self, api, updater, name, dev_id, ctlr_id, min_temp, max_temp):
         """Set up the Plugwise API."""
-        self.coordinator = coordinator
-        self.idx = idx
         self._api = api
+        self._updater = updater
         self._name = name
         self._dev_id = dev_id
         self._ctrl_id = ctlr_id
@@ -138,6 +141,26 @@ class PwThermostat(ClimateDevice):
         self._water_pressure = None
         self._schedule_temp = None
         self._hvac_mode = None
+        self._unique_id = f"{dev_id}-climate"
+
+    @property
+    def unique_id(self):
+        """Return a unique ID."""
+        return self._unique_id
+
+    async def async_added_to_hass(self):
+        """Register callbacks."""
+        self._updater.async_add_listener(self._update_callback)
+
+    async def async_will_remove_from_hass(self):
+        """Disconnect callbacks."""
+        self._updater.async_remove_listener(self._update_callback)
+
+    @callback
+    def _update_callback(self):
+        """Call update method."""
+        self.update()
+        self.async_write_ha_state()
 
     @property
     def hvac_action(self):
@@ -173,45 +196,9 @@ class PwThermostat(ClimateDevice):
         return SUPPORT_FLAGS
 
     @property
-    def is_on(self):
-      """Return entity state.
-
-      Example to show how we fetch data from coordinator.
-      """
-      self.coordinator.data[self.idx]['state']
-
-    @property
     def should_poll(self):
         """No need to poll. Coordinator notifies entity of updates."""
         return False
-
-    @property
-    def available(self):
-        """Return if entity is available."""
-        return self.coordinator.last_update_success
-
-    async def async_added_to_hass(self):
-        """When entity is added to hass."""
-        self.coordinator.async_add_listener(
-            self.async_write_ha_state
-        )
-
-    async def async_will_remove_from_hass(self):
-        """When entity will be removed from hass."""
-        self.coordinator.async_remove_listener(
-            self.async_write_ha_state
-        )
-
-    async def async_turn_on(self, **kwargs):
-        """Turn the light on.
-
-        Example method how to request data updates.
-        """
-        # Do the turning on.
-        # ...
-
-        # Update the data
-        await self.coordinator.async_request_refresh()
 
     @property
     def device_state_attributes(self):
@@ -308,9 +295,8 @@ class PwThermostat(ClimateDevice):
         """Set the preset mode."""
         await self._api.set_preset(self._dev_id, preset_mode)
 
-    async def async_update(self):
+    def update(self):
         """Update the data for this climate device."""
-        await self.coordinator.async_request_refresh()
 
         data = self._api.get_device_data(self._dev_id, self._ctrl_id)
         _LOGGER.info('Plugwise Smile device data: %s',data)

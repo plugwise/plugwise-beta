@@ -12,7 +12,8 @@ from Plugwise_Smile.Smile import Smile
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.core import callback
+# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from homeassistant.exceptions import PlatformNotReady
 
@@ -86,40 +87,41 @@ SCAN_INTERVAL = timedelta(seconds=30)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
     _LOGGER.debug('Plugwise hass data %s',hass.data[DOMAIN])
-    api = hass.data[DOMAIN][config_entry.entry_id]
+    api = hass.data[DOMAIN][config_entry.entry_id]['api']
+    updater = hass.data[DOMAIN][config_entry.entry_id]['updater']
 
-    # Stay close to meter measurements for power, for thermostat back off a bit
-    if api._smile_type == 'power':
-        update_interval=timedelta(seconds=10)
-    else:
-        update_interval=timedelta(seconds=60)
-
-    sensor_coordinator = DataUpdateCoordinator(
-        hass,
-        _LOGGER,
-        name="sensor",
-        update_method=partial(async_safe_fetch,api),
-        update_interval=update_interval
-    )
-
-    # First do a refresh to see if we can reach the hub.
-    # Otherwise we will declare not ready.
-    await sensor_coordinator.async_refresh()
-
-    if not sensor_coordinator.last_update_success:
-        raise PlatformNotReady
+#    # Stay close to meter measurements for power, for thermostat back off a bit
+#    if api._smile_type == 'power':
+#        update_interval=timedelta(seconds=10)
+#    else:
+#        update_interval=timedelta(seconds=60)
+#
+#    sensor_coordinator = DataUpdateCoordinator(
+#        hass,
+#        _LOGGER,
+#        name="sensor",
+#        update_method=partial(async_safe_fetch,api),
+#        update_interval=update_interval
+#    )
+#
+#    # First do a refresh to see if we can reach the hub.
+#    # Otherwise we will declare not ready.
+#    await sensor_coordinator.async_refresh()
+#
+#    if not sensor_coordinator.last_update_success:
+#        raise PlatformNotReady
 
     _LOGGER.debug('Plugwise sensor type %s',api._smile_type)
-    _LOGGER.debug('Plugwise sensor Sensorcoordinator %s',sensor_coordinator)
-    _LOGGER.debug('Plugwise sensor Sensorcoordinator data %s',sensor_coordinator.data)
+#    _LOGGER.debug('Plugwise sensor Sensorcoordinator %s',sensor_coordinator)
+#    _LOGGER.debug('Plugwise sensor Sensorcoordinator data %s',sensor_coordinator.data)
 
     devices = []
     ctrl_id = None
     data = None
     idx = 0
-    _LOGGER.info('Plugwise sensor Devices %s', sensor_coordinator.data)
+#    _LOGGER.info('Plugwise sensor Devices %s', sensor_coordinator.data)
     if api._smile_type == 'thermostat':
-      for dev in sensor_coordinator.data:
+      for dev in await api.get_devices():
           _LOGGER.info('Plugwise sensor Dev %s', dev)
           if dev['name'] == 'Controlled Device':
               ctrl_id = dev['id']
@@ -168,11 +170,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                           addSensor=True
                           _LOGGER.info('Adding illuminance')
               if addSensor:
-                  devices.append(PwThermostatSensor(sensor_coordinator, idx, api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
-                  idx += 1
+                  #devices.append(PwThermostatSensor(sensor_coordinator, idx, api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+                  #idx += 1
+                  devices.append(PwThermostatSensor(api, updater, '{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+                  #idx += 1
 
     if api._smile_type == 'power':
-        for dev in sensor_coordinator.data:
+        for dev in await api.get_devices():
             _LOGGER.info('Dev %s', dev)
             if dev['name'] == 'Home':
                 ctrl_id = dev['id']
@@ -199,25 +203,26 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 #     addSensor=False
 
                 if addSensor:
-                     devices.append(PwPowerSensor(sensor_coordinator, idx, api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
-                     idx += 1
+                     #devices.append(PwPowerSensor(sensor_coordinator, idx, api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+                     #idx += 1
+                     devices.append(PwPowerSensor(api, updater, '{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
 
     async_add_entities(devices, True)
 
-async def async_safe_fetch(api):
-    """Safely fetch data."""
-    with async_timeout.timeout(10):
-        await api.full_update_device()
-        return await api.get_devices()
+# async def async_safe_fetch(api):
+#     """Safely fetch data."""
+#     with async_timeout.timeout(10):
+#         await api.full_update_device()
+#         return await api.get_devices()
 
 class PwThermostatSensor(Entity):
     """Safely fetch data."""
 
-    def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, sensor, sensor_type):
+    # def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, sensor, sensor_type):
+    def __init__(self, api, updater, name, dev_id, ctlr_id, sensor, sensor_type):
         """Set up the Plugwise API."""
-        self.coordinator = coordinator
-        self.idx = idx
         self._api = api
+        self._updater = updater
         self._name = name
         self._dev_id = dev_id
         self._ctrl_id = ctlr_id
@@ -225,7 +230,26 @@ class PwThermostatSensor(Entity):
         self._sensor = sensor
         self._sensor_type = sensor_type
         self._state = None
+        self._unique_id = f"{dev_id}-{sensor_type}"
 
+    @property
+    def unique_id(self):
+        """Return a unique ID."""
+        return self._unique_id
+
+    async def async_added_to_hass(self):
+        """Register callbacks."""
+        self._updater.async_add_listener(self._update_callback)
+
+    async def async_will_remove_from_hass(self):
+        """Disconnect callbacks."""
+        self._updater.async_remove_listener(self._update_callback)
+
+    @callback
+    def _update_callback(self):
+        """Call update method."""
+        self.update()
+        self.async_write_ha_state()
 
     @property
     def device_class(self):
@@ -238,6 +262,11 @@ class PwThermostatSensor(Entity):
             return DEVICE_CLASS_ILLUMINANCE
         if self._sensor_type == "pressure":
             return DEVICE_CLASS_PRESSURE
+
+    @property
+    def should_poll(self):
+        """Return False, updates are controlled via the hub."""
+        return False
 
     @property
     def name(self):
@@ -287,54 +316,8 @@ class PwThermostatSensor(Entity):
         if self._sensor_type == "pressure":
             return "mdi:water"
 
-    @property
-    def is_on(self):
-      """Return entity state.
-
-      Example to show how we fetch data from coordinator.
-      """
-      self.coordinator.data[self.idx]['state']
-
-    @property
-    def should_poll(self):
-        """No need to poll. Coordinator notifies entity of updates."""
-        return False
-
-    @property
-    def available(self):
-        """Return if entity is available."""
-        return self.coordinator.last_update_success
-
-    async def async_added_to_hass(self):
-        """When entity is added to hass."""
-        self.coordinator.async_add_listener(
-            self.async_write_ha_state
-        )
-
-    async def async_will_remove_from_hass(self):
-        """When entity will be removed from hass."""
-        self.coordinator.async_remove_listener(
-            self.async_write_ha_state
-        )
-
-    async def async_turn_on(self, **kwargs):
-        """Turn the light on.
-
-        Example method how to request data updates.
-        """
-        # Do the turning on.
-        # ...
-
-        # Update the data
-        await self.coordinator.async_request_refresh()
-
-    async def async_update(self):
-        """Update the entity.
-
-        Only used by the generic entity update service.
-        """
-        await self.coordinator.async_request_refresh()
-
+    def update(self):
+        """Update the entity."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id, self._ctrl_id)
 
@@ -375,11 +358,11 @@ class PwThermostatSensor(Entity):
 class PwPowerSensor(Entity):
     """Safely fetch data."""
 
-    def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, sensor, sensor_type):
+    # def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, sensor, sensor_type):
+    def __init__(self, api, updater, name, dev_id, ctlr_id, sensor, sensor_type):
         """Set up the Plugwise API."""
-        self.coordinator = coordinator
-        self.idx = idx
         self._api = api
+        self._updater = updater
         self._name = name
         self._dev_id = dev_id
         self._ctrl_id = ctlr_id
@@ -389,6 +372,31 @@ class PwPowerSensor(Entity):
         self._class = sensor_type[3]
         self._sensor = sensor
         self._state = None
+        self._unique_id = f"{dev_id}-{sensor_type}"
+
+    @property
+    def unique_id(self):
+        """Return a unique ID."""
+        return self._unique_id
+
+    async def async_added_to_hass(self):
+        """Register callbacks."""
+        self._updater.async_add_listener(self._update_callback)
+
+    async def async_will_remove_from_hass(self):
+        """Disconnect callbacks."""
+        self._updater.async_remove_listener(self._update_callback)
+
+    @callback
+    def _update_callback(self):
+        """Call update method."""
+        self.update()
+        self.async_write_ha_state()
+
+    @property
+    def should_poll(self):
+        """Return False, updates are controlled via the hub."""
+        return False
 
     @property
     def name(self):
@@ -415,53 +423,8 @@ class PwPowerSensor(Entity):
         """Return the unit of measurement of this entity, if any."""
         return self._unit_of_measurement
 
-    @property
-    def is_on(self):
-      """Return entity state.
-
-      Example to show how we fetch data from coordinator.
-      """
-      self.coordinator.data[self.idx]['state']
-
-    @property
-    def should_poll(self):
-        """No need to poll. Coordinator notifies entity of updates."""
-        return False
-
-    @property
-    def available(self):
-        """Return if entity is available."""
-        return self.coordinator.last_update_success
-
-    async def async_added_to_hass(self):
-        """When entity is added to hass."""
-        self.coordinator.async_add_listener(
-            self.async_write_ha_state
-        )
-
-    async def async_will_remove_from_hass(self):
-        """When entity will be removed from hass."""
-        self.coordinator.async_remove_listener(
-            self.async_write_ha_state
-        )
-
-    async def async_turn_on(self, **kwargs):
-        """Turn the light on.
-
-        Example method how to request data updates.
-        """
-        # Do the turning on.
-        # ...
-
-        # Update the data
-        await self.coordinator.async_request_refresh()
-
-    async def async_update(self):
-        """Update the entity.
-
-        Only used by the generic entity update service.
-        """
-        await self.coordinator.async_request_refresh()
+    def update(self):
+        """Update the entity."""
 
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id, self._ctrl_id)
