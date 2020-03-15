@@ -7,6 +7,7 @@ from Plugwise_Smile.Smile import Smile
 
 from datetime import timedelta
 import async_timeout
+from typing import Any, Dict
 
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
@@ -52,7 +53,7 @@ SCAN_INTERVAL = timedelta(seconds=60)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
-    api = hass.data[DOMAIN][config_entry.unique_id]
+    api = hass.data[DOMAIN][config_entry.entry_id]
 
     # Stay close to meter measurements for power, for thermostat back off a bit
     if api._smile_type == 'power':
@@ -125,6 +126,15 @@ class PwWaterHeater(Entity):
     def name(self):
         """Return the name of the thermostat, if any."""
         return self._name
+
+    @property
+    def device_info(self) -> Dict[str, any]:
+        """Return the device information."""
+        return {
+            "identifiers": {(DOMAIN, self._dev_id)},
+            "name": self._name,
+            "manufacturer": "Plugwise",
+        }
 
     @property
     def state(self):

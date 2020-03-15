@@ -1,5 +1,6 @@
 """Plugwise components for Home Assistant Core."""
 import asyncio
+import logging
 
 import voluptuous as vol
 
@@ -29,6 +30,8 @@ HVAC_MODES_2 = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
 
 SUPPORT_FLAGS = (SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE)
 
+_LOGGER = logging.getLogger(__name__)
+
 # TODO List the platforms that you want to support.
 # For your initial PR, limit it to 1 platform.
 PLATFORMS = ["sensor","climate","water_heater"]
@@ -39,11 +42,11 @@ async def async_setup(hass: HomeAssistant, config: dict):
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     # TODO Store an API object for your platforms to access
     # hass.data[DOMAIN][entry.entry_id] = MyApi(...)
-    hass.data[DOMAIN] = {}
+    hass.data.setdefault(DOMAIN, {})
 
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(host=entry.data.get("host"),
@@ -52,12 +55,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     await api.connect()
 
-    # For backwards compat
-    if entry.unique_id is None:
-        _LOGGER.debug("Plugwise unique entry not set, doing from __init__")
-        hass.config_entries.async_update_entry(entry, unique_id=entry.data.get("password"))
-
-    hass.data[DOMAIN][entry.unique_id] = api
+    _LOGGER.debug("Plugwise async entry hass data %s",hass.data[DOMAIN])
+    hass.data[DOMAIN][entry.entry_id] = api
 
     for component in api._platforms:
         hass.async_create_task(

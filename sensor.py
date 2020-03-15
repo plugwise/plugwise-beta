@@ -5,6 +5,7 @@ from functools import partial
 
 from datetime import timedelta
 import async_timeout
+from typing import Any, Dict
 
 from Plugwise_Smile.Smile import Smile
 
@@ -84,7 +85,8 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
-    api = hass.data[DOMAIN][config_entry.unique_id]
+    _LOGGER.debug('Plugwise hass data %s',hass.data[DOMAIN])
+    api = hass.data[DOMAIN][config_entry.entry_id]
 
     # Stay close to meter measurements for power, for thermostat back off a bit
     if api._smile_type == 'power':
@@ -246,6 +248,15 @@ class PwThermostatSensor(Entity):
     def state(self):
         """Return the state of the sensor."""
         return self._state
+
+    @property
+    def device_info(self) -> Dict[str, any]:
+        """Return the device information."""
+        return {
+            "identifiers": {(DOMAIN, self._dev_id)},
+            "name": self._name,
+            "manufacturer": "Plugwise",
+        }
 
 #    @property
 #    def device_state_attributes(self):

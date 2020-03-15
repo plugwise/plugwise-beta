@@ -77,12 +77,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._user_schema = _get_config_schema(user_input)
         if user_input is not None:
 
-            if self.unique_id is None:
-                _LOGGER.debug("Plugwise config flow unique id unset")
-                await self.async_set_unique_id(user_input['password'])
-                _LOGGER.debug("Plugwise unique id set to %s",self.unique_id)
-                self._abort_if_unique_id_configured()
-
             try:
                 info = await validate_input(self.hass, user_input)
 

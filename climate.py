@@ -5,6 +5,7 @@ from functools import partial
 
 from datetime import timedelta
 import async_timeout
+from typing import Any, Dict
 
 from Plugwise_Smile.Smile import Smile
 
@@ -59,7 +60,7 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile Thermostats from a config entry."""
-    api = hass.data[DOMAIN][config_entry.unique_id]
+    api = hass.data[DOMAIN][config_entry.entry_id]
 
     if api._smile_type == 'power':
         update_interval=timedelta(seconds=10)
@@ -151,6 +152,15 @@ class PwThermostat(ClimateDevice):
     def name(self):
         """Return the name of the thermostat, if any."""
         return self._name
+
+    @property
+    def device_info(self) -> Dict[str, any]:
+        """Return the device information."""
+        return {
+            "identifiers": {(DOMAIN, self._dev_id)},
+            "name": self._name,
+            "manufacturer": "Plugwise",
+        }
 
     @property
     def icon(self):
