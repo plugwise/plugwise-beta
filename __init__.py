@@ -35,12 +35,12 @@ PLATFORMS = ["sensor","climate","water_heater"]
 
 
 async def async_setup(hass: HomeAssistant, config: dict):
-    """Set up the Plugwise Anna component."""
+    """Set up the Plugwise platform."""
     return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-    """Set up Plugwise Anna from a config entry."""
+    """Set up Plugwise Smiles from a config entry."""
     # TODO Store an API object for your platforms to access
     # hass.data[DOMAIN][entry.entry_id] = MyApi(...)
     hass.data[DOMAIN] = {}
