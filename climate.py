@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 import logging
 import voluptuous as vol
+from functools import partial
 
 from datetime import timedelta
+import async_timeout
 
 from Plugwise_Smile.Smile import Smile
 
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from homeassistant.components.climate import ClimateDevice
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+
+from homeassistant.exceptions import PlatformNotReady
 
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_HEAT,
@@ -48,47 +53,65 @@ SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
 _LOGGER = logging.getLogger(__name__)
 
-# Scan interval for updating sensor values
+# Scan interval for updating climate values
 # Smile communication is set using configuration directives
-SCAN_INTERVAL = timedelta(seconds=10)
+SCAN_INTERVAL = timedelta(seconds=30)
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Add the Plugwise ClimateDevice."""
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    """Set up the Smile Thermostats from a config entry."""
+    api = hass.data[DOMAIN][config_entry.unique_id]
 
-    if discovery_info is None:
-        return
+    if api._smile_type == 'power':
+        update_interval=timedelta(seconds=10)
+    else:
+        update_interval=timedelta(seconds=60)
+
+    climate_coordinator = DataUpdateCoordinator(
+        hass,
+        _LOGGER,
+        name="climate",
+        update_method=partial(async_safe_fetch,api),
+        update_interval=update_interval
+    )
+
+    # First do a refresh to see if we can reach the hub.
+    # Otherwise we will declare not ready.
+    await climate_coordinator.async_refresh()
+
+    if not climate_coordinator.last_update_success:
+        raise PlatformNotReady
 
     devices = []
     ctrl_id = None
-    if CONF_THERMOSTAT in hass.data[DOMAIN]:
-        for device,thermostat in hass.data[DOMAIN][CONF_THERMOSTAT].items():
-            _LOGGER.info('Device %s',device)
-            _LOGGER.info('Thermostat %s',thermostat)
-            api = thermostat['data_connection']
-            try:
-                devs = await api.get_devices()
-                _LOGGER.debug("Plugwise devs : %s",devs)
-            except RuntimeError:
-                _LOGGER.error("Unable to get location info from the API")
-                return
-
-            for dev in devs:
-                if dev['name'] == 'Controlled Device':
-                    ctrl_id = dev['id']
-                else:
-                    device = PwThermostat(api,dev['name'], dev['id'], ctrl_id, 4, 30)
-                    _LOGGER.debug("Plugwise device : %s",device)
-                    if not device:
-                        continue
-                    devices.append(device)
+    data = None
+    idx = 0
+    _LOGGER.info('Plugwise thermostat Devices %s', climate_coordinator.data)
+    if api._smile_type == 'thermostat':
+       for dev in climate_coordinator.data:
+          if dev['name'] == 'Controlled Device':
+              ctrl_id = dev['id']
+          else:
+              device = PwThermostat(climate_coordinator, idx, api,dev['name'], dev['id'], ctrl_id, 4, 30)
+              _LOGGER.debug("Plugwise device : %s",device)
+              if not device:
+                  continue
+              devices.append(device)
     async_add_entities(devices, True)
 
+
+async def async_safe_fetch(api):
+    """Safely fetch data."""
+    with async_timeout.timeout(10):
+        await api.full_update_device()
+        return await api.get_devices()
 
 class PwThermostat(ClimateDevice):
     """Representation of an Plugwise thermostat."""
 
-    def __init__(self, api, name, dev_id, ctlr_id, min_temp, max_temp):
+    def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, min_temp, max_temp):
         """Set up the Plugwise API."""
+        self.coordinator = coordinator
+        self.idx = idx
         self._api = api
         self._name = name
         self._dev_id = dev_id
@@ -138,6 +161,47 @@ class PwThermostat(ClimateDevice):
     def supported_features(self):
         """Return the list of supported features."""
         return SUPPORT_FLAGS
+
+    @property
+    def is_on(self):
+      """Return entity state.
+
+      Example to show how we fetch data from coordinator.
+      """
+      self.coordinator.data[self.idx]['state']
+
+    @property
+    def should_poll(self):
+        """No need to poll. Coordinator notifies entity of updates."""
+        return False
+
+    @property
+    def available(self):
+        """Return if entity is available."""
+        return self.coordinator.last_update_success
+
+    async def async_added_to_hass(self):
+        """When entity is added to hass."""
+        self.coordinator.async_add_listener(
+            self.async_write_ha_state
+        )
+
+    async def async_will_remove_from_hass(self):
+        """When entity will be removed from hass."""
+        self.coordinator.async_remove_listener(
+            self.async_write_ha_state
+        )
+
+    async def async_turn_on(self, **kwargs):
+        """Turn the light on.
+
+        Example method how to request data updates.
+        """
+        # Do the turning on.
+        # ...
+
+        # Update the data
+        await self.coordinator.async_request_refresh()
 
     @property
     def device_state_attributes(self):
@@ -236,6 +300,8 @@ class PwThermostat(ClimateDevice):
 
     async def async_update(self):
         """Update the data for this climate device."""
+        await self.coordinator.async_request_refresh()
+
         data = self._api.get_device_data(self._dev_id, self._ctrl_id)
         _LOGGER.info('Plugwise Smile device data: %s',data)
 

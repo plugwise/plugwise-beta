@@ -31,8 +31,6 @@ def _get_config_schema(input_dict: Dict[str, Any] = None) -> vol.Schema:
             vol.Required("host"): str,
             vol.Required("password"): str,
             vol.Required("timeout", default=30): int,
-            vol.Optional("smile_type"): cv.multi_select(
-                        ["thermostat","power"]),
         },
     )
 
@@ -51,8 +49,7 @@ async def validate_input(hass: core.HomeAssistant, data):
 
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(host=data["host"], password=data["password"],
-                smile_type=data["smile_type"], timeout=data["timeout"],
-                websession=websession)
+                timeout=data["timeout"], websession=websession)
 
     if not await api.connect():
         raise CannotConnect

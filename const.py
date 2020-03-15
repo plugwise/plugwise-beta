@@ -24,6 +24,7 @@ CONF_SOLAR = "solar"
 CONF_GAS = "gas"
 
 ATTR_ILLUMINANCE = "illuminance"
+CURRENT_HVAC_DHW = "dhw"
 
 # Icons
 THERMOSTAT_ICON = "mdi:thermometer"
