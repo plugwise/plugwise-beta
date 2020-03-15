@@ -52,6 +52,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     await api.connect()
 
+    # For backwards compat
+    if entry.unique_id is None:
+        _LOGGER.debug("Plugwise unique entry not set, doing from __init__")
+        hass.config_entries.async_update_entry(entry, unique_id=entry.data.get("password"))
+
     hass.data[DOMAIN][entry.unique_id] = api
 
     for component in api._platforms:
