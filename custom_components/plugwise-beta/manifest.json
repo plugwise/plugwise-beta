@@ -2,7 +2,7 @@
   "domain": "plugwise-beta",
   "name": "Plugwise Beta for Home Assistant",
   "documentation": "",
-  "requirements": ["https://test-files.pythonhosted.org/packages/da/0e/80be4e32d391cf2531c274ceb88bca57ccd5dde399449338f5a568b2eef2/Plugwise_Smile-0.0.25.tar.gz#Plugwise_Smile==0.0.25"],
+  "requirements": ["Plugwise_Smile==0.0.25"],
   "dependencies": [],
   "codeowners": ["@CoMPaTech","@bouwew"],
   "config_flow": true
