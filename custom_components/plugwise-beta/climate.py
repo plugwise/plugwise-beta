@@ -327,7 +327,8 @@ class PwThermostat(ClimateDevice):
             self._last_active_schema = data['last_used']
         if 'presets' in data:
             self._presets = data['presets']
-            self._presets_list = list(self._presets)
+            if self._presets:
+                self._presets_list = list(self._presets)
         if 'active_preset' in data:
             self._preset_mode = data['active_preset']
         if 'boiler_state' in data:
