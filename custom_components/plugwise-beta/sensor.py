@@ -336,6 +336,9 @@ class PwThermostatSensor(Entity):
             if 'battery' in data:
                 value = data['battery']
                 self._state = int(round(value * 100))
+        if self._sensor == 'outdoor_temperature':
+            if 'outdoor_temp' in data:
+                self._state = data['outdoor_temp']
         if self._sensor == 'illuminance':
             if 'illuminance' in data:
                 self._state = data['illuminance']
