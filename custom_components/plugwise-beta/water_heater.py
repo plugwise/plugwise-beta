@@ -80,28 +80,27 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     devices = []
     ctrl_id = None
-    data = None
     idx = 0
     if api._smile_type == 'thermostat':
-      for dev in await api.get_devices():
-          _LOGGER.info('Dev %s', dev)
-          if dev['name'] == 'Controlled Device':
-              ctrl_id = dev['id']
-              dev_id = None
-              name = dev['name']
-              _LOGGER.info('Name %s', name)
-              data = api.get_device_data(dev_id, ctrl_id)
+        for dev in await api.get_devices():
+            data = None
+            _LOGGER.info('Dev %s', dev)
+            if dev['name'] == 'Controlled Device':
+                ctrl_id = dev['id']
+                dev_id = None
+                name = dev['name']
+                _LOGGER.info('Name %s', name)
+                data = api.get_device_data(dev_id, ctrl_id, None)
 
-              if data is None:
-                  _LOGGER.debug("Received no data for device %s.", name)
-                  return
-
-              # device = PwWaterHeater(wh_coordinator, idx, api, dev['name'], dev_id, ctrl_id)
-              device = PwWaterHeater(api, updater, dev['name'], dev_id, ctrl_id)
-              if not device:
-                  continue
-              idx += 1
-              devices.append(device)
+                if data is None:
+                    _LOGGER.debug("Received no data for device %s.", name)
+                else:
+                    # device = PwWaterHeater(wh_coordinator, idx, api, dev['name'], dev_id, ctrl_id)
+                    device = PwWaterHeater(api, updater, dev['name'], dev_id, ctrl_id)
+                    if not device:
+                        continue
+                    idx += 1
+                    devices.append(device)
     async_add_entities(devices, True)
 
 #async def async_safe_fetch(api):
@@ -182,15 +181,15 @@ class PwWaterHeater(Entity):
         """Update the entity."""
 
         _LOGGER.debug("Update sensor called")
-        data = self._api.get_device_data(self._dev_id, self._ctrl_id)
+        data = self._api.get_device_data(self._dev_id, self._ctrl_id, None)
 
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
-            return
-        if 'central_heating_state' in data:
-            self._heating_status =  data['central_heating_state']
-        if 'boiler_state' in data:
-            self._boiler_status = data['boiler_state']
-        if 'dhw_state' in data:
-            self._dhw_status = data['dhw_state']
+        else:
+            if 'central_heating_state' in data:
+                self._heating_status =  data['central_heating_state']
+            if 'boiler_state' in data:
+                self._boiler_status = data['boiler_state']
+            if 'dhw_state' in data:
+                self._dhw_status = data['dhw_state']
 

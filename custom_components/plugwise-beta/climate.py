@@ -86,20 +86,20 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     devices = []
     ctrl_id = None
-    data = None
     idx = 0
     # _LOGGER.info('Plugwise thermostat Devices %s', climate_coordinator.data)
     if api._smile_type == 'thermostat':
-       for dev in await api.get_devices():
-          if dev['name'] == 'Controlled Device':
-              ctrl_id = dev['id']
-          else:
-              # device = PwThermostat(climate_coordinator, idx, api,dev['name'], dev['id'], ctrl_id, 4, 30)
-              device = PwThermostat(api, updater, dev['name'], dev['id'], ctrl_id, 4, 30)
-              _LOGGER.debug("Plugwise device : %s",device)
-              if not device:
-                  continue
-              devices.append(device)
+        for dev in await api.get_devices():
+            data = None
+            if dev['name'] == 'Controlled Device':
+                ctrl_id = dev['id']
+            if dev['type'] == 'thermostat':
+                # device = PwThermostat(climate_coordinator, idx, api,dev['name'], dev['id'], ctrl_id, 4, 30)
+                device = PwThermostat(api, updater, dev['name'], dev['id'], ctrl_id, 4, 30)
+                _LOGGER.debug("Plugwise device : %s",device)
+                if not device:
+                    continue
+                devices.append(device)
     async_add_entities(devices, True)
 
 
@@ -298,45 +298,44 @@ class PwThermostat(ClimateDevice):
     def update(self):
         """Update the data for this climate device."""
 
-        data = self._api.get_device_data(self._dev_id, self._ctrl_id)
+        data = self._api.get_device_data(self._dev_id, self._ctrl_id, None)
         _LOGGER.info('Plugwise Smile device data: %s',data)
 
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
-            return
-
-        _LOGGER.debug("Device data collected from Plugwise API")
-        if 'type' in data:
-            self._dev_type = data['type']
-        if 'setpoint_temp' in data:
-            self._thermostat_temp = data['setpoint_temp']
-        if 'current_temp' in data:
-            self._current_temp = data['current_temp']
-        if 'boiler_temp' in data:
-            self._boiler_temp = data['boiler_temp']
-        if 'available_schedules' in data:
-            self._schema_names = data['available_schedules']
-        if 'selected_schedule' in data:
-            self._selected_schema = data['selected_schedule']
-            if self._selected_schema != None:
-                self._schema_status = True
-                self._schedule_temp = self._thermostat_temp
-            else:
-                self._schema_status = False
-        if 'last_used' in data:
-            self._last_active_schema = data['last_used']
-        if 'presets' in data:
-            self._presets = data['presets']
-            if self._presets:
-                self._presets_list = list(self._presets)
-        if 'active_preset' in data:
-            self._preset_mode = data['active_preset']
-        if 'boiler_state' in data:
-            self._boiler_status = data['boiler_state']
-        if 'central_heating_state' in data:
-            self._heating_status = data['central_heating_state']
-        if 'cooling_state' in data:
-            self._cooling_status = data['cooling_state']
-        if 'dhw_state' in data:
-            self._dhw_status = data['dhw_state']
+        else:
+            _LOGGER.debug("Device data collected from Plugwise API")
+            if 'type' in data:
+                self._dev_type = data['type']
+            if 'setpoint_temp' in data:
+                self._thermostat_temp = data['setpoint_temp']
+            if 'current_temp' in data:
+                self._current_temp = data['current_temp']
+            if 'boiler_temp' in data:
+                self._boiler_temp = data['boiler_temp']
+            if 'available_schedules' in data:
+                self._schema_names = data['available_schedules']
+            if 'selected_schedule' in data:
+                self._selected_schema = data['selected_schedule']
+                if self._selected_schema != None:
+                    self._schema_status = True
+                    self._schedule_temp = self._thermostat_temp
+                else:
+                    self._schema_status = False
+            if 'last_used' in data:
+                self._last_active_schema = data['last_used']
+            if 'presets' in data:
+                self._presets = data['presets']
+                if self._presets:
+                    self._presets_list = list(self._presets)
+            if 'active_preset' in data:
+                self._preset_mode = data['active_preset']
+            if 'boiler_state' in data:
+                self._boiler_status = data['boiler_state']
+            if 'central_heating_state' in data:
+                self._heating_status = data['central_heating_state']
+            if 'cooling_state' in data:
+                self._cooling_status = data['cooling_state']
+            if 'dhw_state' in data:
+                self._dhw_status = data['dhw_state']
 

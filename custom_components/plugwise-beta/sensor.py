@@ -117,95 +117,89 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     devices = []
     ctrl_id = None
-    data = None
     idx = 0
 #    _LOGGER.info('Plugwise sensor Devices %s', sensor_coordinator.data)
     if api._smile_type == 'thermostat':
-      for dev in await api.get_devices():
-          _LOGGER.info('Plugwise sensor Dev %s', dev)
-          if dev['name'] == 'Controlled Device':
-              ctrl_id = dev['id']
-              dev_id = None
-              name = dev['name']
-              _LOGGER.info('Plugwise sensor Name %s', name)
-              data = api.get_device_data(dev_id, ctrl_id)
-          else:
-              name = dev['name']
-              dev_id = dev['id']
-              _LOGGER.info('Plugwise sensor Name %s', name)
-              data = api.get_device_data(dev_id, ctrl_id)
+        for dev in await api.get_devices():
+            data = None
+            _LOGGER.info('Plugwise sensor Dev %s', dev)
+            if dev['name'] == 'Controlled Device':
+                ctrl_id = dev['id']
+                dev_id = None
+                name = dev['name']
+                _LOGGER.info('Plugwise sensor Name %s', name)
+                data = api.get_device_data(dev_id, ctrl_id, None)
+            if dev['type'] == 'thermostat':
+                name = dev['name']
+                dev_id = dev['id']
+                _LOGGER.info('Plugwise sensor Name %s', name)
+                data = api.get_device_data(dev_id, ctrl_id, None)
 
-          if data is None:
-              _LOGGER.debug("Received no data for device %s.", name)
-              continue
-
-          _LOGGER.debug("Device data %s.", data)
-          # data {'type': 'thermostat', 'battery': None, 'setpoint_temp': 22.0, 'current_temp': 21.7, 'active_preset': 'home', 'presets': {'vacation': [15.0, 0], 'no_frost': [10.0, 0], 'asleep': [16.0, 0], 'away': [16.0, 0], 'home': [21.0, 0]}, 'available_schedules': ['Test', 'Thermostat schedule', 'Normaal'], 'selected_schedule': 'Normaal', 'last_used': 'Test', 'boiler_state': None, 'central_heating_state': False, 'cooling_state': None, 'dhw_state': None, 'outdoor_temp': '9.3', 'illuminance': '0.8'}.
-
-          for sensor,sensor_type in THERMOSTAT_SENSORS_AVAILABLE.items():
-              addSensor=False
-              if sensor == 'boiler_temperature':
-                  if 'boiler_temp' in data:
-                      if data['boiler_temp']:
-                          addSensor=True
-                          _LOGGER.info('Adding boiler_temp')
-              if sensor == 'water_pressure':
-                  if 'water_pressure' in data:
-                      if data['water_pressure']:
-                          addSensor=True
-                          _LOGGER.info('Adding water_pressure')
-              if sensor == 'battery_charge':
-                  if 'battery' in data:
-                      if data['battery']:
-                          addSensor=True
-                          _LOGGER.info('Adding battery_charge')
-              if sensor == 'outdoor_temperature':
-                  if 'outdoor_temp' in data:
-                      if data['outdoor_temp']:
-                          addSensor=True
-                          _LOGGER.info('Adding outdoor_temperature')
-              if sensor == 'illuminance':
-                  if 'illuminance' in data:
-                      if data['illuminance']:
-                          addSensor=True
-                          _LOGGER.info('Adding illuminance')
-              if addSensor:
-                  #devices.append(PwThermostatSensor(sensor_coordinator, idx, api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
-                  #idx += 1
-                  devices.append(PwThermostatSensor(api, updater, '{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
-                  #idx += 1
+            if data is None:
+                _LOGGER.debug("Received no data for device %s.", name)
+            else:
+                _LOGGER.debug("Device data %s.", data)
+                # data {'type': 'thermostat', 'battery': None, 'setpoint_temp': 22.0, 'current_temp': 21.7, 'active_preset': 'home', 'presets': {'vacation': [15.0, 0], 'no_frost': [10.0, 0], 'asleep': [16.0, 0], 'away': [16.0, 0], 'home': [21.0, 0]}, 'available_schedules': ['Test', 'Thermostat schedule', 'Normaal'], 'selected_schedule': 'Normaal', 'last_used': 'Test', 'boiler_state': None, 'central_heating_state': False, 'cooling_state': None, 'dhw_state': None, 'outdoor_temp': '9.3', 'illuminance': '0.8'}.
+                for sensor,sensor_type in THERMOSTAT_SENSORS_AVAILABLE.items():
+                    addSensor=False
+                    if sensor == 'boiler_temperature':
+                        if 'boiler_temp' in data:
+                            if data['boiler_temp']:
+                                addSensor = True
+                    if sensor == 'water_pressure':
+                        if 'water_pressure' in data:
+                            if data['water_pressure']:
+                                addSensor = True
+                    if sensor == 'outdoor_temperature':
+                        if 'outdoor_temp' in data:
+                            if data['outdoor_temp']:
+                                addSensor = True
+                    if sensor == 'battery_charge':
+                        if 'battery' in data:
+                            if data['battery']:
+                                addSensor = True
+                    if sensor == 'illuminance':
+                        if 'illuminance' in data:
+                            if data['illuminance']:
+                                addSensor = True
+                    if addSensor:
+                        #devices.append(PwThermostatSensor(sensor_coordinator, idx, api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+                        #idx += 1
+                        devices.append(PwThermostatSensor(api, updater, '{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+                        _LOGGER.info('Adding sensor.%s', '{}_{}'.format(name, sensor))
+                        #idx += 1
 
     if api._smile_type == 'power':
         for dev in await api.get_devices():
+            data = None
             _LOGGER.info('Dev %s', dev)
             if dev['name'] == 'Home':
                 ctrl_id = dev['id']
                 dev_id = None
                 name = dev['name']
                 _LOGGER.info('Name %s', name)
-                data = api.get_device_data(dev_id, ctrl_id)
+                data = api.get_device_data(dev_id, ctrl_id, None)
 
             if data is None:
                 _LOGGER.debug("Received no data for device %s.", name)
-                return
+            else:
+                for sensor,sensor_type in POWER_SENSOR_TYPES.items():
+                    _LOGGER.debug("sensor %s",sensor)
+                    _LOGGER.debug("sensortype %s",sensor_type)
+                    addSensor=True
+                    if 'off' in sensor and api._power_tariff['electricity_consumption_tariff_structure'] == 'single':
+                        addSensor=False
+                    _LOGGER.debug(sensor)
+                    # _LOGGER.debug(power['gas'])
+                    # if 'gas_' in sensor and not power['gas']:
+                    #     addSensor=False
+                    # if 'produced' in sensor and not power['solar']:
+                    #     addSensor=False
 
-            for sensor,sensor_type in POWER_SENSOR_TYPES.items():
-                _LOGGER.debug("sensor %s",sensor)
-                _LOGGER.debug("sensortype %s",sensor_type)
-                addSensor=True
-                if 'off' in sensor and api._power_tariff['electricity_consumption_tariff_structure'] == 'single':
-                    addSensor=False
-                _LOGGER.debug(sensor)
-                # _LOGGER.debug(power['gas'])
-                # if 'gas_' in sensor and not power['gas']:
-                #     addSensor=False
-                # if 'produced' in sensor and not power['solar']:
-                #     addSensor=False
-
-                if addSensor:
-                     #devices.append(PwPowerSensor(sensor_coordinator, idx, api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
-                     #idx += 1
-                     devices.append(PwPowerSensor(api, updater, '{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+                    if addSensor:
+                        #devices.append(PwPowerSensor(sensor_coordinator, idx, api,'{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
+                        #idx += 1
+                        devices.append(PwPowerSensor(api, updater, '{}_{}'.format(name, sensor), dev_id, ctrl_id, sensor, sensor_type))
 
     async_add_entities(devices, True)
 
@@ -319,29 +313,28 @@ class PwThermostatSensor(Entity):
     def update(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
-        data = self._api.get_device_data(self._dev_id, self._ctrl_id)
+        data = self._api.get_device_data(self._dev_id, self._ctrl_id, None)
 
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
-            return
-
-        _LOGGER.info("Sensor {}".format(self._sensor))
-        if self._sensor == 'boiler_temperature':
-            if 'boiler_temp' in data:
-                self._state = data['boiler_temp']
-        if self._sensor == 'water_pressure':
-            if 'water_pressure' in data:
-                self._state = data['water_pressure']
-        if self._sensor == 'battery_charge':
-            if 'battery' in data:
-                value = data['battery']
-                self._state = int(round(value * 100))
-        if self._sensor == 'outdoor_temperature':
-            if 'outdoor_temp' in data:
-                self._state = data['outdoor_temp']
-        if self._sensor == 'illuminance':
-            if 'illuminance' in data:
-                self._state = data['illuminance']
+        else:
+            _LOGGER.info("Sensor {}".format(self._sensor))
+            if self._sensor == 'boiler_temperature':
+                if 'boiler_temp' in data:
+                    self._state = data['boiler_temp']
+            if self._sensor == 'water_pressure':
+                if 'water_pressure' in data:
+                    self._state = data['water_pressure']
+            if self._sensor == 'battery_charge':
+                if 'battery' in data:
+                    value = data['battery']
+                    self._state = int(round(value * 100))
+            if self._sensor == 'outdoor_temperature':
+                if 'outdoor_temp' in data:
+                    self._state = data['outdoor_temp']
+            if self._sensor == 'illuminance':
+                if 'illuminance' in data:
+                    self._state = data['illuminance']
 
 
 #async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -426,17 +419,16 @@ class PwPowerSensor(Entity):
         """Update the entity."""
 
         _LOGGER.debug("Update sensor called")
-        data = self._api.get_device_data(self._dev_id, self._ctrl_id)
+        data = self._api.get_device_data(self._dev_id, self._ctrl_id, None)
 
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
-
-        _LOGGER.info("Sensor {}".format(self._sensor))
-
-        if self._sensor in data:
-            measurement = data[self._sensor]
-            if 'cumulative' in self._sensor:
-                measurement = int(data[self._sensor]/1000)
-            self._state = measurement
+        else:
+            _LOGGER.info("Sensor {}".format(self._sensor))
+            if self._sensor in data:
+                measurement = data[self._sensor]
+                if 'cumulative' in self._sensor:
+                    measurement = int(data[self._sensor]/1000)
+                self._state = measurement
 
 
