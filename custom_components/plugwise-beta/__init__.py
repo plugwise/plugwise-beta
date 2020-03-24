@@ -11,6 +11,7 @@ from Plugwise_Smile.Smile import Smile
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.helpers import device_registry as dr
 
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
@@ -70,6 +71,28 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass, "device", entry.entry_id, api, "full_update_device", update_interval
         ),
     }
+
+    # Find controlled device (i.e. smile)
+    for dev_id,device in api.get_all_devices().items():
+        if device['name'] == 'Gateway':
+            api._smile_id = dev_id
+            continue
+
+    _LOGGER.debug("Plugwise gateway is %s",api._smile_id)
+    device_registry = await dr.async_get_registry(hass)
+    _LOGGER.debug("Plugwise device registry  %s",device_registry)
+    result = device_registry.async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, api._smile_id)},
+        manufacturer="Plugwise",
+        name="{} -  Smile Gateway".format(entry.title),
+        model=api._smile_name,
+        sw_version=api._smile_version[0],
+    )
+    _LOGGER.debug("Plugwise device registry  %s",result)
+    #connections={(dr.CONNECTION_NETWORK_MAC, config.mac)},
+    #model=config.modelid,
+    #sw_version=config.swversion,
 
     #_LOGGER.debug("Plugwise async entry hass data %s",hass.data[DOMAIN])
     # hass.data[DOMAIN][entry.entry_id] = api

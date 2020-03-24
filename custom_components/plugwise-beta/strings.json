@@ -10,13 +10,6 @@
           "host": "Smile IP address",
           "password": "Smile ID"
         }
-      },
-      "confirm": {
-        "title": "",
-        "description": "Interval?",
-        "data": {
-          "timeout": "Timeout"
-        }
       }
     },
     "error": {

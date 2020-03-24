@@ -79,28 +79,20 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 #        raise PlatformNotReady
 
     devices = []
-    ctrl_id = None
-    idx = 0
-    if api._smile_type == 'thermostat':
-        for dev in await api.get_devices():
-            data = None
-            _LOGGER.info('Dev %s', dev)
-            if dev['name'] == 'Controlled Device':
-                ctrl_id = dev['id']
-                dev_id = None
-                name = dev['name']
-                _LOGGER.info('Name %s', name)
-                data = api.get_device_data(dev_id, ctrl_id, None)
+    all_devices=api.get_all_devices()
+    for dev_id,device in all_devices.items():
+        if device['class'] != 'heater_central':
+            continue
+        data = api.get_device_data(dev_id)
 
-                if data is None:
-                    _LOGGER.debug("Received no data for device %s.", name)
-                else:
-                    # device = PwWaterHeater(wh_coordinator, idx, api, dev['name'], dev_id, ctrl_id)
-                    device = PwWaterHeater(api, updater, dev['name'], dev_id, ctrl_id)
-                    if not device:
-                        continue
-                    idx += 1
-                    devices.append(device)
+        _LOGGER.info('Plugwise sensor Dev %s', device['name'])
+        water_heater = PwWaterHeater(api, updater, device['name'], dev_id)
+
+        if not water_heater:
+            continue
+
+        devices.append(water_heater)
+
     async_add_entities(devices, True)
 
 #async def async_safe_fetch(api):
@@ -113,13 +105,12 @@ class PwWaterHeater(Entity):
     """Representation of a Plugwise water_heater."""
 
     # def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id):
-    def __init__(self, api, updater, name, dev_id, ctlr_id):
+    def __init__(self, api, updater, name, dev_id):
         """Set up the Plugwise API."""
         self._api = api
         self._updater = updater
         self._name = name
         self._dev_id = dev_id
-        self._ctrl_id = ctlr_id
         self._heating_status =  None
         self._boiler_status = None
         self._dhw_status = None
@@ -156,6 +147,7 @@ class PwWaterHeater(Entity):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
+            "via_device": (DOMAIN, self._api._smile_id),
         }
 
     @property
@@ -181,7 +173,7 @@ class PwWaterHeater(Entity):
         """Update the entity."""
 
         _LOGGER.debug("Update sensor called")
-        data = self._api.get_device_data(self._dev_id, self._ctrl_id, None)
+        data = self._api.get_device_data(self._dev_id)
 
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)

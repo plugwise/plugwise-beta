@@ -10,13 +10,6 @@
           "host": "IP adres van de Smile",
           "password": "Smile ID"
         }
-      },
-      "confirm": {
-        "title": "",
-        "description": "Interval?",
-        "data": {
-          "timeout": "Timeout"
-        }
       }
     },
     "error": {

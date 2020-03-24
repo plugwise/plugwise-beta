@@ -85,21 +85,21 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 #        raise PlatformNotReady
 
     devices = []
-    ctrl_id = None
-    idx = 0
-    # _LOGGER.info('Plugwise thermostat Devices %s', climate_coordinator.data)
-    if api._smile_type == 'thermostat':
-        for dev in await api.get_devices():
-            data = None
-            if dev['name'] == 'Controlled Device':
-                ctrl_id = dev['id']
-            if dev['type'] == 'thermostat':
-                # device = PwThermostat(climate_coordinator, idx, api,dev['name'], dev['id'], ctrl_id, 4, 30)
-                device = PwThermostat(api, updater, dev['name'], dev['id'], ctrl_id, 4, 30)
-                _LOGGER.debug("Plugwise device : %s",device)
-                if not device:
-                    continue
-                devices.append(device)
+    all_devices=api.get_all_devices()
+    for dev_id,device in all_devices.items():
+
+        if device['class'] != 'thermostat' and device['class'] != 'zone_thermostat':
+            continue
+        data = api.get_device_data(dev_id)
+
+        _LOGGER.info('Plugwise climate Dev %s', device['name'])
+        thermostat = PwThermostat(api, updater, device['name'], dev_id, 4, 30)
+
+        if not thermostat:
+            continue
+
+        devices.append(thermostat)
+
     async_add_entities(devices, True)
 
 
@@ -113,17 +113,15 @@ class PwThermostat(ClimateDevice):
     """Representation of an Plugwise thermostat."""
 
     # def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, min_temp, max_temp):
-    def __init__(self, api, updater, name, dev_id, ctlr_id, min_temp, max_temp):
+    def __init__(self, api, updater, name, dev_id, min_temp, max_temp):
         """Set up the Plugwise API."""
         self._api = api
         self._updater = updater
         self._name = name
         self._dev_id = dev_id
-        self._ctrl_id = ctlr_id
         self._min_temp = min_temp
         self._max_temp = max_temp
 
-        self._dev_type = None
         self._selected_schema = None
         self._last_active_schema = None
         self._preset_mode = None
@@ -183,6 +181,7 @@ class PwThermostat(ClimateDevice):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
+            "via_device":  (DOMAIN, self._api._smile_id),
         }
 
     @property
@@ -298,19 +297,17 @@ class PwThermostat(ClimateDevice):
     def update(self):
         """Update the data for this climate device."""
 
-        data = self._api.get_device_data(self._dev_id, self._ctrl_id, None)
+        data = self._api.get_device_data(self._dev_id)
         _LOGGER.info('Plugwise Smile device data: %s',data)
 
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
         else:
             _LOGGER.debug("Device data collected from Plugwise API")
-            if 'type' in data:
-                self._dev_type = data['type']
-            if 'setpoint_temp' in data:
-                self._thermostat_temp = data['setpoint_temp']
-            if 'current_temp' in data:
-                self._current_temp = data['current_temp']
+            if 'thermostat' in data:
+                self._thermostat_temp = data['thermostat']
+            if 'temperature' in data:
+                self._current_temp = data['temperature']
             if 'boiler_temp' in data:
                 self._boiler_temp = data['boiler_temp']
             if 'available_schedules' in data:
