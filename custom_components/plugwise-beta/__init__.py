@@ -72,20 +72,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ),
     }
 
-    # Find controlled device (i.e. smile)
-    for dev_id,device in api.get_all_devices().items():
-        if device['name'] == 'Gateway':
-            api._smile_id = dev_id
-            continue
-
-    _LOGGER.debug("Plugwise gateway is %s",api._smile_id)
+    _LOGGER.debug("Plugwise gateway is %s",api._gateway_id)
     device_registry = await dr.async_get_registry(hass)
     _LOGGER.debug("Plugwise device registry  %s",device_registry)
     result = device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, api._smile_id)},
+        identifiers={(DOMAIN, api._gateway_id)},
         manufacturer="Plugwise",
-        name="{} -  Smile Gateway".format(entry.title),
+        name="{} - {} Gateway".format(entry.title, api._smile_name),
         model=api._smile_name,
         sw_version=api._smile_version[0],
     )

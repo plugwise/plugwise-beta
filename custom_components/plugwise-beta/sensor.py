@@ -221,7 +221,7 @@ class PwThermostatSensor(Entity):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device": (DOMAIN, self._api._smile_id),
+            "via_device": (DOMAIN, self._api._gateway_id),
         }
 
 #    @property

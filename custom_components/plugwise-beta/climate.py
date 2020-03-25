@@ -129,17 +129,23 @@ class PwThermostat(ClimateDevice):
         self._presets_list = None
         self._boiler_status = None
         self._cooling_status = None
-        self._dhw_status = None
-        self._heating_status = None
+        self._domestic_hot_water_state = None
+        self._central_heating_state = None
         self._schema_names = None
         self._schema_status = None
-        self._current_temp = None
-        self._thermostat_temp = None
+        self._temperature = None
+        self._thermostat = None
         self._boiler_temp = None
         self._water_pressure = None
         self._schedule_temp = None
         self._hvac_mode = None
         self._unique_id = f"{dev_id}-climate"
+
+        cdata = api.get_device_data(self._api._gateway_id)
+        if 'central_heating_state' in cdata:
+            self._central_heating_state = cdata['central_heating_state']
+        if 'self._domestic_hot_water_state' in cdata:
+            self._self._domestic_hot_water_state = cdata['self._domestic_hot_water_state']
 
     @property
     def unique_id(self):
@@ -163,7 +169,7 @@ class PwThermostat(ClimateDevice):
     @property
     def hvac_action(self):
         """Return the current action."""
-        if self._heating_status or self._boiler_status or self._dhw_status:
+        if self._central_heating_state or self._boiler_status or self._domestic_hot_water_state:
             return CURRENT_HVAC_HEAT
         if self._cooling_status:
             return CURRENT_HVAC_COOL
@@ -181,7 +187,7 @@ class PwThermostat(ClimateDevice):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device":  (DOMAIN, self._api._smile_id),
+            "via_device":  (DOMAIN, self._api._gateway_id),
         }
 
     @property
@@ -220,7 +226,7 @@ class PwThermostat(ClimateDevice):
     @property
     def hvac_modes(self):
         """Return the available hvac modes list."""
-        if self._heating_status is not None or self._boiler_status is not None:
+        if self._central_heating_state is not None or self._boiler_status is not None:
             if self._cooling_status is not None:
                 return HVAC_MODES_2
             return HVAC_MODES_1
@@ -230,7 +236,7 @@ class PwThermostat(ClimateDevice):
         """Return current active hvac state."""
         if self._schema_status:
             return HVAC_MODE_AUTO
-        if self._heating_status or self._boiler_status or self._dhw_status:
+        if self._central_heating_state or self._boiler_status or self._domestic_hot_water_state:
             if self._cooling_status:
                 return HVAC_MODE_HEAT_COOL
             return HVAC_MODE_HEAT
@@ -243,7 +249,7 @@ class PwThermostat(ClimateDevice):
         compared to the target_temperature-value. This way the information on the card
         is "immediately" updated after changing the preset, temperature, etc.
         """
-        return self._thermostat_temp
+        return self._thermostat
 
     @property
     def preset_mode(self):
@@ -255,7 +261,7 @@ class PwThermostat(ClimateDevice):
     @property
     def current_temperature(self):
         """Return the current room temperature."""
-        return self._current_temp
+        return self._temperature
 
     @property
     def min_temp(self):
@@ -305,9 +311,9 @@ class PwThermostat(ClimateDevice):
         else:
             _LOGGER.debug("Device data collected from Plugwise API")
             if 'thermostat' in data:
-                self._thermostat_temp = data['thermostat']
+                self._thermostat = data['thermostat']
             if 'temperature' in data:
-                self._current_temp = data['temperature']
+                self._temperature = data['temperature']
             if 'boiler_temp' in data:
                 self._boiler_temp = data['boiler_temp']
             if 'available_schedules' in data:
@@ -316,7 +322,7 @@ class PwThermostat(ClimateDevice):
                 self._selected_schema = data['selected_schedule']
                 if self._selected_schema != None:
                     self._schema_status = True
-                    self._schedule_temp = self._thermostat_temp
+                    self._schedule_temp = self._thermostat
                 else:
                     self._schema_status = False
             if 'last_used' in data:
@@ -330,9 +336,9 @@ class PwThermostat(ClimateDevice):
             if 'boiler_state' in data:
                 self._boiler_status = data['boiler_state']
             if 'central_heating_state' in data:
-                self._heating_status = data['central_heating_state']
+                self._central_heating_state = data['central_heating_state']
             if 'cooling_state' in data:
                 self._cooling_status = data['cooling_state']
-            if 'dhw_state' in data:
-                self._dhw_status = data['dhw_state']
+            if 'domestic_hot_water_state' in data:
+                self._domestic_hot_water_state = data['domestic_hot_water_state']
 
