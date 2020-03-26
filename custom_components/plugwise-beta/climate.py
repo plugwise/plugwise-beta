@@ -144,9 +144,9 @@ class PwThermostat(ClimateDevice):
 
         cdata = api.get_device_data(self._api._gateway_id)
         if 'central_heating_state' in cdata:
-            self._central_heating_state = cdata['central_heating_state']
+            self._central_heating_state = (cdata['central_heating_state'] == 'on')
         if 'domestic_hot_water_state' in cdata:
-            self._domestic_hot_water_state = cdata['domestic_hot_water_state']
+            self._domestic_hot_water_state = (cdata['domestic_hot_water_state'] == 'on')
 
     @property
     def unique_id(self):
@@ -335,11 +335,12 @@ class PwThermostat(ClimateDevice):
             if 'active_preset' in data:
                 self._preset_mode = data['active_preset']
             if 'boiler_state' in data:
-                self._boiler_status = data['boiler_state']
+                self._boiler_status = (data['boiler_state'] == 'on')
             if 'central_heating_state' in data:
-                self._central_heating_state = data['central_heating_state']
+                self._central_heating_state = (data['central_heating_state'] == 'on')
             if 'cooling_state' in data:
-                self._cooling_status = data['cooling_state']
+                self._cooling_status = (data['cooling_state'] == 'on')
             if 'domestic_hot_water_state' in data:
-                self._domestic_hot_water_state = data['domestic_hot_water_state']
+                self._domestic_hot_water_state = (data['domestic_hot_water_state'] == 'on')
+
 
