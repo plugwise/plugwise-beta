@@ -45,7 +45,7 @@ from .const import (
 import homeassistant.helpers.config_validation as cv
 
 
-DEFAULT_NAME = "Plugwise async sensoj"
+DEFAULT_NAME = "Plugwise async sensor"
 DEFAULT_ICON = "mdi:thermometer"
 
 
@@ -62,8 +62,8 @@ SENSOR_MAP = {
     'battery': ATTR_BATTERY_LEVEL,
     'battery_charge': ATTR_BATTERY_LEVEL,
     'temperature_difference': ATTR_TEMPERATURE,
-    'electricity_consumed': ['Current Consumed Power', 'W', 'mdi:flash', DEVICE_CLASS_POWER, "mdi:thermometer"],
-    'electricity_produced': ['Current Produced Power', 'W', 'mdi:flash', DEVICE_CLASS_POWER, "mdi:thermometer"],
+    'electricity_consumed': ['Current Consumed Power', 'W', DEVICE_CLASS_POWER, 'mdi:flash'],
+    'electricity_produced': ['Current Produced Power', 'W', DEVICE_CLASS_POWER, 'mdi:flash'],
     'outdoor_temperature': ATTR_TEMPERATURE,
     'central_heater_water_pressure': ATTR_PRESSURE,
     'illuminance': ATTR_ILLUMINANCE,
@@ -144,15 +144,16 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if True:
             for sensor,sensor_type in SENSOR_MAP.items():
                 if sensor in data:
-                    #_LOGGER.info('Plugwise sensor is %s for %s (%s)',sensor,dev_id,device)
-                    #_LOGGER.info('Plugwise sensor data %s for %s',data,dev_id)
-                    if 'power' in device['types']:
-                        if 'off' in sensor and api._power_tariff['electricity_consumption_tariff_structure'] == 'single':
-                            continue
-                        devices.append(PwPowerSensor(api, updater, '{}_{}'.format(device['name'], sensor), dev_id, sensor, sensor_type))
+                    if data[sensor] is not None:
+                        #_LOGGER.info('Plugwise sensor is %s for %s (%s)',sensor,dev_id,device)
+                        #_LOGGER.info('Plugwise sensor data %s for %s',data,dev_id)
+                        if 'power' in device['types']:
+                            if 'off' in sensor and api._power_tariff['electricity_consumption_tariff_structure'] == 'single':
+                                continue
+                            devices.append(PwPowerSensor(api, updater, '{}_{}'.format(device['name'], sensor), dev_id, sensor, sensor_type))
 
-                    devices.append(PwThermostatSensor(api, updater, '{}_{}'.format(device['name'], sensor), dev_id, sensor, sensor_type))
-                    _LOGGER.info('Added sensor.%s', '{}_{}'.format(device['name'], sensor))
+                        devices.append(PwThermostatSensor(api, updater, '{}_{}'.format(device['name'], sensor), dev_id, sensor, sensor_type))
+                        _LOGGER.info('Added sensor.%s', '{}_{}'.format(device['name'], sensor))
 
     async_add_entities(devices, True)
 
@@ -248,8 +249,9 @@ class PwThermostatSensor(Entity):
             _LOGGER.debug("Received no data for device %s.", self._name)
         else:
             if self._sensor in data:
-                measurement = data[self._sensor]
-                self._state = measurement
+                if data[self._sensor]:
+                    measurement = data[self._sensor]
+                    self._state = measurement
 
 
 #async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -340,9 +342,10 @@ class PwPowerSensor(Entity):
         else:
             _LOGGER.info("Sensor {}".format(self._sensor))
             if self._sensor in data:
-                measurement = data[self._sensor]
-                if 'cumulative' in self._sensor:
-                    measurement = int(data[self._sensor]/1000)
-                self._state = measurement
+                if data[self._sensor]:
+                    measurement = data[self._sensor]
+                    if 'cumulative' in self._sensor:
+                        measurement = int(data[self._sensor]/1000)
+                    self._state = measurement
 
 
