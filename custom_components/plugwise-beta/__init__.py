@@ -38,7 +38,7 @@ _LOGGER = logging.getLogger(__name__)
 
 # TODO List the platforms that you want to support.
 # For your initial PR, limit it to 1 platform.
-PLATFORMS = ["sensor","climate","water_heater"]
+PLATFORMS = ["sensor","climate", "water_heater"]
 
 
 async def async_setup(hass: HomeAssistant, config: dict):
@@ -91,7 +91,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     #_LOGGER.debug("Plugwise async entry hass data %s",hass.data[DOMAIN])
     # hass.data[DOMAIN][entry.entry_id] = api
 
-    for component in api._platforms:
+    for component in PLATFORMS: #api._platforms
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
