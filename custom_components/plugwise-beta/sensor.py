@@ -249,7 +249,7 @@ class PwThermostatSensor(Entity):
             _LOGGER.debug("Received no data for device %s.", self._name)
         else:
             if self._sensor in data:
-                if data[self._sensor]:
+                if data[self._sensor] is not None:
                     measurement = data[self._sensor]
                     self._state = measurement
 
@@ -340,12 +340,11 @@ class PwPowerSensor(Entity):
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
         else:
-            _LOGGER.info("Sensor {}".format(self._sensor))
+            #_LOGGER.info("Sensor {}_{}".format(self._name, self._sensor))
             if self._sensor in data:
-                if data[self._sensor]:
+                if data[self._sensor] is not None:
                     measurement = data[self._sensor]
+                    #_LOGGER.debug("Sensor value: %s", measurement)
                     if 'cumulative' in self._sensor:
                         measurement = int(data[self._sensor]/1000)
                     self._state = measurement
-
-
