@@ -93,7 +93,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         data = api.get_device_data(dev_id)
 
         _LOGGER.info('Plugwise climate Dev %s', device['name'])
-        thermostat = PwThermostat(api, updater, device['name'], dev_id, 4, 30)
+        thermostat = PwThermostat(api, updater, device['name'], dev_id, device['location'], 4, 30)
 
         if not thermostat:
             continue
@@ -113,12 +113,13 @@ class PwThermostat(ClimateDevice):
     """Representation of an Plugwise thermostat."""
 
     # def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, min_temp, max_temp):
-    def __init__(self, api, updater, name, dev_id, min_temp, max_temp):
+    def __init__(self, api, updater, name, dev_id, loc_id, min_temp, max_temp):
         """Set up the Plugwise API."""
         self._api = api
         self._updater = updater
         self._name = name
         self._dev_id = dev_id
+        self._loc_id = loc_id
         self._min_temp = min_temp
         self._max_temp = max_temp
 
@@ -144,8 +145,8 @@ class PwThermostat(ClimateDevice):
         cdata = api.get_device_data(self._api._gateway_id)
         if 'central_heating_state' in cdata:
             self._central_heating_state = cdata['central_heating_state']
-        if 'self._domestic_hot_water_state' in cdata:
-            self._self._domestic_hot_water_state = cdata['self._domestic_hot_water_state']
+        if 'domestic_hot_water_state' in cdata:
+            self._domestic_hot_water_state = cdata['domestic_hot_water_state']
 
     @property
     def unique_id(self):
@@ -283,7 +284,7 @@ class PwThermostat(ClimateDevice):
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if (temperature is not None) and (self._min_temp < temperature < self._max_temp):
             _LOGGER.debug("Set temp dev_id = %s",self._dev_id)
-            await self._api.set_temperature(self._dev_id, temperature)
+            await self._api.set_temperature(self._loc_id, temperature)
         else:
             _LOGGER.error("Invalid temperature requested")
 
@@ -293,12 +294,12 @@ class PwThermostat(ClimateDevice):
         state = "false"
         if hvac_mode == HVAC_MODE_AUTO:
             state = "true"
-        await self._api.set_schedule_state(self._dev_id, self._last_active_schema, state)
+        await self._api.set_schedule_state(self._loc_id, self._last_active_schema, state)
 
     async def async_set_preset_mode(self, preset_mode):
         _LOGGER.debug("Changing preset mode to %s.", preset_mode)
         """Set the preset mode."""
-        await self._api.set_preset(self._dev_id, preset_mode)
+        await self._api.set_preset(self._loc_id, preset_mode)
 
     def update(self):
         """Update the data for this climate device."""
