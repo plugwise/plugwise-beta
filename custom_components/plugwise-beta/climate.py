@@ -283,29 +283,31 @@ class PwThermostat(ClimateDevice):
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if (temperature is not None) and (self._min_temp < temperature < self._max_temp):
-            _LOGGER.debug("Set temp dev_id = %s",self._dev_id)
+            _LOGGER.debug("Set temp to %sºC", temperature)
             await self._api.set_temperature(self._loc_id, temperature)
+            await self._updater.async_refresh_all()
         else:
             _LOGGER.error("Invalid temperature requested")
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set the hvac mode."""
-        _LOGGER.debug("Adjusting hvac_mode (i.e. schedule/schema): %s, %s.", hvac_mode)
+        _LOGGER.debug("Set hvac_mode to: %s", hvac_mode)
         state = "false"
         if hvac_mode == HVAC_MODE_AUTO:
             state = "true"
         await self._api.set_schedule_state(self._loc_id, self._last_active_schema, state)
+        await self._updater.async_refresh_all()
 
     async def async_set_preset_mode(self, preset_mode):
-        _LOGGER.debug("Changing preset mode to %s.", preset_mode)
+        _LOGGER.debug("Set preset mode to %s.", preset_mode)
         """Set the preset mode."""
         await self._api.set_preset(self._loc_id, preset_mode)
+        await self._updater.async_refresh_all()
 
     def update(self):
         """Update the data for this climate device."""
-
+        _LOGGER.info('Updating climate...')
         data = self._api.get_device_data(self._dev_id)
-        _LOGGER.info('Plugwise Smile device data: %s',data)
 
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
