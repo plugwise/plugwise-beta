@@ -120,7 +120,7 @@ class PwWaterHeater(Entity):
         self._dev_id = dev_id
         #self._heating_status =  None
         #self._boiler_status = None
-        self._dhw_status = None
+        self._domestic_hot_water_state = None
         self._unique_id = f"{dev_id}-water_heater"
 
     @property
@@ -162,7 +162,7 @@ class PwWaterHeater(Entity):
         """Return the state of the sensor."""
         #if self._heating_status or self._boiler_status:
         #    return CURRENT_HVAC_HEAT
-        if self._dhw_status:
+        if self._domestic_hot_water_state:
             return CURRENT_HVAC_DHW
         return CURRENT_HVAC_IDLE
 
@@ -189,6 +189,5 @@ class PwWaterHeater(Entity):
             #    self._heating_status =  data['central_heating_state']
             #if 'boiler_state' in data:
             #    self._boiler_status = data['boiler_state']
-            if 'dhw_state' in data:
-                self._dhw_status = data['dhw_state']
-
+            if 'domestic_hot_water_state' in data:
+                self._domestic_hot_water_state = (data['domestic_hot_water_state'] == 'on')
