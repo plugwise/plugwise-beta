@@ -99,6 +99,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             continue
 
         devices.append(thermostat)
+        _LOGGER.info('Added climate.%s', '{}'.format(device['name']))
 
     async_add_entities(devices, True)
 
