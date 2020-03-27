@@ -40,16 +40,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for dev_id,device in all_devices.items():
         if device['class'] == 'open_therm_gateway':
             data = api.get_device_data(dev_id)
-
-            _LOGGER.info('Plugwise water_heater Dev %s', device['name'])
-            water_heater = PwWaterHeater(api, updater, device['name'], dev_id)
-
-            if not water_heater:
-                _LOGGER.debug("No water_heater found.")
-                continue
-
-            devices.append(water_heater)
-            _LOGGER.info('Added water_heater.%s', '{}'.format(device['name']))
+            if 'domestic_hot_water_state' in data:
+                if data['domestic_hot_water_state'] is not None:
+                    _LOGGER.info('Plugwise water_heater Dev %s', device['name'])
+                    water_heater = PwWaterHeater(api, updater, device['name'], dev_id)
+                    devices.append(water_heater)
+                    _LOGGER.info('Added water_heater.%s', '{}'.format(device['name']))
 
     async_add_entities(devices, True)
 
