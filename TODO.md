@@ -1,6 +1,5 @@
-# Todo's configentry rebuild
+# TODOs
 
- - [ ] Thermostat/Power is being very arbitrairy selected by the backend module -> so if that get's it wrong, you can't correct it. Yes in earlier commits there was a checkbox/multi-select for this but that isn't UX viable. Best way of working is to have a 2-step config flow (like icloud has). So when submitting `user` step (1) we talk to the api and present the results `Hey, it looks like a thermostat, ok?` ...
- - [ ] Same for legacy ...
+ - [ ] Legacy devices (anna 1.8 and adam 2.3 and p1 2.5)
 
 

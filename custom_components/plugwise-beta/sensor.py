@@ -346,5 +346,5 @@ class PwPowerSensor(Entity):
                     measurement = data[self._sensor]
                     #_LOGGER.debug("Sensor value: %s", measurement)
                     if 'cumulative' in self._sensor:
-                        measurement = int(data[self._sensor]/1000)
+                        measurement = int(measurement/1000)
                     self._state = measurement

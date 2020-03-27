@@ -6,19 +6,18 @@
         "title": "Verbinden met de Smile",
         "description": "Gegevens van Smile",
         "data": {
-          "name": "Naam voor je Smile, bijvoorbeeld Adam",
           "host": "IP adres van de Smile",
           "password": "Smile ID"
         }
       }
     },
     "error": {
-      "cannot_connect": "Failed to connect, please try again",
-      "invalid_auth": "Invalid authentication",
-      "unknown": "Unexpected error"
+      "cannot_connect": "Verbinding mislukt, probeer het opnieuw",
+      "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je Smile goed in",
+      "unknown": "Overwachte fout"
     },
     "abort": {
-      "already_configured": "Device is already configured"
+      "already_configured": "Smile is al geconfigureerd"
     }
   }
 }

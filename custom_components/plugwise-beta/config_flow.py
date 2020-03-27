@@ -27,12 +27,12 @@ def _get_config_schema(input_dict: Dict[str, Any] = None) -> vol.Schema:
 
     return vol.Schema(
         {
-            vol.Required("name", default='Smile'): str,
             vol.Required("host"): str,
             vol.Required("password"): str,
-            vol.Required("timeout", default=30): int,
         },
     )
+    #vol.Optional("name", default='Smile'): str,
+    #vol.Optional("timeout", default=30): int,
 
 async def validate_input(hass: core.HomeAssistant, data):
     """Validate the user input allows us to connect.
@@ -49,7 +49,8 @@ async def validate_input(hass: core.HomeAssistant, data):
 
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(host=data["host"], password=data["password"],
-                timeout=data["timeout"], websession=websession)
+                timeout=30, websession=websession)
+    #            timeout=data["timeout"], websession=websession)
 
     if not await api.connect():
         raise CannotConnect
@@ -60,7 +61,8 @@ async def validate_input(hass: core.HomeAssistant, data):
     # InvalidAuth
 
     # Return info that you want to store in the config entry.
-    return {"title": data["name"]}
+    return {"title": 'Smile'}
+    #return {"title": data["name"]}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
