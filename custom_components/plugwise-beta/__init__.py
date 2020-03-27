@@ -38,7 +38,7 @@ _LOGGER = logging.getLogger(__name__)
 
 # TODO List the platforms that you want to support.
 # For your initial PR, limit it to 1 platform.
-PLATFORMS = ["sensor","climate", "water_heater"]
+PLATFORMS = ["climate", "sensor", "switch", "water_heater"]
 
 
 async def async_setup(hass: HomeAssistant, config: dict):
