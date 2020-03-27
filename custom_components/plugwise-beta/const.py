@@ -26,6 +26,7 @@ CONF_GAS = "gas"
 ATTR_ILLUMINANCE = "illuminance"
 
 # Icons
+SWITCH_ICON = "mdi:electric-switch"
 THERMOSTAT_ICON = "mdi:thermometer"
 WATER_HEATER_ICON = "mdi:water-pump"
 GAS_ICON = "mdi:fire"
