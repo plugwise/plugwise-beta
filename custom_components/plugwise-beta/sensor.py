@@ -64,6 +64,8 @@ SENSOR_MAP = {
     'temperature_difference': ATTR_TEMPERATURE,
     'electricity_consumed': ['Current Consumed Power', 'W', DEVICE_CLASS_POWER, 'mdi:flash'],
     'electricity_produced': ['Current Produced Power', 'W', DEVICE_CLASS_POWER, 'mdi:flash'],
+    'electricity_consumed_interval': ['Consumed Power Interval', 'Wh', DEVICE_CLASS_POWER, 'mdi:flash'],
+    'electricity_produced_interval': ['Produced Power Interval', 'Wh', DEVICE_CLASS_POWER, 'mdi:flash'],
     'outdoor_temperature': ATTR_TEMPERATURE,
     'central_heater_water_pressure': ATTR_PRESSURE,
     'illuminance': ATTR_ILLUMINANCE,
