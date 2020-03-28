@@ -1,22 +1,19 @@
 """Config flow for Plugwise Anna integration."""
 import logging
-
-import voluptuous as vol
-
 from typing import Any, Dict
 
+import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-
 from homeassistant.helpers import config_validation as cv
-
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from Plugwise_Smile.Smile import Smile
 
 from .const import DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
-def _get_config_schema(input_dict: Dict[str, Any] = None) -> vol.Schema:
+
+def _get_config_schema(input_dict: Dict[str, Any]=None) -> vol.Schema:
     """
     Return schema defaults for init step based on user input/config dict.
 
@@ -25,14 +22,10 @@ def _get_config_schema(input_dict: Dict[str, Any] = None) -> vol.Schema:
     if input_dict is None:
         input_dict = {}
 
-    return vol.Schema(
-        {
-            vol.Required("host"): str,
-            vol.Required("password"): str,
-        },
-    )
-    #vol.Optional("name", default='Smile'): str,
-    #vol.Optional("timeout", default=30): int,
+    return vol.Schema({vol.Required("host"): str, vol.Required("password"): str, }, )
+    # vol.Optional("name", default='Smile'): str,
+    # vol.Optional("timeout", default=30): int,
+
 
 async def validate_input(hass: core.HomeAssistant, data):
     """Validate the user input allows us to connect.
@@ -48,8 +41,9 @@ async def validate_input(hass: core.HomeAssistant, data):
     # )
 
     websession = async_get_clientsession(hass, verify_ssl=False)
-    api = Smile(host=data["host"], password=data["password"],
-                timeout=30, websession=websession)
+    api = Smile(
+        host=data["host"], password=data["password"], timeout=30, websession=websession
+    )
     #            timeout=data["timeout"], websession=websession)
 
     if not await api.connect():
@@ -61,8 +55,8 @@ async def validate_input(hass: core.HomeAssistant, data):
     # InvalidAuth
 
     # Return info that you want to store in the config entry.
-    return {"title": 'Smile'}
-    #return {"title": data["name"]}
+    return {"title": "Smile"}
+    # return {"title": data["name"]}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

@@ -1,25 +1,17 @@
 #!/usr/bin/env python3
 import logging
-import voluptuous as vol
-from functools import partial
-
 from datetime import timedelta
-import async_timeout
+from functools import partial
 from typing import Any, Dict
 
-from Plugwise_Smile.Smile import Smile
+import async_timeout
 
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
 from homeassistant.components.climate import ClimateDevice
-# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from homeassistant.core import callback
-
-from homeassistant.exceptions import PlatformNotReady
-
 from homeassistant.components.climate.const import (
-    CURRENT_HVAC_HEAT,
     CURRENT_HVAC_COOL,
+    CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
     HVAC_MODE_AUTO,
     HVAC_MODE_HEAT,
@@ -28,7 +20,6 @@ from homeassistant.components.climate.const import (
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
 )
-
 from homeassistant.const import (
     ATTR_TEMPERATURE,
     CONF_HOST,
@@ -37,19 +28,14 @@ from homeassistant.const import (
     TEMP_CELSIUS,
 )
 
-from .const import (
-    CONF_THERMOSTAT,
-    DOMAIN,
-    THERMOSTAT_ICON,
-)
+# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.core import callback
+from homeassistant.exceptions import PlatformNotReady
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from Plugwise_Smile.Smile import Smile
 
-from . import (
-    HVAC_MODES_1,
-    HVAC_MODES_2,
-)
-
-import homeassistant.helpers.config_validation as cv
-
+from . import HVAC_MODES_1, HVAC_MODES_2
+from .const import CONF_THERMOSTAT, DOMAIN, THERMOSTAT_ICON
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
@@ -59,56 +45,60 @@ _LOGGER = logging.getLogger(__name__)
 # Smile communication is set using configuration directives
 SCAN_INTERVAL = timedelta(seconds=30)
 
+
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile Thermostats from a config entry."""
-    api = hass.data[DOMAIN][config_entry.entry_id]['api']
-    updater = hass.data[DOMAIN][config_entry.entry_id]['updater']
+    api = hass.data[DOMAIN][config_entry.entry_id]["api"]
+    updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
-#    if api._smile_type == 'power':
-#        update_interval=timedelta(seconds=10)
-#    else:
-#        update_interval=timedelta(seconds=60)
-#
-#    climate_coordinator = DataUpdateCoordinator(
-#        hass,
-#        _LOGGER,
-#        name="climate",
-#        update_method=partial(async_safe_fetch,api),
-#        update_interval=update_interval
-#    )
-#
-#    # First do a refresh to see if we can reach the hub.
-#    # Otherwise we will declare not ready.
-#    await climate_coordinator.async_refresh()
-#
-#    if not climate_coordinator.last_update_success:
-#        raise PlatformNotReady
+    #    if api._smile_type == 'power':
+    #        update_interval=timedelta(seconds=10)
+    #    else:
+    #        update_interval=timedelta(seconds=60)
+    #
+    #    climate_coordinator = DataUpdateCoordinator(
+    #        hass,
+    #        _LOGGER,
+    #        name="climate",
+    #        update_method=partial(async_safe_fetch,api),
+    #        update_interval=update_interval
+    #    )
+    #
+    #    # First do a refresh to see if we can reach the hub.
+    #    # Otherwise we will declare not ready.
+    #    await climate_coordinator.async_refresh()
+    #
+    #    if not climate_coordinator.last_update_success:
+    #        raise PlatformNotReady
 
     devices = []
-    all_devices=api.get_all_devices()
-    for dev_id,device in all_devices.items():
+    all_devices = api.get_all_devices()
+    for dev_id, device in all_devices.items():
 
-        if device['class'] != 'thermostat' and device['class'] != 'zone_thermostat':
+        if device["class"] != "thermostat" and device["class"] != "zone_thermostat":
             continue
         data = api.get_device_data(dev_id)
 
-        _LOGGER.info('Plugwise climate Dev %s', device['name'])
-        thermostat = PwThermostat(api, updater, device['name'], dev_id, device['location'], 4, 30)
+        _LOGGER.info("Plugwise climate Dev %s", device["name"])
+        thermostat = PwThermostat(
+            api, updater, device["name"], dev_id, device["location"], 4, 30
+        )
 
         if not thermostat:
             continue
 
         devices.append(thermostat)
-        _LOGGER.info('Added climate.%s', '{}'.format(device['name']))
+        _LOGGER.info("Added climate.%s", "{}".format(device["name"]))
 
     async_add_entities(devices, True)
 
 
-#async def async_safe_fetch(api):
+# async def async_safe_fetch(api):
 #    """Safely fetch data."""
 #    with async_timeout.timeout(10):
 #        await api.full_update_device()
 #        return await api.get_devices()
+
 
 class PwThermostat(ClimateDevice):
     """Representation of an Plugwise thermostat."""
@@ -144,10 +134,10 @@ class PwThermostat(ClimateDevice):
         self._unique_id = f"{dev_id}-climate"
 
         cdata = api.get_device_data(self._api._gateway_id)
-        if 'central_heating_state' in cdata:
-            self._central_heating_state = (cdata['central_heating_state'] == 'on')
-        if 'domestic_hot_water_state' in cdata:
-            self._domestic_hot_water_state = (cdata['domestic_hot_water_state'] == 'on')
+        if "central_heating_state" in cdata:
+            self._central_heating_state = cdata["central_heating_state"] == "on"
+        if "domestic_hot_water_state" in cdata:
+            self._domestic_hot_water_state = cdata["domestic_hot_water_state"] == "on"
 
     @property
     def unique_id(self):
@@ -171,7 +161,11 @@ class PwThermostat(ClimateDevice):
     @property
     def hvac_action(self):
         """Return the current action."""
-        if self._central_heating_state or self._boiler_status or self._domestic_hot_water_state:
+        if (
+            self._central_heating_state
+            or self._boiler_status
+            or self._domestic_hot_water_state
+        ):
             return CURRENT_HVAC_HEAT
         if self._cooling_status:
             return CURRENT_HVAC_COOL
@@ -189,7 +183,7 @@ class PwThermostat(ClimateDevice):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device":  (DOMAIN, self._api._gateway_id),
+            "via_device": (DOMAIN, self._api._gateway_id),
         }
 
     @property
@@ -238,7 +232,11 @@ class PwThermostat(ClimateDevice):
         """Return current active hvac state."""
         if self._schema_status:
             return HVAC_MODE_AUTO
-        if self._central_heating_state or self._boiler_status or self._domestic_hot_water_state:
+        if (
+            self._central_heating_state
+            or self._boiler_status
+            or self._domestic_hot_water_state
+        ):
             if self._cooling_status:
                 return HVAC_MODE_HEAT_COOL
             return HVAC_MODE_HEAT
@@ -283,7 +281,9 @@ class PwThermostat(ClimateDevice):
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
-        if (temperature is not None) and (self._min_temp < temperature < self._max_temp):
+        if (temperature is not None) and (
+            self._min_temp < temperature < self._max_temp
+        ):
             _LOGGER.debug("Set temp to %sºC", temperature)
             await self._api.set_temperature(self._loc_id, temperature)
             await self._updater.async_refresh_all()
@@ -296,7 +296,9 @@ class PwThermostat(ClimateDevice):
         state = "false"
         if hvac_mode == HVAC_MODE_AUTO:
             state = "true"
-        await self._api.set_schedule_state(self._loc_id, self._last_active_schema, state)
+        await self._api.set_schedule_state(
+            self._loc_id, self._last_active_schema, state
+        )
         await self._updater.async_refresh_all()
 
     async def async_set_preset_mode(self, preset_mode):
@@ -307,43 +309,43 @@ class PwThermostat(ClimateDevice):
 
     def update(self):
         """Update the data for this climate device."""
-        _LOGGER.info('Updating climate...')
+        _LOGGER.info("Updating climate...")
         data = self._api.get_device_data(self._dev_id)
 
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
         else:
             _LOGGER.debug("Device data collected from Plugwise API")
-            if 'thermostat' in data:
-                self._thermostat = data['thermostat']
-            if 'temperature' in data:
-                self._temperature = data['temperature']
-            if 'boiler_temp' in data:
-                self._boiler_temp = data['boiler_temp']
-            if 'available_schedules' in data:
-                self._schema_names = data['available_schedules']
-            if 'selected_schedule' in data:
-                self._selected_schema = data['selected_schedule']
-                if self._selected_schema != None:
+            if "thermostat" in data:
+                self._thermostat = data["thermostat"]
+            if "temperature" in data:
+                self._temperature = data["temperature"]
+            if "boiler_temp" in data:
+                self._boiler_temp = data["boiler_temp"]
+            if "available_schedules" in data:
+                self._schema_names = data["available_schedules"]
+            if "selected_schedule" in data:
+                self._selected_schema = data["selected_schedule"]
+                if self._selected_schema is not None:
                     self._schema_status = True
                     self._schedule_temp = self._thermostat
                 else:
                     self._schema_status = False
-            if 'last_used' in data:
-                self._last_active_schema = data['last_used']
-            if 'presets' in data:
-                self._presets = data['presets']
+            if "last_used" in data:
+                self._last_active_schema = data["last_used"]
+            if "presets" in data:
+                self._presets = data["presets"]
                 if self._presets:
                     self._presets_list = list(self._presets)
-            if 'active_preset' in data:
-                self._preset_mode = data['active_preset']
-            if 'boiler_state' in data:
-                self._boiler_status = (data['boiler_state'] == 'on')
-            if 'central_heating_state' in data:
-                self._central_heating_state = (data['central_heating_state'] == 'on')
-            if 'cooling_state' in data:
-                self._cooling_status = (data['cooling_state'] == 'on')
-            if 'domestic_hot_water_state' in data:
-                self._domestic_hot_water_state = (data['domestic_hot_water_state'] == 'on')
-
-
+            if "active_preset" in data:
+                self._preset_mode = data["active_preset"]
+            if "boiler_state" in data:
+                self._boiler_status = data["boiler_state"] == "on"
+            if "central_heating_state" in data:
+                self._central_heating_state = data["central_heating_state"] == "on"
+            if "cooling_state" in data:
+                self._cooling_status = data["cooling_state"] == "on"
+            if "domestic_hot_water_state" in data:
+                self._domestic_hot_water_state = (
+                    data["domestic_hot_water_state"] == "on"
+                )

@@ -1,51 +1,42 @@
 #!/usr/bin/env python3
 import logging
-import voluptuous as vol
-from functools import partial
-
-from Plugwise_Smile.Smile import Smile
-
 from datetime import timedelta
-import async_timeout
+from functools import partial
 from typing import Any, Dict
 
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from homeassistant.core import callback
-
-from homeassistant.helpers.entity import Entity
-
-from homeassistant.const import (
-    STATE_OFF,
-    STATE_ON,
-)
-
-from .const import (
-    DOMAIN,
-    WATER_HEATER_ICON,
-)
+import async_timeout
 
 import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
+from homeassistant.const import STATE_OFF, STATE_ON
 
+# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.core import callback
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.entity import Entity
+from Plugwise_Smile.Smile import Smile
+
+from .const import DOMAIN, WATER_HEATER_ICON
 
 _LOGGER = logging.getLogger(__name__)
 
+
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
-    api = hass.data[DOMAIN][config_entry.entry_id]['api']
-    updater = hass.data[DOMAIN][config_entry.entry_id]['updater']
+    api = hass.data[DOMAIN][config_entry.entry_id]["api"]
+    updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
     devices = []
-    all_devices=api.get_all_devices()
-    for dev_id,device in all_devices.items():
-        if device['class'] == 'heater_central':
+    all_devices = api.get_all_devices()
+    for dev_id, device in all_devices.items():
+        if device["class"] == "heater_central":
             data = api.get_device_data(dev_id)
-            if 'domestic_hot_water_state' in data:
-                if data['domestic_hot_water_state'] is not None:
-                    _LOGGER.info('Plugwise water_heater Dev %s', device['name'])
-                    water_heater = PwWaterHeater(api, updater, device['name'], dev_id)
+            if "domestic_hot_water_state" in data:
+                if data["domestic_hot_water_state"] is not None:
+                    _LOGGER.info("Plugwise water_heater Dev %s", device["name"])
+                    water_heater = PwWaterHeater(api, updater, device["name"], dev_id)
                     devices.append(water_heater)
-                    _LOGGER.info('Added water_heater.%s', '{}'.format(device['name']))
+                    _LOGGER.info("Added water_heater.%s", "{}".format(device["name"]))
 
     async_add_entities(devices, True)
 
@@ -122,5 +113,7 @@ class PwWaterHeater(Entity):
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
         else:
-            if 'domestic_hot_water_state' in data:
-                self._domestic_hot_water_state = (data['domestic_hot_water_state'] == 'on')
+            if "domestic_hot_water_state" in data:
+                self._domestic_hot_water_state = (
+                    data["domestic_hot_water_state"] == "on"
+                )

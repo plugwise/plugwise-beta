@@ -1,22 +1,13 @@
 #!/usr/bin/env python3
 import logging
-import voluptuous as vol
-from functools import partial
-
 from datetime import timedelta
-import async_timeout
+from functools import partial
 from typing import Any, Dict
 
-from Plugwise_Smile.Smile import Smile
+import async_timeout
 
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-
-from homeassistant.helpers.entity import Entity
-from homeassistant.core import callback
-# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-
-from homeassistant.exceptions import PlatformNotReady
-
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
     ATTR_TEMPERATURE,
@@ -25,61 +16,135 @@ from homeassistant.const import (
     CONF_PASSWORD,
     CONF_PORT,
     CONF_USERNAME,
-    TEMP_CELSIUS,
-    DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_ILLUMINANCE,
-    DEVICE_CLASS_PRESSURE,
     DEVICE_CLASS_POWER,
+    DEVICE_CLASS_PRESSURE,
+    DEVICE_CLASS_TEMPERATURE,
     PRESSURE_MBAR,
+    TEMP_CELSIUS,
 )
+from homeassistant.core import callback
+from homeassistant.exceptions import PlatformNotReady
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.entity import Entity
+from Plugwise_Smile.Smile import Smile
 
 from .const import (
     ATTR_ILLUMINANCE,
-    CONF_THERMOSTAT,
     CONF_POWER,
-    DOMAIN,
+    CONF_THERMOSTAT,
     DEVICE_CLASS_GAS,
+    DOMAIN,
 )
 
-import homeassistant.helpers.config_validation as cv
+# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 
 DEFAULT_NAME = "Plugwise async sensor"
 DEFAULT_ICON = "mdi:thermometer"
 
 
-
 _LOGGER = logging.getLogger(__name__)
 
-ATTR_TEMPERATURE = [TEMP_CELSIUS, None, DEVICE_CLASS_TEMPERATURE,"mdi:thermometer"]
-ATTR_BATTERY_LEVEL = ["%" , None, DEVICE_CLASS_BATTERY,"mdi:water-battery"]
-ATTR_ILLUMINANCE = ["lm", None, DEVICE_CLASS_ILLUMINANCE,"mdi:lightbulb-on-outline"]
-ATTR_PRESSURE = [PRESSURE_MBAR , None, DEVICE_CLASS_PRESSURE, "mdi:water"]
+ATTR_TEMPERATURE = [TEMP_CELSIUS, None, DEVICE_CLASS_TEMPERATURE, "mdi:thermometer"]
+ATTR_BATTERY_LEVEL = ["%", None, DEVICE_CLASS_BATTERY, "mdi:water-battery"]
+ATTR_ILLUMINANCE = ["lm", None, DEVICE_CLASS_ILLUMINANCE, "mdi:lightbulb-on-outline"]
+ATTR_PRESSURE = [PRESSURE_MBAR, None, DEVICE_CLASS_PRESSURE, "mdi:water"]
 SENSOR_MAP = {
-    'thermostat': ATTR_TEMPERATURE,
-    'temperature': ATTR_TEMPERATURE,
-    'battery': ATTR_BATTERY_LEVEL,
-    'battery_charge': ATTR_BATTERY_LEVEL,
-    'temperature_difference': ATTR_TEMPERATURE,
-    'electricity_consumed': ['Current Consumed Power', 'W', DEVICE_CLASS_POWER, 'mdi:flash'],
-    'electricity_produced': ['Current Produced Power', 'W', DEVICE_CLASS_POWER, 'mdi:flash'],
-    'electricity_consumed_interval': ['Consumed Power Interval', 'Wh', DEVICE_CLASS_POWER, 'mdi:flash'],
-    'electricity_produced_interval': ['Produced Power Interval', 'Wh', DEVICE_CLASS_POWER, 'mdi:flash'],
-    'outdoor_temperature': ATTR_TEMPERATURE,
-    'central_heater_water_pressure': ATTR_PRESSURE,
-    'illuminance': ATTR_ILLUMINANCE,
-    'boiler_temperature': ATTR_TEMPERATURE,
-    'electricity_consumed_off_peak_point': ['Current Consumed Power (off peak)', 'W', DEVICE_CLASS_POWER, "mdi:flash"],
-    'electricity_consumed_peak_point': ['Current Consumed Power', 'W', DEVICE_CLASS_POWER, "mdi:flash"],
-    'electricity_consumed_off_peak_cumulative': ['Cumulative Consumed Power (off peak)', 'kW', DEVICE_CLASS_POWER, "mdi:flash"],
-    'electricity_consumed_peak_cumulative': ['Cumulative Consumed Power', 'kW', DEVICE_CLASS_POWER, "mdi:flash"],
-    'electricity_produced_off_peak_point': ['Current Consumed Power (off peak)', 'W', DEVICE_CLASS_POWER, "mdi:white-balancy-sunny"],
-    'electricity_produced_peak_point': ['Current Consumed Power', 'W', DEVICE_CLASS_POWER, "mdi:white-balancy-sunny"],
-    'electricity_produced_off_peak_cumulative': ['Cumulative Consumed Power (off peak)', 'kW', DEVICE_CLASS_POWER, "mdi:white-balancy-sunny"],
-    'electricity_produced_peak_cumulative': ['Cumulative Consumed Power', 'kW', DEVICE_CLASS_POWER, "mdi:white-balancy-sunny"],
-    'gas_consumed_point_peak_point': ['Current Consumed Gas', 'm3', DEVICE_CLASS_GAS, "mdi:gas-cylinder"],
-    'gas_consumed_point_peak_cumulative': ['Cumulative Consumed Gas', 'm3', DEVICE_CLASS_GAS, "mdi:gas-cylinder"],
+    "thermostat": ATTR_TEMPERATURE,
+    "temperature": ATTR_TEMPERATURE,
+    "battery": ATTR_BATTERY_LEVEL,
+    "battery_charge": ATTR_BATTERY_LEVEL,
+    "temperature_difference": ATTR_TEMPERATURE,
+    "electricity_consumed": [
+        "Current Consumed Power",
+        "W",
+        DEVICE_CLASS_POWER,
+        "mdi:flash",
+    ],
+    "electricity_produced": [
+        "Current Produced Power",
+        "W",
+        DEVICE_CLASS_POWER,
+        "mdi:flash",
+    ],
+    "electricity_consumed_interval": [
+        "Consumed Power Interval",
+        "Wh",
+        DEVICE_CLASS_POWER,
+        "mdi:flash",
+    ],
+    "electricity_produced_interval": [
+        "Produced Power Interval",
+        "Wh",
+        DEVICE_CLASS_POWER,
+        "mdi:flash",
+    ],
+    "outdoor_temperature": ATTR_TEMPERATURE,
+    "central_heater_water_pressure": ATTR_PRESSURE,
+    "illuminance": ATTR_ILLUMINANCE,
+    "boiler_temperature": ATTR_TEMPERATURE,
+    "electricity_consumed_off_peak_point": [
+        "Current Consumed Power (off peak)",
+        "W",
+        DEVICE_CLASS_POWER,
+        "mdi:flash",
+    ],
+    "electricity_consumed_peak_point": [
+        "Current Consumed Power",
+        "W",
+        DEVICE_CLASS_POWER,
+        "mdi:flash",
+    ],
+    "electricity_consumed_off_peak_cumulative": [
+        "Cumulative Consumed Power (off peak)",
+        "kW",
+        DEVICE_CLASS_POWER,
+        "mdi:flash",
+    ],
+    "electricity_consumed_peak_cumulative": [
+        "Cumulative Consumed Power",
+        "kW",
+        DEVICE_CLASS_POWER,
+        "mdi:flash",
+    ],
+    "electricity_produced_off_peak_point": [
+        "Current Consumed Power (off peak)",
+        "W",
+        DEVICE_CLASS_POWER,
+        "mdi:white-balancy-sunny",
+    ],
+    "electricity_produced_peak_point": [
+        "Current Consumed Power",
+        "W",
+        DEVICE_CLASS_POWER,
+        "mdi:white-balancy-sunny",
+    ],
+    "electricity_produced_off_peak_cumulative": [
+        "Cumulative Consumed Power (off peak)",
+        "kW",
+        DEVICE_CLASS_POWER,
+        "mdi:white-balancy-sunny",
+    ],
+    "electricity_produced_peak_cumulative": [
+        "Cumulative Consumed Power",
+        "kW",
+        DEVICE_CLASS_POWER,
+        "mdi:white-balancy-sunny",
+    ],
+    "gas_consumed_point_peak_point": [
+        "Current Consumed Gas",
+        "m3",
+        DEVICE_CLASS_GAS,
+        "mdi:gas-cylinder",
+    ],
+    "gas_consumed_point_peak_cumulative": [
+        "Cumulative Consumed Gas",
+        "m3",
+        DEVICE_CLASS_GAS,
+        "mdi:gas-cylinder",
+    ],
 }
 
 # TODO:
@@ -107,59 +172,86 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
-    _LOGGER.debug('Plugwise hass data %s',hass.data[DOMAIN])
-    api = hass.data[DOMAIN][config_entry.entry_id]['api']
-    updater = hass.data[DOMAIN][config_entry.entry_id]['updater']
+    _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
+    api = hass.data[DOMAIN][config_entry.entry_id]["api"]
+    updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
-#    # Stay close to meter measurements for power, for thermostat back off a bit
-#    if api._smile_type == 'power':
-#        update_interval=timedelta(seconds=10)
-#    else:
-#        update_interval=timedelta(seconds=60)
-#
-#    sensor_coordinator = DataUpdateCoordinator(
-#        hass,
-#        _LOGGER,
-#        name="sensor",
-#        update_method=partial(async_safe_fetch,api),
-#        update_interval=update_interval
-#    )
-#
-#    # First do a refresh to see if we can reach the hub.
-#    # Otherwise we will declare not ready.
-#    await sensor_coordinator.async_refresh()
-#
-#    if not sensor_coordinator.last_update_success:
-#        raise PlatformNotReady
+    #    # Stay close to meter measurements for power, for thermostat back off a bit
+    #    if api._smile_type == 'power':
+    #        update_interval=timedelta(seconds=10)
+    #    else:
+    #        update_interval=timedelta(seconds=60)
+    #
+    #    sensor_coordinator = DataUpdateCoordinator(
+    #        hass,
+    #        _LOGGER,
+    #        name="sensor",
+    #        update_method=partial(async_safe_fetch,api),
+    #        update_interval=update_interval
+    #    )
+    #
+    #    # First do a refresh to see if we can reach the hub.
+    #    # Otherwise we will declare not ready.
+    #    await sensor_coordinator.async_refresh()
+    #
+    #    if not sensor_coordinator.last_update_success:
+    #        raise PlatformNotReady
 
-    _LOGGER.debug('Plugwise sensor type %s',api._smile_type)
-#    _LOGGER.debug('Plugwise sensor Sensorcoordinator %s',sensor_coordinator)
-#    _LOGGER.debug('Plugwise sensor Sensorcoordinator data %s',sensor_coordinator.data)
+    _LOGGER.debug("Plugwise sensor type %s", api._smile_type)
+    #    _LOGGER.debug('Plugwise sensor Sensorcoordinator %s',sensor_coordinator)
+    #    _LOGGER.debug('Plugwise sensor Sensorcoordinator data %s',sensor_coordinator.data)
 
     devices = []
-    all_devices=api.get_all_devices()
-    _LOGGER.debug('Plugwise all devices (not just sensor) %s', all_devices)
-    for dev_id,device in all_devices.items():
+    all_devices = api.get_all_devices()
+    _LOGGER.debug("Plugwise all devices (not just sensor) %s", all_devices)
+    for dev_id, device in all_devices.items():
         data = api.get_device_data(dev_id)
-        _LOGGER.debug('Plugwise all device data (not just sensor) %s', data)
-        _LOGGER.info('Plugwise sensor Dev %s', device['name'])
+        _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
+        _LOGGER.info("Plugwise sensor Dev %s", device["name"])
         # Skip thermostats since they'll include in climate
         # if 'thermostat' not in device['types']:
         if True:
-            for sensor,sensor_type in SENSOR_MAP.items():
+            for sensor, sensor_type in SENSOR_MAP.items():
                 if sensor in data:
                     if data[sensor] is not None:
-                        #_LOGGER.info('Plugwise sensor is %s for %s (%s)',sensor,dev_id,device)
-                        #_LOGGER.info('Plugwise sensor data %s for %s',data,dev_id)
-                        if 'power' in device['types']:
-                            if 'off' in sensor and api._power_tariff['electricity_consumption_tariff_structure'] == 'single':
+                        # _LOGGER.info('Plugwise sensor is %s for %s (%s)',sensor,dev_id,device)
+                        # _LOGGER.info('Plugwise sensor data %s for %s',data,dev_id)
+                        if "power" in device["types"]:
+                            if (
+                                "off" in sensor
+                                and api._power_tariff[
+                                    "electricity_consumption_tariff_structure"
+                                ]
+                                == "single"
+                            ):
                                 continue
-                            devices.append(PwPowerSensor(api, updater, '{}_{}'.format(device['name'], sensor), dev_id, sensor, sensor_type))
+                            devices.append(
+                                PwPowerSensor(
+                                    api,
+                                    updater,
+                                    "{}_{}".format(device["name"], sensor),
+                                    dev_id,
+                                    sensor,
+                                    sensor_type,
+                                )
+                            )
                         else:
-                            devices.append(PwThermostatSensor(api, updater, '{}_{}'.format(device['name'], sensor), dev_id, sensor, sensor_type))
-                        _LOGGER.info('Added sensor.%s', '{}_{}'.format(device['name'], sensor))
+                            devices.append(
+                                PwThermostatSensor(
+                                    api,
+                                    updater,
+                                    "{}_{}".format(device["name"], sensor),
+                                    dev_id,
+                                    sensor,
+                                    sensor_type,
+                                )
+                            )
+                        _LOGGER.info(
+                            "Added sensor.%s", "{}_{}".format(device["name"], sensor)
+                        )
 
     async_add_entities(devices, True)
+
 
 class PwThermostatSensor(Entity):
     """Safely fetch data."""
@@ -179,7 +271,7 @@ class PwThermostatSensor(Entity):
         self._class = sensor_type[2]
         self._state = None
         self._unique_id = f"{dev_id}-{name}-{sensor_type[2]}"
-        _LOGGER.debug('Registering Plugwise %s',self._unique_id)
+        _LOGGER.debug("Registering Plugwise %s", self._unique_id)
 
     @property
     def unique_id(self):
@@ -230,10 +322,10 @@ class PwThermostatSensor(Entity):
             "via_device": (DOMAIN, self._api._gateway_id),
         }
 
-#    @property
-#    def device_state_attributes(self):
-#        """Return the state attributes."""
-#        return self._state_attributes
+    #    @property
+    #    def device_state_attributes(self):
+    #        """Return the state attributes."""
+    #        return self._state_attributes
 
     @property
     def unit_of_measurement(self):
@@ -259,7 +351,7 @@ class PwThermostatSensor(Entity):
                     self._state = measurement
 
 
-#async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+# async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
 #    """Add the Plugwise Thermostat Sensor."""
 #
 #    if discovery_info is None:
@@ -268,6 +360,7 @@ class PwThermostatSensor(Entity):
 #
 #
 #    async_add_entities(devices, True)
+
 
 class PwPowerSensor(Entity):
     """Safely fetch data."""
@@ -286,7 +379,7 @@ class PwPowerSensor(Entity):
         self._sensor = sensor
         self._state = None
         self._unique_id = f"{dev_id}-{name}-{sensor_type[2]}"
-        _LOGGER.debug('Registering Plugwise %s',self._unique_id)
+        _LOGGER.debug("Registering Plugwise %s", self._unique_id)
 
     @property
     def unique_id(self):
@@ -346,11 +439,11 @@ class PwPowerSensor(Entity):
         if data is None:
             _LOGGER.debug("Received no data for device %s.", self._name)
         else:
-            #_LOGGER.info("Sensor {}_{}".format(self._name, self._sensor))
+            # _LOGGER.info("Sensor {}_{}".format(self._name, self._sensor))
             if self._sensor in data:
                 if data[self._sensor] is not None:
                     measurement = data[self._sensor]
-                    #_LOGGER.debug("Sensor value: %s", measurement)
-                    if self._unit_of_measurement == 'kW':
-                        measurement = int(measurement/1000)
+                    # _LOGGER.debug("Sensor value: %s", measurement)
+                    if self._unit_of_measurement == "kW":
+                        measurement = int(measurement / 1000)
                     self._state = measurement

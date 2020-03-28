@@ -1,20 +1,10 @@
 """Plugwise components for Home Assistant Core."""
 import asyncio
 import logging
-
-import voluptuous as vol
 from datetime import timedelta
 from typing import Optional
 
-from Plugwise_Smile.Smile import Smile
-
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.event import async_track_time_interval
-from homeassistant.helpers import device_registry as dr
-
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-
+import voluptuous as vol
 from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
     HVAC_MODE_HEAT,
@@ -23,6 +13,12 @@ from homeassistant.components.climate.const import (
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
 )
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.event import async_track_time_interval
+from Plugwise_Smile.Smile import Smile
 
 from .const import DOMAIN
 
@@ -32,7 +28,7 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 HVAC_MODES_1 = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
 HVAC_MODES_2 = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
 
-SUPPORT_FLAGS = (SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE)
+SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -52,18 +48,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # hass.data[DOMAIN][entry.entry_id] = MyApi(...)
 
     websession = async_get_clientsession(hass, verify_ssl=False)
-    api = Smile(host=entry.data.get("host"),
-                password=entry.data.get("password"),
-                websession=websession)
+    api = Smile(
+        host=entry.data.get("host"),
+        password=entry.data.get("password"),
+        websession=websession,
+    )
 
     await api.connect()
 
-    if api._smile_type == 'power':
-        update_interval=timedelta(seconds=10)
+    if api._smile_type == "power":
+        update_interval = timedelta(seconds=10)
     else:
-        update_interval=timedelta(seconds=60)
+        update_interval = timedelta(seconds=60)
 
-    _LOGGER.debug("Plugwise async update interval %s",update_interval)
+    _LOGGER.debug("Plugwise async update interval %s", update_interval)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "api": api,
@@ -72,9 +70,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ),
     }
 
-    _LOGGER.debug("Plugwise gateway is %s",api._gateway_id)
+    _LOGGER.debug("Plugwise gateway is %s", api._gateway_id)
     device_registry = await dr.async_get_registry(hass)
-    _LOGGER.debug("Plugwise device registry  %s",device_registry)
+    _LOGGER.debug("Plugwise device registry  %s", device_registry)
     result = device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, api._gateway_id)},
@@ -83,15 +81,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         model=api._smile_name,
         sw_version=api._smile_version[0],
     )
-    _LOGGER.debug("Plugwise device registry  %s",result)
-    #connections={(dr.CONNECTION_NETWORK_MAC, config.mac)},
-    #model=config.modelid,
-    #sw_version=config.swversion,
+    _LOGGER.debug("Plugwise device registry  %s", result)
+    # connections={(dr.CONNECTION_NETWORK_MAC, config.mac)},
+    # model=config.modelid,
+    # sw_version=config.swversion,
 
-    #_LOGGER.debug("Plugwise async entry hass data %s",hass.data[DOMAIN])
+    # _LOGGER.debug("Plugwise async entry hass data %s",hass.data[DOMAIN])
     # hass.data[DOMAIN][entry.entry_id] = api
 
-    for component in PLATFORMS: #api._platforms
+    for component in PLATFORMS:  # api._platforms
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
@@ -173,11 +171,10 @@ class SmileDataUpdater:
             return
 
         _LOGGER.debug("Plugwise Smile updating data using: %s", self.update_method)
-        #await self.hass.async_add_executor_job(
-            # getattr(self.api, self.update_method)
-        #)
+        # await self.hass.async_add_executor_job(
+        # getattr(self.api, self.update_method)
+        # )
         await self.api.full_update_device()
 
         for update_callback in self.listeners:
             update_callback()
-
