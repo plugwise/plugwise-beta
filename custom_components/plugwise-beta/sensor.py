@@ -179,6 +179,7 @@ class PwThermostatSensor(Entity):
         self._class = sensor_type[2]
         self._state = None
         self._unique_id = f"{dev_id}-{name}-{sensor_type[2]}"
+        _LOGGER.info('Registering Plugwise %s',self._unique_id)
 
     @property
     def unique_id(self):
