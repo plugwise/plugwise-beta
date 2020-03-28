@@ -28,6 +28,8 @@ What can I expect in HA
 
 ## When installed
 
+For each Plugwise Smile (i.e. gateway) you have add an integration. For instance if you have an Adam and a Smile P1, you have to add them individually.
+
  - [ ] In Home Assitant click on `Configuration`
  - [ ] Click on `Integrations`
  - [ ] Hit the `+` button in the corner

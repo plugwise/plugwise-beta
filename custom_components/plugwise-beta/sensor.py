@@ -345,6 +345,6 @@ class PwPowerSensor(Entity):
                 if data[self._sensor] is not None:
                     measurement = data[self._sensor]
                     #_LOGGER.debug("Sensor value: %s", measurement)
-                    if 'cumulative' in self._sensor:
+                    if self._unit_of_measurement == 'kW':
                         measurement = int(measurement/1000)
                     self._state = measurement
