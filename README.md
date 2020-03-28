@@ -17,9 +17,9 @@ What is on our radar (not commitment to timelines though)
 
 What can I expect in HA
 
-  - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating status
+  - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating status. Also, setting of temperature, preset and switching a schedule on and off.
   - `sensor`:A number of sensoric values depending on your hardware (Outdoor temperature, Anna's illuminance, plug power-usage, P1 values)
-  - `switch`: Plugs available as switches (functionality determined as configured through the Mobile Plugwise App and/or web-interface)
+  - `switch`: Plugs are available as switches, also switching them on/off is supported.
   - `water_heater`: When your heating system connected to the Smile/Adam supports heating of tap-water, the status of this function is shown via the water_heater entity (on/off)
 
 ## How to set-up?
