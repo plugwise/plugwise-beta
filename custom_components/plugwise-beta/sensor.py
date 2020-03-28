@@ -70,7 +70,7 @@ SENSOR_MAP = {
     'boiler_temperature': ATTR_TEMPERATURE,
     'electricity_consumed_off_peak_point': ['Current Consumed Power (off peak)', 'W', DEVICE_CLASS_POWER, "mdi:flash"],
     'electricity_consumed_peak_point': ['Current Consumed Power', 'W', DEVICE_CLASS_POWER, "mdi:flash"],
-    'electricity_consumed_off_peak_cumulative': ['Cumulative Consumed Power (off peak)', 'kW', DEVICE_CLASS_POWER, "mdi:flasj"],
+    'electricity_consumed_off_peak_cumulative': ['Cumulative Consumed Power (off peak)', 'kW', DEVICE_CLASS_POWER, "mdi:flash"],
     'electricity_consumed_peak_cumulative': ['Cumulative Consumed Power', 'kW', DEVICE_CLASS_POWER, "mdi:flash"],
     'electricity_produced_off_peak_point': ['Current Consumed Power (off peak)', 'W', DEVICE_CLASS_POWER, "mdi:white-balancy-sunny"],
     'electricity_produced_peak_point': ['Current Consumed Power', 'W', DEVICE_CLASS_POWER, "mdi:white-balancy-sunny"],
