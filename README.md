@@ -39,6 +39,12 @@ For each Plugwise Smile (i.e. gateway) you have add an integration. For instance
 
 HA wil continue to ask you if you want to put your Smile and detected other devices in area's and presto, things should be available to configure in lovelace.
 
+# I don't like the name of the sensor or the icon
+
+You can adjust these in `Configuration`, `Integration` -> `Entities` (e.g. `https://{Your HA address}/config/entities`)
+
+Just click on the device and adjust accordingly!
+
 # It doesn't work
 
 It's still in early phases and moving between two developers and a handfull of testers, if you notice things we are on discord and welcome issues on the repos
