@@ -1,42 +1,17 @@
 #!/usr/bin/env python3
 import logging
 from datetime import timedelta
-from functools import partial
-from typing import Any, Dict
+from typing import Dict
 
-import async_timeout
-
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
-from homeassistant.const import (
-    ATTR_BATTERY_LEVEL,
-    ATTR_TEMPERATURE,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_USERNAME,
-    DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_ILLUMINANCE,
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_PRESSURE,
-    DEVICE_CLASS_TEMPERATURE,
-    PRESSURE_MBAR,
-    TEMP_CELSIUS,
-)
+from homeassistant.const import (DEVICE_CLASS_BATTERY,
+                                 DEVICE_CLASS_ILLUMINANCE, DEVICE_CLASS_POWER,
+                                 DEVICE_CLASS_PRESSURE,
+                                 DEVICE_CLASS_TEMPERATURE, PRESSURE_MBAR,
+                                 TEMP_CELSIUS)
 from homeassistant.core import callback
-from homeassistant.exceptions import PlatformNotReady
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
-from Plugwise_Smile.Smile import Smile
 
-from .const import (
-    ATTR_ILLUMINANCE,
-    CONF_POWER,
-    CONF_THERMOSTAT,
-    DEVICE_CLASS_GAS,
-    DOMAIN,
-)
+from .const import DEVICE_CLASS_GAS, DOMAIN
 
 # from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -99,39 +74,39 @@ SENSOR_MAP = {
     ],
     "electricity_consumed_off_peak_cumulative": [
         "Cumulative Consumed Power (off peak)",
-        "kW",
+        "kWh",
         DEVICE_CLASS_POWER,
-        "mdi:flash",
+        "mdi:gauge",
     ],
     "electricity_consumed_peak_cumulative": [
         "Cumulative Consumed Power",
-        "kW",
+        "kWh",
         DEVICE_CLASS_POWER,
-        "mdi:flash",
+        "mdi:gauge",
     ],
     "electricity_produced_off_peak_point": [
         "Current Consumed Power (off peak)",
         "W",
         DEVICE_CLASS_POWER,
-        "mdi:white-balancy-sunny",
+        "mdi:white-balance-sunny",
     ],
     "electricity_produced_peak_point": [
         "Current Consumed Power",
         "W",
         DEVICE_CLASS_POWER,
-        "mdi:white-balancy-sunny",
+        "mdi:white-balance-sunny",
     ],
     "electricity_produced_off_peak_cumulative": [
         "Cumulative Consumed Power (off peak)",
-        "kW",
+        "kWh",
         DEVICE_CLASS_POWER,
-        "mdi:white-balancy-sunny",
+        "mdi:gauge",
     ],
     "electricity_produced_peak_cumulative": [
         "Cumulative Consumed Power",
-        "kW",
+        "kWh",
         DEVICE_CLASS_POWER,
-        "mdi:white-balancy-sunny",
+        "mdi:gauge",
     ],
     "gas_consumed_point_peak_point": [
         "Current Consumed Gas",
@@ -143,7 +118,19 @@ SENSOR_MAP = {
         "Cumulative Consumed Gas",
         "m3",
         DEVICE_CLASS_GAS,
-        "mdi:gas-cylinder",
+        "mdi:gauge",
+    ],
+    "net_electricity_point": [
+        "Current net Power",
+        "W",
+        DEVICE_CLASS_POWER,
+        "mdi:solar-power",
+    ],
+    "net_electricity_cumulative": [
+        "Cumulative net Power",
+        "kWh",
+        DEVICE_CLASS_POWER,
+        "mdi:gauge",
     ],
 }
 
@@ -175,27 +162,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
     updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
-
-    #    # Stay close to meter measurements for power, for thermostat back off a bit
-    #    if api._smile_type == 'power':
-    #        update_interval=timedelta(seconds=10)
-    #    else:
-    #        update_interval=timedelta(seconds=60)
-    #
-    #    sensor_coordinator = DataUpdateCoordinator(
-    #        hass,
-    #        _LOGGER,
-    #        name="sensor",
-    #        update_method=partial(async_safe_fetch,api),
-    #        update_interval=update_interval
-    #    )
-    #
-    #    # First do a refresh to see if we can reach the hub.
-    #    # Otherwise we will declare not ready.
-    #    await sensor_coordinator.async_refresh()
-    #
-    #    if not sensor_coordinator.last_update_success:
-    #        raise PlatformNotReady
 
     _LOGGER.debug("Plugwise sensor type %s", api._smile_type)
     #    _LOGGER.debug('Plugwise sensor Sensorcoordinator %s',sensor_coordinator)
@@ -444,6 +410,6 @@ class PwPowerSensor(Entity):
                 if data[self._sensor] is not None:
                     measurement = data[self._sensor]
                     # _LOGGER.debug("Sensor value: %s", measurement)
-                    if self._unit_of_measurement == "kW":
+                    if self._unit_of_measurement == "kWh":
                         measurement = int(measurement / 1000)
                     self._state = measurement

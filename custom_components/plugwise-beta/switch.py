@@ -4,8 +4,6 @@ import logging
 
 from homeassistant.components.switch import SwitchDevice
 from homeassistant.core import callback
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from Plugwise_Smile.Smile import Smile
 
 from .const import DOMAIN, SWITCH_ICON
 
@@ -21,7 +19,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     all_devices = api.get_all_devices()
     for dev_id, device in all_devices.items():
         if "plug" in device["types"]:
-            data = api.get_device_data(dev_id)
+            # data = api.get_device_data(dev_id)
             # _LOGGER.debug(data)
             _LOGGER.info("Plugwise switch Dev %s", device["name"])
             switch = PwSwitch(api, updater, device["name"], dev_id)

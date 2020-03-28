@@ -1,41 +1,23 @@
 #!/usr/bin/env python3
 import logging
 from datetime import timedelta
-from functools import partial
-from typing import Any, Dict
+from typing import Dict
 
-import async_timeout
-
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
 from homeassistant.components.climate import ClimateDevice
-from homeassistant.components.climate.const import (
-    CURRENT_HVAC_COOL,
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
-    HVAC_MODE_OFF,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    TEMP_CELSIUS,
-)
-
-# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.components.climate.const import (CURRENT_HVAC_COOL,
+                                                    CURRENT_HVAC_HEAT,
+                                                    CURRENT_HVAC_IDLE,
+                                                    HVAC_MODE_AUTO,
+                                                    HVAC_MODE_HEAT,
+                                                    HVAC_MODE_HEAT_COOL,
+                                                    HVAC_MODE_OFF,
+                                                    SUPPORT_PRESET_MODE,
+                                                    SUPPORT_TARGET_TEMPERATURE)
+from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
-from homeassistant.exceptions import PlatformNotReady
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from Plugwise_Smile.Smile import Smile
 
 from . import HVAC_MODES_1, HVAC_MODES_2
-from .const import CONF_THERMOSTAT, DOMAIN, THERMOSTAT_ICON
+from .const import DOMAIN, THERMOSTAT_ICON
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
@@ -77,7 +59,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         if device["class"] != "thermostat" and device["class"] != "zone_thermostat":
             continue
-        data = api.get_device_data(dev_id)
+        # data = api.get_device_data(dev_id)
 
         _LOGGER.info("Plugwise climate Dev %s", device["name"])
         thermostat = PwThermostat(

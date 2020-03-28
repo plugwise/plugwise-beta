@@ -1,20 +1,10 @@
 #!/usr/bin/env python3
 import logging
-from datetime import timedelta
-from functools import partial
-from typing import Any, Dict
+from typing import Dict
 
-import async_timeout
-
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
 from homeassistant.const import STATE_OFF, STATE_ON
-
-# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.core import callback
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
-from Plugwise_Smile.Smile import Smile
 
 from .const import DOMAIN, WATER_HEATER_ICON
 
