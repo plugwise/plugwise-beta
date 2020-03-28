@@ -13,7 +13,7 @@ from .const import DOMAIN  # pylint:disable=unused-import
 _LOGGER = logging.getLogger(__name__)
 
 
-def _get_config_schema(input_dict: Dict[str, Any]=None) -> vol.Schema:
+def _get_config_schema(input_dict: Dict[str, Any] = None) -> vol.Schema:
     """
     Return schema defaults for init step based on user input/config dict.
 
@@ -22,7 +22,7 @@ def _get_config_schema(input_dict: Dict[str, Any]=None) -> vol.Schema:
     if input_dict is None:
         input_dict = {}
 
-    return vol.Schema({vol.Required("host"): str, vol.Required("password"): str, }, )
+    return vol.Schema({vol.Required("host"): str, vol.Required("password"): str,},)
     # vol.Optional("name", default='Smile'): str,
     # vol.Optional("timeout", default=30): int,
 
