@@ -28,7 +28,7 @@ What can I expect in HA
 
 ## When installed
 
- - [ ] In Home Assitant click on `Confiuration`
+ - [ ] In Home Assitant click on `Configuration`
  - [ ] Click on `Integrations`
  - [ ] Hit the `+` button in the corner
  - [ ] Search or browse for 'Plugwise Smile beta' and click it
