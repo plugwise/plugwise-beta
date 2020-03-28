@@ -6,13 +6,12 @@ A fully asynchronous approach to supporting Plugwise devices. At this time we on
 
 What do we support?
 
-  - Adam (firmware 3.0)
+  - Adam (firmware 2.3 + 3.0)
   - Smile & Anna (firmware 3.1)
   - Smile P1 (firmware 3.3)
 
 What is on our radar (not commitment to timelines though)
 
-  - Adam (firmare 2.3)
   - Smile & Anna (v1.8)
   - Smile P1 (v2.5)
 
