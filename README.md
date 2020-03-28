@@ -28,8 +28,8 @@ What can I expect in HA
 
 ## When installed
 
- - [ ] In Home Assitant click on `Setup`
- - [ ] Click on `integrations`
+ - [ ] In Home Assitant click on `Confiuration`
+ - [ ] Click on `Integrations`
  - [ ] Hit the `+` button in the corner
  - [ ] Search or browse for 'Plugwise Smile beta' and click it
  - [ ] Enter your Smiles IP-address and the 8 character ID of the smile
