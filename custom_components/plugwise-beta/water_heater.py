@@ -38,7 +38,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     devices = []
     all_devices=api.get_all_devices()
     for dev_id,device in all_devices.items():
-        if device['class'] == 'open_therm_gateway':
+        if device['class'] == 'heater_central':
             data = api.get_device_data(dev_id)
             if 'domestic_hot_water_state' in data:
                 if data['domestic_hot_water_state'] is not None:
