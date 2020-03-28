@@ -138,8 +138,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     devices = []
     all_devices=api.get_all_devices()
+    _LOGGER.debug('Plugwise all devices (not just sensor) %s', all_devices)
     for dev_id,device in all_devices.items():
         data = api.get_device_data(dev_id)
+        _LOGGER.debug('Plugwise all device data (not just sensor) %s', data)
         _LOGGER.info('Plugwise sensor Dev %s', device['name'])
         # Skip thermostats since they'll include in climate
         # if 'thermostat' not in device['types']:
