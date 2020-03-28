@@ -155,8 +155,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                             if 'off' in sensor and api._power_tariff['electricity_consumption_tariff_structure'] == 'single':
                                 continue
                             devices.append(PwPowerSensor(api, updater, '{}_{}'.format(device['name'], sensor), dev_id, sensor, sensor_type))
-
-                        devices.append(PwThermostatSensor(api, updater, '{}_{}'.format(device['name'], sensor), dev_id, sensor, sensor_type))
+                        else:
+                            devices.append(PwThermostatSensor(api, updater, '{}_{}'.format(device['name'], sensor), dev_id, sensor, sensor_type))
                         _LOGGER.info('Added sensor.%s', '{}_{}'.format(device['name'], sensor))
 
     async_add_entities(devices, True)
