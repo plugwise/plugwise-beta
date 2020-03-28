@@ -280,7 +280,7 @@ class PwPowerSensor(Entity):
         self._class = sensor_type[2]
         self._sensor = sensor
         self._state = None
-        self._unique_id = f"{dev_id}-{sensor_type}"
+        self._unique_id = f"{dev_id}-{name}-{sensor_type[2]}"
 
     @property
     def unique_id(self):
