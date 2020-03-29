@@ -116,12 +116,6 @@ class PwThermostat(ClimateDevice):
         self._hvac_mode = None
         self._unique_id = f"{dev_id}-climate"
 
-        cdata = api.get_device_data(self._api._gateway_id)
-        if "central_heating_state" in cdata:
-            self._central_heating_state = cdata["central_heating_state"] == "on"
-        if "domestic_hot_water_state" in cdata:
-            self._domestic_hot_water_state = cdata["domestic_hot_water_state"] == "on"
-
     @property
     def unique_id(self):
         """Return a unique ID."""
@@ -290,49 +284,56 @@ class PwThermostat(ClimateDevice):
     def update(self):
         """Update the data for this climate device."""
         _LOGGER.info("Updating climate...")
-        data = self._api.get_device_data(self._dev_id)
+        climate_data = self._api.get_device_data(self._dev_id)
+        heater_central_data = self._api.get_device_data(self._api._gateway_id)
 
-        if data is None:
-            _LOGGER.debug("Received no data for device %s.", self._name)
+        if climate_data is None:
+            _LOGGER.debug("Received no climate_data for device %s.", self._name)
         else:
-            _LOGGER.debug("Device data collected from Plugwise API")
-            if "thermostat" in data:
-                self._thermostat = data["thermostat"]
-            if "temperature" in data:
-                self._temperature = data["temperature"]
-            if "boiler_temp" in data:
-                self._boiler_temp = data["boiler_temp"]
-            if "available_schedules" in data:
-                self._schema_names = data["available_schedules"]
-            if "selected_schedule" in data:
-                self._selected_schema = data["selected_schedule"]
+            _LOGGER.debug("Climate_data collected from Plugwise API")
+            if "thermostat" in climate_data:
+                self._thermostat = climate_data["thermostat"]
+            if "temperature" in climate_data:
+                self._temperature = climate_data["temperature"]
+            if "available_schedules" in climate_data:
+                self._schema_names = climate_data["available_schedules"]
+            if "selected_schedule" in climate_data:
+                self._selected_schema = climate_data["selected_schedule"]
                 if self._selected_schema is not None:
                     self._schema_status = True
                     self._schedule_temp = self._thermostat
                 else:
                     self._schema_status = False
-            if "last_used" in data:
-                self._last_active_schema = data["last_used"]
-            if "presets" in data:
-                self._presets = data["presets"]
+            if "last_used" in climate_data:
+                self._last_active_schema = climate_data["last_used"]
+            if "presets" in climate_data:
+                self._presets = climate_data["presets"]
                 if self._presets:
                     self._presets_list = list(self._presets)
-            if "active_preset" in data:
-                self._preset_mode = data["active_preset"]
-            if "boiler_state" in data:
-                if data["boiler_state"] is not None:
-                    self._boiler_status = data["boiler_state"] == "on"
-            if "central_heating_state" in data:
-                if data["central_heating_state"] is not None:
-                    self._central_heating_state = data["central_heating_state"] == "on"
-            if "cooling_state" in data:
-                if data["cooling_state"] is not None:
-                    self._cooling_status = data["cooling_state"] == "on"
-            if "domestic_hot_water_state" in data:
-                if data["domestic_hot_water_state"] is not None:
+            if "active_preset" in climate_data:
+                self._preset_mode = climate_data["active_preset"]
+
+        if heater_central_data is None:
+            _LOGGER.debug("Received no heater_central_data for device %s.", self._name)
+        else:
+            _LOGGER.debug("Heater_central_data collected from Plugwise API")
+            if "boiler_temp" in heater_central_data:
+                self._boiler_temp = heater_central_data["boiler_temp"]
+            if "boiler_state" in heater_central_data:
+                if heater_central_data["boiler_state"] is not None:
+                    self._boiler_status = heater_central_data["boiler_state"] == "on"
+            if "central_heating_state" in heater_central_data:
+                if heater_central_data["central_heating_state"] is not None:
+                    self._central_heating_state = heater_central_data["central_heating_state"] == "on"
+            if "cooling_state" in heater_central_data:
+                if heater_central_data["cooling_state"] is not None:
+                    self._cooling_status = heater_central_data["cooling_state"] == "on"
+            if "domestic_hot_water_state" in heater_central_data:
+                if heater_central_data["domestic_hot_water_state"] is not None:
                     self._domestic_hot_water_state = (
-                        data["domestic_hot_water_state"] == "on"
+                        heater_central_data["domestic_hot_water_state"] == "on"
                     )
+            
             if self._schema_status:
                 self._hvac_mode = HVAC_MODE_AUTO
             elif (
