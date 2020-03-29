@@ -105,6 +105,7 @@ class PwThermostat(ClimateDevice):
         self._cooling_status = None
         self._domestic_hot_water_state = None
         self._central_heating_state = None
+        self._hvac_mode = None
         self._schema_names = None
         self._schema_status = None
         self._temperature = None
@@ -139,6 +140,7 @@ class PwThermostat(ClimateDevice):
         """Call update method."""
         self.update()
         self.async_write_ha_state()
+        #self.async_schedule_update_ha_state(True)
 
     @property
     def hvac_action(self):
@@ -213,16 +215,18 @@ class PwThermostat(ClimateDevice):
     def hvac_mode(self):
         """Return current active hvac state."""
         if self._schema_status:
-            return HVAC_MODE_AUTO
-        if (
+            self._hvac_mode = HVAC_MODE_AUTO
+        elif (
             self._central_heating_state
             or self._boiler_status
             or self._domestic_hot_water_state
         ):
             if self._cooling_status:
-                return HVAC_MODE_HEAT_COOL
-            return HVAC_MODE_HEAT
-        return HVAC_MODE_OFF
+                self._hvac_mode = HVAC_MODE_HEAT_COOL
+            self._hvac_mode = HVAC_MODE_HEAT
+        else:
+            self._hvac_mode = HVAC_MODE_OFF
+        return self._hvac_mode
 
     @property
     def target_temperature(self):
@@ -268,7 +272,8 @@ class PwThermostat(ClimateDevice):
         ):
             _LOGGER.debug("Set temp to %sºC", temperature)
             await self._api.set_temperature(self._loc_id, temperature)
-            await self._updater.async_refresh_all()
+            self._thermostat = temperature
+            self.async_write_ha_state()
         else:
             _LOGGER.error("Invalid temperature requested")
 
@@ -281,13 +286,18 @@ class PwThermostat(ClimateDevice):
         await self._api.set_schedule_state(
             self._loc_id, self._last_active_schema, state
         )
-        await self._updater.async_refresh_all()
+        self._hvac_mode = hvac_mode
+        if hvac_mode == HVAC_MODE_AUTO:
+            self._thermostat = self._schedule_temp
+        self.async_write_ha_state()
 
     async def async_set_preset_mode(self, preset_mode):
         _LOGGER.debug("Set preset mode to %s.", preset_mode)
         """Set the preset mode."""
         await self._api.set_preset(self._loc_id, preset_mode)
-        await self._updater.async_refresh_all()
+        self._preset_mode = preset_mode
+        self._thermostat = self._presets.get(self._preset_mode, "none")[0]
+        self.async_write_ha_state()
 
     def update(self):
         """Update the data for this climate device."""
