@@ -320,15 +320,19 @@ class PwThermostat(ClimateDevice):
             if "active_preset" in data:
                 self._preset_mode = data["active_preset"]
             if "boiler_state" in data:
-                self._boiler_status = data["boiler_state"] == "on"
+                if data["boiler_state"] is not None:
+                    self._boiler_status = data["boiler_state"] == "on"
             if "central_heating_state" in data:
-                self._central_heating_state = data["central_heating_state"] == "on"
+                if data["central_heating_state"] is not None:
+                    self._central_heating_state = data["central_heating_state"] == "on"
             if "cooling_state" in data:
-                self._cooling_status = data["cooling_state"] == "on"
+                if data["cooling_state"] is not None:
+                    self._cooling_status = data["cooling_state"] == "on"
             if "domestic_hot_water_state" in data:
-                self._domestic_hot_water_state = (
-                    data["domestic_hot_water_state"] == "on"
-                )
+                if data["domestic_hot_water_state"] is not None:
+                    self._domestic_hot_water_state = (
+                        data["domestic_hot_water_state"] == "on"
+                    )
             if self._schema_status:
                 self._hvac_mode = HVAC_MODE_AUTO
             elif (
