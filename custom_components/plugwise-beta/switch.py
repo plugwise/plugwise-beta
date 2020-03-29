@@ -65,17 +65,24 @@ class PwSwitch(SwitchDevice):
         """Return true if device is on."""
         return self._device_is_on
 
+    @property
+    def should_poll(self):
+        """No need to poll. Coordinator notifies entity of updates."""
+        return False
+
     async def turn_on(self, **kwargs):
         """Turn the device on."""
         _LOGGER.debug("Turn switch.%s on.", self._name)
-        await self._api.set_relay_state(self._dev_id, "on")
-        await self._updater.async_refresh_all()
+        if await self._api.set_relay_state(self._dev_id, "on"):
+            self._device_is_on = True
+            self.async_write_ha_state()
 
     async def turn_off(self, **kwargs):
         """Turn the device off."""
         _LOGGER.debug("Turn switch.%s off.", self._name)
-        await self._api.set_relay_state(self._dev_id, "off")
-        await self._updater.async_refresh_all()
+        if await self._api.set_relay_state(self._dev_id, "off"):
+            self._device_is_on = False
+            self.async_write_ha_state()
 
     @property
     def name(self):
@@ -97,5 +104,5 @@ class PwSwitch(SwitchDevice):
             _LOGGER.debug("Received no data for device %s.", self._name)
         else:
             if "relay" in data:
-                self._device_is_on = data["relay"] == "on"
+                self._device_is_on = (data["relay"] == "on")
                 _LOGGER.debug("Switch is ON is %s.", self._device_is_on)
