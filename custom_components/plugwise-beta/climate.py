@@ -214,18 +214,6 @@ class PwThermostat(ClimateDevice):
     @property
     def hvac_mode(self):
         """Return current active hvac state."""
-        if self._schema_status:
-            self._hvac_mode = HVAC_MODE_AUTO
-        elif (
-            self._central_heating_state
-            or self._boiler_status
-            or self._domestic_hot_water_state
-        ):
-            if self._cooling_status:
-                self._hvac_mode = HVAC_MODE_HEAT_COOL
-            self._hvac_mode = HVAC_MODE_HEAT
-        else:
-            self._hvac_mode = HVAC_MODE_OFF
         return self._hvac_mode
 
     @property
@@ -341,3 +329,15 @@ class PwThermostat(ClimateDevice):
                 self._domestic_hot_water_state = (
                     data["domestic_hot_water_state"] == "on"
                 )
+            if self._schema_status:
+                self._hvac_mode = HVAC_MODE_AUTO
+            elif (
+                self._central_heating_state is not None
+                or self._boiler_status is not None
+                or self._domestic_hot_water_state is not None
+            ):
+                if self._cooling_status is not None:
+                    self._hvac_mode = HVAC_MODE_HEAT_COOL
+                self._hvac_mode = HVAC_MODE_HEAT
+            else:
+                self._hvac_mode = HVAC_MODE_OFF
