@@ -10,7 +10,7 @@ What do we support?
   - Smile & Anna (firmware 3.1)
   - Smile P1 (firmware 3.3)
 
-What is on our radar (not commitment to timelines though)
+What is on our radar (not commitment to timelines though) - early alpha version from plugwise-beta 0.0.40 onward
 
   - Smile & Anna (v1.8)
   - Smile P1 (v2.5)
@@ -56,10 +56,16 @@ It's still in early phases and moving between two developers and a handfull of t
 
 We use the term Smile for the 'device connected to your home network', called Smile P1 for their power-meter, Smile if you have an Anna or Adam.
 
+# Testing
+
+While we try to make sure that everyting works as intended, we can't really test out changes happening to hardware devices. Our testing is done through testing against files from community members (see [Plugwise-Smile tests](https://github.com/plugwise/Plugwise-Smile/tree/master/tests)) and if you have a setup you are willing to share we highly welcome that. Just send us the files or submit a PR. Including your testcode into the `tests/test_Smile.py` code is highly recommended.
+
+Results of our tests are checked by Travis, click the left button (the one that should say 'Build passing' :)) on the [Plugwise-Smile repository](https://github.com/plugwise/Plugwise-Smile/).
+
 # There is Anna support in HA Core already
 
-And from the original sources by @laetificat it was upstreamed by @CoMPaTech and maintained by @bouwew
+And from the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech and improved and maintained by @bouwew
 
 As things like async were in high demand from HA, desired by the original author and a great challenge for us we rewrote it largely. The Plugwise Smile Beta repository (accompanying the Plugwise-Smile python module) is intended for development purposes, just as `anna-ha` was for `haanna` (respectively the original before upstreaming and original python module).
 
-And yes this (to some degree) supports Anna v1.8 - it doesn't support Adam nor the Smile P1
+And yes anna-ha with haanna (to some degree) support Anna v1.8 - but they don't support Adam nor the Smile P1
