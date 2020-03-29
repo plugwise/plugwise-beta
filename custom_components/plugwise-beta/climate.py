@@ -269,8 +269,6 @@ class PwThermostat(ClimateDevice):
             self._loc_id, self._last_active_schema, state
         )
         self._hvac_mode = hvac_mode
-        if hvac_mode == HVAC_MODE_AUTO:
-            self._thermostat = self._schedule_temp
         self.async_write_ha_state()
 
     async def async_set_preset_mode(self, preset_mode):
