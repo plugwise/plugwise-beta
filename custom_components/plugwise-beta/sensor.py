@@ -22,10 +22,10 @@ DEFAULT_ICON = "mdi:thermometer"
 
 _LOGGER = logging.getLogger(__name__)
 
-ATTR_TEMPERATURE = [TEMP_CELSIUS, None, DEVICE_CLASS_TEMPERATURE, "mdi:thermometer"]
-ATTR_BATTERY_LEVEL = ["%", None, DEVICE_CLASS_BATTERY, "mdi:water-battery"]
-ATTR_ILLUMINANCE = ["lm", None, DEVICE_CLASS_ILLUMINANCE, "mdi:lightbulb-on-outline"]
-ATTR_PRESSURE = [PRESSURE_MBAR, None, DEVICE_CLASS_PRESSURE, "mdi:water"]
+ATTR_TEMPERATURE = ["Temperature", TEMP_CELSIUS, DEVICE_CLASS_TEMPERATURE, "mdi:thermometer"]
+ATTR_BATTERY_LEVEL = ["Charge", "%", DEVICE_CLASS_BATTERY, "mdi:water-battery"]
+ATTR_ILLUMINANCE = ["Illuminance", "lm", DEVICE_CLASS_ILLUMINANCE, "mdi:lightbulb-on-outline"]
+ATTR_PRESSURE = ["Pressure", PRESSURE_MBAR, DEVICE_CLASS_PRESSURE, "mdi:water"]
 SENSOR_MAP = {
     "thermostat": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
