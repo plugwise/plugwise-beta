@@ -1,7 +1,6 @@
 """Plugwise Sensor component for Home Assistant."""
 
 import logging
-from datetime import timedelta
 from typing import Dict
 
 from homeassistant.const import (
@@ -17,9 +16,6 @@ from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
 from .const import DEVICE_CLASS_GAS, DOMAIN
-
-DEFAULT_NAME = "Plugwise async sensor"
-DEFAULT_ICON = "mdi:thermometer"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -145,28 +141,6 @@ SENSOR_MAP = {
     ],
 }
 
-# TODO:
-#    'relay',
-#    'valve_position',
-#    'boiler_state',
-#    'central_heating_state',
-#    'cooling_state',
-#    'dhw_state',
-
-# TODO:
-#    'electricity_consumption_tariff_structure',
-#    'electricity_consumption_peak_tariff',
-#    'electricity_consumption_off_peak_tariff',
-#    'electricity_production_peak_tariff',
-#    'electricity_production_off_peak_tariff',
-#    'electricity_consumption_single_tariff',
-#    'electricity_production_single_tariff',
-#    'gas_consumption_tariff',
-
-# Scan interval for updating sensor values
-# Smile communication is set using configuration directives
-SCAN_INTERVAL = timedelta(seconds=30)
-
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
@@ -186,8 +160,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         for sensor, sensor_type in SENSOR_MAP.items():
             if sensor in data:
                 if data[sensor] is not None:
-                    # _LOGGER.info('Plugwise sensor is %s for %s (%s)',sensor,dev_id,device)
-                    # _LOGGER.info('Plugwise sensor data %s for %s',data,dev_id)
                     if "power" in device["types"]:
                         if (
                             "off" in sensor
@@ -396,7 +368,6 @@ class PwPowerSensor(Entity):
             if self._sensor in data:
                 if data[self._sensor] is not None:
                     measurement = data[self._sensor]
-                    # _LOGGER.debug("Sensor value: %s", measurement)
                     if self._unit_of_measurement == "kWh":
                         measurement = int(measurement / 1000)
                     self._state = measurement
