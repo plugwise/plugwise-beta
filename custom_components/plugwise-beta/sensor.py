@@ -1,30 +1,41 @@
-#!/usr/bin/env python3
+"""Plugwise Sensor component for Home Assistant."""
+
 import logging
 from datetime import timedelta
 from typing import Dict
 
-from homeassistant.const import (DEVICE_CLASS_BATTERY,
-                                 DEVICE_CLASS_ILLUMINANCE, DEVICE_CLASS_POWER,
-                                 DEVICE_CLASS_PRESSURE,
-                                 DEVICE_CLASS_TEMPERATURE, PRESSURE_MBAR,
-                                 TEMP_CELSIUS)
+from homeassistant.const import (
+    DEVICE_CLASS_BATTERY,
+    DEVICE_CLASS_ILLUMINANCE,
+    DEVICE_CLASS_POWER,
+    DEVICE_CLASS_PRESSURE,
+    DEVICE_CLASS_TEMPERATURE,
+    PRESSURE_MBAR,
+    TEMP_CELSIUS,
+)
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
 from .const import DEVICE_CLASS_GAS, DOMAIN
 
-# from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-
-
 DEFAULT_NAME = "Plugwise async sensor"
 DEFAULT_ICON = "mdi:thermometer"
 
-
 _LOGGER = logging.getLogger(__name__)
 
-ATTR_TEMPERATURE = ["Temperature", TEMP_CELSIUS, DEVICE_CLASS_TEMPERATURE, "mdi:thermometer"]
+ATTR_TEMPERATURE = [
+    "Temperature",
+    TEMP_CELSIUS,
+    DEVICE_CLASS_TEMPERATURE,
+    "mdi:thermometer",
+]
 ATTR_BATTERY_LEVEL = ["Charge", "%", DEVICE_CLASS_BATTERY, "mdi:water-battery"]
-ATTR_ILLUMINANCE = ["Illuminance", "lm", DEVICE_CLASS_ILLUMINANCE, "mdi:lightbulb-on-outline"]
+ATTR_ILLUMINANCE = [
+    "Illuminance",
+    "lm",
+    DEVICE_CLASS_ILLUMINANCE,
+    "mdi:lightbulb-on-outline",
+]
 ATTR_PRESSURE = ["Pressure", PRESSURE_MBAR, DEVICE_CLASS_PRESSURE, "mdi:water"]
 SENSOR_MAP = {
     "thermostat": ATTR_TEMPERATURE,
@@ -164,8 +175,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
     _LOGGER.debug("Plugwise sensor type %s", api._smile_type)
-    #    _LOGGER.debug('Plugwise sensor Sensorcoordinator %s',sensor_coordinator)
-    #    _LOGGER.debug('Plugwise sensor Sensorcoordinator data %s',sensor_coordinator.data)
 
     devices = []
     all_devices = api.get_all_devices()
@@ -173,56 +182,52 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for dev_id, device in all_devices.items():
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
-        _LOGGER.info("Plugwise sensor Dev %s", device["name"])
-        # Skip thermostats since they'll include in climate
-        # if 'thermostat' not in device['types']:
-        if True:
-            for sensor, sensor_type in SENSOR_MAP.items():
-                if sensor in data:
-                    if data[sensor] is not None:
-                        # _LOGGER.info('Plugwise sensor is %s for %s (%s)',sensor,dev_id,device)
-                        # _LOGGER.info('Plugwise sensor data %s for %s',data,dev_id)
-                        if "power" in device["types"]:
-                            if (
-                                "off" in sensor
-                                and api._power_tariff[
-                                    "electricity_consumption_tariff_structure"
-                                ]
-                                == "single"
-                            ):
-                                continue
-                            devices.append(
-                                PwPowerSensor(
-                                    api,
-                                    updater,
-                                    "{}_{}".format(device["name"], sensor),
-                                    dev_id,
-                                    sensor,
-                                    sensor_type,
-                                )
+        _LOGGER.debug("Plugwise sensor Dev %s", device["name"])
+        for sensor, sensor_type in SENSOR_MAP.items():
+            if sensor in data:
+                if data[sensor] is not None:
+                    # _LOGGER.info('Plugwise sensor is %s for %s (%s)',sensor,dev_id,device)
+                    # _LOGGER.info('Plugwise sensor data %s for %s',data,dev_id)
+                    if "power" in device["types"]:
+                        if (
+                            "off" in sensor
+                            and api._power_tariff[
+                                "electricity_consumption_tariff_structure"
+                            ]
+                            == "single"
+                        ):
+                            continue
+                        devices.append(
+                            PwPowerSensor(
+                                api,
+                                updater,
+                                "{}_{}".format(device["name"], sensor),
+                                dev_id,
+                                sensor,
+                                sensor_type,
                             )
-                        else:
-                            devices.append(
-                                PwThermostatSensor(
-                                    api,
-                                    updater,
-                                    "{}_{}".format(device["name"], sensor),
-                                    dev_id,
-                                    sensor,
-                                    sensor_type,
-                                )
-                            )
-                        _LOGGER.info(
-                            "Added sensor.%s", "{}_{}".format(device["name"], sensor)
                         )
+                    else:
+                        devices.append(
+                            PwThermostatSensor(
+                                api,
+                                updater,
+                                "{}_{}".format(device["name"], sensor),
+                                dev_id,
+                                sensor,
+                                sensor_type,
+                            )
+                        )
+                    _LOGGER.info(
+                        "Added sensor.%s", "{}_{}".format(device["name"], sensor)
+                    )
 
     async_add_entities(devices, True)
 
 
 class PwThermostatSensor(Entity):
-    """Safely fetch data."""
+    """Thermostat (or generic) sensor devices."""
 
-    # def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, sensor, sensor_type):
     def __init__(self, api, updater, name, dev_id, sensor, sensor_type):
         """Set up the Plugwise API."""
         self._api = api
@@ -288,11 +293,6 @@ class PwThermostatSensor(Entity):
             "via_device": (DOMAIN, self._api._gateway_id),
         }
 
-    #    @property
-    #    def device_state_attributes(self):
-    #        """Return the state attributes."""
-    #        return self._state_attributes
-
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
@@ -309,7 +309,7 @@ class PwThermostatSensor(Entity):
         data = self._api.get_device_data(self._dev_id)
 
         if data is None:
-            _LOGGER.debug("Received no data for device %s.", self._name)
+            _LOGGER.error("Received no data for device %s.", self._name)
         else:
             if self._sensor in data:
                 if data[self._sensor] is not None:
@@ -317,21 +317,9 @@ class PwThermostatSensor(Entity):
                     self._state = measurement
 
 
-# async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-#    """Add the Plugwise Thermostat Sensor."""
-#
-#    if discovery_info is None:
-#        return
-#
-#
-#
-#    async_add_entities(devices, True)
-
-
 class PwPowerSensor(Entity):
-    """Safely fetch data."""
+    """Power sensor devices."""
 
-    # def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, sensor, sensor_type):
     def __init__(self, api, updater, name, dev_id, sensor, sensor_type):
         """Set up the Plugwise API."""
         self._api = api
@@ -403,9 +391,8 @@ class PwPowerSensor(Entity):
         data = self._api.get_device_data(self._dev_id)
 
         if data is None:
-            _LOGGER.debug("Received no data for device %s.", self._name)
+            _LOGGER.error("Received no data for device %s.", self._name)
         else:
-            # _LOGGER.info("Sensor {}_{}".format(self._name, self._sensor))
             if self._sensor in data:
                 if data[self._sensor] is not None:
                     measurement = data[self._sensor]

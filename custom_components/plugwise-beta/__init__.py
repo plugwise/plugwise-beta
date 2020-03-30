@@ -1,16 +1,19 @@
-"""Plugwise components for Home Assistant Core."""
+"""Plugwise platform for Home Assistant Core."""
+
 import asyncio
 import logging
 from datetime import timedelta
 from typing import Optional
 
 import voluptuous as vol
-from homeassistant.components.climate.const import (HVAC_MODE_AUTO,
-                                                    HVAC_MODE_HEAT,
-                                                    HVAC_MODE_HEAT_COOL,
-                                                    HVAC_MODE_OFF,
-                                                    SUPPORT_PRESET_MODE,
-                                                    SUPPORT_TARGET_TEMPERATURE)
+
+from homeassistant.components.climate.const import (
+    HVAC_MODE_AUTO,
+    HVAC_MODE_HEAT,
+    HVAC_MODE_HEAT_COOL,
+    SUPPORT_PRESET_MODE,
+    SUPPORT_TARGET_TEMPERATURE,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
@@ -30,8 +33,6 @@ SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO List the platforms that you want to support.
-# For your initial PR, limit it to 1 platform.
 PLATFORMS = ["climate", "sensor", "switch", "water_heater"]
 
 
@@ -42,8 +43,6 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
-    # TODO Store an API object for your platforms to access
-    # hass.data[DOMAIN][entry.entry_id] = MyApi(...)
 
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
@@ -80,12 +79,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         sw_version=api._smile_version[0],
     )
     _LOGGER.debug("Plugwise device registry  %s", result)
-    # connections={(dr.CONNECTION_NETWORK_MAC, config.mac)},
-    # model=config.modelid,
-    # sw_version=config.swversion,
-
-    # _LOGGER.debug("Plugwise async entry hass data %s",hass.data[DOMAIN])
-    # hass.data[DOMAIN][entry.entry_id] = api
 
     for component in PLATFORMS:  # api._platforms
         hass.async_create_task(
@@ -97,7 +90,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         for info in hass.data[DOMAIN].values():
             await info["updater"].async_refresh_all()
 
-    # Register service
     hass.services.async_register(DOMAIN, "update", async_refresh_all)
 
     return True
@@ -120,7 +112,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 
 class SmileDataUpdater:
-    """Data storage for single API endpoint."""
+    """Data storage for single Smile API endpoint."""
 
     def __init__(
         self,
@@ -144,7 +136,6 @@ class SmileDataUpdater:
     @callback
     def async_add_listener(self, update_callback):
         """Listen for data updates."""
-        # This is the first listener, set up interval.
         if not self.listeners:
             self._unsub_interval = async_track_time_interval(
                 self.hass, self.async_refresh_all, self.update_interval
@@ -165,13 +156,11 @@ class SmileDataUpdater:
         """Time to update."""
         _LOGGER.debug("Plugwise Smile updating with interval: %s", self.update_interval)
         if not self.listeners:
-            _LOGGER.debug("Plugwise Smile has no listeners, not updating")
+            _LOGGER.error("Plugwise Smile has no listeners, not updating")
             return
 
         _LOGGER.debug("Plugwise Smile updating data using: %s", self.update_method)
-        # await self.hass.async_add_executor_job(
-        # getattr(self.api, self.update_method)
-        # )
+
         await self.api.full_update_device()
 
         for update_callback in self.listeners:

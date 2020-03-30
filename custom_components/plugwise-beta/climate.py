@@ -1,18 +1,21 @@
-#!/usr/bin/env python3
+"""Plugwise Climate component for Home Assistant."""
+
 import logging
 from datetime import timedelta
 from typing import Dict
 
 from homeassistant.components.climate import ClimateDevice
-from homeassistant.components.climate.const import (CURRENT_HVAC_COOL,
-                                                    CURRENT_HVAC_HEAT,
-                                                    CURRENT_HVAC_IDLE,
-                                                    HVAC_MODE_AUTO,
-                                                    HVAC_MODE_HEAT,
-                                                    HVAC_MODE_HEAT_COOL,
-                                                    HVAC_MODE_OFF,
-                                                    SUPPORT_PRESET_MODE,
-                                                    SUPPORT_TARGET_TEMPERATURE)
+from homeassistant.components.climate.const import (
+    CURRENT_HVAC_COOL,
+    CURRENT_HVAC_HEAT,
+    CURRENT_HVAC_IDLE,
+    HVAC_MODE_AUTO,
+    HVAC_MODE_HEAT,
+    HVAC_MODE_HEAT_COOL,
+    HVAC_MODE_OFF,
+    SUPPORT_PRESET_MODE,
+    SUPPORT_TARGET_TEMPERATURE,
+)
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
 
@@ -23,8 +26,6 @@ SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
 _LOGGER = logging.getLogger(__name__)
 
-# Scan interval for updating climate values
-# Smile communication is set using configuration directives
 SCAN_INTERVAL = timedelta(seconds=30)
 
 
@@ -33,35 +34,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
     updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
-    #    if api._smile_type == 'power':
-    #        update_interval=timedelta(seconds=10)
-    #    else:
-    #        update_interval=timedelta(seconds=60)
-    #
-    #    climate_coordinator = DataUpdateCoordinator(
-    #        hass,
-    #        _LOGGER,
-    #        name="climate",
-    #        update_method=partial(async_safe_fetch,api),
-    #        update_interval=update_interval
-    #    )
-    #
-    #    # First do a refresh to see if we can reach the hub.
-    #    # Otherwise we will declare not ready.
-    #    await climate_coordinator.async_refresh()
-    #
-    #    if not climate_coordinator.last_update_success:
-    #        raise PlatformNotReady
-
     devices = []
     all_devices = api.get_all_devices()
     for dev_id, device in all_devices.items():
 
         if device["class"] != "thermostat" and device["class"] != "zone_thermostat":
             continue
-        # data = api.get_device_data(dev_id)
 
-        _LOGGER.info("Plugwise climate Dev %s", device["name"])
+        _LOGGER.debug("Plugwise climate Dev %s", device["name"])
         thermostat = PwThermostat(
             api, updater, device["name"], dev_id, device["location"], 4, 30
         )
@@ -75,17 +55,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(devices, True)
 
 
-# async def async_safe_fetch(api):
-#    """Safely fetch data."""
-#    with async_timeout.timeout(10):
-#        await api.full_update_device()
-#        return await api.get_devices()
-
-
 class PwThermostat(ClimateDevice):
     """Representation of an Plugwise thermostat."""
 
-    # def __init__(self, coordinator, idx, api, name, dev_id, ctlr_id, min_temp, max_temp):
     def __init__(self, api, updater, name, dev_id, loc_id, min_temp, max_temp):
         """Set up the Plugwise API."""
         self._api = api
@@ -134,7 +106,7 @@ class PwThermostat(ClimateDevice):
         """Call update method."""
         self.update()
         self.async_write_ha_state()
-        #self.async_schedule_update_ha_state(True)
+        # self.async_schedule_update_ha_state(True)
 
     @property
     def hvac_action(self):
@@ -191,10 +163,7 @@ class PwThermostat(ClimateDevice):
 
     @property
     def preset_modes(self):
-        """
-        Return the available preset modes list and make the presets with their
-        temperatures available.
-        """
+        """Return the available preset modes list."""
         return self._presets_list
 
     @property
@@ -212,11 +181,7 @@ class PwThermostat(ClimateDevice):
 
     @property
     def target_temperature(self):
-        """Return the target_temperature.
-        From the XML the thermostat-value is used because it updates 'immediately'
-        compared to the target_temperature-value. This way the information on the card
-        is "immediately" updated after changing the preset, temperature, etc.
-        """
+        """Return the target_temperature."""
         return self._thermostat
 
     @property
@@ -272,8 +237,8 @@ class PwThermostat(ClimateDevice):
         self.async_write_ha_state()
 
     async def async_set_preset_mode(self, preset_mode):
-        _LOGGER.debug("Set preset mode to %s.", preset_mode)
         """Set the preset mode."""
+        _LOGGER.debug("Set preset mode to %s.", preset_mode)
         await self._api.set_preset(self._loc_id, preset_mode)
         self._preset_mode = preset_mode
         self._thermostat = self._presets.get(self._preset_mode, "none")[0]
@@ -286,7 +251,7 @@ class PwThermostat(ClimateDevice):
         heater_central_data = self._api.get_device_data(self._api._gateway_id)
 
         if climate_data is None:
-            _LOGGER.debug("Received no climate_data for device %s.", self._name)
+            _LOGGER.error("Received no climate_data for device %s.", self._name)
         else:
             _LOGGER.debug("Climate_data collected from Plugwise API")
             if "thermostat" in climate_data:
@@ -312,7 +277,7 @@ class PwThermostat(ClimateDevice):
                 self._preset_mode = climate_data["active_preset"]
 
         if heater_central_data is None:
-            _LOGGER.debug("Received no heater_central_data for device %s.", self._name)
+            _LOGGER.error("Received no heater_central_data for device %s.", self._name)
         else:
             _LOGGER.debug("Heater_central_data collected from Plugwise API")
             if "boiler_temp" in heater_central_data:
@@ -322,7 +287,9 @@ class PwThermostat(ClimateDevice):
                     self._boiler_status = heater_central_data["boiler_state"] == "on"
             if "central_heating_state" in heater_central_data:
                 if heater_central_data["central_heating_state"] is not None:
-                    self._central_heating_state = heater_central_data["central_heating_state"] == "on"
+                    self._central_heating_state = (
+                        heater_central_data["central_heating_state"] == "on"
+                    )
             if "cooling_state" in heater_central_data:
                 if heater_central_data["cooling_state"] is not None:
                     self._cooling_status = heater_central_data["cooling_state"] == "on"
@@ -331,7 +298,7 @@ class PwThermostat(ClimateDevice):
                     self._domestic_hot_water_state = (
                         heater_central_data["domestic_hot_water_state"] == "on"
                     )
-            
+
             if self._schema_status:
                 self._hvac_mode = HVAC_MODE_AUTO
             elif (

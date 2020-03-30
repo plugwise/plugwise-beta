@@ -1,4 +1,4 @@
-"""Plugwise Water Heater component for HomeAssistant."""
+"""Plugwise Switch component for HomeAssistant."""
 
 import logging
 
@@ -19,9 +19,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     all_devices = api.get_all_devices()
     for dev_id, device in all_devices.items():
         if "plug" in device["types"]:
-            # data = api.get_device_data(dev_id)
-            # _LOGGER.debug(data)
-            _LOGGER.info("Plugwise switch Dev %s", device["name"])
+            _LOGGER.debug("Plugwise switch Dev %s", device["name"])
             switch = PwSwitch(api, updater, device["name"], dev_id)
             devices.append(switch)
             _LOGGER.info("Added switch.%s", "{}".format(device["name"]))
@@ -101,8 +99,8 @@ class PwSwitch(SwitchDevice):
         data = self._api.get_device_data(self._dev_id)
 
         if data is None:
-            _LOGGER.debug("Received no data for device %s.", self._name)
+            _LOGGER.error("Received no data for device %s.", self._name)
         else:
             if "relay" in data:
-                self._device_is_on = (data["relay"] == "on")
+                self._device_is_on = data["relay"] == "on"
                 _LOGGER.debug("Switch is ON is %s.", self._device_is_on)

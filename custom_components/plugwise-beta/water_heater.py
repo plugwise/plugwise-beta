@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+"""Plugwise Water Heater component for Home Assistant."""
+
 import logging
 from typing import Dict
 
@@ -23,7 +24,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             data = api.get_device_data(dev_id)
             if "domestic_hot_water_state" in data:
                 if data["domestic_hot_water_state"] is not None:
-                    _LOGGER.info("Plugwise water_heater Dev %s", device["name"])
+                    _LOGGER.debug("Plugwise water_heater Dev %s", device["name"])
                     water_heater = PwWaterHeater(api, updater, device["name"], dev_id)
                     devices.append(water_heater)
                     _LOGGER.info("Added water_heater.%s", "{}".format(device["name"]))
@@ -101,7 +102,7 @@ class PwWaterHeater(Entity):
         data = self._api.get_device_data(self._dev_id)
 
         if data is None:
-            _LOGGER.debug("Received no data for device %s.", self._name)
+            _LOGGER.error("Received no data for device %s.", self._name)
         else:
             if "domestic_hot_water_state" in data:
                 self._domestic_hot_water_state = (
