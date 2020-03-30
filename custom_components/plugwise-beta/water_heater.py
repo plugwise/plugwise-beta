@@ -1,22 +1,15 @@
 """Plugwise Water Heater component for Home Assistant."""
 
 import logging
-from typing import Dict, Optional
+from typing import Dict
 
-from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
-#from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity import Entity
 
-from homeassistant.const import TEMP_CELSIUS
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
-)
-
-from homeassistant.components.water_heater import (
-    SUPPORT_OPERATION_MODE,
-    WaterHeaterDevice,
 )
 
 from .const import (
@@ -26,8 +19,6 @@ from .const import (
     IDLE_ICON,
     WATER_HEATER_ICON,
 )
-
-SUPPORT_FLAGS_HEATER = SUPPORT_OPERATION_MODE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -51,7 +42,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(devices, True)
 
 
-class PwWaterHeater(WaterHeaterDevice):
+class PwWaterHeater(Entity):
     """Representation of a Plugwise water_heater."""
 
     def __init__(self, api, updater, name, dev_id):
@@ -101,12 +92,7 @@ class PwWaterHeater(WaterHeaterDevice):
         }
 
     @property
-    def supported_features(self) -> int:
-        """Return the list of supported features."""
-        return 1
-
-    @property
-    def current_operation(self):
+    def state(self):
         """Return the state of the water_heater."""
         if self._central_heating_state or self._boiler_state:
             return CURRENT_HVAC_HEAT
@@ -114,17 +100,14 @@ class PwWaterHeater(WaterHeaterDevice):
             return CURRENT_HVAC_DHW
         else:
             return CURRENT_HVAC_IDLE
-        #if self._domestic_hot_water_state:
 
     @property
-    def current_temperature(self) -> float:
-        """Return the current water temperature."""
-        return self._boiler_temp
+    def device_state_attributes(self):
+        """Return the optional device state attributes."""
+        data = {}
+        data["water_temperature"] = self._boiler_temp
 
-    @property
-    def temperature_unit(self) -> str:
-        """Return the unit of measurement."""
-        return TEMP_CELSIUS
+        return data
 
     @property
     def icon(self):
@@ -135,16 +118,6 @@ class PwWaterHeater(WaterHeaterDevice):
             return WATER_HEATER_ICON
         else:
             return IDLE_ICON
-
-    @property
-    def min_temp(self) -> float:
-        """Return max valid temperature that can be set."""
-        return 80.0
-
-    @property
-    def max_temp(self) -> float:
-        """Return max valid temperature that can be set."""
-        return 30.0
 
     @property
     def should_poll(self):
