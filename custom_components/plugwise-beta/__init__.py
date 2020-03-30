@@ -4,16 +4,8 @@ import asyncio
 import logging
 from datetime import timedelta
 from typing import Optional
-
 import voluptuous as vol
 
-from homeassistant.components.climate.const import (
-    HVAC_MODE_AUTO,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
@@ -25,12 +17,6 @@ from .const import DOMAIN
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
-# HVAC modes
-HVAC_MODES_1 = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
-HVAC_MODES_2 = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
-
-SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
-
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = ["climate", "sensor", "switch", "water_heater"]
@@ -39,7 +25,6 @@ PLATFORMS = ["climate", "sensor", "switch", "water_heater"]
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the Plugwise platform."""
     return True
-
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
@@ -80,7 +65,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     _LOGGER.debug("Plugwise device registry  %s", result)
 
-    for component in PLATFORMS:  # api._platforms
+    for component in PLATFORMS:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
@@ -93,7 +78,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.services.async_register(DOMAIN, "update", async_refresh_all)
 
     return True
-
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
