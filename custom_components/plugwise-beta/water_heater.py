@@ -112,6 +112,11 @@ class PwWaterHeater(Entity):
         return attributes
 
     @property
+    def current_temperature(self):
+        """Return the current temperature of the hot water."""
+        return self._boiler_temp
+
+    @property
     def icon(self):
         """Return the icon to use in the frontend."""
         if self._central_heating_state or self._boiler_state:
