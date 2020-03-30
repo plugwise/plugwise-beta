@@ -1,7 +1,6 @@
 """Plugwise Climate component for Home Assistant."""
 
 import logging
-from datetime import timedelta
 from typing import Dict
 
 from homeassistant.components.climate import ClimateDevice
@@ -19,14 +18,20 @@ from homeassistant.components.climate.const import (
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
 
-from . import HVAC_MODES_1, HVAC_MODES_2
-from .const import DOMAIN, THERMOSTAT_ICON
+from .const import (
+    DOMAIN, 
+    THERMOSTAT_ICON,
+    DEFAULT_MIN_TEMP, 
+    DEFAULT_MAX_TEMP,
+)
+
+# HVAC modes
+HVAC_MODES_1 = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
+HVAC_MODES_2 = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
 _LOGGER = logging.getLogger(__name__)
-
-SCAN_INTERVAL = timedelta(seconds=30)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -43,7 +48,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         _LOGGER.debug("Plugwise climate Dev %s", device["name"])
         thermostat = PwThermostat(
-            api, updater, device["name"], dev_id, device["location"], 4, 30
+            api, 
+            updater, 
+            device["name"], 
+            dev_id, device["location"], 
+            DEFAULT_MIN_TEMP, 
+            DEFAULT_MAX_TEMP,
         )
 
         if not thermostat:
@@ -82,7 +92,6 @@ class PwThermostat(ClimateDevice):
         self._schema_status = None
         self._temperature = None
         self._thermostat = None
-        self._boiler_temp = None
         self._water_pressure = None
         self._schedule_temp = None
         self._hvac_mode = None
@@ -106,20 +115,23 @@ class PwThermostat(ClimateDevice):
         """Call update method."""
         self.update()
         self.async_write_ha_state()
-        # self.async_schedule_update_ha_state(True)
 
     @property
     def hvac_action(self):
         """Return the current action."""
-        if (
-            self._central_heating_state
-            or self._boiler_status
-            or self._domestic_hot_water_state
-        ):
-            return CURRENT_HVAC_HEAT
-        if self._cooling_status:
-            return CURRENT_HVAC_COOL
+        if (self._central_heating_state is not None or self._boiler_status is not None) and self._cooling_status is None:
+            if self._thermostat > self._temperature:
+                return CURRENT_HVAC_HEAT
         return CURRENT_HVAC_IDLE
+        #if (
+        #    self._central_heating_state
+        #    or self._boiler_status
+        #    or self._domestic_hot_water_state
+        #):
+        #    return CURRENT_HVAC_HEAT
+        #if self._cooling_status:
+        #    return CURRENT_HVAC_COOL
+        #return CURRENT_HVAC_IDLE
 
     @property
     def name(self):
@@ -280,8 +292,6 @@ class PwThermostat(ClimateDevice):
             _LOGGER.error("Received no heater_central_data for device %s.", self._name)
         else:
             _LOGGER.debug("Heater_central_data collected from Plugwise API")
-            if "boiler_temp" in heater_central_data:
-                self._boiler_temp = heater_central_data["boiler_temp"]
             if "boiler_state" in heater_central_data:
                 if heater_central_data["boiler_state"] is not None:
                     self._boiler_status = heater_central_data["boiler_state"] == "on"
@@ -293,11 +303,6 @@ class PwThermostat(ClimateDevice):
             if "cooling_state" in heater_central_data:
                 if heater_central_data["cooling_state"] is not None:
                     self._cooling_status = heater_central_data["cooling_state"] == "on"
-            if "domestic_hot_water_state" in heater_central_data:
-                if heater_central_data["domestic_hot_water_state"] is not None:
-                    self._domestic_hot_water_state = (
-                        heater_central_data["domestic_hot_water_state"] == "on"
-                    )
 
             if self._schema_status:
                 self._hvac_mode = HVAC_MODE_AUTO

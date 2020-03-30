@@ -24,11 +24,14 @@ CONF_SOLAR = "solar"
 CONF_GAS = "gas"
 
 ATTR_ILLUMINANCE = "illuminance"
+CURRENT_HVAC_DHW = "hot_water"
 
 # Icons
 SWITCH_ICON = "mdi:electric-switch"
 THERMOSTAT_ICON = "mdi:thermometer"
 WATER_HEATER_ICON = "mdi:water-pump"
+FLAME_ICON = "mdi:fire"
+IDLE_ICON = "mdi:close-circle-outline"
 GAS_ICON = "mdi:fire"
 POWER_ICON = "mdi:flash"
 POWER_FAILURE_ICON = "mdi:flash-off"
