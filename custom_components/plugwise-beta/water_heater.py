@@ -106,15 +106,10 @@ class PwWaterHeater(Entity):
     def device_state_attributes(self):
         """Return the optional device state attributes."""
         attributes = {}
-        attributes["water_temperature"] = self._boiler_temp
+        attributes["current_temperature"] = self._boiler_temp
         attributes["water_pressure"] = self._central_heater_water_pressure
 
         return attributes
-
-    @property
-    def current_temperature(self):
-        """Return the current temperature of the hot water."""
-        return self._boiler_temp
 
     @property
     def icon(self):
