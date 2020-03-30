@@ -54,6 +54,7 @@ class PwWaterHeater(Entity):
         self._boiler_state = False
         self._boiler_temp = None
         self._central_heating_state =  False
+        self._central_heater_water_pressure = None
         self._domestic_hot_water_state = False
         self._unique_id = f"{dev_id}-water_heater"
 
@@ -104,10 +105,11 @@ class PwWaterHeater(Entity):
     @property
     def device_state_attributes(self):
         """Return the optional device state attributes."""
-        data = {}
-        data["water_temperature"] = self._boiler_temp
+        attributes = {}
+        attributes["water_temperature"] = self._boiler_temp
+        attributes["water_pressure"] = self._central_heater_water_pressure
 
-        return data
+        return attributes
 
     @property
     def icon(self):
@@ -128,14 +130,14 @@ class PwWaterHeater(Entity):
         """Update the entity."""
         _LOGGER.debug("Update water_heater called")
         data = self._api.get_device_data(self._dev_id)
-        _LOGGER.debug("Water_heater: %s", data)
 
         if data is None:
             _LOGGER.error("Received no data for device %s.", self._name)
         else:
-            #ToDo: add central_heater_water_pressure
             if "boiler_temperature" in data:
                 self._boiler_temp = data["boiler_temperature"]
+            if "central_heater_water_pressure" in data:
+                self._central_heater_water_pressure = data["central_heater_water_pressure"]
             if "boiler_state" in data:
                 if data["boiler_state"] is not None:
                     self._boiler_state = (data["boiler_state"] == "on")

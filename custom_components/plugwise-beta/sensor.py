@@ -64,7 +64,6 @@ SENSOR_MAP = {
         "mdi:flash",
     ],
     "outdoor_temperature": ATTR_TEMPERATURE,
-    "central_heater_water_pressure": ATTR_PRESSURE,
     "illuminance": ATTR_ILLUMINANCE,
     "boiler_temperature": ATTR_TEMPERATURE,
     "electricity_consumed_off_peak_point": [
