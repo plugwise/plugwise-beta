@@ -161,7 +161,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 if data[sensor] is not None:
                     if "power" in device["types"]:
                         if "off" in sensor:
-                            api._power_tariff is None:
+                            if api._power_tariff is None:
                                 continue
                             if (
                                 api._power_tariff[
