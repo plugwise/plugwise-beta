@@ -163,7 +163,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         if "off" in sensor:
                             if api._power_tariff is None:
                                 continue
-                            if (
+                            elif (
                                 api._power_tariff[
                                     "electricity_consumption_tariff_structure"
                                 ]
