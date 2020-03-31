@@ -160,14 +160,16 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             if sensor in data:
                 if data[sensor] is not None:
                     if "power" in device["types"]:
-                        if (
-                            "off" in sensor
-                            and api._power_tariff[
-                                "electricity_consumption_tariff_structure"
-                            ]
-                            == "single"
-                        ):
-                            continue
+                        if "off" in sensor:
+                            if api._power_tariff is None:
+                                continue
+                            if (
+                                api._power_tariff[
+                                    "electricity_consumption_tariff_structure"
+                                ]
+                                == "single"
+                            ):
+                                continue
                         devices.append(
                             PwPowerSensor(
                                 api,
