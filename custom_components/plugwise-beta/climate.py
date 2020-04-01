@@ -19,9 +19,9 @@ from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
 
 from .const import (
-    DOMAIN, 
+    DOMAIN,
     THERMOSTAT_ICON,
-    DEFAULT_MIN_TEMP, 
+    DEFAULT_MIN_TEMP,
     DEFAULT_MAX_TEMP,
 )
 
@@ -40,19 +40,21 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
     devices = []
+    thermostat_classes = [ "thermostat", "zone_thermostat", "thermostatic_radiator_valve"]
     all_devices = api.get_all_devices()
+
     for dev_id, device in all_devices.items():
 
-        if device["class"] != "thermostat" and device["class"] != "zone_thermostat":
+        if device["class"] not in thermostat_classes:
             continue
 
         _LOGGER.debug("Plugwise climate Dev %s", device["name"])
         thermostat = PwThermostat(
-            api, 
-            updater, 
-            device["name"], 
-            dev_id, device["location"], 
-            DEFAULT_MIN_TEMP, 
+            api,
+            updater,
+            device["name"],
+            dev_id, device["location"],
+            DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
         )
 
