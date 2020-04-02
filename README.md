@@ -1,21 +1,31 @@
-**New** Configure using integrations!
+# Plugwise Smile custom_component (BETA)
 
-# Plugwise Smile Beta
+Our main usage for this module is supporting [Home Assistant](https://www.home-assistant.io) / [home-assistant](http://github.com/home-assistant/core/)
 
-A fully asynchronous approach to supporting Plugwise devices. At this time we only support the newest firmware (_unfortunat_ but as the developers only have recent hardware it takes time to develop for 'legacy' devices).
+ [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/plugwise)
+ [![Generic badge](https://img.shields.io/github/v/release/plugwise/plugwise-beta)](https://github.com/plugwise/plugwise-beta)
 
-What do we support?
+A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. 
 
-  - Adam (firmware 2.3 + 3.0)
-  - Smile & Anna (firmware 3.1)
-  - Smile P1 (firmware 3.3)
+## Status
 
-What is on our radar (not commitment to timelines though) - early alpha version from plugwise-beta 0.0.40 onward
+ - [x] The current (feb/mar/apr 2020) `plugwise` HA-core component only supports Anna devices (both v1 and v3)
+ - [x] This module supports all devices as indicated on the [Plugwise-Smile](https://github.com/plugwise/Plugwise-Smile) repository page
+ - [ ] There is no pending PR for HA-core yet, still ironing out the kinks together with **you** using this module
 
-  - Smile & Anna (v1.8)
-  - Smile P1 (v2.5)
+### Required python module (status)
 
-What can I expect in HA
+ [![Build Status](https://travis-ci.org/plugwise/Plugwise-Smile.svg?branch=master)](https://travis-ci.org/plugwise/Plugwise-Smile)
+ [![codecov](https://codecov.io/gh/plugwise/Plugwise-Smile/branch/master/graph/badge.svg)](https://codecov.io/gh/plugwise/Plugwise-Smile)
+ [![PyPI version fury.io](https://badge.fury.io/py/Plugwise-Smile.svg)](https://pypi.python.org/pypi/Plugwise-Smile/)
+
+## What do we support (in short)?
+
+  - Adam (firmware 2.3 + 3.0) - we don't have a `Koen` yet in our testers suite
+  - Smile & Anna (firmware 1.8, 3.1 and 4.0)
+  - Smile P1 (firmware 2.5 and 3.3)
+
+## What can I expect in HA from this component
 
   - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating status. Also, setting of temperature, preset and switching a schedule on and off.
   - `sensor`:A number of sensoric values depending on your hardware (Outdoor temperature, Anna's illuminance, plug power-usage, P1 values)
@@ -24,7 +34,9 @@ What can I expect in HA
 
 ## How to set-up?
 
- - Use [HACS](https://hacs.xyz) to install this repo and make this `custom_component` available!
+ - Use [HACS](https://hacs.xyz) 
+ - Use the link to this page and add it on the `custom repo` page 
+ - Look for `Plugwise beta custom component ` in `integrations` and install it!
 
 ## When installed
 
