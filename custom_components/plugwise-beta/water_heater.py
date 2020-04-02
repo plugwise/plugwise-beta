@@ -13,8 +13,8 @@ from homeassistant.components.climate.const import (
 )
 
 from .const import (
-    CURRENT_HVAC_DHW, 
-    DOMAIN, 
+    CURRENT_HVAC_DHW,
+    DOMAIN,
     FLAME_ICON,
     IDLE_ICON,
     WATER_HEATER_ICON,
@@ -53,7 +53,7 @@ class PwWaterHeater(Entity):
         self._dev_id = dev_id
         self._boiler_state = False
         self._boiler_temp = None
-        self._central_heating_state =  False
+        self._central_heating_state = False
         self._central_heater_water_pressure = None
         self._domestic_hot_water_state = False
         self._unique_id = f"{dev_id}-water_heater"
@@ -137,15 +137,15 @@ class PwWaterHeater(Entity):
             if "boiler_temperature" in data:
                 self._boiler_temp = data["boiler_temperature"]
             if "central_heater_water_pressure" in data:
-                self._central_heater_water_pressure = data["central_heater_water_pressure"]
+                self._central_heater_water_pressure = data[
+                    "central_heater_water_pressure"
+                ]
             if "boiler_state" in data:
                 if data["boiler_state"] is not None:
-                    self._boiler_state = (data["boiler_state"] == "on")
+                    self._boiler_state = data["boiler_state"] == "on"
             if "central_heating_state" in data:
                 if data["central_heating_state"] is not None:
-                    self._central_heating_state = (
-                        data["central_heating_state"] == "on"
-                    )
+                    self._central_heating_state = data["central_heating_state"] == "on"
             if "domestic_hot_water_state" in data:
                 self._domestic_hot_water_state = (
                     data["domestic_hot_water_state"] == "on"

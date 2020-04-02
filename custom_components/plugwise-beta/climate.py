@@ -40,7 +40,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
     devices = []
-    thermostat_classes = [ "thermostat", "zone_thermostat", "thermostatic_radiator_valve"]
+    thermostat_classes = [
+        "thermostat",
+        "zone_thermostat",
+        "thermostatic_radiator_valve",
+    ]
     all_devices = api.get_all_devices()
 
     for dev_id, device in all_devices.items():
@@ -53,7 +57,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             api,
             updater,
             device["name"],
-            dev_id, device["location"],
+            dev_id,
+            device["location"],
             DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
         )
@@ -121,19 +126,21 @@ class PwThermostat(ClimateDevice):
     @property
     def hvac_action(self):
         """Return the current action."""
-        if (self._central_heating_state is not None or self._boiler_status is not None) and self._cooling_status is None:
+        if (
+            self._central_heating_state is not None or self._boiler_status is not None
+        ) and self._cooling_status is None:
             if self._thermostat > self._temperature:
                 return CURRENT_HVAC_HEAT
         return CURRENT_HVAC_IDLE
-        #if (
+        # if (
         #    self._central_heating_state
         #    or self._boiler_status
         #    or self._domestic_hot_water_state
-        #):
+        # ):
         #    return CURRENT_HVAC_HEAT
-        #if self._cooling_status:
+        # if self._cooling_status:
         #    return CURRENT_HVAC_COOL
-        #return CURRENT_HVAC_IDLE
+        # return CURRENT_HVAC_IDLE
 
     @property
     def name(self):
