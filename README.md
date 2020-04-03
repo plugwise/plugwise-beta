@@ -30,7 +30,7 @@ A fully asynchronous approach to supporting Plugwise devices. This repository is
   - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating status. Also, setting of temperature, preset and switching a schedule on and off.
   - `sensor`:A number of sensoric values depending on your hardware (Outdoor temperature, Anna's illuminance, plug power-usage, P1 values)
   - `switch`: Plugs are available as switches, also switching them on/off is supported.
-  - `water_heater`: When your heating system connected to the Smile/Adam supports heating of tap-water, the status of this function is shown via the water_heater entity (on/off)
+  - `water_heater`: When your heating system connected to the Smile/Adam supports heating of tap-water, the status of this function is shown via the water_heater entity icon, next to the status of the normal heating function (idle/heating/hot_water)
 
 ## How to set-up?
 
