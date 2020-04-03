@@ -297,9 +297,9 @@ class PwThermostat(ClimateDevice):
                     self._boiler_state = heater_central_data["boiler_state"]
             if "central_heating_state" in heater_central_data:
                 if heater_central_data["central_heating_state"] is not None:
-                    self._central_heating_state = (
-                        heater_central_data["central_heating_state"]
-                    )
+                    self._central_heating_state = heater_central_data[
+                        "central_heating_state"
+                    ]
             if "cooling_state" in heater_central_data:
                 if heater_central_data["cooling_state"] is not None:
                     self._cooling_state = heater_central_data["cooling_state"]
