@@ -90,10 +90,10 @@ class PwThermostat(ClimateDevice):
         self._preset_mode = None
         self._presets = None
         self._presets_list = None
-        self._boiler_status = None
-        self._cooling_status = None
-        self._domestic_hot_water_state = None
+        self._boiler_state = None
         self._central_heating_state = None
+        self._cooling_state = None
+        self._domestic_hot_water_state = None
         self._hvac_mode = None
         self._schema_names = None
         self._schema_status = None
@@ -127,20 +127,11 @@ class PwThermostat(ClimateDevice):
     def hvac_action(self):
         """Return the current action."""
         if (
-            self._central_heating_state is not None or self._boiler_status is not None
-        ) and self._cooling_status is None:
+            self._central_heating_state is not None or self._boiler_state is not None
+        ) and self._cooling_state is None:
             if self._thermostat > self._temperature:
                 return CURRENT_HVAC_HEAT
         return CURRENT_HVAC_IDLE
-        # if (
-        #    self._central_heating_state
-        #    or self._boiler_status
-        #    or self._domestic_hot_water_state
-        # ):
-        #    return CURRENT_HVAC_HEAT
-        # if self._cooling_status:
-        #    return CURRENT_HVAC_COOL
-        # return CURRENT_HVAC_IDLE
 
     @property
     def name(self):
@@ -190,8 +181,8 @@ class PwThermostat(ClimateDevice):
     @property
     def hvac_modes(self):
         """Return the available hvac modes list."""
-        if self._central_heating_state is not None or self._boiler_status is not None:
-            if self._cooling_status is not None:
+        if self._central_heating_state is not None or self._boiler_state is not None:
+            if self._cooling_state is not None:
                 return HVAC_MODES_2
             return HVAC_MODES_1
 
@@ -303,24 +294,24 @@ class PwThermostat(ClimateDevice):
             _LOGGER.debug("Heater_central_data collected from Plugwise API")
             if "boiler_state" in heater_central_data:
                 if heater_central_data["boiler_state"] is not None:
-                    self._boiler_status = heater_central_data["boiler_state"] == "on"
+                    self._boiler_state = heater_central_data["boiler_state"]
             if "central_heating_state" in heater_central_data:
                 if heater_central_data["central_heating_state"] is not None:
                     self._central_heating_state = (
-                        heater_central_data["central_heating_state"] == "on"
+                        heater_central_data["central_heating_state"]
                     )
             if "cooling_state" in heater_central_data:
                 if heater_central_data["cooling_state"] is not None:
-                    self._cooling_status = heater_central_data["cooling_state"] == "on"
+                    self._cooling_state = heater_central_data["cooling_state"]
 
             if self._schema_status:
                 self._hvac_mode = HVAC_MODE_AUTO
             elif (
                 self._central_heating_state is not None
-                or self._boiler_status is not None
+                or self._boiler_state is not None
                 or self._domestic_hot_water_state is not None
             ):
-                if self._cooling_status is not None:
+                if self._cooling_state is not None:
                     self._hvac_mode = HVAC_MODE_HEAT_COOL
                 self._hvac_mode = HVAC_MODE_HEAT
             else:
