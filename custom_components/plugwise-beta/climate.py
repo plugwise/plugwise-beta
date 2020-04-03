@@ -303,15 +303,15 @@ class PwThermostat(ClimateDevice):
             _LOGGER.debug("Heater_central_data collected from Plugwise API")
             if "boiler_state" in heater_central_data:
                 if heater_central_data["boiler_state"] is not None:
-                    self._boiler_status = heater_central_data["boiler_state"] == "on"
+                    self._boiler_status = heater_central_data["boiler_state"]
             if "central_heating_state" in heater_central_data:
                 if heater_central_data["central_heating_state"] is not None:
                     self._central_heating_state = (
-                        heater_central_data["central_heating_state"] == "on"
+                        heater_central_data["central_heating_state"]
                     )
             if "cooling_state" in heater_central_data:
                 if heater_central_data["cooling_state"] is not None:
-                    self._cooling_status = heater_central_data["cooling_state"] == "on"
+                    self._cooling_status = heater_central_data["cooling_state"]
 
             if self._schema_status:
                 self._hvac_mode = HVAC_MODE_AUTO

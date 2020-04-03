@@ -102,5 +102,5 @@ class PwSwitch(SwitchDevice):
             _LOGGER.error("Received no data for device %s.", self._name)
         else:
             if "relay" in data:
-                self._device_is_on = data["relay"] == "on"
+                self._device_is_on = data["relay"]
                 _LOGGER.debug("Switch is ON is %s.", self._device_is_on)
