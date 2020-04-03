@@ -90,10 +90,10 @@ class PwThermostat(ClimateDevice):
         self._preset_mode = None
         self._presets = None
         self._presets_list = None
-        self._boiler_status = None
-        self._cooling_status = None
-        self._domestic_hot_water_state = None
-        self._central_heating_state = None
+        self._boiler_state = False
+        self._cooling_state = False
+        self._domestic_hot_water_state = False
+        self._central_heating_state = False
         self._hvac_mode = None
         self._schema_names = None
         self._schema_status = None
@@ -127,20 +127,11 @@ class PwThermostat(ClimateDevice):
     def hvac_action(self):
         """Return the current action."""
         if (
-            self._central_heating_state is not None or self._boiler_status is not None
-        ) and self._cooling_status is None:
+            self._central_heating_state is not None or self._boiler_state is not None
+        ) and self._cooling_state is None:
             if self._thermostat > self._temperature:
                 return CURRENT_HVAC_HEAT
         return CURRENT_HVAC_IDLE
-        # if (
-        #    self._central_heating_state
-        #    or self._boiler_status
-        #    or self._domestic_hot_water_state
-        # ):
-        #    return CURRENT_HVAC_HEAT
-        # if self._cooling_status:
-        #    return CURRENT_HVAC_COOL
-        # return CURRENT_HVAC_IDLE
 
     @property
     def name(self):
