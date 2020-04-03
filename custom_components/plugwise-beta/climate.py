@@ -90,10 +90,10 @@ class PwThermostat(ClimateDevice):
         self._preset_mode = None
         self._presets = None
         self._presets_list = None
-        self._boiler_state = False
-        self._cooling_state = False
-        self._domestic_hot_water_state = False
-        self._central_heating_state = False
+        self._boiler_state = None
+        self._central_heating_state = None
+        self._cooling_state = None
+        self._domestic_hot_water_state = None
         self._hvac_mode = None
         self._schema_names = None
         self._schema_status = None
