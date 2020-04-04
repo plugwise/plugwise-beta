@@ -5,7 +5,6 @@ from typing import Any, Dict
 import voluptuous as vol
 
 from homeassistant import config_entries, core, exceptions
-from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from Plugwise_Smile.Smile import Smile
 
@@ -24,26 +23,23 @@ def _get_config_schema(input_dict: Dict[str, Any] = None) -> vol.Schema:
         input_dict = {}
 
     return vol.Schema({vol.Required("host"): str, vol.Required("password"): str})
-    # vol.Optional("name", default='Smile'): str,
-    # vol.Optional("timeout", default=30): int,
 
 
 async def validate_input(hass: core.HomeAssistant, data):
-    """Validate the user input allows us to connect.
+    """
+    Validate the user input allows us to connect.
 
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
-
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
         host=data["host"], password=data["password"], timeout=30, websession=websession
     )
-    #            timeout=data["timeout"], websession=websession)
 
     if not await api.connect():
         raise CannotConnect
 
-    return {"title": api._smile_name}
+    return {"title": api.smile_name}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

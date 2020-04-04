@@ -7,7 +7,6 @@ from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
 from homeassistant.components.climate.const import (
-    CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
 )
@@ -89,7 +88,7 @@ class PwWaterHeater(Entity):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device": (DOMAIN, self._api._gateway_id),
+            "via_device": (DOMAIN, self._api.gateway_id),
         }
 
     @property
@@ -97,10 +96,9 @@ class PwWaterHeater(Entity):
         """Return the state of the water_heater."""
         if self._central_heating_state or self._boiler_state:
             return CURRENT_HVAC_HEAT
-        elif self._domestic_hot_water_state:
+        if self._domestic_hot_water_state:
             return CURRENT_HVAC_DHW
-        else:
-            return CURRENT_HVAC_IDLE
+        return CURRENT_HVAC_IDLE
 
     @property
     def device_state_attributes(self):
@@ -116,10 +114,9 @@ class PwWaterHeater(Entity):
         """Return the icon to use in the frontend."""
         if self._central_heating_state or self._boiler_state:
             return FLAME_ICON
-        elif self._domestic_hot_water_state:
+        if self._domestic_hot_water_state:
             return WATER_HEATER_ICON
-        else:
-            return IDLE_ICON
+        return IDLE_ICON
 
     @property
     def should_poll(self):

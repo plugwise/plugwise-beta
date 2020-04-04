@@ -5,7 +5,6 @@ from typing import Dict
 
 from homeassistant.components.climate import ClimateDevice
 from homeassistant.components.climate.const import (
-    CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
     HVAC_MODE_AUTO,
@@ -25,7 +24,6 @@ from .const import (
     DEFAULT_MAX_TEMP,
 )
 
-# HVAC modes
 HVAC_MODES_1 = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
 HVAC_MODES_2 = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
 
@@ -145,7 +143,7 @@ class PwThermostat(ClimateDevice):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device": (DOMAIN, self._api._gateway_id),
+            "via_device": (DOMAIN, self._api.gateway_id),
         }
 
     @property
@@ -260,7 +258,7 @@ class PwThermostat(ClimateDevice):
         """Update the data for this climate device."""
         _LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)
-        heater_central_data = self._api.get_device_data(self._api._gateway_id)
+        heater_central_data = self._api.get_device_data(self._api.gateway_id)
 
         if climate_data is None:
             _LOGGER.error("Received no climate_data for device %s.", self._name)

@@ -147,7 +147,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
     updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
-    _LOGGER.debug("Plugwise sensor type %s", api._smile_type)
+    _LOGGER.debug("Plugwise sensor type %s", api.smile_type)
 
     devices = []
     all_devices = api.get_all_devices()
@@ -253,7 +253,7 @@ class PwThermostatSensor(Entity):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device": (DOMAIN, self._api._gateway_id),
+            "via_device": (DOMAIN, self._api.gateway_id),
         }
 
     @property
@@ -349,7 +349,6 @@ class PwPowerSensor(Entity):
 
     def update(self):
         """Update the entity."""
-
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
 
