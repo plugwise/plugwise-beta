@@ -29,7 +29,6 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
-
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
         host=entry.data.get("host"),
@@ -39,7 +38,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await api.connect()
 
-    if api._smile_type == "power":
+    if api.smile_type == "power":
         update_interval = timedelta(seconds=10)
     else:
         update_interval = timedelta(seconds=60)
@@ -53,16 +52,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ),
     }
 
-    _LOGGER.debug("Plugwise gateway is %s", api._gateway_id)
+    _LOGGER.debug("Plugwise gateway is %s", api.gateway_id)
     device_registry = await dr.async_get_registry(hass)
     _LOGGER.debug("Plugwise device registry  %s", device_registry)
     result = device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, api._gateway_id)},
+        identifiers={(DOMAIN, api.gateway_id)},
         manufacturer="Plugwise",
-        name="{} - {} Gateway".format(entry.title, api._smile_name),
-        model=api._smile_name,
-        sw_version=api._smile_version[0],
+        name="{} - {} Gateway".format(entry.title, api.smile_name),
+        model=api.smile_name,
+        sw_version=api.smile_version[0],
     )
     _LOGGER.debug("Plugwise device registry  %s", result)
 
