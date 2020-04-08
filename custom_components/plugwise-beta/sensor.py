@@ -37,19 +37,18 @@ SENSOR_MAP = {
     "thermostat": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
     "battery": ATTR_BATTERY_LEVEL,
-    "battery_charge": ATTR_BATTERY_LEVEL,
     "temperature_difference": ATTR_TEMPERATURE,
-    "electricity_consumed": [
-        "Current Consumed Power",
-        "W",
-        DEVICE_CLASS_POWER,
-        "mdi:flash",
-    ],
     "valve_position": [
         "Valve Position",
         "%",
         "position",
         "mdi:valve",
+    ],
+    "electricity_consumed": [
+        "Current Consumed Power",
+        "W",
+        DEVICE_CLASS_POWER,
+        "mdi:flash",
     ],
     "electricity_produced": [
         "Current Produced Power",
