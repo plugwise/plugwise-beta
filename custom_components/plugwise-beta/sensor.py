@@ -119,13 +119,13 @@ SENSOR_MAP = {
         DEVICE_CLASS_POWER,
         "mdi:gauge",
     ],
-    "gas_consumed_peak_interval": [
+    "gas_consumed_interval": [
         "Current Consumed Gas",
         "m3",
         DEVICE_CLASS_GAS,
         "mdi:gas-cylinder",
     ],
-    "gas_consumed_peak_cumulative": [
+    "gas_consumed_cumulative": [
         "Cumulative Consumed Gas",
         "m3",
         DEVICE_CLASS_GAS,
