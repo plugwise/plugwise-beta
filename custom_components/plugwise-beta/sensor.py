@@ -45,6 +45,12 @@ SENSOR_MAP = {
         DEVICE_CLASS_POWER,
         "mdi:flash",
     ],
+    "valve_position": [
+        "Valve Position",
+        "%",
+        "position",
+        "mdi:valve",
+    ],
     "electricity_produced": [
         "Current Produced Power",
         "W",
@@ -278,7 +284,9 @@ class PwThermostatSensor(Entity):
                 if data[self._sensor] is not None:
                     measurement = data[self._sensor]
                     if self._sensor == "battery":
-                        measurement = int(measurement * 100)
+                        measurement = measurement * 100
+                    if self._unit_of_measurement == "%":
+                        measurement = int(measurement)
                     self._state = measurement
 
 
