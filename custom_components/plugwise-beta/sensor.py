@@ -9,7 +9,7 @@ from homeassistant.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_PRESSURE,
     DEVICE_CLASS_TEMPERATURE,
-    PRESSURE_MBAR,
+    PRESSURE_BAR,
     TEMP_CELSIUS,
 )
 from homeassistant.core import callback
