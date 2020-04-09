@@ -37,6 +37,7 @@ SENSOR_MAP = {
     "thermostat": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
     "battery": ATTR_BATTERY_LEVEL,
+    "central_heater_water_pressure": ATTR_PRESSURE,
     "temperature_difference": ATTR_TEMPERATURE,
     "valve_position": [
         "Valve Position",
