@@ -32,7 +32,7 @@ ATTR_ILLUMINANCE = [
     DEVICE_CLASS_ILLUMINANCE,
     "mdi:lightbulb-on-outline",
 ]
-ATTR_PRESSURE = ["Pressure", PRESSURE_MBAR, DEVICE_CLASS_PRESSURE, "mdi:water"]
+ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE, "mdi:water"]
 SENSOR_MAP = {
     "thermostat": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
