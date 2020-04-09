@@ -9,7 +9,7 @@ from homeassistant.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_PRESSURE,
     DEVICE_CLASS_TEMPERATURE,
-    PRESSURE_MBAR,
+    PRESSURE_BAR,
     TEMP_CELSIUS,
 )
 from homeassistant.core import callback
@@ -32,7 +32,7 @@ ATTR_ILLUMINANCE = [
     DEVICE_CLASS_ILLUMINANCE,
     "mdi:lightbulb-on-outline",
 ]
-ATTR_PRESSURE = ["Pressure", PRESSURE_MBAR, DEVICE_CLASS_PRESSURE, "mdi:water"]
+ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE, "mdi:water"]
 SENSOR_MAP = {
     "thermostat": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
