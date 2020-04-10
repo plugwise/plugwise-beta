@@ -25,7 +25,7 @@ ATTR_TEMPERATURE = [
     DEVICE_CLASS_TEMPERATURE,
     "mdi:thermometer",
 ]
-ATTR_BATTERY_LEVEL = ["Charge", "%", DEVICE_CLASS_BATTERY, "mdi:water-battery"]
+ATTR_BATTERY_LEVEL = ["Charge", "%", DEVICE_CLASS_BATTERY, "mdi:battery-high"]
 ATTR_ILLUMINANCE = [
     "Illuminance",
     "lm",
