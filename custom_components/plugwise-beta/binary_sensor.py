@@ -105,6 +105,16 @@ class PwBinarySensor(BinarySensorDevice):
         return STATE_OFF
 
     @property
+    def device_info(self) -> Dict[str, any]:
+        """Return the device information."""
+        return {
+            "identifiers": {(DOMAIN, self._dev_id)},
+            "name": self._name,
+            "manufacturer": "Plugwise",
+            "via_device": (DOMAIN, self._api.gateway_id),
+        }
+
+    @property
     def icon(self):
         """Return the icon to use in the frontend."""
         if self._binary_sensor == "domestic_hot_water_state":

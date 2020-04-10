@@ -1,6 +1,7 @@
 """Plugwise Switch component for HomeAssistant."""
 
 import logging
+from typing import Dict
 
 from homeassistant.components.switch import SwitchDevice
 from homeassistant.core import callback
@@ -20,8 +21,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for dev_id, device in all_devices.items():
         if "plug" in device["types"]:
             _LOGGER.debug("Plugwise switch Dev %s", device["name"])
-            switch = PwSwitch(api, updater, device["name"], dev_id)
-            devices.append(switch)
+            devices.append(
+                PwSwitch(
+                    api,
+                    updater,
+                    device["name"],
+                    dev_id,
+                )
+            )
             _LOGGER.info("Added switch.%s", "{}".format(device["name"]))
 
     async_add_entities(devices, True)
@@ -37,7 +44,7 @@ class PwSwitch(SwitchDevice):
         self._name = name
         self._dev_id = dev_id
         self._device_is_on = False
-        self._unique_id = f"{dev_id}-plug"
+        self._unique_id = f"{dev_id}-{name}"
 
     @property
     def unique_id(self):
@@ -64,6 +71,16 @@ class PwSwitch(SwitchDevice):
         return self._device_is_on
 
     @property
+    def device_info(self) -> Dict[str, any]:
+        """Return the device information."""
+        return {
+            "identifiers": {(DOMAIN, self._dev_id)},
+            "name": self._name,
+            "manufacturer": "Plugwise",
+            "via_device": (DOMAIN, self._api.gateway_id),
+        }
+
+    @property
     def should_poll(self):
         """No need to poll. Coordinator notifies entity of updates."""
         return False
@@ -85,7 +102,7 @@ class PwSwitch(SwitchDevice):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._name
+        return self._name.replace('_', ' ')
 
     @property
     def icon(self):
