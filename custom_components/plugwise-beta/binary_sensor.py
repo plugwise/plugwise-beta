@@ -3,7 +3,7 @@
 import logging
 from typing import Dict
 
-from homeassistant.components.binary_sensor import DEVICE_CLASS_HEAT, BinarySensorDevice
+from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
@@ -124,7 +124,7 @@ class PwBinarySensor(BinarySensorDevice):
     @property
     def device_class(self):
         """Return the class of this device, from component DEVICE_CLASSES."""
-        return DEVICE_CLASS_HEAT
+        return "none"
 
     def update(self):
         """Update the entity."""
