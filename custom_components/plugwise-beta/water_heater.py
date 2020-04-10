@@ -149,6 +149,6 @@ class PwWaterHeater(Entity):
                     self._central_heating_state = data["central_heating_state"]
             if "cooling_state" in data:
                 if data["cooling_state"] is not None:
-                    self._cooling_state = data["boiler_state"]
+                    self._cooling_state = data["cooling_state"]
             if "domestic_hot_water_state" in data:
                 self._domestic_hot_water_state = data["domestic_hot_water_state"]
