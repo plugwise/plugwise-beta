@@ -7,6 +7,7 @@ from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
 from homeassistant.components.climate.const import (
+    CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
 )
@@ -14,6 +15,7 @@ from homeassistant.components.climate.const import (
 from .const import (
     CURRENT_HVAC_DHW,
     DOMAIN,
+    COOL_ICON,
     FLAME_ICON,
     IDLE_ICON,
     WATER_HEATER_ICON,
@@ -50,11 +52,12 @@ class PwWaterHeater(Entity):
         self._updater = updater
         self._name = name
         self._dev_id = dev_id
-        self._boiler_state = False
         self._boiler_temp = None
-        self._central_heating_state = False
+        self._boiler_state = None
+        self._central_heating_state = None
+        self._cooling_state = None
+        self._domestic_hot_water_state = None
         self._central_heater_water_pressure = None
-        self._domestic_hot_water_state = False
         self._unique_id = f"{dev_id}-water_heater"
 
     @property
@@ -98,6 +101,8 @@ class PwWaterHeater(Entity):
             return CURRENT_HVAC_HEAT
         if self._domestic_hot_water_state:
             return CURRENT_HVAC_DHW
+        if self._cooling_state:
+            return CURRENT_HVAC_COOL
         return CURRENT_HVAC_IDLE
 
     @property
@@ -116,6 +121,8 @@ class PwWaterHeater(Entity):
             return FLAME_ICON
         if self._domestic_hot_water_state:
             return WATER_HEATER_ICON
+        if self._cooling_state:
+            return COOL_ICON
         return IDLE_ICON
 
     @property
@@ -143,5 +150,8 @@ class PwWaterHeater(Entity):
             if "central_heating_state" in data:
                 if data["central_heating_state"] is not None:
                     self._central_heating_state = data["central_heating_state"]
+            if "cooling_state" in data:
+                if data["cooling_state"] is not None:
+                    self._boiler_state = data["boiler_state"]
             if "domestic_hot_water_state" in data:
                 self._domestic_hot_water_state = data["domestic_hot_water_state"]
