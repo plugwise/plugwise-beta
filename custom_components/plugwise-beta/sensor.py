@@ -252,15 +252,15 @@ class PwThermostatSensor(Entity):
         """Return the state of the sensor."""
         return self._state
 
-    @property
-    def device_info(self) -> Dict[str, any]:
-        """Return the device information."""
-        return {
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._name,
-            "manufacturer": "Plugwise",
-            "via_device": (DOMAIN, self._api.gateway_id),
-        }
+#    @property
+#    def device_info(self) -> Dict[str, any]:
+#        """Return the device information."""
+#        return {
+#            "identifiers": {(DOMAIN, self._dev_id)},
+#            "name": self._name,
+#            "manufacturer": "Plugwise",
+#            "via_device": (DOMAIN, self._api.gateway_id),
+#        }
 
     @property
     def unit_of_measurement(self):

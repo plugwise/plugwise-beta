@@ -7,18 +7,9 @@ from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
-from homeassistant.components.climate.const import (
-    CURRENT_HVAC_COOL,
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE,
-)
-
 from .const import (
-    CURRENT_HVAC_DHW,
     DOMAIN,
-    COOL_ICON,
     FLAME_ICON,
-    IDLE_ICON,
     WATER_ICON,
 )
 
@@ -45,7 +36,15 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 _LOGGER.debug("Binary_sensor: %s", binary_sensor)
                 if binary_sensor in data:
                     _LOGGER.debug("Plugwise binary_sensor Dev %s", device["name"])
-                    devices.append(PwBinarySensor(api, updater, binary_sensor, dev_id))
+                    devices.append(
+                        PwBinarySensor(
+                            api,
+                            updater,
+                            "{}_{}".format(device["name"], binary_sensor),
+                            binary_sensor,
+                            dev_id,
+                        )
+                    )
                     _LOGGER.info("Added binary_sensor.%s", binary_sensor)
 
     async_add_entities(devices, True)
@@ -54,14 +53,15 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class PwBinarySensor(BinarySensorDevice):
     """Representation of a Plugwise binary_sensor."""
 
-    def __init__(self, api, updater, binary_sensor, dev_id):
+    def __init__(self, api, updater, name, binary_sensor, dev_id):
         """Set up the Plugwise API."""
         self._api = api
         self._updater = updater
         self._dev_id = dev_id
+        self._name = name
         self._binary_sensor = binary_sensor
         self._is_on = False
-        self._unique_id = f"{dev_id}-binary_sensor"
+        self._unique_id = f"{dev_id}-{name}"
 
     @property
     def unique_id(self):
@@ -85,17 +85,7 @@ class PwBinarySensor(BinarySensorDevice):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._binary_sensor
-
-    @property
-    def device_info(self) -> Dict[str, any]:
-        """Return the device information."""
-        return {
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._binary_sensor,
-            "manufacturer": "Plugwise",
-            "via_device": (DOMAIN, self._api.gateway_id),
-        }
+        return f"{self._name.replace('_', ' ')}"
 
     @property
     def should_poll(self):
