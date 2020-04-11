@@ -3,19 +3,25 @@
 import logging
 from typing import Dict
 
-from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import (
+    DEVICE_CLASS_OPENING,
+    BinarySensorDevice,
+)
+
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .const import (
     DOMAIN,
     FLAME_ICON,
+    VALVE_ICON,
     WATER_ICON,
 )
 
 BINARY_SENSOR_LIST = [
     "domestic_hot_water_state",
     "slave_boiler_state",
+    "valve_position",
 ]
 
 _LOGGER = logging.getLogger(__name__)
@@ -27,10 +33,15 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
     devices = []
+    binary_sensor_classes = [
+        "heater_central",
+        "thermo_sensor",
+        "thermostatic_radiator_valve",
+    ]
     all_devices = api.get_all_devices()
     for dev_id, device in all_devices.items():
-        if device["class"] == "heater_central":
-            _LOGGER.debug("Plugwise device_class found")
+        if device["class"] in binary_sensor_classes: 
+            _LOGGER.debug("Plugwise device_class %s found", device["class"])
             data = api.get_device_data(dev_id)
             for binary_sensor in BINARY_SENSOR_LIST:
                 _LOGGER.debug("Binary_sensor: %s", binary_sensor)
@@ -119,11 +130,16 @@ class PwBinarySensor(BinarySensorDevice):
         """Return the icon to use in the frontend."""
         if self._binary_sensor == "domestic_hot_water_state":
             return WATER_ICON
-        return FLAME_ICON
+        if self._binary_sensor == "slave_boiler_state":
+            return FLAME_ICON
+        if self._binary_sensor == "valve_position":
+            return VALVE_ICON
 
     @property
     def device_class(self):
         """Return the class of this device, from component DEVICE_CLASSES."""
+        if self._binary_sensor == "valve_position":
+            return DEVICE_CLASS_OPENING
         return "none"
 
     def update(self):
@@ -135,4 +151,6 @@ class PwBinarySensor(BinarySensorDevice):
             _LOGGER.error("Received no data for device %s.", self._binary_sensor)
         else:
             if self._binary_sensor in data:
+                if isinstance(data[self._binary_sensor], float):
+                    self._is_on = data[self._binary_sensor] == 1.0
                 self._is_on = data[self._binary_sensor]
