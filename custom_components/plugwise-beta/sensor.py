@@ -25,7 +25,7 @@ ATTR_TEMPERATURE = [
     DEVICE_CLASS_TEMPERATURE,
     "mdi:thermometer",
 ]
-ATTR_BATTERY_LEVEL = ["Charge", "%", DEVICE_CLASS_BATTERY, "mdi:water-battery"]
+ATTR_BATTERY_LEVEL = ["Charge", "%", DEVICE_CLASS_BATTERY, "mdi:battery-high"]
 ATTR_ILLUMINANCE = [
     "Illuminance",
     "lm",
@@ -39,12 +39,6 @@ SENSOR_MAP = {
     "battery": ATTR_BATTERY_LEVEL,
     "central_heater_water_pressure": ATTR_PRESSURE,
     "temperature_difference": ATTR_TEMPERATURE,
-    "valve_position": [
-        "Valve Position",
-        "%",
-        "position",
-        "mdi:valve",
-    ],
     "electricity_consumed": [
         "Current Consumed Power",
         "W",
@@ -245,7 +239,7 @@ class PwThermostatSensor(Entity):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._name
+        return self._name.replace('_', ' ')
 
     @property
     def state(self):
@@ -335,7 +329,7 @@ class PwPowerSensor(Entity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return self._name
+        return self._name.replace('_', ' ')
 
     @property
     def icon(self):
@@ -351,6 +345,16 @@ class PwPowerSensor(Entity):
     def state(self):
         """Return the state of the sensor."""
         return self._state
+
+    @property
+    def device_info(self) -> Dict[str, any]:
+        """Return the device information."""
+        return {
+            "identifiers": {(DOMAIN, self._dev_id)},
+            "name": self._name,
+            "manufacturer": "Plugwise",
+            "via_device": (DOMAIN, self._api.gateway_id),
+        }
 
     @property
     def unit_of_measurement(self):

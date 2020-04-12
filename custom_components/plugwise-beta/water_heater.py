@@ -7,6 +7,7 @@ from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
 from homeassistant.components.climate.const import (
+    CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
 )
@@ -14,10 +15,16 @@ from homeassistant.components.climate.const import (
 from .const import (
     CURRENT_HVAC_DHW,
     DOMAIN,
+    COOL_ICON,
     FLAME_ICON,
     IDLE_ICON,
-    WATER_HEATER_ICON,
 )
+
+INDICATE_ACTIVE_LOCAL_DEVICE = [
+    "boiler_state",
+    "cooling_state",
+    "flame_state",
+]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,15 +35,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
     devices = []
+    idx = 1
     all_devices = api.get_all_devices()
     for dev_id, device in all_devices.items():
         if device["class"] == "heater_central":
             data = api.get_device_data(dev_id)
-            if "boiler_temperature" in data:
-                _LOGGER.debug("Plugwise water_heater Dev %s", device["name"])
-                water_heater = PwWaterHeater(api, updater, device["name"], dev_id)
-                devices.append(water_heater)
-                _LOGGER.info("Added water_heater.%s", "{}".format(device["name"]))
+            for state in INDICATE_ACTIVE_LOCAL_DEVICE:
+                if state in data:
+                    if idx == 1:
+                        _LOGGER.debug("Plugwise water_heater Dev %s", device["name"])
+                        water_heater = PwWaterHeater(api, updater, device["name"], dev_id)
+                        devices.append(water_heater)
+                        _LOGGER.info("Added water_heater.%s", "{}".format(device["name"]))
+                        idx += 1
 
     async_add_entities(devices, True)
 
@@ -50,11 +61,12 @@ class PwWaterHeater(Entity):
         self._updater = updater
         self._name = name
         self._dev_id = dev_id
-        self._boiler_state = False
         self._boiler_temp = None
+        self._boiler_state = False
         self._central_heating_state = False
-        self._central_heater_water_pressure = None
+        self._cooling_state = False
         self._domestic_hot_water_state = False
+        self._central_heater_water_pressure = None
         self._unique_id = f"{dev_id}-water_heater"
 
     @property
@@ -79,7 +91,7 @@ class PwWaterHeater(Entity):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._name
+        return self._name.replace('_', ' ')
 
     @property
     def device_info(self) -> Dict[str, any]:
@@ -94,11 +106,12 @@ class PwWaterHeater(Entity):
     @property
     def state(self):
         """Return the state of the water_heater."""
-        if self._central_heating_state or self._boiler_state:
+        if self._cooling_state:
+            return CURRENT_HVAC_COOL
+        elif self._central_heating_state or self._boiler_state or self._domestic_hot_water_state:
             return CURRENT_HVAC_HEAT
-        if self._domestic_hot_water_state:
-            return CURRENT_HVAC_DHW
-        return CURRENT_HVAC_IDLE
+        else:
+            return CURRENT_HVAC_IDLE
 
     @property
     def device_state_attributes(self):
@@ -112,11 +125,12 @@ class PwWaterHeater(Entity):
     @property
     def icon(self):
         """Return the icon to use in the frontend."""
-        if self._central_heating_state or self._boiler_state:
+        if self._cooling_state:
+            return COOL_ICON
+        elif self._central_heating_state or self._boiler_state or self._domestic_hot_water_state:
             return FLAME_ICON
-        if self._domestic_hot_water_state:
-            return WATER_HEATER_ICON
-        return IDLE_ICON
+        else:
+            return IDLE_ICON
 
     @property
     def should_poll(self):
@@ -143,5 +157,8 @@ class PwWaterHeater(Entity):
             if "central_heating_state" in data:
                 if data["central_heating_state"] is not None:
                     self._central_heating_state = data["central_heating_state"]
+            if "cooling_state" in data:
+                if data["cooling_state"] is not None:
+                    self._cooling_state = data["cooling_state"]
             if "domestic_hot_water_state" in data:
                 self._domestic_hot_water_state = data["domestic_hot_water_state"]

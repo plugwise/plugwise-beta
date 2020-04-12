@@ -134,7 +134,7 @@ class PwThermostat(ClimateDevice):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._name
+        return self._name.replace('_', ' ')
 
     @property
     def device_info(self) -> Dict[str, any]:
