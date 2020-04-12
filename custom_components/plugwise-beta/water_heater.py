@@ -20,6 +20,12 @@ from .const import (
     IDLE_ICON,
 )
 
+INDICATE_ACTIVE_LOCAL_DEVICE = [
+    "boiler_state",
+    "cooling_state",
+    "flame_state",
+]
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -29,15 +35,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
     devices = []
+    idx = 1
     all_devices = api.get_all_devices()
     for dev_id, device in all_devices.items():
         if device["class"] == "heater_central":
             data = api.get_device_data(dev_id)
-            if "boiler_temperature" in data:
-                _LOGGER.debug("Plugwise water_heater Dev %s", device["name"])
-                water_heater = PwWaterHeater(api, updater, device["name"], dev_id)
-                devices.append(water_heater)
-                _LOGGER.info("Added water_heater.%s", "{}".format(device["name"]))
+            for state in INDICATE_ACTIVE_LOCAL_DEVICE:
+                if state in data:
+                    if idx == 1:
+                        _LOGGER.debug("Plugwise water_heater Dev %s", device["name"])
+                        water_heater = PwWaterHeater(api, updater, device["name"], dev_id)
+                        devices.append(water_heater)
+                        _LOGGER.info("Added water_heater.%s", "{}".format(device["name"]))
+                        idx += 1
 
     async_add_entities(devices, True)
 
