@@ -19,9 +19,9 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS_1 = ["sensor"]
-PLATFORMS_2 = ["binary_sensor", "climate", "sensor", "switch"]
-PLATFORMS_3 = ["binary_sensor", "climate", "sensor", "switch", "water_heater"]
+SENSORS = ["sensor"]
+CLIMATE = ["binary_sensor", "climate", "sensor", "switch"]
+MULTI = ["binary_sensor", "climate", "sensor", "switch", "water_heater"]
 
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the Plugwise platform."""
@@ -70,11 +70,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
     if single_master_thermostat is not None:
         if single_master_thermostat == True:
-            PLATFORMS = PLATFORMS_2
+            PLATFORMS = CLIMATE
         else:
-            PLATFORMS = PLATFORMS_3
+            PLATFORMS = MULTI
     else:
-        PLATFORMS = PLATFORMS_1
+        PLATFORMS = SENSORS
 
     for component in PLATFORMS:
         hass.async_create_task(
