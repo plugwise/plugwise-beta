@@ -258,7 +258,7 @@ class PwThermostat(ClimateDevice):
         """Update the data for this climate device."""
         _LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)
-        heater_central_data = self._api.get_device_data(self._api.gateway_id)
+        heater_central_data = self._api.get_device_data(self._api.heater_id)
 
         if climate_data is None:
             _LOGGER.error("Received no climate_data for device %s.", self._name)
