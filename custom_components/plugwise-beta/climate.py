@@ -134,7 +134,10 @@ class PwThermostat(ClimateDevice):
                 return CURRENT_HVAC_COOL
             return CURRENT_HVAC_IDLE
         else:
-            if (self._central_heating_state is not None or self._boiler_state is not None):
+            if (
+                self._central_heating_state is not None 
+                or self._boiler_state is not None
+            ):
                 if self._thermostat > self._temperature:
                     return CURRENT_HVAC_HEAT
             return CURRENT_HVAC_IDLE
@@ -280,7 +283,7 @@ class PwThermostat(ClimateDevice):
         """Update the data for this climate device."""
         _LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)
-        heater_central_data = self._api.get_device_data(self._api.gateway_id)
+        heater_central_data = self._api.get_device_data(self._api.heater_id)
 
         if climate_data is None:
             _LOGGER.error("Received no climate_data for device %s.", self._name)
