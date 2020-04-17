@@ -19,8 +19,8 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
 
-SENSORS = ["sensor"]
-CLIMATE = ["binary_sensor", "climate", "sensor", "switch"]
+SENSOR = ["sensor"]
+SINGLE = ["binary_sensor", "climate", "sensor", "switch"]
 MULTI = ["binary_sensor", "climate", "sensor", "switch", "water_heater"]
 
 async def async_setup(hass: HomeAssistant, config: dict):
@@ -70,11 +70,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
     if single_master_thermostat is not None:
         if single_master_thermostat == True:
-            PLATFORMS = CLIMATE
+            PLATFORMS = SINGLE
         else:
             PLATFORMS = MULTI
     else:
-        PLATFORMS = SENSORS
+        PLATFORMS = SENSOR
 
     for component in PLATFORMS:
         hass.async_create_task(

@@ -44,7 +44,7 @@ class PwSwitch(SwitchDevice):
         self._name = name
         self._dev_id = dev_id
         self._device_is_on = False
-        self._unique_id = f"{dev_id}-{name}"
+        self._unique_id = f"sw-{dev_id}-{name}"
 
     @property
     def unique_id(self):
