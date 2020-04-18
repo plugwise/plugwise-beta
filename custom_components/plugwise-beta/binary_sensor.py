@@ -68,7 +68,15 @@ class PwBinarySensor(BinarySensorDevice):
         self._name = name
         self._binary_sensor = binary_sensor
         self._is_on = False
-        self._unique_id = f"bs-{dev_id}-{name}"
+        self._unique_id = f"bs-{dev_id}-{name}-{sensor}"
+
+        sensorname = sensor.replace("_"," ").title()
+        self._sensorname = f"{name} {sensorname}"
+
+        self._via_id = self._api.gateway_id
+        if self._dev_id == self._via_id:
+            self._via_id = None
+            self._name = f"Smile {self._name}"
 
     @property
     def unique_id(self):
@@ -92,7 +100,7 @@ class PwBinarySensor(BinarySensorDevice):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._name
+        return self._sensorname
 
     @property
     def should_poll(self):
@@ -120,9 +128,9 @@ class PwBinarySensor(BinarySensorDevice):
             via_device = (DOMAIN, self._api.gateway_id)
         return {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": dev_name,
+            "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device": via_device,
+            "via_device": (DOMAIN, self._via_id),
         }
 
     @property

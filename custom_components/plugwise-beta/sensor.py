@@ -207,7 +207,6 @@ class PwThermostatSensor(Entity):
         sensorname = sensor.replace("_"," ").title()
         self._sensorname = f"{name} {sensorname}"
 
-
         self._via_id = self._api.gateway_id
         if self._dev_id == self._via_id:
             self._via_id = None
@@ -216,7 +215,6 @@ class PwThermostatSensor(Entity):
     @property
     def unique_id(self):
         """Return a unique ID."""
-        _LOGGER.debug("Uniq id = %s",self._unique_id)
         return self._unique_id
 
     async def async_added_to_hass(self):
