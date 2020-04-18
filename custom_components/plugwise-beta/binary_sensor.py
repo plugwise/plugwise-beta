@@ -72,7 +72,7 @@ class PwBinarySensor(BinarySensorDevice):
         self._name = name
         self._binary_sensor = binary_sensor
         self._is_on = False
-        self._unique_id = f"{dev_id}-{name}"
+        self._unique_id = f"bs-{dev_id}-{name}"
 
     @property
     def unique_id(self):

@@ -5,6 +5,7 @@ from typing import Dict
 
 from homeassistant.components.climate import ClimateDevice
 from homeassistant.components.climate.const import (
+    CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
     HVAC_MODE_AUTO,
@@ -100,7 +101,8 @@ class PwThermostat(ClimateDevice):
         self._water_pressure = None
         self._schedule_temp = None
         self._hvac_mode = None
-        self._unique_id = f"{dev_id}-climate"
+        self._single_thermostat = self._api.single_master_thermostat()
+        self._unique_id = f"cl-{dev_id}-{name}"
 
     @property
     def unique_id(self):
@@ -124,12 +126,20 @@ class PwThermostat(ClimateDevice):
     @property
     def hvac_action(self):
         """Return the current action."""
-        if (
-            self._central_heating_state is not None or self._boiler_state is not None
-        ) and self._cooling_state is None:
-            if self._thermostat > self._temperature:
+        if self._single_thermostat:
+            if self._central_heating_state or self._boiler_state:
                 return CURRENT_HVAC_HEAT
-        return CURRENT_HVAC_IDLE
+            if self._cooling_state:
+                return CURRENT_HVAC_COOL
+            return CURRENT_HVAC_IDLE
+        else:
+            if (
+                self._central_heating_state is not None 
+                or self._boiler_state is not None
+            ):
+                if self._thermostat > self._temperature:
+                    return CURRENT_HVAC_HEAT
+            return CURRENT_HVAC_IDLE
 
     @property
     def name(self):
@@ -183,7 +193,10 @@ class PwThermostat(ClimateDevice):
     @property
     def hvac_modes(self):
         """Return the available hvac modes list."""
-        if self._central_heating_state is not None or self._boiler_state is not None:
+        if (
+            self._central_heating_state is not None 
+            or self._boiler_state is not None
+        ):
             if self._cooling_state is not None:
                 return HVAC_MODES_2
             return HVAC_MODES_1
@@ -306,15 +319,14 @@ class PwThermostat(ClimateDevice):
                 if heater_central_data["cooling_state"] is not None:
                     self._cooling_state = heater_central_data["cooling_state"]
 
-            if self._schema_status:
-                self._hvac_mode = HVAC_MODE_AUTO
-            elif (
-                self._central_heating_state is not None
-                or self._boiler_state is not None
-                or self._domestic_hot_water_state is not None
-            ):
-                if self._cooling_state is not None:
-                    self._hvac_mode = HVAC_MODE_HEAT_COOL
-                self._hvac_mode = HVAC_MODE_HEAT
-            else:
-                self._hvac_mode = HVAC_MODE_OFF
+        if self._schema_status:
+            self._hvac_mode = HVAC_MODE_AUTO
+        elif self._central_heating_state is not None or self._boiler_state is not None:
+            if self._cooling_state is not None:
+                self._hvac_mode = HVAC_MODE_HEAT_COOL
+            self._hvac_mode = HVAC_MODE_HEAT
+        elif self._cooling_state is not None:
+            if self._central_heating_state is not None or self._boiler_state is not None:
+                self._hvac_mode = HVAC_MODE_HEAT_COOL
+
+
