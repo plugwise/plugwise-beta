@@ -122,10 +122,6 @@ class PwBinarySensor(BinarySensorDevice):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        via_device = None
-        dev_name = f"{self._name.split('_')[0]} Sensors"
-        if self._dev_id is not self._api.gateway_id:
-            via_device = (DOMAIN, self._api.gateway_id)
         return {
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
