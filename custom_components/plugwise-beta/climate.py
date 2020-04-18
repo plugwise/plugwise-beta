@@ -9,7 +9,6 @@ from homeassistant.components.climate.const import (
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
     HVAC_MODE_AUTO,
-    HVAC_MODE_COOL,
     HVAC_MODE_HEAT,
     HVAC_MODE_HEAT_COOL,
     HVAC_MODE_OFF,
@@ -201,7 +200,7 @@ class PwThermostat(ClimateDevice):
     @property
     def hvac_mode(self):
         """Return current active hvac state."""
-        self._hvac_mode
+        return self._hvac_mode
 
     @property
     def target_temperature(self):
@@ -318,15 +317,12 @@ class PwThermostat(ClimateDevice):
 
         if self._schema_status:
             self._hvac_mode = HVAC_MODE_AUTO
-        elif self._central_heating_state or self._boiler_state:
+        elif self._central_heating_state is not None or self._boiler_state is not None:
             if self._cooling_state is not None:
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
             self._hvac_mode = HVAC_MODE_HEAT
-        elif self._cooling_state:
-            if self._central_heating_state is not None:
+        elif self._cooling_state is not None:
+            if self._central_heating_state is not None or self._boiler_state is not None:
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
-            self._hvac_mode = HVAC_MODE_COOL
-        else:
-            self._hvac_mode = HVAC_MODE_OFF
 
 
