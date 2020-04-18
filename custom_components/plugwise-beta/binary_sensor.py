@@ -40,7 +40,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     ]
     all_devices = api.get_all_devices()
     for dev_id, device in all_devices.items():
-        if device["class"] in binary_sensor_classes: 
+        if device["class"] in binary_sensor_classes:
             _LOGGER.debug("Plugwise device_class %s found", device["class"])
             data = api.get_device_data(dev_id)
             for binary_sensor in BINARY_SENSOR_LIST:
@@ -118,11 +118,15 @@ class PwBinarySensor(BinarySensorDevice):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
+        via_device = None
+        dev_name = f"{self._name.split('_')[0]} Sensors"
+        if self._dev_id is not self._api.gateway_id:
+            via_device = (DOMAIN, self._api.gateway_id)
         return {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._name,
+            "name": dev_name,
             "manufacturer": "Plugwise",
-            "via_device": (DOMAIN, self._api.gateway_id),
+            "via_device": via_device,
         }
 
     @property
