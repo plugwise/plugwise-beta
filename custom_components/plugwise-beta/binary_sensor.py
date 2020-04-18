@@ -70,7 +70,7 @@ class PwBinarySensor(BinarySensorDevice):
         self._is_on = False
         self._unique_id = f"bs-{dev_id}-{name}-{sensor}"
 
-        sensorname = sensor.replace("_", " ").title()
+        sensorname = binary_sensor.replace("_", " ").title()
         self._sensorname = f"{name} {sensorname}"
 
         self._via_id = self._api.gateway_id
