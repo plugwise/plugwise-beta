@@ -11,7 +11,7 @@ A fully asynchronous approach to supporting Plugwise devices. This repository is
 
  - [x] The current (feb/mar/apr 2020) `plugwise` HA-core component only supports Anna devices (both v1 and v3)
  - [x] This module supports all devices as indicated on the [Plugwise-Smile](https://github.com/plugwise/Plugwise-Smile) repository page
- - [ ] There is no pending PR for HA-core yet, still ironing out the kinks together with **you** using this module
+ - [ ] [PR](https://github.com/home-assistant/core/pull/33691) for HA-core is out, but we will continue ironing out the kinks together with **you** using this `custom_module`
 
 ### Required python module (status)
 
@@ -28,9 +28,9 @@ A fully asynchronous approach to supporting Plugwise devices. This repository is
 ## What can I expect in HA from this component
 
   - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating-demand status, per thermostat. Also, setting of temperature, preset and switching the active schedule on and off.
-  - `sensor`: A number of sensoric values depending on your hardware (Outdoor temperature, Anna's illuminance, Plug power-usage, P1 values)
+  - `sensor` and `binary_sensor`: A number of sensoric values depending on your hardware (Outdoor temperature, Anna's illuminance, Plug power-usage, P1 values)
   - `switch`: Plugs are available as switches, also switching them on/off is supported.
-  - `water_heater`: When your heating system connected to the Smile/Adam supports heating of tap-water, the status of this function is shown via the water_heater entity icon, next to the status of the normal heating function (idle/heating/hot_water)
+  - `water_heater`: When your heating system connected to the Smile/Adam supports heating of tap-water, the status of this function is shown via the water_heater entity icon, next to the status of the normal heating function (idle/heating/hot_water) - **note** this is not available on all platforms (there is logic in place deciding if you need this as a seperate entity)
 
 ## How to set-up?
 
