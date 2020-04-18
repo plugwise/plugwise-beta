@@ -100,11 +100,15 @@ class PwWaterHeater(Entity):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
+        via_device = None
+        dev_name = f"{self._name.split('_')[0]} Heater Central/Boiler"
+        if self._dev_id is not self._api.gateway_id:
+            via_device = (DOMAIN, self._api.gateway_id)
         return {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._name,
+            "name": dev_name,
             "manufacturer": "Plugwise",
-            "via_device": (DOMAIN, self._api.gateway_id),
+            "via_device": via_device,
         }
 
     @property
