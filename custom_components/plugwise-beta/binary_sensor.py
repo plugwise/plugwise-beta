@@ -40,7 +40,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     ]
     all_devices = api.get_all_devices()
     for dev_id, device in all_devices.items():
-        if device["class"] in binary_sensor_classes: 
+        if device["class"] in binary_sensor_classes:
             _LOGGER.debug("Plugwise device_class %s found", device["class"])
             data = api.get_device_data(dev_id)
             for binary_sensor in BINARY_SENSOR_LIST:
@@ -49,14 +49,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     _LOGGER.debug("Plugwise binary_sensor Dev %s", device["name"])
                     devices.append(
                         PwBinarySensor(
-                            api,
-                            updater,
-                            "{}_{}".format(device["name"], binary_sensor),
-                            binary_sensor,
-                            dev_id,
+                            api, updater, device["name"], binary_sensor, dev_id,
                         )
                     )
-                    _LOGGER.info("Added binary_sensor.%s", binary_sensor)
+                    _LOGGER.info("Added binary_sensor.%s", device["name"])
 
     async_add_entities(devices, True)
 
@@ -96,7 +92,7 @@ class PwBinarySensor(BinarySensorDevice):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return f"{self._name.replace('_', ' ')}"
+        return self._name
 
     @property
     def should_poll(self):

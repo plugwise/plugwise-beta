@@ -21,14 +21,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for dev_id, device in all_devices.items():
         if "plug" in device["types"]:
             _LOGGER.debug("Plugwise switch Dev %s", device["name"])
-            devices.append(
-                PwSwitch(
-                    api,
-                    updater,
-                    device["name"],
-                    dev_id,
-                )
-            )
+            devices.append(PwSwitch(api, updater, device["name"], dev_id,))
             _LOGGER.info("Added switch.%s", "{}".format(device["name"]))
 
     async_add_entities(devices, True)
@@ -102,7 +95,7 @@ class PwSwitch(SwitchDevice):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._name.replace('_', ' ')
+        return self._name
 
     @property
     def icon(self):

@@ -23,6 +23,7 @@ SENSOR = ["sensor"]
 SINGLE = ["binary_sensor", "climate", "sensor", "switch"]
 MULTI = ["binary_sensor", "climate", "sensor", "switch", "water_heater"]
 
+
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the Plugwise platform."""
     return True
@@ -44,6 +45,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     else:
         update_interval = timedelta(seconds=60)
 
+    api.get_all_devices()
+
     _LOGGER.debug("Plugwise async update interval %s", update_interval)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
@@ -55,13 +58,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.debug("Plugwise gateway is %s", api.gateway_id)
     device_registry = await dr.async_get_registry(hass)
-    _LOGGER.debug("Plugwise device registry  %s", device_registry)
     result = device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, api.gateway_id)},
         manufacturer="Plugwise",
         name="{} - {} Gateway".format(entry.title, api.smile_name),
-        model=api.smile_name,
+        model=f"Smile {api.smile_name}",
         sw_version=api.smile_version[0],
     )
     _LOGGER.debug("Plugwise device registry  %s", result)
