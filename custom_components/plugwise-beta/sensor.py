@@ -204,7 +204,7 @@ class PwThermostatSensor(Entity):
         self._state = None
         self._unique_id = f"cl-{dev_id}-{name}-{sensor}"
 
-        sensorname = sensor.replace("_"," ").title()
+        sensorname = sensor.replace("_", " ").title()
         self._sensorname = f"{name} {sensorname}"
 
         self._via_id = self._api.gateway_id
@@ -310,14 +310,13 @@ class PwPowerSensor(Entity):
         self._state = None
         self._unique_id = f"{dev_id}-{name}-{sensor}"
 
-        sensorname = sensor.replace("_"," ").title()
+        sensorname = sensor.replace("_", " ").title()
         self._sensorname = f"{name} {sensorname}"
 
         self._via_id = self._api.gateway_id
         if self._dev_id == self._via_id:
             self._via_id = None
             self._name = f"Smile {self._name}"
-
 
     @property
     def unique_id(self):

@@ -323,5 +323,8 @@ class PwThermostat(ClimateDevice):
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
             self._hvac_mode = HVAC_MODE_HEAT
         elif self._cooling_state is not None:
-            if self._central_heating_state is not None or self._boiler_state is not None:
+            if (
+                self._central_heating_state is not None
+                or self._boiler_state is not None
+            ):
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
