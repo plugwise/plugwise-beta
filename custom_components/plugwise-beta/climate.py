@@ -254,6 +254,7 @@ class PwThermostat(ClimateDevice):
         state = "false"
         if hvac_mode == HVAC_MODE_AUTO:
             state = "true"
+            await self._api.set_temperature(self._loc_id, self._schedule_temp)
             self._thermostat = self._schedule_temp
         await self._api.set_schedule_state(
             self._loc_id, self._last_active_schema, state
