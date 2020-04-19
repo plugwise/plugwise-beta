@@ -77,6 +77,9 @@ class PwBinarySensor(BinarySensorDevice):
         if self._dev_id == self._via_id:
             self._via_id = None
             self._name = f"Smile {self._name}"
+        if self._dev_id == self._api.heater_id:
+            self._name = f"Auxiliary"
+            self._sensorname = f"{self._name} {sensorname}"
 
     @property
     def unique_id(self):
