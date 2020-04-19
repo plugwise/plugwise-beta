@@ -254,6 +254,8 @@ class PwThermostat(ClimateDevice):
         state = "false"
         if hvac_mode == HVAC_MODE_AUTO:
             state = "true"
+            await self._api.set_temperature(self._loc_id, self._schedule_temp)
+            self._thermostat = self._schedule_temp
         await self._api.set_schedule_state(
             self._loc_id, self._last_active_schema, state
         )
@@ -282,13 +284,14 @@ class PwThermostat(ClimateDevice):
                 self._thermostat = climate_data["thermostat"]
             if "temperature" in climate_data:
                 self._temperature = climate_data["temperature"]
+            if "schedule_temperature" in climate_data:
+                self._schedule_temp = climate_data["schedule_temperature"]
             if "available_schedules" in climate_data:
                 self._schema_names = climate_data["available_schedules"]
             if "selected_schedule" in climate_data:
                 self._selected_schema = climate_data["selected_schedule"]
                 if self._selected_schema is not None:
                     self._schema_status = True
-                    self._schedule_temp = self._thermostat
                 else:
                     self._schema_status = False
             if "last_used" in climate_data:
