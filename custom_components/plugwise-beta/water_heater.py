@@ -44,9 +44,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 if state in data:
                     if idx == 1:
                         _LOGGER.debug("Plugwise water_heater Dev %s", device["name"])
-                        water_heater = PwWaterHeater(api, updater, device["name"], dev_id)
+                        water_heater = PwWaterHeater(
+                            api, updater, device["name"], dev_id
+                        )
                         devices.append(water_heater)
-                        _LOGGER.info("Added water_heater.%s", "{}".format(device["name"]))
+                        _LOGGER.info(
+                            "Added water_heater.%s", "{}".format(device["name"])
+                        )
                         idx += 1
 
     async_add_entities(devices, True)
@@ -91,7 +95,7 @@ class PwWaterHeater(Entity):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._name.replace('_', ' ')
+        return self._name
 
     @property
     def device_info(self) -> Dict[str, any]:
@@ -112,7 +116,11 @@ class PwWaterHeater(Entity):
         """Return the state of the water_heater."""
         if self._cooling_state:
             return CURRENT_HVAC_COOL
-        elif self._central_heating_state or self._boiler_state or self._domestic_hot_water_state:
+        elif (
+            self._central_heating_state
+            or self._boiler_state
+            or self._domestic_hot_water_state
+        ):
             return CURRENT_HVAC_HEAT
         else:
             return CURRENT_HVAC_IDLE
@@ -131,7 +139,11 @@ class PwWaterHeater(Entity):
         """Return the icon to use in the frontend."""
         if self._cooling_state:
             return COOL_ICON
-        elif self._central_heating_state or self._boiler_state or self._domestic_hot_water_state:
+        elif (
+            self._central_heating_state
+            or self._boiler_state
+            or self._domestic_hot_water_state
+        ):
             return FLAME_ICON
         else:
             return IDLE_ICON

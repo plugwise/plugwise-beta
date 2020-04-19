@@ -134,7 +134,7 @@ class PwThermostat(ClimateDevice):
             return CURRENT_HVAC_IDLE
         else:
             if (
-                self._central_heating_state is not None 
+                self._central_heating_state is not None
                 or self._boiler_state is not None
             ):
                 if self._thermostat > self._temperature:
@@ -144,7 +144,7 @@ class PwThermostat(ClimateDevice):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._name.replace('_', ' ')
+        return self._name
 
     @property
     def device_info(self) -> Dict[str, any]:
@@ -193,10 +193,7 @@ class PwThermostat(ClimateDevice):
     @property
     def hvac_modes(self):
         """Return the available hvac modes list."""
-        if (
-            self._central_heating_state is not None 
-            or self._boiler_state is not None
-        ):
+        if self._central_heating_state is not None or self._boiler_state is not None:
             if self._cooling_state is not None:
                 return HVAC_MODES_2
             return HVAC_MODES_1
@@ -326,7 +323,8 @@ class PwThermostat(ClimateDevice):
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
             self._hvac_mode = HVAC_MODE_HEAT
         elif self._cooling_state is not None:
-            if self._central_heating_state is not None or self._boiler_state is not None:
+            if (
+                self._central_heating_state is not None
+                or self._boiler_state is not None
+            ):
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
-
-

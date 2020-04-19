@@ -49,14 +49,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     _LOGGER.debug("Plugwise binary_sensor Dev %s", device["name"])
                     devices.append(
                         PwBinarySensor(
-                            api,
-                            updater,
-                            "{}_{}".format(device["name"], binary_sensor),
-                            binary_sensor,
-                            dev_id,
+                            api, updater, device["name"], binary_sensor, dev_id,
                         )
                     )
-                    _LOGGER.info("Added binary_sensor.%s", binary_sensor)
+                    _LOGGER.info("Added binary_sensor.%s", device["name"])
 
     async_add_entities(devices, True)
 
@@ -72,7 +68,15 @@ class PwBinarySensor(BinarySensorDevice):
         self._name = name
         self._binary_sensor = binary_sensor
         self._is_on = False
-        self._unique_id = f"bs-{dev_id}-{name}"
+        self._unique_id = f"bs-{dev_id}-{name}-{binary_sensor}"
+
+        sensorname = binary_sensor.replace("_", " ").title()
+        self._sensorname = f"{name} {sensorname}"
+
+        self._via_id = self._api.gateway_id
+        if self._dev_id == self._via_id:
+            self._via_id = None
+            self._name = f"Smile {self._name}"
 
     @property
     def unique_id(self):
@@ -96,7 +100,7 @@ class PwBinarySensor(BinarySensorDevice):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return f"{self._name.replace('_', ' ')}"
+        return self._sensorname
 
     @property
     def should_poll(self):
@@ -118,15 +122,11 @@ class PwBinarySensor(BinarySensorDevice):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        via_device = None
-        dev_name = f"{self._name.split('_')[0]} Sensors"
-        if self._dev_id is not self._api.gateway_id:
-            via_device = (DOMAIN, self._api.gateway_id)
         return {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": dev_name,
+            "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device": via_device,
+            "via_device": (DOMAIN, self._via_id),
         }
 
     @property

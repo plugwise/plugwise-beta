@@ -164,7 +164,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                             PwPowerSensor(
                                 api,
                                 updater,
-                                "{}_{}".format(device["name"], sensor),
+                                device["name"],
                                 dev_id,
                                 sensor,
                                 sensor_type,
@@ -175,15 +175,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                             PwThermostatSensor(
                                 api,
                                 updater,
-                                "{}_{}".format(device["name"], sensor),
+                                device["name"],
                                 dev_id,
                                 sensor,
                                 sensor_type,
                             )
                         )
-                    _LOGGER.info(
-                        "Added sensor.%s", "{}_{}".format(device["name"], sensor)
-                    )
+                    _LOGGER.info("Added sensor.%s", device["name"])
 
     async_add_entities(devices, True)
 
@@ -195,17 +193,24 @@ class PwThermostatSensor(Entity):
         """Set up the Plugwise API."""
         self._api = api
         self._updater = updater
-        self._name = name
         self._dev_id = dev_id
         self._device = sensor_type[2]
+        self._name = name
         self._sensor = sensor
         self._sensor_type = sensor_type
         self._unit_of_measurement = sensor_type[1]
         self._icon = sensor_type[3]
         self._class = sensor_type[2]
         self._state = None
-        self._unique_id = f"sr-{dev_id}-{name}"
-        _LOGGER.debug("Registering Plugwise %s", self._unique_id)
+        self._unique_id = f"cl-{dev_id}-{name}-{sensor}"
+
+        sensorname = sensor.replace("_", " ").title()
+        self._sensorname = f"{name} {sensorname}"
+
+        self._via_id = self._api.gateway_id
+        if self._dev_id == self._via_id:
+            self._via_id = None
+            self._name = f"Smile {self._name}"
 
     @property
     def unique_id(self):
@@ -239,7 +244,7 @@ class PwThermostatSensor(Entity):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._name.replace('_', ' ')
+        return self._sensorname
 
     @property
     def state(self):
@@ -249,15 +254,11 @@ class PwThermostatSensor(Entity):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        via_device = None
-        dev_name = f"{self._name.split('_')[0]} Sensors"
-        if self._dev_id is not self._api.gateway_id:
-            via_device = (DOMAIN, self._api.gateway_id)
         return {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": dev_name,
+            "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device": via_device,
+            "via_device": (DOMAIN, self._via_id),
         }
 
     @property
@@ -303,8 +304,15 @@ class PwPowerSensor(Entity):
         self._class = sensor_type[2]
         self._sensor = sensor
         self._state = None
-        self._unique_id = f"{dev_id}-{name}-{sensor_type[2]}"
-        _LOGGER.debug("Registering Plugwise %s", self._unique_id)
+        self._unique_id = f"{dev_id}-{name}-{sensor}"
+
+        sensorname = sensor.replace("_", " ").title()
+        self._sensorname = f"{name} {sensorname}"
+
+        self._via_id = self._api.gateway_id
+        if self._dev_id == self._via_id:
+            self._via_id = None
+            self._name = f"Smile {self._name}"
 
     @property
     def unique_id(self):
@@ -333,7 +341,7 @@ class PwPowerSensor(Entity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return self._name.replace('_', ' ')
+        return self._sensorname
 
     @property
     def icon(self):
@@ -357,7 +365,7 @@ class PwPowerSensor(Entity):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device": (DOMAIN, self._api.gateway_id),
+            "via_device": (DOMAIN, self._via_id),
         }
 
     @property
