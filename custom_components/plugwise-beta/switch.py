@@ -20,8 +20,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     all_devices = api.get_all_devices()
     for dev_id, device in all_devices.items():
         if "plug" in device["types"]:
+            model = "Plug"
             _LOGGER.debug("Plugwise switch Dev %s", device["name"])
-            devices.append(PwSwitch(api, updater, device["name"], dev_id,))
+            devices.append(PwSwitch(api, updater, device["name"], dev_id, model,))
             _LOGGER.info("Added switch.%s", "{}".format(device["name"]))
 
     async_add_entities(devices, True)
@@ -30,10 +31,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class PwSwitch(SwitchDevice):
     """Representation of a Plugwise plug."""
 
-    def __init__(self, api, updater, name, dev_id):
+    def __init__(self, api, updater, name, dev_id, model):
         """Set up the Plugwise API."""
         self._api = api
         self._updater = updater
+        self._model = model
         self._name = name
         self._dev_id = dev_id
         self._device_is_on = False
@@ -66,16 +68,15 @@ class PwSwitch(SwitchDevice):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        dev_name = f"{self._name} Plug/Switch"
-
         via_device = self._api.gateway_id
         if self._dev_id is via_device:
             via_device = None
 
         return {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": dev_name,
+            "name": self._name,
             "manufacturer": "Plugwise",
+            "model": self._model,
             "via_device": via_device,
         }
 

@@ -49,7 +49,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     _LOGGER.debug("Plugwise binary_sensor Dev %s", device["name"])
                     devices.append(
                         PwBinarySensor(
-                            api, updater, device["name"], binary_sensor, dev_id,
+                            api,
+                            updater,
+                            device["name"],
+                            binary_sensor,
+                            dev_id,
+                            device["class"],
                         )
                     )
                     _LOGGER.info("Added binary_sensor.%s", device["name"])
@@ -60,11 +65,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class PwBinarySensor(BinarySensorDevice):
     """Representation of a Plugwise binary_sensor."""
 
-    def __init__(self, api, updater, name, binary_sensor, dev_id):
+    def __init__(self, api, updater, name, binary_sensor, dev_id, model):
         """Set up the Plugwise API."""
         self._api = api
         self._updater = updater
         self._dev_id = dev_id
+        self._model = model
         self._name = name
         self._binary_sensor = binary_sensor
         self._is_on = False
@@ -129,6 +135,7 @@ class PwBinarySensor(BinarySensorDevice):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
+            "model": self._model.replace("_", " ").title(),
             "via_device": (DOMAIN, self._via_id),
         }
 

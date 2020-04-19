@@ -160,6 +160,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             if sensor in data:
                 if data[sensor] is not None:
                     if "power" in device["types"]:
+                        model = None
+
+                        if "plug" in device["types"]:
+                            model = "Plug"
+
                         devices.append(
                             PwPowerSensor(
                                 api,
@@ -168,6 +173,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                                 dev_id,
                                 sensor,
                                 sensor_type,
+                                model,
                             )
                         )
                     else:
@@ -295,10 +301,11 @@ class PwThermostatSensor(Entity):
 class PwPowerSensor(Entity):
     """Power sensor devices."""
 
-    def __init__(self, api, updater, name, dev_id, sensor, sensor_type):
+    def __init__(self, api, updater, name, dev_id, sensor, sensor_type, model):
         """Set up the Plugwise API."""
         self._api = api
         self._updater = updater
+        self._model = model
         self._name = name
         self._dev_id = dev_id
         self._device = sensor_type[0]
@@ -368,6 +375,7 @@ class PwPowerSensor(Entity):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
+            "model": self._model,
             "via_device": (DOMAIN, self._via_id),
         }
 

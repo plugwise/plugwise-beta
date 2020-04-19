@@ -100,15 +100,13 @@ class PwWaterHeater(Entity):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        dev_name = f"{self._name} Heater Central/Auxiliary Device"
-
         via_device = self._api.gateway_id
         if self._dev_id is via_device:
             via_device = None
 
         return {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": dev_name,
+            "name": self._name,
             "manufacturer": "Plugwise",
             "via_device": via_device,
         }
