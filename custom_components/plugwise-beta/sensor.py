@@ -208,7 +208,6 @@ class PwThermostatSensor(Entity):
         self._icon = sensor_type[3]
         self._class = sensor_type[2]
         self._state = None
-        self._unique_id = f"cl-{dev_id}-{name}-{sensor}"
 
         sensorname = sensor.replace("_", " ").title()
         self._sensorname = f"{name} {sensorname}"
@@ -220,6 +219,8 @@ class PwThermostatSensor(Entity):
         if self._dev_id == self._api.heater_id:
             self._name = f"Auxiliary"
             self._sensorname = f"{self._name} {sensorname}"
+
+        self._unique_id = f"cl-{dev_id}-{self._name}-{sensor}"
 
     @property
     def unique_id(self):

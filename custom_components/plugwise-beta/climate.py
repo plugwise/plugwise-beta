@@ -104,7 +104,7 @@ class PwThermostat(ClimateDevice):
         self._schedule_temp = None
         self._hvac_mode = None
         self._single_thermostat = self._api.single_master_thermostat()
-        self._unique_id = f"cl-{dev_id}-{name}"
+        self._unique_id = f"cl-{dev_id}-{self._name}"
 
     @property
     def unique_id(self):

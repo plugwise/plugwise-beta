@@ -71,7 +71,11 @@ class PwWaterHeater(Entity):
         self._cooling_state = False
         self._domestic_hot_water_state = False
         self._central_heater_water_pressure = None
-        self._unique_id = f"wh-{dev_id}-{name}"
+
+        if self._dev_id == self._api.heater_id:
+            self._name = f"Auxiliary"
+
+        self._unique_id = f"wh-{dev_id}-{self._name}"
 
     @property
     def unique_id(self):

@@ -74,7 +74,6 @@ class PwBinarySensor(BinarySensorDevice):
         self._name = name
         self._binary_sensor = binary_sensor
         self._is_on = False
-        self._unique_id = f"bs-{dev_id}-{name}-{binary_sensor}"
 
         sensorname = binary_sensor.replace("_", " ").title()
         self._sensorname = f"{name} {sensorname}"
@@ -86,6 +85,8 @@ class PwBinarySensor(BinarySensorDevice):
         if self._dev_id == self._api.heater_id:
             self._name = f"Auxiliary"
             self._sensorname = f"{self._name} {sensorname}"
+
+        self._unique_id = f"bs-{dev_id}-{self._name}-{binary_sensor}"
 
     @property
     def unique_id(self):
