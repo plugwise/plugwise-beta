@@ -72,13 +72,16 @@ class PwWaterHeater(Entity):
         self._domestic_hot_water_state = False
         self._central_heater_water_pressure = None
 
+        whname = binary_sensor.replace("_", " ").title()
+        self._whname = f"{name} {whname}"
+        if self._dev_id == self._api.heater_id:
+            self._whname = f"Auxiliary {whname}"
+
         self._via_id = self._api.gateway_id
         if self._dev_id in [self._api.gateway_id, self._api.heater_id]:
             self._dev_id = self._api.gateway_id
             self._name = f"Smile {self._name}"
             self._via_id = None
-        if self._dev_id == self._api.heater_id:
-            self._name = f"Auxiliary"
 
         self._unique_id = f"wh-{dev_id}-{self._name}"
 
@@ -104,7 +107,7 @@ class PwWaterHeater(Entity):
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
-        return self._name
+        return self._whname
 
     @property
     def device_info(self) -> Dict[str, any]:
