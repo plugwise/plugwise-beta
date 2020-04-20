@@ -72,6 +72,11 @@ class PwWaterHeater(Entity):
         self._domestic_hot_water_state = False
         self._central_heater_water_pressure = None
 
+        self._via_id = self._api.gateway_id
+        if self._dev_id in [self._api.gateway_id, self._api.heater_id]:
+            self._dev_id = self._api.gateway_id
+            self._name = f"Smile {self._name}"
+            self._via_id = None
         if self._dev_id == self._api.heater_id:
             self._name = f"Auxiliary"
 
