@@ -72,10 +72,9 @@ class PwWaterHeater(Entity):
         self._domestic_hot_water_state = False
         self._central_heater_water_pressure = None
 
-        whname = binary_sensor.replace("_", " ").title()
-        self._whname = f"{name} {whname}"
+        self._whname = f"{self._name}"
         if self._dev_id == self._api.heater_id:
-            self._whname = f"Auxiliary {whname}"
+            self._whname = f"Auxiliary {self._whname}"
 
         self._via_id = self._api.gateway_id
         if self._dev_id in [self._api.gateway_id, self._api.heater_id]:
