@@ -58,6 +58,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             device["name"],
             dev_id,
             device["location"],
+            device["class"],
             DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
         )
@@ -74,13 +75,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class PwThermostat(ClimateDevice):
     """Representation of an Plugwise thermostat."""
 
-    def __init__(self, api, updater, name, dev_id, loc_id, min_temp, max_temp):
+    def __init__(self, api, updater, name, dev_id, loc_id, model, min_temp, max_temp):
         """Set up the Plugwise API."""
         self._api = api
         self._updater = updater
         self._name = name
         self._dev_id = dev_id
         self._loc_id = loc_id
+        self._model = model
         self._min_temp = min_temp
         self._max_temp = max_temp
 
@@ -149,14 +151,16 @@ class PwThermostat(ClimateDevice):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        via_device = None
-        dev_name = f"{self._name.split('_')[0]} Climate/Thermostat"
-        if self._dev_id is not self._api.gateway_id:
-            via_device = (DOMAIN, self._api.gateway_id)
+
+        via_device = self._api.gateway_id
+        if self._dev_id is via_device:
+            via_device = None
+
         return {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": dev_name,
+            "name": self._name,
             "manufacturer": "Plugwise",
+            "model": self._model.replace("_", " ").title(),
             "via_device": via_device,
         }
 
