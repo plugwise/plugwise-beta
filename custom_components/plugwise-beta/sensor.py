@@ -163,7 +163,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         model = None
 
                         if "plug" in device["types"]:
-                            model = "Plug"
+                            model = "Metered Switch"
 
                         devices.append(
                             PwPowerSensor(

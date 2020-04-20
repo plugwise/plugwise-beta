@@ -20,7 +20,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     all_devices = api.get_all_devices()
     for dev_id, device in all_devices.items():
         if "plug" in device["types"]:
-            model = "Switch"
+            model = "Metered Switch"
             _LOGGER.debug("Plugwise switch Dev %s", device["name"])
             devices.append(PwSwitch(api, updater, device["name"], dev_id, model,))
             _LOGGER.info("Added switch.%s", "{}".format(device["name"]))
