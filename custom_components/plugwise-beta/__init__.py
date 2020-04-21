@@ -57,7 +57,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.debug("Plugwise gateway is %s", api.gateway_id)
     device_registry = await dr.async_get_registry(hass)
-    result = device_registry.async_get_or_create(
+    device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, api.gateway_id)},
         manufacturer="Plugwise",
@@ -95,7 +95,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         await asyncio.gather(
             *[
                 hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in PLATFORMS
+                for component in CLIMATE
             ]
         )
     )
