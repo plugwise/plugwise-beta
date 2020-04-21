@@ -15,7 +15,13 @@ from homeassistant.const import (
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
-from .const import DEVICE_CLASS_GAS, DOMAIN
+from .const import (
+    DEVICE_CLASS_GAS,
+    DOMAIN,
+    COOL_ICON,
+    FLAME_ICON,
+    IDLE_ICON,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -140,6 +146,11 @@ SENSOR_MAP = {
     ],
 }
 
+INDICATE_ACTIVE_LOCAL_DEVICE = [
+    "boiler_state",
+    "cooling_state",
+    "flame_state",
+]
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
@@ -151,6 +162,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     devices = []
     all_devices = api.get_all_devices()
+    single_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Plugwise all devices (not just sensor) %s", all_devices)
     for dev_id, device in all_devices.items():
         data = api.get_device_data(dev_id)
@@ -189,6 +201,28 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         )
                     _LOGGER.info("Added sensor.%s", device["name"])
 
+        if single_thermostat is not None and not single_thermostat:
+            idx = 1
+            for state in INDICATE_ACTIVE_LOCAL_DEVICE:
+                if state in data:
+                    if idx == 1:
+                        _LOGGER.debug("Plugwise aux sensor Dev %s", device["name"])
+                        devices.append(
+                            PwThermostatSensor(
+                                api,
+                                updater,
+                                device["name"],
+                                dev_id,
+                                "state",
+                                None,
+                            )
+                        )
+                        _LOGGER.info(
+                            "Added sensor.%s_state", "{}".format(device["name"])
+                        )
+                        idx += 1
+
+
     async_add_entities(devices, True)
 
 
@@ -200,14 +234,21 @@ class PwThermostatSensor(Entity):
         self._api = api
         self._updater = updater
         self._dev_id = dev_id
-        self._device = sensor_type[2]
+        if sensor_type is not None:
+            self._unit_of_measurement = sensor_type[1]
+            self._device = sensor_type[2]
+            self._icon = sensor_type[3]
+        else:
+            self._unit_of_measurement = None
+            self._device = "auxiliary"
         self._name = name
         self._sensor = sensor
         self._sensor_type = sensor_type
-        self._unit_of_measurement = sensor_type[1]
-        self._icon = sensor_type[3]
-        self._class = sensor_type[2]
+        self._class = self._device
         self._state = None
+        self._boiler_state = False
+        self._central_heating_state = False
+        self._cooling_state = False
 
         if self._dev_id == self._api.heater_id:
             self._name = f"Auxiliary"
@@ -278,6 +319,12 @@ class PwThermostatSensor(Entity):
     @property
     def icon(self):
         """Icon for the sensor."""
+        if self._sensor_type is None:
+            if self._boiler_state or self._central_heating_state:
+                return FLAME_ICON
+            if self._cooling_state:
+                return COOL_ICON
+            return IDLE_ICON
         return self._icon
 
     def update(self):
@@ -297,6 +344,23 @@ class PwThermostatSensor(Entity):
                         measurement = int(measurement)
                     self._state = measurement
 
+            if "boiler_state" in data:
+                if data["boiler_state"] is not None:
+                    self._boiler_state = data["boiler_state"]
+            if "central_heating_state" in data:
+                if data["central_heating_state"] is not None:
+                    self._central_heating_state = data["central_heating_state"]
+            if "cooling_state" in data:
+                if data["cooling_state"] is not None:
+                    self._cooling_state = data["cooling_state"]
+            if self._sensor == "state":
+                if self._boiler_state or self._central_heating_state:
+                    self._state = "heating"
+                elif self._cooling_state:
+                    self._state = "cooling"
+                else:
+                    self._state = "idle"
+                    
 
 class PwPowerSensor(Entity):
     """Power sensor devices."""
