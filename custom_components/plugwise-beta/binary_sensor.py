@@ -75,14 +75,14 @@ class PwBinarySensor(BinarySensorDevice):
         self._binary_sensor = binary_sensor
         self._is_on = False
 
-        bsensorname = binary_sensor.replace("_", " ").title()
-        self._sensorname = f"{name} {bsensorname}"
         if self._dev_id == self._api.heater_id:
-            self._sensorname = f"Auxiliary {bsensorname}"
+            self._name = f"Auxiliary"
+
+        bsensorname = binary_sensor.replace("_", " ").title()
+        self._sensorname = f"{self._name} {bsensorname}"
 
         self._via_id = self._api.gateway_id
-        if self._dev_id in [self._api.gateway_id, self._api.heater_id]:
-            self._dev_id = self._api.gateway_id
+        if self._dev_id == self._api.gateway_id:
             self._name = f"Smile {self._name}"
             self._via_id = None
 

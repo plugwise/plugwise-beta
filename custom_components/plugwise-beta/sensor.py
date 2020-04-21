@@ -209,14 +209,13 @@ class PwThermostatSensor(Entity):
         self._class = sensor_type[2]
         self._state = None
 
-        sensorname = sensor.replace("_", " ").title()
-        self._sensorname = f"{name} {sensorname}"
         if self._dev_id == self._api.heater_id:
-            self._sensorname = f"Auxiliary {sensorname}"
+            self._name = f"Auxiliary"
+        sensorname = sensor.replace("_", " ").title()
+        self._sensorname = f"{self._name} {sensorname}"
 
         self._via_id = self._api.gateway_id
-        if self._dev_id in [self._api.gateway_id, self._api.heater_id]:
-            self._dev_id = self._api.gateway_id
+        if self._dev_id == self._api.gateway_id:
             self._name = f"Smile {self._name}"
             self._via_id = None
 
