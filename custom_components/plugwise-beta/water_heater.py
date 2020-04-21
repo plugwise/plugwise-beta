@@ -77,8 +77,7 @@ class PwWaterHeater(Entity):
             self._whname = f"Auxiliary {self._whname}"
 
         self._via_id = self._api.gateway_id
-        if self._dev_id in [self._api.gateway_id, self._api.heater_id]:
-            self._dev_id = self._api.gateway_id
+        if self._dev_id == self._api.gateway_id:
             self._name = f"Smile {self._name}"
             self._via_id = None
 
