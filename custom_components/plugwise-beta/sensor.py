@@ -215,7 +215,7 @@ class PwThermostatSensor(Entity):
         self._sensorname = f"{self._name} {sensorname}"
 
         self._via_id = self._api.gateway_id
-        if self._dev_id == self.api.gateway_id:
+        if self._dev_id == self._api.gateway_id:
             self._name = f"Smile {self._name}"
             self._via_id = None
 
