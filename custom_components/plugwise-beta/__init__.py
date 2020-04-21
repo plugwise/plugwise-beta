@@ -19,8 +19,8 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
 
-SENSOR = ["sensor"]
-CLIMATE = ["binary_sensor", "climate", "sensor", "switch"]
+SENSOR_PLATFORMS = ["sensor"]
+ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
 
 
 async def async_setup(hass: HomeAssistant, config: dict):
@@ -32,12 +32,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
-        host=entry.data.get("host"),
-        password=entry.data.get("password"),
-        websession=websession,
+        host=entry.data["host"], password=entry.data["password"], websession=websession
     )
 
-    await api.connect()
+    try:
+        await api.connect()
+    except asyncio.TimeoutError:
+        _LOGGER.error("Timeout while connecting to Smile")
 
     if api.smile_type == "power":
         update_interval = timedelta(seconds=10)
@@ -57,7 +58,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.debug("Plugwise gateway is %s", api.gateway_id)
     device_registry = await dr.async_get_registry(hass)
-    result = device_registry.async_get_or_create(
+    device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, api.gateway_id)},
         manufacturer="Plugwise",
@@ -69,12 +70,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     single_master_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
+    platforms = ALL_PLATFORMS
     if single_master_thermostat is None:
-        PLATFORMS = SENSOR
-    else:
-        PLATFORMS = CLIMATE
+        platforms = SENSOR_PLATFORMS
 
-    for component in PLATFORMS:
+    for component in platforms:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
@@ -95,7 +95,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         await asyncio.gather(
             *[
                 hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in PLATFORMS
+                for component in ALL_PLATFORMS
             ]
         )
     )
