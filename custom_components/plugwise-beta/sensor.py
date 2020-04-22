@@ -152,6 +152,7 @@ INDICATE_ACTIVE_LOCAL_DEVICE = [
     "flame_state",
 ]
 
+
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
@@ -209,19 +210,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         _LOGGER.debug("Plugwise aux sensor Dev %s", device["name"])
                         devices.append(
                             PwThermostatSensor(
-                                api,
-                                updater,
-                                device["name"],
-                                dev_id,
-                                "state",
-                                None,
+                                api, updater, device["name"], dev_id, "state", None,
                             )
                         )
                         _LOGGER.info(
                             "Added sensor.%s_state", "{}".format(device["name"])
                         )
                         idx += 1
-
 
     async_add_entities(devices, True)
 
@@ -360,7 +355,7 @@ class PwThermostatSensor(Entity):
                     self._state = "cooling"
                 else:
                     self._state = "idle"
-                    
+
 
 class PwPowerSensor(Entity):
     """Power sensor devices."""
