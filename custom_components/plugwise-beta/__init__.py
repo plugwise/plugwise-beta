@@ -43,6 +43,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.error("Unable to connect to Smile: %s",api.smile_status)
             raise PlatformNotReady
 
+    except Smile.PlugwiseError:
+        _LOGGER.error("Error while communicating to device")
+        raise PlatformNotReady
+
     except asyncio.TimeoutError:
         _LOGGER.error("Timeout while connecting to Smile")
         raise PlatformNotReady
@@ -161,10 +165,11 @@ class SmileDataUpdater:
 
         _LOGGER.debug("Smile updating data using: %s", self.update_method)
 
-        update_success, update_status = await self.api.full_update_device()
-        if not update_success:
-            _LOGGER.error("Smile update failed: %s", update_status)
-            return
+        try:
+            await self.api.full_update_device()
+        except Smile.XMLDataMissingError as e:
+            _LOGGER.error("Smile update failed")
+            raise e
 
         for update_callback in self.listeners:
             update_callback()
