@@ -8,6 +8,7 @@ import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_time_interval
@@ -36,9 +37,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     try:
-        await api.connect()
+        connected = await api.connect()
+
+        if not connected:
+            _LOGGER.error("Unable to Smile: %s",api.smile_status)
+            raise PlatformNotReady
+
     except asyncio.TimeoutError:
         _LOGGER.error("Timeout while connecting to Smile")
+        raise PlatformNotReady
 
     if api.smile_type == "power":
         update_interval = timedelta(seconds=10)
@@ -47,7 +54,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     api.get_all_devices()
 
-    _LOGGER.debug("Plugwise async update interval %s", update_interval)
+    _LOGGER.debug("Async update interval %s", update_interval)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "api": api,
@@ -56,7 +63,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ),
     }
 
-    _LOGGER.debug("Plugwise gateway is %s", api.gateway_id)
+    _LOGGER.debug("Gateway is %s", api.gateway_id)
     device_registry = await dr.async_get_registry(hass)
     device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
@@ -66,7 +73,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         model=f"Smile {api.smile_name}",
         sw_version=api.smile_version[0],
     )
-    _LOGGER.debug("Plugwise device registry  %s", result)
 
     single_master_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
@@ -148,14 +154,17 @@ class SmileDataUpdater:
 
     async def async_refresh_all(self, _now: Optional[int] = None) -> None:
         """Time to update."""
-        _LOGGER.debug("Plugwise Smile updating with interval: %s", self.update_interval)
+        _LOGGER.debug("Smile updating with interval: %s", self.update_interval)
         if not self.listeners:
-            _LOGGER.error("Plugwise Smile has no listeners, not updating")
+            _LOGGER.error("PSmile has no listeners, not updating")
             return
 
-        _LOGGER.debug("Plugwise Smile updating data using: %s", self.update_method)
+        _LOGGER.debug("Smile updating data using: %s", self.update_method)
 
-        await self.api.full_update_device()
+        update_success, update_status = await self.api.full_update_device()
+        if not update_success:
+            _LOGGER.error("Smile update failed: %s", update_status)
+            return
 
         for update_callback in self.listeners:
             update_callback()
