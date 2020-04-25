@@ -40,7 +40,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         connected = await api.connect()
 
         if not connected:
-            _LOGGER.error("Unable to Smile: %s",api.smile_status)
+            _LOGGER.error("Unable to connect to Smile: %s",api.smile_status)
             raise PlatformNotReady
 
     except asyncio.TimeoutError:
