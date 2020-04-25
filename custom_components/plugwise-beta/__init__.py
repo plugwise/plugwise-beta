@@ -156,7 +156,7 @@ class SmileDataUpdater:
         """Time to update."""
         _LOGGER.debug("Smile updating with interval: %s", self.update_interval)
         if not self.listeners:
-            _LOGGER.error("PSmile has no listeners, not updating")
+            _LOGGER.error("Smile has no listeners, not updating")
             return
 
         _LOGGER.debug("Smile updating data using: %s", self.update_method)
