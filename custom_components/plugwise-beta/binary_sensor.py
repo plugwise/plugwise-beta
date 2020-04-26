@@ -162,7 +162,7 @@ class PwBinarySensor(BinarySensorDevice):
         _LOGGER.debug("Update binary_sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if data is None:
+        if not data:
             _LOGGER.error("Received no data for device %s.", self._binary_sensor)
         else:
             if self._binary_sensor in data:
