@@ -327,7 +327,7 @@ class PwThermostatSensor(Entity):
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if data is None:
+        if not data:
             _LOGGER.error("Received no data for device %s.", self._name)
         else:
             if self._sensor in data:
@@ -448,7 +448,7 @@ class PwPowerSensor(Entity):
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if data is None:
+        if not data:
             _LOGGER.error("Received no data for device %s.", self._name)
         else:
             if self._sensor in data:
