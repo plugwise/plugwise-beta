@@ -5,6 +5,7 @@ from typing import Dict
 
 from homeassistant.components.switch import SwitchDevice
 from homeassistant.core import callback
+from Plugwise_Smile.Smile import Smile
 
 from .const import DOMAIN, SWITCH_ICON
 
