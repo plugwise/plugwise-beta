@@ -115,7 +115,7 @@ class PwSwitch(SwitchDevice):
 
         data = self._api.get_device_data(self._dev_id)
 
-        if data is None:
+        if not data:
             _LOGGER.error("Received no data for device %s.", self._name)
         else:
             if "relay" in data:
