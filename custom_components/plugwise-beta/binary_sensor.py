@@ -19,7 +19,7 @@ from .const import (
 )
 
 BINARY_SENSOR_LIST = [
-    "domestic_hot_water_state",
+    "dhw_state",
     "slave_boiler_state",
     "valve_position",
 ]
