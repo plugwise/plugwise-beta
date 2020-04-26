@@ -143,7 +143,7 @@ class PwBinarySensor(BinarySensorDevice):
     @property
     def icon(self):
         """Return the icon to use in the frontend."""
-        if self._binary_sensor == "domestic_hot_water_state":
+        if self._binary_sensor == "dhw_state":
             return WATER_ICON
         if self._binary_sensor == "slave_boiler_state":
             return FLAME_ICON
