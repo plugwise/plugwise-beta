@@ -40,10 +40,10 @@ ATTR_ILLUMINANCE = [
 ]
 ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE, "mdi:water"]
 SENSOR_MAP = {
-    "thermostat": ATTR_TEMPERATURE,
+    "setpoint": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
     "battery": ATTR_BATTERY_LEVEL,
-    "central_heater_water_pressure": ATTR_PRESSURE,
+    "water_pressure": ATTR_PRESSURE,
     "temperature_difference": ATTR_TEMPERATURE,
     "electricity_consumed": [
         "Current Consumed Power",
@@ -71,7 +71,7 @@ SENSOR_MAP = {
     ],
     "outdoor_temperature": ATTR_TEMPERATURE,
     "illuminance": ATTR_ILLUMINANCE,
-    "boiler_temperature": ATTR_TEMPERATURE,
+    "water_temperature": ATTR_TEMPERATURE,
     "electricity_consumed_off_peak_point": [
         "Current Consumed Power (off peak)",
         "W",
@@ -242,7 +242,7 @@ class PwThermostatSensor(Entity):
         self._class = self._device
         self._state = None
         self._boiler_state = False
-        self._central_heating_state = False
+        self._heating_state = False
         self._cooling_state = False
 
         if self._dev_id == self._api.heater_id:
@@ -315,7 +315,7 @@ class PwThermostatSensor(Entity):
     def icon(self):
         """Icon for the sensor."""
         if self._sensor_type is None:
-            if self._boiler_state or self._central_heating_state:
+            if self._boiler_state or self._heating_state:
                 return FLAME_ICON
             if self._cooling_state:
                 return COOL_ICON
@@ -342,14 +342,14 @@ class PwThermostatSensor(Entity):
             if "boiler_state" in data:
                 if data["boiler_state"] is not None:
                     self._boiler_state = data["boiler_state"]
-            if "central_heating_state" in data:
-                if data["central_heating_state"] is not None:
-                    self._central_heating_state = data["central_heating_state"]
+            if "heating_state" in data:
+                if data["heating_state"] is not None:
+                    self._heating_state = data["heating_state"]
             if "cooling_state" in data:
                 if data["cooling_state"] is not None:
                     self._cooling_state = data["cooling_state"]
             if self._sensor == "state":
-                if self._boiler_state or self._central_heating_state:
+                if self._boiler_state or self._heating_state:
                     self._state = "heating"
                 elif self._cooling_state:
                     self._state = "cooling"
