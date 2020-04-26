@@ -16,6 +16,7 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
+from Plugwise_Smile.Smile import Smile
 
 from .const import (
     DOMAIN,
