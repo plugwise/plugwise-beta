@@ -275,7 +275,7 @@ class PwThermostat(ClimateDevice):
         climate_data = self._api.get_device_data(self._dev_id)
         heater_central_data = self._api.get_device_data(self._api.heater_id)
 
-        if climate_data is None:
+        if not climate_data:
             _LOGGER.error("Received no climate_data for device %s.", self._name)
         else:
             _LOGGER.debug("Climate_data collected from Plugwise API")
@@ -302,7 +302,7 @@ class PwThermostat(ClimateDevice):
             if "active_preset" in climate_data:
                 self._preset_mode = climate_data["active_preset"]
 
-        if heater_central_data is None:
+        if not heater_central_data:
             _LOGGER.error("Received no heater_central_data for device %s.", self._name)
         else:
             _LOGGER.debug("Heater_central_data collected from Plugwise API")
