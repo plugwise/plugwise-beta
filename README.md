@@ -7,7 +7,7 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 
  [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/plugwise)
  [![Generic badge](https://img.shields.io/github/v/release/plugwise/plugwise-beta)](https://github.com/plugwise/plugwise-beta)
- [![HASSfest](https://img.shields.io/badge/Maintained%3F-view-blue.svg)](https://github.com/plugwise/plugwise-beta/actions)
+ [![HASSfest](https://img.shields.io/badge/HASSfest%3F-view-blue.svg)](https://github.com/plugwise/plugwise-beta/actions)
 
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. 
 
