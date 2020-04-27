@@ -135,7 +135,7 @@ class PwThermostat(ClimateDevice):
                 return CURRENT_HVAC_COOL
             return CURRENT_HVAC_IDLE
         if self._heating_state is not None or self._boiler_state is not None:
-            if self._thermostat > self._temperature:
+            if self._setpoint > self._temperature:
                 return CURRENT_HVAC_HEAT
         return CURRENT_HVAC_IDLE
 
@@ -293,7 +293,7 @@ class PwThermostat(ClimateDevice):
         else:
             _LOGGER.debug("Climate_data collected from Plugwise API")
             if "setpoint" in climate_data:
-                self._thermostat = climate_data["setpoint"]
+                self._setpoint = climate_data["setpoint"]
             if "temperature" in climate_data:
                 self._temperature = climate_data["temperature"]
             if "schedule_temperature" in climate_data:
