@@ -21,22 +21,24 @@ A fully asynchronous approach to supporting Plugwise devices. This repository is
 
 ## What do we support (in short)?
 
-  - Adam (firmware 2.3 + 3.0) - we don't have a `Koen` yet in our testers suite
+  - Adam (firmware 2.3 + 3.0)
   - Smile & Anna (firmware 1.8, 3.1 and 4.0)
   - Smile P1 (firmware 2.5 and 3.3)
 
 ## What can I expect in HA from this component
 
-  - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating-demand status, per thermostat. Also, setting of temperature, preset and switching the active schedule on and off.
-  - `sensor` and `binary_sensor`: A number of sensoric values depending on your hardware (Outdoor temperature, Anna's illuminance, Plug power-usage, P1 values)
-  - `switch`: Plugs are available as switches, also switching them on/off is supported.
-  - `water_heater`: When your heating system connected to the Smile/Adam supports heating of tap-water, the status of this function is shown via the water_heater entity icon, next to the status of the normal heating function (idle/heating/hot_water) - **note** this is not available on all platforms (there is logic in place deciding if you need this as a seperate entity)
+  - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating-demand status, per thermostat. Also, setting of temperature, preset and switching the active schedule on and off. Cooling is only supported in combination with an Anna (fw 3.1 and 4.0).
+  - `sensor` and `binary_sensor`: A number of sensoric values depending on your hardware: outdoor temperature, Anna's illuminance, Tom's valve postion, Plug's power-values, P1 power- and gas-values
+  - `switch`: The switch-parts of Plugs are available as switches, also switching them on/off is supported.
+
+The `water_heater`-device present in previous releases has been replaced by a state-sensor. This sensor will only show up when there are more (than one) thermostats present in your climate-system.
 
 ## How to set-up?
 
  - Use [HACS](https://hacs.xyz) 
- - Use the link to this page and add it on the `custom repo` page 
+ - Use the link to this page and add it on the `custom repo` page .
  - Look for `Plugwise beta custom component ` in `integrations` and install it!
+ - If you need an pre-release for testing, click the three dots and mark the 'beta' check to see pre-releases.
 
 ## When installed
 

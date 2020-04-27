@@ -5,6 +5,7 @@ from typing import Dict
 
 from homeassistant.components.switch import SwitchDevice
 from homeassistant.core import callback
+from Plugwise_Smile.Smile import Smile
 
 from .const import DOMAIN, SWITCH_ICON
 
@@ -88,16 +89,24 @@ class PwSwitch(SwitchDevice):
     async def turn_on(self, **kwargs):
         """Turn the device on."""
         _LOGGER.debug("Turn switch.%s on.", self._name)
-        if await self._api.set_relay_state(self._dev_id, "on"):
-            self._device_is_on = True
-            self.async_write_ha_state()
+        try:
+            state_on = await self._api.set_relay_state(self._dev_id, "on")
+            if state_on:
+                self._device_is_on = True
+                self.async_write_ha_state()
+        except Smile.PlugwiseError:
+            _LOGGER.error("Error while communicating to device")
 
     async def turn_off(self, **kwargs):
         """Turn the device off."""
         _LOGGER.debug("Turn switch.%s off.", self._name)
-        if await self._api.set_relay_state(self._dev_id, "off"):
-            self._device_is_on = False
-            self.async_write_ha_state()
+        try:
+            state_off = await self._api.set_relay_state(self._dev_id, "off")
+            if state_off:
+                self._device_is_on = False
+                self.async_write_ha_state()
+        except Smile.PlugwiseError:
+            _LOGGER.error("Error while communicating to device")       
 
     @property
     def name(self):
@@ -115,7 +124,7 @@ class PwSwitch(SwitchDevice):
 
         data = self._api.get_device_data(self._dev_id)
 
-        if data is None:
+        if not data:
             _LOGGER.error("Received no data for device %s.", self._name)
         else:
             if "relay" in data:

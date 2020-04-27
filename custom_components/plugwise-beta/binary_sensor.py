@@ -19,7 +19,7 @@ from .const import (
 )
 
 BINARY_SENSOR_LIST = [
-    "domestic_hot_water_state",
+    "dhw_state",
     "slave_boiler_state",
     "valve_position",
 ]
@@ -143,7 +143,7 @@ class PwBinarySensor(BinarySensorDevice):
     @property
     def icon(self):
         """Return the icon to use in the frontend."""
-        if self._binary_sensor == "domestic_hot_water_state":
+        if self._binary_sensor == "dhw_state":
             return WATER_ICON
         if self._binary_sensor == "slave_boiler_state":
             return FLAME_ICON
@@ -162,7 +162,7 @@ class PwBinarySensor(BinarySensorDevice):
         _LOGGER.debug("Update binary_sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if data is None:
+        if not data:
             _LOGGER.error("Received no data for device %s.", self._binary_sensor)
         else:
             if self._binary_sensor in data:
