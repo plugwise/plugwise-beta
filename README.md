@@ -1,5 +1,5 @@
 
-** Read the 0.2.x release notes (here)[] before upgrading - you should always read them, but 0.2.x is a breaking upgrade! **
+** Read the 0.2.x release notes (here)[] before upgrading - you should always read them, but 0.2.x is a breaking upgrade (and requires HA 0.109)! **
 
 # Plugwise Smile custom_component (BETA)
 
