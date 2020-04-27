@@ -17,6 +17,7 @@ from homeassistant.helpers.entity import Entity
 
 from .const import (
     DEVICE_CLASS_GAS,
+    DEVICE_STATE,
     DOMAIN,
     COOL_ICON,
     FLAME_ICON,
@@ -210,7 +211,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         _LOGGER.debug("Plugwise aux sensor Dev %s", device["name"])
                         devices.append(
                             PwThermostatSensor(
-                                api, updater, device["name"], dev_id, "state", None,
+                                api, updater, device["name"], dev_id, DEVICE_STATE, None,
                             )
                         )
                         _LOGGER.info(
@@ -348,7 +349,7 @@ class PwThermostatSensor(Entity):
             if "cooling_state" in data:
                 if data["cooling_state"] is not None:
                     self._cooling_state = data["cooling_state"]
-            if self._sensor == "state":
+            if self._sensor == DEVICE_STATE:
                 if self._boiler_state or self._heating_state:
                     self._state = "heating"
                 elif self._cooling_state:
