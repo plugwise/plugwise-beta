@@ -1,6 +1,6 @@
 {
   "name": "Plugwise beta custom component",
-  "domains": ["climate","sensor","water_heater","switch"],
-  "homeassistant": "0.106.2",
+  "domains": ["binary_sensor","climate","sensor","switch"],
+  "homeassistant": "0.108.9",
   "render_readme": true
 }
