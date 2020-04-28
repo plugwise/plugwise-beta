@@ -68,6 +68,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     }
 
     _LOGGER.debug("Gateway is %s", api.gateway_id)
+
+    _LOGGER.debug("Gateway sofware version is %s", api.smile_version)
+    _LOGGER.debug("Appliances is %s", api.get_all_appliances())
+    _LOGGER.debug("Scan thermostats is %s", api.scan_thermostats())
+    _LOGGER.debug("Locations (matched) is %s", api.match_locations())
+
     device_registry = await dr.async_get_registry(hass)
     device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
