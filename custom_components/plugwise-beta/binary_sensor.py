@@ -13,8 +13,9 @@ from homeassistant.core import callback
 
 from .const import (
     DOMAIN,
-    FLAME_ICON,
-    VALVE_ICON,
+    FLAME_ICON,    
+    VALVE_CLOSED_ICON,
+    VALVE_OPEN_ICON,
     WATER_ICON,
 )
 
@@ -148,7 +149,9 @@ class PwBinarySensor(BinarySensorDevice):
         if self._binary_sensor == "slave_boiler_state":
             return FLAME_ICON
         if self._binary_sensor == "valve_position":
-            return VALVE_ICON
+            if self._is_on:
+                return VALVE_OPEN_ICON
+            return VALVE_CLOSED_ICON
 
     @property
     def device_class(self):
