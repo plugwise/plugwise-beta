@@ -341,7 +341,7 @@ class PwThermostatSensor(Entity):
             if self._sensor in data:
                 if data[self._sensor] is not None:
                     measurement = data[self._sensor]
-                    if self._sensor == "battery":
+                    if self._sensor == "battery" or self._sensor == "valve_position":
                         measurement = measurement * 100
                     if self._unit_of_measurement == "%":
                         measurement = int(measurement)
