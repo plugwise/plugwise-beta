@@ -145,6 +145,12 @@ SENSOR_MAP = {
         DEVICE_CLASS_POWER,
         "mdi:gauge",
     ],
+    "valve_position": [
+        "Valve Position",
+        "%",
+        "valve",
+        "mdi:valve",
+    ],
 }
 
 INDICATE_ACTIVE_LOCAL_DEVICE = [
