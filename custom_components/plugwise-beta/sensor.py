@@ -17,6 +17,7 @@ from homeassistant.helpers.entity import Entity
 
 from .const import (
     DEVICE_CLASS_GAS,
+    DEVICE_CLASS_VALVE,
     DEVICE_STATE,
     DOMAIN,
     COOL_ICON,
@@ -148,7 +149,7 @@ SENSOR_MAP = {
     "valve_position": [
         "Valve Position",
         "%",
-        "valve",
+        DEVICE_CLASS_VALVE,
         "mdi:valve",
     ],
 }
