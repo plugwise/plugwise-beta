@@ -116,7 +116,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     return unload_ok
 
 
-class SmileUpdater(DataUpdateCoordinator:
+class SmileUpdater(DataUpdateCoordinator):
     """Data storage for single Smile API endpoint."""
 
     def __init__(
