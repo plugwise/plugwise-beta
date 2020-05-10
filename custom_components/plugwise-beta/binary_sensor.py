@@ -31,7 +31,6 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile binary_sensors from a config entry."""
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
-    updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
     devices = []
     binary_sensor_classes = [
@@ -51,7 +50,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     devices.append(
                         PwBinarySensor(
                             api,
-                            updater,
                             device["name"],
                             binary_sensor,
                             dev_id,
@@ -66,10 +64,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class PwBinarySensor(BinarySensorDevice):
     """Representation of a Plugwise binary_sensor."""
 
-    def __init__(self, api, updater, name, binary_sensor, dev_id, model):
+    def __init__(self, api, name, binary_sensor, dev_id, model):
         """Set up the Plugwise API."""
         self._api = api
-        self._updater = updater
         self._dev_id = dev_id
         self._model = model
         self._name = name
@@ -93,14 +90,6 @@ class PwBinarySensor(BinarySensorDevice):
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        self._updater.async_add_listener(self._update_callback)
-
-    async def async_will_remove_from_hass(self):
-        """Disconnect callbacks."""
-        self._updater.async_remove_listener(self._update_callback)
 
     @callback
     def _update_callback(self):

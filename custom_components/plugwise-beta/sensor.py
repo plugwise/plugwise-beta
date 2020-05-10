@@ -165,7 +165,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
-    updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
 
     _LOGGER.debug("Plugwise sensor type %s", api.smile_type)
 
@@ -189,7 +188,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         devices.append(
                             PwPowerSensor(
                                 api,
-                                updater,
                                 device["name"],
                                 dev_id,
                                 sensor,
@@ -201,7 +199,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         devices.append(
                             PwThermostatSensor(
                                 api,
-                                updater,
                                 device["name"],
                                 dev_id,
                                 sensor,
@@ -218,7 +215,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         _LOGGER.debug("Plugwise aux sensor Dev %s", device["name"])
                         devices.append(
                             PwThermostatSensor(
-                                api, updater, device["name"], dev_id, DEVICE_STATE, None,
+                                api, device["name"], dev_id, DEVICE_STATE, None,
                             )
                         )
                         _LOGGER.info(
@@ -232,10 +229,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class PwThermostatSensor(Entity):
     """Thermostat (or generic) sensor devices."""
 
-    def __init__(self, api, updater, name, dev_id, sensor, sensor_type):
+    def __init__(self, api, name, dev_id, sensor, sensor_type):
         """Set up the Plugwise API."""
         self._api = api
-        self._updater = updater
         self._dev_id = dev_id
         if sensor_type is not None:
             self._unit_of_measurement = sensor_type[1]
@@ -269,14 +265,6 @@ class PwThermostatSensor(Entity):
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        self._updater.async_add_listener(self._update_callback)
-
-    async def async_will_remove_from_hass(self):
-        """Disconnect callbacks."""
-        self._updater.async_remove_listener(self._update_callback)
 
     @callback
     def _update_callback(self):
@@ -368,10 +356,9 @@ class PwThermostatSensor(Entity):
 class PwPowerSensor(Entity):
     """Power sensor devices."""
 
-    def __init__(self, api, updater, name, dev_id, sensor, sensor_type, model):
+    def __init__(self, api, name, dev_id, sensor, sensor_type, model):
         """Set up the Plugwise API."""
         self._api = api
-        self._updater = updater
         self._model = model
         self._name = name
         self._dev_id = dev_id
@@ -395,14 +382,6 @@ class PwPowerSensor(Entity):
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        self._updater.async_add_listener(self._update_callback)
-
-    async def async_will_remove_from_hass(self):
-        """Disconnect callbacks."""
-        self._updater.async_remove_listener(self._update_callback)
 
     @callback
     def _update_callback(self):

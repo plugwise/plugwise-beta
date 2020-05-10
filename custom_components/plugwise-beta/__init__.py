@@ -8,10 +8,11 @@ import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import PlatformNotReady
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from Plugwise_Smile.Smile import Smile
 
 from .const import DOMAIN
@@ -58,14 +59,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     api.get_all_devices()
 
+    coordinator = SmileUpdater(hass, api, update_interval=update_interval)
+    await coordinator.async_refresh()
+
+    if not coordinator.last_update_success:
+        raise ConfigEntryNotReady
+
     _LOGGER.debug("Async update interval %s", update_interval)
 
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
-        "api": api,
-        "updater": SmileDataUpdater(
-            hass, "device", entry.entry_id, api, "full_update_device", update_interval
-        ),
-    }
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = { "api": api, }
 
     _LOGGER.debug("Gateway is %s", api.gateway_id)
 
@@ -95,13 +97,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
 
-    async def async_refresh_all(_):
-        """Refresh all Smile data."""
-        for info in hass.data[DOMAIN].values():
-            await info["updater"].async_refresh_all()
-
-    hass.services.async_register(DOMAIN, "update", async_refresh_all)
-
     return True
 
 
@@ -121,61 +116,25 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     return unload_ok
 
 
-class SmileDataUpdater:
+class SmileUpdater(DataUpdateCoordinator:
     """Data storage for single Smile API endpoint."""
 
     def __init__(
-        self,
-        hass: HomeAssistant,
-        data_type: str,
-        config_entry_id: str,
-        api: Smile,
-        update_method: str,
-        update_interval: timedelta,
+        self, hass, api, update_interval,
     ):
         """Initialize global data updater."""
-        self.hass = hass
-        self.data_type = data_type
-        self.config_entry_id = config_entry_id
         self.api = api
-        self.update_method = update_method
-        self.update_interval = update_interval
-        self.listeners = []
-        self._unsub_interval = None
 
-    @callback
-    def async_add_listener(self, update_callback):
-        """Listen for data updates."""
-        if not self.listeners:
-            self._unsub_interval = async_track_time_interval(
-                self.hass, self.async_refresh_all, self.update_interval
-            )
+        super().__init__(
+            hass, _LOGGER, name=DOMAIN, update_interval=update_interval,
+        )
 
-        self.listeners.append(update_callback)
-
-    @callback
-    def async_remove_listener(self, update_callback):
-        """Remove data update."""
-        self.listeners.remove(update_callback)
-
-        if not self.listeners:
-            self._unsub_interval()
-            self._unsub_interval = None
-
-    async def async_refresh_all(self, _now: Optional[int] = None) -> None:
-        """Time to update."""
-        _LOGGER.debug("Smile updating with interval: %s", self.update_interval)
-        if not self.listeners:
-            _LOGGER.error("Smile has no listeners, not updating")
-            return
-
-        _LOGGER.debug("Smile updating data using: %s", self.update_method)
-
+    async def _async_update_data(self):
+        """Update data via library."""
         try:
             await self.api.full_update_device()
-        except Smile.XMLDataMissingError as e:
-            _LOGGER.error("Smile update failed")
-            raise e
+        except Smile.XMLDataMissingError:
+            raise UpdateFailed("Smile update failed")
 
-        for update_callback in self.listeners:
-            update_callback()
+        return True
+
