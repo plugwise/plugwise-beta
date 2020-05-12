@@ -277,21 +277,10 @@ class PwThermostatSensor(SmileGateway, Entity):
         """Return a unique ID."""
         return self._unique_id
 
-    # @callback
-    # def _update_callback(self):
-    #    """Call update method."""
-    #   self.update()
-    #    self.async_write_ha_state()
-
     @property
     def device_class(self):
         """Device class of this entity."""
         return self._class
-
-    # @property
-    # def should_poll(self):
-    #    """Return False, updates are controlled via the hub."""
-    #    return False
 
     @property
     def name(self):
@@ -329,11 +318,7 @@ class PwThermostatSensor(SmileGateway, Entity):
             return IDLE_ICON
         return self._icon
 
-    #def update(self):
-    async def async_update(self):
-        """Update the entity."""
-        await self.coordinator.async_request_refresh()   
-
+    def update(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
@@ -402,17 +387,6 @@ class PwPowerSensor(SmileGateway, Entity):
         """Return a unique ID."""
         return self._unique_id
 
-    # @callback
-    # def _update_callback(self):
-    #    """Call update method."""
-    #    self.update()
-    #    self.async_write_ha_state()
-
-    # @property
-    # def should_poll(self):
-    #    """Return False, updates are controlled via the hub."""
-    #    return False
-
     @property
     def name(self):
         """Return the name of the sensor."""
@@ -449,10 +423,8 @@ class PwPowerSensor(SmileGateway, Entity):
         """Return the unit of measurement of this entity, if any."""
         return self._unit_of_measurement
 
-    #def update(self):
-    async def async_update(self):
-        """Update the entity."""
-        await self.coordinator.async_request_refresh()       
+    
+    def update(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
@@ -466,4 +438,3 @@ class PwPowerSensor(SmileGateway, Entity):
                     if self._unit_of_measurement == "kWh":
                         measurement = int(measurement / 1000)
                     self._state = measurement
-
