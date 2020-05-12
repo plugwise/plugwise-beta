@@ -65,6 +65,7 @@ async def async_setup_entry(hass, entry):
         try:
             async with async_timeout.timeout(10):
                 await api.full_update_device()
+                _LOGGER.debug("Succesfully updated Smile %s", api.smile_type)
                 return True
         except Smile.XMLDataMissingError:
             _LOGGER.debug("Updating Smile failed %s", api.smile_type)
@@ -141,8 +142,8 @@ class SmileGateway(Entity):
 
     def __init__(self, api, coordinator):
         """Initialise the sensor."""
-        self.api = api
-        self.coordinator = coordinator
+        self._api = api
+        self._coordinator = coordinator
 
     @property
     def should_poll(self):
@@ -152,15 +153,28 @@ class SmileGateway(Entity):
     @property
     def available(self):
         """Return True if entity is available."""
-        return self.coordinator.last_update_success
-
-    async def async_update(self):
-        """Update the entity."""
-        await self.coordinator.async_request_refresh()
+        return self._coordinator.last_update_success
 
     async def async_added_to_hass(self):
         """Subscribe to updates."""
         self.async_on_remove(
-            self.coordinator.async_add_listener(self.async_write_ha_state)
+            self._coordinator.async_add_listener(self._update_callback)
         )
+        self.async_on_remove(
+            self._coordinator.async_add_listener(self.async_write_ha_state)
+        )
+        self._update_callback()        
 
+    @callback
+    def _update_callback(self):
+        """Call update method."""
+        self.update()
+        self.async_write_ha_state()
+    
+    def update(self):
+        """Update the entity."""
+        raise NotImplementedError
+
+    async def async_update(self):
+        """Update the entity."""
+        await self._coordinator.async_request_refresh()
