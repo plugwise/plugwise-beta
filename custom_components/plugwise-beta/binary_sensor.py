@@ -7,9 +7,7 @@ from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_OPENING,
     BinarySensorDevice,
 )
-
 from homeassistant.const import STATE_OFF, STATE_ON
-from homeassistant.core import callback
 
 from .const import (
     DOMAIN,
@@ -18,6 +16,8 @@ from .const import (
     VALVE_OPEN_ICON,
     WATER_ICON,
 )
+
+from . import SmileGateway
 
 BINARY_SENSOR_LIST = [
     "dhw_state",
@@ -31,7 +31,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile binary_sensors from a config entry."""
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
-    updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
 
     devices = []
     binary_sensor_classes = [
@@ -51,7 +51,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     devices.append(
                         PwBinarySensor(
                             api,
-                            updater,
+                            coordinator,
                             device["name"],
                             binary_sensor,
                             dev_id,
@@ -63,13 +63,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(devices, True)
 
 
-class PwBinarySensor(BinarySensorDevice):
+class PwBinarySensor(SmileGateway, BinarySensorDevice):
     """Representation of a Plugwise binary_sensor."""
 
-    def __init__(self, api, updater, name, binary_sensor, dev_id, model):
+    def __init__(self, api, coordinator, name, binary_sensor, dev_id, model):
         """Set up the Plugwise API."""
+        super().__init__(api, coordinator)
+
         self._api = api
-        self._updater = updater
         self._dev_id = dev_id
         self._model = model
         self._name = name
@@ -94,29 +95,10 @@ class PwBinarySensor(BinarySensorDevice):
         """Return a unique ID."""
         return self._unique_id
 
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        self._updater.async_add_listener(self._update_callback)
-
-    async def async_will_remove_from_hass(self):
-        """Disconnect callbacks."""
-        self._updater.async_remove_listener(self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        self.update()
-        self.async_write_ha_state()
-
     @property
     def name(self):
         """Return the name of the thermostat, if any."""
         return self._sensorname
-
-    @property
-    def should_poll(self):
-        """No need to poll. Coordinator notifies entity of updates."""
-        return False
 
     @property
     def is_on(self):
