@@ -16,7 +16,6 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
-from Plugwise_Smile.Smile import Smile
 
 from .const import (
     DOMAIN,
@@ -83,7 +82,6 @@ class PwThermostat(SmileGateway, ClimateDevice):
         super().__init__(api, coordinator)
         
         self._api = api
-        self._coordinator = coordinator
         self._name = name
         self._dev_id = dev_id
         self._loc_id = loc_id
