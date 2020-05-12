@@ -118,11 +118,6 @@ class PwThermostat(SmileGateway, ClimateDevice):
         """Return a unique ID."""
         return self._unique_id
 
-    # @callback
-    # def _update_callback(self):
-    #    """Call update method."""
-    #    self.update()
-    #    self.async_write_ha_state()
 
     @property
     def hvac_action(self):
@@ -168,11 +163,6 @@ class PwThermostat(SmileGateway, ClimateDevice):
     def supported_features(self):
         """Return the list of supported features."""
         return SUPPORT_FLAGS
-
-    # @property
-    # def should_poll(self):
-    #    """No need to poll. Coordinator notifies entity of updates."""
-    #    return False
 
     @property
     def device_state_attributes(self):
@@ -281,11 +271,7 @@ class PwThermostat(SmileGateway, ClimateDevice):
         except Smile.PlugwiseError:
             _LOGGER.error("Error while communicating to device")
 
-    #def update(self):
-    async def async_update(self):
-        """Update the entity."""
-        await self.coordinator.async_request_refresh()    
-    
+    def update(self):
         """Update the data for this climate device."""
         _LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)
@@ -344,4 +330,3 @@ class PwThermostat(SmileGateway, ClimateDevice):
                 or self._boiler_state is not None
             ):
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
-
