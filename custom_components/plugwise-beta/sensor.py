@@ -241,7 +241,6 @@ class PwThermostatSensor(SmileGateway, Entity):
         super().__init__(api, coordinator)
 
         self._api = api
-        self._coordinator = coordinator
         self._dev_id = dev_id
         if sensor_type is not None:
             self._unit_of_measurement = sensor_type[1]
@@ -361,7 +360,6 @@ class PwPowerSensor(SmileGateway, Entity):
         super().__init__(api, coordinator)
 
         self._api = api
-        self._coordinator = coordinator
         self._model = model
         self._name = name
         self._dev_id = dev_id
