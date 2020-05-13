@@ -269,7 +269,7 @@ class PwThermostat(SmileGateway, ClimateDevice):
         except Smile.PlugwiseError:
             _LOGGER.error("Error while communicating to device")
 
-    def update(self):
+    def _process_data(self):
         """Update the data for this climate device."""
         _LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)
@@ -328,3 +328,5 @@ class PwThermostat(SmileGateway, ClimateDevice):
                 or self._boiler_state is not None
             ):
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
+
+        self.async_write_ha_state()

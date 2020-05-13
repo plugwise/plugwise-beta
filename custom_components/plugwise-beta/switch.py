@@ -100,7 +100,7 @@ class PwSwitch(SmileGateway, SwitchDevice):
         """Return the icon to use in the frontend."""
         return SWITCH_ICON
 
-    def update(self):
+    def _process_data(self):
         """Update the data from the Plugs."""
         _LOGGER.debug("Update switch called")
 
@@ -112,3 +112,5 @@ class PwSwitch(SmileGateway, SwitchDevice):
             if "relay" in data:
                 self._device_is_on = data["relay"]
                 _LOGGER.debug("Switch is ON is %s.", self._device_is_on)
+
+        self.async_write_ha_state()

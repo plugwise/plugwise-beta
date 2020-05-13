@@ -142,7 +142,7 @@ class PwBinarySensor(SmileGateway, BinarySensorDevice):
             return DEVICE_CLASS_OPENING
         return "none"
 
-    def update(self):
+    def _process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update binary_sensor called")
         data = self._api.get_device_data(self._dev_id)
@@ -154,3 +154,5 @@ class PwBinarySensor(SmileGateway, BinarySensorDevice):
                 if isinstance(data[self._binary_sensor], float):
                     self._is_on = data[self._binary_sensor] == 1.0
                 self._is_on = data[self._binary_sensor]
+
+        self.async_write_ha_state()

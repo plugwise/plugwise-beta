@@ -317,7 +317,7 @@ class PwThermostatSensor(SmileGateway, Entity):
             return IDLE_ICON
         return self._icon
 
-    def update(self):
+    def _process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
@@ -350,6 +350,7 @@ class PwThermostatSensor(SmileGateway, Entity):
                     self._state = "cooling"
                 else:
                     self._state = "idle"
+        self.async_write_ha_state()
 
 
 class PwPowerSensor(SmileGateway, Entity):
@@ -422,7 +423,7 @@ class PwPowerSensor(SmileGateway, Entity):
         return self._unit_of_measurement
 
     
-    def update(self):
+    def _process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
@@ -436,3 +437,5 @@ class PwPowerSensor(SmileGateway, Entity):
                     if self._unit_of_measurement == "kWh":
                         measurement = int(measurement / 1000)
                     self._state = measurement
+
+        self.async_write_ha_state()
