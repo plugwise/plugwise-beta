@@ -2,6 +2,7 @@
 
 import logging
 from typing import Dict
+from Plugwise_Smile.Smile import Smile
 
 from homeassistant.components.switch import SwitchDevice
 
