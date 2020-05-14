@@ -130,7 +130,7 @@ class PwThermostat(SmileGateway, ClimateDevice):
         if self._heating_state is not None or self._boiler_state is not None:
             if self._setpoint > self._temperature:
                 return CURRENT_HVAC_HEAT
-        return CURRENT_HVAC_IDLE
+            return CURRENT_HVAC_IDLE
 
     @property
     def name(self):
