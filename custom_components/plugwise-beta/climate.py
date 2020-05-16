@@ -2,6 +2,7 @@
 
 import logging
 from typing import Dict
+from Plugwise_Smile.Smile import Smile
 
 from homeassistant.components.climate import ClimateDevice
 from homeassistant.components.climate.const import (
@@ -16,7 +17,6 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
-from Plugwise_Smile.Smile import Smile
 
 from .const import (
     DOMAIN,
@@ -24,6 +24,8 @@ from .const import (
     DEFAULT_MIN_TEMP,
     DEFAULT_MAX_TEMP,
 )
+
+from . import SmileGateway
 
 HVAC_MODES_1 = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
 HVAC_MODES_2 = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
@@ -36,7 +38,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile Thermostats from a config entry."""
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
-    updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
 
     devices = []
     thermostat_classes = [
@@ -54,7 +56,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         _LOGGER.debug("Plugwise climate Dev %s", device["name"])
         thermostat = PwThermostat(
             api,
-            updater,
+            coordinator,
             device["name"],
             dev_id,
             device["location"],
@@ -72,13 +74,15 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(devices, True)
 
 
-class PwThermostat(ClimateDevice):
+class PwThermostat(SmileGateway, ClimateDevice):
     """Representation of an Plugwise thermostat."""
 
-    def __init__(self, api, updater, name, dev_id, loc_id, model, min_temp, max_temp):
+    def __init__(self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp):
         """Set up the Plugwise API."""
+
+        super().__init__(api, coordinator)
+        
         self._api = api
-        self._updater = updater
         self._name = name
         self._dev_id = dev_id
         self._loc_id = loc_id
@@ -105,25 +109,14 @@ class PwThermostat(ClimateDevice):
         self._hvac_mode = None
         self._single_thermostat = self._api.single_master_thermostat()
         self._unique_id = f"cl-{dev_id}-{self._name}"
+    
+                
 
     @property
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
 
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        self._updater.async_add_listener(self._update_callback)
-
-    async def async_will_remove_from_hass(self):
-        """Disconnect callbacks."""
-        self._updater.async_remove_listener(self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        self.update()
-        self.async_write_ha_state()
 
     @property
     def hvac_action(self):
@@ -137,7 +130,7 @@ class PwThermostat(ClimateDevice):
         if self._heating_state is not None or self._boiler_state is not None:
             if self._setpoint > self._temperature:
                 return CURRENT_HVAC_HEAT
-        return CURRENT_HVAC_IDLE
+            return CURRENT_HVAC_IDLE
 
     @property
     def name(self):
@@ -169,11 +162,6 @@ class PwThermostat(ClimateDevice):
     def supported_features(self):
         """Return the list of supported features."""
         return SUPPORT_FLAGS
-
-    @property
-    def should_poll(self):
-        """No need to poll. Coordinator notifies entity of updates."""
-        return False
 
     @property
     def device_state_attributes(self):
@@ -282,7 +270,7 @@ class PwThermostat(ClimateDevice):
         except Smile.PlugwiseError:
             _LOGGER.error("Error while communicating to device")
 
-    def update(self):
+    def _process_data(self):
         """Update the data for this climate device."""
         _LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)
@@ -332,12 +320,8 @@ class PwThermostat(ClimateDevice):
         if self._schema_status:
             self._hvac_mode = HVAC_MODE_AUTO
         elif self._heating_state is not None or self._boiler_state is not None:
+            self._hvac_mode = HVAC_MODE_HEAT
             if self._cooling_state is not None:
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
-            self._hvac_mode = HVAC_MODE_HEAT
-        elif self._cooling_state is not None:
-            if (
-                self._heating_state is not None
-                or self._boiler_state is not None
-            ):
-                self._hvac_mode = HVAC_MODE_HEAT_COOL
+
+        self.async_write_ha_state()

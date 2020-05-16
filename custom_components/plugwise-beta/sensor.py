@@ -25,6 +25,9 @@ from .const import (
     IDLE_ICON,
 )
 
+from . import SmileGateway
+
+
 _LOGGER = logging.getLogger(__name__)
 
 ATTR_TEMPERATURE = [
@@ -165,7 +168,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
-    updater = hass.data[DOMAIN][config_entry.entry_id]["updater"]
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
+
 
     _LOGGER.debug("Plugwise sensor type %s", api.smile_type)
 
@@ -189,7 +193,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         devices.append(
                             PwPowerSensor(
                                 api,
-                                updater,
+                                coordinator,
                                 device["name"],
                                 dev_id,
                                 sensor,
@@ -201,7 +205,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         devices.append(
                             PwThermostatSensor(
                                 api,
-                                updater,
+                                coordinator,
                                 device["name"],
                                 dev_id,
                                 sensor,
@@ -218,7 +222,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         _LOGGER.debug("Plugwise aux sensor Dev %s", device["name"])
                         devices.append(
                             PwThermostatSensor(
-                                api, updater, device["name"], dev_id, DEVICE_STATE, None,
+                                api, coordinator, device["name"], dev_id, DEVICE_STATE, None,
                             )
                         )
                         _LOGGER.info(
@@ -229,13 +233,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(devices, True)
 
 
-class PwThermostatSensor(Entity):
+class PwThermostatSensor(SmileGateway, Entity):
     """Thermostat (or generic) sensor devices."""
 
-    def __init__(self, api, updater, name, dev_id, sensor, sensor_type):
+    def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type):
         """Set up the Plugwise API."""
+        super().__init__(api, coordinator)
+
         self._api = api
-        self._updater = updater
         self._dev_id = dev_id
         if sensor_type is not None:
             self._unit_of_measurement = sensor_type[1]
@@ -264,35 +269,17 @@ class PwThermostatSensor(Entity):
             self._via_id = None
 
         self._unique_id = f"cl-{dev_id}-{self._name}-{sensor}"
+        
 
     @property
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
 
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        self._updater.async_add_listener(self._update_callback)
-
-    async def async_will_remove_from_hass(self):
-        """Disconnect callbacks."""
-        self._updater.async_remove_listener(self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        self.update()
-        self.async_write_ha_state()
-
     @property
     def device_class(self):
         """Device class of this entity."""
         return self._class
-
-    @property
-    def should_poll(self):
-        """Return False, updates are controlled via the hub."""
-        return False
 
     @property
     def name(self):
@@ -330,7 +317,7 @@ class PwThermostatSensor(Entity):
             return IDLE_ICON
         return self._icon
 
-    def update(self):
+    def _process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
@@ -363,15 +350,17 @@ class PwThermostatSensor(Entity):
                     self._state = "cooling"
                 else:
                     self._state = "idle"
+        self.async_write_ha_state()
 
 
-class PwPowerSensor(Entity):
+class PwPowerSensor(SmileGateway, Entity):
     """Power sensor devices."""
 
-    def __init__(self, api, updater, name, dev_id, sensor, sensor_type, model):
+    def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type, model):
         """Set up the Plugwise API."""
+        super().__init__(api, coordinator)
+
         self._api = api
-        self._updater = updater
         self._model = model
         self._name = name
         self._dev_id = dev_id
@@ -390,30 +379,12 @@ class PwPowerSensor(Entity):
         if self._dev_id == self._via_id:
             self._via_id = None
             self._name = f"Smile {self._name}"
+        
 
     @property
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        self._updater.async_add_listener(self._update_callback)
-
-    async def async_will_remove_from_hass(self):
-        """Disconnect callbacks."""
-        self._updater.async_remove_listener(self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        self.update()
-        self.async_write_ha_state()
-
-    @property
-    def should_poll(self):
-        """Return False, updates are controlled via the hub."""
-        return False
 
     @property
     def name(self):
@@ -451,7 +422,8 @@ class PwPowerSensor(Entity):
         """Return the unit of measurement of this entity, if any."""
         return self._unit_of_measurement
 
-    def update(self):
+    
+    def _process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
@@ -465,3 +437,5 @@ class PwPowerSensor(Entity):
                     if self._unit_of_measurement == "kWh":
                         measurement = int(measurement / 1000)
                     self._state = measurement
+
+        self.async_write_ha_state()
