@@ -159,7 +159,7 @@ SENSOR_MAP = {
     "modulation_level": [
         "Heater Modulation Level",
         "%",
-        "modulation"
+        "modulation",
         "mdi:percent",
     ],
 }
