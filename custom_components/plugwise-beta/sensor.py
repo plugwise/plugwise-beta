@@ -47,6 +47,7 @@ ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE, "mdi:water"]
 SENSOR_MAP = {
     "setpoint": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
+    "intended_boiler_temperature": ATTR_TEMPERATURE,
     "battery": ATTR_BATTERY_LEVEL,
     "water_pressure": ATTR_PRESSURE,
     "temperature_difference": ATTR_TEMPERATURE,
@@ -154,6 +155,12 @@ SENSOR_MAP = {
         "%",
         DEVICE_CLASS_VALVE,
         "mdi:valve",
+    ],
+    "modulation_level": [
+        "Heater Modulation Level",
+        "%",
+        "modulation",
+        "mdi:percent",
     ],
 }
 
