@@ -42,12 +42,7 @@ class PwSwitch(SmileGateway, SwitchDevice):
         self._name = name
         self._dev_id = dev_id
         self._device_is_on = False
-        self._unique_id = f"sw-{dev_id}-{self._name}"
-
-    @property
-    def unique_id(self):
-        """Return a unique ID."""
-        return self._unique_id
+        self._unique_id = f"{dev_id}-switch"
 
     @property
     def is_on(self):
@@ -57,7 +52,7 @@ class PwSwitch(SmileGateway, SwitchDevice):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        via_device = self._api.gateway_id
+        via_device = (DOMAIN, self._api.gateway_id)
         if self._dev_id is via_device:
             via_device = None
 

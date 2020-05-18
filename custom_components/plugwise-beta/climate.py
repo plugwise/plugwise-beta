@@ -108,6 +108,7 @@ class PwThermostat(SmileGateway, ClimateDevice):
         self._schedule_temp = None
         self._hvac_mode = None
         self._single_thermostat = self._api.single_master_thermostat()
+<<<<<<< HEAD
         self._unique_id = f"cl-{dev_id}-{self._name}"
     
                 
@@ -116,6 +117,9 @@ class PwThermostat(SmileGateway, ClimateDevice):
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
+=======
+        self._unique_id = f"{dev_id}-climate"
+>>>>>>> Partial core review update
 
 
     @property
@@ -141,7 +145,7 @@ class PwThermostat(SmileGateway, ClimateDevice):
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
 
-        via_device = self._api.gateway_id
+        via_device = (DOMAIN, self._api.gateway_id)
         if self._dev_id is via_device:
             via_device = None
 

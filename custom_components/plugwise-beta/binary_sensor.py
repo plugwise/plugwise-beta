@@ -88,12 +88,7 @@ class PwBinarySensor(SmileGateway, BinarySensorDevice):
             self._name = f"Smile {self._name}"
             self._via_id = None
 
-        self._unique_id = f"bs-{dev_id}-{self._name}-{binary_sensor}"
-
-    @property
-    def unique_id(self):
-        """Return a unique ID."""
-        return self._unique_id
+        self._unique_id = f"{dev_id}-{binary_sensor}"
 
     @property
     def name(self):
