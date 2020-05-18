@@ -276,17 +276,7 @@ class PwThermostatSensor(SmileGateway, Entity):
             self._name = f"Smile {self._name}"
             self._via_id = None
 
-<<<<<<< HEAD
-        self._unique_id = f"cl-{dev_id}-{self._name}-{sensor}"
-        
-
-    @property
-    def unique_id(self):
-        """Return a unique ID."""
-        return self._unique_id
-=======
         self._unique_id = f"{dev_id}-{sensor}"
->>>>>>> Partial core review update
 
     @property
     def device_class(self):

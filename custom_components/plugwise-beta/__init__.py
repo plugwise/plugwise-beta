@@ -137,71 +137,19 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     return unload_ok
 
 
-<<<<<<< HEAD
 class SmileGateway(Entity):
     """Represent Smile Gateway."""
-=======
-class SmileDataUpdater:
-    """Data storage for single Smile API endpoint."""
 
-    def __init__(
-        self,
-        hass: HomeAssistant,
-        data_type: str,
-        config_entry_id: str,
-        api: Smile,
-        update_method: str,
-        update_interval: timedelta,
-    ):
-        """Initialize global data updater."""
-        self.hass = hass
-        self.data_type = data_type
-        self.config_entry_id = config_entry_id
-        self.api = api
-        self.update_method = update_method
-        self.update_interval = update_interval
-        self.listeners = []
-        self._unsub_interval = None
+    def __init__(self, api, coordinator):
+        """Initialise the sensor."""
+        self._api = api
+        self._coordinator = coordinator
         self._unique_id = None
 
     @property
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
-
-    @callback
-    def async_add_listener(self, update_callback):
-        """Listen for data updates."""
-        if not self.listeners:
-            self._unsub_interval = async_track_time_interval(
-                self.hass, self.async_refresh_all, self.update_interval
-            )
-
-        self.listeners.append(update_callback)
-
-    @callback
-    def async_remove_listener(self, update_callback):
-        """Remove data update."""
-        self.listeners.remove(update_callback)
-
-        if not self.listeners:
-            self._unsub_interval()
-            self._unsub_interval = None
-
-    async def async_refresh_all(self, _now: Optional[int] = None) -> None:
-        """Time to update."""
-        _LOGGER.debug("Smile updating with interval: %s", self.update_interval)
-        if not self.listeners:
-            _LOGGER.error("Smile has no listeners, not updating")
-            return
-
-        _LOGGER.debug("Smile updating data using: %s", self.update_method)
->>>>>>> Partial core review update
-
-    def __init__(self, api, coordinator):
-        """Initialise the sensor."""
-        self._api = api
-        self._coordinator = coordinator
 
     @property
     def should_poll(self):
