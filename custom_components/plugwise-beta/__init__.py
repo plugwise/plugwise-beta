@@ -46,6 +46,10 @@ async def async_setup_entry(hass, entry):
             _LOGGER.error("Unable to connect to Smile: %s",api.smile_status)
             raise ConfigEntryNotReady
 
+    except Smile.InvalidAuthentication:
+        _LOGGER.error("Invalid Smile ID")
+        raise ConfigEntryNotReady
+
     except Smile.PlugwiseError:
         _LOGGER.error("Error while communicating to device")
         raise ConfigEntryNotReady
