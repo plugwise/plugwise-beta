@@ -276,7 +276,7 @@ class PwThermostatSensor(SmileGateway, Entity):
             self._name = f"Smile {self._name}"
             self._via_id = None
 
-        self._unique_id = f"{dev_id}-{sensor_type}"
+        self._unique_id = f"{dev_id}-{sensor}"
 
     @property
     def device_class(self):
