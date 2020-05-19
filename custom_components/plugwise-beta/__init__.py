@@ -44,15 +44,15 @@ async def async_setup_entry(hass, entry):
 
         if not connected:
             _LOGGER.error("Unable to connect to Smile: %s",api.smile_status)
-            raise PlatformNotReady
+            raise ConfigEntryNotReady
 
     except Smile.PlugwiseError:
         _LOGGER.error("Error while communicating to device")
-        raise PlatformNotReady
+        raise ConfigEntryNotReady
 
     except asyncio.TimeoutError:
         _LOGGER.error("Timeout while connecting to Smile")
-        raise PlatformNotReady
+        raise ConfigEntryNotReady
 
     if api.smile_type == "power":
         update_interval = timedelta(seconds=10)
