@@ -78,6 +78,7 @@ SENSOR_MAP = {
     "outdoor_temperature": ATTR_TEMPERATURE,
     "illuminance": ATTR_ILLUMINANCE,
     "water_temperature": ATTR_TEMPERATURE,
+    "return_temperature": ATTR_TEMPERATURE,
     "electricity_consumed_off_peak_point": [
         "Current Consumed Power (off peak)",
         "W",
