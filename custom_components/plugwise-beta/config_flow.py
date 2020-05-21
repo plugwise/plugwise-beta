@@ -5,6 +5,7 @@ from typing import Any, Dict
 import voluptuous as vol
 
 from homeassistant import config_entries, core, exceptions
+from homeassistant.const import CONF_HOST, CONF_PASSWORD
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from Plugwise_Smile.Smile import Smile
 
@@ -12,18 +13,7 @@ from .const import DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
-
-def _get_config_schema(input_dict: Dict[str, Any] = None) -> vol.Schema:
-    """
-    Return schema defaults for init step based on user input/config dict.
-
-    Retain info already provided for future form views by setting them as defaults in schema.
-    """
-    if input_dict is None:
-        input_dict = {}
-
-    return vol.Schema({vol.Required("host"): str, vol.Required("password"): str})
-
+DATA_SCHEMA = vol.Schema({vol.Required(CONF_HOST): str, vol.Required(CONF_PASSWORD): str})
 
 async def validate_input(hass: core.HomeAssistant, data):
     """
@@ -36,7 +26,11 @@ async def validate_input(hass: core.HomeAssistant, data):
         host=data["host"], password=data["password"], timeout=30, websession=websession
     )
 
-    if not await api.connect():
+    try:
+        await api.connect()
+    except Smile.InvalidAuthentication:
+        raise InvalidAuth
+    except Smile.PlugwiseError:
         raise CannotConnect
 
     return {"title": api.smile_name}
@@ -48,14 +42,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
 
-    def __init__(self) -> None:
-        """Initialize config flow."""
-        self._user_schema = None
-
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
         errors = {}
-        self._user_schema = _get_config_schema(user_input)
         if user_input is not None:
 
             try:
@@ -71,7 +60,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "unknown"
 
         return self.async_show_form(
-            step_id="user", data_schema=self._user_schema, errors=errors
+            step_id="user", data_schema=DATA_SCHEMA, errors=errors
         )
 
 

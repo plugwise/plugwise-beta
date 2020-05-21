@@ -4,7 +4,7 @@ import logging
 from typing import Dict
 from Plugwise_Smile.Smile import Smile
 
-from homeassistant.components.switch import SwitchDevice
+from homeassistant.components.switch import SwitchEntity
 
 from .const import DOMAIN, SWITCH_ICON
 
@@ -30,7 +30,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(devices, True)
 
 
-class PwSwitch(SmileGateway, SwitchDevice):
+class PwSwitch(SmileGateway, SwitchEntity):
     """Representation of a Plugwise plug."""
 
     def __init__(self, api, coordinator, name, dev_id, model):
@@ -45,11 +45,6 @@ class PwSwitch(SmileGateway, SwitchDevice):
         self._unique_id = f"sw-{dev_id}-{self._name}"
 
     @property
-    def unique_id(self):
-        """Return a unique ID."""
-        return self._unique_id
-
-    @property
     def is_on(self):
         """Return true if device is on."""
         return self._device_is_on
@@ -57,7 +52,7 @@ class PwSwitch(SmileGateway, SwitchDevice):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        via_device = self._api.gateway_id
+        via_device = (DOMAIN, self._api.gateway_id)
         if self._dev_id is via_device:
             via_device = None
 
