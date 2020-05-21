@@ -48,7 +48,7 @@ async def async_setup_entry(hass, entry):
 
     except Smile.InvalidAuthentication:
         _LOGGER.error("Invalid Smile ID")
-        raise ConfigEntryNotReady
+        return False
 
     except Smile.PlugwiseError:
         _LOGGER.error("Error while communicating to device")
