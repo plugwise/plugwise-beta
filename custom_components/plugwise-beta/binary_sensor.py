@@ -91,11 +91,6 @@ class PwBinarySensor(SmileGateway, BinarySensorEntity):
         self._unique_id = f"bs-{dev_id}-{self._name}-{binary_sensor}"
 
     @property
-    def unique_id(self):
-        """Return a unique ID."""
-        return self._unique_id
-
-    @property
     def name(self):
         """Return the name of the thermostat, if any."""
         return self._sensorname

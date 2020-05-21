@@ -45,11 +45,6 @@ class PwSwitch(SmileGateway, SwitchEntity):
         self._unique_id = f"sw-{dev_id}-{self._name}"
 
     @property
-    def unique_id(self):
-        """Return a unique ID."""
-        return self._unique_id
-
-    @property
     def is_on(self):
         """Return true if device is on."""
         return self._device_is_on
