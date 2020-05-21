@@ -5,7 +5,7 @@ from typing import Dict
 
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_OPENING,
-    BinarySensorDevice,
+    BinarySensorEntity,
 )
 from homeassistant.const import STATE_OFF, STATE_ON
 
@@ -63,7 +63,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(devices, True)
 
 
-class PwBinarySensor(SmileGateway, BinarySensorDevice):
+class PwBinarySensor(SmileGateway, BinarySensorEntity):
     """Representation of a Plugwise binary_sensor."""
 
     def __init__(self, api, coordinator, name, binary_sensor, dev_id, model):

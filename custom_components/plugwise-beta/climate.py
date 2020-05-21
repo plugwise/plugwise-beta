@@ -4,7 +4,7 @@ import logging
 from typing import Dict
 from Plugwise_Smile.Smile import Smile
 
-from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
@@ -73,8 +73,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     async_add_entities(devices, True)
 
-
-class PwThermostat(SmileGateway, ClimateDevice):
+class PwThermostat(SmileGateway, ClimateEntity):
     """Representation of an Plugwise thermostat."""
 
     def __init__(self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp):
@@ -141,7 +140,7 @@ class PwThermostat(SmileGateway, ClimateDevice):
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
 
-        via_device = self._api.gateway_id
+        via_device = (DOMAIN, self._api.gateway_id)
         if self._dev_id is via_device:
             via_device = None
 
