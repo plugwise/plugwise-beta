@@ -5,6 +5,7 @@ from typing import Any, Dict
 import voluptuous as vol
 
 from homeassistant import config_entries, core, exceptions
+from homeassistant.const import CONF_HOST, CONF_PASSWORD
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from Plugwise_Smile.Smile import Smile
 
