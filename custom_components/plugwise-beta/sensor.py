@@ -381,12 +381,6 @@ class PwPowerSensor(SmileGateway, Entity):
         if self._dev_id == self._via_id:
             self._via_id = None
             self._name = f"Smile {self._name}"
-        
-
-    @property
-    def unique_id(self):
-        """Return a unique ID."""
-        return self._unique_id
 
     @property
     def name(self):
