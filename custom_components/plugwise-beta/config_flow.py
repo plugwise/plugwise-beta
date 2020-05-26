@@ -54,7 +54,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(api.gateway_id)
                 self._abort_if_unique_id_configured()
 
-                return self.async_create_entry(api.smile_name, data=user_input)
+                return self.async_create_entry(title=api.smile_name, data=user_input)
             except CannotConnect:
                 errors["base"] = "cannot_connect"
             except InvalidAuth:
