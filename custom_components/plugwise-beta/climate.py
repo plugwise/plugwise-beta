@@ -23,12 +23,14 @@ from .const import (
     THERMOSTAT_ICON,
     DEFAULT_MIN_TEMP,
     DEFAULT_MAX_TEMP,
+    SCHEDULE_ON,
+    SCHEDULE_OFF,
 )
 
 from . import SmileGateway
 
-HVAC_MODES_1 = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
-HVAC_MODES_2 = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
+HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
+HVAC_MODES_HEAT_COOL = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
@@ -132,17 +134,17 @@ class PwThermostat(SmileGateway, ClimateEntity):
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
 
-        via_device = (DOMAIN, self._api.gateway_id)
-        if self._dev_id is via_device:
-            via_device = None
-
-        return {
+        device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
             "model": self._model.replace("_", " ").title(),
-            "via_device": via_device,
         }
+
+        if self._dev_id != self._api.gateway_id:
+            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
+
+        return device_information
 
     @property
     def icon(self):
@@ -159,8 +161,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         """Return the device specific state attributes."""
         attributes = {}
         if self._schema_names:
-            if len(self._schema_names) > 1:
-                attributes["available_schemas"] = self._schema_names
+            attributes["available_schemas"] = self._schema_names
         if self._selected_schema:
             attributes["selected_schema"] = self._selected_schema
         return attributes
@@ -175,8 +176,8 @@ class PwThermostat(SmileGateway, ClimateEntity):
         """Return the available hvac modes list."""
         if self._heating_state is not None or self._boiler_state is not None:
             if self._cooling_state is not None:
-                return HVAC_MODES_2
-            return HVAC_MODES_1
+                return HVAC_MODES_HEAT_COOL
+            return HVAC_MODES_HEAT_ONLY
 
     @property
     def hvac_mode(self):
@@ -234,9 +235,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set the hvac mode."""
         _LOGGER.debug("Set hvac_mode to: %s", hvac_mode)
-        state = "false"
+        state = SCHEDULE_OFF
         if hvac_mode == HVAC_MODE_AUTO:
-            state = "true"
+            state = SCHEDULE_ON
             try:
                 await self._api.set_temperature(self._loc_id, self._schedule_temp)
                 self._setpoint = self._schedule_temp

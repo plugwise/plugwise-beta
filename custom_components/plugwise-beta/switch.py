@@ -52,17 +52,18 @@ class PwSwitch(SmileGateway, SwitchEntity):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        via_device = (DOMAIN, self._api.gateway_id)
-        if self._dev_id is via_device:
-            via_device = None
 
-        return {
+        device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
             "model": self._model,
-            "via_device": via_device,
         }
+
+        if self._dev_id != self._api.gateway_id:
+            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
+
+        return device_information
 
     async def turn_on(self, **kwargs):
         """Turn the device on."""

@@ -251,6 +251,7 @@ class PwThermostatSensor(SmileGateway, Entity):
         self._api = api
         self._dev_id = dev_id
         if sensor_type is not None:
+            self._model = sensor_type[0]
             self._unit_of_measurement = sensor_type[1]
             self._device = sensor_type[2]
             self._icon = sensor_type[3]
@@ -271,10 +272,8 @@ class PwThermostatSensor(SmileGateway, Entity):
         sensorname = sensor.replace("_", " ").title()
         self._sensorname = f"{self._name} {sensorname}"
 
-        self._via_id = self._api.gateway_id
         if self._dev_id == self._api.gateway_id:
             self._name = f"Smile {self._name}"
-            self._via_id = None
 
         self._unique_id = f"cl-{dev_id}-{self._name}-{sensor}"
         
@@ -296,12 +295,18 @@ class PwThermostatSensor(SmileGateway, Entity):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        return {
+
+        device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "via_device": (DOMAIN, self._via_id),
+            "model": self._model,
         }
+
+        if self._dev_id != self._api.gateway_id:
+            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
+
+        return device_information
 
     @property
     def unit_of_measurement(self):
@@ -377,9 +382,7 @@ class PwPowerSensor(SmileGateway, Entity):
         sensorname = sensor.replace("_", " ").title()
         self._sensorname = f"{name} {sensorname}"
 
-        self._via_id = self._api.gateway_id
-        if self._dev_id == self._via_id:
-            self._via_id = None
+        if self._dev_id == self._api.gateway_id:
             self._name = f"Smile {self._name}"
 
     @property
@@ -405,13 +408,18 @@ class PwPowerSensor(SmileGateway, Entity):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        return {
+
+        device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "model": self._model,
-            "via_device": (DOMAIN, self._via_id),
+            "model": self._device,
         }
+
+        if self._dev_id != self._api.gateway_id:
+            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
+
+        return device_information
 
     @property
     def unit_of_measurement(self):
