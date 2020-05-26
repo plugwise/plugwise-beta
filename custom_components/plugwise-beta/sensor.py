@@ -250,19 +250,20 @@ class PwThermostatSensor(SmileGateway, Entity):
 
         self._api = api
         self._dev_id = dev_id
-        if sensor_type is not None:
-            self._model = sensor_type[0]
-            self._unit_of_measurement = sensor_type[1]
-            self._device = sensor_type[2]
-            self._icon = sensor_type[3]
-        else:
-            self._unit_of_measurement = None
-            self._device = "auxiliary"
+        self._sensor_type = sensor_type
         self._name = name
         self._sensor = sensor
-        self._sensor_type = sensor_type
-        self._class = self._device
         self._state = None
+        self._model = None
+        self._unit_of_measurement = None
+        if self._sensor_type is not None:
+            self._model = self._sensor_type[0]
+            self._unit_of_measurement = self._sensor_type[1]
+            self._dev_class = self._sensor_type[2]
+            self._icon = self._sensor_type[3]
+        else:
+            self._dev_class = "auxiliary"
+
         self._boiler_state = False
         self._heating_state = False
         self._cooling_state = False
@@ -280,7 +281,7 @@ class PwThermostatSensor(SmileGateway, Entity):
     @property
     def device_class(self):
         """Device class of this entity."""
-        return self._class
+        return self._dev_class
 
     @property
     def name(self):
@@ -300,8 +301,10 @@ class PwThermostatSensor(SmileGateway, Entity):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "model": self._model,
         }
+
+        if self._model != None:
+            device_information["model"] = self._model
 
         if self._dev_id != self._api.gateway_id:
             device_information["via_device"] = (DOMAIN, self._api.gateway_id)
@@ -357,6 +360,7 @@ class PwThermostatSensor(SmileGateway, Entity):
                     self._state = "cooling"
                 else:
                     self._state = "idle"
+
         self.async_write_ha_state()
 
 
@@ -373,8 +377,8 @@ class PwPowerSensor(SmileGateway, Entity):
         self._dev_id = dev_id
         self._device = sensor_type[0]
         self._unit_of_measurement = sensor_type[1]
+        self._dev_class = sensor_type[2]
         self._icon = sensor_type[3]
-        self._class = sensor_type[2]
         self._sensor = sensor
         self._state = None
         self._unique_id = f"{dev_id}-{name}-{sensor}"
@@ -398,7 +402,7 @@ class PwPowerSensor(SmileGateway, Entity):
     @property
     def device_class(self):
         """Device class of this entity."""
-        return self._class
+        return self._dev_class
 
     @property
     def state(self):
