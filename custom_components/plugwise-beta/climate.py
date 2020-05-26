@@ -23,6 +23,8 @@ from .const import (
     THERMOSTAT_ICON,
     DEFAULT_MIN_TEMP,
     DEFAULT_MAX_TEMP,
+    SCHEDULE_ON,
+    SCHEDULE_OFF,
 )
 
 from . import SmileGateway
@@ -234,9 +236,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set the hvac mode."""
         _LOGGER.debug("Set hvac_mode to: %s", hvac_mode)
-        state = "false"
+        state = SCHEDULE_OFF
         if hvac_mode == HVAC_MODE_AUTO:
-            state = "true"
+            state = SCHEDULE_ON
             try:
                 await self._api.set_temperature(self._loc_id, self._schedule_temp)
                 self._setpoint = self._schedule_temp
