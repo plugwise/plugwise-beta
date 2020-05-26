@@ -58,11 +58,10 @@ class PwSwitch(SmileGateway, SwitchEntity):
             "name": self._name,
             "manufacturer": "Plugwise",
             "model": self._model,
-            "via_device": (DOMAIN, self._api.gateway_id),
         }
 
-        if self._dev_id is self._api.gateway_id:
-            del device_information["via_device"]
+        if self._dev_id != self._api.gateway_id:
+            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
 
         return device_information
 
