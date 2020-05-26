@@ -251,6 +251,7 @@ class PwThermostatSensor(SmileGateway, Entity):
         self._api = api
         self._dev_id = dev_id
         if sensor_type is not None:
+            self._model = sensor_type[0]
             self._unit_of_measurement = sensor_type[1]
             self._device = sensor_type[2]
             self._icon = sensor_type[3]
@@ -299,7 +300,7 @@ class PwThermostatSensor(SmileGateway, Entity):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "model": sensor_type[0],
+            "model": self._model,
         }
 
         if self._dev_id != self._api.gateway_id:
@@ -412,7 +413,7 @@ class PwPowerSensor(SmileGateway, Entity):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "model": sensor_type[0],
+            "model": self._device,
         }
 
         if self._dev_id != self._api.gateway_id:
