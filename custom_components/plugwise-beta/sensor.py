@@ -299,14 +299,13 @@ class PwThermostatSensor(SmileGateway, Entity):
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "model": self._model,
+            "model": sensor_type[0],
         }
 
         if self._dev_id != self._api.gateway_id:
             device_information["via_device"] = (DOMAIN, self._api.gateway_id)
 
         return device_information
-
 
     @property
     def unit_of_measurement(self):
@@ -408,13 +407,12 @@ class PwPowerSensor(SmileGateway, Entity):
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-        return {
 
         device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._name,
             "manufacturer": "Plugwise",
-            "model": self._model,
+            "model": sensor_type[0],
         }
 
         if self._dev_id != self._api.gateway_id:
