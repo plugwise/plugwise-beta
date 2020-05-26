@@ -382,7 +382,7 @@ class PwPowerSensor(SmileGateway, Entity):
         sensorname = sensor.replace("_", " ").title()
         self._sensorname = f"{name} {sensorname}"
 
-        if self._dev_id == self._api.gateway_id
+        if self._dev_id == self._api.gateway_id:
             self._name = f"Smile {self._name}"
 
     @property
