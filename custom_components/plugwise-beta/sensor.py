@@ -187,7 +187,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for dev_id, entity in all_entities.items():
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
-        _LOGGER.debug("Plugwise sensor Dev %s", device["name"])
+        _LOGGER.debug("Plugwise sensor Dev %s", entity["name"])
         for sensor, sensor_type in SENSOR_MAP.items():
             if sensor in data:
                 if data[sensor] is not None:
