@@ -250,7 +250,7 @@ class PwThermostatSensor(SmileGateway, Entity):
         self._api = api
         self._dev_id = dev_id
         self._sensor_type = sensor_type
-        self._name = name
+        self._entity_name = name
         self._sensor = sensor
         self._state = None
         self._model = None
@@ -267,37 +267,22 @@ class PwThermostatSensor(SmileGateway, Entity):
         self._cooling_state = False
 
         if self._dev_id == self._api.heater_id:
-            self._name = f"Auxiliary"
+            self._entity_name = f"Auxiliary"
         sensorname = sensor.replace("_", " ").title()
-        self._sensorname = f"{self._name} {sensorname}"
+        self._name = f"{self._entity_name} {sensorname}"
 
         if self._dev_id == self._api.gateway_id:
-            self._name = f"Smile {self._name}"
+            self._entity_name = f"Smile {self._entity_name}"
 
         self._unique_id = f"cl-{dev_id}-{self._name}-{sensor}"
         
-    @property
-    def device_class(self):
-        """Device class of this entity."""
-        return self._dev_class
-
-    @property
-    def name(self):
-        """Return the name of the thermostat, if any."""
-        return self._sensorname
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
     @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
 
         device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._name,
+            "name": self._entity_name,
             "manufacturer": "Plugwise",
         }
 
@@ -314,17 +299,6 @@ class PwThermostatSensor(SmileGateway, Entity):
         """Return the unit of measurement."""
         return self._unit_of_measurement
 
-    @property
-    def icon(self):
-        """Icon for the sensor."""
-        if self._sensor_type is None:
-            if self._heating_state:
-                return FLAME_ICON
-            if self._cooling_state:
-                return COOL_ICON
-            return IDLE_ICON
-        return self._icon
-
     def _process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
@@ -332,29 +306,37 @@ class PwThermostatSensor(SmileGateway, Entity):
 
         if not data:
             _LOGGER.error("Received no data for device %s.", self._name)
-        else:
-            if self._sensor in data:
-                if data[self._sensor] is not None:
-                    measurement = data[self._sensor]
-                    if self._sensor == "battery" or self._sensor == "valve_position":
-                        measurement = measurement * 100
-                    if self._unit_of_measurement == "%":
-                        measurement = int(measurement)
-                    self._state = measurement
+            self.async_write_ha_state()
+            return
+        if self._sensor in data:
+            if data[self._sensor] is not None:
+                measurement = data[self._sensor]
+                if self._sensor == "battery" or self._sensor == "valve_position":
+                    measurement = measurement * 100
+                if self._unit_of_measurement == "%":
+                    measurement = int(measurement)
+                self._state = measurement
 
-            if "heating_state" in data:
-                if data["heating_state"] is not None:
-                    self._heating_state = data["heating_state"]
-            if "cooling_state" in data:
-                if data["cooling_state"] is not None:
-                    self._cooling_state = data["cooling_state"]
-            if self._sensor == DEVICE_STATE:
-                if self._heating_state:
-                    self._state = "heating"
-                elif self._cooling_state:
-                    self._state = "cooling"
-                else:
-                    self._state = "idle"
+        if "heating_state" in data:
+            if data["heating_state"] is not None:
+                self._heating_state = data["heating_state"]
+        if "cooling_state" in data:
+            if data["cooling_state"] is not None:
+                self._cooling_state = data["cooling_state"]
+        if self._sensor == DEVICE_STATE:
+            if self._heating_state:
+                self._state = "heating"
+            elif self._cooling_state:
+                self._state = "cooling"
+            else:
+                self._state = "idle"
+
+        if self._sensor_type is None:
+            self._icon = IDLE_ICON
+            if self._heating_state:
+                self._icon = FLAME_ICON
+            if self._cooling_state:
+                self._icon = COOL_ICON
 
         self.async_write_ha_state()
 
@@ -368,7 +350,7 @@ class PwPowerSensor(SmileGateway, Entity):
 
         self._api = api
         self._model = model
-        self._name = name
+        self._entity_name = name
         self._dev_id = dev_id
         self._device = sensor_type[0]
         self._unit_of_measurement = sensor_type[1]
@@ -379,30 +361,10 @@ class PwPowerSensor(SmileGateway, Entity):
         self._unique_id = f"{dev_id}-{name}-{sensor}"
 
         sensorname = sensor.replace("_", " ").title()
-        self._sensorname = f"{name} {sensorname}"
+        self._name = f"{name} {sensorname}"
 
         if self._dev_id == self._api.gateway_id:
-            self._name = f"Smile {self._name}"
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self._sensorname
-
-    @property
-    def icon(self):
-        """Icon to use in the frontend, if any."""
-        return self._icon
-
-    @property
-    def device_class(self):
-        """Device class of this entity."""
-        return self._dev_class
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
+            self._entity_name = f"Smile {self._entity_name}"
 
     @property
     def device_info(self) -> Dict[str, any]:
@@ -410,7 +372,7 @@ class PwPowerSensor(SmileGateway, Entity):
 
         device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._name,
+            "name": self._entity_name,
             "manufacturer": "Plugwise",
             "model": self._device,
         }
@@ -433,12 +395,14 @@ class PwPowerSensor(SmileGateway, Entity):
 
         if not data:
             _LOGGER.error("Received no data for device %s.", self._name)
-        else:
-            if self._sensor in data:
-                if data[self._sensor] is not None:
-                    measurement = data[self._sensor]
-                    if self._unit_of_measurement == "kWh":
-                        measurement = int(measurement / 1000)
-                    self._state = measurement
+            self.async_write_ha_state()
+            return
+
+        if self._sensor in data:
+            if data[self._sensor] is not None:
+                measurement = data[self._sensor]
+                if self._unit_of_measurement == "kWh":
+                    measurement = int(measurement / 1000)
+                self._state = measurement
 
         self.async_write_ha_state()

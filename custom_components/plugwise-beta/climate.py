@@ -109,6 +109,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._schedule_temp = None
         self._hvac_mode = None
         self._single_thermostat = self._api.single_master_thermostat()
+        self._icon = THERMOSTAT_ICON
         self._unique_id = f"cl-{dev_id}-{self._name}"
 
     @property
@@ -126,11 +127,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
             return CURRENT_HVAC_IDLE
 
     @property
-    def name(self):
-        """Return the name of the thermostat, if any."""
-        return self._name
-
-    @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
 
@@ -145,11 +141,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
             device_information["via_device"] = (DOMAIN, self._api.gateway_id)
 
         return device_information
-
-    @property
-    def icon(self):
-        """Return the icon to use in the frontend."""
-        return THERMOSTAT_ICON
 
     @property
     def supported_features(self):

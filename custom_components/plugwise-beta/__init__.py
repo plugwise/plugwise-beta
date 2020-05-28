@@ -149,6 +149,10 @@ class SmileGateway(Entity):
         self._api = api
         self._coordinator = coordinator
         self._unique_id = None
+        self._name = None
+        self._icon = None
+        self._dev_class = None
+        self._state = None
 
     @property
     def unique_id(self):
@@ -159,6 +163,34 @@ class SmileGateway(Entity):
     def should_poll(self):
         """Return False, updates are controlled via coordinator."""
         return False
+
+    @property
+    def name(self):
+        """Return the name of the entity, if any."""
+        if not self._name:
+            pass
+        return self._name
+
+    @property
+    def icon(self):
+        """Return the icon to use in the frontend."""
+        if not self._icon:
+            return THERMOSTAT_ICON
+        return self._icon
+
+    @property
+    def device_class(self):
+        """Device class of this entity."""
+        if not self._dev_class:
+            pass
+        return self._dev_class
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        if not self._state:
+            pass
+        return self._state
 
     @property
     def available(self):
