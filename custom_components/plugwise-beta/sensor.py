@@ -189,36 +189,38 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         _LOGGER.debug("Plugwise sensor Dev %s", entity["name"])
         for sensor, sensor_type in SENSOR_MAP.items():
             if sensor in data:
-                if data[sensor] is not None:
-                    if "power" in entity["types"]:
-                        model = None
+                if data[sensor] is None:
+                    continue
 
-                        if "plug" in entity["types"]:
-                            model = "Metered Switch"
+                if "power" in entity["types"]:
+                    model = None
 
-                        entities.append(
-                            PwPowerSensor(
-                                api,
-                                coordinator,
-                                entity["name"],
-                                dev_id,
-                                sensor,
-                                sensor_type,
-                                model,
-                            )
+                    if "plug" in entity["types"]:
+                        model = "Metered Switch"
+
+                    entities.append(
+                        PwPowerSensor(
+                            api,
+                            coordinator,
+                            entity["name"],
+                            dev_id,
+                            sensor,
+                            sensor_type,
+                            model,
                         )
-                    else:
-                        entities.append(
-                            PwThermostatSensor(
-                                api,
-                                coordinator,
-                                entity["name"],
-                                dev_id,
-                                sensor,
-                                sensor_type,
-                            )
+                    )
+                else:
+                    entities.append(
+                        PwThermostatSensor(
+                            api,
+                            coordinator,
+                            entity["name"],
+                            dev_id,
+                            sensor,
+                            sensor_type,
                         )
-                    _LOGGER.info("Added sensor.%s", entity["name"])
+                    )
+                _LOGGER.info("Added sensor.%s", entity["name"])
 
         # If not None and False (hence `is False`, not `not False`)
         if single_thermostat is False:
