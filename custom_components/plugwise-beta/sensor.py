@@ -166,7 +166,6 @@ SENSOR_MAP = {
 }
 
 INDICATE_ACTIVE_LOCAL_DEVICE = [
-    "boiler_state",
     "cooling_state",
     "flame_state",
 ]
