@@ -152,7 +152,6 @@ class SmileGateway(Entity):
         self._name = None
         self._icon = None
         self._dev_class = None
-        self._state = None
 
     @property
     def unique_id(self):
@@ -184,13 +183,6 @@ class SmileGateway(Entity):
         if not self._dev_class:
             pass
         return self._dev_class
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        if not self._state:
-            pass
-        return self._state
 
     @property
     def available(self):

@@ -295,6 +295,11 @@ class PwThermostatSensor(SmileGateway, Entity):
         return device_information
 
     @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._state
+
+    @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
         return self._unit_of_measurement
@@ -381,6 +386,11 @@ class PwPowerSensor(SmileGateway, Entity):
             device_information["via_device"] = (DOMAIN, self._api.gateway_id)
 
         return device_information
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._state
 
     @property
     def unit_of_measurement(self):
