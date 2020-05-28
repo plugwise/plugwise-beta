@@ -221,6 +221,8 @@ class SmileSensor(SmileGateway):
 
     def __init__(self, api, coordinator):
         """Initialise the sensor."""
+        super().__init__(api, coordinator)
+
         self._dev_class = None
         self._state = None
 
