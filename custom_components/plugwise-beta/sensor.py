@@ -181,28 +181,28 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     _LOGGER.debug("Plugwise sensor type %s", api.smile_type)
 
-    devices = []
-    all_devices = api.get_all_devices()
+    entities = []
+    all_entities = api.get_all_devices()
     single_thermostat = api.single_master_thermostat()
-    _LOGGER.debug("Plugwise all devices (not just sensor) %s", all_devices)
-    for dev_id, device in all_devices.items():
+    _LOGGER.debug("Plugwise all devices (not just sensor) %s", all_entities)
+    for dev_id, entity in all_entities.items():
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
         _LOGGER.debug("Plugwise sensor Dev %s", device["name"])
         for sensor, sensor_type in SENSOR_MAP.items():
             if sensor in data:
                 if data[sensor] is not None:
-                    if "power" in device["types"]:
+                    if "power" in entity["types"]:
                         model = None
 
-                        if "plug" in device["types"]:
+                        if "plug" in entity["types"]:
                             model = "Metered Switch"
 
-                        devices.append(
+                        entities.append(
                             PwPowerSensor(
                                 api,
                                 coordinator,
-                                device["name"],
+                                entity["name"],
                                 dev_id,
                                 sensor,
                                 sensor_type,
@@ -210,35 +210,35 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                             )
                         )
                     else:
-                        devices.append(
+                        entities.append(
                             PwThermostatSensor(
                                 api,
                                 coordinator,
-                                device["name"],
+                                entity["name"],
                                 dev_id,
                                 sensor,
                                 sensor_type,
                             )
                         )
-                    _LOGGER.info("Added sensor.%s", device["name"])
+                    _LOGGER.info("Added sensor.%s", entity["name"])
 
-        if single_thermostat is not None and not single_thermostat:
-            idx = 1
+        # If not None and False (hence `is False`, not `not False`)
+        if single_thermostat is False:
             for state in INDICATE_ACTIVE_LOCAL_DEVICE:
+                # Once we hit this, append and break (don't add twice)
                 if state in data:
-                    if idx == 1:
-                        _LOGGER.debug("Plugwise aux sensor Dev %s", device["name"])
-                        devices.append(
-                            PwThermostatSensor(
-                                api, coordinator, device["name"], dev_id, DEVICE_STATE, None,
-                            )
+                    _LOGGER.debug("Plugwise aux sensor Dev %s", entity["name"])
+                    entities.append(
+                        PwThermostatSensor(
+                            api, coordinator, entity["name"], dev_id, DEVICE_STATE, None,
                         )
-                        _LOGGER.info(
-                            "Added sensor.%s_state", "{}".format(device["name"])
-                        )
-                        idx += 1
+                    )
+                    _LOGGER.info(
+                        "Added sensor.%s_state", "{}".format(entity["name"])
+                    )
+                    break
 
-    async_add_entities(devices, True)
+    async_add_entities(entities, True)
 
 
 class PwThermostatSensor(SmileGateway, Entity):
