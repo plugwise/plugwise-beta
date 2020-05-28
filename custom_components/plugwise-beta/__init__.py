@@ -145,13 +145,15 @@ class SmileGateway(Entity):
     """Represent Smile Gateway."""
 
     def __init__(self, api, coordinator):
-        """Initialise the sensor."""
+        """Initialise the gateway."""
         self._api = api
         self._coordinator = coordinator
         self._unique_id = None
         self._name = None
         self._icon = None
-        self._dev_class = None
+        self._dev_id = None
+        self._model = None
+        self._gateway_id = None
 
     @property
     def unique_id(self):
@@ -162,6 +164,11 @@ class SmileGateway(Entity):
     def should_poll(self):
         """Return False, updates are controlled via coordinator."""
         return False
+
+    @property
+    def available(self):
+        """Return True if entity is available."""
+        return self._coordinator.last_update_success
 
     @property
     def name(self):
@@ -178,16 +185,22 @@ class SmileGateway(Entity):
         return self._icon
 
     @property
-    def device_class(self):
-        """Device class of this entity."""
-        if not self._dev_class:
-            pass
-        return self._dev_class
+    def device_info(self) -> Dict[str, any]:
+        """Return the device information."""
 
-    @property
-    def available(self):
-        """Return True if entity is available."""
-        return self._coordinator.last_update_success
+        device_information = {
+            "identifiers": {(DOMAIN, self._dev_id)},
+            "name": self._name,
+            "manufacturer": "Plugwise",
+        }
+
+        if self._model is not None:
+            device_information["model"] = self._model.replace("_", " ").title()
+
+        if self._dev_id != self._gateway_id:
+            device_information["via_device"] = (DOMAIN, self._gateway_id)
+
+        return device_information
 
     async def async_added_to_hass(self):
         """Subscribe to updates."""
@@ -202,3 +215,30 @@ class SmileGateway(Entity):
     async def async_update(self):
         """Update the entity."""
         await self._coordinator.async_request_refresh()
+
+class SmileSensor(SmileGateway):
+    """Represent Smile Sensors."""
+
+    def __init__(self, api, coordinator):
+        """Initialise the sensor."""
+        self._dev_class = None
+        self._state = None
+
+    @property
+    def device_class(self):
+        """Device class of this entity."""
+        if not self._dev_class:
+            pass
+        return self._dev_class
+
+    @property
+    def state(self):
+        """Device class of this entity."""
+        if not self._state:
+            pass
+        return self._state
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit of measurement of this entity, if any."""
+        return self._unit_of_measurement

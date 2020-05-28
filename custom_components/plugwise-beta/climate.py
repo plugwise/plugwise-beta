@@ -84,6 +84,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         super().__init__(api, coordinator)
         
         self._api = api
+        self._gateway_id = self._api.gateway_id
         self._name = name
         self._dev_id = dev_id
         self._loc_id = loc_id
@@ -125,22 +126,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
             if self._setpoint > self._temperature:
                 return CURRENT_HVAC_HEAT
             return CURRENT_HVAC_IDLE
-
-    @property
-    def device_info(self) -> Dict[str, any]:
-        """Return the device information."""
-
-        device_information = {
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._name,
-            "manufacturer": "Plugwise",
-            "model": self._model.replace("_", " ").title(),
-        }
-
-        if self._dev_id != self._api.gateway_id:
-            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
-
-        return device_information
 
     @property
     def supported_features(self):

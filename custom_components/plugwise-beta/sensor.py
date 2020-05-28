@@ -12,7 +12,6 @@ from homeassistant.const import (
     PRESSURE_BAR,
     TEMP_CELSIUS,
 )
-from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
 from .const import (
@@ -25,7 +24,7 @@ from .const import (
     IDLE_ICON,
 )
 
-from . import SmileGateway
+from . import SmileSensor
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -240,7 +239,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(entities, True)
 
 
-class PwThermostatSensor(SmileGateway, Entity):
+class PwThermostatSensor(SmileSensor, Entity):
     """Thermostat (or generic) sensor devices."""
 
     def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type):
@@ -248,6 +247,7 @@ class PwThermostatSensor(SmileGateway, Entity):
         super().__init__(api, coordinator)
 
         self._api = api
+        self._gateway_id = self._api.gateway_id
         self._dev_id = dev_id
         self._sensor_type = sensor_type
         self._entity_name = name
@@ -276,29 +276,6 @@ class PwThermostatSensor(SmileGateway, Entity):
 
         self._unique_id = f"cl-{dev_id}-{self._name}-{sensor}"
         
-    @property
-    def device_info(self) -> Dict[str, any]:
-        """Return the device information."""
-
-        device_information = {
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._entity_name,
-            "manufacturer": "Plugwise",
-        }
-
-        if self._model != None:
-            device_information["model"] = self._model
-
-        if self._dev_id != self._api.gateway_id:
-            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
-
-        return device_information
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
@@ -346,7 +323,7 @@ class PwThermostatSensor(SmileGateway, Entity):
         self.async_write_ha_state()
 
 
-class PwPowerSensor(SmileGateway, Entity):
+class PwPowerSensor(SmileSensor, Entity):
     """Power sensor devices."""
 
     def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type, model):
@@ -354,6 +331,7 @@ class PwPowerSensor(SmileGateway, Entity):
         super().__init__(api, coordinator)
 
         self._api = api
+        self._gateway_id = self._api.gateway_id
         self._model = model
         self._entity_name = name
         self._dev_id = dev_id
@@ -371,33 +349,6 @@ class PwPowerSensor(SmileGateway, Entity):
         if self._dev_id == self._api.gateway_id:
             self._entity_name = f"Smile {self._entity_name}"
 
-    @property
-    def device_info(self) -> Dict[str, any]:
-        """Return the device information."""
-
-        device_information = {
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._entity_name,
-            "manufacturer": "Plugwise",
-            "model": self._device,
-        }
-
-        if self._dev_id != self._api.gateway_id:
-            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
-
-        return device_information
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement of this entity, if any."""
-        return self._unit_of_measurement
-
-    
     def _process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
