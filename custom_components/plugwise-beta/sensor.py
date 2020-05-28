@@ -264,7 +264,6 @@ class PwThermostatSensor(SmileGateway, Entity):
         else:
             self._dev_class = "auxiliary"
 
-        self._boiler_state = False
         self._heating_state = False
         self._cooling_state = False
 
@@ -320,7 +319,7 @@ class PwThermostatSensor(SmileGateway, Entity):
     def icon(self):
         """Icon for the sensor."""
         if self._sensor_type is None:
-            if self._boiler_state or self._heating_state:
+            if self._heating_state:
                 return FLAME_ICON
             if self._cooling_state:
                 return COOL_ICON
@@ -344,9 +343,6 @@ class PwThermostatSensor(SmileGateway, Entity):
                         measurement = int(measurement)
                     self._state = measurement
 
-            if "boiler_state" in data:
-                if data["boiler_state"] is not None:
-                    self._boiler_state = data["boiler_state"]
             if "heating_state" in data:
                 if data["heating_state"] is not None:
                     self._heating_state = data["heating_state"]
@@ -354,7 +350,7 @@ class PwThermostatSensor(SmileGateway, Entity):
                 if data["cooling_state"] is not None:
                     self._cooling_state = data["cooling_state"]
             if self._sensor == DEVICE_STATE:
-                if self._boiler_state or self._heating_state:
+                if self._heating_state:
                     self._state = "heating"
                 elif self._cooling_state:
                     self._state = "cooling"
