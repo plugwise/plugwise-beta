@@ -98,6 +98,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._presets_list = None
         self._heating_state = None
         self._cooling_state = None
+        self._compressor_state = None
         self._dhw_state = None
         self._hvac_mode = None
         self._schema_names = None
@@ -174,7 +175,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
     def hvac_modes(self):
         """Return the available hvac modes list."""
         if self._heating_state is not None:
-            if self._cooling_state is not None:
+            if self._compressor_state is not None:
                 return HVAC_MODES_HEAT_COOL
             return HVAC_MODES_HEAT_ONLY
 
@@ -305,12 +306,15 @@ class PwThermostat(SmileGateway, ClimateEntity):
             if "cooling_state" in heater_central_data:
                 if heater_central_data["cooling_state"] is not None:
                     self._cooling_state = heater_central_data["cooling_state"]
+            if "compressor_state" in heater_central_data:
+                if heater_central_data["compressor_state"] is not None:
+                    self._compressor_state = heater_central_data["compressor_state"]
 
         if self._schema_status:
             self._hvac_mode = HVAC_MODE_AUTO
         elif self._heating_state is not None:
             self._hvac_mode = HVAC_MODE_HEAT
-            if self._cooling_state is not None:
+            if self._compressor_state is not None:
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
 
         self.async_write_ha_state()
