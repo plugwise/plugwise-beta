@@ -96,7 +96,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._preset_mode = None
         self._presets = None
         self._presets_list = None
-        self._boiler_state = None
         self._heating_state = None
         self._cooling_state = None
         self._dhw_state = None
@@ -115,12 +114,12 @@ class PwThermostat(SmileGateway, ClimateEntity):
     def hvac_action(self):
         """Return the current action."""
         if self._single_thermostat:
-            if self._heating_state or self._boiler_state:
+            if self._heating_state:
                 return CURRENT_HVAC_HEAT
             if self._cooling_state:
                 return CURRENT_HVAC_COOL
             return CURRENT_HVAC_IDLE
-        if self._heating_state is not None or self._boiler_state is not None:
+        if self._heating_state is not None:
             if self._setpoint > self._temperature:
                 return CURRENT_HVAC_HEAT
             return CURRENT_HVAC_IDLE
@@ -174,7 +173,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
     @property
     def hvac_modes(self):
         """Return the available hvac modes list."""
-        if self._heating_state is not None or self._boiler_state is not None:
+        if self._heating_state is not None:
             if self._cooling_state is not None:
                 return HVAC_MODES_HEAT_COOL
             return HVAC_MODES_HEAT_ONLY
@@ -300,9 +299,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
             _LOGGER.error("Received no heater_central_data for device %s.", self._name)
         else:
             _LOGGER.debug("Heater_central_data collected from Plugwise API")
-            if "boiler_state" in heater_central_data:
-                if heater_central_data["boiler_state"] is not None:
-                    self._boiler_state = heater_central_data["boiler_state"]
             if "heating_state" in heater_central_data:
                 if heater_central_data["heating_state"] is not None:
                     self._heating_state = heater_central_data["heating_state" ]
@@ -312,7 +308,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
         if self._schema_status:
             self._hvac_mode = HVAC_MODE_AUTO
-        elif self._heating_state is not None or self._boiler_state is not None:
+        elif self._heating_state is not None:
             self._hvac_mode = HVAC_MODE_HEAT
             if self._cooling_state is not None:
                 self._hvac_mode = HVAC_MODE_HEAT_COOL
