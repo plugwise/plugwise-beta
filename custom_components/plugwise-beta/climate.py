@@ -275,15 +275,12 @@ class PwThermostat(SmileGateway, ClimateEntity):
             _LOGGER.error("Received no heater_central_data for device %s.", self._name)
         else:
             _LOGGER.debug("Heater_central_data collected from Plugwise API")
-            if "heating_state" in heater_central_data:
-                if heater_central_data["heating_state"] is not None:
-                    self._heating_state = heater_central_data["heating_state" ]
-            if "cooling_state" in heater_central_data:
-                if heater_central_data["cooling_state"] is not None:
-                    self._cooling_state = heater_central_data["cooling_state"]
-            if "compressor_state" in heater_central_data:
-                if heater_central_data["compressor_state"] is not None:
-                    self._compressor_state = heater_central_data["compressor_state"]
+            if heater_central_data.get("heating_state") is not None:
+                self._heating_state = heater_central_data["heating_state"]
+            if heater_central_data.get("cooling_state") is not None:
+                self._cooling_state = heater_central_data["cooling_state"]
+            if heater_central_data.get("compressor_state") is not None:
+                self._compressor_state = heater_central_data["compressor_state"]
 
         if self._schema_status:
             self._hvac_mode = HVAC_MODE_AUTO

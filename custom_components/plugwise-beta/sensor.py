@@ -179,10 +179,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     _LOGGER.debug("Plugwise sensor type %s", api.smile_type)
 
     entities = []
-    all_entities = api.get_all_devices()
+    all_devices = api.get_all_devices()
     single_thermostat = api.single_master_thermostat()
-    _LOGGER.debug("Plugwise all devices (not just sensor) %s", all_entities)
-    for dev_id, entity in all_entities.items():
+    _LOGGER.debug("Plugwise all devices (not just sensor) %s", all_devices)
+    for dev_id, entity in all_devices.items():
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
         _LOGGER.debug("Plugwise sensor Dev %s", entity["name"])
