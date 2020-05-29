@@ -1,7 +1,6 @@
 """Plugwise Climate component for Home Assistant."""
 
 import logging
-from typing import Dict
 from Plugwise_Smile.Smile import Smile
 
 from homeassistant.components.climate import ClimateEntity

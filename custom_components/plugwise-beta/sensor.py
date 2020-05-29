@@ -1,7 +1,6 @@
 """Plugwise Sensor component for Home Assistant."""
 
 import logging
-from typing import Dict
 
 from homeassistant.const import (
     DEVICE_CLASS_BATTERY,
