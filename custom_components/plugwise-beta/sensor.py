@@ -264,6 +264,7 @@ class SmileSensor(SmileGateway):
 
         self._dev_class = None
         self._state = None
+        self._unit_of_measurement =  None
 
     @property
     def device_class(self):
