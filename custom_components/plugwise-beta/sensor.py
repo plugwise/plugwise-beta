@@ -316,7 +316,7 @@ class PwThermostatSensor(SmileSensor, Entity):
         self._cooling_state = False
 
         if self._dev_id == self._api.heater_id:
-            self._entity_name = f"Auxiliary"
+            self._entity_name = "Auxiliary"
         sensorname = sensor.replace("_", " ").title()
         self._name = f"{self._entity_name} {sensorname}"
 
