@@ -72,7 +72,6 @@ class PwBinarySensor(SmileGateway, BinarySensorEntity):
 
         self._api = api
         self._dev_id = dev_id
-        self._model = model
         self._name = name
         self._binary_sensor = binary_sensor
         self._is_on = False
@@ -104,22 +103,6 @@ class PwBinarySensor(SmileGateway, BinarySensorEntity):
         if self._is_on:
             return STATE_ON
         return STATE_OFF
-
-    @property
-    def device_info(self) -> Dict[str, any]:
-        """Return the device information."""
-
-        device_information = {
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._name,
-            "manufacturer": "Plugwise",
-            "model": self._model,
-        }
-
-        if self._dev_id != self._api.gateway_id:
-            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
-
-        return device_information
 
     @property
     def icon(self):
