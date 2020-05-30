@@ -8,6 +8,9 @@ from homeassistant.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_PRESSURE,
     DEVICE_CLASS_TEMPERATURE,
+    ENERGY_WATT_HOUR,
+    ENERGY_KILO_WATT_HOUR,
+    POWER_WATT,
     PRESSURE_BAR,
     TEMP_CELSIUS,
 )
@@ -51,25 +54,25 @@ SENSOR_MAP = {
     "temperature_difference": ATTR_TEMPERATURE,
     "electricity_consumed": [
         "Current Consumed Power",
-        "W",
+        POWER_WATT,
         DEVICE_CLASS_POWER,
         "mdi:flash",
     ],
     "electricity_produced": [
         "Current Produced Power",
-        "W",
+        POWER_WATT,
         DEVICE_CLASS_POWER,
         "mdi:flash",
     ],
     "electricity_consumed_interval": [
         "Consumed Power Interval",
-        "Wh",
+        ENERGY_WATT_HOUR,
         DEVICE_CLASS_POWER,
         "mdi:flash",
     ],
     "electricity_produced_interval": [
         "Produced Power Interval",
-        "Wh",
+        ENERGY_WATT_HOUR,
         DEVICE_CLASS_POWER,
         "mdi:flash",
     ],
@@ -79,49 +82,49 @@ SENSOR_MAP = {
     "return_temperature": ATTR_TEMPERATURE,
     "electricity_consumed_off_peak_point": [
         "Current Consumed Power (off peak)",
-        "W",
+        POWER_WATT,
         DEVICE_CLASS_POWER,
         "mdi:flash",
     ],
     "electricity_consumed_peak_point": [
         "Current Consumed Power",
-        "W",
+        POWER_WATT,
         DEVICE_CLASS_POWER,
         "mdi:flash",
     ],
     "electricity_consumed_off_peak_cumulative": [
         "Cumulative Consumed Power (off peak)",
-        "kWh",
+        ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
         "mdi:gauge",
     ],
     "electricity_consumed_peak_cumulative": [
         "Cumulative Consumed Power",
-        "kWh",
+        ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
         "mdi:gauge",
     ],
     "electricity_produced_off_peak_point": [
         "Current Consumed Power (off peak)",
-        "W",
+        POWER_WATT,
         DEVICE_CLASS_POWER,
         "mdi:white-balance-sunny",
     ],
     "electricity_produced_peak_point": [
         "Current Consumed Power",
-        "W",
+        POWER_WATT,
         DEVICE_CLASS_POWER,
         "mdi:white-balance-sunny",
     ],
     "electricity_produced_off_peak_cumulative": [
         "Cumulative Consumed Power (off peak)",
-        "kWh",
+        ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
         "mdi:gauge",
     ],
     "electricity_produced_peak_cumulative": [
         "Cumulative Consumed Power",
-        "kWh",
+        ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
         "mdi:gauge",
     ],
@@ -139,13 +142,13 @@ SENSOR_MAP = {
     ],
     "net_electricity_point": [
         "Current net Power",
-        "W",
+        POWER_WATT,
         DEVICE_CLASS_POWER,
         "mdi:solar-power",
     ],
     "net_electricity_cumulative": [
         "Cumulative net Power",
-        "kWh",
+        ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
         "mdi:gauge",
     ],
@@ -393,7 +396,7 @@ class PwPowerSensor(SmileSensor, Entity):
         if self._sensor in data:
             if data[self._sensor] is not None:
                 measurement = data[self._sensor]
-                if self._unit_of_measurement == "kWh":
+                if self._unit_of_measurement == ENERGY_KILO_WATT_HOUR:
                     measurement = int(measurement / 1000)
                 self._state = measurement
 
