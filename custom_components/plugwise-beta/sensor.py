@@ -46,13 +46,18 @@ ATTR_ILLUMINANCE = [
     "mdi:lightbulb-on-outline",
 ]
 ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE, "mdi:water"]
-SENSOR_MAP = {
+
+TEMP_SENSOR_MAP = {
     "setpoint": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
     "intended_boiler_temperature": ATTR_TEMPERATURE,
-    "battery": ATTR_BATTERY_LEVEL,
-    "water_pressure": ATTR_PRESSURE,
     "temperature_difference": ATTR_TEMPERATURE,
+    "outdoor_temperature": ATTR_TEMPERATURE,
+    "water_temperature": ATTR_TEMPERATURE,
+    "return_temperature": ATTR_TEMPERATURE,
+}
+
+ENERGY_SENSOR_MAP = {
     "electricity_consumed": [
         "Current Consumed Power",
         POWER_WATT,
@@ -77,10 +82,6 @@ SENSOR_MAP = {
         DEVICE_CLASS_POWER,
         "mdi:flash",
     ],
-    "outdoor_temperature": ATTR_TEMPERATURE,
-    "illuminance": ATTR_ILLUMINANCE,
-    "water_temperature": ATTR_TEMPERATURE,
-    "return_temperature": ATTR_TEMPERATURE,
     "electricity_consumed_off_peak_point": [
         "Current Consumed Power (off peak)",
         POWER_WATT,
@@ -131,13 +132,13 @@ SENSOR_MAP = {
     ],
     "gas_consumed_interval": [
         "Current Consumed Gas",
-        VOLUME_CUBIC_METERS,
+        "m3",
         DEVICE_CLASS_GAS,
         "mdi:gas-cylinder",
     ],
     "gas_consumed_cumulative": [
         "Cumulative Consumed Gas",
-        VOLUME_CUBIC_METERS,
+        "m3",
         DEVICE_CLASS_GAS,
         "mdi:gauge",
     ],
@@ -152,6 +153,17 @@ SENSOR_MAP = {
         ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
         "mdi:gauge",
+    ]
+}
+
+MISC_SENSOR_MAP = {
+    "battery": ATTR_BATTERY_LEVEL,
+    "illuminance": ATTR_ILLUMINANCE,
+    "modulation_level": [
+        "Heater Modulation Level",
+        "%",
+        "modulation",
+        "mdi:percent",
     ],
     "valve_position": [
         "Valve Position",
@@ -159,12 +171,7 @@ SENSOR_MAP = {
         DEVICE_CLASS_VALVE,
         "mdi:valve",
     ],
-    "modulation_level": [
-        "Heater Modulation Level",
-        "%",
-        "modulation",
-        "mdi:percent",
-    ],
+    "water_pressure": ATTR_PRESSURE,
 }
 
 INDICATE_ACTIVE_LOCAL_DEVICE = [
@@ -190,7 +197,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
         _LOGGER.debug("Plugwise sensor Dev %s", entity["name"])
-        for sensor, sensor_type in SENSOR_MAP.items():
+        for sensor, sensor_type in {
+                **TEMP_SENSOR_MAP,
+                **ENERGY_SENSOR_MAP,
+                **MISC_SENSOR_MAP,
+        }.items():
             if sensor in data:
                 if data[sensor] is None:
                     continue
