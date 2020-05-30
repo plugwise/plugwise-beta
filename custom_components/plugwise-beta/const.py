@@ -27,6 +27,7 @@ CONF_GAS = "gas"
 ATTR_ILLUMINANCE = "illuminance"
 CURRENT_HVAC_DHW = "hot_water"
 DEVICE_STATE = "device_state"
+UNIT_LUMEN  = "lm"'
 
 SCHEDULE_ON = "true"
 SCHEDULE_OFF = "false"

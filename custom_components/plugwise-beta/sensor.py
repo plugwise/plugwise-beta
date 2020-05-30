@@ -13,6 +13,7 @@ from homeassistant.const import (
     POWER_WATT,
     PRESSURE_BAR,
     TEMP_CELSIUS,
+    UNIT_PERCENTAGE,
     VOLUME_CUBIC_METERS,
 )
 from homeassistant.helpers.entity import Entity
@@ -25,6 +26,7 @@ from .const import (
     COOL_ICON,
     FLAME_ICON,
     IDLE_ICON,
+    UNIT_LUMEN,
 )
 
 from . import SmileGateway
@@ -38,10 +40,10 @@ ATTR_TEMPERATURE = [
     DEVICE_CLASS_TEMPERATURE,
     "mdi:thermometer",
 ]
-ATTR_BATTERY_LEVEL = ["Charge", "%", DEVICE_CLASS_BATTERY, "mdi:battery-high"]
+ATTR_BATTERY_LEVEL = ["Charge", UNIT_PERCENTAGE, DEVICE_CLASS_BATTERY, "mdi:battery-high"]
 ATTR_ILLUMINANCE = [
     "Illuminance",
-    "lm",
+    UNIT_LUMEN,
     DEVICE_CLASS_ILLUMINANCE,
     "mdi:lightbulb-on-outline",
 ]
@@ -132,13 +134,13 @@ ENERGY_SENSOR_MAP = {
     ],
     "gas_consumed_interval": [
         "Current Consumed Gas",
-        "m3",
+        VOLUME_CUBIC_METERS,
         DEVICE_CLASS_GAS,
         "mdi:gas-cylinder",
     ],
     "gas_consumed_cumulative": [
         "Cumulative Consumed Gas",
-        "m3",
+        VOLUME_CUBIC_METERS,
         DEVICE_CLASS_GAS,
         "mdi:gauge",
     ],
@@ -161,13 +163,13 @@ MISC_SENSOR_MAP = {
     "illuminance": ATTR_ILLUMINANCE,
     "modulation_level": [
         "Heater Modulation Level",
-        "%",
+        UNIT_PERCENTAGE,
         "modulation",
         "mdi:percent",
     ],
     "valve_position": [
         "Valve Position",
-        "%",
+        UNIT_PERCENTAGE,
         DEVICE_CLASS_VALVE,
         "mdi:valve",
     ],
