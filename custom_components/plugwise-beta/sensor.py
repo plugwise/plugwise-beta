@@ -23,7 +23,7 @@ from .const import (
     IDLE_ICON,
 )
 
-from . import SmileSensor
+from . import SmileGateway
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -238,6 +238,36 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     break
 
     async_add_entities(entities, True)
+
+
+class SmileSensor(SmileGateway):
+    """Represent Smile Sensors."""
+
+    def __init__(self, api, coordinator):
+        """Initialise the sensor."""
+        super().__init__(api, coordinator)
+
+        self._dev_class = None
+        self._state = None
+
+    @property
+    def device_class(self):
+        """Device class of this entity."""
+        if not self._dev_class:
+            pass
+        return self._dev_class
+
+    @property
+    def state(self):
+        """Device class of this entity."""
+        if not self._state:
+            pass
+        return self._state
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit of measurement of this entity, if any."""
+        return self._unit_of_measurement
 
 
 class PwThermostatSensor(SmileSensor, Entity):

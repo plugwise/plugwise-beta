@@ -216,31 +216,3 @@ class SmileGateway(Entity):
         """Update the entity."""
         await self._coordinator.async_request_refresh()
 
-class SmileSensor(SmileGateway):
-    """Represent Smile Sensors."""
-
-    def __init__(self, api, coordinator):
-        """Initialise the sensor."""
-        super().__init__(api, coordinator)
-
-        self._dev_class = None
-        self._state = None
-
-    @property
-    def device_class(self):
-        """Device class of this entity."""
-        if not self._dev_class:
-            pass
-        return self._dev_class
-
-    @property
-    def state(self):
-        """Device class of this entity."""
-        if not self._state:
-            pass
-        return self._state
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement of this entity, if any."""
-        return self._unit_of_measurement
