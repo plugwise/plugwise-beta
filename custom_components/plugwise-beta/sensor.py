@@ -198,9 +198,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
         _LOGGER.debug("Plugwise sensor Dev %s", entity["name"])
         for sensor, sensor_type in {
-                **TEMP_SENSOR_MAP,
-                **ENERGY_SENSOR_MAP,
-                **MISC_SENSOR_MAP,
+            **TEMP_SENSOR_MAP,
+            **ENERGY_SENSOR_MAP,
+            **MISC_SENSOR_MAP,
         }.items():
             if sensor in data:
                 if data[sensor] is None:
