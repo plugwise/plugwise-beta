@@ -17,7 +17,7 @@ from .const import (
     WATER_ICON,
 )
 
-from sensor import SmileSensor
+from .sensor import SmileSensor
 
 BINARY_SENSOR_LIST = [
     "dhw_state",
@@ -63,7 +63,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(devices, True)
 
 
-class PwBinarySensor(SmileGateway, BinarySensorEntity):
+class PwBinarySensor(SmileSensor, BinarySensorEntity):
     """Representation of a Plugwise binary_sensor."""
 
     def __init__(self, api, coordinator, name, binary_sensor, dev_id, model):
