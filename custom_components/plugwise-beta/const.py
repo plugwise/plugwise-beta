@@ -26,7 +26,7 @@ CONF_GAS = "gas"
 
 CURRENT_HVAC_DHW = "hot_water"
 DEVICE_STATE = "device_state"
-UNIT_LUMEN  = "lm"'
+UNIT_LUMEN  = "lm"
 
 SCHEDULE_ON = "true"
 SCHEDULE_OFF = "false"
