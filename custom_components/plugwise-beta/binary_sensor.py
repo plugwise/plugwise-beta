@@ -17,7 +17,7 @@ from .const import (
     WATER_ICON,
 )
 
-from . import SmileGateway
+from .sensor import SmileSensor
 
 BINARY_SENSOR_LIST = [
     "dhw_state",
@@ -63,7 +63,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(devices, True)
 
 
-class PwBinarySensor(SmileGateway, BinarySensorEntity):
+class PwBinarySensor(SmileSensor, BinarySensorEntity):
     """Representation of a Plugwise binary_sensor."""
 
     def __init__(self, api, coordinator, name, binary_sensor, dev_id, model):
@@ -72,73 +72,27 @@ class PwBinarySensor(SmileGateway, BinarySensorEntity):
 
         self._api = api
         self._dev_id = dev_id
-        self._model = model
-        self._name = name
+        self._entity_name = name
         self._binary_sensor = binary_sensor
         self._is_on = False
+        self._state = None
+        self._dev_class = None
 
         if self._dev_id == self._api.heater_id:
-            self._name = f"Auxiliary"
+            self._entity_name = f"Auxiliary"
 
         if self._dev_id == self._api.gateway_id:
-            self._name = f"Smile {self._name}"
+            self._entity_name = f"Smile {self._name}"
 
         bsensorname = binary_sensor.replace("_", " ").title()
-        self._sensorname = f"{self._name} {bsensorname}"
+        self._name = f"{self._entity_name} {bsensorname}"
 
-        self._unique_id = f"bs-{dev_id}-{self._name}-{binary_sensor}"
-
-    @property
-    def name(self):
-        """Return the name of the thermostat, if any."""
-        return self._sensorname
+        self._unique_id = f"bs-{dev_id}-{self._entity_name}-{binary_sensor}"
 
     @property
     def is_on(self):
         """Return true if the binary sensor is on."""
         return self.is_on
-
-    @property
-    def state(self):
-        """Return the state of the binary sensor."""
-        if self._is_on:
-            return STATE_ON
-        return STATE_OFF
-
-    @property
-    def device_info(self) -> Dict[str, any]:
-        """Return the device information."""
-
-        device_information = {
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._name,
-            "manufacturer": "Plugwise",
-            "model": self._model,
-        }
-
-        if self._dev_id != self._api.gateway_id:
-            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
-
-        return device_information
-
-    @property
-    def icon(self):
-        """Return the icon to use in the frontend."""
-        if self._binary_sensor == "dhw_state":
-            return WATER_ICON
-        if self._binary_sensor == "slave_boiler_state":
-            return FLAME_ICON
-        if self._binary_sensor == "valve_position":
-            if self._is_on:
-                return VALVE_OPEN_ICON
-            return VALVE_CLOSED_ICON
-
-    @property
-    def device_class(self):
-        """Return the class of this device, from component DEVICE_CLASSES."""
-        if self._binary_sensor == "valve_position":
-            return DEVICE_CLASS_OPENING
-        return "none"
 
     def _process_data(self):
         """Update the entity."""
@@ -149,8 +103,23 @@ class PwBinarySensor(SmileGateway, BinarySensorEntity):
             _LOGGER.error("Received no data for device %s.", self._binary_sensor)
         else:
             if self._binary_sensor in data:
+                self._state = STATE_OFF
+
                 if isinstance(data[self._binary_sensor], float):
                     self._is_on = data[self._binary_sensor] == 1.0
                 self._is_on = data[self._binary_sensor]
+
+                if self._is_on:
+                    self._state = STATE_ON
+
+                if self._binary_sensor == "dhw_state":
+                    self._icon = WATER_ICON
+                if self._binary_sensor == "slave_boiler_state":
+                    self._icon = FLAME_ICON
+                if self._binary_sensor == "valve_position":
+                    self._dev_class = DEVICE_CLASS_OPENING
+                    self._icon = VALVE_CLOSED_ICON
+                    if self._is_on:
+                        self._icon = VALVE_OPEN_ICON
 
         self.async_write_ha_state()

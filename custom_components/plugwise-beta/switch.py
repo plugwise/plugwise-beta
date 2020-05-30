@@ -38,7 +38,6 @@ class PwSwitch(SmileGateway, SwitchEntity):
         super().__init__(api, coordinator)
 
         self._api = api
-        self._model = model
         self._name = name
         self._dev_id = dev_id
         self._device_is_on = False
@@ -48,22 +47,6 @@ class PwSwitch(SmileGateway, SwitchEntity):
     def is_on(self):
         """Return true if device is on."""
         return self._device_is_on
-
-    @property
-    def device_info(self) -> Dict[str, any]:
-        """Return the device information."""
-
-        device_information = {
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._name,
-            "manufacturer": "Plugwise",
-            "model": self._model,
-        }
-
-        if self._dev_id != self._api.gateway_id:
-            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
-
-        return device_information
 
     async def turn_on(self, **kwargs):
         """Turn the device on."""
@@ -85,12 +68,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
                 self._device_is_on = False
                 self.async_write_ha_state()
         except Smile.PlugwiseError:
-            _LOGGER.error("Error while communicating to device")       
-
-    @property
-    def name(self):
-        """Return the name of the thermostat, if any."""
-        return self._name
+            _LOGGER.error("Error while communicating to device")
 
     @property
     def icon(self):
