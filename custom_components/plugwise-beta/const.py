@@ -24,7 +24,6 @@ CONF_HEATER = "heater"
 CONF_SOLAR = "solar"
 CONF_GAS = "gas"
 
-ATTR_ILLUMINANCE = "illuminance"
 CURRENT_HVAC_DHW = "hot_water"
 DEVICE_STATE = "device_state"
 UNIT_LUMEN  = "lm"'
