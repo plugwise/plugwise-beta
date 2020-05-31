@@ -75,7 +75,6 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
         self._entity_name = name
         self._binary_sensor = binary_sensor
         self._is_on = False
-        self._state = None
         self._dev_class = None
 
         if self._dev_id == self._api.heater_id:
