@@ -24,6 +24,10 @@ from .const import (
     COOL_ICON,
     FLAME_ICON,
     IDLE_ICON,
+    SENSOR_MAP_DEVICE_CLASS,
+    SENSOR_MAP_ICON,
+    SENSOR_MAP_MODEL,
+    SENSOR_MAP_UOM,
     UNIT_LUMEN,
 )
 
