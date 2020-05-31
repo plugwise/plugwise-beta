@@ -101,25 +101,27 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
 
         if not data:
             _LOGGER.error("Received no data for device %s.", self._binary_sensor)
-        else:
-            if self._binary_sensor in data:
-                self._state = STATE_OFF
+            self.async_write_ha_state()
+            return
 
-                if isinstance(data[self._binary_sensor], float):
-                    self._is_on = data[self._binary_sensor] == 1.0
-                self._is_on = data[self._binary_sensor]
+        if self._binary_sensor in data:
+            self._state = STATE_OFF
 
+            if isinstance(data[self._binary_sensor], float):
+                self._is_on = data[self._binary_sensor] == 1.0
+            self._is_on = data[self._binary_sensor]
+
+            if self._is_on:
+                self._state = STATE_ON
+
+            if self._binary_sensor == "dhw_state":
+                self._icon = WATER_ICON
+            if self._binary_sensor == "slave_boiler_state":
+                self._icon = FLAME_ICON
+            if self._binary_sensor == "valve_position":
+                self._dev_class = DEVICE_CLASS_OPENING
+                self._icon = VALVE_CLOSED_ICON
                 if self._is_on:
-                    self._state = STATE_ON
-
-                if self._binary_sensor == "dhw_state":
-                    self._icon = WATER_ICON
-                if self._binary_sensor == "slave_boiler_state":
-                    self._icon = FLAME_ICON
-                if self._binary_sensor == "valve_position":
-                    self._dev_class = DEVICE_CLASS_OPENING
-                    self._icon = VALVE_CLOSED_ICON
-                    if self._is_on:
-                        self._icon = VALVE_OPEN_ICON
+                    self._icon = VALVE_OPEN_ICON
 
         self.async_write_ha_state()
