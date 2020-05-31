@@ -247,9 +247,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                             api, coordinator, entity["name"], dev_id, DEVICE_STATE,
                         )
                     )
-                    _LOGGER.info(
-                        "Added sensor.%s_state", "{}".format(entity["name"])
-                    )
+                    _LOGGER.info("Added auxiliary sensor %s", device_properties["name"])
                     break
 
     async_add_entities(entities, True)
