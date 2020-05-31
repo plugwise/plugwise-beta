@@ -313,11 +313,6 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
 
         self._unique_id = f"cl-{dev_id}-{self._name}-{sensor}"
         
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return self._unit_of_measurement
-
     def _process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update aux dev sensor called")
