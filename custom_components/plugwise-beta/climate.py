@@ -85,6 +85,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._api = api
         self._gateway_id = self._api.gateway_id
         self._name = name
+        self._entity_name = self._name
         self._dev_id = dev_id
         self._loc_id = loc_id
         self._model = model
