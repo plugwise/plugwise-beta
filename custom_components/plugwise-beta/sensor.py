@@ -272,19 +272,21 @@ class SmileSensor(SmileGateway):
     def device_class(self):
         """Device class of this entity."""
         if not self._dev_class:
-            pass
+            return None
         return self._dev_class
 
     @property
     def state(self):
         """Device class of this entity."""
         if not self._state:
-            pass
+            return None
         return self._state
 
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement of this entity, if any."""
+        if not self._unit_of_measurement:
+            return None
         return self._unit_of_measurement
 
 
