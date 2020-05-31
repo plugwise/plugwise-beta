@@ -39,6 +39,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
 
         self._api = api
         self._name = name
+        self._entity_name = self._name
         self._dev_id = dev_id
         self._device_is_on = False
         self._unique_id = f"sw-{dev_id}-{self._name}"
