@@ -197,10 +197,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     all_devices = api.get_all_devices()
     single_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Plugwise all devices (not just sensor) %s", all_devices)
-    for dev_id, entity in all_devices.items():
+    for dev_id, device_properties in all_devices.items():
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
-        _LOGGER.debug("Plugwise sensor Dev %s", entity["name"])
+        _LOGGER.debug("Plugwise sensor Dev %s", device_properties["name"])
         for sensor, sensor_type in {
             **TEMP_SENSOR_MAP,
             **ENERGY_SENSOR_MAP,
@@ -210,17 +210,17 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 if data[sensor] is None:
                     continue
 
-                if "power" in entity["types"]:
+                if "power" in device_properties["types"]:
                     model = None
 
-                    if "plug" in entity["types"]:
+                    if "plug" in device_properties["types"]:
                         model = "Metered Switch"
 
                     entities.append(
                         PwPowerSensor(
                             api,
                             coordinator,
-                            entity["name"],
+                            device_properties["name"],
                             dev_id,
                             sensor,
                             sensor_type,
@@ -232,23 +232,23 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         PwThermostatSensor(
                             api,
                             coordinator,
-                            entity["name"],
+                            device_properties["name"],
                             dev_id,
                             sensor,
                             sensor_type,
                         )
                     )
-                _LOGGER.info("Added sensor.%s", entity["name"])
+                _LOGGER.info("Added sensor.%s", device_properties["name"])
 
         # If not None and False (hence `is False`, not `not False`)
         if single_thermostat is False:
             for state in INDICATE_ACTIVE_LOCAL_DEVICE:
                 # Once we hit this, append and break (don't add twice)
                 if state in data:
-                    _LOGGER.debug("Plugwise aux sensor Dev %s", entity["name"])
+                    _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties["name"])
                     entities.append(
                         PwAuxDeviceSensor(
-                            api, coordinator, entity["name"], dev_id, DEVICE_STATE,
+                            api, coordinator, device_properties["name"], dev_id, DEVICE_STATE,
                         )
                     )
                     _LOGGER.info("Added auxiliary sensor %s", device_properties["name"])
