@@ -8,31 +8,26 @@ from homeassistant.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_PRESSURE,
     DEVICE_CLASS_TEMPERATURE,
-    ENERGY_WATT_HOUR,
     ENERGY_KILO_WATT_HOUR,
+    ENERGY_WATT_HOUR,
     POWER_WATT,
     PRESSURE_BAR,
     TEMP_CELSIUS,
     UNIT_PERCENTAGE,
     VOLUME_CUBIC_METERS,
 )
+from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
+from . import SmileGateway
 from .const import (
     DEVICE_STATE,
     DOMAIN,
-    COOL_ICON,
-    FLAME_ICON,
-    IDLE_ICON,
     SENSOR_MAP_DEVICE_CLASS,
-    SENSOR_MAP_ICON,
     SENSOR_MAP_MODEL,
     SENSOR_MAP_UOM,
     UNIT_LUMEN,
 )
-
-from . import SmileGateway
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,16 +35,18 @@ ATTR_TEMPERATURE = [
     "Temperature",
     TEMP_CELSIUS,
     DEVICE_CLASS_TEMPERATURE,
-    "mdi:thermometer",
 ]
-ATTR_BATTERY_LEVEL = ["Charge", UNIT_PERCENTAGE, DEVICE_CLASS_BATTERY, "mdi:battery-high"]
+ATTR_BATTERY_LEVEL = [
+    "Charge",
+    UNIT_PERCENTAGE,
+    DEVICE_CLASS_BATTERY,
+]
 ATTR_ILLUMINANCE = [
     "Illuminance",
     UNIT_LUMEN,
     DEVICE_CLASS_ILLUMINANCE,
-    "mdi:lightbulb-on-outline",
 ]
-ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE, "mdi:water"]
+ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE]
 
 TEMP_SENSOR_MAP = {
     "setpoint": ATTR_TEMPERATURE,
@@ -62,119 +59,73 @@ TEMP_SENSOR_MAP = {
 }
 
 ENERGY_SENSOR_MAP = {
-    "electricity_consumed": [
-        "Current Consumed Power",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-        "mdi:flash",
-    ],
-    "electricity_produced": [
-        "Current Produced Power",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-        "mdi:flash",
-    ],
+    "electricity_consumed": ["Current Consumed Power", POWER_WATT, DEVICE_CLASS_POWER],
+    "electricity_produced": ["Current Produced Power", POWER_WATT, DEVICE_CLASS_POWER],
     "electricity_consumed_interval": [
         "Consumed Power Interval",
         ENERGY_WATT_HOUR,
         DEVICE_CLASS_POWER,
-        "mdi:flash",
     ],
     "electricity_produced_interval": [
         "Produced Power Interval",
         ENERGY_WATT_HOUR,
         DEVICE_CLASS_POWER,
-        "mdi:flash",
     ],
     "electricity_consumed_off_peak_point": [
         "Current Consumed Power (off peak)",
         POWER_WATT,
         DEVICE_CLASS_POWER,
-        "mdi:flash",
     ],
     "electricity_consumed_peak_point": [
         "Current Consumed Power",
         POWER_WATT,
         DEVICE_CLASS_POWER,
-        "mdi:flash",
     ],
     "electricity_consumed_off_peak_cumulative": [
         "Cumulative Consumed Power (off peak)",
         ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
-        "mdi:gauge",
     ],
     "electricity_consumed_peak_cumulative": [
         "Cumulative Consumed Power",
         ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
-        "mdi:gauge",
     ],
     "electricity_produced_off_peak_point": [
         "Current Consumed Power (off peak)",
         POWER_WATT,
         DEVICE_CLASS_POWER,
-        "mdi:white-balance-sunny",
     ],
     "electricity_produced_peak_point": [
         "Current Consumed Power",
         POWER_WATT,
         DEVICE_CLASS_POWER,
-        "mdi:white-balance-sunny",
     ],
     "electricity_produced_off_peak_cumulative": [
         "Cumulative Consumed Power (off peak)",
         ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
-        "mdi:gauge",
     ],
     "electricity_produced_peak_cumulative": [
         "Cumulative Consumed Power",
         ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
-        "mdi:gauge",
     ],
-    "gas_consumed_interval": [
-        "Current Consumed Gas",
-        VOLUME_CUBIC_METERS,
-        None,
-        "mdi:gas-cylinder",
-    ],
-    "gas_consumed_cumulative": [
-        "Cumulative Consumed Gas",
-        VOLUME_CUBIC_METERS,
-        None,
-        "mdi:gauge",
-    ],
-    "net_electricity_point": [
-        "Current net Power",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-        "mdi:solar-power",
-    ],
+    "gas_consumed_interval": ["Current Consumed Gas", VOLUME_CUBIC_METERS, None],
+    "gas_consumed_cumulative": ["Cumulative Consumed Gas", VOLUME_CUBIC_METERS, None],
+    "net_electricity_point": ["Current net Power", POWER_WATT, DEVICE_CLASS_POWER],
     "net_electricity_cumulative": [
         "Cumulative net Power",
         ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
-        "mdi:gauge",
-    ]
+    ],
 }
 
 MISC_SENSOR_MAP = {
     "battery": ATTR_BATTERY_LEVEL,
     "illuminance": ATTR_ILLUMINANCE,
-    "modulation_level": [
-        "Heater Modulation Level",
-        UNIT_PERCENTAGE,
-        "modulation",
-        "mdi:percent",
-    ],
-    "valve_position": [
-        "Valve Position",
-        UNIT_PERCENTAGE,
-        None,
-        "mdi:valve",
-    ],
+    "modulation_level": ["Heater Modulation Level", UNIT_PERCENTAGE, "modulation"],
+    "valve_position": ["Valve Position", UNIT_PERCENTAGE, None],
     "water_pressure": ATTR_PRESSURE,
 }
 
@@ -189,7 +140,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
     coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
-
 
     _LOGGER.debug("Plugwise sensor type %s", api.smile_type)
 
@@ -245,10 +195,16 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             for state in INDICATE_ACTIVE_LOCAL_DEVICE:
                 # Once we hit this, append and break (don't add twice)
                 if state in data:
-                    _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties["name"])
+                    _LOGGER.debug(
+                        "Plugwise aux sensor Dev %s", device_properties["name"]
+                    )
                     entities.append(
                         PwAuxDeviceSensor(
-                            api, coordinator, device_properties["name"], dev_id, DEVICE_STATE,
+                            api,
+                            coordinator,
+                            device_properties["name"],
+                            dev_id,
+                            DEVICE_STATE,
                         )
                     )
                     _LOGGER.info("Added auxiliary sensor %s", device_properties["name"])
@@ -266,78 +222,22 @@ class SmileSensor(SmileGateway):
 
         self._dev_class = None
         self._state = None
-        self._unit_of_measurement =  None
+        self._unit_of_measurement = None
 
     @property
     def device_class(self):
         """Device class of this entity."""
-        if not self._dev_class:
-            return None
         return self._dev_class
 
     @property
     def state(self):
         """Device class of this entity."""
-        if not self._state:
-            return None
         return self._state
 
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement of this entity, if any."""
-        if not self._unit_of_measurement:
-            return None
         return self._unit_of_measurement
-
-
-class PwAuxDeviceSensor(SmileSensor, Entity):
-    """Thermostat (or generic) sensor devices."""
-
-    def __init__(self, api, coordinator, name, dev_id, sensor):
-        """Set up the Plugwise API."""
-        super().__init__(api, coordinator)
-
-        self._api = api
-        self._gateway_id = self._api.gateway_id
-        self._dev_id = dev_id
-        self._entity_name = "Auxiliary"
-        self._sensor = sensor
-        self._state = None
-        self._dev_class = "auxiliary"
-
-        self._heating_state = False
-        self._cooling_state = False
-
-        sensorname = sensor.replace("_", " ").title()
-        self._name = f"{self._entity_name} {sensorname}"
-
-        self._unique_id = f"cl-{dev_id}-{self._name}-{sensor}"
-        
-    def _process_data(self):
-        """Update the entity."""
-        _LOGGER.debug("Update aux dev sensor called")
-        data = self._api.get_device_data(self._dev_id)
-
-        if not data:
-            _LOGGER.error("Received no data for device %s.", self._name)
-            self.async_write_ha_state()
-            return
-
-        if data.get("heating_state") is not None:
-            self._heating_state = data["heating_state"]
-        if data.get("cooling_state") is not None:
-            self._cooling_state = data["cooling_state"]
-
-        self._state = "idle"
-        self._icon = IDLE_ICON
-        if self._heating_state:
-            self._state = "heating"
-            self._icon = FLAME_ICON
-        if self._cooling_state:
-            self._state = "cooling"
-            self._icon = COOL_ICON
-
-        self.async_write_ha_state()
 
 
 class PwThermostatSensor(SmileSensor, Entity):
@@ -353,14 +253,14 @@ class PwThermostatSensor(SmileSensor, Entity):
         self._sensor_type = sensor_type
         self._entity_name = name
         self._sensor = sensor
-        self._state = None
+
         self._model = self._sensor_type[SENSOR_MAP_MODEL]
         self._unit_of_measurement = self._sensor_type[SENSOR_MAP_UOM]
         self._dev_class = self._sensor_type[SENSOR_MAP_DEVICE_CLASS]
-        self._icon = self._sensor_type[SENSOR_MAP_ICON]
 
         if self._dev_id == self._api.heater_id:
-            self._entity_name = f"Auxiliary"
+            self._entity_name = "Auxiliary"
+
         sensorname = sensor.replace("_", " ").title()
         self._name = f"{self._entity_name} {sensorname}"
 
@@ -368,13 +268,9 @@ class PwThermostatSensor(SmileSensor, Entity):
             self._entity_name = f"Smile {self._entity_name}"
 
         self._unique_id = f"cl-{dev_id}-{self._name}-{sensor}"
-        
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return self._unit_of_measurement
 
-    def _process_data(self):
+    @callback
+    def _async_process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
@@ -388,9 +284,62 @@ class PwThermostatSensor(SmileSensor, Entity):
             measurement = data[self._sensor]
             if self._sensor == "battery" or self._sensor == "valve_position":
                 measurement = measurement * 100
-            if self._unit_of_measurement == "%":
+            if self._unit_of_measurement == UNIT_PERCENTAGE:
                 measurement = int(measurement)
             self._state = measurement
+
+        self.async_write_ha_state()
+
+
+class PwAuxDeviceSensor(SmileSensor, Entity):
+    """Thermostat (or generic) sensor devices."""
+
+    def __init__(self, api, coordinator, name, dev_id, sensor):
+        """Set up the Plugwise API."""
+        super().__init__(api, coordinator)
+
+        self._api = api
+        self._gateway_id = self._api.gateway_id
+        self._dev_id = dev_id
+        self._entity_name = "Auxiliary"
+        self._sensor = sensor
+
+        self._model = None
+        self._heating_state = False
+        self._cooling_state = False
+
+        if self._dev_id == self._api.heater_id:
+            self._entity_name = "Auxiliary"
+
+        sensorname = sensor.replace("_", " ").title()
+        self._name = f"{self._entity_name} {sensorname}"
+
+        if self._dev_id == self._api.gateway_id:
+            self._entity_name = f"Smile {self._entity_name}"
+
+        self._unique_id = f"cl-{dev_id}-{self._name}-{sensor}"
+
+    @callback
+    def _async_process_data(self):
+        """Update the entity."""
+        _LOGGER.debug("Update aux dev sensor called")
+        data = self._api.get_device_data(self._dev_id)
+
+        if not data:
+            _LOGGER.error("Received no data for device %s.", self._name)
+            self.async_write_ha_state()
+            return
+
+        if data.get("heating_state") is not None:
+            self._heating_state = data["heating_state"]
+        if data.get("cooling_state") is not None:
+            self._cooling_state = data["cooling_state"]
+
+        self._state = "idle"
+        if self._heating_state:
+            self._state = "heating"
+        if self._cooling_state:
+            self._state = "cooling"
 
         self.async_write_ha_state()
 
@@ -407,13 +356,11 @@ class PwPowerSensor(SmileSensor, Entity):
         self._model = model
         self._entity_name = name
         self._dev_id = dev_id
-        self._device = sensor_type[SENSOR_MAP_MODEL]
+        self._sensor = sensor
+
+        self._model = sensor_type[SENSOR_MAP_MODEL]
         self._unit_of_measurement = sensor_type[SENSOR_MAP_UOM]
         self._dev_class = sensor_type[SENSOR_MAP_DEVICE_CLASS]
-        self._icon = sensor_type[SENSOR_MAP_ICON]
-        self._sensor = sensor
-        self._state = None
-        self._unique_id = f"{dev_id}-{name}-{sensor}"
 
         sensorname = sensor.replace("_", " ").title()
         self._name = f"{self._entity_name} {sensorname}"
@@ -421,7 +368,10 @@ class PwPowerSensor(SmileSensor, Entity):
         if self._dev_id == self._api.gateway_id:
             self._entity_name = f"Smile {self._entity_name}"
 
-    def _process_data(self):
+        self._unique_id = f"{dev_id}-{name}-{sensor}"
+
+    @callback
+    def _async_process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)

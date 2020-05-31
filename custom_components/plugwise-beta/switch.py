@@ -1,14 +1,14 @@
 """Plugwise Switch component for HomeAssistant."""
 
 import logging
-from typing import Dict
+
 from Plugwise_Smile.Smile import Smile
 
 from homeassistant.components.switch import SwitchEntity
-
-from .const import DOMAIN, SWITCH_ICON
+from homeassistant.core import callback
 
 from . import SmileGateway
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -18,16 +18,18 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
     coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
 
-    devices = []
+    entities = []
     all_devices = api.get_all_devices()
-    for dev_id, device in all_devices.items():
-        if "plug" in device["types"]:
+    for dev_id, device_properties in all_devices.items():
+        if "plug" in device_properties["types"]:
             model = "Metered Switch"
-            _LOGGER.debug("Plugwise switch Dev %s", device["name"])
-            devices.append(PwSwitch(api, coordinator, device["name"], dev_id, model,))
-            _LOGGER.info("Added switch.%s", "{}".format(device["name"]))
+            _LOGGER.debug("Plugwise switch Dev %s", device_properties["name"])
+            entities.append(
+                PwSwitch(api, coordinator, device_properties["name"], dev_id, model,)
+            )
+            _LOGGER.info("Added switch.%s", "{}".format(device_properties["name"]))
 
-    async_add_entities(devices, True)
+    async_add_entities(entities, True)
 
 
 class PwSwitch(SmileGateway, SwitchEntity):
@@ -41,7 +43,9 @@ class PwSwitch(SmileGateway, SwitchEntity):
         self._name = name
         self._entity_name = self._name
         self._dev_id = dev_id
+
         self._device_is_on = False
+
         self._unique_id = f"sw-{dev_id}-{self._name}"
 
     @property
@@ -71,12 +75,8 @@ class PwSwitch(SmileGateway, SwitchEntity):
         except Smile.PlugwiseError:
             _LOGGER.error("Error while communicating to device")
 
-    @property
-    def icon(self):
-        """Return the icon to use in the frontend."""
-        return SWITCH_ICON
-
-    def _process_data(self):
+    @callback
+    def _async_process_data(self):
         """Update the data from the Plugs."""
         _LOGGER.debug("Update switch called")
 
