@@ -127,7 +127,7 @@ ENERGY_SENSOR_MAP = {
 MISC_SENSOR_MAP = {
     "battery": ATTR_BATTERY_LEVEL,
     "illuminance": ATTR_ILLUMINANCE,
-    "modulation_level": ["Heater Modulation Level", UNIT_PERCENTAGE, "modulation"],
+    "modulation_level": ["Heater Modulation Level", UNIT_PERCENTAGE, None],
     "valve_position": ["Valve Position", UNIT_PERCENTAGE, None],
     "water_pressure": ATTR_PRESSURE,
 }
@@ -136,6 +136,15 @@ INDICATE_ACTIVE_LOCAL_DEVICE = [
     "cooling_state",
     "flame_state",
 ]
+
+CUSTOM_ICONS = {
+    "gas_consumed_interval": "mdi:fire",
+    "gas_consumed_cumulative": "mdi:fire",
+    "modulation_level": "mdi:percent",
+    "valve_position": "mdi:valve",
+    # VALVE_OPEN_ICON = "mdi:valve-open",
+    # VALVE_CLOSED_ICON = "mdi:valve-closed"<
+}
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -296,6 +305,8 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id, sensor)
 
+        self._sensor = sensor
+
         self._cooling_state = False
         self._heating_state = False
         self._icon = None
@@ -320,6 +331,9 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
             self._heating_state = data["heating_state"]
         if data.get("cooling_state") is not None:
             self._cooling_state = data["cooling_state"]
+
+        if CUSTOM_ICONS.get(self._sensor) is not None:
+            self._icon = CUSTOM_ICONS.get(self._sensor)
 
         self._state = "idle"
         self._icon = IDLE_ICON
