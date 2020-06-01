@@ -255,6 +255,13 @@ class SmileSensor(SmileGateway):
         return self._dev_class
 
     @property
+    def icon(self):
+        """Return the icon to use in the frontend."""
+        if CUSTOM_ICONS.get(self._sensor) is not None:
+            self._icon = CUSTOM_ICONS.get(self._sensor)
+        return self._icon
+
+    @property
     def state(self):
         """Device class of this entity."""
         return self._state
@@ -311,11 +318,6 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
         self._heating_state = False
         self._icon = None
 
-    @property
-    def icon(self):
-        """Return the icon to use in the frontend."""
-        return self._icon
-
     @callback
     def _async_process_data(self):
         """Update the entity."""
@@ -331,9 +333,6 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
             self._heating_state = data["heating_state"]
         if data.get("cooling_state") is not None:
             self._cooling_state = data["cooling_state"]
-
-        if CUSTOM_ICONS.get(self._sensor) is not None:
-            self._icon = CUSTOM_ICONS.get(self._sensor)
 
         self._state = "idle"
         self._icon = IDLE_ICON
