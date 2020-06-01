@@ -229,7 +229,6 @@ class SmileSensor(SmileGateway):
         self._state = None
         self._unit_of_measurement = None
 
-
         if dev_id == self._api.heater_id:
             self._entity_name = "Auxiliary"
 
