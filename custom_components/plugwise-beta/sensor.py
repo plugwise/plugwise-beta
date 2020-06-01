@@ -312,8 +312,6 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id, sensor)
 
-        self._sensor = sensor
-
         self._cooling_state = False
         self._heating_state = False
         self._icon = None
