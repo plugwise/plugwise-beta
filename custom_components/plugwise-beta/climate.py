@@ -1,6 +1,7 @@
 """Plugwise Climate component for Home Assistant."""
 
 import logging
+
 from Plugwise_Smile.Smile import Smile
 
 from homeassistant.components.climate import ClimateEntity
@@ -17,16 +18,8 @@ from homeassistant.components.climate.const import (
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
 
-from .const import (
-    DOMAIN,
-    THERMOSTAT_ICON,
-    DEFAULT_MIN_TEMP,
-    DEFAULT_MAX_TEMP,
-    SCHEDULE_ON,
-    SCHEDULE_OFF,
-)
-
 from . import SmileGateway
+from .const import DEFAULT_MAX_TEMP, DEFAULT_MIN_TEMP, DOMAIN, SCHEDULE_OFF, SCHEDULE_ON
 
 HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
 HVAC_MODES_HEAT_COOL = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
@@ -41,7 +34,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
     coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
 
-    devices = []
+    entities = []
     thermostat_classes = [
         "thermostat",
         "zone_thermostat",
@@ -49,19 +42,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     ]
     all_devices = api.get_all_devices()
 
-    for dev_id, device in all_devices.items():
+    for dev_id, device_properties in all_devices.items():
 
-        if device["class"] not in thermostat_classes:
+        if device_properties["class"] not in thermostat_classes:
             continue
 
-        _LOGGER.debug("Plugwise climate Dev %s", device["name"])
+        _LOGGER.debug("Plugwise climate Dev %s", device_properties["name"])
         thermostat = PwThermostat(
             api,
             coordinator,
-            device["name"],
+            device_properties["name"],
             dev_id,
-            device["location"],
-            device["class"],
+            device_properties["location"],
+            device_properties["class"],
             DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
         )
@@ -69,23 +62,22 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if not thermostat:
             continue
 
-        devices.append(thermostat)
-        _LOGGER.info("Added climate.%s", "{}".format(device["name"]))
+        entities.append(thermostat)
+        _LOGGER.info("Added climate.%s", "{}".format(device_properties["name"]))
 
-    async_add_entities(devices, True)
+    async_add_entities(entities, True)
+
 
 class PwThermostat(SmileGateway, ClimateEntity):
     """Representation of an Plugwise thermostat."""
 
-    def __init__(self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp):
+    def __init__(
+        self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp
+    ):
         """Set up the Plugwise API."""
+        super().__init__(api, coordinator, name, dev_id)
 
-        super().__init__(api, coordinator)
-        
         self._api = api
-        self._gateway_id = self._api.gateway_id
-        self._name = name
-        self._dev_id = dev_id
         self._loc_id = loc_id
         self._model = model
         self._min_temp = min_temp
@@ -108,8 +100,8 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._water_pressure = None
         self._schedule_temp = None
         self._hvac_mode = None
+
         self._single_thermostat = self._api.single_master_thermostat()
-        self._icon = THERMOSTAT_ICON
         self._unique_id = f"cl-{dev_id}-{self._name}"
 
     @property
@@ -238,7 +230,8 @@ class PwThermostat(SmileGateway, ClimateEntity):
         except Smile.PlugwiseError:
             _LOGGER.error("Error while communicating to device")
 
-    def _process_data(self):
+    @callback
+    def _async_process_data(self):
         """Update the data for this climate device."""
         _LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)

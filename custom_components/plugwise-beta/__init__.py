@@ -5,19 +5,19 @@ import logging
 from datetime import timedelta
 from typing import Dict
 
-from Plugwise_Smile.Smile import Smile
 import async_timeout
 import voluptuous as vol
+from Plugwise_Smile.Smile import Smile
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant 
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DOMAIN, THERMOSTAT_ICON
+from .const import DOMAIN
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -43,7 +43,6 @@ async def async_setup_entry(hass, entry):
         connected = await api.connect()
 
         if not connected:
-            _LOGGER.error("Unable to connect to Smile: %s",api.smile_status)
             raise ConfigEntryNotReady
 
     except Smile.InvalidAuthentication:
@@ -73,15 +72,15 @@ async def async_setup_entry(hass, entry):
                 return True
         except Smile.XMLDataMissingError:
             _LOGGER.debug("Updating Smile failed %s", api.smile_type)
-            raise UpdateFailed("Smile update failed %s", api.smile_type)
-
+            raise UpdateFailed("Smile update failed")
 
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
         name="Smile",
         update_method=async_update_data,
-        update_interval=update_interval)
+        update_interval=update_interval,
+    )
 
     await coordinator.async_refresh()
 
@@ -92,7 +91,10 @@ async def async_setup_entry(hass, entry):
 
     _LOGGER.debug("Async update interval %s", update_interval)
 
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = { "api": api, "coordinator": coordinator }
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
+        "api": api,
+        "coordinator": coordinator,
+    }
 
     _LOGGER.debug("Gateway is %s", api.gateway_id)
 
@@ -111,9 +113,10 @@ async def async_setup_entry(hass, entry):
         sw_version=api.smile_version[0],
     )
 
+    platforms = ALL_PLATFORMS
+
     single_master_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
-    platforms = ALL_PLATFORMS
     if single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
@@ -144,16 +147,17 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 class SmileGateway(Entity):
     """Represent Smile Gateway."""
 
-    def __init__(self, api, coordinator):
+    def __init__(self, api, coordinator, name, dev_id):
         """Initialise the gateway."""
         self._api = api
         self._coordinator = coordinator
+        self._name = name
+        self._dev_id = dev_id
+
         self._unique_id = None
-        self._name = None
-        self._icon = None
-        self._dev_id = None
         self._model = None
-        self._gateway_id = None
+
+        self._entity_name = self._name
 
     @property
     def unique_id(self):
@@ -178,42 +182,34 @@ class SmileGateway(Entity):
         return self._name
 
     @property
-    def icon(self):
-        """Return the icon to use in the frontend."""
-        if not self._icon:
-            return THERMOSTAT_ICON
-        return self._icon
-
-    @property
     def device_info(self) -> Dict[str, any]:
         """Return the device information."""
-
         device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._name,
+            "name": self._entity_name,
             "manufacturer": "Plugwise",
         }
 
         if self._model is not None:
             device_information["model"] = self._model.replace("_", " ").title()
 
-        if self._dev_id != self._gateway_id:
-            device_information["via_device"] = (DOMAIN, self._gateway_id)
+        if self._dev_id != self._api.gateway_id:
+            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
 
         return device_information
 
     async def async_added_to_hass(self):
         """Subscribe to updates."""
-        self._process_data()
+        self._async_process_data()
         self.async_on_remove(
-            self._coordinator.async_add_listener(self._process_data)
+            self._coordinator.async_add_listener(self._async_process_data)
         )
-    
-    def _process_data(self):
+
+    @callback
+    def _async_process_data(self):
         """Interpret and process API data."""
         raise NotImplementedError
 
     async def async_update(self):
         """Update the entity."""
         await self._coordinator.async_request_refresh()
-
