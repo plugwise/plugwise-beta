@@ -50,7 +50,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
         """Return true if device is on."""
         return self._device_is_on
 
-    async def turn_on(self, **kwargs):
+    async def async_turn_on(self, **kwargs):
         """Turn the device on."""
         _LOGGER.debug("Turn switch.%s on.", self._name)
         try:
@@ -61,7 +61,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
         except Smile.PlugwiseError:
             _LOGGER.error("Error while communicating to device")
 
-    async def turn_off(self, **kwargs):
+    async def async_turn_off(self, **kwargs):
         """Turn the device off."""
         _LOGGER.debug("Turn switch.%s off.", self._name)
         try:
