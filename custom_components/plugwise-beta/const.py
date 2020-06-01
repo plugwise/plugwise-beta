@@ -39,6 +39,7 @@ SCHEDULE_OFF = "false"
 # Icons
 SWITCH_ICON = "mdi:electric-switch"
 FLAME_ICON = "mdi:fire"
+COOL_ICON = "mdi:snowflake"
 IDLE_ICON = "mdi:circle-off-outline"
 GAS_ICON = "mdi:fire"
 POWER_ICON = "mdi:flash"
