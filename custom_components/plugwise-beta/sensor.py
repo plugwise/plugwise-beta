@@ -236,6 +236,7 @@ class SmileSensor(SmileGateway):
 
         self._dev_class = None
         self._state = None
+        self._icon = None
         self._unit_of_measurement = None
 
         if dev_id == self._api.heater_id:
@@ -314,7 +315,6 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
 
         self._cooling_state = False
         self._heating_state = False
-        self._icon = None
 
     @callback
     def _async_process_data(self):
