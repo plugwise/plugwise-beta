@@ -222,6 +222,11 @@ class SmileSensor(SmileGateway):
 
         self._sensor = sensor
 
+        self._dev_class = None
+        self._state = None
+        self._unit_of_measurement = None
+
+
         if dev_id == self._api.heater_id:
             self._entity_name = "Auxiliary"
 
@@ -232,10 +237,6 @@ class SmileSensor(SmileGateway):
             self._entity_name = f"Smile {self._entity_name}"
 
         self._unique_id = f"{dev_id}-{sensor}"
-
-        self._dev_class = None
-        self._state = None
-        self._unit_of_measurement = None
 
     @property
     def device_class(self):

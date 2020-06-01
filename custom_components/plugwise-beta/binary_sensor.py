@@ -61,23 +61,11 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
 
     def __init__(self, api, coordinator, name, binary_sensor, dev_id, model):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator)
+        super().__init__(api, coordinator, name, dev_id, binary_sensor)
 
-        self._api = api
-        self._dev_id = dev_id
-        self._entity_name = name
         self._binary_sensor = binary_sensor
 
         self._is_on = False
-
-        if self._dev_id == self._api.heater_id:
-            self._entity_name = "Auxiliary"
-
-        bsensorname = binary_sensor.replace("_", " ").title()
-        self._name = f"{self._entity_name} {bsensorname}"
-
-        if self._dev_id == self._api.gateway_id:
-            self._entity_name = f"Smile {self._name}"
 
         self._unique_id = f"bs-{dev_id}-{self._entity_name}-{binary_sensor}"
 

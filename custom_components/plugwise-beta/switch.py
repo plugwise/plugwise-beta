@@ -37,12 +37,9 @@ class PwSwitch(SmileGateway, SwitchEntity):
 
     def __init__(self, api, coordinator, name, dev_id, model):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator)
+        super().__init__(api, coordinator, name, dev_id)
 
-        self._api = api
-        self._name = name
-        self._entity_name = self._name
-        self._dev_id = dev_id
+        self._model = model
 
         self._device_is_on = False
 
