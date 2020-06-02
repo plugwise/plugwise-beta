@@ -41,14 +41,14 @@ class PwSwitch(SmileGateway, SwitchEntity):
 
         self._model = model
 
-        self._device_is_on = False
+        self._is_on = False
 
         self._unique_id = f"sw-{dev_id}-{self._name}"
 
     @property
     def is_on(self):
         """Return true if device is on."""
-        return self._device_is_on
+        return self._is_on
 
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
@@ -56,7 +56,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
         try:
             state_on = await self._api.set_relay_state(self._dev_id, "on")
             if state_on:
-                self._device_is_on = True
+                self._is_on = True
                 self.async_write_ha_state()
         except Smile.PlugwiseError:
             _LOGGER.error("Error while communicating to device")
@@ -67,7 +67,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
         try:
             state_off = await self._api.set_relay_state(self._dev_id, "off")
             if state_off:
-                self._device_is_on = False
+                self._is_on = False
                 self.async_write_ha_state()
         except Smile.PlugwiseError:
             _LOGGER.error("Error while communicating to device")
@@ -85,7 +85,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
             return
 
         if "relay" in data:
-            self._device_is_on = data["relay"]
-            _LOGGER.debug("Switch is ON is %s.", self._device_is_on)
+            self._is_on = data["relay"]
+            _LOGGER.debug("Switch is ON is %s.", self._is_on)
 
         self.async_write_ha_state()
