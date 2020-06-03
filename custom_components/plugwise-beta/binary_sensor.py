@@ -26,26 +26,30 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     all_devices = api.get_all_devices()
     for dev_id, device_properties in all_devices.items():
-        if device_properties["class"] == "heater_central":
-            _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
-            data = api.get_device_data(dev_id)
-            for binary_sensor, b_s_type in BINARY_SENSOR_MAP.items():
-                _LOGGER.debug("Binary_sensor: %s", binary_sensor)
-                if binary_sensor in data:
-                    _LOGGER.debug(
-                        "Plugwise binary_sensor Dev %s", device_properties["name"]
-                    )
-                    entities.append(
-                        PwBinarySensor(
-                            api,
-                            coordinator,
-                            device_properties["name"],
-                            binary_sensor,
-                            dev_id,
-                            device_properties["class"],
-                        )
-                    )
-                    _LOGGER.info("Added binary_sensor.%s", device_properties["name"])
+        if device_properties["class"] != "heater_central":
+            continue
+
+        _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
+        data = api.get_device_data(dev_id)
+        for binary_sensor, b_s_type in BINARY_SENSOR_MAP.items():
+            _LOGGER.debug("Binary_sensor: %s", binary_sensor)
+            if binary_sensor not in data:
+                continue
+
+            _LOGGER.debug(
+                "Plugwise binary_sensor Dev %s", device_properties["name"]
+            )
+            entities.append(
+                PwBinarySensor(
+                    api,
+                    coordinator,
+                    device_properties["name"],
+                    binary_sensor,
+                    dev_id,
+                    device_properties["class"],
+                )
+            )
+            _LOGGER.info("Added binary_sensor.%s", device_properties["name"])
 
     async_add_entities(entities, True)
 
@@ -81,23 +85,26 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
         data = self._api.get_device_data(self._dev_id)
 
         if not data:
-            _LOGGER.error("Received no data for device %s.", self._binary_sensor)
+            _LOGGER.error("Received no data for device %s", self._binary_sensor)
             self.async_write_ha_state()
             return
 
-        if self._binary_sensor in data:
-            self._is_on = data[self._binary_sensor]
+        if self._binary_sensor not in data:
+            self.async_write_ha_state()
+            return
 
-            self._state = STATE_OFF
+        self._is_on = data[self._binary_sensor]
+
+        self._state = STATE_OFF
+        if self._binary_sensor == "dhw_state":
+            self._icon = FLOW_OFF_ICON
+        if self._binary_sensor == "slave_boiler_state":
+            self._icon = IDLE_ICON
+        if self._is_on:
+            self._state = STATE_ON
             if self._binary_sensor == "dhw_state":
-                self._icon = FLOW_OFF_ICON
+                self._icon = FLOW_ON_ICON
             if self._binary_sensor == "slave_boiler_state":
-                self._icon = IDLE_ICON
-            if self._is_on:
-                self._state = STATE_ON
-                if self._binary_sensor == "dhw_state":
-                    self._icon = FLOW_ON_ICON
-                if self._binary_sensor == "slave_boiler_state":
-                    self._icon = FLAME_ICON
+                self._icon = FLAME_ICON
 
         self.async_write_ha_state()
