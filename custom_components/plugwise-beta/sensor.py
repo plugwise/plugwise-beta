@@ -69,12 +69,12 @@ ENERGY_SENSOR_MAP = {
         ENERGY_WATT_HOUR,
         DEVICE_CLASS_POWER,
     ],
-    "electricity_consumed_interval_peak": [
+    "electricity_consumed_peak_interval": [
         "Consumed Power Interval",
         ENERGY_WATT_HOUR,
         DEVICE_CLASS_POWER,
     ],
-    "electricity_consumed_interval_off_peak": [
+    "electricity_consumed_off_peak_interval": [
         "Consumed Power Interval (off peak)",
         ENERGY_WATT_HOUR,
         DEVICE_CLASS_POWER,
@@ -84,12 +84,12 @@ ENERGY_SENSOR_MAP = {
         ENERGY_WATT_HOUR,
         DEVICE_CLASS_POWER,
     ],
-    "electricity_produced_interval_peak": [
+    "electricity_produced_peak_interval": [
         "Produced Power Interval",
         ENERGY_WATT_HOUR,
         DEVICE_CLASS_POWER,
     ],
-    "electricity_produced_interval_off_peak": [
+    "electricity_produced_off_peak_interval": [
         "Produced Power Interval (off peak)",
         ENERGY_WATT_HOUR,
         DEVICE_CLASS_POWER,
