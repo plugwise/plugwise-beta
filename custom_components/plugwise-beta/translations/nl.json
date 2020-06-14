@@ -18,5 +18,15 @@
     "abort": {
       "already_configured": "Smile is al geconfigureerd"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Plugwise opties aanpassen",
+        "data": {
+          "scan_interval": "Scan Interval (seconden)"
+        }
+      }
+    }
   }
 }

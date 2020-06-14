@@ -16,8 +16,9 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SCAN_INTERVAL
 
-from .const import DOMAIN
+from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -36,9 +37,13 @@ async def async_setup_entry(hass, entry):
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
-        host=entry.data["host"], password=entry.data["password"], websession=websession
+        host=entry.data[CONF_HOST], password=entry.data[CONF_PASSWORD], websession=websession
     )
-
+    if api.smile_type == "power":
+        update_interval = timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["power"]))
+    else:
+        update_interval = timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["thermostat"]))
+    _LOGGER.debug("Async update interval %s", update_interval)
     try:
         connected = await api.connect()
 
@@ -57,10 +62,10 @@ async def async_setup_entry(hass, entry):
         _LOGGER.error("Timeout while connecting to Smile")
         raise ConfigEntryNotReady
 
-    if api.smile_type == "power":
-        update_interval = timedelta(seconds=10)
-    else:
-        update_interval = timedelta(seconds=60)
+    #if api.smile_type == "power":
+    #    update_interval = timedelta(seconds=10)
+    #else:
+    #    update_interval = timedelta(seconds=30)
 
     async def async_update_data():
         """Update data via API endpoint."""
@@ -88,8 +93,6 @@ async def async_setup_entry(hass, entry):
 
     if not coordinator.last_update_success:
         raise ConfigEntryNotReady
-
-    _LOGGER.debug("Async update interval %s", update_interval)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "api": api,
