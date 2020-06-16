@@ -40,14 +40,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     api = Smile(
         host=entry.data[CONF_HOST], password=entry.data[CONF_PASSWORD], websession=websession
     )
-    update_interval = timedelta(
-        seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["thermostat"])
-    )
-    if api.smile_type == "power":
-        update_interval = timedelta(
-            seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["power"])
-        )
-    _LOGGER.debug("Async update interval %s", update_interval)
 
     try:
         connected = await api.connect()
@@ -75,6 +67,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             _LOGGER.debug("Updating Smile failed %s", api.smile_type)
             raise UpdateFailed("Smile update failed")
 
+    update_interval = timedelta(
+        seconds=entry.options.get(
+            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["thermostat"]
+        )
+    )
+    if api.smile_type == "power":
+        update_interval = timedelta(
+            seconds=entry.options.get(
+                CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["power"]
+            )
+        )
+    _LOGGER.debug("Async update interval %s", update_interval)
+    
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
