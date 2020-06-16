@@ -39,33 +39,28 @@ async def async_setup_entry(hass, entry):
     api = Smile(
         host=entry.data[CONF_HOST], password=entry.data[CONF_PASSWORD], websession=websession
     )
+    update_interval = timedelta(
+        seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["thermostat"])
+    )
     if api.smile_type == "power":
-        update_interval = timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["power"]))
-    else:
-        update_interval = timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["thermostat"]))
+        update_interval = timedelta(
+            seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["power"])
+        )
     _LOGGER.debug("Async update interval %s", update_interval)
+
     try:
         connected = await api.connect()
-
         if not connected:
             raise ConfigEntryNotReady
-
     except Smile.InvalidAuthentication:
         _LOGGER.error("Invalid Smile ID")
         return False
-
     except Smile.PlugwiseError:
         _LOGGER.error("Error while communicating to device")
         raise ConfigEntryNotReady
-
     except asyncio.TimeoutError:
         _LOGGER.error("Timeout while connecting to Smile")
         raise ConfigEntryNotReady
-
-    #if api.smile_type == "power":
-    #    update_interval = timedelta(seconds=10)
-    #else:
-    #    update_interval = timedelta(seconds=30)
 
     async def async_update_data():
         """Update data via API endpoint."""
@@ -117,11 +112,12 @@ async def async_setup_entry(hass, entry):
     )
 
     platforms = ALL_PLATFORMS
-
     single_master_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
     if single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
+
+    entry.add_update_listener(_update_listener)
 
     for component in platforms:
         hass.async_create_task(
@@ -130,6 +126,11 @@ async def async_setup_entry(hass, entry):
 
     return True
 
+async def _update_listener(hass, entry):
+    """Handle options update."""
+    async_dispatcher_send(
+        hass, f"{PLUGWISE_OPTIONS_UPDATE}-{entry.unique_id}", entry.options
+    )
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
