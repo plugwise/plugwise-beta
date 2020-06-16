@@ -14,12 +14,11 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SCAN_INTERVAL
 
-from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
+from .const import DOMAIN, DEFAULT_SCAN_INTERVAL, PLUGWISE_OPTIONS_UPDATE
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -135,9 +134,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
-    async_dispatcher_send(
-        hass, f"{PLUGWISE_OPTIONS_UPDATE}-{entry.unique_id}", entry.options
-    )
+    await hass.config_entries.async_reload(entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
