@@ -34,7 +34,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
     return True
 
 
-async def async_setup_entry(hass, entry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
@@ -127,7 +127,7 @@ async def async_setup_entry(hass, entry):
 
     return True
 
-async def _update_listener(hass, entry):
+async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
     async_dispatcher_send(
         hass, f"{PLUGWISE_OPTIONS_UPDATE}-{entry.unique_id}", entry.options
