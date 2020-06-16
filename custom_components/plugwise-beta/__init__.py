@@ -127,11 +127,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     return True
 
+
 async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
     async_dispatcher_send(
         hass, f"{PLUGWISE_OPTIONS_UPDATE}-{entry.unique_id}", entry.options
     )
+
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
