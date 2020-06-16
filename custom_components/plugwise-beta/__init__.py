@@ -18,7 +18,7 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SCAN_INTERVAL
 
-from .const import DOMAIN, DEFAULT_SCAN_INTERVAL, PLUGWISE_OPTIONS_UPDATE
+from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
