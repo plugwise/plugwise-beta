@@ -17,6 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 zeroconf_map = {
     "smile": "P1 DSMR",
     "smile_thermo": "Climate",
+    "smile_open_therm": "Climate",
 }
 
 def _base_schema(discovery_info):
