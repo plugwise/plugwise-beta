@@ -7,19 +7,38 @@ import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import CONF_HOST, CONF_PASSWORD
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.typing import DiscoveryInfoType
 from Plugwise_Smile.Smile import Smile
 
 from .const import DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
-DATA_SCHEMA = vol.Schema({vol.Required(CONF_HOST): str, vol.Required(CONF_PASSWORD): str})
+zeroconf_map = {
+    "smile": "P1 DSMR",
+    "smile_thermo": "Climate",
+}
+
+def _base_schema(discovery_info):
+    """Generate base schema."""
+    base_schema = {}
+    if not discovery_info:
+        base_schema.update(
+            {
+                vol.Required(CONF_HOST): str,
+            }
+        )
+    base_schema.update(
+        {vol.Required(CONF_PASSWORD): str}
+    )
+
+    return vol.Schema(base_schema)
 
 async def validate_input(hass: core.HomeAssistant, data):
     """
     Validate the user input allows us to connect.
 
-    Data has the keys from DATA_SCHEMA with values provided by the user.
+    Data has the keys from _base_schema() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
@@ -41,6 +60,41 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
+
+    def __init__(self):
+        """Initialize the Plugwise config flow."""
+        self.discovery_info = {}
+
+    async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
+         """Prepare configuration for a discovered Plugwise Smile."""
+         self.discovery_info = discovery_info
+         _properties = self.discovery_info.get('properties')
+
+         for entry in self._async_current_entries():
+             already_configured = False
+
+             if (
+                 entry.data[CONF_HOST] == discovery_info[CONF_HOST] and
+                 entry.data[DOMAIN] == DOMAIN
+             ):
+                 # Is this address or IP address already configured?
+                 already_configured = True
+
+             if already_configured:
+                return self.async_abort(reason="already_configured")
+
+         _product = _properties.get('product', None)
+         _version = _properties.get('version', "n/a")
+         _name = f"{zeroconf_map.get(_product,_product)} v{_version}"
+
+         _LOGGER.debug("Plugwise Smile discovered with %s", _properties)
+
+         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
+         self.context["title_placeholders"] = {
+             CONF_HOST: discovery_info[CONF_HOST],
+             "name": _name,
+         }
+         return await self.async_step_user()
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
@@ -67,7 +121,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
         return self.async_show_form(
-            step_id="user", data_schema=DATA_SCHEMA, errors=errors
+            step_id="user", data_schema=_base_schema(self.discovery_info), errors=errors
         )
 
 

@@ -17,6 +17,7 @@
     },
     "abort": {
       "already_configured": "Smile is al geconfigureerd"
-    }
+    },
+    "flow_title": "Smile: {name}"
   }
 }
