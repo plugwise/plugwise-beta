@@ -16,24 +16,24 @@ _LOGGER = logging.getLogger(__name__)
 
 zeroconf_map = {
     "smile": "P1 DSMR",
-    "smile_thermo": "Climate",
-    "smile_open_therm": "Climate",
+    "smile_thermo": "Climate (likely Anna)",
+    "smile_open_therm": "Climate (likely Adam)",
 }
+
 
 def _base_schema(discovery_info):
     """Generate base schema."""
     base_schema = {}
+
     if not discovery_info:
         base_schema.update(
-            {
-                vol.Required(CONF_HOST): str,
-            }
+            {vol.Required(CONF_HOST): str,}
         )
-    base_schema.update(
-        {vol.Required(CONF_PASSWORD): str}
-    )
+
+    base_schema.update({vol.Required(CONF_PASSWORD): str})
 
     return vol.Schema(base_schema)
+
 
 async def validate_input(hass: core.HomeAssistant, data):
     """
@@ -67,41 +67,45 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.discovery_info = {}
 
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
-         """Prepare configuration for a discovered Plugwise Smile."""
-         self.discovery_info = discovery_info
-         _properties = self.discovery_info.get('properties')
+        """Prepare configuration for a discovered Plugwise Smile."""
+        self.discovery_info = discovery_info
+        _properties = self.discovery_info.get("properties")
 
-         for entry in self._async_current_entries():
-             already_configured = False
+        for entry in self._async_current_entries():
+            already_configured = False
 
-             if (
-                 entry.data[CONF_HOST] == discovery_info[CONF_HOST] and
-                 entry.data[DOMAIN] == DOMAIN
-             ):
-                 # Is this address or IP address already configured?
-                 already_configured = True
+            if (
+                entry.data[CONF_HOST] == discovery_info[CONF_HOST]
+                and entry.data[DOMAIN] == DOMAIN
+            ):
+                already_configured = True
 
-             if already_configured:
+            if already_configured:
                 return self.async_abort(reason="already_configured")
 
-         _product = _properties.get('product', None)
-         _version = _properties.get('version', "n/a")
-         _name = f"{zeroconf_map.get(_product,_product)} v{_version}"
+        _product = _properties.get("product", None)
+        _version = _properties.get("version", "n/a")
+        _name = f"{zeroconf_map.get(_product,_product)} v{_version}"
 
-         _LOGGER.debug("Plugwise Smile discovered with %s", _properties)
+        _LOGGER.debug("Plugwise Smile discovered with %s", _properties)
 
-         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
-         self.context["title_placeholders"] = {
-             CONF_HOST: discovery_info[CONF_HOST],
-             "name": _name,
-         }
-         return await self.async_step_user()
+        # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
+        self.context["title_placeholders"] = {
+            CONF_HOST: discovery_info[CONF_HOST],
+            "name": _name,
+        }
+        return await self.async_step_user()
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
         errors = {}
 
         if user_input is not None:
+
+            if self.discovery_info:
+                user_input.update(
+                    {CONF_HOST: self.discovery_info[CONF_HOST],}
+                )
 
             try:
                 api = await validate_input(self.hass, user_input)
