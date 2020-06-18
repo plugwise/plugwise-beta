@@ -1,6 +1,5 @@
 """Config flow for Plugwise Anna integration."""
 import logging
-from typing import Any, Dict
 
 import voluptuous as vol
 
@@ -14,7 +13,7 @@ from .const import DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
-zeroconf_map = {
+ZEROCONF_MAP = {
     "smile": "P1 DSMR",
     "smile_thermo": "Climate (likely Anna)",
     "smile_open_therm": "Climate (likely Adam)",
@@ -85,7 +84,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
-        _name = f"{zeroconf_map.get(_product,_product)} v{_version}"
+        _name = f"{ZEROCONF_MAP.get(_product,_product)} v{_version}"
 
         _LOGGER.debug("Plugwise Smile discovered with %s", _properties)
 
