@@ -4,5 +4,6 @@
   "documentation": "https://github.com/plugwise/plugwise-beta",
   "requirements": ["Plugwise_Smile==0.2.13"],
   "codeowners": ["@CoMPaTech","@bouwew"],
-  "config_flow": true
+  "config_flow": true,
+  "zeroconf": ["_plugwise._tcp.local."]
 }
