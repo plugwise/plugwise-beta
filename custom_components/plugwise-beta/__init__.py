@@ -35,10 +35,6 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up Plugwise Smiles from a config entry."""
-    _LOGGER.debug("Entry ID: %s", entry.entry_id)
-    _LOGGER.debug("Entry title: %s", entry.title)
-    _LOGGER.debug("Entry data: %s", entry.data)
-    _LOGGER.debug("Entry options: %s", entry.options)
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
         host=entry.data[CONF_HOST], password=entry.data[CONF_PASSWORD], websession=websession
@@ -133,7 +129,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
 
-    _LOGGER.debug("Coordinator update interval: %s", coordinator.update_interval)
     return True
 
 
@@ -145,6 +140,12 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["thermostat"]
         )
     )
+    if api.smile_type == "power":
+        coordinator.update_interval = timedelta(
+            seconds=entry.options.get(
+                CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL["power"]
+            )
+        )
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
