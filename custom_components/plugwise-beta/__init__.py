@@ -134,15 +134,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
-    api = hass.data[DOMAIN][entry.entry_id]["api"]
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-    default_interval = DEFAULT_SCAN_INTERVAL["thermostat"]
-    if api.smile_type == "power":
-        default_interval = DEFAULT_SCAN_INTERVAL["power"]
     coordinator.update_interval = timedelta(
-        seconds=entry.options.get(
-            CONF_SCAN_INTERVAL, default_interval
-        )
+        seconds=entry.options.get(CONF_SCAN_INTERVAL)
     )
 
 
