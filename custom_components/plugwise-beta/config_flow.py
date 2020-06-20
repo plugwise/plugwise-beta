@@ -72,11 +72,20 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Initialize the Plugwise config flow."""
         self.discovery_info = {}
 
+    async def _async_set_unique_id(self, id):
+        """Set the config entry's unique ID (based on the device's 4-digit PIN)."""
+        await self.async_set_unique_id(id)
+        self._abort_if_unique_id_configured()
+
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
+
+        unique_id = self.discovery_info["hostname"].split(".")[0]
+        _LOGGER.debug("Unique ID zero: %s", unique_id)
+        await self._async_set_unique_id(unique_id)
 
         for entry in self._async_current_entries():
             already_configured = False
@@ -128,8 +137,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors[CONF_BASE] = "unknown"
 
             if not errors:
-                await self.async_set_unique_id(api.gateway_id)
-                self._abort_if_unique_id_configured()
+                unique_id = api.gateway_id
+                _LOGGER.debug("Unique ID (step): %s", unique_id)
+                await self._async_set_unique_id(unique_id)
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
