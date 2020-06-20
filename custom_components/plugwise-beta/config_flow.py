@@ -4,12 +4,19 @@ import logging
 import voluptuous as vol
 
 from homeassistant import config_entries, core, exceptions
-from homeassistant.const import CONF_HOST, CONF_PASSWORD
+from homeassistant.const import (
+    CONF_BASE,
+    CONF_HOST,
+    CONF_NAME,
+    CONF_PASSWORD,
+    CONF_SCAN_INTERVAL
+)
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
+from homeassistant.core import callback
 from Plugwise_Smile.Smile import Smile
 
-from .const import DOMAIN  # pylint:disable=unused-import
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,7 +49,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
-        host=data["host"], password=data["password"], timeout=30, websession=websession
+        host=data[CONF_HOST], password=data[CONF_PASSWORD], timeout=30, websession=websession
     )
 
     try:
@@ -68,13 +75,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
+        _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
 
         for entry in self._async_current_entries():
             already_configured = False
 
             if (
-                entry.data[CONF_HOST] == discovery_info[CONF_HOST]
+                entry.data[CONF_HOST] == self.discovery_info[CONF_HOST]
                 and entry.data[DOMAIN] == DOMAIN
             ):
                 already_configured = True
@@ -85,14 +93,15 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
         _name = f"{ZEROCONF_MAP.get(_product,_product)} v{_version}"
-
+        _LOGGER.debug("Discovered: %s", _properties)
         _LOGGER.debug("Plugwise Smile discovered with %s", _properties)
 
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
         self.context["title_placeholders"] = {
-            CONF_HOST: discovery_info[CONF_HOST],
-            "name": _name,
+            CONF_HOST: self.discovery_info[CONF_HOST],
+            CONF_NAME: _name,
         }
+
         return await self.async_step_user()
 
     async def async_step_user(self, user_input=None):
@@ -111,12 +120,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
             except CannotConnect:
-                errors["base"] = "cannot_connect"
+                errors[CONF_BASE] = "cannot_connect"
             except InvalidAuth:
-                errors["base"] = "invalid_auth"
+                errors[CONF_BASE] = "invalid_auth"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
-                errors["base"] = "unknown"
+                errors[CONF_BASE] = "unknown"
 
             if not errors:
                 await self.async_set_unique_id(api.gateway_id)
@@ -128,6 +137,38 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user", data_schema=_base_schema(self.discovery_info), errors=errors
         )
 
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        """Get the options flow for this handler."""
+        return PlugwiseOptionsFlowHandler(config_entry)
+
+class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
+    """Plugwise option flow."""
+    def __init__(self, config_entry):
+        """Initialize options flow."""
+        self.config_entry = config_entry
+
+    async def async_step_init(self, user_input=None):
+        """Manage the Plugwise options."""
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        api = self.hass.data[DOMAIN][self.config_entry.entry_id]["api"]
+        SCAN_INTERVAL = DEFAULT_SCAN_INTERVAL["thermostat"]
+        if api.smile_type == "power":
+            SCAN_INTERVAL = DEFAULT_SCAN_INTERVAL["power"]
+
+        data = {
+            vol.Optional(
+                CONF_SCAN_INTERVAL, 
+                default=self.config_entry.options.get(
+                    CONF_SCAN_INTERVAL, SCAN_INTERVAL
+                )
+            ): int
+        }
+
+        return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
 
 class CannotConnect(exceptions.HomeAssistantError):
     """Error to indicate we cannot connect."""

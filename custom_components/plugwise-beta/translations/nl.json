@@ -1,4 +1,14 @@
 {
+  "options": {
+    "step": {
+      "init": {
+        "description": "Plugwise Opties aanpassen",
+        "data": {
+          "scan_interval": "Scan Interval (seconden)"
+        }
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
