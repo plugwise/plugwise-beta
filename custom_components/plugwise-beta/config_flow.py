@@ -88,15 +88,17 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         for entry in self._async_current_entries():
             already_configured = False
+            _LOGGER.debug("Entry data: %s", entry.data)
 
-            if (
-                entry.data[CONF_HOST] == self.discovery_info[CONF_HOST]
-                and entry.data[DOMAIN] == DOMAIN
-            ):
-                already_configured = True
+            if entry.data != {}:
+                if (
+                    entry.data[CONF_HOST] == self.discovery_info[CONF_HOST] 
+                    and entry.data[DOMAIN] == DOMAIN
+                    ):
+                    already_configured = True
 
-            if already_configured:
-                return self.async_abort(reason="already_configured")
+                if already_configured:
+                    return self.async_abort(reason="already_configured")
 
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
