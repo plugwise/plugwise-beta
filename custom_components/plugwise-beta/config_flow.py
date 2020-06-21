@@ -86,18 +86,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         unique_id = self.discovery_info["hostname"].split(".")[0]
         await self._async_set_unique_id(unique_id)
 
-        for entry in self._async_current_entries():
-            already_configured = False
-
-            if (
-                entry.data[CONF_HOST] == self.discovery_info[CONF_HOST]
-                and entry.data[DOMAIN] == DOMAIN
-            ):
-                already_configured = True
-
-            if already_configured:
-                return self.async_abort(reason="already_configured")
-
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
         _name = f"{ZEROCONF_MAP.get(_product,_product)} v{_version}"
@@ -115,6 +103,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
         errors = {}
+
+        if self._async_current_entries():
+            return self.async_abort(reason="already_configured")
 
         if user_input is not None:
 
