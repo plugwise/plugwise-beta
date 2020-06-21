@@ -22,8 +22,8 @@ _LOGGER = logging.getLogger(__name__)
 
 ZEROCONF_MAP = {
     "smile": "P1 DSMR",
-    "smile_thermo": "Climate (likely Anna)",
-    "smile_open_therm": "Climate (likely Adam)",
+    "smile_thermo": "Anna",
+    "smile_open_therm": "Adam",
 }
 
 
@@ -73,7 +73,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.discovery_info = {}
 
     async def _async_set_unique_id(self, id):
-        """Set the config entry's unique ID (based on the device's 4-digit PIN)."""
+        """Helperfunction setting the config entry's unique ID."""
         await self.async_set_unique_id(id)
         self._abort_if_unique_id_configured()
 
@@ -84,7 +84,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _properties = self.discovery_info.get("properties")
 
         unique_id = self.discovery_info["hostname"].split(".")[0]
-        _LOGGER.debug("Unique ID zero: %s", unique_id)
         await self._async_set_unique_id(unique_id)
 
         for entry in self._async_current_entries():
@@ -137,9 +136,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors[CONF_BASE] = "unknown"
 
             if not errors:
-                unique_id = api.gateway_id
-                _LOGGER.debug("Unique ID (step): %s", unique_id)
-                await self._async_set_unique_id(unique_id)
+                await self._async_set_unique_id(api.gateway_id)
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
@@ -152,6 +149,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def async_get_options_flow(config_entry):
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
+
 
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
@@ -179,6 +177,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         }
 
         return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
+
 
 class CannotConnect(exceptions.HomeAssistantError):
     """Error to indicate we cannot connect."""
