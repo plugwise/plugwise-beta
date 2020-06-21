@@ -88,7 +88,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         for entry in self._async_current_entries():
             already_configured = False
-            _LOGGER.debug("Entry data: %s", entry.data)
 
             if entry.data != {}:
                 if (
