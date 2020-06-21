@@ -1,4 +1,14 @@
 {
+  "options": {
+    "step": {
+      "init": {
+        "description": "Plugwise Opties aanpassen",
+        "data": {
+          "scan_interval": "Scan Interval (seconden)"
+        }
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
@@ -17,6 +27,7 @@
     },
     "abort": {
       "already_configured": "Smile is al geconfigureerd"
-    }
+    },
+    "flow_title": "Smile: {name}"
   }
 }

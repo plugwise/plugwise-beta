@@ -16,6 +16,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SCAN_INTERVAL
 
 from .const import DOMAIN
 
@@ -36,7 +37,7 @@ async def async_setup_entry(hass, entry):
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
-        host=entry.data["host"], password=entry.data["password"], websession=websession
+        host=entry.data[CONF_HOST], password=entry.data[CONF_PASSWORD], websession=websession
     )
 
     try:
@@ -120,6 +121,8 @@ async def async_setup_entry(hass, entry):
     if single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
+    entry.add_update_listener(_update_listener)
+
     for component in platforms:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
@@ -142,6 +145,13 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
+
+async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
+    """Handle options update."""
+    coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
+    coordinator.update_interval = timedelta(
+        seconds=entry.options.get(CONF_SCAN_INTERVAL)
+    )
 
 
 class SmileGateway(Entity):
