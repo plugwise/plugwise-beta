@@ -74,7 +74,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def _async_set_unique_id(self, id):
         """Helperfunction setting the config entry's unique ID."""
-        _LOGGER.debug("Unique ID: %s", id)
         await self.async_set_unique_id(id)
         self._abort_if_unique_id_configured()
 
