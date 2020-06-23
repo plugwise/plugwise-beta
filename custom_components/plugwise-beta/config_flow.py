@@ -104,8 +104,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         errors = {}
 
-        if self._async_current_entries():
-            return self.async_abort(reason="already_configured")
+        for entry in self._async_current_entries():
+            if entry.unique_id == self.discovery_info["hostname"].split(".")[0]:
+                return self.async_abort(reason="already_configured")
 
         if user_input is not None:
 
