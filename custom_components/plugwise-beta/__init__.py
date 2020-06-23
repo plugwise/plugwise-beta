@@ -134,9 +134,7 @@ async def async_setup_entry(hass, entry):
         for id, details in api.notifications.items():
             for msg_type, msg in details.items():
                 notification_msg = f"{notification_list} - [{msg_type}] {msg}]"
-            persistent_notification.async_create(
-                hass, notification_msg, "Plugwise System", "")
-            )
+            persistent_notification.async_create(hass, notification_msg, "Plugwise System", "")
 
     return True
 
