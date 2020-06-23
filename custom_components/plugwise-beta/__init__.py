@@ -9,6 +9,7 @@ import async_timeout
 import voluptuous as vol
 from Plugwise_Smile.Smile import Smile
 
+from homeassistant.components import persistent_notification
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
@@ -127,6 +128,15 @@ async def async_setup_entry(hass, entry):
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
+
+    if api.notifications is not None:
+        notification_msg = None
+        for id, details in api.notifications.items():
+            for msg_type, msg in details.items():
+                notification_msg = f"{notification_list} - [{msg_type}] {msg}]"
+            persistent_notification.async_create(
+                hass, notification_msg, "Plugwise System", "")
+            )
 
     return True
 
