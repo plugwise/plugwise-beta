@@ -129,11 +129,9 @@ async def async_setup_entry(hass, entry):
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
 
-    notification_msg = ""
     for id, details in api.notifications.items():
         for msg_type, msg in details.items():
-            notification_msg = f"{notification_msg} [{msg_type}:]{msg}!"
-        persistent_notification.async_create(hass, notification_msg, "Plugwise System", f"{DOMAIN}.system")
+            persistent_notification.async_create(hass, f"[{msg_type}:] {msg}!", "Plugwise System", f"{DOMAIN}.{id}")
 
     return True
 
