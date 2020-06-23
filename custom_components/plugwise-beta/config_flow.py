@@ -105,10 +105,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         for entry in self._async_current_entries():
-            if (
-                entry.unique_id == self.discovery_info.get("hostname").split(".")[0] 
-                or entry.data.get(CONF_HOST) == self.discovery_info.get(CONF_HOST)
-            ):
+            if entry.data.get(CONF_HOST) == self.discovery_info.get(CONF_HOST):
+                return self.async_abort(reason="already_configured")
+            if entry.unique_id == self.discovery_info.get("hostname").split(".")[0]:
                 self._abort_if_unique_id_configured()
 
         if user_input is not None:
