@@ -83,7 +83,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
 
-        unique_id = self.discovery_info["hostname"].split(".")[0]
+        unique_id = self.discovery_info.get("hostname").split(".")[0]
         await self._async_set_unique_id(unique_id)
 
         _product = _properties.get("product", None)
@@ -104,8 +104,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         errors = {}
 
-        if self._async_current_entries():
-            return self.async_abort(reason="already_configured")
+        for entry in self._async_current_entries():
+            if entry.unique_id == self.discovery_info.get("hostname").split(".")[0]:
+                self._abort_if_unique_id_configured()
 
         if user_input is not None:
 
