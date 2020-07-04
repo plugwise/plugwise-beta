@@ -2,12 +2,13 @@
 
 import logging
 
+from homeassistant.components import persistent_notification
 from homeassistant.components.binary_sensor import BinarySensorEntity, DEVICE_CLASS_OPENING
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .const import DOMAIN, FLOW_OFF_ICON, FLOW_ON_ICON, IDLE_ICON, FLAME_ICON
-from .sensor import SmileSensor
+from .sensor import SmileSensor, SmileGateway
 
 BINARY_SENSOR_MAP = {
     "dhw_state": ["Domestic Hot Water State", None],
@@ -50,6 +51,17 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 )
             )
             _LOGGER.info("Added binary_sensor.%s", device_properties["name"])
+
+        entities.append(
+            PwNotifySensor(
+                api,
+                coordinator,
+                device_properties["name"],
+                "plugwise_notification",
+                dev_id,
+            )
+        )
+        _LOGGER.info("Added binary_sensor.%s", "Plugwise Notification")
 
     async_add_entities(entities, True)
 
@@ -106,5 +118,59 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
                 self._icon = FLOW_ON_ICON
             if self._binary_sensor == "slave_boiler_state":
                 self._icon = FLAME_ICON
+
+        self.async_write_ha_state()
+
+
+class PwNotifySensor(SmileGateway, BinarySensorEntity):
+    """Representation of a Plugwise Notification binary_sensor."""
+
+    def __init__(self, api, coordinator, name, binary_sensor, dev_id):
+        """Set up the Plugwise API."""
+        super().__init__(api, coordinator, name, dev_id)
+
+        self._binary_sensor = binary_sensor
+
+        self._is_on = False
+        self._icon = None
+        self._name = f"{self._entity_name} {binary_sensor}"
+
+        self._unique_id = f"bs-{dev_id}-{self._entity_name}-{binary_sensor}"
+
+    @property
+    def is_on(self):
+        """Return true if the binary sensor is on."""
+        return self._is_on
+
+    @property
+    def state(self):
+        """Device class of this entity."""
+        return self._state
+
+    @property
+    def icon(self):
+        """Return the icon to use in the frontend."""
+        return self._icon
+
+    @callback
+    def _async_process_data(self):
+        """Update the entity."""
+        _LOGGER.debug("Update binary_sensor called")
+        
+        self._state = STATE_OFF
+        self._icon = "mdi:mailbox-outline"
+        notify = self._api.notifications
+        if notify == {}:
+            _LOGGER.debug("No notification found")
+            self.async_write_ha_state()
+            return
+
+        _LOGGER.debug("Notification: %s", notify)
+        self._is_on = True
+        for id, details in notify.items():
+            for msg_type, msg in details.items():
+                persistent_notification.async_create(hass, f"[{msg_type}:] {msg}!", "Plugwise System", f"{DOMAIN}.{id}")
+        self._state = STATE_ON
+        self._icon = "mdi:mailbox-up-outline"
 
         self.async_write_ha_state()
