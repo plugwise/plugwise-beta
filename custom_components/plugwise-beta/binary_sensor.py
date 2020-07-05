@@ -10,8 +10,6 @@ from homeassistant.core import callback
 from .const import DOMAIN, FLOW_OFF_ICON, FLOW_ON_ICON, IDLE_ICON, FLAME_ICON
 from .sensor import SmileSensor, SmileGateway
 
-ATTRIBUTION = "Notification provided by Plugwise"
-
 BINARY_SENSOR_MAP = {
     "dhw_state": ["Domestic Hot Water State", None],
     "slave_boiler_state": ["Secondary Heater Device State", None],
@@ -154,7 +152,6 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
     @property
     def device_state_attributes(self):
         """Return the state attributes."""
-        self._attributes[ATTR_ATTRIBUTION] = ATTRIBUTION
         return self._attributes
 
     @property
@@ -184,7 +181,11 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
         self._icon = "mdi:mailbox-up-outline"
         for id, details in notify.items():
             for msg_type, msg in details.items():
-                self._attributes[msg_type] = msg
-                self._hass.components.persistent_notification.async_create(f"[{msg_type}:] {msg}!", "Plugwise System", f"{DOMAIN}.{id}")
+                self._attributes[msg_type.upper()] = msg
+                self._hass.components.persistent_notification.async_create(
+                    f"{msg_type.upper()}: {msg}!",
+                    "Plugwise Notification:",
+                    f"{DOMAIN}.{id}",
+                )
 
         self.async_write_ha_state()
