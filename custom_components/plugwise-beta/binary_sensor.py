@@ -56,6 +56,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         entities.append(
             PwNotifySensor(
+                hass,
                 api,
                 coordinator,
                 device_properties["name"],
@@ -127,11 +128,12 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
 class PwNotifySensor(SmileGateway, BinarySensorEntity):
     """Representation of a Plugwise Notification binary_sensor."""
 
-    def __init__(self, api, coordinator, name, binary_sensor, dev_id):
+    def __init__(self, hass, api, coordinator, name, binary_sensor, dev_id):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id)
 
         self._binary_sensor = binary_sensor
+        self._hass = hass
 
         self._is_on = False
         self._icon = None
@@ -177,10 +179,10 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
         _LOGGER.debug("Notification: %s", notify)
         self._is_on = True
         for id, details in notify.items():
+            self._attributes = details
             for msg_type, msg in details.items():
-                persistent_notification.async_create(hass, f"[{msg_type}:] {msg}!", "Plugwise System", f"{DOMAIN}.{id}")
+                self._hass.components.persistent_notification.async_create(f"[{msg_type}:] {msg}!", "Plugwise System", f"{DOMAIN}.{id}")
         self._state = STATE_ON
-        self._attributes = notify
         self._icon = "mdi:mailbox-up-outline"
 
         self.async_write_ha_state()
