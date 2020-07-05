@@ -167,22 +167,24 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
         """Update the entity."""
         _LOGGER.debug("Update notification-binary_sensor called")
         
-        self._state = STATE_OFF
         self._attributes = {}
-        self._icon = "mdi:mailbox-outline"
         notify = self._api.notifications
         if notify == {}:
             _LOGGER.debug("No notification found")
+            self._is_on = False
+            self._state = STATE_OFF
+            self._icon = "mdi:mailbox-outline"
+
             self.async_write_ha_state()
             return
 
         _LOGGER.debug("Notification: %s", notify)
         self._is_on = True
-        for id, details in notify.items():
-            self._attributes = details
-            for msg_type, msg in details.items():
-                self._hass.components.persistent_notification.async_create(f"[{msg_type}:] {msg}!", "Plugwise System", f"{DOMAIN}.{id}")
         self._state = STATE_ON
         self._icon = "mdi:mailbox-up-outline"
+        for id, details in notify.items():
+            for msg_type, msg in details.items():
+                self._attributes[msg_type] = msg
+                self._hass.components.persistent_notification.async_create(f"[{msg_type}:] {msg}!", "Plugwise System", f"{DOMAIN}.{id}")
 
         self.async_write_ha_state()
