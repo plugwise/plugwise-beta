@@ -4,11 +4,13 @@ import logging
 
 from homeassistant.components import persistent_notification
 from homeassistant.components.binary_sensor import BinarySensorEntity, DEVICE_CLASS_OPENING
-from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.const import ATTR_ATTRIBUTION, STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .const import DOMAIN, FLOW_OFF_ICON, FLOW_ON_ICON, IDLE_ICON, FLAME_ICON
 from .sensor import SmileSensor, SmileGateway
+
+ATTRIBUTION = "Notification provided by Plugwise"
 
 BINARY_SENSOR_MAP = {
     "dhw_state": ["Domestic Hot Water State", None],
@@ -50,7 +52,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     device_properties["class"],
                 )
             )
-            _LOGGER.info("Added binary_sensor.%s", device_properties["name"])
+            _LOGGER.info("Added binary_sensor.%s", f"{device_properties['name']}_{binary_sensor}")
 
         entities.append(
             PwNotifySensor(
@@ -61,7 +63,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 dev_id,
             )
         )
-        _LOGGER.info("Added binary_sensor.%s", "Plugwise Notification")
+        _LOGGER.info("Added binary_sensor.%s", f"{device_properties['name']}_{'plugwise_notification'}")
 
     async_add_entities(entities, True)
 
@@ -133,7 +135,7 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
 
         self._is_on = False
         self._icon = None
-        self._name = f"{self._entity_name} {binary_sensor}"
+        self._name = f"{self._entity_name} {'Plugwise Notification'}"
 
         self._unique_id = f"bs-{dev_id}-{self._entity_name}-{binary_sensor}"
 
@@ -148,6 +150,12 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
         return self._state
 
     @property
+    def device_state_attributes(self):
+        """Return the state attributes."""
+        self._attributes[ATTR_ATTRIBUTION] = ATTRIBUTION
+        return self._attributes
+
+    @property
     def icon(self):
         """Return the icon to use in the frontend."""
         return self._icon
@@ -155,9 +163,10 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        _LOGGER.debug("Update binary_sensor called")
+        _LOGGER.debug("Update notification-binary_sensor called")
         
         self._state = STATE_OFF
+        self._attributes = {}
         self._icon = "mdi:mailbox-outline"
         notify = self._api.notifications
         if notify == {}:
@@ -171,6 +180,7 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
             for msg_type, msg in details.items():
                 persistent_notification.async_create(hass, f"[{msg_type}:] {msg}!", "Plugwise System", f"{DOMAIN}.{id}")
         self._state = STATE_ON
+        self._attributes = notify
         self._icon = "mdi:mailbox-up-outline"
 
         self.async_write_ha_state()
