@@ -7,7 +7,16 @@ from homeassistant.components.binary_sensor import BinarySensorEntity, DEVICE_CL
 from homeassistant.const import ATTR_ATTRIBUTION, STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
-from .const import DOMAIN, FLOW_OFF_ICON, FLOW_ON_ICON, IDLE_ICON, FLAME_ICON
+from .const import (
+    DOMAIN,
+    FLAME_ICON,
+    FLOW_OFF_ICON,
+    FLOW_ON_ICON,
+    IDLE_ICON,
+    NO_NOTIFICATION_ICON,
+    NOTIFICATION_ICON,
+)
+
 from .sensor import SmileSensor, SmileGateway
 
 BINARY_SENSOR_MAP = {
@@ -170,7 +179,7 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
             _LOGGER.debug("No notification found")
             self._is_on = False
             self._state = STATE_OFF
-            self._icon = "mdi:mailbox-outline"
+            self._icon = NO_NOTIFICATION_ICON
 
             self.async_write_ha_state()
             return
@@ -178,7 +187,7 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
         _LOGGER.debug("Notification: %s", notify)
         self._is_on = True
         self._state = STATE_ON
-        self._icon = "mdi:mailbox-up-outline"
+        self._icon = NOTIFICATION_ICON
         for id, details in notify.items():
             for msg_type, msg in details.items():
                 self._attributes[msg_type.upper()] = msg
