@@ -4,7 +4,7 @@ import logging
 
 from homeassistant.components import persistent_notification
 from homeassistant.components.binary_sensor import BinarySensorEntity, DEVICE_CLASS_OPENING
-from homeassistant.const import ATTR_ATTRIBUTION, STATE_OFF, STATE_ON
+from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .const import (
