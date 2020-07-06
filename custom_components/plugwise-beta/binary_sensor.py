@@ -130,8 +130,8 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id)
 
-        self._hass = hass
         self._binary_sensor = binary_sensor
+        self._hass = hass
 
         self._is_on = False
         self._icon = None
