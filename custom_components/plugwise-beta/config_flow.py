@@ -76,6 +76,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
+        _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
 
         unique_id = self.discovery_info.get("hostname").split(".")[0]
@@ -84,12 +85,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
+        _LOGGER.debug("Discovered: %s", _properties)
+        _LOGGER.debug("Plugwise Smile discovered with %s", _properties)
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
 
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
         self.context["title_placeholders"] = {
-            CONF_HOST: discovery_info[CONF_HOST],
-            "name": _name,
+            CONF_HOST: self.discovery_info[CONF_HOST],
+            CONF_NAME: _name,
         }
         return await self.async_step_user()
 
