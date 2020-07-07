@@ -120,7 +120,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
         return self.async_show_form(
-            step_id="user", data_schema=_base_schema(self.discovery_info), errors=errors
+            step_id="user", data_schema=_base_schema(self.discovery_info), errors=errors or {}
         )
 
     @staticmethod
