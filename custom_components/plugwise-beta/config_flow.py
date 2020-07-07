@@ -1,4 +1,4 @@
-"""Config flow for Plugwise Anna integration."""
+"""Config flow for Plugwise integration."""
 import logging
 
 import voluptuous as vol
