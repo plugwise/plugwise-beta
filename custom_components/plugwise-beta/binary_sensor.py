@@ -17,7 +17,7 @@ from .const import (
     NOTIFICATION_ICON,
 )
 
-from .sensor import SmileSensor, SmileGateway
+from .sensor import SmileSensor
 
 BINARY_SENSOR_MAP = {
     "dhw_state": ["Domestic Hot Water State", None],
@@ -132,32 +132,24 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
         self.async_write_ha_state()
 
 
-class PwNotifySensor(SmileGateway, BinarySensorEntity):
+class PwNotifySensor(SmileSensor, BinarySensorEntity):
     """Representation of a Plugwise Notification binary_sensor."""
 
     def __init__(self, hass, api, coordinator, name, binary_sensor, dev_id):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator, name, dev_id)
-
+        super().__init__(api, coordinator, name, dev_id, binary_sensor)
         self._binary_sensor = binary_sensor
         self._hass = hass
 
         self._is_on = False
         self._icon = None
-        self._name = f"{self._entity_name} {'Plugwise Notification'}"
 
-        self._entity_name = f"Smile {self._entity_name}"
         self._unique_id = f"bs-{dev_id}-{self._entity_name}-{binary_sensor}"
 
     @property
     def is_on(self):
         """Return true if the binary sensor is on."""
         return self._is_on
-
-    @property
-    def state(self):
-        """Device class of this entity."""
-        return self._state
 
     @property
     def device_state_attributes(self):
