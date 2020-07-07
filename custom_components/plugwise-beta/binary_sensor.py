@@ -146,6 +146,7 @@ class PwNotifySensor(SmileGateway, BinarySensorEntity):
         self._icon = None
         self._name = f"{self._entity_name} {'Plugwise Notification'}"
 
+        self._entity_name = f"Smile {self._entity_name}"
         self._unique_id = f"bs-{dev_id}-{self._entity_name}-{binary_sensor}"
 
     @property
