@@ -1,15 +1,22 @@
-"""Config flow for Plugwise integration."""
+"""Config flow for Plugwise Anna integration."""
 import logging
 
-from Plugwise_Smile.Smile import Smile
 import voluptuous as vol
 
 from homeassistant import config_entries, core, exceptions
-from homeassistant.const import CONF_HOST, CONF_PASSWORD
+from homeassistant.const import (
+    CONF_BASE,
+    CONF_HOST,
+    CONF_NAME,
+    CONF_PASSWORD,
+    CONF_SCAN_INTERVAL
+)
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
+from homeassistant.core import callback
+from Plugwise_Smile.Smile import Smile
 
-from .const import DOMAIN  # pylint:disable=unused-import
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,10 +47,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
-        host=data[CONF_HOST],
-        password=data[CONF_PASSWORD],
-        timeout=30,
-        websession=websession,
+        host=data[CONF_HOST], password=data[CONF_PASSWORD], timeout=30, websession=websession
     )
 
     try:
@@ -56,7 +60,6 @@ async def validate_input(hass: core.HomeAssistant, data):
     return api
 
 
-class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise Smile."""
 
     VERSION = 1
@@ -93,28 +96,64 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
 
             if self.discovery_info:
-                user_input[CONF_HOST] = self.discovery_info[CONF_HOST]
+                user_input.update(
+                    {CONF_HOST: self.discovery_info[CONF_HOST],}
+                )
 
             try:
                 api = await validate_input(self.hass, user_input)
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
             except CannotConnect:
-                errors["base"] = "cannot_connect"
+                errors[CONF_BASE] = "cannot_connect"
             except InvalidAuth:
-                errors["base"] = "invalid_auth"
+                errors[CONF_BASE] = "invalid_auth"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
-                errors["base"] = "unknown"
+                errors[CONF_BASE] = "unknown"
 
             if not errors:
-                await self.async_set_unique_id(api.gateway_id)
+                await self._async_set_unique_id(api.gateway_id)
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
         return self.async_show_form(
             step_id="user", data_schema=_base_schema(self.discovery_info), errors=errors
         )
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        """Get the options flow for this handler."""
+        return PlugwiseOptionsFlowHandler(config_entry)
+
+
+class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
+    """Plugwise option flow."""
+    def __init__(self, config_entry):
+        """Initialize options flow."""
+        self.config_entry = config_entry
+
+    async def async_step_init(self, user_input=None):
+        """Manage the Plugwise options."""
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        api = self.hass.data[DOMAIN][self.config_entry.entry_id]["api"]
+        interval = DEFAULT_SCAN_INTERVAL["thermostat"]
+        if api.smile_type == "power":
+            interval = DEFAULT_SCAN_INTERVAL["power"]
+
+        data = {
+            vol.Optional(
+                CONF_SCAN_INTERVAL, 
+                default=self.config_entry.options.get(
+                    CONF_SCAN_INTERVAL, interval
+                )
+            ): int
+        }
+
+        return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
 
 
 class CannotConnect(exceptions.HomeAssistantError):
