@@ -47,7 +47,10 @@ async def validate_input(hass: core.HomeAssistant, data):
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
-        host=data[CONF_HOST], password=data[CONF_PASSWORD], timeout=30, websession=websession
+        host=data[CONF_HOST],
+        password=data[CONF_PASSWORD],
+        timeout=30,
+        websession=websession,
     )
 
     try:
@@ -60,6 +63,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     return api
 
 
+class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise Smile."""
 
     VERSION = 1
@@ -96,9 +100,7 @@ async def validate_input(hass: core.HomeAssistant, data):
         if user_input is not None:
 
             if self.discovery_info:
-                user_input.update(
-                    {CONF_HOST: self.discovery_info[CONF_HOST],}
-                )
+                user_input[CONF_HOST] = self.discovery_info[CONF_HOST]
 
             try:
                 api = await validate_input(self.hass, user_input)
@@ -113,7 +115,7 @@ async def validate_input(hass: core.HomeAssistant, data):
                 errors[CONF_BASE] = "unknown"
 
             if not errors:
-                await self._async_set_unique_id(api.gateway_id)
+                await self.async_set_unique_id(api.gateway_id)
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
