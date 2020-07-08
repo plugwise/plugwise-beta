@@ -2,7 +2,7 @@
 
 import logging
 
-from homeassistant.components.binary_sensor import BinarySensorEntity, DEVICE_CLASS_OPENING
+from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
