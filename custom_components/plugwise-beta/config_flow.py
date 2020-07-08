@@ -1,4 +1,4 @@
-"""Config flow for Plugwise Anna integration."""
+"""Config flow for Plugwise integration."""
 import logging
 
 import voluptuous as vol
@@ -22,8 +22,8 @@ _LOGGER = logging.getLogger(__name__)
 
 ZEROCONF_MAP = {
     "smile": "P1 DSMR",
-    "smile_thermo": "Anna",
-    "smile_open_therm": "Adam",
+    "smile_thermo": "Climate (Anna)",
+    "smile_open_therm": "Climate (Adam)",
 }
 
 
@@ -32,11 +32,9 @@ def _base_schema(discovery_info):
     base_schema = {}
 
     if not discovery_info:
-        base_schema.update(
-            {vol.Required(CONF_HOST): str,}
-        )
+        base_schema[vol.Required(CONF_HOST)] = str
 
-    base_schema.update({vol.Required(CONF_PASSWORD): str})
+    base_schema[vol.Required(CONF_PASSWORD)] = str
 
     return vol.Schema(base_schema)
 
@@ -49,7 +47,10 @@ async def validate_input(hass: core.HomeAssistant, data):
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
-        host=data[CONF_HOST], password=data[CONF_PASSWORD], timeout=30, websession=websession
+        host=data[CONF_HOST],
+        password=data[CONF_PASSWORD],
+        timeout=30,
+        websession=websession,
     )
 
     try:
@@ -72,11 +73,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Initialize the Plugwise config flow."""
         self.discovery_info = {}
 
-    async def _async_set_unique_id(self, id):
-        """Helperfunction setting the config entry's unique ID."""
-        await self.async_set_unique_id(id)
-        self._abort_if_unique_id_configured()
-
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
@@ -84,36 +80,30 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _properties = self.discovery_info.get("properties")
 
         unique_id = self.discovery_info.get("hostname").split(".")[0]
-        await self._async_set_unique_id(unique_id)
+        await self.async_set_unique_id(unique_id)
+        self._abort_if_unique_id_configured()
 
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
-        _name = f"{ZEROCONF_MAP.get(_product,_product)} v{_version}"
         _LOGGER.debug("Discovered: %s", _properties)
         _LOGGER.debug("Plugwise Smile discovered with %s", _properties)
+        _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
 
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
         self.context["title_placeholders"] = {
             CONF_HOST: self.discovery_info[CONF_HOST],
             CONF_NAME: _name,
         }
-
         return await self.async_step_user()
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
         errors = {}
 
-        for entry in self._async_current_entries():
-            if entry.unique_id == self.discovery_info.get("hostname").split(".")[0]:
-                self._abort_if_unique_id_configured()
-
         if user_input is not None:
 
             if self.discovery_info:
-                user_input.update(
-                    {CONF_HOST: self.discovery_info[CONF_HOST],}
-                )
+                user_input[CONF_HOST] = self.discovery_info[CONF_HOST]
 
             try:
                 api = await validate_input(self.hass, user_input)
@@ -128,12 +118,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors[CONF_BASE] = "unknown"
 
             if not errors:
-                await self._async_set_unique_id(api.gateway_id)
+                await self.async_set_unique_id(api.gateway_id)
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
         return self.async_show_form(
-            step_id="user", data_schema=_base_schema(self.discovery_info), errors=errors
+            step_id="user", data_schema=_base_schema(self.discovery_info), errors=errors or {}
         )
 
     @staticmethod
@@ -155,15 +145,15 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             return self.async_create_entry(title="", data=user_input)
 
         api = self.hass.data[DOMAIN][self.config_entry.entry_id]["api"]
-        SCAN_INTERVAL = DEFAULT_SCAN_INTERVAL["thermostat"]
+        interval = DEFAULT_SCAN_INTERVAL["thermostat"]
         if api.smile_type == "power":
-            SCAN_INTERVAL = DEFAULT_SCAN_INTERVAL["power"]
+            interval = DEFAULT_SCAN_INTERVAL["power"]
 
         data = {
             vol.Optional(
                 CONF_SCAN_INTERVAL, 
                 default=self.config_entry.options.get(
-                    CONF_SCAN_INTERVAL, SCAN_INTERVAL
+                    CONF_SCAN_INTERVAL, interval
                 )
             ): int
         }
