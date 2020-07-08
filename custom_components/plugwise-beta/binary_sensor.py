@@ -3,7 +3,7 @@
 import logging
 
 from homeassistant.components import persistent_notification
-from homeassistant.components.binary_sensor import BinarySensorEntity, DEVICE_CLASS_OPENING
+from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
@@ -69,6 +69,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     device_properties["name"],
                     "plugwise_notification",
                     dev_id,
+                    device_properties["class"],
                 )
             )
             _LOGGER.info("Added binary_sensor.%s", f"{device_properties['name']}_{'plugwise_notification'}")
@@ -132,12 +133,13 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
         self.async_write_ha_state()
 
 
-class PwNotifySensor(SmileSensor, BinarySensorEntity):
+class PwNotifySensor(PwBinarySensor, BinarySensorEntity):
     """Representation of a Plugwise Notification binary_sensor."""
 
-    def __init__(self, hass, api, coordinator, name, binary_sensor, dev_id):
+    def __init__(self, hass, api, coordinator, name, binary_sensor, dev_id, model):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator, name, dev_id, binary_sensor)
+        super().__init__(api, coordinator, name, binary_sensor, dev_id, model)
+        
         self._binary_sensor = binary_sensor
         self._hass = hass
 
@@ -147,19 +149,9 @@ class PwNotifySensor(SmileSensor, BinarySensorEntity):
         self._unique_id = f"bs-{dev_id}-{self._entity_name}-{binary_sensor}"
 
     @property
-    def is_on(self):
-        """Return true if the binary sensor is on."""
-        return self._is_on
-
-    @property
     def device_state_attributes(self):
         """Return the state attributes."""
         return self._attributes
-
-    @property
-    def icon(self):
-        """Return the icon to use in the frontend."""
-        return self._icon
 
     @callback
     def _async_process_data(self):
