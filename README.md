@@ -1,5 +1,5 @@
 
-** Read the 0.2.x release notes (https://github.com/plugwise/plugwise-beta/releases/tag/0.2.0) before upgrading - you should always read them, but 0.2.x is a breaking upgrade (and requires HA 0.109)! **
+** Read the release notes (https://github.com/plugwise/plugwise-beta/releases) before upgrading, in case there are BREAKING changes! **
 
 # Plugwise Smile custom_component (BETA)
 
@@ -32,7 +32,7 @@ A fully asynchronous approach to supporting Plugwise devices. This repository is
 ## What can I expect in HA from this component
 
   - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating-demand status, per thermostat. Also, setting of temperature, preset and switching the active schedule on and off. Cooling is only supported in combination with an Anna (fw 3.1 and 4.0).
-  - `sensor` and `binary_sensor`: A number of sensoric values depending on your hardware: outdoor temperature, Anna's illuminance, Tom's valve postion, Plug's power-values, P1 power- and gas-values
+  - `sensor` and `binary_sensor`: A number of sensoric values depending on your hardware: outdoor temperature, Anna's illuminance, Tom's valve postion, Plug's power-values, P1 power- and gas-values, Plugwise Notifications (new)
   - `switch`: The switch-parts of Plugs are available as switches, also switching them on/off is supported.
 
 The `water_heater`-device present in previous releases has been replaced by a state-sensor. This sensor will only show up when there are more (than one) thermostats present in your climate-system.
@@ -57,6 +57,8 @@ For each Plugwise Smile (i.e. gateway) you have add an integration. For instance
 
 HA wil continue to ask you if you want to put your Smile and detected other devices in area's and presto, things should be available to configure in lovelace.
 
+Also, using the OPTIONS-button, the default Smile-data refresh-interval can be changed.
+
 # I don't like the name of the sensor or the icon
 
 You can adjust these in `Configuration`, `Integration` -> `Entities` (e.g. `https://{Your HA address}/config/entities`)
@@ -80,7 +82,7 @@ While we try to make sure that everyting works as intended, we can't really test
 
 Results of our tests are checked by Travis, click the left button (the one that should say 'Build passing' :)) on the [Plugwise-Smile repository](https://github.com/plugwise/Plugwise-Smile/).
 
-# There is Anna support in HA Core already
+# ~~There is Anna support in HA Core already~~ replaced by the new Plugwise component, based on this beta-version.
 
 And from the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech and improved and maintained by @bouwew
 
