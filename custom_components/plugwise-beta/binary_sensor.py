@@ -113,17 +113,11 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
 
         self._is_on = data[self._binary_sensor]
 
-        self._state = STATE_OFF
+        self._state = STATE_ON if self._is_on else STATE_OFF
         if self._binary_sensor == "dhw_state":
-            self._icon = FLOW_OFF_ICON
+            self._icon = FLOW_ON_ICON if self._is_on else FLOW_OFF_ICON
         if self._binary_sensor == "slave_boiler_state":
-            self._icon = IDLE_ICON
-        if self._is_on:
-            self._state = STATE_ON
-            if self._binary_sensor == "dhw_state":
-                self._icon = FLOW_ON_ICON
-            if self._binary_sensor == "slave_boiler_state":
-                self._icon = FLAME_ICON
+            self._icon = FLAME_ICON if self._is_on else IDLE_ICON
 
         self.async_write_ha_state()
 
@@ -153,28 +147,19 @@ class PwNotifySensor(PwBinarySensor, BinarySensorEntity):
         """Update the entity."""
         _LOGGER.debug("Update notification-binary_sensor called")
         
-        self._attributes = {}
         notify = self._api.notifications
-        if notify == {}:
-            _LOGGER.debug("No notification found")
-            self._is_on = False
-            self._state = STATE_OFF
-            self._icon = NO_NOTIFICATION_ICON
-
-            self.async_write_ha_state()
-            return
-
-        _LOGGER.debug("Notification: %s", notify)
-        self._is_on = True
-        self._state = STATE_ON
-        self._icon = NOTIFICATION_ICON
-        for id, details in notify.items():
-            for msg_type, msg in details.items():
-                self._attributes[msg_type.upper()] = msg
-                self._hass.components.persistent_notification.async_create(
-                    f"{msg_type.upper()}: {msg}",
-                    "Plugwise Notification:",
-                    f"{DOMAIN}.{id}",
-                )
+        self._is_on = False if notify == {} else True
+        self._state = STATE_OFF if notify == {} else STATE_ON
+        self._icon = NO_NOTIFICATION_ICON if notify == {} else NOTIFICATION_ICON
+        self._attributes = {} 
+        if notify != {}: 
+            for id, details in notify.items():
+                for msg_type, msg in details.items():
+                    self._attributes[msg_type.upper()] = msg
+                    self._hass.components.persistent_notification.async_create(
+                        f"{msg_type.upper()}: {msg}",
+                        "Plugwise Notification:",
+                        f"{DOMAIN}.{id}",
+                    )
 
         self.async_write_ha_state()
