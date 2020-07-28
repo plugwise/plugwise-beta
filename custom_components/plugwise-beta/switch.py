@@ -8,7 +8,7 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import callback
 
 from . import SmileGateway
-from .const import DOMAIN
+from .const import DOMAIN, SWITCH_ICON
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,10 +40,15 @@ class PwSwitch(SmileGateway, SwitchEntity):
         super().__init__(api, coordinator, name, dev_id)
 
         self._model = model
-
+        
         self._is_on = False
 
         self._unique_id = f"sw-{dev_id}-{self._name}"
+
+    @property
+    def icon(self):
+        """Return the icon of the entity."""
+        return SWITCH_ICON
 
     @property
     def is_on(self):
