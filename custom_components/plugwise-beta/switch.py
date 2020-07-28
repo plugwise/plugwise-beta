@@ -40,7 +40,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
         super().__init__(api, coordinator, name, dev_id)
 
         self._model = model
-        
+
         self._is_on = False
 
         self._unique_id = f"sw-{dev_id}-{self._name}"
