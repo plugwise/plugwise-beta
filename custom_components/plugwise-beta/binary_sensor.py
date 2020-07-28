@@ -96,11 +96,6 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
         """Return true if the binary sensor is on."""
         return self._is_on
 
-    @property
-    def icon(self):
-        """Return the icon to use in the frontend."""
-        return self._icon
-
     @callback
     def _async_process_data(self):
         """Update the entity."""
