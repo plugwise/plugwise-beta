@@ -272,17 +272,17 @@ class SmileSensor(SmileGateway):
 
     @property
     def device_class(self):
-        """Return the device class of the entity."""
+        """Return the device class of this entity, if any."""
         return self._dev_class
 
     @property
     def icon(self):
-        """Return the icon of the entity."""
+        """Return the icon of this entity."""
         return self._icon
 
     @property
     def state(self):
-        """Return the state of the entity."""
+        """Return the state of this entity."""
         return self._state
 
     @property
@@ -327,7 +327,7 @@ class PwThermostatSensor(SmileSensor, Entity):
 
 
 class PwAuxDeviceSensor(SmileSensor, Entity):
-    """Sensors from the Auxiliary Device."""
+    """Auxiliary Device sensors."""
 
     def __init__(self, api, coordinator, name, dev_id, sensor):
         """Set up the Plugwise API."""
