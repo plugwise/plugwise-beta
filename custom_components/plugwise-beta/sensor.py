@@ -276,6 +276,11 @@ class SmileSensor(SmileGateway):
         return self._dev_class
 
     @property
+    def icon(self):
+        """Return the name of the entity, if any."""
+        return self._icon
+
+    @property
     def state(self):
         """Device class of this entity."""
         return self._state
