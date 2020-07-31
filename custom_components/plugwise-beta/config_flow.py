@@ -46,9 +46,17 @@ async def validate_input(hass: core.HomeAssistant, data):
     Data has the keys from _base_schema() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
+
+    host = data[CONF_HOST]
+    port = 80
+    if ":" in host:
+        host = data[CONF_HOST].split(":")[0]
+        port = int(data[CONF_HOST].split(":")[1])
+
     api = Smile(
-        host=data[CONF_HOST],
+        host=host,
         password=data[CONF_PASSWORD],
+        port=port,
         timeout=30,
         websession=websession,
     )

@@ -12,11 +12,11 @@
   "config": {
     "step": {
       "user": {
-        "title": "Verbinden met de Smile",
-        "description": "Gegevens van Smile",
+        "title": "Verbinden met de Plugwise Smile",
+        "description": "IP-adres en ID invoeren",
         "data": {
-          "host": "IP adres van de Smile",
-          "password": "Smile ID"
+          "host": "IP-adres(:poort)",
+          "password": "ID"
         }
       }
     },
