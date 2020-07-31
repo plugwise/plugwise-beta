@@ -12,11 +12,11 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect to the device",
-        "description": "Which device and naming",
+        "title": "Connect to the Plugwise Smile",
+        "description": "Enter IP-address and ID",
         "data": {
-          "host": "Smile IP address",
-          "password": "Smile ID"
+          "host": "IP-address(:port)",
+          "password": "ID"
         }
       }
     },
