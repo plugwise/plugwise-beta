@@ -52,8 +52,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         api,
                         coordinator,
                         device_properties["name"],
-                        binary_sensor,
                         dev_id,
+                        binary_sensor,
                         device_properties["class"],
                     )
                 )
@@ -67,8 +67,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     api,
                     coordinator,
                     device_properties["name"],
-                    "plugwise_notification",
                     dev_id,
+                    "plugwise_notification",
                     device_properties["class"],
                 )
             )
@@ -80,7 +80,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class PwBinarySensor(SmileSensor, BinarySensorEntity):
     """Representation of a Plugwise binary_sensor."""
 
-    def __init__(self, api, coordinator, name, binary_sensor, dev_id, model):
+    def __init__(self, api, coordinator, name, dev_id, binary_sensor, model):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id, binary_sensor)
 
@@ -131,9 +131,9 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
 class PwNotifySensor(PwBinarySensor, BinarySensorEntity):
     """Representation of a Plugwise Notification binary_sensor."""
 
-    def __init__(self, hass, api, coordinator, name, binary_sensor, dev_id, model):
+    def __init__(self, hass, api, coordinator, name, dev_id, binary_sensor, model):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator, name, binary_sensor, dev_id, model)
+        super().__init__(api, coordinator, name, dev_id, binary_sensor, model)
         
         self._binary_sensor = binary_sensor
         self._hass = hass
