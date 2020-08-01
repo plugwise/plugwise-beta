@@ -13,7 +13,7 @@
     "step": {
       "user": {
         "title": "Verbinden met de Plugwise Smile",
-        "description": "IP-adres en ID invoeren",
+        "description": "Smile IP-adres en Smile ID invoeren",
         "data": {
           "host": "IP-adres(:poort)",
           "password": "ID"

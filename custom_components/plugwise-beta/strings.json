@@ -13,7 +13,7 @@
     "step": {
       "user": {
         "title": "Connect to the Plugwise Smile",
-        "description": "Enter IP-address and ID",
+        "description": "Enter Smile IP-address and Smile ID",
         "data": {
           "host": "IP-address(:port)",
           "password": "ID"
