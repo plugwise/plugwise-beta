@@ -87,8 +87,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
 
-        unique_id = self.discovery_info.get("hostname").split(".")[0]
-        await self.async_set_unique_id(unique_id)
+        await self.async_set_unique_id(api.hostname)
         self._abort_if_unique_id_configured()
 
         _product = _properties.get("product", None)
@@ -126,7 +125,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors[CONF_BASE] = "unknown"
 
             if not errors:
-                await self.async_set_unique_id(api.gateway_id)
+                unique_id = api.gateway_id
+                if api.hostname is not None:
+                    unique_id =  api.hostname
+                await self.async_set_unique_id(unique_id)
+                self._abort_if_unique_id_configured()
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
