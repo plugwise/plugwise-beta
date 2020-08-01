@@ -125,10 +125,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors[CONF_BASE] = "unknown"
 
             if not errors:
+                unique_id = api.gateway_id
                 if api.hostname is not None:
-                    await self.async_set_unique_id(api.hostname)
-                else:
-                    await self.async_set_unique_id(api.gateway_id)
+                    unique_id =  api.hostname
+                await self.async_set_unique_id(unique_id)
                 self._abort_if_unique_id_configured()
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
