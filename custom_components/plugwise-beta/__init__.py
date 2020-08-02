@@ -102,7 +102,7 @@ async def async_setup_entry(hass, entry):
     _LOGGER.debug("Async update interval %s", update_interval)
 
     # Migrate to new unique_id's when needed
-    if api.smile_version[0] = "2.5.9":
+    if api.smile_version[0] == "2.5.9":
         if entry.unique_id is None:
             hass.config_entries.async_update_entry(
                 entry, unique_id=entry.data[api.gateway_id]
