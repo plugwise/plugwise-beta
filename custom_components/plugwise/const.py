@@ -1,6 +1,6 @@
 """Constant for Plugwise beta component."""
 
-DOMAIN = "plugwise-beta"
+DOMAIN = "plugwise"
 
 # Sensor mapping
 SENSOR_MAP_MODEL = 0

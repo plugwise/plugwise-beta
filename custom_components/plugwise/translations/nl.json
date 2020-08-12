@@ -10,13 +10,14 @@
     }
   },
   "config": {
+    "flow_title": "Smile: {name}",
     "step": {
       "user": {
         "title": "Verbinden met de Plugwise Smile",
-        "description": "Smile IP-adres en Smile ID invoeren",
+        "description": "Aub invoeren:",
         "data": {
-          "host": "IP-adres(:poort)",
-          "password": "ID"
+          "host": "Smile IP-adres(:poort)",
+          "password": "Smile ID"
         }
       }
     },
@@ -26,8 +27,7 @@
       "unknown": "Overwachte fout"
     },
     "abort": {
-      "already_configured": "Smile is al geconfigureerd"
-    },
-    "flow_title": "Smile: {name}"
+      "already_configured": "Deze Smile is al geconfigureerd"
+    }
   }
 }
