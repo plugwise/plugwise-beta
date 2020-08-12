@@ -37,14 +37,13 @@ PLEASE NOTE: at the moment you will need to remove the existing Core Plugwise in
 
 The `water_heater`-device present in previous releases has been replaced by a state-sensor. This sensor will only show up when there are more (than one) thermostats present in your climate-system.
 
-## How to set-up?
+## How to install?
 
  - Use [HACS](https://hacs.xyz) 
  - Use the link to this page and add it on the `custom repo` page .
  - Look for `Plugwise beta custom component ` in `integrations` and install it!
- - If you need an pre-release for testing, click the three dots and mark the 'beta' check to see pre-releases.
 
-## When installed
+## How to add the integration to HA Core
 
 For each Plugwise Smile (i.e. gateway) you will have to add it as an integration. For instance if you have an Adam and a Smile P1, you have to add them individually. If you have an Anna and an Adam, do not add the Anna, only add the Adam.
  - [ ] In Home Assitant click on `Configuration`
@@ -73,10 +72,10 @@ Just click on the device and adjust accordingly!
 
 # It doesn't work
 
-It's still in early phases and moving between two developers and a handfull of testers, if you notice things we are on discord and welcome issues on the repos
+If you notice issuess, we are on discord and on the Community. You can also create an Issue in these repos:
 
-  - [plugwise-beta](https://github.com/plugwise/plugwise-beta) - the `custom_component` for Home Assistant
-  - [Plugwise-Smile](https://github.com/plugwise/Plugwise-Smile) - the python module interfacing between the component and your Smile
+  - [plugwise-beta](https://github.com/plugwise/plugwise-beta) - the `custom_component` for HA Core
+  - [Plugwise-Smile](https://github.com/plugwise/Plugwise-Smile) - the python module interfacing between the plugwise component and your Smile
 
 # Smile?
 
@@ -88,10 +87,10 @@ While we try to make sure that everyting works as intended, we can't really test
 
 Results of our tests are checked by Travis, click the left button (the one that should say 'Build passing' :)) on the [Plugwise-Smile repository](https://github.com/plugwise/Plugwise-Smile/).
 
-# ~~There is Anna support in HA Core already~~ replaced by the new Plugwise component, based on this beta-version.
+# ~~There is Anna support in HA Core already~~ Replaced by the new Plugwise component, based on this beta-version.
 
 And from the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech and improved and maintained by @bouwew
 
-As things like async were in high demand from HA, desired by the original author and a great challenge for us we rewrote it largely. The Plugwise Smile Beta repository (accompanying the Plugwise-Smile python module) is intended for development purposes, just as `anna-ha` was for `haanna` (respectively the original before upstreaming and original python module).
+As things like async were in high demand from HA Core, desired by the original author and a great challenge for us we rewrote it largely. The Plugwise Smile Beta repository (accompanying the Plugwise-Smile python module) is intended for development purposes, just as `anna-ha` was for `haanna` (respectively the original before upstreaming and original python module).
 
 And yes anna-ha with haanna (to some degree) support Anna v1.8 - but they don't support Adam nor the Smile P1
