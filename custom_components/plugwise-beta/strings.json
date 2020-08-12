@@ -10,13 +10,14 @@
     }
   },
   "config": {
+    "flow_title": "Smile: {name}",
     "step": {
       "user": {
-        "title": "Connect to the Plugwise Smile",
-        "description": "Enter Smile IP-address and Smile ID",
+        "title": "Connect to the Smile",
+        "description": "Please enter:",
         "data": {
-          "host": "IP-address(:port)",
-          "password": "ID"
+          "host": "Smile IP-address(:port)",
+          "password": "Smile ID"
         }
       }
     },
@@ -26,8 +27,7 @@
       "unknown": "Unexpected error"
     },
     "abort": {
-      "already_configured": "Device is already configured"
-    },
-    "flow_title": "Smile: {name}"
+      "already_configured": "This Smile is already configured"
+    }
   }
 }
