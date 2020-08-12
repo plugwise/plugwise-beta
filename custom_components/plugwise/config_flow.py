@@ -41,8 +41,9 @@ def _base_schema(discovery_info):
 
 async def validate_input(hass: core.HomeAssistant, data):
     """
-    Validate the user input allows us to connect.
-    Data has the keys from _base_schema() with values provided by the user.
+    Validate whether the user input allows us to connect.
+
+    'data' has the keys from _base_schema() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
 
