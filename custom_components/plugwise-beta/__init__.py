@@ -94,23 +94,23 @@ async def async_setup_entry(hass, entry):
 
     await coordinator.async_refresh()
 
-    api.get_all_devices()
-
     if not coordinator.last_update_success:
         raise ConfigEntryNotReady
 
     _LOGGER.debug("Async update interval %s", update_interval)
 
-    # Migrate to new unique_id's when needed
-    if api.smile_version[0] == "2.5.9":
-        if entry.unique_id is None:
+    api.get_all_devices()
+
+    # Migrate to a valid unique_id when needed
+    if entry.unique_id is None:
+        if api.smile_version[0] == "2.5.9":
             hass.config_entries.async_update_entry(
-                entry, unique_id=entry.data[api.gateway_id]
+                entry, unique_id=api.gateway_id
             )
-    elif entry.unique_id == api.gateway_id:
-        hass.config_entries.async_update_entry(
-            entry, unique_id=entry.data[api.hostname]
-        )
+        else:
+            hass.config_entries.async_update_entry(
+                entry, unique_id=api.smile_hostname
+            )
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "api": api,
