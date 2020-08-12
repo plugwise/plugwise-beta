@@ -11,11 +11,11 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. 
 
-## Status
+## NEW (Aug 12, 2020) ##
 
- - [x] The current (feb/mar/apr 2020) `plugwise` HA-core component only supports Anna devices (both v1 and v3)
- - [x] This module supports all devices as indicated on the [Plugwise-Smile](https://github.com/plugwise/Plugwise-Smile) repository page
- - [ ] [PR](https://github.com/home-assistant/core/pull/33691) for HA-core is out, but we will continue ironing out the kinks together with **you** using this `custom_module`
+This custom_component can be installed to replace the HA Core Plugwise component. It can NO LONGER be installed next to the HA Core Plugwise component.
+Due to this it behaves exactly as the HA Core Plugwise component: discovery works. But this beta-version has extra features and improvements!
+PLEASE NOTE: at the moment you will need to remove the existing Core Plugwise integration(s) before you install this beta custom_component. This is at the moment also needed when you want to return to using the Core Plugwise integration. When this is no longer needed, you can read about it here.
 
 ### Required python module (status)
 
@@ -25,11 +25,11 @@ A fully asynchronous approach to supporting Plugwise devices. This repository is
 
 ## What do we support (in short)?
 
-  - Adam (firmware 2.3 + 3.0)
+  - Adam (firmware 2.3 + 3.0) and the accompanying Lisa's, Tom's, Floor's, Koen's and Plugs.
   - Smile & Anna (firmware 1.8, 3.1 and 4.0)
   - Smile P1 (firmware 2.5 and 3.3)
 
-## What can I expect in HA from this component
+## What can I expect in HA Core from this component
 
   - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating-demand status, per thermostat. Also, setting of temperature, preset and switching the active schedule on and off. Cooling is only supported in combination with an Anna (fw 3.1 and 4.0).
   - `sensor` and `binary_sensor`: A number of sensoric values depending on your hardware: outdoor temperature, Anna's illuminance, Tom's valve postion, Plug's power-values, P1 power- and gas-values, Plugwise Notifications (new)
@@ -46,18 +46,24 @@ The `water_heater`-device present in previous releases has been replaced by a st
 
 ## When installed
 
-For each Plugwise Smile (i.e. gateway) you have add an integration. For instance if you have an Adam and a Smile P1, you have to add them individually.
-
+For each Plugwise Smile (i.e. gateway) you will have to add it as an integration. For instance if you have an Adam and a Smile P1, you have to add them individually. If you have an Anna and an Adam, do not add the Anna, only add the Adam.
  - [ ] In Home Assitant click on `Configuration`
  - [ ] Click on `Integrations`
+ - [ ] You should one or more discovered Smiles
+ - [ ] Click the `Configure` button and enter the Smile ID
+ - [ ] Click Add to see the magic happens
+ 
+ If there is no discovered Smile present: in case of a Smile P1 v:
  - [ ] Hit the `+` button in the corner
  - [ ] Search or browse for 'Plugwise Smile beta' and click it
  - [ ] Enter your Smiles IP-address and the 8 character ID of the smile
  - [ ] Click Add and hopefully the magic happens
 
-HA wil continue to ask you if you want to put your Smile and detected other devices in area's and presto, things should be available to configure in lovelace.
+HA Core wil continue to ask you if you want to put your Smile and detected other devices in area's and presto, things should be available to configure in lovelace.
 
-Also, using the OPTIONS-button, the default Smile-data refresh-interval can be changed.
+## Options ##
+
+Using the OPTIONS-button, the default Smile-data refresh-interval can be modified.
 
 # I don't like the name of the sensor or the icon
 
