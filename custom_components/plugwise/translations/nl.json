@@ -14,7 +14,7 @@
     "step": {
       "user": {
         "title": "Verbinden met de Plugwise Smile",
-        "description": "Aub invoeren",
+        "description": "Aub invoeren:",
         "data": {
           "host": "Smile IP-adres(:poort)",
           "password": "Smile ID"
