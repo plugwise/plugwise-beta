@@ -17,6 +17,7 @@
         "description": "Please enter:",
         "data": {
           "host": "Smile IP-address(:port)",
+          "username" : "Smile Username",
           "password": "Smile ID"
         }
       }
