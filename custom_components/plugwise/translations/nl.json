@@ -17,7 +17,7 @@
         "description": "Aub invoeren:",
         "data": {
           "host": "Smile IP-adres(:poort)",
-          "username": : "Smile gebruikersnaam",
+          "username": "Smile gebruikersnaam",
           "password": "Smile ID"
         }
       }
