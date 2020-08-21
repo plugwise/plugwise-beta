@@ -9,7 +9,8 @@ from homeassistant.const import (
     CONF_HOST,
     CONF_NAME,
     CONF_PASSWORD,
-    CONF_SCAN_INTERVAL
+    CONF_SCAN_INTERVAL,
+    CONF_USERNAME
 )
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
@@ -34,7 +35,9 @@ def _base_schema(discovery_info):
     if not discovery_info:
         base_schema[vol.Required(CONF_HOST)] = str
 
-    base_schema[vol.Required(CONF_PASSWORD)] = str
+    base_schema.update(
+        {vol.Required(CONF_USERNAME): str, vol.Required(CONF_PASSWORD): str}
+    )
 
     return vol.Schema(base_schema)
 
@@ -55,6 +58,7 @@ async def validate_input(hass: core.HomeAssistant, data):
 
     api = Smile(
         host=host,
+        username=data[CONF_USERNAME],
         password=data[CONF_PASSWORD],
         port=port,
         timeout=30,
