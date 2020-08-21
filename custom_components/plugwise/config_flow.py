@@ -36,7 +36,12 @@ def _base_schema(discovery_info):
         base_schema[vol.Required(CONF_HOST)] = str
 
     base_schema.update(
-        {vol.Required(CONF_USERNAME): str, vol.Required(CONF_PASSWORD): str}
+        {
+            vol.Required(
+                CONF_USERNAME, description={"suggested_value": "smile"}
+            ): str, 
+            vol.Required(CONF_PASSWORD): str
+        }
     )
 
     return vol.Schema(base_schema)
