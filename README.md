@@ -11,6 +11,10 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. 
 
+## Coming soon ##
+
+Support for the Plugwise Stretch with firmware v2.3 and v3.1 is under development.
+
 ## NEW (Aug 12, 2020) ##
 
 This custom_component can be installed to replace the HA Core Plugwise component. It can NO LONGER be installed next to the HA Core Plugwise component.
