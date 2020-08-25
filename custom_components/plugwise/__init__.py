@@ -29,7 +29,7 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
 
-SENSOR_PLATFORMS = ["sensor"]
+SENSOR_PLATFORMS = ["sensor", "switch"]
 ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
 
 
