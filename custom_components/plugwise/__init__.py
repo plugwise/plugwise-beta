@@ -82,7 +82,7 @@ async def async_setup_entry(hass, entry):
         """Update data via API endpoint."""
         _LOGGER.debug("Updating Smile %s", api.smile_type)
         try:
-            async with async_timeout.timeout(10):
+            async with async_timeout.timeout(60):
                 await api.full_update_device()
                 _LOGGER.debug("Succesfully updated Smile %s", api.smile_type)
                 return True
