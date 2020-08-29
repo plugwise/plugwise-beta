@@ -109,11 +109,7 @@ async def async_setup_entry(hass, entry):
 
     # Migrate to a valid unique_id when needed
     if entry.unique_id is None:
-        if api.smile_version[0] == "2.5.9":
-            hass.config_entries.async_update_entry(
-                entry, unique_id=api.gateway_id
-            )
-        else:
+        if api.smile_version[0] != "1.8.0":
             hass.config_entries.async_update_entry(
                 entry, unique_id=api.smile_hostname
             )
