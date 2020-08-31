@@ -25,6 +25,7 @@ ZEROCONF_MAP = {
     "smile": "P1",
     "smile_thermo": "Anna",
     "smile_open_therm": "Adam",
+    "stretch": "Stretch",
 }
 
 
