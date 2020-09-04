@@ -87,7 +87,10 @@ async def async_setup_entry(hass, entry):
                 _LOGGER.debug("Succesfully updated Smile %s", api.smile_type)
                 return True
         except Smile.XMLDataMissingError:
-            _LOGGER.debug("Updating Smile failed %s", api.smile_type)
+            _LOGGER.debug("Updating Smile failed, expected XML data for %s", api.smile_type)
+            raise UpdateFailed("Smile update failed")
+        except Smile.PlugwiseError:
+            _LOGGER.debug("Updating Smile failed, generic failure for %s", api.smile_type)
             raise UpdateFailed("Smile update failed")
 
     coordinator = DataUpdateCoordinator(
