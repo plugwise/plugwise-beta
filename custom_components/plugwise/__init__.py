@@ -63,15 +63,15 @@ async def async_setup_entry(hass, entry):
             raise ConfigEntryNotReady
 
     except Smile.InvalidAuthentication:
-        _LOGGER.error("Invalid Smile ID")
+        _LOGGER.error("Invalid username or Smile ID")
         return False
 
     except Smile.PlugwiseError:
-        _LOGGER.error("Error while communicating to device")
+        _LOGGER.error("Error while communicating to Smile %s", api.smile_name)
         raise ConfigEntryNotReady
 
     except asyncio.TimeoutError:
-        _LOGGER.error("Timeout while connecting to Smile")
+        _LOGGER.error("Timeout while connecting to Smile %s", api.smile_name)
         raise ConfigEntryNotReady
 
     update_interval = timedelta(seconds=60)
@@ -80,18 +80,18 @@ async def async_setup_entry(hass, entry):
 
     async def async_update_data():
         """Update data via API endpoint."""
-        _LOGGER.debug("Updating Smile %s", api.smile_type)
+        _LOGGER.debug("Updating Smile %s", api.smile_name)
         try:
             async with async_timeout.timeout(60):
                 await api.full_update_device()
-                _LOGGER.debug("Succesfully updated Smile %s", api.smile_type)
+                _LOGGER.debug("Succesfully updated Smile %s", api.smile_name)
                 return True
         except Smile.XMLDataMissingError:
-            _LOGGER.debug("Updating Smile failed, expected XML data for %s", api.smile_type)
+            _LOGGER.debug("Updating Smile failed, expected XML data for %s", api.smile_name)
             raise UpdateFailed("Smile update failed")
         except Smile.PlugwiseError:
-            _LOGGER.debug("Updating Smile failed, generic failure for %s", api.smile_type)
-            raise UpdateFailed("Smile update failed")
+            _LOGGER.debug("Updating Smile failed, generic failure for %s", api.smile_name)
+            raise UpdateFailed("Smile %s update failed", api.smile_name)
 
     coordinator = DataUpdateCoordinator(
         hass,
