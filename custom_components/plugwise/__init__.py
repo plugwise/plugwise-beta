@@ -96,7 +96,7 @@ async def async_setup_entry(hass, entry):
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="Smile",
+        name=f"Smile {api.smile_name}",
         update_method=async_update_data,
         update_interval=update_interval,
     )
