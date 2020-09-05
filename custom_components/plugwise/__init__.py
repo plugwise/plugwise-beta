@@ -91,7 +91,7 @@ async def async_setup_entry(hass, entry):
             raise UpdateFailed("Smile update failed")
         except Smile.PlugwiseError:
             _LOGGER.debug("Updating Smile failed, generic failure for %s", api.smile_name)
-            raise UpdateFailed("Smile %s update failed", api.smile_name)
+            raise UpdateFailed("Smile update failed")
 
     coordinator = DataUpdateCoordinator(
         hass,
