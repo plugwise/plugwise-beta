@@ -316,10 +316,8 @@ class PwThermostatSensor(SmileSensor, Entity):
 
         if data.get(self._sensor) is not None:
             measurement = data[self._sensor]
-            if self._sensor == "battery" or self._sensor == "valve_position":
-                measurement = measurement * 100
             if self._unit_of_measurement == UNIT_PERCENTAGE:
-                measurement = int(measurement)
+                measurement = int(measurement*100)
             self._state = measurement
             self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 
