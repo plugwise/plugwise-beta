@@ -12,7 +12,8 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. 
 
 ## NEW Sept, 2020 ##
-Support for the Plugwise Stretch v2 and v3 has been added
+Support for switching groups created on the Plugwise App has been added, these are available on the Adam with Plugs and on the Stretch.
+Support for the Plugwise Stretch v2 and v3 has been added.
 
 ## Aug 12, 2020 ##
 This custom_component can be installed to replace the HA Core Plugwise component. It can NO LONGER be installed next to the HA Core Plugwise component.
