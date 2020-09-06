@@ -19,11 +19,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
 
     entities = []
+    switch_classes = ["plug", "switch_group"]
     all_devices = api.get_all_devices()
     for dev_id, device_properties in all_devices.items():
         members = None
         model = None
-        if "plug" in device_properties["types"] or "switch_group" in device_properties["types":
+        if any(dummy in device_properties["types"] for dummy in switch_classes):
             if device_properties["types"] == "plug":
                 model = "Metered Switch"
             if device_properties["types"] =="switch_group":
