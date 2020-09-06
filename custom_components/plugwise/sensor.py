@@ -395,7 +395,7 @@ class PwPowerSensor(SmileSensor, Entity):
         if data.get(self._sensor) is not None:
             measurement = data[self._sensor]
             if self._unit_of_measurement == ENERGY_KILO_WATT_HOUR:
-                measurement = int(measurement / 1000)
+                measurement = round((measurement / 1000), 1)
             self._state = measurement
             self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 
