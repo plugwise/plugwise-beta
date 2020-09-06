@@ -129,6 +129,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             try:
                 api = await validate_input(self.hass, user_input)
+            except CannotConnect:
+                errors[CONF_BASE] = "cannot_connect"
+            except InvalidAuth:
+                errors[CONF_BASE] = "invalid_auth"
+            except Exception:  # pylint: disable=broad-except
+                _LOGGER.exception("Unexpected exception")
+                errors[CONF_BASE] = "unknown"
+            if not errors:
                 unique_id = api.gateway_id
                 smile_hostname = api.smile_hostname
                 if smile_hostname is not None:
@@ -137,13 +145,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._abort_if_unique_id_configured()
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
-            except CannotConnect:
-                errors[CONF_BASE] = "cannot_connect"
-            except InvalidAuth:
-                errors[CONF_BASE] = "invalid_auth"
-            except Exception:  # pylint: disable=broad-except
-                _LOGGER.exception("Unexpected exception")
-                errors[CONF_BASE] = "unknown"
 
         return self.async_show_form(
             step_id="user", data_schema=_base_schema(self.discovery_info), errors=errors or {}
