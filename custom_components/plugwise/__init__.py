@@ -23,7 +23,7 @@ from homeassistant.const import (
     CONF_USERNAME
 )
 
-from .const import COORDINATOR, DEFAULT_SCAN_INTERVAL, DOMAIN, UNDO_UPDATE_LISTENER
+from .const import COORDINATOR, DEFAULT_SCAN_INTERVAL, DOMAIN
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
