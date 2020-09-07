@@ -102,7 +102,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._hvac_mode = None
 
         self._single_thermostat = self._api.single_master_thermostat()
-        self._unique_id = f"cl-{dev_id}-{self._name}"
+        self._unique_id = f"{dev_id}-climate"
 
     @property
     def hvac_action(self):
