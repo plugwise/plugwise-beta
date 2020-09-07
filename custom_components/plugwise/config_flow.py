@@ -52,7 +52,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     """
     Validate whether the user input allows us to connect.
 
-    'data' has the keys from _base_schema() with values provided by the user.
+    Data has the keys from _base_schema() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
 
@@ -81,7 +81,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     return api
 
 
-class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise Smile."""
 
     VERSION = 1
@@ -129,6 +129,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             try:
                 api = await validate_input(self.hass, user_input)
+
             except CannotConnect:
                 errors[CONF_BASE] = "cannot_connect"
             except InvalidAuth:
@@ -136,6 +137,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors[CONF_BASE] = "unknown"
+
             if not errors:
                 unique_id = api.gateway_id
                 smile_hostname = api.smile_hostname
@@ -147,7 +149,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
         return self.async_show_form(
-            step_id="user", data_schema=_base_schema(self.discovery_info), errors=errors or {}
+            step_id="user",
+            data_schema=_base_schema(self.discovery_info),
+            errors=errors or {},
         )
 
     @staticmethod
@@ -159,6 +163,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
+
     def __init__(self, config_entry):
         """Initialize options flow."""
         self.config_entry = config_entry
@@ -169,16 +174,11 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             return self.async_create_entry(title="", data=user_input)
 
         api = self.hass.data[DOMAIN][self.config_entry.entry_id]["api"]
-        interval = DEFAULT_SCAN_INTERVAL["thermostat"]
-        if api.smile_type == "power":
-            interval = DEFAULT_SCAN_INTERVAL["power"]
-
+        interval = DEFAULT_SCAN_INTERVAL[api.smile_type]
         data = {
             vol.Optional(
-                CONF_SCAN_INTERVAL, 
-                default=self.config_entry.options.get(
-                    CONF_SCAN_INTERVAL, interval
-                )
+                CONF_SCAN_INTERVAL,
+                default=self.config_entry.options.get(CONF_SCAN_INTERVAL, interval),
             ): int
         }
 
