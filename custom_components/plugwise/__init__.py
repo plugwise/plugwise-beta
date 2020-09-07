@@ -23,7 +23,7 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 
-from .const import COORDINATOR, DEFAULT_SCAN_INTERVAL, DOMAIN
+from .const import COORDINATOR, DEFAULT_SCAN_INTERVAL, DOMAIN, UNDO_UPDATE_LISTENER
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -117,6 +117,8 @@ async def async_setup_entry(hass, entry):
 
     api.get_all_devices()
 
+    undo_listener = entry.add_update_listener(_update_listener)
+
     # Migrate to a valid unique_id when needed
     if entry.unique_id is None:
         if api.smile_version[0] != "1.8.0":
@@ -125,6 +127,7 @@ async def async_setup_entry(hass, entry):
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "api": api,
         COORDINATOR: coordinator,
+        UNDO_UPDATE_LISTENER: undo_listener,
     }
 
     _LOGGER.debug("Gateway is %s", api.gateway_id)
@@ -150,8 +153,6 @@ async def async_setup_entry(hass, entry):
     platforms = ALL_PLATFORMS
     if single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
-
-    entry.add_update_listener(_update_listener)
 
     for component in platforms:
         hass.async_create_task(
@@ -179,11 +180,20 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
             ]
         )
     )
+
+    hass.data[DOMAIN][entry.entry_id][UNDO_UPDATE_LISTENER]()
+
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
 
+async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
+    """Handle options update."""
+    coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
+    coordinator.update_interval = timedelta(
+        seconds=entry.options.get(CONF_SCAN_INTERVAL)
+    )
 
 class SmileGateway(Entity):
     """Represent Smile Gateway."""
