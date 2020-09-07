@@ -23,7 +23,7 @@ from homeassistant.const import (
     CONF_USERNAME
 )
 
-from .const import DOMAIN
+from .const import COORDINATOR, DEFAULT_SCAN_INTERVAL, DOMAIN, UNDO_UPDATE_LISTENER
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -60,6 +60,7 @@ async def async_setup_entry(hass, entry):
         connected = await api.connect()
 
         if not connected:
+            _LOGGER.error("Unable to connect to Smile %s", smile_name)
             raise ConfigEntryNotReady
 
     except Smile.InvalidAuthentication:
@@ -74,9 +75,11 @@ async def async_setup_entry(hass, entry):
         _LOGGER.error("Timeout while connecting to Smile %s", api.smile_name)
         raise ConfigEntryNotReady
 
-    update_interval = timedelta(seconds=60)
-    if api.smile_type == "power":
-        update_interval = timedelta(seconds=10)
+    update_interval = timedelta(
+        seconds=entry.options.get(
+            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL[api.smile_type]
+        )
+    )
 
     async def async_update_data():
         """Update data via API endpoint."""
@@ -119,7 +122,7 @@ async def async_setup_entry(hass, entry):
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "api": api,
-        "coordinator": coordinator,
+        COORDINATOR: coordinator,
     }
 
     _LOGGER.debug("Gateway is %s", api.gateway_id)
@@ -139,7 +142,6 @@ async def async_setup_entry(hass, entry):
         sw_version=api.smile_version[0],
     )
 
-
     single_master_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
 
@@ -157,6 +159,13 @@ async def async_setup_entry(hass, entry):
     return True
 
 
+async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
+    """Handle options update."""
+    coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
+    coordinator.update_interval = timedelta(
+        seconds=entry.options.get(CONF_SCAN_INTERVAL)
+    )
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
     unload_ok = all(
@@ -171,13 +180,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
-
-async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
-    """Handle options update."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-    coordinator.update_interval = timedelta(
-        seconds=entry.options.get(CONF_SCAN_INTERVAL)
-    )
 
 
 class SmileGateway(Entity):
