@@ -25,9 +25,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         members = None
         model = None
         if any(dummy in device_properties["types"] for dummy in switch_classes):
-            if device_properties["types"] == "plug":
+            if "plug" in device_properties["types"]:
                 model = "Metered Switch"
-            if device_properties["types"] =="switch_group":
+            if "switch_group" in device_properties["types"]:
                 members = device_properties["members"]
                 model = "Switch Group"
             _LOGGER.debug("Plugwise switch Dev %s", device_properties["name"])
