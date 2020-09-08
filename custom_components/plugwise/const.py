@@ -17,10 +17,9 @@ DEFAULT_PORT = 80
 DEFAULT_MIN_TEMP = 4
 DEFAULT_MAX_TEMP = 30
 DEFAULT_SCAN_INTERVAL = {
-  "stretch_v2": 60,
-  "stretch_v3": 60,
+  "power": 10,
+  "stretch": 60,
   "thermostat": 60,
-  "power": 10
 }
 
 DEVICE_CLASS_GAS = "gas"
