@@ -9,7 +9,8 @@ from homeassistant.const import (
     CONF_HOST,
     CONF_NAME,
     CONF_PASSWORD,
-    CONF_SCAN_INTERVAL
+    CONF_SCAN_INTERVAL,
+    CONF_USERNAME,
 )
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
@@ -24,6 +25,7 @@ ZEROCONF_MAP = {
     "smile": "P1",
     "smile_thermo": "Anna",
     "smile_open_therm": "Adam",
+    "stretch": "Stretch",
 }
 
 
@@ -34,7 +36,12 @@ def _base_schema(discovery_info):
     if not discovery_info:
         base_schema[vol.Required(CONF_HOST)] = str
 
-    base_schema[vol.Required(CONF_PASSWORD)] = str
+    base_schema.update(
+        {
+            vol.Required(CONF_USERNAME, description={"suggested_value": "smile"}): str,
+            vol.Required(CONF_PASSWORD): str,
+        }
+    )
 
     return vol.Schema(base_schema)
 
@@ -43,7 +50,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     """
     Validate whether the user input allows us to connect.
 
-    'data' has the keys from _base_schema() with values provided by the user.
+    Data has the keys from _base_schema() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
 
@@ -55,6 +62,7 @@ async def validate_input(hass: core.HomeAssistant, data):
 
     api = Smile(
         host=host,
+        username=data[CONF_USERNAME],
         password=data[CONF_PASSWORD],
         port=port,
         timeout=30,
@@ -71,7 +79,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     return api
 
 
-class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise Smile."""
 
     VERSION = 1
@@ -119,14 +127,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             try:
                 api = await validate_input(self.hass, user_input)
-                unique_id = api.gateway_id
-                smile_hostname = api.smile_hostname
-                if smile_hostname is not None:
-                    unique_id = smile_hostname
-                await self.async_set_unique_id(unique_id, raise_on_progress=False)
-                self._abort_if_unique_id_configured()
 
-                return self.async_create_entry(title=api.smile_name, data=user_input)
             except CannotConnect:
                 errors[CONF_BASE] = "cannot_connect"
             except InvalidAuth:
@@ -135,8 +136,18 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.exception("Unexpected exception")
                 errors[CONF_BASE] = "unknown"
 
+            if not errors:
+                await self.async_set_unique_id(
+                    api.smile_hostname or api.gateway_id, raise_on_progress=False
+                )
+                self._abort_if_unique_id_configured()
+
+                return self.async_create_entry(title=api.smile_name, data=user_input)
+
         return self.async_show_form(
-            step_id="user", data_schema=_base_schema(self.discovery_info), errors=errors or {}
+            step_id="user",
+            data_schema=_base_schema(self.discovery_info),
+            errors=errors or {},
         )
 
     @staticmethod
@@ -148,6 +159,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
+
     def __init__(self, config_entry):
         """Initialize options flow."""
         self.config_entry = config_entry
@@ -158,16 +170,11 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             return self.async_create_entry(title="", data=user_input)
 
         api = self.hass.data[DOMAIN][self.config_entry.entry_id]["api"]
-        interval = DEFAULT_SCAN_INTERVAL["thermostat"]
-        if api.smile_type == "power":
-            interval = DEFAULT_SCAN_INTERVAL["power"]
-
+        interval = DEFAULT_SCAN_INTERVAL[api.smile_type]
         data = {
             vol.Optional(
-                CONF_SCAN_INTERVAL, 
-                default=self.config_entry.options.get(
-                    CONF_SCAN_INTERVAL, interval
-                )
+                CONF_SCAN_INTERVAL,
+                default=self.config_entry.options.get(CONF_SCAN_INTERVAL, interval),
             ): int
         }
 

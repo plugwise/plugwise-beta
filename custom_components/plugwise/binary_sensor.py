@@ -2,12 +2,12 @@
 
 import logging
 
-from homeassistant.components import persistent_notification
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .const import (
+    COORDINATOR,
     DOMAIN,
     FLAME_ICON,
     FLOW_OFF_ICON,
@@ -30,7 +30,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile binary_sensors from a config entry."""
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
-    coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
+    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
 
@@ -57,7 +57,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         device_properties["class"],
                     )
                 )
-                _LOGGER.info("Added binary_sensor.%s", f"{device_properties['name']}_{binary_sensor}")
+                _LOGGER.info(
+                    "Added binary_sensor.%s",
+                    f"{device_properties['name']}_{binary_sensor}",
+                )
 
         if device_properties["class"] == "gateway":
             _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
@@ -72,7 +75,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     device_properties["class"],
                 )
             )
-            _LOGGER.info("Added binary_sensor.%s", f"{device_properties['name']}_{'plugwise_notification'}")
+            _LOGGER.info(
+                "Added binary_sensor.%s",
+                f"{device_properties['name']}_{'plugwise_notification'}",
+            )
 
     async_add_entities(entities, True)
 
@@ -128,7 +134,7 @@ class PwNotifySensor(PwBinarySensor, BinarySensorEntity):
     def __init__(self, hass, api, coordinator, name, dev_id, binary_sensor, model):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id, binary_sensor, model)
-        
+
         self._binary_sensor = binary_sensor
         self._hass = hass
 
@@ -146,13 +152,13 @@ class PwNotifySensor(PwBinarySensor, BinarySensorEntity):
     def _async_process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update notification-binary_sensor called")
-        
+
         notify = self._api.notifications
         self._is_on = False if notify == {} else True
         self._state = STATE_OFF if notify == {} else STATE_ON
         self._icon = NO_NOTIFICATION_ICON if notify == {} else NOTIFICATION_ICON
-        self._attributes = {} 
-        if notify != {}: 
+        self._attributes = {}
+        if notify != {}:
             for id, details in notify.items():
                 for msg_type, msg in details.items():
                     self._attributes[msg_type.upper()] = msg

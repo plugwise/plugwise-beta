@@ -11,12 +11,11 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. 
 
-## Coming soon ##
+## NEW Sept, 2020 ##
+Support for switching groups created on the Plugwise App has been added, these are available on the Adam with Plugs and on the Stretch.
+Support for the Plugwise Stretch v2 and v3 has been added.
 
-Support for the Plugwise Stretch with firmware v2.3 and v3.1 is under development.
-
-## NEW (Aug 12, 2020) ##
-
+## Aug 12, 2020 ##
 This custom_component can be installed to replace the HA Core Plugwise component. It can NO LONGER be installed next to the HA Core Plugwise component.
 Due to this it behaves exactly as the HA Core Plugwise component: discovery works. But this beta-version has extra features and improvements!
 
@@ -32,15 +31,16 @@ PLEASE NOTE: at the moment you will need to remove the existing Core Plugwise in
 
   - Adam (firmware 2.3 + 3.0) and the accompanying Lisa's, Tom's, Floor's, Koen's and Plugs.
   - Smile & Anna (firmware 1.8, 3.1 and 4.0)
-  - Smile P1 (firmware 2.5 and 3.3)
+  - Smile P1 (firmware 2.1, 2.5, 3.3 and 4.0)
+  - Stretch (firmware 2.3 and 3.1)
 
 ## What can I expect in HA Core from this component
 
   - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating-demand status, per thermostat. Also, setting of temperature, preset and switching the active schedule on and off. Cooling is only supported in combination with an Anna (fw 3.1 and 4.0).
-  - `sensor` and `binary_sensor`: A number of sensoric values depending on your hardware: outdoor temperature, Anna's illuminance, Tom's valve postion, Plug's power-values, P1 power- and gas-values, Plugwise Notifications (new)
-  - `switch`: The switch-parts of Plugs are available as switches, also switching them on/off is supported.
+  - `sensor` and `binary_sensor`: A number of sensoric values depending on your hardware: outdoor temperature, Anna's illuminance, Tom's valve postion, Plug's and Circle/Stealth's power-values, P1 power- and gas-values, Plugwise Notifications.
+  - `switch`: The switch-parts of Plugs/Circles are available as switches, also switching them on/off is supported.
 
-The `water_heater`-device present in previous releases has been replaced by a state-sensor. This sensor will only show up when there are more (than one) thermostats present in your climate-system.
+The `water_heater`-device present in previous releases has been replaced by an Auxiliary Device state-sensor. This sensor will only show up when there are more (than one) thermostats present in your climate-system.
 
 ## How to install?
 

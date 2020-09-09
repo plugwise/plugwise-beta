@@ -22,6 +22,7 @@ from homeassistant.helpers.entity import Entity
 from . import SmileGateway
 from .const import (
     COOL_ICON,
+    COORDINATOR,
     DEVICE_STATE,
     DOMAIN,
     UNIT_LUMEN,
@@ -170,7 +171,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
     api = hass.data[DOMAIN][config_entry.entry_id]["api"]
-    coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
+    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     _LOGGER.debug("Plugwise sensor type %s", api.smile_type)
 
@@ -227,9 +228,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 if state not in data:
                     continue
 
-                _LOGGER.debug(
-                    "Plugwise aux sensor Dev %s", device_properties["name"]
-                )
+                _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties["name"])
                 entities.append(
                     PwAuxDeviceSensor(
                         api,
@@ -298,7 +297,7 @@ class PwThermostatSensor(SmileSensor, Entity):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id, sensor)
 
-        self._icon =  None
+        self._icon = None
         self._model = sensor_type[SENSOR_MAP_MODEL]
         self._unit_of_measurement = sensor_type[SENSOR_MAP_UOM]
         self._dev_class = sensor_type[SENSOR_MAP_DEVICE_CLASS]
@@ -316,10 +315,8 @@ class PwThermostatSensor(SmileSensor, Entity):
 
         if data.get(self._sensor) is not None:
             measurement = data[self._sensor]
-            if self._sensor == "battery" or self._sensor == "valve_position":
-                measurement = measurement * 100
             if self._unit_of_measurement == UNIT_PERCENTAGE:
-                measurement = int(measurement)
+                measurement = int(measurement * 100)
             self._state = measurement
             self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 
@@ -397,7 +394,7 @@ class PwPowerSensor(SmileSensor, Entity):
         if data.get(self._sensor) is not None:
             measurement = data[self._sensor]
             if self._unit_of_measurement == ENERGY_KILO_WATT_HOUR:
-                measurement = int(measurement / 1000)
+                measurement = round((measurement / 1000), 1)
             self._state = measurement
             self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 

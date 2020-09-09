@@ -16,15 +16,20 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SCAN_INTERVAL
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_PASSWORD,
+    CONF_SCAN_INTERVAL,
+    CONF_USERNAME,
+)
 
-from .const import DOMAIN
+from .const import COORDINATOR, DEFAULT_SCAN_INTERVAL, DOMAIN
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
 
-SENSOR_PLATFORMS = ["sensor"]
+SENSOR_PLATFORMS = ["sensor", "switch"]
 ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
 
 
@@ -45,6 +50,7 @@ async def async_setup_entry(hass, entry):
 
     api = Smile(
         host=host,
+        username=entry.data[CONF_USERNAME],
         password=entry.data[CONF_PASSWORD],
         port=port,
         websession=websession,
@@ -54,40 +60,50 @@ async def async_setup_entry(hass, entry):
         connected = await api.connect()
 
         if not connected:
+            _LOGGER.error("Unable to connect to Smile %s", smile_name)
             raise ConfigEntryNotReady
 
     except Smile.InvalidAuthentication:
-        _LOGGER.error("Invalid Smile ID")
+        _LOGGER.error("Invalid username or Smile ID")
         return False
 
     except Smile.PlugwiseError:
-        _LOGGER.error("Error while communicating to device")
+        _LOGGER.error("Error while communicating to Smile %s", api.smile_name)
         raise ConfigEntryNotReady
 
     except asyncio.TimeoutError:
-        _LOGGER.error("Timeout while connecting to Smile")
+        _LOGGER.error("Timeout while connecting to Smile %s", api.smile_name)
         raise ConfigEntryNotReady
 
-    update_interval = timedelta(seconds=60)
-    if api.smile_type == "power":
-        update_interval = timedelta(seconds=10)
+    update_interval = timedelta(
+        seconds=entry.options.get(
+            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL[api.smile_type]
+        )
+    )
 
     async def async_update_data():
         """Update data via API endpoint."""
-        _LOGGER.debug("Updating Smile %s", api.smile_type)
+        _LOGGER.debug("Updating Smile %s", api.smile_name)
         try:
-            async with async_timeout.timeout(10):
+            async with async_timeout.timeout(60):
                 await api.full_update_device()
-                _LOGGER.debug("Succesfully updated Smile %s", api.smile_type)
+                _LOGGER.debug("Succesfully updated Smile %s", api.smile_name)
                 return True
         except Smile.XMLDataMissingError:
-            _LOGGER.debug("Updating Smile failed %s", api.smile_type)
+            _LOGGER.debug(
+                "Updating Smile failed, expected XML data for %s", api.smile_name
+            )
+            raise UpdateFailed("Smile update failed")
+        except Smile.PlugwiseError:
+            _LOGGER.debug(
+                "Updating Smile failed, generic failure for %s", api.smile_name
+            )
             raise UpdateFailed("Smile update failed")
 
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="Smile",
+        name=f"Smile {api.smile_name}",
         update_method=async_update_data,
         update_interval=update_interval,
     )
@@ -103,18 +119,12 @@ async def async_setup_entry(hass, entry):
 
     # Migrate to a valid unique_id when needed
     if entry.unique_id is None:
-        if api.smile_version[0] == "2.5.9":
-            hass.config_entries.async_update_entry(
-                entry, unique_id=api.gateway_id
-            )
-        else:
-            hass.config_entries.async_update_entry(
-                entry, unique_id=api.smile_hostname
-            )
+        if api.smile_version[0] != "1.8.0":
+            hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "api": api,
-        "coordinator": coordinator,
+        COORDINATOR: coordinator,
     }
 
     _LOGGER.debug("Gateway is %s", api.gateway_id)
@@ -134,7 +144,6 @@ async def async_setup_entry(hass, entry):
         sw_version=api.smile_version[0],
     )
 
-
     single_master_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
 
@@ -152,6 +161,14 @@ async def async_setup_entry(hass, entry):
     return True
 
 
+async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
+    """Handle options update."""
+    coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
+    coordinator.update_interval = timedelta(
+        seconds=entry.options.get(CONF_SCAN_INTERVAL)
+    )
+
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
     unload_ok = all(
@@ -166,13 +183,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
-
-async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
-    """Handle options update."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-    coordinator.update_interval = timedelta(
-        seconds=entry.options.get(CONF_SCAN_INTERVAL)
-    )
 
 
 class SmileGateway(Entity):
