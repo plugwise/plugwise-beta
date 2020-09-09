@@ -58,7 +58,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
 
         self._is_on = False
 
-        self._unique_id = f"sw-{dev_id}-{self._name}"
+        self._unique_id = f"{dev_id}-plug"
 
     @property
     def icon(self):

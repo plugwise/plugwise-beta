@@ -95,7 +95,7 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
         self._is_on = False
         self._icon = None
 
-        self._unique_id = f"bs-{dev_id}-{self._entity_name}-{binary_sensor}"
+        self._unique_id = f"{dev_id}-{binary_sensor}"
 
     @property
     def is_on(self):
@@ -141,7 +141,7 @@ class PwNotifySensor(PwBinarySensor, BinarySensorEntity):
         self._is_on = False
         self._icon = None
 
-        self._unique_id = f"bs-{dev_id}-{self._entity_name}-{binary_sensor}"
+        self._unique_id = f"{dev_id}-{binary_sensor}"
 
     @property
     def device_state_attributes(self):
