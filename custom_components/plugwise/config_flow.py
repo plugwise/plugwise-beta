@@ -10,7 +10,7 @@ from homeassistant.const import (
     CONF_NAME,
     CONF_PASSWORD,
     CONF_SCAN_INTERVAL,
-    CONF_USERNAME
+    CONF_USERNAME,
 )
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
@@ -38,10 +38,8 @@ def _base_schema(discovery_info):
 
     base_schema.update(
         {
-            vol.Required(
-                CONF_USERNAME, description={"suggested_value": "smile"}
-            ): str, 
-            vol.Required(CONF_PASSWORD): str
+            vol.Required(CONF_USERNAME, description={"suggested_value": "smile"}): str,
+            vol.Required(CONF_PASSWORD): str,
         }
     )
 
@@ -140,8 +138,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if not errors:
                 await self.async_set_unique_id(
-                    api.smile_hostname or api.gateway_id,
-                     raise_on_progress=False
+                    api.smile_hostname or api.gateway_id, raise_on_progress=False
                 )
                 self._abort_if_unique_id_configured()
 

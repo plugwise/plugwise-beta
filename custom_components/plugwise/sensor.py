@@ -228,9 +228,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 if state not in data:
                     continue
 
-                _LOGGER.debug(
-                    "Plugwise aux sensor Dev %s", device_properties["name"]
-                )
+                _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties["name"])
                 entities.append(
                     PwAuxDeviceSensor(
                         api,
@@ -299,7 +297,7 @@ class PwThermostatSensor(SmileSensor, Entity):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id, sensor)
 
-        self._icon =  None
+        self._icon = None
         self._model = sensor_type[SENSOR_MAP_MODEL]
         self._unit_of_measurement = sensor_type[SENSOR_MAP_UOM]
         self._dev_class = sensor_type[SENSOR_MAP_DEVICE_CLASS]
@@ -318,7 +316,7 @@ class PwThermostatSensor(SmileSensor, Entity):
         if data.get(self._sensor) is not None:
             measurement = data[self._sensor]
             if self._unit_of_measurement == UNIT_PERCENTAGE:
-                measurement = int(measurement*100)
+                measurement = int(measurement * 100)
             self._state = measurement
             self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 

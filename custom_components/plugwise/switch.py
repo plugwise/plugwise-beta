@@ -32,7 +32,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 model = "Switch Group"
             _LOGGER.debug("Plugwise switch Dev %s", device_properties["name"])
             entities.append(
-                PwSwitch(api, coordinator, device_properties["name"], dev_id, members, model,)
+                PwSwitch(
+                    api,
+                    coordinator,
+                    device_properties["name"],
+                    dev_id,
+                    members,
+                    model,
+                )
             )
             _LOGGER.info("Added switch.%s", "{}".format(device_properties["name"]))
 
@@ -67,7 +74,9 @@ class PwSwitch(SmileGateway, SwitchEntity):
         """Turn the device on."""
         _LOGGER.debug("Turn switch.%s on.", self._name)
         try:
-            state_on = await self._api.set_relay_state(self._dev_id, self._members, "on")
+            state_on = await self._api.set_relay_state(
+                self._dev_id, self._members, "on"
+            )
             if state_on:
                 self._is_on = True
                 self.async_write_ha_state()
@@ -78,7 +87,9 @@ class PwSwitch(SmileGateway, SwitchEntity):
         """Turn the device off."""
         _LOGGER.debug("Turn switch.%s off.", self._name)
         try:
-            state_off = await self._api.set_relay_state(self._dev_id, self._members, "off")
+            state_off = await self._api.set_relay_state(
+                self._dev_id, self._members, "off"
+            )
             if state_off:
                 self._is_on = False
                 self.async_write_ha_state()

@@ -20,7 +20,7 @@ from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,
     CONF_SCAN_INTERVAL,
-    CONF_USERNAME
+    CONF_USERNAME,
 )
 
 from .const import COORDINATOR, DEFAULT_SCAN_INTERVAL, DOMAIN
@@ -90,10 +90,14 @@ async def async_setup_entry(hass, entry):
                 _LOGGER.debug("Succesfully updated Smile %s", api.smile_name)
                 return True
         except Smile.XMLDataMissingError:
-            _LOGGER.debug("Updating Smile failed, expected XML data for %s", api.smile_name)
+            _LOGGER.debug(
+                "Updating Smile failed, expected XML data for %s", api.smile_name
+            )
             raise UpdateFailed("Smile update failed")
         except Smile.PlugwiseError:
-            _LOGGER.debug("Updating Smile failed, generic failure for %s", api.smile_name)
+            _LOGGER.debug(
+                "Updating Smile failed, generic failure for %s", api.smile_name
+            )
             raise UpdateFailed("Smile update failed")
 
     coordinator = DataUpdateCoordinator(
@@ -116,9 +120,7 @@ async def async_setup_entry(hass, entry):
     # Migrate to a valid unique_id when needed
     if entry.unique_id is None:
         if api.smile_version[0] != "1.8.0":
-            hass.config_entries.async_update_entry(
-                entry, unique_id=api.smile_hostname
-            )
+            hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "api": api,
@@ -165,6 +167,7 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     coordinator.update_interval = timedelta(
         seconds=entry.options.get(CONF_SCAN_INTERVAL)
     )
+
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""

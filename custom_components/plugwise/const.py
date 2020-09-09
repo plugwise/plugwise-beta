@@ -17,9 +17,9 @@ DEFAULT_PORT = 80
 DEFAULT_MIN_TEMP = 4
 DEFAULT_MAX_TEMP = 30
 DEFAULT_SCAN_INTERVAL = {
-  "power": 10,
-  "stretch": 60,
-  "thermostat": 60,
+    "power": 10,
+    "stretch": 60,
+    "thermostat": 60,
 }
 
 DEVICE_CLASS_GAS = "gas"
@@ -36,7 +36,7 @@ CONF_GAS = "gas"
 
 CURRENT_HVAC_DHW = "hot_water"
 DEVICE_STATE = "device_state"
-UNIT_LUMEN  = "lm"
+UNIT_LUMEN = "lm"
 
 SCHEDULE_ON = "true"
 SCHEDULE_OFF = "false"
