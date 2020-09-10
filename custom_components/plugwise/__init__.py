@@ -210,7 +210,7 @@ def setup_hass_services(hass):
                 "Failed to delete the Plugwise Notification for %s", api.smile_name
             )
 
-    hass.services.register(DOMAIN, SERVICE_DELETE, delete_notification)
+    hass.services.register(DOMAIN, SERVICE_DELETE, delete_notification, schema=None)
 
 
 class SmileGateway(CoordinatorEntity):
