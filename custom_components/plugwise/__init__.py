@@ -14,8 +14,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.update_coordinator import CoordinatorEntity, DataUpdateCoordinator, UpdateFailed
 from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,
@@ -195,13 +194,14 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
         seconds=entry.options.get(CONF_SCAN_INTERVAL)
     )
 
-class SmileGateway(Entity):
+class SmileGateway(CoordinatorEntity):
     """Represent Smile Gateway."""
 
     def __init__(self, api, coordinator, name, dev_id):
         """Initialise the gateway."""
+
+        super().__init__(coordinator)
         self._api = api
-        self._coordinator = coordinator
         self._name = name
         self._dev_id = dev_id
 
@@ -214,16 +214,6 @@ class SmileGateway(Entity):
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
-
-    @property
-    def should_poll(self):
-        """Return False, updates are controlled via coordinator."""
-        return False
-
-    @property
-    def available(self):
-        """Return True if entity is available."""
-        return self._coordinator.last_update_success
 
     @property
     def name(self):
@@ -251,14 +241,10 @@ class SmileGateway(Entity):
         """Subscribe to updates."""
         self._async_process_data()
         self.async_on_remove(
-            self._coordinator.async_add_listener(self._async_process_data)
+            self.coordinator.async_add_listener(self._async_process_data)
         )
 
     @callback
     def _async_process_data(self):
         """Interpret and process API data."""
         raise NotImplementedError
-
-    async def async_update(self):
-        """Update the entity."""
-        await self._coordinator.async_request_refresh()
