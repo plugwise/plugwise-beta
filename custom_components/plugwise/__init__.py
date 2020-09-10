@@ -158,6 +158,8 @@ async def async_setup_entry(hass, entry):
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
 
+    await hass.async_add_executor_job(setup_hass_services, hass)
+
     return True
 
 
@@ -193,6 +195,21 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     coordinator.update_interval = timedelta(
         seconds=entry.options.get(CONF_SCAN_INTERVAL)
     )
+
+def setup_hass_services(hass):
+    """Home Assistant services."""
+
+    def delete_notification():
+        """Delete the Plugwise Notification."""
+        try:
+            api.delete_notification()
+        except Smile.PlugwiseError:
+            _LOGGER.debug(
+                "Failed to delete the Plugwise Notification for %s", api.smile_name
+            )
+
+    hass.services.register(DOMAIN, SERVICE_SETTINGS, delete_notification)
+
 
 class SmileGateway(CoordinatorEntity):
     """Represent Smile Gateway."""
