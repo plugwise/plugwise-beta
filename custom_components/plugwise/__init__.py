@@ -28,6 +28,8 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
 
+SERVICE_DELETE = "delete_notification"
+
 SENSOR_PLATFORMS = ["sensor", "switch"]
 ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
 
@@ -208,7 +210,7 @@ def setup_hass_services(hass):
                 "Failed to delete the Plugwise Notification for %s", api.smile_name
             )
 
-    hass.services.register(DOMAIN, SERVICE_SETTINGS, delete_notification)
+    hass.services.register(DOMAIN, SERVICE_DELETE, delete_notification)
 
 
 class SmileGateway(CoordinatorEntity):
