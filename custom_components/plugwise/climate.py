@@ -1,6 +1,7 @@
 """Plugwise Climate component for Home Assistant."""
 
 import logging
+import voluptuous as vol
 
 from Plugwise_Smile.Smile import Smile
 
@@ -32,6 +33,8 @@ HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
 HVAC_MODES_HEAT_COOL = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
+
+SERVICE_DELETE = "delete_notification"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -74,6 +77,22 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     async_add_entities(entities, True)
 
+    async def async_delete_notification(self):
+        """Service: delete the Plugwise Notification."""
+        for dummy, device_properties in all_devices.items():
+            if device_properties["class"] == "thermostat":
+                _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
+                try:
+                    deleted = await api.delete_notification()
+                    _LOGGER.debug("PW Notification deleted: %s", deleted)
+                except Smile.PlugwiseError:
+                    _LOGGER.debug(
+                        "Failed to delete the Plugwise Notification for %s", api.smile_name
+                    )
+
+    hass.services.async_register(
+        DOMAIN, SERVICE_DELETE, async_delete_notification, schema=vol.Schema({})
+    )
 
 class PwThermostat(SmileGateway, ClimateEntity):
     """Representation of an Plugwise thermostat."""
@@ -109,7 +128,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._hvac_mode = None
 
         self._single_thermostat = self._api.single_master_thermostat()
-        self._unique_id = f"cl-{dev_id}-{self._name}"
+        self._unique_id = f"{dev_id}-climate"
 
     @property
     def hvac_action(self):
