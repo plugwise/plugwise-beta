@@ -155,10 +155,25 @@ async def async_setup_entry(hass, entry):
     if single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
+    async def async_delete_notification(self):
+        """Service: delete the Plugwise Notification."""
+        _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
+        try:
+            deleted = await api.delete_notification()
+            _LOGGER.debug("PW Notification deleted: %s", deleted)
+        except Smile.PlugwiseError:
+            _LOGGER.debug(
+                "Failed to delete the Plugwise Notification for %s", api.smile_name
+            )
+
     for component in platforms:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
+        if component == "climate":
+            hass.services.async_register(
+                DOMAIN, SERVICE_DELETE, async_delete_notification, schema=vol.Schema({})
+            )
 
     return True
 
