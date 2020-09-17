@@ -11,11 +11,12 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. 
 
-## NEW Sept, 2020 ##
+## NEW Sept 2020 ##
+Add a service: plugwise.delete_notification, this allows you to dismiss a Plugwise Notification from HA Core.
 Support for switching groups created on the Plugwise App has been added, these are available on the Adam with Plugs and on the Stretch.
 Support for the Plugwise Stretch v2 and v3 has been added.
 
-## Aug 12, 2020 ##
+## Aug 2020 ##
 This custom_component can be installed to replace the HA Core Plugwise component. It can NO LONGER be installed next to the HA Core Plugwise component.
 Due to this it behaves exactly as the HA Core Plugwise component: discovery works. But this beta-version has extra features and improvements!
 
@@ -31,6 +32,7 @@ PLEASE NOTE: at the moment you will need to remove the existing Core Plugwise in
 
   - Adam (firmware 2.3 + 3.0) and the accompanying Lisa's, Tom's, Floor's, Koen's and Plugs.
   - Smile & Anna (firmware 1.8, 3.1 and 4.0)
+    - Plugwise Notifications from the Adam and the Anna
   - Smile P1 (firmware 2.1, 2.5, 3.3 and 4.0)
   - Stretch (firmware 2.3 and 3.1)
 
@@ -53,15 +55,16 @@ The `water_heater`-device present in previous releases has been replaced by an A
 For each Plugwise Smile (i.e. gateway) you will have to add it as an integration. For instance if you have an Adam and a Smile P1, you have to add them individually. If you have an Anna and an Adam, do not add the Anna, only add the Adam.
  - [ ] In Home Assitant click on `Configuration`
  - [ ] Click on `Integrations`
- - [ ] You should one or more discovered Smiles
+ - [ ] You should see one or more discovered Smiles
  - [ ] Click the `Configure` button and enter the Smile ID
  - [ ] Click Add to see the magic happens
  
- If there is no discovered Smile present: in case of a Smile P1 v:
- - [ ] Hit the `+` button in the corner
- - [ ] Search or browse for 'Plugwise Smile beta' and click it
- - [ ] Enter your Smiles IP-address and the 8 character ID of the smile
+ If there is no discovered Smile present:
+ - [ ] Hit the `+` button in the right lower corner
+ - [ ] Search or browse for 'Plugwise beta' and click it
+ - [ ] Enter your Smile IP-address and the 8 character ID of the smile
  - [ ] Click Add and hopefully the magic happens
+ - [ ] Repeat this process to add more Smiles
 
 HA Core wil continue to ask you if you want to put your Smile and detected other devices in area's and presto, things should be available to configure in lovelace.
 
