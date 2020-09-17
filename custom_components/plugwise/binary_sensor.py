@@ -15,6 +15,7 @@ from .const import (
     IDLE_ICON,
     NO_NOTIFICATION_ICON,
     NOTIFICATION_ICON,
+    COORDINATOR,
 )
 
 from .sensor import SmileSensor

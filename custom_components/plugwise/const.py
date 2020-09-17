@@ -3,6 +3,9 @@
 DOMAIN = "plugwise"
 COORDINATOR = "coordinator"
 
+UNDO_UPDATE_LISTENER = "undo_update_listener"
+COORDINATOR = "coordinator"
+
 # Sensor mapping
 SENSOR_MAP_MODEL = 0
 SENSOR_MAP_UOM = 1

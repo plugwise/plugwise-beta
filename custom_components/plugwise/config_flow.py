@@ -171,6 +171,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
 
         api = self.hass.data[DOMAIN][self.config_entry.entry_id]["api"]
         interval = DEFAULT_SCAN_INTERVAL[api.smile_type]
+
         data = {
             vol.Optional(
                 CONF_SCAN_INTERVAL,
