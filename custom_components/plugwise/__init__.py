@@ -18,15 +18,24 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity, DataUpda
 from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,
+    CONF_PORT,
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
 )
 
-from .const import COORDINATOR, DEFAULT_SCAN_INTERVAL, DOMAIN, UNDO_UPDATE_LISTENER
+from .const import (
+    COORDINATOR,
+    DEFAULT_PORT,
+    DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
+    UNDO_UPDATE_LISTENER,
+)
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
+
+SERVICE_DELETE = "delete_notification"
 
 SENSOR_PLATFORMS = ["sensor", "switch"]
 ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
@@ -41,17 +50,12 @@ async def async_setup_entry(hass, entry):
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
 
-    host = entry.data[CONF_HOST]
-    port = 80
-    if ":" in host:
-        host = entry.data[CONF_HOST].split(":")[0]
-        port = int(entry.data[CONF_HOST].split(":")[1])
-
     api = Smile(
-        host=host,
+        host=entry.data[CONF_HOST],
         username=entry.data[CONF_USERNAME],
         password=entry.data[CONF_PASSWORD],
-        port=port,
+        port=entry.data.get(CONF_PORT, DEFAULT_PORT),
+        timeout=30,
         websession=websession,
     )
 
@@ -153,10 +157,25 @@ async def async_setup_entry(hass, entry):
     if single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
+    async def async_delete_notification(self):
+        """Service: delete the Plugwise Notification."""
+        _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
+        try:
+            deleted = await api.delete_notification()
+            _LOGGER.debug("PW Notification deleted: %s", deleted)
+        except Smile.PlugwiseError:
+            _LOGGER.debug(
+                "Failed to delete the Plugwise Notification for %s", api.smile_name
+            )
+
     for component in platforms:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
+        if component == "climate":
+            hass.services.async_register(
+                DOMAIN, SERVICE_DELETE, async_delete_notification, schema=vol.Schema({})
+            )
 
     return True
 
@@ -193,6 +212,7 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     coordinator.update_interval = timedelta(
         seconds=entry.options.get(CONF_SCAN_INTERVAL)
     )
+
 
 class SmileGateway(CoordinatorEntity):
     """Represent Smile Gateway."""

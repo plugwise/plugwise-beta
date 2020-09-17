@@ -16,9 +16,10 @@
         "title": "Connect to the Smile",
         "description": "Please enter:",
         "data": {
-          "host": "Smile IP-address(:port)",
+          "host": "Smile IP-address",
           "username" : "Smile Username",
-          "password": "Smile ID"
+          "password": "Smile ID",
+          "port": "Smile port number"
         }
       }
     },
