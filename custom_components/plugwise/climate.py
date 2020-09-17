@@ -16,7 +16,6 @@ from homeassistant.components.climate.const import (
     SUPPORT_TARGET_TEMPERATURE,
 )
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
-from homeassistant.helpers import entity_platform
 from homeassistant.core import callback
 
 from . import SmileGateway
