@@ -20,7 +20,7 @@ A fully asynchronous approach to supporting Plugwise devices. This repository is
 This custom_component can be installed to replace the HA Core Plugwise component. It can NO LONGER be installed next to the HA Core Plugwise component.
 Due to this it behaves exactly as the HA Core Plugwise component: discovery works. But this beta-version has extra features and improvements!
 
-PLEASE NOTE: at the moment you will need to remove the existing Core Plugwise integration(s) before you install this beta custom_component. This is at the moment also needed when you want to return to using the Core Plugwise integration. When this is no longer needed, you can read about it here.
+PLEASE NOTE: ~~at the moment you will need to remove the existing Core Plugwise integration(s) before you install this beta custom_component. This is at the moment also needed when you want to return to using the Core Plugwise integration. When this is no longer needed, you can read about it here.~~ Since Core v0.115.0 this is no longer needed.
 
 ### Required python module (status)
 
