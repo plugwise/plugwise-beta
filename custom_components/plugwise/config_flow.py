@@ -9,6 +9,7 @@ from homeassistant.const import (
     CONF_HOST,
     CONF_NAME,
     CONF_PASSWORD,
+    CONF_PORT,
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
 )
@@ -17,7 +18,7 @@ from homeassistant.helpers.typing import DiscoveryInfoType
 from homeassistant.core import callback
 from Plugwise_Smile.Smile import Smile
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN  # pylint:disable=unused-import
+from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
