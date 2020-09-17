@@ -18,8 +18,8 @@
         "data": {
           "host": "Smile IP-adres(:poort)",
           "username": "Smile gebruikersnaam",
-          "password": "Smile ID"
-          "port": "Smile poort nummer"
+          "password": "Smile ID",
+          "port": "Smile poort nummer",
         }
       }
     },
