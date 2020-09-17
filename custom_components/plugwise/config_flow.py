@@ -9,6 +9,7 @@ from homeassistant.const import (
     CONF_HOST,
     CONF_NAME,
     CONF_PASSWORD,
+    CONF_PORT,
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
 )
@@ -17,7 +18,7 @@ from homeassistant.helpers.typing import DiscoveryInfoType
 from homeassistant.core import callback
 from Plugwise_Smile.Smile import Smile
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN  # pylint:disable=unused-import
+from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -103,6 +104,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
         self.context["title_placeholders"] = {
             CONF_HOST: self.discovery_info[CONF_HOST],
+            CONF_PORT: self.discovery_info[CONF_PORT],
             CONF_NAME: _name,
         }
         return await self.async_step_user()
@@ -115,6 +117,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if self.discovery_info:
                 user_input[CONF_HOST] = self.discovery_info[CONF_HOST]
+                user_input[CONF_PORT] = self.discovery_info[CONF_PORT]
 
             for entry in self._async_current_entries():
                 if entry.data.get(CONF_HOST) == user_input[CONF_HOST]:
