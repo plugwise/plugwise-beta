@@ -19,7 +19,7 @@
           "host": "Smile IP-address(:port)",
           "username" : "Smile Username",
           "password": "Smile ID",
-          "port": "Smile port number",
+          "port": "Smile port number"
         }
       }
     },

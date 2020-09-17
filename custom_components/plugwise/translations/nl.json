@@ -19,7 +19,7 @@
           "host": "Smile IP-adres(:poort)",
           "username": "Smile gebruikersnaam",
           "password": "Smile ID",
-          "port": "Smile poort nummer",
+          "port": "Smile poort nummer"
         }
       }
     },
