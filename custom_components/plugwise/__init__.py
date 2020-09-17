@@ -18,11 +18,18 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity, DataUpda
 from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,
+    CONF_PORT,
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
 )
 
-from .const import COORDINATOR, DEFAULT_SCAN_INTERVAL, DOMAIN, UNDO_UPDATE_LISTENER
+from .const import (
+    COORDINATOR,
+    DEFAULT_PORT,
+    DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
+    UNDO_UPDATE_LISTENER,
+)
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -43,17 +50,12 @@ async def async_setup_entry(hass, entry):
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
 
-    host = entry.data[CONF_HOST]
-    port = 80
-    if ":" in host:
-        host = entry.data[CONF_HOST].split(":")[0]
-        port = int(entry.data[CONF_HOST].split(":")[1])
-
     api = Smile(
-        host=host,
+        host=entry.data[CONF_HOST],
         username=entry.data[CONF_USERNAME],
         password=entry.data[CONF_PASSWORD],
-        port=port,
+        port=entry.data.get(CONF_PORT, DEFAULT_PORT),
+        timeout=30,
         websession=websession,
     )
 

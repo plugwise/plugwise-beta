@@ -35,6 +35,7 @@ def _base_schema(discovery_info):
 
     if not discovery_info:
         base_schema[vol.Required(CONF_HOST)] = str
+        base_schema[vol.Optional(CONF_PORT, default=DEFAULT_PORT)] = int
 
     base_schema.update(
         {
@@ -54,17 +55,11 @@ async def validate_input(hass: core.HomeAssistant, data):
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
 
-    host = data[CONF_HOST]
-    port = 80
-    if ":" in host:
-        host = data[CONF_HOST].split(":")[0]
-        port = int(data[CONF_HOST].split(":")[1])
-
     api = Smile(
-        host=host,
+        host=data[CONF_HOST],
         username=data[CONF_USERNAME],
         password=data[CONF_PASSWORD],
-        port=port,
+        port=data[CONF_PORT],
         timeout=30,
         websession=websession,
     )
