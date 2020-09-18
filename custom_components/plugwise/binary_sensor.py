@@ -37,49 +37,53 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     all_devices = api.get_all_devices()
     for dev_id, device_properties in all_devices.items():
-        if device_properties["class"] == "heater_central":
-            _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
-            data = api.get_device_data(dev_id)
-            for binary_sensor, b_s_type in BINARY_SENSOR_MAP.items():
-                _LOGGER.debug("Binary_sensor: %s", binary_sensor)
-                if binary_sensor not in data:
-                    continue
+        if device_properties["class"] != "heater_central":
+            continue
 
-                _LOGGER.debug(
-                    "Plugwise binary_sensor Dev %s", device_properties["name"]
-                )
-                entities.append(
-                    PwBinarySensor(
-                        api,
-                        coordinator,
-                        device_properties["name"],
-                        dev_id,
-                        binary_sensor,
-                        device_properties["class"],
-                    )
-                )
-                _LOGGER.info(
-                    "Added binary_sensor.%s",
-                    f"{device_properties['name']}_{binary_sensor}",
-                )
+        _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
+        data = api.get_device_data(dev_id)
+        for binary_sensor, b_s_type in BINARY_SENSOR_MAP.items():
+            _LOGGER.debug("Binary_sensor: %s", binary_sensor)
+            if binary_sensor not in data:
+                continue
 
-        if device_properties["class"] == "gateway":
-            _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
+            _LOGGER.debug(
+                "Plugwise binary_sensor Dev %s", device_properties["name"]
+            )
             entities.append(
-                PwNotifySensor(
-                    hass,
+                PwBinarySensor(
                     api,
                     coordinator,
                     device_properties["name"],
                     dev_id,
-                    "plugwise_notification",
+                    binary_sensor,
                     device_properties["class"],
                 )
             )
             _LOGGER.info(
                 "Added binary_sensor.%s",
-                f"{device_properties['name']}_{'plugwise_notification'}",
+                f"{device_properties['name']}_{binary_sensor}",
             )
+
+        if device_properties["class"] != "gateway":
+            continue
+
+        _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
+        entities.append(
+            PwNotifySensor(
+                hass,
+                api,
+                coordinator,
+                device_properties["name"],
+                dev_id,
+                "plugwise_notification",
+                device_properties["class"],
+            )
+        )
+        _LOGGER.info(
+            "Added binary_sensor.%s",
+            f"{device_properties['name']}_{'plugwise_notification'}",
+        )
 
     async_add_entities(entities, True)
 

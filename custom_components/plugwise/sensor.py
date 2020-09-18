@@ -10,10 +10,10 @@ from homeassistant.const import (
     DEVICE_CLASS_TEMPERATURE,
     ENERGY_KILO_WATT_HOUR,
     ENERGY_WATT_HOUR,
+    PERCENTAGE,
     POWER_WATT,
     PRESSURE_BAR,
     TEMP_CELSIUS,
-    PERCENTAGE,
     VOLUME_CUBIC_METERS,
 )
 from homeassistant.core import callback
@@ -25,12 +25,12 @@ from .const import (
     COORDINATOR,
     DEVICE_STATE,
     DOMAIN,
-    UNIT_LUMEN,
     FLAME_ICON,
     IDLE_ICON,
     SENSOR_MAP_DEVICE_CLASS,
     SENSOR_MAP_MODEL,
     SENSOR_MAP_UOM,
+    UNIT_LUMEN,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -144,7 +144,6 @@ ENERGY_SENSOR_MAP = {
         DEVICE_CLASS_POWER,
     ],
 }
-
 
 MISC_SENSOR_MAP = {
     "battery": ATTR_BATTERY_LEVEL,
@@ -309,7 +308,7 @@ class PwThermostatSensor(SmileSensor, Entity):
         data = self._api.get_device_data(self._dev_id)
 
         if not data:
-            _LOGGER.error("Received no data for device %s", self._name)
+            _LOGGER.error("Received no data for device %s", self._entity_name)
             self.async_write_ha_state()
             return
 
@@ -387,7 +386,7 @@ class PwPowerSensor(SmileSensor, Entity):
         data = self._api.get_device_data(self._dev_id)
 
         if not data:
-            _LOGGER.error("Received no data for device %s", self._name)
+            _LOGGER.error("Received no data for device %s", self._entity_name)
             self.async_write_ha_state()
             return
 
