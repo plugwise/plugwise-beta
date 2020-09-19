@@ -75,23 +75,10 @@ ZEROCONF_MAP = {
 }
 
 # sensor consts:
-ATTR_TEMPERATURE = [
-    "Temperature",
-    TEMP_CELSIUS,
-    DEVICE_CLASS_TEMPERATURE,
-]
-ATTR_BATTERY_LEVEL = [
-    "Charge",
-    PERCENTAGE,
-    DEVICE_CLASS_BATTERY,
-]
-ATTR_ILLUMINANCE = [
-    "Illuminance",
-    UNIT_LUMEN,
-    DEVICE_CLASS_ILLUMINANCE,
-]
+ATTR_TEMPERATURE = ["Temperature", TEMP_CELSIUS, DEVICE_CLASS_TEMPERATURE]
+ATTR_BATTERY_LEVEL = ["Charge", PERCENTAGE, DEVICE_CLASS_BATTERY]
+ATTR_ILLUMINANCE = ["Illuminance", UNIT_LUMEN, DEVICE_CLASS_ILLUMINANCE]
 ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE]
-
 TEMP_SENSOR_MAP = {
     "setpoint": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
@@ -101,10 +88,17 @@ TEMP_SENSOR_MAP = {
     "water_temperature": ATTR_TEMPERATURE,
     "return_temperature": ATTR_TEMPERATURE,
 }
-
 ENERGY_SENSOR_MAP = {
-    "electricity_consumed": ["Current Consumed Power", POWER_WATT, DEVICE_CLASS_POWER],
-    "electricity_produced": ["Current Produced Power", POWER_WATT, DEVICE_CLASS_POWER],
+    "electricity_consumed": [
+        "Current Consumed Power",
+        POWER_WATT,
+        DEVICE_CLASS_POWER],
+    ],
+    "electricity_produced": [
+        "Current Produced Power",
+        POWER_WATT,
+        DEVICE_CLASS_POWER],
+    ],
     "electricity_consumed_interval": [
         "Consumed Power Interval",
         ENERGY_WATT_HOUR,
@@ -175,16 +169,27 @@ ENERGY_SENSOR_MAP = {
         ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
     ],
-    "gas_consumed_interval": ["Current Consumed Gas", VOLUME_CUBIC_METERS, None],
-    "gas_consumed_cumulative": ["Cumulative Consumed Gas", VOLUME_CUBIC_METERS, None],
-    "net_electricity_point": ["Current net Power", POWER_WATT, DEVICE_CLASS_POWER],
+    "gas_consumed_interval": [
+        "Current Consumed Gas",
+        VOLUME_CUBIC_METERS,
+        None,
+    ],
+    "gas_consumed_cumulative": [
+        "Cumulative Consumed Gas",
+        VOLUME_CUBIC_METERS,
+        None,
+    ],
+    "net_electricity_point": [
+        "Current net Power",
+        POWER_WATT,
+        DEVICE_CLASS_POWER
+    ],
     "net_electricity_cumulative": [
         "Cumulative net Power",
         ENERGY_KILO_WATT_HOUR,
         DEVICE_CLASS_POWER,
     ],
 }
-
 MISC_SENSOR_MAP = {
     "battery": ATTR_BATTERY_LEVEL,
     "illuminance": ATTR_ILLUMINANCE,
@@ -192,15 +197,16 @@ MISC_SENSOR_MAP = {
     "valve_position": ["Valve Position", PERCENTAGE, None],
     "water_pressure": ATTR_PRESSURE,
 }
-
 INDICATE_ACTIVE_LOCAL_DEVICE = [
     "cooling_state",
     "flame_state",
 ]
-
 CUSTOM_ICONS = {
     "gas_consumed_interval": "mdi:fire",
     "gas_consumed_cumulative": "mdi:fire",
     "modulation_level": "mdi:percent",
     "valve_position": "mdi:valve",
 }
+
+# switch const:
+SWITCH_CLASSES = ["plug", "switch_group"]
