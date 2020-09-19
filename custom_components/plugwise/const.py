@@ -47,3 +47,8 @@ IDLE_ICON = "mdi:circle-off-outline"
 NOTIFICATION_ICON = "mdi:mailbox-up-outline"
 NO_NOTIFICATION_ICON = "mdi:mailbox-outline"
 SWITCH_ICON = "mdi:electric-switch"
+
+# __init__ consts:
+ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
+SERVICE_DELETE = "delete_notification"
+SENSOR_PLATFORMS = ["sensor", "switch"]

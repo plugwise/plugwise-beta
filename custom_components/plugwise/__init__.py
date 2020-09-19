@@ -28,21 +28,19 @@ from homeassistant.const import (
 )
 
 from .const import (
+    ALL_PLATFORMS,
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    SENSOR_PLATFORMS,
+    SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
-
-SERVICE_DELETE = "delete_notification"
-
-SENSOR_PLATFORMS = ["sensor", "switch"]
-ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
 
 
 async def async_setup(hass: HomeAssistant, config: dict):
