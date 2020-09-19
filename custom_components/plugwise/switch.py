@@ -103,11 +103,6 @@ class PwSwitch(SmileGateway, SwitchEntity):
 
         data = self._api.get_device_data(self._dev_id)
 
-        if not data:
-            _LOGGER.error("Received no data for device %s", self._name)
-            self.async_write_ha_state()
-            return
-
         if "relay" in data:
             self._is_on = data["relay"]
             _LOGGER.debug("Switch is ON is %s.", self._is_on)

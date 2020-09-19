@@ -307,11 +307,6 @@ class PwThermostatSensor(SmileSensor, Entity):
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if not data:
-            _LOGGER.error("Received no data for device %s", self._entity_name)
-            self.async_write_ha_state()
-            return
-
         if data.get(self._sensor) is not None:
             measurement = data[self._sensor]
             if self._unit_of_measurement == PERCENTAGE:
@@ -338,11 +333,6 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
         """Update the entity."""
         _LOGGER.debug("Update aux dev sensor called")
         data = self._api.get_device_data(self._dev_id)
-
-        if not data:
-            _LOGGER.error("Received no data for device %s", self._name)
-            self.async_write_ha_state()
-            return
 
         if data.get("heating_state") is not None:
             self._heating_state = data["heating_state"]
@@ -384,11 +374,6 @@ class PwPowerSensor(SmileSensor, Entity):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
-
-        if not data:
-            _LOGGER.error("Received no data for device %s", self._entity_name)
-            self.async_write_ha_state()
-            return
 
         if data.get(self._sensor) is not None:
             measurement = data[self._sensor]

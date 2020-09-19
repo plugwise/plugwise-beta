@@ -113,11 +113,6 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
         _LOGGER.debug("Update binary_sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if not data:
-            _LOGGER.error("Received no data for device %s", self._binary_sensor)
-            self.async_write_ha_state()
-            return
-
         if self._binary_sensor not in data:
             self.async_write_ha_state()
             return
