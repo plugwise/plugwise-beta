@@ -20,6 +20,7 @@ from homeassistant.core import callback
 
 from . import SmileGateway
 from .const import (
+    API,
     COORDINATOR,
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,

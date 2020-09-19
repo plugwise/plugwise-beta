@@ -29,6 +29,7 @@ from homeassistant.const import (
 
 from .const import (
     ALL_PLATFORMS,
+    API,
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,

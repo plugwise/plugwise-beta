@@ -7,6 +7,7 @@ from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .const import (
+    API,
     BINARY_SENSOR_MAP,
     COORDINATOR,
     DOMAIN,

@@ -21,6 +21,7 @@ from homeassistant.helpers.entity import Entity
 
 from . import SmileGateway
 from .const import (
+    API,
     ATTR_BATTERY_LEVEL,
     ATTR_ILLUMINANCE,
     ATTR_PRESSURE,
