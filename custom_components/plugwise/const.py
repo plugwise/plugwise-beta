@@ -92,12 +92,12 @@ ENERGY_SENSOR_MAP = {
     "electricity_consumed": [
         "Current Consumed Power",
         POWER_WATT,
-        DEVICE_CLASS_POWER],
+        DEVICE_CLASS_POWER,
     ],
     "electricity_produced": [
         "Current Produced Power",
         POWER_WATT,
-        DEVICE_CLASS_POWER],
+        DEVICE_CLASS_POWER,
     ],
     "electricity_consumed_interval": [
         "Consumed Power Interval",
@@ -182,7 +182,7 @@ ENERGY_SENSOR_MAP = {
     "net_electricity_point": [
         "Current net Power",
         POWER_WATT,
-        DEVICE_CLASS_POWER
+        DEVICE_CLASS_POWER,
     ],
     "net_electricity_cumulative": [
         "Cumulative net Power",
