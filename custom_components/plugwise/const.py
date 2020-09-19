@@ -52,3 +52,9 @@ SWITCH_ICON = "mdi:electric-switch"
 ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
 SERVICE_DELETE = "delete_notification"
 SENSOR_PLATFORMS = ["sensor", "switch"]
+
+# binary_sensor consts:
+BINARY_SENSOR_MAP = {
+    "dhw_state": ["Domestic Hot Water State", None],
+    "slave_boiler_state": ["Secondary Heater Device State", None],
+}
