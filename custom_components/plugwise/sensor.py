@@ -2,20 +2,7 @@
 
 import logging
 
-from homeassistant.const import (
-    DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_ILLUMINANCE,
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_PRESSURE,
-    DEVICE_CLASS_TEMPERATURE,
-    ENERGY_KILO_WATT_HOUR,
-    ENERGY_WATT_HOUR,
-    PERCENTAGE,
-    POWER_WATT,
-    PRESSURE_BAR,
-    TEMP_CELSIUS,
-    VOLUME_CUBIC_METERS,
-)
+from homeassistant.const import ENERGY_KILO_WATT_HOUR, PERCENTAGE
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
@@ -27,10 +14,6 @@ from homeassistant.helpers.entity import Entity
 from . import SmileGateway
 from .const import (
     API,
-    ATTR_BATTERY_LEVEL,
-    ATTR_ILLUMINANCE,
-    ATTR_PRESSURE,
-    ATTR_TEMPERATURE,
     COOL_ICON,
     COORDINATOR,
     CUSTOM_ICONS,
@@ -45,7 +28,6 @@ from .const import (
     SENSOR_MAP_MODEL,
     SENSOR_MAP_UOM,
     TEMP_SENSOR_MAP,
-    UNIT_LUMEN,
 )
 
 _LOGGER = logging.getLogger(__name__)

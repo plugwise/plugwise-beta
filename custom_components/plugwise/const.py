@@ -1,4 +1,19 @@
-"""Constant for Plugwise beta component."""
+"""Constants for Plugwise beta component."""
+
+from homeassistant.const import (
+    DEVICE_CLASS_BATTERY,
+    DEVICE_CLASS_ILLUMINANCE,
+    DEVICE_CLASS_POWER,
+    DEVICE_CLASS_PRESSURE,
+    DEVICE_CLASS_TEMPERATURE,
+    ENERGY_KILO_WATT_HOUR,
+    ENERGY_WATT_HOUR,
+    PERCENTAGE,
+    POWER_WATT,
+    PRESSURE_BAR,
+    TEMP_CELSIUS,
+    VOLUME_CUBIC_METERS,
+)
 
 API = "api"
 DOMAIN = "plugwise"
