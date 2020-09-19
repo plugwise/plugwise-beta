@@ -337,9 +337,9 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
         _LOGGER.debug("Update aux dev sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if data.get("heating_state") is not None:
+        if "heating_state" in data:
             self._heating_state = data["heating_state"]
-        if data.get("cooling_state") is not None:
+        if "cooling_state" in data:
             self._cooling_state = data["cooling_state"]
 
         self._state = "idle"
@@ -378,11 +378,14 @@ class PwPowerSensor(SmileSensor, Entity):
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if data.get(self._sensor) is not None:
-            measurement = data[self._sensor]
-            if self._unit_of_measurement == ENERGY_KILO_WATT_HOUR:
-                measurement = round((measurement / 1000), 1)
-            self._state = measurement
-            self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
+        if self._sensor not in data:
+            self.async_write_ha_state()
+            return
+
+        measurement = data[self._sensor]
+        if self._unit_of_measurement == ENERGY_KILO_WATT_HOUR:
+            measurement = round((measurement / 1000), 1)
+        self._state = measurement
+        self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 
         self.async_write_ha_state()
