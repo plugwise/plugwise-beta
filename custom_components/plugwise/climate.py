@@ -26,6 +26,7 @@ from .const import (
     DOMAIN,
     SCHEDULE_OFF,
     SCHEDULE_ON,
+    THERMOSTAT_CLASSES
 )
 
 HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
@@ -42,16 +43,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    thermostat_classes = [
-        "thermostat",
-        "zone_thermostat",
-        "thermostatic_radiator_valve",
-    ]
     all_devices = api.get_all_devices()
 
     for dev_id, device_properties in all_devices.items():
 
-        if device_properties["class"] not in thermostat_classes:
+        if device_properties["class"] not in THERMOSTAT_CLASSES:
             continue
 
         _LOGGER.debug("Plugwise climate Dev %s", device_properties["name"])

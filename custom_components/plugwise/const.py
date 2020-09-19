@@ -58,3 +58,10 @@ BINARY_SENSOR_MAP = {
     "dhw_state": ["Domestic Hot Water State", None],
     "slave_boiler_state": ["Secondary Heater Device State", None],
 }
+
+# climate consts:
+THERMOSTAT_CLASSES = [
+    "thermostat",
+    "zone_thermostat",
+    "thermostatic_radiator_valve",
+]
