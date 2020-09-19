@@ -7,6 +7,7 @@ from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .const import (
+    BINARY_SENSOR_MAP,
     COORDINATOR,
     DOMAIN,
     FLAME_ICON,
@@ -19,11 +20,6 @@ from .const import (
 )
 
 from .sensor import SmileSensor
-
-BINARY_SENSOR_MAP = {
-    "dhw_state": ["Domestic Hot Water State", None],
-    "slave_boiler_state": ["Secondary Heater Device State", None],
-}
 
 _LOGGER = logging.getLogger(__name__)
 
