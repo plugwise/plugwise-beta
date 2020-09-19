@@ -307,12 +307,15 @@ class PwThermostatSensor(SmileSensor, Entity):
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if data.get(self._sensor) is not None:
-            measurement = data[self._sensor]
-            if self._unit_of_measurement == PERCENTAGE:
-                measurement = int(measurement * 100)
-            self._state = measurement
-            self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
+        if self._sensor not in data:
+            self.async_write_ha_state()
+            return
+
+        measurement = data[self._sensor]
+        if self._unit_of_measurement == PERCENTAGE:
+            measurement = int(measurement * 100)
+        self._state = measurement
+        self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 
         self.async_write_ha_state()
 
