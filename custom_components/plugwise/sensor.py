@@ -16,6 +16,11 @@ from homeassistant.const import (
     TEMP_CELSIUS,
     VOLUME_CUBIC_METERS,
 )
+from homeassistant.components.climate.const import (
+    CURRENT_HVAC_COOL,
+    CURRENT_HVAC_HEAT,
+    CURRENT_HVAC_IDLE,
+)
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
@@ -222,13 +227,13 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
         if "cooling_state" in data:
             self._cooling_state = data["cooling_state"]
 
-        self._state = "idle"
+        self._state = CURRENT_HVAC_IDLE
         self._icon = IDLE_ICON
         if self._heating_state:
-            self._state = "heating"
+            self._state = CURRENT_HVAC_HEAT
             self._icon = FLAME_ICON
         if self._cooling_state:
-            self._state = "cooling"
+            self._state = CURRENT_HVAC_COOL
             self._icon = COOL_ICON
 
         self.async_write_ha_state()
