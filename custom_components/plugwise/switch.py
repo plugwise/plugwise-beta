@@ -4,6 +4,7 @@ import logging
 
 from Plugwise_Smile.Smile import Smile
 
+from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import callback
 
@@ -74,7 +75,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
         _LOGGER.debug("Turn switch.%s on.", self._name)
         try:
             state_on = await self._api.set_relay_state(
-                self._dev_id, self._members, "on"
+                self._dev_id, self._members, STATE_ON
             )
             if state_on:
                 self._is_on = True
@@ -87,7 +88,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
         _LOGGER.debug("Turn switch.%s off.", self._name)
         try:
             state_off = await self._api.set_relay_state(
-                self._dev_id, self._members, "off"
+                self._dev_id, self._members, STATE_OFF
             )
             if state_off:
                 self._is_on = False
