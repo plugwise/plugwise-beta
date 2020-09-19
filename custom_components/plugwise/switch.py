@@ -4,27 +4,27 @@ import logging
 
 from Plugwise_Smile.Smile import Smile
 
+from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import callback
 
 from . import SmileGateway
-from .const import COORDINATOR, DOMAIN, SWITCH_ICON
+from .const import API, COORDINATOR, DOMAIN, SWITCH_CLASSES, SWITCH_ICON
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile switches from a config entry."""
-    api = hass.data[DOMAIN][config_entry.entry_id]["api"]
+    api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    switch_classes = ["plug", "switch_group"]
     all_devices = api.get_all_devices()
     for dev_id, device_properties in all_devices.items():
         members = None
         model = None
-        if any(dummy in device_properties["types"] for dummy in switch_classes):
+        if any(dummy in device_properties["types"] for dummy in SWITCH_CLASSES):
             if "plug" in device_properties["types"]:
                 model = "Metered Switch"
             if "switch_group" in device_properties["types"]:
@@ -75,7 +75,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
         _LOGGER.debug("Turn switch.%s on.", self._name)
         try:
             state_on = await self._api.set_relay_state(
-                self._dev_id, self._members, "on"
+                self._dev_id, self._members, STATE_ON
             )
             if state_on:
                 self._is_on = True
@@ -88,7 +88,7 @@ class PwSwitch(SmileGateway, SwitchEntity):
         _LOGGER.debug("Turn switch.%s off.", self._name)
         try:
             state_off = await self._api.set_relay_state(
-                self._dev_id, self._members, "off"
+                self._dev_id, self._members, STATE_OFF
             )
             if state_off:
                 self._is_on = False
@@ -103,13 +103,11 @@ class PwSwitch(SmileGateway, SwitchEntity):
 
         data = self._api.get_device_data(self._dev_id)
 
-        if not data:
-            _LOGGER.error("Received no data for device %s", self._name)
+        if "relay" not in data:
             self.async_write_ha_state()
             return
 
-        if "relay" in data:
-            self._is_on = data["relay"]
-            _LOGGER.debug("Switch is ON is %s.", self._is_on)
+        self._is_on = data["relay"]
+        _LOGGER.debug("Switch is ON is %s.", self._is_on)
 
         self.async_write_ha_state()

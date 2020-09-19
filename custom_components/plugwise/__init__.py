@@ -14,7 +14,11 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import CoordinatorEntity, DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.update_coordinator import (
+    CoordinatorEntity,
+    DataUpdateCoordinator,
+    UpdateFailed,
+)
 from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,
@@ -24,10 +28,14 @@ from homeassistant.const import (
 )
 
 from .const import (
+    ALL_PLATFORMS,
+    API,
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    SENSOR_PLATFORMS,
+    SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
 
@@ -35,18 +43,13 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
 
-SERVICE_DELETE = "delete_notification"
-
-SENSOR_PLATFORMS = ["sensor", "switch"]
-ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
-
 
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the Plugwise platform."""
     return True
 
 
-async def async_setup_entry(hass, entry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
 
@@ -70,13 +73,13 @@ async def async_setup_entry(hass, entry):
         _LOGGER.error("Invalid username or Smile ID")
         return False
 
-    except Smile.PlugwiseError:
+    except Smile.PlugwiseError as err:
         _LOGGER.error("Error while communicating to Smile %s", api.smile_name)
-        raise ConfigEntryNotReady
+        raise ConfigEntryNotReady from err
 
-    except asyncio.TimeoutError:
+    except asyncio.TimeoutError as err:
         _LOGGER.error("Timeout while connecting to Smile %s", api.smile_name)
-        raise ConfigEntryNotReady
+        raise ConfigEntryNotReady from err
 
     update_interval = timedelta(
         seconds=entry.options.get(
@@ -92,16 +95,16 @@ async def async_setup_entry(hass, entry):
                 await api.full_update_device()
                 _LOGGER.debug("Succesfully updated Smile %s", api.smile_name)
                 return True
-        except Smile.XMLDataMissingError:
+        except Smile.XMLDataMissingError as err:
             _LOGGER.debug(
                 "Updating Smile failed, expected XML data for %s", api.smile_name
             )
-            raise UpdateFailed("Smile update failed")
-        except Smile.PlugwiseError:
+            raise UpdateFailed("Smile update failed") from err
+        except Smile.PlugwiseError as err:
             _LOGGER.debug(
                 "Updating Smile failed, generic failure for %s", api.smile_name
             )
-            raise UpdateFailed("Smile update failed")
+            raise UpdateFailed("Smile update failed") from err
 
     coordinator = DataUpdateCoordinator(
         hass,
@@ -128,7 +131,7 @@ async def async_setup_entry(hass, entry):
             hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
-        "api": api,
+        API: api,
         COORDINATOR: coordinator,
         UNDO_UPDATE_LISTENER: undo_listener,
     }

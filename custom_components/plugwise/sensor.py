@@ -10,167 +10,51 @@ from homeassistant.const import (
     DEVICE_CLASS_TEMPERATURE,
     ENERGY_KILO_WATT_HOUR,
     ENERGY_WATT_HOUR,
+    PERCENTAGE,
     POWER_WATT,
     PRESSURE_BAR,
     TEMP_CELSIUS,
-    PERCENTAGE,
     VOLUME_CUBIC_METERS,
+)
+from homeassistant.components.climate.const import (
+    CURRENT_HVAC_COOL,
+    CURRENT_HVAC_HEAT,
+    CURRENT_HVAC_IDLE,
 )
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
 from . import SmileGateway
 from .const import (
+    API,
+    ATTR_BATTERY_LEVEL,
+    ATTR_ILLUMINANCE,
+    ATTR_PRESSURE,
+    ATTR_TEMPERATURE,
     COOL_ICON,
     COORDINATOR,
+    CUSTOM_ICONS,
     DEVICE_STATE,
     DOMAIN,
-    UNIT_LUMEN,
+    ENERGY_SENSOR_MAP,
     FLAME_ICON,
     IDLE_ICON,
+    INDICATE_ACTIVE_LOCAL_DEVICE,
+    MISC_SENSOR_MAP,
     SENSOR_MAP_DEVICE_CLASS,
     SENSOR_MAP_MODEL,
     SENSOR_MAP_UOM,
+    TEMP_SENSOR_MAP,
+    UNIT_LUMEN,
 )
 
 _LOGGER = logging.getLogger(__name__)
-
-ATTR_TEMPERATURE = [
-    "Temperature",
-    TEMP_CELSIUS,
-    DEVICE_CLASS_TEMPERATURE,
-]
-ATTR_BATTERY_LEVEL = [
-    "Charge",
-    PERCENTAGE,
-    DEVICE_CLASS_BATTERY,
-]
-ATTR_ILLUMINANCE = [
-    "Illuminance",
-    UNIT_LUMEN,
-    DEVICE_CLASS_ILLUMINANCE,
-]
-ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE]
-
-TEMP_SENSOR_MAP = {
-    "setpoint": ATTR_TEMPERATURE,
-    "temperature": ATTR_TEMPERATURE,
-    "intended_boiler_temperature": ATTR_TEMPERATURE,
-    "temperature_difference": ATTR_TEMPERATURE,
-    "outdoor_temperature": ATTR_TEMPERATURE,
-    "water_temperature": ATTR_TEMPERATURE,
-    "return_temperature": ATTR_TEMPERATURE,
-}
-
-ENERGY_SENSOR_MAP = {
-    "electricity_consumed": ["Current Consumed Power", POWER_WATT, DEVICE_CLASS_POWER],
-    "electricity_produced": ["Current Produced Power", POWER_WATT, DEVICE_CLASS_POWER],
-    "electricity_consumed_interval": [
-        "Consumed Power Interval",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_peak_interval": [
-        "Consumed Power Interval",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_off_peak_interval": [
-        "Consumed Power Interval (off peak)",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_interval": [
-        "Produced Power Interval",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_peak_interval": [
-        "Produced Power Interval",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_off_peak_interval": [
-        "Produced Power Interval (off peak)",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_off_peak_point": [
-        "Current Consumed Power (off peak)",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_peak_point": [
-        "Current Consumed Power",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_off_peak_cumulative": [
-        "Cumulative Consumed Power (off peak)",
-        ENERGY_KILO_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_peak_cumulative": [
-        "Cumulative Consumed Power",
-        ENERGY_KILO_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_off_peak_point": [
-        "Current Consumed Power (off peak)",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_peak_point": [
-        "Current Consumed Power",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_off_peak_cumulative": [
-        "Cumulative Consumed Power (off peak)",
-        ENERGY_KILO_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_peak_cumulative": [
-        "Cumulative Consumed Power",
-        ENERGY_KILO_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "gas_consumed_interval": ["Current Consumed Gas", VOLUME_CUBIC_METERS, None],
-    "gas_consumed_cumulative": ["Cumulative Consumed Gas", VOLUME_CUBIC_METERS, None],
-    "net_electricity_point": ["Current net Power", POWER_WATT, DEVICE_CLASS_POWER],
-    "net_electricity_cumulative": [
-        "Cumulative net Power",
-        ENERGY_KILO_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-}
-
-
-MISC_SENSOR_MAP = {
-    "battery": ATTR_BATTERY_LEVEL,
-    "illuminance": ATTR_ILLUMINANCE,
-    "modulation_level": ["Heater Modulation Level", PERCENTAGE, None],
-    "valve_position": ["Valve Position", PERCENTAGE, None],
-    "water_pressure": ATTR_PRESSURE,
-}
-
-INDICATE_ACTIVE_LOCAL_DEVICE = [
-    "cooling_state",
-    "flame_state",
-]
-
-CUSTOM_ICONS = {
-    "gas_consumed_interval": "mdi:fire",
-    "gas_consumed_cumulative": "mdi:fire",
-    "modulation_level": "mdi:percent",
-    "valve_position": "mdi:valve",
-}
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
-    api = hass.data[DOMAIN][config_entry.entry_id]["api"]
+    api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     _LOGGER.debug("Plugwise sensor type %s", api.smile_type)
@@ -308,17 +192,15 @@ class PwThermostatSensor(SmileSensor, Entity):
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if not data:
-            _LOGGER.error("Received no data for device %s", self._name)
+        if self._sensor not in data:
             self.async_write_ha_state()
             return
 
-        if data.get(self._sensor) is not None:
-            measurement = data[self._sensor]
-            if self._unit_of_measurement == PERCENTAGE:
-                measurement = int(measurement * 100)
-            self._state = measurement
-            self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
+        measurement = data[self._sensor]
+        if self._unit_of_measurement == PERCENTAGE:
+            measurement = int(measurement * 100)
+        self._state = measurement
+        self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 
         self.async_write_ha_state()
 
@@ -340,23 +222,18 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
         _LOGGER.debug("Update aux dev sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if not data:
-            _LOGGER.error("Received no data for device %s", self._name)
-            self.async_write_ha_state()
-            return
-
-        if data.get("heating_state") is not None:
+        if "heating_state" in data:
             self._heating_state = data["heating_state"]
-        if data.get("cooling_state") is not None:
+        if "cooling_state" in data:
             self._cooling_state = data["cooling_state"]
 
-        self._state = "idle"
+        self._state = CURRENT_HVAC_IDLE
         self._icon = IDLE_ICON
         if self._heating_state:
-            self._state = "heating"
+            self._state = CURRENT_HVAC_HEAT
             self._icon = FLAME_ICON
         if self._cooling_state:
-            self._state = "cooling"
+            self._state = CURRENT_HVAC_COOL
             self._icon = COOL_ICON
 
         self.async_write_ha_state()
@@ -386,16 +263,14 @@ class PwPowerSensor(SmileSensor, Entity):
         _LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if not data:
-            _LOGGER.error("Received no data for device %s", self._name)
+        if self._sensor not in data:
             self.async_write_ha_state()
             return
 
-        if data.get(self._sensor) is not None:
-            measurement = data[self._sensor]
-            if self._unit_of_measurement == ENERGY_KILO_WATT_HOUR:
-                measurement = round((measurement / 1000), 1)
-            self._state = measurement
-            self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
+        measurement = data[self._sensor]
+        if self._unit_of_measurement == ENERGY_KILO_WATT_HOUR:
+            measurement = round((measurement / 1000), 1)
+        self._state = measurement
+        self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 
         self.async_write_ha_state()

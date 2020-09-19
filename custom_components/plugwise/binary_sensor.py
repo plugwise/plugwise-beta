@@ -7,6 +7,8 @@ from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .const import (
+    API,
+    BINARY_SENSOR_MAP,
     COORDINATOR,
     DOMAIN,
     FLAME_ICON,
@@ -20,20 +22,16 @@ from .const import (
 
 from .sensor import SmileSensor
 
-BINARY_SENSOR_MAP = {
-    "dhw_state": ["Domestic Hot Water State", None],
-    "slave_boiler_state": ["Secondary Heater Device State", None],
-}
-
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile binary_sensors from a config entry."""
-    api = hass.data[DOMAIN][config_entry.entry_id]["api"]
+    api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
+    is_thermostat = api.single_master_thermostat()
 
     all_devices = api.get_all_devices()
     for dev_id, device_properties in all_devices.items():
@@ -62,8 +60,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "Added binary_sensor.%s",
                     f"{device_properties['name']}_{binary_sensor}",
                 )
-
-        if device_properties["class"] == "gateway":
+        if device_properties["class"] == "gateway" and is_thermostat is not None:
             _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
             entities.append(
                 PwNotifySensor(
@@ -108,11 +105,6 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
         """Update the entity."""
         _LOGGER.debug("Update binary_sensor called")
         data = self._api.get_device_data(self._dev_id)
-
-        if not data:
-            _LOGGER.error("Received no data for device %s", self._binary_sensor)
-            self.async_write_ha_state()
-            return
 
         if self._binary_sensor not in data:
             self.async_write_ha_state()

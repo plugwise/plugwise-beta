@@ -18,16 +18,15 @@ from homeassistant.helpers.typing import DiscoveryInfoType
 from homeassistant.core import callback
 from Plugwise_Smile.Smile import Smile
 
-from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DOMAIN  # pylint:disable=unused-import
+from .const import (
+    API,
+    DEFAULT_PORT,
+    DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
+    ZEROCONF_MAP,
+  )  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
-
-ZEROCONF_MAP = {
-    "smile": "P1",
-    "smile_thermo": "Anna",
-    "smile_open_therm": "Adam",
-    "stretch": "Stretch",
-}
 
 
 def _base_schema(discovery_info):
@@ -67,10 +66,10 @@ async def validate_input(hass: core.HomeAssistant, data):
 
     try:
         await api.connect()
-    except Smile.InvalidAuthentication:
-        raise InvalidAuth
-    except Smile.PlugwiseError:
-        raise CannotConnect
+    except Smile.InvalidAuthentication as err:
+        raise InvalidAuth from err
+    except Smile.PlugwiseError as err:
+        raise CannotConnect from err
 
     return api
 
@@ -167,7 +166,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        api = self.hass.data[DOMAIN][self.config_entry.entry_id]["api"]
+        api = self.hass.data[DOMAIN][self.config_entry.entry_id][API]
         interval = DEFAULT_SCAN_INTERVAL[api.smile_type]
 
         data = {
