@@ -1,5 +1,6 @@
 """Constant for Plugwise beta component."""
 
+API = "api"
 DOMAIN = "plugwise"
 COORDINATOR = "coordinator"
 

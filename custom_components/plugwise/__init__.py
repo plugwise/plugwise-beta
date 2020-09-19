@@ -130,7 +130,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
-        "api": api,
+        API: api,
         COORDINATOR: coordinator,
         UNDO_UPDATE_LISTENER: undo_listener,
     }

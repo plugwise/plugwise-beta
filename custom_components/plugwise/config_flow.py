@@ -19,6 +19,7 @@ from homeassistant.core import callback
 from Plugwise_Smile.Smile import Smile
 
 from .const import (
+    API,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -165,7 +166,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        api = self.hass.data[DOMAIN][self.config_entry.entry_id]["api"]
+        api = self.hass.data[DOMAIN][self.config_entry.entry_id][API]
         interval = DEFAULT_SCAN_INTERVAL[api.smile_type]
 
         data = {
