@@ -53,15 +53,24 @@ ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
 SERVICE_DELETE = "delete_notification"
 SENSOR_PLATFORMS = ["sensor", "switch"]
 
-# binary_sensor consts:
+# binary_sensor const:
 BINARY_SENSOR_MAP = {
     "dhw_state": ["Domestic Hot Water State", None],
     "slave_boiler_state": ["Secondary Heater Device State", None],
 }
 
-# climate consts:
+# climate const:
 THERMOSTAT_CLASSES = [
     "thermostat",
     "zone_thermostat",
     "thermostatic_radiator_valve",
 ]
+
+# config_flow const:
+ZEROCONF_MAP = {
+    "smile": "P1",
+    "smile_thermo": "Anna",
+    "smile_open_therm": "Adam",
+    "stretch": "Stretch",
+}
+

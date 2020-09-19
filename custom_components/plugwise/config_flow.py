@@ -18,16 +18,14 @@ from homeassistant.helpers.typing import DiscoveryInfoType
 from homeassistant.core import callback
 from Plugwise_Smile.Smile import Smile
 
-from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DOMAIN  # pylint:disable=unused-import
+from .const import (
+    DEFAULT_PORT,
+    DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
+    ZEROCONF_MAP,
+  )  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
-
-ZEROCONF_MAP = {
-    "smile": "P1",
-    "smile_thermo": "Anna",
-    "smile_open_therm": "Adam",
-    "stretch": "Stretch",
-}
 
 
 def _base_schema(discovery_info):
