@@ -31,6 +31,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
+    is_thermostat = api.single_master_thermostat()
 
     all_devices = api.get_all_devices()
     for dev_id, device_properties in all_devices.items():
@@ -59,7 +60,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "Added binary_sensor.%s",
                     f"{device_properties['name']}_{binary_sensor}",
                 )
-        if device_properties["class"] == "gateway":
+        if device_properties["class"] == "gateway" and is_thermostat is not None:
             _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
             entities.append(
                 PwNotifySensor(
