@@ -24,30 +24,42 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     ZEROCONF_MAP,
-  )  # pylint:disable=unused-import
+)  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
+# TODO
+CONNECTION_SCHEMA = vol.Schema(
+    {
+        vol.Required("id"): vol.In(
+            {
+                "select_gw": "Configure a Smile or Stretch",
+                "select_usb": "Configure a USB stealth/circle",
+            }
+        ),
+    },
+)
 
-def _base_schema(discovery_info):
+
+def _base_gw_schema(discovery_info):
     """Generate base schema."""
-    base_schema = {}
+    base_gw_schema = {}
 
     if not discovery_info:
-        base_schema[vol.Required(CONF_HOST)] = str
-        base_schema[vol.Optional(CONF_PORT, default=DEFAULT_PORT)] = int
+        base_gw_schema[vol.Required(CONF_HOST)] = str
+        base_gw_schema[vol.Optional(CONF_PORT, default=DEFAULT_PORT)] = int
 
-    base_schema.update(
+    base_gw_schema.update(
         {
             vol.Required(CONF_USERNAME, description={"suggested_value": "smile"}): str,
             vol.Required(CONF_PASSWORD): str,
         }
     )
 
-    return vol.Schema(base_schema)
+    return vol.Schema(base_gw_schema)
 
 
-async def validate_input(hass: core.HomeAssistant, data):
+async def validate_input_gateway(hass: core.HomeAssistant, data):
     """
     Validate whether the user input allows us to connect.
 
@@ -86,6 +98,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
         """Prepare configuration for a discovered Plugwise Smile."""
+        # TODO discover username accordingly?
         self.discovery_info = discovery_info
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
@@ -106,10 +119,10 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             CONF_PORT: self.discovery_info[CONF_PORT],
             CONF_NAME: _name,
         }
-        return await self.async_step_user()
+        return await self.async_step_user_gateway()
 
     async def async_step_user(self, user_input=None):
-        """Handle the initial step."""
+        """Handle the initial step when using network/gateway setups."""
         errors = {}
 
         if user_input is not None:
@@ -123,7 +136,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     return self.async_abort(reason="already_configured")
 
             try:
-                api = await validate_input(self.hass, user_input)
+                api = await validate_input_gateway(self.hass, user_input)
 
             except CannotConnect:
                 errors[CONF_BASE] = "cannot_connect"
@@ -141,9 +154,17 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
+        # TODO
+
+        data_schema = CONNECTION_SCHEMA
+        if self.discovery_info:
+            data_schema = _base_gw_schema(self.discovery_info)
+
+        # TODO if usb_discovery:
+
         return self.async_show_form(
             step_id="user",
-            data_schema=_base_schema(self.discovery_info),
+            data_schema=data_schema,
             errors=errors or {},
         )
 
@@ -154,6 +175,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return PlugwiseOptionsFlowHandler(config_entry)
 
 
+# TODO only for gateway (stretch/smile) or also for usb (stick)?
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
 

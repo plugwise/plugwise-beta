@@ -21,8 +21,10 @@ from .const import (
     AVAILABLE_SENSOR_ID,
     CONF_USB_PATH,
     DOMAIN,
+    PW_TYPE,
     SENSORS,
     UNDO_UPDATE_LISTENER,
+    USB,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -56,7 +58,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
         hass.async_add_executor_job(stick.disconnect)
 
     stick = plugwise.stick(config_entry.data[CONF_USB_PATH])
-    hass.data[DOMAIN][config_entry.entry_id] = {"stick": stick}
+    hass.data[DOMAIN][config_entry.entry_id] = {PW_TYPE: USB, STICK: stick}
     try:
         _LOGGER.debug("Connect to USB-Stick")
         await hass.async_add_executor_job(stick.connect)

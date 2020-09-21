@@ -34,6 +34,8 @@ from .const import (
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    GATEWAY,
+    PW_TYPE,
     SENSOR_PLATFORMS,
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
@@ -128,6 +130,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         API: api,
         COORDINATOR: coordinator,
+        PW_TYPE: GATEWAY,
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 

@@ -27,6 +27,10 @@ from homeassistant.const import (
 API = "api"
 DOMAIN = "plugwise"
 COORDINATOR = "coordinator"
+GATEWAY = "gateway"
+PW_TYPE = "plugwise_type"
+STICK = "stick"
+USB = "usb"
 
 UNDO_UPDATE_LISTENER = "undo_update_listener"
 
