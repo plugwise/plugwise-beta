@@ -18,7 +18,7 @@ from homeassistant.components.climate.const import (
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
 
-from . import SmileGateway
+from .gateway import SmileGateway
 from .const import (
     API,
     COORDINATOR,
