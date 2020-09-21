@@ -24,9 +24,21 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     ZEROCONF_MAP,
-  )
+)  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
+
+# TODO
+CONNECTION_SCHEMA = vol.Schema(
+    {
+        vol.Required("id"): vol.In(
+            {
+                "select_gw": "Configure a Smile or Stretch",
+                "select_usb": "Configure a USB stealth/circle",
+            }
+        ),
+    },
+)
 
 
 def _base_gw_schema(discovery_info):
@@ -89,6 +101,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
         """Prepare configuration for a discovered Plugwise Smile."""
+        # TODO discover username accordingly?
         self.discovery_info = discovery_info
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
@@ -109,7 +122,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             CONF_PORT: self.discovery_info[CONF_PORT],
             CONF_NAME: _name,
         }
-        return await self.async_step_user()
+        return await self.async_step_user_gateway()
 
     async def async_step_user_gateway(self, user_input=None):
         """Handle the initial step for gateways."""
@@ -144,6 +157,14 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
+        # TODO
+
+        data_schema = CONNECTION_SCHEMA
+        if self.discovery_info:
+            data_schema = _base_gw_schema(self.discovery_info)
+
+        # TODO if usb_discovery:
+
         return self.async_show_form(
             step_id="user_gateway",
             data_schema=_base_gw_schema(self.discovery_info),
@@ -164,6 +185,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return PlugwiseOptionsFlowHandler(config_entry)
 
 
+# TODO only for gateway (stretch/smile) or also for usb (stick)?
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
 
