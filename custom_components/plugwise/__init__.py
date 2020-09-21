@@ -12,6 +12,9 @@ from homeassistant.core import HomeAssistant
 from .const import ALL_PLATFORMS, DOMAIN, UNDO_UPDATE_LISTENER
 from .gateway import async_setup_entry_gw
 
+from .gateway import async_setup_entry_gw
+from .usb import async_setup_entry_usb
+
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
@@ -25,8 +28,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise components from a config entry."""
     if entry.data.get(CONF_HOST):
         return await async_setup_entry_gw(hass, entry)
-    # PLACEHOLDER USB entry setup
+    if entry.data.get(CONF_USB_PATH):
+        return await async_setup_entry_usb(hass, entry)
     return False
+
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""

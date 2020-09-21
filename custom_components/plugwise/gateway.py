@@ -1,4 +1,4 @@
-"""Plugwise platform for Home Assistant Core."""
+"""Plugwise network/gateway platform."""
 
 import asyncio
 import logging
@@ -95,7 +95,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     )
 
-    async def async_update_data():
+    async def async_update_data_gw():
         """Update data via API endpoint."""
         _LOGGER.debug("Updating Smile %s", api.smile_name)
         try:
@@ -118,7 +118,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass,
         _LOGGER,
         name=f"Smile {api.smile_name}",
-        update_method=async_update_data,
+        update_method=async_update_data_gw,
         update_interval=update_interval,
     )
 

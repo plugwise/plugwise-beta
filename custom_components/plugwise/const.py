@@ -1,5 +1,7 @@
 """Constants for Plugwise beta component."""
 
+from homeassistant.components.switch import DEVICE_CLASS_OUTLET
+
 from homeassistant.const import (
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_ILLUMINANCE,
@@ -13,6 +15,13 @@ from homeassistant.const import (
     PRESSURE_BAR,
     TEMP_CELSIUS,
     VOLUME_CUBIC_METERS,
+)
+
+from homeassistant.const import (
+    DEVICE_CLASS_ENERGY,
+    DEVICE_CLASS_POWER,
+    ENERGY_KILO_WATT_HOUR,
+    POWER_WATT,
 )
 
 API = "api"
@@ -226,3 +235,58 @@ CUSTOM_ICONS = {
 
 # switch const:
 SWITCH_CLASSES = ["plug", "switch_group"]
+
+# --- usb part
+
+### DOMAIN = "plugwise_stick"
+CONF_USB_PATH = "usb_path"
+### UNDO_UPDATE_LISTENER = "undo_update_listener"
+
+# Callback types
+CB_NEW_NODE = "NEW_NODE"
+
+# Sensor IDs
+AVAILABLE_SENSOR_ID = "available"
+CURRENT_POWER_SENSOR_ID = "power_1s"
+TODAY_ENERGY_SENSOR_ID = "power_con_today"
+
+# Sensor types
+SENSORS = {
+    AVAILABLE_SENSOR_ID: {
+        "class": None,
+        "enabled_default": False,
+        "icon": "mdi:signal-off",
+        "name": "Available",
+        "state": "get_available",
+        "unit": None,
+    },
+    CURRENT_POWER_SENSOR_ID: {
+        "class": DEVICE_CLASS_POWER,
+        "enabled_default": True,
+        "icon": None,
+        "name": "Power usage",
+        "state": "get_power_usage",
+        "unit": POWER_WATT,
+    },
+    TODAY_ENERGY_SENSOR_ID: {
+        "class": DEVICE_CLASS_ENERGY,
+        "enabled_default": True,
+        "icon": None,
+        "name": "Power consumption today",
+        "state": "get_power_consumption_today",
+        "unit": ENERGY_KILO_WATT_HOUR,
+    },
+}
+
+# Switch types
+SWITCHES = {
+    "relay": {
+        "class": DEVICE_CLASS_OUTLET,
+        "enabled_default": True,
+        "icon": None,
+        "name": "Relay state",
+        "state": "get_relay_state",
+        "switch": "set_relay_state",
+        "unit": "state",
+    }
+}
