@@ -23,17 +23,32 @@
         "title": "Connect to the Smile",
         "description": "Please enter:",
         "data": {
-          "host": "Smile IP-address",
-          "username" : "Smile Username",
           "password": "Smile ID",
+          "username" : "Smile Username",
+          "host": "Smile IP-address",
           "port": "Smile port number"
         }
-      }
+      },
+      "user_usb": {
+        "title": "Setup direct connection to legacy Plugwise USB-stick",
+        "description": "Please enter:",
+        "data": {
+          "usb_path": "[%key:common::config_flow::data::usb_path%]"
+      },
+      "manual_path": {
+         "data": {
+           "usb_path": "[%key:common::config_flow::data::usb_path%]"
+         }
+       }
     },
     "error": {
-      "cannot_connect": "Failed to connect, please try again",
       "invalid_auth": "Invalid authentication, check the 8 characters of your Smile ID",
-      "unknown": "Unexpected error"
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "connection_exists": "Plugwise USB-Stick already configured",
+      "network_down": "Plugwise Zigbee network is down",
+      "network_timeout": "Network communication timeout",
+      "stick_init": "Initialization of Plugwise USB-stick failed",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {
       "already_configured": "This Smile is already configured"
