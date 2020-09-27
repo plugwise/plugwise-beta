@@ -13,20 +13,42 @@
     "flow_title": "Smile: {name}",
     "step": {
       "user": {
-        "title": "Verbinden met de Plugwise Smile",
+        "title": "Type Plugwise",
+        "description": "Produkt:",
+        "data": {
+          "flow_type": "Verbindingstype" 
+        }
+      },
+      "user_gateway": {
+        "title": "Verbinden met de Smile of Stretch",
         "description": "Aub invoeren:",
         "data": {
-          "host": "Smile IP-adres(:poort)",
-          "username": "Smile gebruikersnaam",
           "password": "Smile ID",
+          "username" : "Smile gebruikersnaam",
+          "host": "Smile IP-adres",
           "port": "Smile poort nummer"
         }
-      }
+      },
+      "user_usb": {
+        "title": "Verbinden met een legacy USB-stick",
+        "description": "Aub invoeren:",
+        "data": {
+          "usb_path": "[%key:common::config_flow::data::usb_path%]"
+      },
+      "manual_path": {
+         "data": {
+           "usb_path": "[%key:common::config_flow::data::usb_path%]"
+         }
+       }
     },
     "error": {
-      "cannot_connect": "Verbinding mislukt, probeer het opnieuw",
       "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je Smile goed in",
-      "unknown": "Overwachte fout"
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "connection_exists": "Plugwise USB-Stick al geconfigureerd",
+      "network_down": "Plugwise Zigbee netwerk is down",
+      "network_timeout": "Network communicatie timeout",
+      "stick_init": "Initaliseren van USB-stick mislukt",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {
       "already_configured": "Deze Smile is al geconfigureerd"
