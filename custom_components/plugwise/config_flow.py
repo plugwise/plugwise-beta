@@ -1,5 +1,8 @@
 """Config flow for Plugwise integration."""
 import logging
+import os
+import serial.tools.list_ports
+from typing import Dict
 
 import voluptuous as vol
 
@@ -16,25 +19,36 @@ from homeassistant.const import (
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
 from homeassistant.core import callback
+
+import plugwise
 from Plugwise_Smile.Smile import Smile
 
 from .const import (
     API,
+    CONF_USB_PATH,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     ZEROCONF_MAP,
 )  # pylint:disable=unused-import
 
+from plugwise.exceptions import NetworkDown, PortError, StickInitError, TimeoutException
+
 _LOGGER = logging.getLogger(__name__)
 
-# TODO
+CONF_MANUAL_PATH = "Enter Manually"
+
+# TODO move to const
+FLOW_TYPE = "flow_type"
+FLOW_USB = "flow_usb"
+FLOW_NET = "flow_network"
+
 CONNECTION_SCHEMA = vol.Schema(
     {
-        vol.Required("id"): vol.In(
+        vol.Required(FLOW_TYPE, description={"suggested_value": "Select Smile/Stretch for network or USB for stick"}): vol.In(
             {
-                "select_gw": "Configure a Smile or Stretch",
-                "select_usb": "Configure a USB stealth/circle",
+                FLOW_USB: "Configure a Smile or Stretch",
+                FLOW_NET: "Configure a USB stick",
             }
         ),
     },
@@ -53,6 +67,7 @@ def _base_gw_schema(discovery_info):
         {
             vol.Required(CONF_USERNAME, description={"suggested_value": "smile"}): str,
             vol.Required(CONF_PASSWORD): str,
+            vol.Required(FLOW_TYPE): FLOW_NET,
         }
     )
 
@@ -93,7 +108,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise Smile."""
 
     VERSION = 1
-    CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
+    CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_PUSH
 
     def __init__(self):
         """Initialize the Plugwise config flow."""
@@ -124,8 +139,70 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         }
         return await self.async_step_user_gateway()
 
+    async def async_step_user_usb(self, user_input=None):
+        """Step when user initializes a integration."""
+        errors = {}
+        ports = await self.hass.async_add_executor_job(serial.tools.list_ports.comports)
+        list_of_ports = [
+            f"{p}, s/n: {p.serial_number or 'n/a'}"
+            + (f" - {p.manufacturer}" if p.manufacturer else "")
+            for p in ports
+        ]
+        list_of_ports.append(CONF_MANUAL_PATH)
+
+        if user_input is not None:
+            user_selection = user_input[CONF_USB_PATH]
+            if user_selection == CONF_MANUAL_PATH:
+                return await self.async_step_manual_path()
+            if user_selection in list_of_ports:
+                port = ports[list_of_ports.index(user_selection)]
+                device_path = await self.hass.async_add_executor_job(
+                    get_serial_by_id, port.device
+                )
+            else:
+                device_path = await self.hass.async_add_executor_job(
+                    get_serial_by_id, user_selection
+                )
+            errors = await validate_connection(self.hass, device_path)
+            if not errors:
+                return self.async_create_entry(
+                    title=device_path, data={CONF_USB_PATH: device_path}
+                )
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema(
+                {vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}
+            ),
+            errors=errors,
+        )
+
+    async def async_step_manual_path(self, user_input=None):
+        """Step when manual path to device."""
+        errors = {}
+
+        if user_input is not None:
+            device_path = await self.hass.async_add_executor_job(
+                get_serial_by_id, user_input.get(CONF_USB_PATH)
+            )
+            errors = await validate_connection(self.hass, device_path)
+            if not errors:
+                return self.async_create_entry(
+                    title=device_path, data={CONF_USB_PATH: device_path}
+                )
+        return self.async_show_form(
+            step_id="manual_path",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(
+                        CONF_USB_PATH, default="/dev/ttyUSB0" or vol.UNDEFINED
+                    ): str
+                }
+            ),
+            errors=errors if errors else {},
+        )
+
     async def async_step_user_gateway(self, user_input=None):
-        """Handle the initial step for gateways."""
+        """Handle the initial step when using network/gateway setups."""
         errors = {}
 
         if user_input is not None:
@@ -157,13 +234,27 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
-        # TODO
+        return self.async_show_form(
+            step_id="user",
+            data_schema=_base_schema(self.discovery_info),
+            errors=errors or {},
+        )
+
+
+    async def async_step_user(self, user_input=None):
+        """Handle the initial step when using network/gateway setups."""
+        errors = {}
+
+        if user_input is not None:
+            if user_input[FLOW_TYPE] is FLOW_NET:
+                return await self.async_step_user_gateway()
+
+            if user_input[FLOW_TYPE] is FLOW_USB:
+                return await self.async_step_user_usb()
 
         data_schema = CONNECTION_SCHEMA
         if self.discovery_info:
             data_schema = _base_gw_schema(self.discovery_info)
-
-        # TODO if usb_discovery:
 
         return self.async_show_form(
             step_id="user_gateway",
@@ -185,7 +276,51 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return PlugwiseOptionsFlowHandler(config_entry)
 
 
-# TODO only for gateway (stretch/smile) or also for usb (stick)?
+@callback
+def plugwise_stick_entries(hass: HomeAssistant):
+    """Return existing connections for Plugwise USB-stick domain."""
+    return {
+        (entry.data[CONF_USB_PATH])
+        for entry in hass.config_entries.async_entries(DOMAIN)
+    }
+
+async def validate_connection(self, device_path=None) -> Dict[str, str]:
+    """Test if device_path is a real Plugwise USB-Stick."""
+    errors = {}
+    if device_path is None:
+        errors["base"] = "connection_failed"
+        return errors
+
+    if device_path in plugwise_stick_entries(self):
+        errors["base"] = "connection_exists"
+        return errors
+
+    stick = await self.async_add_executor_job(plugwise.stick, device_path)
+    try:
+        await self.async_add_executor_job(stick.connect)
+        await self.async_add_executor_job(stick.initialize_stick)
+        await self.async_add_executor_job(stick.disconnect)
+    except PortError:
+        errors["base"] = "cannot_connect"
+    except StickInitError:
+        errors["base"] = "stick_init"
+    except NetworkDown:
+        errors["base"] = "network_down"
+    except TimeoutException:
+        errors["base"] = "network_timeout"
+    return errors
+
+
+def get_serial_by_id(dev_path: str) -> str:
+    """Return a /dev/serial/by-id match for given device if available."""
+    by_id = "/dev/serial/by-id"
+    if not os.path.isdir(by_id):
+        return dev_path
+    for path in (entry.path for entry in os.scandir(by_id) if entry.is_symlink()):
+        if os.path.realpath(path) == dev_path:
+            return path
+    return dev_path
+
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
 
