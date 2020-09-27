@@ -34,12 +34,13 @@
         "description": "Please enter:",
         "data": {
           "usb_path": "[%key:common::config_flow::data::usb_path%]"
+         }
       },
       "manual_path": {
          "data": {
            "usb_path": "[%key:common::config_flow::data::usb_path%]"
          }
-       }
+      }
     },
     "error": {
       "invalid_auth": "Invalid authentication, check the 8 characters of your Smile ID",

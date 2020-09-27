@@ -51,8 +51,8 @@ CONNECTION_SCHEMA = vol.Schema(
         vol.Required(FLOW_TYPE, default=0): vol.In(
             {
                 0: FLOW_CHOOSE,
-                FLOW_NET: f"{SMILE} / {STRETCH}",
-                FLOW_USB: "USB stick",
+                FLOW_NET: f"Network: {SMILE} / {STRETCH}",
+                FLOW_USB: "USB: Stick",
             }
         ),
     },
@@ -156,6 +156,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         list_of_ports.append(CONF_MANUAL_PATH)
 
         if user_input is not None:
+            user_input.pop(FLOW_TYPE, None)
             user_selection = user_input[CONF_USB_PATH]
             if user_selection == CONF_MANUAL_PATH:
                 return await self.async_step_manual_path()
@@ -186,6 +187,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
+            user_input.pop(FLOW_TYPE, None)
             device_path = await self.hass.async_add_executor_job(
                 get_serial_by_id, user_input.get(CONF_USB_PATH)
             )
@@ -211,6 +213,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
+            user_input.pop(FLOW_TYPE, None)
 
             if self.discovery_info:
                 user_input[CONF_HOST] = self.discovery_info[CONF_HOST]
