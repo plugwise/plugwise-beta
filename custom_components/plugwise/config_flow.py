@@ -74,7 +74,7 @@ def _base_gw_schema(discovery_info):
     return vol.Schema(base_gw_schema)
 
 
-async def validate_input_gateway(hass: core.HomeAssistant, data):
+async def validate_input_gateway(hass, data):
     """
     Validate whether the user input allows us to connect.
 
@@ -267,7 +267,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 @callback
-def plugwise_stick_entries(hass: HomeAssistant):
+def plugwise_stick_entries(hass):
     """Return existing connections for Plugwise USB-stick domain."""
     return {
         (entry.data[CONF_USB_PATH])
