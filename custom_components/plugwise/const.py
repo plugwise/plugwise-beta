@@ -29,8 +29,17 @@ DOMAIN = "plugwise"
 COORDINATOR = "coordinator"
 GATEWAY = "gateway"
 PW_TYPE = "plugwise_type"
+SMILE = "smile"
 STICK = "stick"
+STRETCH = "stretch"
 USB = "usb"
+
+FLOW_CHOOSE = "USB / Network?"
+FLOW_NET = "flow_network"
+FLOW_TYPE = "flow_type"
+FLOW_USB = "flow_usb"
+FLOW_SMILE = "smile (Adam/Anna/P1)"
+FLOW_STRETCH = "stretch (Stretch)"
 
 UNDO_UPDATE_LISTENER = "undo_update_listener"
 

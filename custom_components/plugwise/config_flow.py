@@ -29,6 +29,14 @@ from .const import (
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    FLOW_CHOOSE,
+    FLOW_NET,
+    FLOW_SMILE,
+    FLOW_STRETCH,
+    FLOW_TYPE,
+    FLOW_USB,
+    SMILE,
+    STRETCH,
     ZEROCONF_MAP,
 )  # pylint:disable=unused-import
 
@@ -38,17 +46,13 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_MANUAL_PATH = "Enter Manually"
 
-# TODO move to const
-FLOW_TYPE = "flow_type"
-FLOW_USB = "flow_usb"
-FLOW_NET = "flow_network"
-
 CONNECTION_SCHEMA = vol.Schema(
     {
-        vol.Required(FLOW_TYPE, description={"suggested_value": "Select Smile/Stretch for network or USB for stick"}): vol.In(
+        vol.Required(FLOW_TYPE, default=0): vol.In(
             {
-                FLOW_USB: "Configure a Smile or Stretch",
-                FLOW_NET: "Configure a USB stick",
+                0: FLOW_CHOOSE,
+                FLOW_NET: f"{SMILE} / {STRETCH}",
+                FLOW_USB: "USB stick",
             }
         ),
     },
@@ -66,6 +70,10 @@ def _base_gw_schema(discovery_info):
     base_gw_schema.update(
         {
             vol.Required(CONF_USERNAME, description={"suggested_value": "smile"}): str,
+            vol.Required(CONF_USERNAME, default=SMILE): vol.In({
+                SMILE: FLOW_SMILE,
+                STRETCH: FLOW_STRETCH,
+            }),
             vol.Required(CONF_PASSWORD): str,
             vol.Required(FLOW_TYPE): FLOW_NET,
         }
@@ -169,7 +177,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     title=device_path, data={CONF_USB_PATH: device_path}
                 )
         return self.async_show_form(
-            step_id="user",
+            step_id="user_usb",
             data_schema=vol.Schema(
                 {vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}
             ),
@@ -235,8 +243,8 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
         return self.async_show_form(
-            step_id="user",
-            data_schema=_base_schema(self.discovery_info),
+            step_id="user_gateway",
+            data_schema=_base_gw_schema(self.discovery_info),
             errors=errors or {},
         )
 
@@ -246,10 +254,10 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            if user_input[FLOW_TYPE] is FLOW_NET:
+            if user_input[FLOW_TYPE] == FLOW_NET:
                 return await self.async_step_user_gateway()
 
-            if user_input[FLOW_TYPE] is FLOW_USB:
+            if user_input[FLOW_TYPE] == FLOW_USB:
                 return await self.async_step_user_usb()
 
         data_schema = CONNECTION_SCHEMA
