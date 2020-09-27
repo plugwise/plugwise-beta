@@ -277,7 +277,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 @callback
-def plugwise_stick_entries(hass: HomeAssistant):
+def plugwise_stick_entries(hass):
     """Return existing connections for Plugwise USB-stick domain."""
     return {
         (entry.data[CONF_USB_PATH])
