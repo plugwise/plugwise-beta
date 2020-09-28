@@ -209,13 +209,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     return unload_ok
 
-async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
-    """Handle options update."""
-    coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
-    coordinator.update_interval = timedelta(
-        seconds=entry.options.get(CONF_SCAN_INTERVAL)
-    )
-
 
 class SmileGateway(CoordinatorEntity):
     """Represent Smile Gateway."""
