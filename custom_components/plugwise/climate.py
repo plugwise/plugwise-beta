@@ -114,10 +114,11 @@ class PwThermostat(SmileGateway, ClimateEntity):
             if self._cooling_state:
                 return CURRENT_HVAC_COOL
             return CURRENT_HVAC_IDLE
-        else:
-            if self._setpoint > self._temperature:
-                return CURRENT_HVAC_HEAT
-            return CURRENT_HVAC_IDLE
+
+        if self._setpoint > self._temperature:
+            return CURRENT_HVAC_HEAT
+
+        return CURRENT_HVAC_IDLE
 
     @property
     def supported_features(self):
@@ -266,11 +267,12 @@ class PwThermostat(SmileGateway, ClimateEntity):
         if heater_central_data.get("compressor_state") is not None:
             self._compressor_state = heater_central_data["compressor_state"]
 
+        self._hvac_mode = HVAC_MODE_HEAT
+        if self._compressor_state is not None:
+            self._hvac_mode = HVAC_MODE_HEAT_COOL
+
         if self._schema_status:
             self._hvac_mode = HVAC_MODE_AUTO
-        else:
-            self._hvac_mode = HVAC_MODE_HEAT
-            if self._compressor_state is not None:
-                self._hvac_mode = HVAC_MODE_HEAT_COOL
+
 
         self.async_write_ha_state()
