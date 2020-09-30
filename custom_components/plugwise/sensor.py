@@ -14,6 +14,7 @@ from homeassistant.helpers.entity import Entity
 from . import SmileGateway
 from .const import (
     API,
+    AUX_DEV_SENSOR_MAP,
     COOL_ICON,
     COORDINATOR,
     CUSTOM_ICONS,
@@ -23,11 +24,10 @@ from .const import (
     FLAME_ICON,
     IDLE_ICON,
     INDICATE_ACTIVE_LOCAL_DEVICE,
-    MISC_SENSOR_MAP,
     SENSOR_MAP_DEVICE_CLASS,
     SENSOR_MAP_MODEL,
     SENSOR_MAP_UOM,
-    TEMP_SENSOR_MAP,
+    THERMOSTAT_SENSOR_MAP,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,9 +50,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
         _LOGGER.debug("Plugwise sensor Dev %s", device_properties["name"])
         for sensor, sensor_type in {
-            **TEMP_SENSOR_MAP,
+            **AUX_DEV_SENSOR_MAP,
             **ENERGY_SENSOR_MAP,
-            **MISC_SENSOR_MAP,
+            **THERMOSTAT_SENSOR_MAP,
         }.items():
             if data.get(sensor) is None:
                 continue
