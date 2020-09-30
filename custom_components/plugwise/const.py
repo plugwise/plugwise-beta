@@ -104,6 +104,7 @@ INDICATE_ACTIVE_LOCAL_DEVICE = [
 THERMOSTAT_SENSOR_MAP = {
     "battery": ATTR_BATTERY_LEVEL,
     "illuminance": ATTR_ILLUMINANCE,
+    "outdoor_temperature": ATTR_TEMPERATURE,
     "setpoint": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
     "temperature_difference": ATTR_TEMPERATURE,
@@ -113,7 +114,6 @@ THERMOSTAT_SENSOR_MAP = {
 AUX_DEV_SENSOR_MAP = {
     "intended_boiler_temperature": ATTR_TEMPERATURE,
     "modulation_level": ["Heater Modulation Level", PERCENTAGE, None],
-    "outdoor_temperature": ATTR_TEMPERATURE,
     "return_temperature": ATTR_TEMPERATURE,
     "water_pressure": ATTR_PRESSURE,
     "water_temperature": ATTR_TEMPERATURE,
