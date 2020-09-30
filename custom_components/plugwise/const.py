@@ -95,15 +95,30 @@ ATTR_TEMPERATURE = ["Temperature", TEMP_CELSIUS, DEVICE_CLASS_TEMPERATURE]
 ATTR_BATTERY_LEVEL = ["Charge", PERCENTAGE, DEVICE_CLASS_BATTERY]
 ATTR_ILLUMINANCE = ["Illuminance", UNIT_LUMEN, DEVICE_CLASS_ILLUMINANCE]
 ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE]
-TEMP_SENSOR_MAP = {
+
+INDICATE_ACTIVE_LOCAL_DEVICE = [
+    "cooling_state",
+    "flame_state",
+]
+
+THERMOSTAT_SENSOR_MAP = {
+    "battery": ATTR_BATTERY_LEVEL,
+    "illuminance": ATTR_ILLUMINANCE,
     "setpoint": ATTR_TEMPERATURE,
     "temperature": ATTR_TEMPERATURE,
-    "intended_boiler_temperature": ATTR_TEMPERATURE,
     "temperature_difference": ATTR_TEMPERATURE,
-    "outdoor_temperature": ATTR_TEMPERATURE,
-    "water_temperature": ATTR_TEMPERATURE,
-    "return_temperature": ATTR_TEMPERATURE,
+    "valve_position": ["Valve Position", PERCENTAGE, None],
 }
+
+AUX_DEV_SENSOR_MAP = {
+    "intended_boiler_temperature": ATTR_TEMPERATURE,
+    "modulation_level": ["Heater Modulation Level", PERCENTAGE, None],
+    "outdoor_temperature": ATTR_TEMPERATURE,
+    "return_temperature": ATTR_TEMPERATURE,
+    "water_pressure": ATTR_PRESSURE,
+    "water_temperature": ATTR_TEMPERATURE,
+}
+
 ENERGY_SENSOR_MAP = {
     "electricity_consumed": [
         "Current Consumed Power",
@@ -206,17 +221,7 @@ ENERGY_SENSOR_MAP = {
         DEVICE_CLASS_POWER,
     ],
 }
-MISC_SENSOR_MAP = {
-    "battery": ATTR_BATTERY_LEVEL,
-    "illuminance": ATTR_ILLUMINANCE,
-    "modulation_level": ["Heater Modulation Level", PERCENTAGE, None],
-    "valve_position": ["Valve Position", PERCENTAGE, None],
-    "water_pressure": ATTR_PRESSURE,
-}
-INDICATE_ACTIVE_LOCAL_DEVICE = [
-    "cooling_state",
-    "flame_state",
-]
+
 CUSTOM_ICONS = {
     "gas_consumed_interval": "mdi:fire",
     "gas_consumed_cumulative": "mdi:fire",
