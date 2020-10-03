@@ -9,8 +9,12 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 
-from .const import ALL_PLATFORMS, DOMAIN, UNDO_UPDATE_LISTENER
-from .gateway import async_setup_entry_gw
+from .const import (
+    ALL_PLATFORMS,
+    CONF_USB_PATH,
+    DOMAIN,
+    UNDO_UPDATE_LISTENER,
+)
 
 from .gateway import async_setup_entry_gw
 from .usb import async_setup_entry_usb
