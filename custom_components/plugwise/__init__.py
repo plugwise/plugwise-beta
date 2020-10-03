@@ -2,40 +2,16 @@
 
 import asyncio
 import logging
-from datetime import timedelta
-from typing import Dict
-
-import async_timeout
 import voluptuous as vol
-from Plugwise_Smile.Smile import Smile
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
-    DataUpdateCoordinator,
-    UpdateFailed,
-)
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SCAN_INTERVAL,
-    CONF_USERNAME,
-)
+from homeassistant.core import HomeAssistant
+from homeassistant.const import CONF_HOST
 
 from .const import (
     ALL_PLATFORMS,
-    API,
-    COORDINATOR,
-    DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,
+    CONF_USB_PATH,
     DOMAIN,
-    SENSOR_PLATFORMS,
-    SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
 
@@ -78,5 +54,3 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
-
-
