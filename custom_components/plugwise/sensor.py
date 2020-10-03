@@ -103,7 +103,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             _LOGGER.info("Added sensor.%s", device_properties["name"])
 
         # If not None and False (hence `is False`, not `not False`)
-        if single_thermostat is False and api.active_device_present:
+        if single_thermostat is False:
             if device_properties["class"] == "heater_central":
                 _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties["name"])
                 entities.append(
