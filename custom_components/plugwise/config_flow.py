@@ -282,10 +282,11 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 @callback
 def plugwise_stick_entries(hass):
     """Return existing connections for Plugwise USB-stick domain."""
-    return {
-        (entry.data[CONF_USB_PATH])
-        for entry in hass.config_entries.async_entries(DOMAIN)
-    }
+    sticks = []
+    for entry in hass.config_entries.async_entries(DOMAIN):
+        if entry.data.get(PW_TYPE) == STICK:
+            sticks.add(entry.data.get(CONF_USB_PATH))
+    return sticks
 
 
 async def validate_connection(self, device_path=None) -> Dict[str, str]:

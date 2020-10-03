@@ -34,6 +34,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile switches from a config entry."""
     if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
         return await async_setup_entry_usb(hass, config_entry, async_add_entities)
+    # Considered default and for earlier setups without usb/network config_flow
     return await async_setup_entry_gateway(hass, config_entry, async_add_entities)
 
 
