@@ -24,6 +24,7 @@ from .const import (
     PW_TYPE,
     SENSORS,
     UNDO_UPDATE_LISTENER,
+    STICK,
     USB,
 )
 
@@ -122,7 +123,7 @@ async def _async_update_listener(hass: HomeAssistant, config_entry: ConfigEntry)
     await hass.config_entries.async_reload(config_entry.entry_id)
 
 
-class PlugwiseNodeEntity(Entity):
+class NodeEntity(Entity):
     """Base class for a Plugwise entities."""
 
     def __init__(self, node, mac):

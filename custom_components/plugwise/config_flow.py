@@ -6,7 +6,7 @@ from typing import Dict
 
 import voluptuous as vol
 
-from homeassistant import config_entries, core, exceptions
+from homeassistant import config_entries, exceptions
 from homeassistant.const import (
     CONF_BASE,
     CONF_HOST,
@@ -35,7 +35,9 @@ from .const import (
     FLOW_STRETCH,
     FLOW_TYPE,
     FLOW_USB,
+    PW_TYPE,
     SMILE,
+    STICK,
     STRETCH,
     ZEROCONF_MAP,
 )  # pylint:disable=unused-import
@@ -175,7 +177,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors = await validate_connection(self.hass, device_path)
             if not errors:
                 return self.async_create_entry(
-                    title=device_path, data={CONF_USB_PATH: device_path}
+                    title=device_path, data={CONF_USB_PATH: device_path, PW_TYPE: STICK}
                 )
         return self.async_show_form(
             step_id="user_usb",
@@ -243,6 +245,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
                 self._abort_if_unique_id_configured()
 
+                user_input[PW_TYPE] = API
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
         return self.async_show_form(
@@ -250,7 +253,6 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=_base_gw_schema(self.discovery_info),
             errors=errors or {},
         )
-
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step when using network/gateway setups."""
@@ -295,6 +297,7 @@ def plugwise_stick_entries(hass):
         for entry in hass.config_entries.async_entries(DOMAIN)
     }
 
+
 async def validate_connection(self, device_path=None) -> Dict[str, str]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
@@ -331,6 +334,7 @@ def get_serial_by_id(dev_path: str) -> str:
         if os.path.realpath(path) == dev_path:
             return path
     return dev_path
+
 
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
