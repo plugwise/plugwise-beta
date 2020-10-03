@@ -45,10 +45,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     all_devices = api.get_all_devices()
     single_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Plugwise all devices (not just sensor) %s", all_devices)
+    valves_open = False
     for dev_id, device_properties in all_devices.items():
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
         _LOGGER.debug("Plugwise sensor Dev %s", device_properties["name"])
+        if api.open_valve_count > 0:
+            valves_open = True
         for sensor, sensor_type in ENERGY_SENSOR_MAP.items():
             if data.get(sensor) is None:
                 continue
@@ -113,6 +116,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         device_properties["name"],
                         dev_id,
                         DEVICE_STATE,
+                        valves_open,
                     )
                 )
                 _LOGGER.info("Added auxiliary sensor %s", device_properties["name"])
@@ -200,13 +204,14 @@ class PwThermostatSensor(SmileSensor, Entity):
 class PwAuxDeviceSensor(SmileSensor, Entity):
     """Auxiliary Device sensors."""
 
-    def __init__(self, api, coordinator, name, dev_id, sensor):
+    def __init__(self, api, coordinator, name, dev_id, sensor, valves_open):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id, sensor)
 
         self._cooling_state = False
         self._heating_state = False
         self._icon = None
+        self._valves_open = valves_open
 
     @callback
     def _async_process_data(self):
@@ -221,7 +226,7 @@ class PwAuxDeviceSensor(SmileSensor, Entity):
 
         self._state = CURRENT_HVAC_IDLE
         self._icon = IDLE_ICON
-        if self._heating_state:
+        if self._heating_state or self._valves_open:
             self._state = CURRENT_HVAC_HEAT
             self._icon = FLAME_ICON
         if self._cooling_state:
