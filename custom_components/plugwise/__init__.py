@@ -53,6 +53,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
 
+    # When migrating from Core to beta, add the username in config entry
+    entry_updates = {}
+    try:
+        username = entry.data[CONF_USERNAME]
+    except KeyError:
+        username = DEFAULT_USERNAME
+        data = {**entry.data}
+        data.update({"username": username})
+        entry_updates["data"] = data
+
+    if entry_updates:
+        hass.config_entries.async_update_entry(entry, **entry_updates)
+
     api = Smile(
         host=entry.data[CONF_HOST],
         username=entry.data[CONF_USERNAME],
