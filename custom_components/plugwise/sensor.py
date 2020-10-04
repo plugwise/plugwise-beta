@@ -14,6 +14,7 @@ from homeassistant.helpers.entity import Entity
 from . import SmileGateway
 from .const import (
     API,
+    AUX_DEV_SENSOR_MAP,
     COOL_ICON,
     COORDINATOR,
     CUSTOM_ICONS,
@@ -22,12 +23,10 @@ from .const import (
     ENERGY_SENSOR_MAP,
     FLAME_ICON,
     IDLE_ICON,
-    INDICATE_ACTIVE_LOCAL_DEVICE,
-    MISC_SENSOR_MAP,
     SENSOR_MAP_DEVICE_CLASS,
     SENSOR_MAP_MODEL,
     SENSOR_MAP_UOM,
-    TEMP_SENSOR_MAP,
+    THERMOSTAT_SENSOR_MAP,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -49,51 +48,62 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
         _LOGGER.debug("Plugwise sensor Dev %s", device_properties["name"])
-        for sensor, sensor_type in {
-            **TEMP_SENSOR_MAP,
-            **ENERGY_SENSOR_MAP,
-            **MISC_SENSOR_MAP,
-        }.items():
+        for sensor, sensor_type in ENERGY_SENSOR_MAP.items():
             if data.get(sensor) is None:
                 continue
 
-            if "power" in device_properties["types"]:
-                model = None
+            model = None
+            if "plug" in device_properties["types"]:
+                model = "Metered Switch"
 
-                if "plug" in device_properties["types"]:
-                    model = "Metered Switch"
+            entities.append(
+                PwPowerSensor(
+                    api,
+                    coordinator,
+                    device_properties["name"],
+                    dev_id,
+                    sensor,
+                    sensor_type,
+                    model,
+                )
+            )
+            _LOGGER.info("Added sensor.%s", device_properties["name"])
 
-                entities.append(
-                    PwPowerSensor(
-                        api,
-                        coordinator,
-                        device_properties["name"],
-                        dev_id,
-                        sensor,
-                        sensor_type,
-                        model,
-                    )
+        for sensor, sensor_type in THERMOSTAT_SENSOR_MAP.items():
+            if data.get(sensor) is None:
+                continue
+
+            entities.append(
+                PwThermostatSensor(
+                    api,
+                    coordinator,
+                    device_properties["name"],
+                    dev_id,
+                    sensor,
+                    sensor_type,
                 )
-            else:
-                entities.append(
-                    PwThermostatSensor(
-                        api,
-                        coordinator,
-                        device_properties["name"],
-                        dev_id,
-                        sensor,
-                        sensor_type,
-                    )
+            )
+            _LOGGER.info("Added sensor.%s", device_properties["name"])
+
+        for sensor, sensor_type in AUX_DEV_SENSOR_MAP.items():
+            if data.get(sensor) is None or not api.active_device_present:
+                continue
+
+            entities.append(
+                PwThermostatSensor(
+                    api,
+                    coordinator,
+                    device_properties["name"],
+                    dev_id,
+                    sensor,
+                    sensor_type,
                 )
+            )
             _LOGGER.info("Added sensor.%s", device_properties["name"])
 
         # If not None and False (hence `is False`, not `not False`)
         if single_thermostat is False:
-            for state in INDICATE_ACTIVE_LOCAL_DEVICE:
-                # Once we hit this, append and break (don't add twice)
-                if state not in data:
-                    continue
-
+            if device_properties["class"] == "heater_central":
                 _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties["name"])
                 entities.append(
                     PwAuxDeviceSensor(
@@ -105,7 +115,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     )
                 )
                 _LOGGER.info("Added auxiliary sensor %s", device_properties["name"])
-                break
 
     async_add_entities(entities, True)
 
