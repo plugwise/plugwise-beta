@@ -23,20 +23,20 @@
         "title": "Connect to the Smile",
         "description": "Please enter:",
         "data": {
-          "host": "[%key:common::config_flow::data::ip%]",
+          "host": "Smile IP",
           "username" : "Smile Username",
           "password": "Smile ID",
-          "port": "[%key:common::config_flow::data::port%]"
+          "port": "Port"
         }
       }
     },
     "error": {
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
+      "cannot_connect": "Cannot connect",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unknown error"
     },
     "abort": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_service%]"
+      "already_configured": "This device is already configured"
     }
   }
 }
