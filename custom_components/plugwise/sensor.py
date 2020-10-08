@@ -11,7 +11,7 @@ from homeassistant.components.climate.const import (
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
-from . import SmileGateway
+from .gateway import SmileGateway
 from .const import (
     API,
     AUX_DEV_SENSOR_MAP,

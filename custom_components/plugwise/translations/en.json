@@ -13,6 +13,13 @@
     "flow_title": "Smile: {name}",
     "step": {
       "user": {
+        "title": "Plugwise type",
+        "description": "Product:",
+        "data": {
+          "flow_type": "Connection type"
+        }
+      },
+      "user_gateway": {
         "title": "Connect to the Smile",
         "description": "Please enter:",
         "data": {

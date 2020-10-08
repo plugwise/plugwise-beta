@@ -13,6 +13,13 @@
     "flow_title": "Smile: {name}",
     "step": {
       "user": {
+        "title": "Plugwise type",
+        "description": "Product:",
+        "data": {
+          "flow_type": "Connectie type"
+        }
+      },
+      "user_gateway": {
         "title": "Verbinden met de Plugwise Smile",
         "description": "Aub invoeren:",
         "data": {
