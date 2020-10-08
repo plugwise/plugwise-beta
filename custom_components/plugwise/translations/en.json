@@ -23,20 +23,20 @@
         "title": "Connect to the Smile",
         "description": "Please enter:",
         "data": {
-          "host": "Smile IP",
+          "host": "Smile IP-address",
           "username" : "Smile Username",
           "password": "Smile ID",
-          "port": "Port"
+          "port": "Smile port number"
         }
       }
     },
     "error": {
-      "cannot_connect": "Cannot connect",
-      "invalid_auth": "Invalid authentication",
-      "unknown": "Unknown error"
+      "cannot_connect": "Failed to connect, please try again",
+      "invalid_auth": "Invalid authentication, check the 8 characters of your Smile ID",
+      "unknown": "Unexpected error"
     },
     "abort": {
-      "already_configured": "This device is already configured"
+      "already_configured": "This Smile is already configured"
     }
   }
 }
