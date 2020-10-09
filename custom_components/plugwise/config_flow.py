@@ -173,7 +173,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors = await validate_connection(self.hass, device_path)
             if not errors:
                 return self.async_create_entry(
-                    title=device_path, data={CONF_USB_PATH: device_path, PW_TYPE: STICK}
+                    title="Stick", data={CONF_USB_PATH: device_path, PW_TYPE: STICK}
                 )
         return self.async_show_form(
             step_id="user_usb",
@@ -195,7 +195,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors = await validate_connection(self.hass, device_path)
             if not errors:
                 return self.async_create_entry(
-                    title=device_path, data={CONF_USB_PATH: device_path}
+                    title="Stick", data={CONF_USB_PATH: device_path}
                 )
         return self.async_show_form(
             step_id="manual_path",
