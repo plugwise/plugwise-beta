@@ -33,23 +33,23 @@
         "title": "Setup direct connection to legacy Plugwise USB-stick",
         "description": "Please enter:",
         "data": {
-          "usb_path": "[%key:common::config_flow::data::usb_path%]"
-         }
+          "usb_path": "USB Path"
+        }
       },
       "manual_path": {
-         "data": {
-           "usb_path": "[%key:common::config_flow::data::usb_path%]"
-         }
+        "data": {
+          "usb_path": "USB Path"
+        }
       }
     },
     "error": {
       "invalid_auth": "Invalid authentication, check the 8 characters of your Smile ID",
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "cannot_connect": "Cannot connect",
       "connection_exists": "Plugwise USB-Stick already configured",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "stick_init": "Initialization of Plugwise USB-stick failed",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
+      "unknown": "Unknown error!"
     },
     "abort": {
       "already_configured": "This Smile is already configured"
