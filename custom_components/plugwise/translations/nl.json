@@ -33,23 +33,23 @@
         "title": "Verbinden met een legacy USB-stick",
         "description": "Aub invoeren:",
         "data": {
-          "usb_path": "[%key:common::config_flow::data::usb_path%]"
+          "usb_path": "USB pad"
          }
       },
       "manual_path": {
          "data": {
-           "usb_path": "[%key:common::config_flow::data::usb_path%]"
+           "usb_path": "USB pad"
          }
        }
     },
     "error": {
       "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je Smile goed in",
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "cannot_connect": "Verbinding mislukt, probeer het opnieuw",
       "connection_exists": "Plugwise USB-Stick al geconfigureerd",
       "network_down": "Plugwise Zigbee netwerk is down",
       "network_timeout": "Network communicatie timeout",
       "stick_init": "Initaliseren van USB-stick mislukt",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
+      "unknown": "Onbekende fout"
     },
     "abort": {
       "already_configured": "Deze Smile is al geconfigureerd"
