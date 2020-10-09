@@ -261,22 +261,13 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if user_input[FLOW_TYPE] == FLOW_USB:
                 return await self.async_step_user_usb()
 
-        data_schema = CONNECTION_SCHEMA
-        if self.discovery_info:
-            data_schema = _base_gw_schema(self.discovery_info)
-
         return self.async_show_form(
-            step_id="user_gateway",
-            data_schema=_base_gw_schema(self.discovery_info),
+            step_id="user",
+            data_schema=CONNECTION_SCHEMA,
             errors=errors or {},
         )
 
     # PLACEHOLDER USB async_step_user_usb and async_step_user_usb_manual_paht
-
-    async def async_step_user(self, user_input=None):
-        """Handle the initial step."""
-        # PLACEHOLDER USB vs Gateway Logic
-        return await self.async_step_user_gateway()
 
     @staticmethod
     @callback
