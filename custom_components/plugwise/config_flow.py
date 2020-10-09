@@ -6,7 +6,7 @@ from typing import Dict
 
 import voluptuous as vol
 
-from homeassistant import config_entries, exceptions
+from homeassistant import config_entries, core, exceptions
 from homeassistant.const import (
     CONF_BASE,
     CONF_HOST,
