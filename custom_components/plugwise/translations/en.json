@@ -1,6 +1,10 @@
 {
   "options": {
     "step": {
+      "none": {
+        "title": "No Options available",
+        "description": "This Integration does not provide any Options"
+      },
       "init": {
         "description": "Adjust Plugwise Options",
         "data": {

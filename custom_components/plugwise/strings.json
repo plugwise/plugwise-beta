@@ -1,6 +1,10 @@
 {
   "options": {
     "step": {
+      "none": {
+        "title": "No Options available",
+        "description": "This Integration does not provide any Options"
+      },
       "init": {
         "description": "Adjust Plugwise Options",
         "data": {
@@ -34,12 +38,12 @@
         "description": "Please enter:",
         "data": {
           "usb_path": "[%key:common::config_flow::data::usb_path%]"
-         }
+        }
       },
       "manual_path": {
-         "data": {
-           "usb_path": "[%key:common::config_flow::data::usb_path%]"
-         }
+        "data": {
+          "usb_path": "[%key:common::config_flow::data::usb_path%]"
+        }
       }
     },
     "error": {

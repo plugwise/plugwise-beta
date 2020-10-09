@@ -1,6 +1,10 @@
 {
   "options": {
     "step": {
+      "none": {
+        "title": "Geen Opties beschikbaar",
+        "description": "Deze Integratie heeft geen Opties"
+      },
       "init": {
         "description": "Plugwise Opties aanpassen",
         "data": {
@@ -34,13 +38,13 @@
         "description": "Aub invoeren:",
         "data": {
           "usb_path": "USB pad"
-         }
+        }
       },
       "manual_path": {
-         "data": {
-           "usb_path": "USB pad"
-         }
-       }
+        "data": {
+          "usb_path": "USB pad"
+        }
+      }
     },
     "error": {
       "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je Smile goed in",
