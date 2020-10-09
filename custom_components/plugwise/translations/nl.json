@@ -13,10 +13,17 @@
     "flow_title": "Smile: {name}",
     "step": {
       "user": {
+        "title": "Plugwise type",
+        "description": "Product:",
+        "data": {
+          "flow_type": "Connectie type"
+        }
+      },
+      "user_gateway": {
         "title": "Verbinden met de Plugwise Smile",
         "description": "Aub invoeren:",
         "data": {
-          "host": "Smile IP-adres(:poort)",
+          "host": "Smile IP-adres",
           "username": "Smile gebruikersnaam",
           "password": "Smile ID",
           "port": "Smile poort nummer"

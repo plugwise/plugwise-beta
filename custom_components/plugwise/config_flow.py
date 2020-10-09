@@ -24,34 +24,34 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     ZEROCONF_MAP,
-  )  # pylint:disable=unused-import
+  )
 
 _LOGGER = logging.getLogger(__name__)
 
 
-def _base_schema(discovery_info):
-    """Generate base schema."""
-    base_schema = {}
+def _base_gw_schema(discovery_info):
+    """Generate base schema for gateways."""
+    base_gw_schema = {}
 
     if not discovery_info:
-        base_schema[vol.Required(CONF_HOST)] = str
-        base_schema[vol.Optional(CONF_PORT, default=DEFAULT_PORT)] = int
+        base_gw_schema[vol.Required(CONF_HOST)] = str
+        base_gw_schema[vol.Optional(CONF_PORT, default=DEFAULT_PORT)] = int
 
-    base_schema.update(
+    base_gw_schema.update(
         {
             vol.Required(CONF_USERNAME, description={"suggested_value": "smile"}): str,
             vol.Required(CONF_PASSWORD): str,
         }
     )
 
-    return vol.Schema(base_schema)
+    return vol.Schema(base_gw_schema)
 
 
-async def validate_input(hass: core.HomeAssistant, data):
+async def validate_gw_input(hass: core.HomeAssistant, data):
     """
-    Validate whether the user input allows us to connect.
+    Validate whether the user input allows us to connect to the gateway.
 
-    Data has the keys from _base_schema() with values provided by the user.
+    Data has the keys from _base_gw_schema() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
 
@@ -72,6 +72,9 @@ async def validate_input(hass: core.HomeAssistant, data):
         raise CannotConnect from err
 
     return api
+
+
+# PLACEHOLDER USB connection validation
 
 
 class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -108,8 +111,8 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         }
         return await self.async_step_user()
 
-    async def async_step_user(self, user_input=None):
-        """Handle the initial step."""
+    async def async_step_user_gateway(self, user_input=None):
+        """Handle the initial step for gateways."""
         errors = {}
 
         if user_input is not None:
@@ -123,7 +126,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     return self.async_abort(reason="already_configured")
 
             try:
-                api = await validate_input(self.hass, user_input)
+                api = await validate_gw_input(self.hass, user_input)
 
             except CannotConnect:
                 errors[CONF_BASE] = "cannot_connect"
@@ -142,10 +145,17 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
         return self.async_show_form(
-            step_id="user",
-            data_schema=_base_schema(self.discovery_info),
+            step_id="user_gateway",
+            data_schema=_base_gw_schema(self.discovery_info),
             errors=errors or {},
         )
+
+    # PLACEHOLDER USB async_step_user_usb and async_step_user_usb_manual_paht
+
+    async def async_step_user(self, user_input=None):
+        """Handle the initial step."""
+        # PLACEHOLDER USB vs Gateway Logic
+        return await self.async_step_user_gateway()
 
     @staticmethod
     @callback

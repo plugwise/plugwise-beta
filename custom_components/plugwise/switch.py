@@ -8,7 +8,7 @@ from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import callback
 
-from . import SmileGateway
+from .gateway import SmileGateway
 from .const import API, COORDINATOR, DOMAIN, SWITCH_CLASSES, SWITCH_ICON
 
 _LOGGER = logging.getLogger(__name__)
