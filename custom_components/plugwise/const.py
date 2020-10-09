@@ -34,7 +34,6 @@ STICK = "stick"
 STRETCH = "stretch"
 USB = "usb"
 
-FLOW_CHOOSE = "USB / Network?"
 FLOW_NET = "flow_network"
 FLOW_TYPE = "flow_type"
 FLOW_USB = "flow_usb"

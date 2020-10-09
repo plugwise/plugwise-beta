@@ -29,7 +29,6 @@ from .const import (
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
-    FLOW_CHOOSE,
     FLOW_NET,
     FLOW_SMILE,
     FLOW_STRETCH,
@@ -50,9 +49,8 @@ CONF_MANUAL_PATH = "Enter Manually"
 
 CONNECTION_SCHEMA = vol.Schema(
     {
-        vol.Required(FLOW_TYPE, default=0): vol.In(
+        vol.Required(FLOW_TYPE, default=FLOW_NET): vol.In(
             {
-                0: FLOW_CHOOSE,
                 FLOW_NET: f"Network: {SMILE} / {STRETCH}",
                 FLOW_USB: "USB: Stick",
             }
@@ -71,7 +69,6 @@ def _base_gw_schema(discovery_info):
 
     base_gw_schema.update(
         {
-            vol.Required(CONF_USERNAME, description={"suggested_value": "smile"}): str,
             vol.Required(CONF_USERNAME, default=SMILE): vol.In({
                 SMILE: FLOW_SMILE,
                 STRETCH: FLOW_STRETCH,
