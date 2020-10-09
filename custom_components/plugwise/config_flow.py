@@ -74,7 +74,6 @@ def _base_gw_schema(discovery_info):
                 STRETCH: FLOW_STRETCH,
             }),
             vol.Required(CONF_PASSWORD): str,
-            vol.Required(FLOW_TYPE): FLOW_NET,
         }
     )
 
