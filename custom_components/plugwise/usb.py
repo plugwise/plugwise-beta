@@ -1,6 +1,7 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
 import asyncio
 import logging
+import voluptuous as vol
 
 import plugwise
 from plugwise.exceptions import (
@@ -15,14 +16,19 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.entity import Entity
 
 from .const import (
+    ATTR_MAC_ADDRESS,
     AVAILABLE_SENSOR_ID,
     CONF_USB_PATH,
     DOMAIN,
     PW_TYPE,
     SENSORS,
+    SERVICE_DEVICE_ADD,
+    SERVICE_DEVICE_FEATURES,
+    SERVICE_DEVICE_REMOVE,
     UNDO_UPDATE_LISTENER,
     STICK,
     USB,
@@ -30,7 +36,7 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 CB_TYPE_NEW_NODE = "NEW_NODE"
-PLUGWISE_STICK_PLATFORMS = ["switch"]
+PLUGWISE_STICK_PLATFORMS = ["binary_sensor", "sensor", "switch"]
 
 
 async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
@@ -54,6 +60,8 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
                 hass.config_entries.async_forward_entry_setup(config_entry, component)
             )
         stick.auto_update()
+        # Enable reception of join request and automatically accept new node join requests
+        stick.allow_join_requests(True, True)
 
     def shutdown(event):
         hass.async_add_executor_job(stick.disconnect)
@@ -96,6 +104,30 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     hass.data[DOMAIN][config_entry.entry_id][
         UNDO_UPDATE_LISTENER
     ] = config_entry.add_update_listener(_async_update_listener)
+
+    async def device_add(service):
+        """Manually add device to Plugwise zigbee network"""
+        stick.node_join(service.data[ATTR_MAC_ADDRESS])
+
+    async def device_remove(service):
+        """Manually remove device from Plugwise zigbee network"""
+        stick.node_unjoin(service.data[ATTR_MAC_ADDRESS])
+
+    async def device_features(service):
+        """Manually remove device from Plugwise zigbee network"""
+        stick.node(service.data[ATTR_MAC_ADDRESS])._request_features()
+
+    service_device_schema = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
+
+    hass.services.async_register(
+        DOMAIN, SERVICE_DEVICE_ADD, device_add, service_device_schema
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_DEVICE_REMOVE, device_remove, service_device_schema
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_DEVICE_FEATURES, device_features, service_device_schema
+    )
 
     return True
 
