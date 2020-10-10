@@ -67,11 +67,11 @@ For each Plugwise Smile (i.e. gateway) you will have to add it as an integration
  - [ ] Hit the `+` button in the right lower corner
  - [ ] Search or browse for 'Plugwise beta' and click it
  - [ ] Select the type of integration: Network or USB
- For the Network-selection:
+ - For the Network-selection:
  - [ ] Enter your Smile IP-address and the 8 character ID of the smile
  - [ ] Click SUBMIT and FINISH and hopefully the magic happens
  - [ ] Repeat this process to add more Smiles
- For the USB-selection:
+ - For the USB-selection:
  - [ ] Select or enter the USB-path
  - [ ] Click SUBMIT and FINISH
 
