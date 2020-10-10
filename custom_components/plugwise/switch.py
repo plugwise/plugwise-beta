@@ -11,20 +11,20 @@ from homeassistant.core import callback
 from .gateway import SmileGateway
 from .usb import NodeEntity
 from .const import (
-     API,
-     AVAILABLE_SENSOR_ID,
-     CB_NEW_NODE,
-     COORDINATOR,
-     CURRENT_POWER_SENSOR_ID,
-     DOMAIN,
-     PW_TYPE,
-     SENSORS,
-     STICK,
-     SWITCH_CLASSES,
-     SWITCH_ICON,
-     SWITCHES,
-     TODAY_ENERGY_SENSOR_ID,
-     USB,
+    API,
+    AVAILABLE_SENSOR_ID,
+    CB_NEW_NODE,
+    COORDINATOR,
+    CURRENT_POWER_SENSOR_ID,
+    DOMAIN,
+    PW_TYPE,
+    SENSORS,
+    STICK,
+    SWITCH_CLASSES,
+    SWITCH_ICON,
+    SWITCHES,
+    TODAY_ENERGY_SENSOR_ID,
+    USB,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -52,12 +52,12 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     for mac in hass.data[DOMAIN][config_entry.entry_id]["switch"]:
         hass.async_create_task(async_add_switch(mac))
 
-    def add_switch(mac):
-        """Add switch."""
+    def discoved_switch(mac):
+        """Add newly discovered switch"""
         hass.async_create_task(async_add_switch(mac))
 
-    # Listen for discovered nodes
-    stick.subscribe_stick_callback(add_switch, CB_NEW_NODE)
+    #Listen for discovered nodes
+    stick.subscribe_stick_callback(discoved_switch, CB_NEW_NODE)
 
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
