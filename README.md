@@ -11,7 +11,10 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. 
 
-## NEW Sept 2020 ##
+## NEW Oct 2020 ##
+The developer of the Plugwise Stick integration, brefa, has joined the team. As a result we have added support for the Plugwise Stick.
+
+## Sept 2020 ##
 - Add a service: plugwise.delete_notification, this allows you to dismiss a Plugwise Notification from HA Core.
 - Support for switching groups created on the Plugwise App has been added, these are available on the Adam with Plugs and on the Stretch.
 - Support for the Plugwise Stretch v2 and v3 has been added.
@@ -35,6 +38,7 @@ PLEASE NOTE: ~~at the moment you will need to remove the existing Core Plugwise 
     - Plugwise Notifications from the Adam and the Anna
   - Smile P1 (firmware 2.1, 2.5, 3.3 and 4.0)
   - Stretch (firmware 2.3 and 3.1)
+  - Stick
 
 ## What can I expect in HA Core from this component
 
@@ -62,15 +66,20 @@ For each Plugwise Smile (i.e. gateway) you will have to add it as an integration
  If there is no discovered Smile present:
  - [ ] Hit the `+` button in the right lower corner
  - [ ] Search or browse for 'Plugwise beta' and click it
+ - [ ] Select the type of integration: Network or USB
+ For the Network-selection:
  - [ ] Enter your Smile IP-address and the 8 character ID of the smile
- - [ ] Click Add and hopefully the magic happens
+ - [ ] Click SUBMIT and FINISH and hopefully the magic happens
  - [ ] Repeat this process to add more Smiles
+ For the USB-selection:
+ - [ ] Select or enter the USB-path
+ - [ ] Click SUBMIT and FINISH
 
 HA Core wil continue to ask you if you want to put your Smile and detected other devices in area's and presto, things should be available to configure in lovelace.
 
 ## Options ##
 
-Using the OPTIONS-button, the default Smile-data refresh-interval can be modified.
+Using the OPTIONS-button, the default Smile-data refresh-interval can be modified. There are no OPTIONS available for the Stick.
 
 # I don't like the name of the sensor or the icon
 
