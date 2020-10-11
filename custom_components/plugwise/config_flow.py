@@ -91,8 +91,8 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
         """Prepare configuration for a discovered Plugwise Smile."""
-        _username = DEFAULT_USERNAME
         self.discovery_info = discovery_info
+        self.discovery_info[CONF_USERNAME] = DEFAULT_USERNAME
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
 
@@ -101,7 +101,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._abort_if_unique_id_configured()
 
         if DEFAULT_USERNAME not in unique_id:
-            _username = STRETCH_USERNAME
+            self.discovery_info[CONF_USERNAME] = STRETCH_USERNAME
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
         _LOGGER.debug("Discovered: %s", _properties)
@@ -113,7 +113,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             CONF_HOST: self.discovery_info[CONF_HOST],
             CONF_NAME: _name,
             CONF_PORT: self.discovery_info[CONF_PORT],
-            CONF_USERNAME: _username,
+            CONF_USERNAME: self.discovery_info[CONF_USERNAME],
         }
         return await self.async_step_user()
 
