@@ -226,7 +226,6 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_manual_path(self, user_input=None):
         """Step when manual path to device."""
         errors = {}
-
         if user_input is not None:
             user_input.pop(FLOW_TYPE, None)
             device_path = await self.hass.async_add_executor_job(
@@ -246,7 +245,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     ): str
                 }
             ),
-            errors=errors if errors else {},
+            errors=errors,
         )
 
     async def async_step_user_gateway(self, user_input=None):
@@ -287,13 +286,12 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user_gateway",
             data_schema=_base_gw_schema(self.discovery_info),
-            errors=errors or {},
+            errors=errors,
         )
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step when using network/gateway setups."""
         errors = {}
-
         if user_input is not None:
             if user_input[FLOW_TYPE] == FLOW_NET:
                 return await self.async_step_user_gateway()
@@ -304,7 +302,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user",
             data_schema=CONNECTION_SCHEMA,
-            errors=errors or {},
+            errors=errors,
         )
 
     @staticmethod
