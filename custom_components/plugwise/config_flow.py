@@ -67,7 +67,6 @@ def plugwise_stick_entries(hass):
             sticks.add(entry.data.get(CONF_USB_PATH))
     return sticks
 
-
 async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
@@ -93,7 +92,6 @@ async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
     except TimeoutException:
         errors["base"] = "network_timeout"
     return errors
-
 
 def get_serial_by_id(dev_path: str) -> str:
     """Return a /dev/serial/by-id match for given device if available."""
@@ -150,9 +148,6 @@ async def validate_gw_input(hass: core.HomeAssistant, data):
         raise CannotConnect from err
 
     return api
-
-
-# PLACEHOLDER USB connection validation
 
 
 class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -311,8 +306,6 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=CONNECTION_SCHEMA,
             errors=errors or {},
         )
-
-    # PLACEHOLDER USB async_step_user_usb and async_step_user_usb_manual_paht
 
     @staticmethod
     @callback
