@@ -38,13 +38,9 @@ def _base_gw_schema(discovery_info):
     if not discovery_info:
         base_gw_schema[vol.Required(CONF_HOST)] = str
         base_gw_schema[vol.Optional(CONF_PORT, default=DEFAULT_PORT)] = int
+        base_gw_schema[vol.Required(CONF_USERNAME, description={"suggested_value": "smile"})] = str,
 
-    base_gw_schema.update(
-        {
-            vol.Required(CONF_USERNAME, description={"suggested_value": "smile"}): str,
-            vol.Required(CONF_PASSWORD): str,
-        }
-    )
+    base_gw_schema.update({vol.Required(CONF_PASSWORD): str})
 
     return vol.Schema(base_gw_schema)
 
