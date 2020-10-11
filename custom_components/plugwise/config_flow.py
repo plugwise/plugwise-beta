@@ -58,6 +58,52 @@ CONNECTION_SCHEMA = vol.Schema(
     },
 )
 
+@callback
+def plugwise_stick_entries(hass):
+    """Return existing connections for Plugwise USB-stick domain."""
+    sticks = []
+    for entry in hass.config_entries.async_entries(DOMAIN):
+        if entry.data.get(PW_TYPE) == STICK:
+            sticks.add(entry.data.get(CONF_USB_PATH))
+    return sticks
+
+
+async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
+    """Test if device_path is a real Plugwise USB-Stick."""
+    errors = {}
+    if device_path is None:
+        errors["base"] = "connection_failed"
+        return errors
+
+    if device_path in plugwise_stick_entries(self):
+        errors["base"] = "connection_exists"
+        return errors
+
+    stick = await self.async_add_executor_job(plugwise.stick, device_path)
+    try:
+        await self.async_add_executor_job(stick.connect)
+        await self.async_add_executor_job(stick.initialize_stick)
+        await self.async_add_executor_job(stick.disconnect)
+    except PortError:
+        errors["base"] = "cannot_connect"
+    except StickInitError:
+        errors["base"] = "stick_init"
+    except NetworkDown:
+        errors["base"] = "network_down"
+    except TimeoutException:
+        errors["base"] = "network_timeout"
+    return errors
+
+
+def get_serial_by_id(dev_path: str) -> str:
+    """Return a /dev/serial/by-id match for given device if available."""
+    by_id = "/dev/serial/by-id"
+    if not os.path.isdir(by_id):
+        return dev_path
+    for path in (entry.path for entry in os.scandir(by_id) if entry.is_symlink()):
+        if os.path.realpath(path) == dev_path:
+            return path
+    return dev_path
 
 def _base_gw_schema(discovery_info):
     """Generate base schema for gateways."""
@@ -78,7 +124,6 @@ def _base_gw_schema(discovery_info):
     )
 
     return vol.Schema(base_gw_schema)
-
 
 async def validate_gw_input(hass: core.HomeAssistant, data):
     """
@@ -170,7 +215,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 device_path = await self.hass.async_add_executor_job(
                     get_serial_by_id, user_selection
                 )
-            errors = await validate_connection(self.hass, device_path)
+            errors = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path, PW_TYPE: STICK}
@@ -192,7 +237,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             device_path = await self.hass.async_add_executor_job(
                 get_serial_by_id, user_input.get(CONF_USB_PATH)
             )
-            errors = await validate_connection(self.hass, device_path)
+            errors = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
@@ -274,54 +319,6 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def async_get_options_flow(config_entry):
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
-
-
-@callback
-def plugwise_stick_entries(hass):
-    """Return existing connections for Plugwise USB-stick domain."""
-    sticks = []
-    for entry in hass.config_entries.async_entries(DOMAIN):
-        if entry.data.get(PW_TYPE) == STICK:
-            sticks.add(entry.data.get(CONF_USB_PATH))
-    return sticks
-
-
-async def validate_connection(self, device_path=None) -> Dict[str, str]:
-    """Test if device_path is a real Plugwise USB-Stick."""
-    errors = {}
-    if device_path is None:
-        errors["base"] = "connection_failed"
-        return errors
-
-    if device_path in plugwise_stick_entries(self):
-        errors["base"] = "connection_exists"
-        return errors
-
-    stick = await self.async_add_executor_job(plugwise.stick, device_path)
-    try:
-        await self.async_add_executor_job(stick.connect)
-        await self.async_add_executor_job(stick.initialize_stick)
-        await self.async_add_executor_job(stick.disconnect)
-    except PortError:
-        errors["base"] = "cannot_connect"
-    except StickInitError:
-        errors["base"] = "stick_init"
-    except NetworkDown:
-        errors["base"] = "network_down"
-    except TimeoutException:
-        errors["base"] = "network_timeout"
-    return errors
-
-
-def get_serial_by_id(dev_path: str) -> str:
-    """Return a /dev/serial/by-id match for given device if available."""
-    by_id = "/dev/serial/by-id"
-    if not os.path.isdir(by_id):
-        return dev_path
-    for path in (entry.path for entry in os.scandir(by_id) if entry.is_symlink()):
-        if os.path.realpath(path) == dev_path:
-            return path
-    return dev_path
 
 
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
