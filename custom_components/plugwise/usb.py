@@ -132,7 +132,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_unload_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     """Unload the Plugwise stick connection."""
     unload_ok = all(
         await asyncio.gather(
