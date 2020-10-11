@@ -71,11 +71,11 @@ async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
     if device_path is None:
-        errors["base"] = "connection_failed"
+        errors[CONF_BASE] = "connection_failed"
         return errors
 
     if device_path in plugwise_stick_entries(self):
-        errors["base"] = "connection_exists"
+        errors[CONF_BASE] = "connection_exists"
         return errors
 
     stick = await self.async_add_executor_job(plugwise.stick, device_path)
@@ -84,13 +84,13 @@ async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
         await self.async_add_executor_job(stick.initialize_stick)
         await self.async_add_executor_job(stick.disconnect)
     except PortError:
-        errors["base"] = "cannot_connect"
+        errors[CONF_BASE] = "cannot_connect"
     except StickInitError:
-        errors["base"] = "stick_init"
+        errors[CONF_BASE] = "stick_init"
     except NetworkDown:
-        errors["base"] = "network_down"
+        errors[CONF_BASE] = "network_down"
     except TimeoutException:
-        errors["base"] = "network_timeout"
+        errors[CONF_BASE] = "network_timeout"
     return errors
 
 def get_serial_by_id(dev_path: str) -> str:
