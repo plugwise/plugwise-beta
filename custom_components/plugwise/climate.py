@@ -224,6 +224,11 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._preset_mode = preset_mode
                 self._setpoint = self._presets.get(self._preset_mode, "none")[0]
+            if hvac_mode == HVAC_MODE_HEAT and self._preset_mode == "away":
+                preset_mode = "home"
+                await self._api.set_preset(self._loc_id, preset_mode)
+                self._preset_mode = preset_mode
+                self._setpoint = self._presets.get(self._preset_mode, "none")[0]
             self._hvac_mode = hvac_mode
             self.async_write_ha_state()
         except Smile.PlugwiseError:
