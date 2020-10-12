@@ -22,7 +22,9 @@ from .const import (
     API,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_USERNAME,
     DOMAIN,
+    STRETCH_USERNAME,
     ZEROCONF_MAP,
   )
 
@@ -36,13 +38,9 @@ def _base_gw_schema(discovery_info):
     if not discovery_info:
         base_gw_schema[vol.Required(CONF_HOST)] = str
         base_gw_schema[vol.Optional(CONF_PORT, default=DEFAULT_PORT)] = int
+        base_gw_schema[vol.Required(CONF_USERNAME, description={"suggested_value": "smile"})] = str,
 
-    base_gw_schema.update(
-        {
-            vol.Required(CONF_USERNAME, description={"suggested_value": "smile"}): str,
-            vol.Required(CONF_PASSWORD): str,
-        }
-    )
+    base_gw_schema.update({vol.Required(CONF_PASSWORD): str})
 
     return vol.Schema(base_gw_schema)
 
@@ -90,6 +88,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
+        self.discovery_info[CONF_USERNAME] = DEFAULT_USERNAME
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
 
@@ -97,6 +96,8 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         await self.async_set_unique_id(unique_id)
         self._abort_if_unique_id_configured()
 
+        if DEFAULT_USERNAME not in unique_id:
+            self.discovery_info[CONF_USERNAME] = STRETCH_USERNAME
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
         _LOGGER.debug("Discovered: %s", _properties)
@@ -106,8 +107,9 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
         self.context["title_placeholders"] = {
             CONF_HOST: self.discovery_info[CONF_HOST],
-            CONF_PORT: self.discovery_info[CONF_PORT],
             CONF_NAME: _name,
+            CONF_PORT: self.discovery_info[CONF_PORT],
+            CONF_USERNAME: self.discovery_info[CONF_USERNAME],
         }
         return await self.async_step_user()
 
@@ -120,6 +122,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if self.discovery_info:
                 user_input[CONF_HOST] = self.discovery_info[CONF_HOST]
                 user_input[CONF_PORT] = self.discovery_info[CONF_PORT]
+                user_input[CONF_USERNAME] = self.discovery_info[CONF_USERNAME]
 
             for entry in self._async_current_entries():
                 if entry.data.get(CONF_HOST) == user_input[CONF_HOST]:
