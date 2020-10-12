@@ -259,10 +259,6 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input[CONF_HOST] = self.discovery_info[CONF_HOST]
                 user_input[CONF_PORT] = self.discovery_info[CONF_PORT]
 
-            for entry in self._async_current_entries():
-                if entry.data.get(CONF_HOST) == user_input[CONF_HOST]:
-                    return self.async_abort(reason="already_configured")
-
             try:
                 api = await validate_gw_input(self.hass, user_input)
 
