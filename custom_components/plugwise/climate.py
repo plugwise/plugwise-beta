@@ -12,6 +12,7 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
     HVAC_MODE_HEAT,
     HVAC_MODE_HEAT_COOL,
+    HVAC_MODE_OFF,
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
 )
@@ -30,8 +31,8 @@ from .const import (
     THERMOSTAT_CLASSES
 )
 
-HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
-HVAC_MODES_HEAT_COOL = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
+HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO, HVAC_MODE_OFF]
+HVAC_MODES_HEAT_COOL = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO, HVAC_MODE_OFF]
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
@@ -209,8 +210,16 @@ class PwThermostat(SmileGateway, ClimateEntity):
             try:
                 await self._api.set_temperature(self._loc_id, self._schedule_temp)
                 self._setpoint = self._schedule_temp
+                self.async_write_ha_state()
             except Smile.PlugwiseError:
                 _LOGGER.error("Error while communicating to device")
+        elif hvac_mode == "off":
+            preset_mode = "away"
+            try:
+                await self._api.set_preset(self._loc_id, preset_mode)
+                self._preset_mode = preset_mode
+                self._setpoint = self._presets.get(self._preset_mode, "none")[0]
+                self.async_write_ha_state()
         try:
             await self._api.set_schedule_state(
                 self._loc_id, self._last_active_schema, state
