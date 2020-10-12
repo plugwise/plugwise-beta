@@ -95,6 +95,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._compressor_state = None
         self._dhw_state = None
         self._hvac_mode = None
+        self._mode_off = None
         self._schema_names = None
         self._schema_status = None
         self._temperature = None
@@ -216,7 +217,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
             await self._api.set_schedule_state(
                 self._loc_id, self._last_active_schema, state
             )
+            self._mode_off = False
             if hvac_mode == HVAC_MODE_OFF:
+                self._mode_off = True
                 preset_mode = "away"
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._preset_mode = preset_mode
@@ -276,8 +279,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._hvac_mode = HVAC_MODE_HEAT
         if self._compressor_state is not None:
             self._hvac_mode = HVAC_MODE_HEAT_COOL
-
         if self._schema_status:
             self._hvac_mode = HVAC_MODE_AUTO
+        if self._mode_off:
+            self._hvac_mode = HVAC_MODE_OFF
 
         self.async_write_ha_state()
