@@ -204,30 +204,39 @@ class PwThermostat(SmileGateway, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set the hvac mode."""
         _LOGGER.debug("Set hvac_mode to: %s", hvac_mode)
-        state = SCHEDULE_OFF
         if hvac_mode == HVAC_MODE_AUTO:
             state = SCHEDULE_ON
             try:
                 await self._api.set_temperature(self._loc_id, self._schedule_temp)
                 self._setpoint = self._schedule_temp
+                self._hvac_mode = hvac_mode
                 self.async_write_ha_state()
             except Smile.PlugwiseError:
                 _LOGGER.error("Error while communicating to device")
-        elif hvac_mode == "off":
+        elif hvac_mode == HVAC_MODE_HEAT:
+            state = SCHEDULE_OFF
+            try:
+                await self._api.set_schedule_state(
+                    self._loc_id, self._last_active_schema, state
+                )
+                self._hvac_mode = hvac_mode
+                self.async_write_ha_state()
+            except Smile.PlugwiseError:
+                _LOGGER.error("Error while communicating to device")
+        elif hvac_mode == HVAC_MODE_OFF:
+            state = SCHEDULE_OFF
             preset_mode = "away"
             try:
+                await self._api.set_schedule_state(
+                    self._loc_id, self._last_active_schema, state
+                )
+                self._hvac_mode = hvac_mode
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._preset_mode = preset_mode
                 self._setpoint = self._presets.get(self._preset_mode, "none")[0]
                 self.async_write_ha_state()
-        try:
-            await self._api.set_schedule_state(
-                self._loc_id, self._last_active_schema, state
-            )
-            self._hvac_mode = hvac_mode
-            self.async_write_ha_state()
-        except Smile.PlugwiseError:
-            _LOGGER.error("Error while communicating to device")
+            except Smile.PlugwiseError:
+                _LOGGER.error("Error while communicating to device")
 
     async def async_set_preset_mode(self, preset_mode):
         """Set the preset mode."""
