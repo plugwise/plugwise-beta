@@ -12,7 +12,7 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing.
 
 ## NEW Oct 2020 ##
-The developer of the Plugwise Stick integration, brefra, has joined the team. As a result we have added support for the Plugwise Stick.
+The developer of the Plugwise Stick integration, @brefra, has joined the team. As a result we have added support for the Plugwise Stick.
 
 ## Sept 2020 ##
 - Add a service: plugwise.delete_notification, this allows you to dismiss a Plugwise Notification from HA Core.
@@ -34,12 +34,14 @@ PLEASE NOTE: ~~at the moment you will need to remove the existing Core Plugwise 
 
 ## What do we support (in short)?
 
-  - Adam (firmware 2.3 + 3.0) and the accompanying Lisa's, Tom's, Floor's, Koen's and Plugs.
-  - Smile & Anna (firmware 1.8, 3.1 and 4.0)
-    - Plugwise Notifications from the Adam and the Anna
-  - Smile P1 (firmware 2.1, 2.5, 3.3 and 4.0)
-  - Stretch (firmware 2.3 and 3.1)
-  - Stick (legacy Circle+'s, Circle's, Stealth's and Scan's)
+  - Thermostats
+    - Adam (firmware 2.3 + 3.0) and the accompanying Lisa's, Tom's, Floor's, Koen's and Plugs.
+    - Anna (firmware 1.8, 3.1 and 4.0)
+    - Notifications for both types
+  - Power-related
+    - Smile P1 (firmware 2.1, 2.5, 3.3 and 4.0)
+    - Stretch (firmware 2.3 and 3.1)
+    - Stick (legacy Circle+'s, Circle's, Stealth's and Scan's)
 
 ## What can I expect in HA Core from this component
 
@@ -107,8 +109,13 @@ Results of our tests are checked by Travis, click the left button (the one that 
 
 # ~~There is Anna support in HA Core already~~ Replaced by the new Plugwise component, based on this beta-version.
 
-And from the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech and improved and maintained by @bouwew
+From the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech. Right after that @bouwew joined to improve and help maintain the code. As of 2020 @brefra joined so we have a full range of Plugwise products supported.
 
 As things like async were in high demand from HA Core, desired by the original author and a great challenge for us we rewrote it largely. The Plugwise Smile Beta repository (accompanying the Plugwise-Smile python module) is intended for development purposes, just as `anna-ha` was for `haanna` (respectively the original before upstreaming and original python module).
+
+With the three combined forces we now support, maintain and improve on:
+ - `plugwise-beta` (this repository) for beta-testing new features to go into the `plugwise`-integration for HA
+ - `Plugwise-Smile` for connectivity with the Smile (Adam, Anna and P1) and Stretch products (i.e. the new Plugs)
+ - `python-plugwise` for connectivity with the Stick (USB-device) (i.e. the old Plugs: Circle(+), Stealths and Scans)
 
 And yes anna-ha with haanna (to some degree) support Anna v1.8 - but they don't support Adam nor the Smile P1
