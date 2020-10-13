@@ -27,7 +27,6 @@ from .const import (
     PW_TYPE,
     SENSORS,
     SERVICE_DEVICE_ADD,
-    SERVICE_DEVICE_FEATURES,
     SERVICE_DEVICE_REMOVE,
     UNDO_UPDATE_LISTENER,
     STICK,
@@ -113,10 +112,6 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
         """Manually remove device from Plugwise zigbee network"""
         stick.node_unjoin(service.data[ATTR_MAC_ADDRESS])
 
-    async def device_features(service):
-        """Manually remove device from Plugwise zigbee network"""
-        stick.node(service.data[ATTR_MAC_ADDRESS])._request_features()
-
     service_device_schema = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
 
     hass.services.async_register(
@@ -124,9 +119,6 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     )
     hass.services.async_register(
         DOMAIN, SERVICE_DEVICE_REMOVE, device_remove, service_device_schema
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_DEVICE_FEATURES, device_features, service_device_schema
     )
 
     return True

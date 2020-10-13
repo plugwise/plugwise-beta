@@ -12,12 +12,6 @@ device_remove:
     mac:
       description: The full 16 character MAC address of the plugwise device.
       example: 0123456789ABCDEF
-device_features:
-  description: Request supported features of specified device (MAC) from plugwise network
-  fields:
-    mac:
-      description: The full 16 character MAC address of the plugwise device.
-      example: 0123456789ABCDEF
 configure_scan:
   description: >
     Configure the motion settings for a Plugwise Scan device 
