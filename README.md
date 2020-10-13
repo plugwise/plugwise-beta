@@ -9,10 +9,10 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
  [![Generic badge](https://img.shields.io/github/v/release/plugwise/plugwise-beta)](https://github.com/plugwise/plugwise-beta)
  [![HASSfest](https://img.shields.io/badge/HASSfest%3F-view-blue.svg)](https://github.com/plugwise/plugwise-beta/actions)
 
-A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. 
+A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing.
 
 ## NEW Oct 2020 ##
-The developer of the Plugwise Stick integration, brefa, has joined the team. As a result we have added support for the Plugwise Stick.
+The developer of the Plugwise Stick integration, brefra, has joined the team. As a result we have added support for the Plugwise Stick.
 
 ## Sept 2020 ##
 - Add a service: plugwise.delete_notification, this allows you to dismiss a Plugwise Notification from HA Core.
@@ -30,6 +30,7 @@ PLEASE NOTE: ~~at the moment you will need to remove the existing Core Plugwise 
  [![Build Status](https://travis-ci.org/plugwise/Plugwise-Smile.svg?branch=master)](https://travis-ci.org/plugwise/Plugwise-Smile)
  [![codecov](https://codecov.io/gh/plugwise/Plugwise-Smile/branch/master/graph/badge.svg)](https://codecov.io/gh/plugwise/Plugwise-Smile)
  [![PyPI version fury.io](https://badge.fury.io/py/Plugwise-Smile.svg)](https://pypi.python.org/pypi/Plugwise-Smile/)
+ [![PyPI version fury.io](https://badge.fury.io/py/python-plugwise.svg)](https://pypi.org/pypi/python-plugwise/)
 
 ## What do we support (in short)?
 
@@ -38,7 +39,7 @@ PLEASE NOTE: ~~at the moment you will need to remove the existing Core Plugwise 
     - Plugwise Notifications from the Adam and the Anna
   - Smile P1 (firmware 2.1, 2.5, 3.3 and 4.0)
   - Stretch (firmware 2.3 and 3.1)
-  - Stick
+  - Stick (legacy Circle+'s, Circle's, Stealth's and Scan's)
 
 ## What can I expect in HA Core from this component
 
