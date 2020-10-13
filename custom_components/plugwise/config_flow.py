@@ -58,24 +58,11 @@ CONNECTION_SCHEMA = vol.Schema(
     },
 )
 
-@callback
-def plugwise_stick_entries(hass):
-    """Return existing connections for Plugwise USB-stick domain."""
-    sticks = []
-    for entry in hass.config_entries.async_entries(DOMAIN):
-        if entry.data.get(PW_TYPE) == STICK:
-            sticks.add(entry.data.get(CONF_USB_PATH))
-    return sticks
-
 async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
     if device_path is None:
         errors[CONF_BASE] = "connection_failed"
-        return errors
-
-    if device_path in plugwise_stick_entries(self):
-        errors[CONF_BASE] = "connection_exists"
         return errors
 
     stick = await self.async_add_executor_job(plugwise.stick, device_path)
@@ -91,7 +78,7 @@ async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
         errors[CONF_BASE] = "network_down"
     except TimeoutException:
         errors[CONF_BASE] = "network_timeout"
-    return errors
+    return errors, stick
 
 def get_serial_by_id(dev_path: str) -> str:
     """Return a /dev/serial/by-id match for given device if available."""
@@ -210,8 +197,12 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 device_path = await self.hass.async_add_executor_job(
                     get_serial_by_id, user_selection
                 )
-            errors = await validate_usb_connection(self.hass, device_path)
+            errors, stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
+                await self.async_set_unique_id(
+                    stick.circle_plus_mac, raise_on_progress=False
+                )
+                self._abort_if_unique_id_configured()
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path, PW_TYPE: STICK}
                 )
@@ -231,8 +222,12 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             device_path = await self.hass.async_add_executor_job(
                 get_serial_by_id, user_input.get(CONF_USB_PATH)
             )
-            errors = await validate_usb_connection(self.hass, device_path)
+            errors, stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
+                await self.async_set_unique_id(
+                    stick.circle_plus_mac, raise_on_progress=False
+                )
+                self._abort_if_unique_id_configured()
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
