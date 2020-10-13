@@ -67,6 +67,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         for sensor_type in node.get_sensors():
             if sensor_type in BINARY_SENSORS:
                 async_add_entities([USBBinarySensor(node, mac, sensor_type)])
+                ## TODO: two strings in debug, wont work and doesnt display what you want
                 _LOGGER.debug("Added %s as binary_sensors for %s", mac)
 
                 if node.get_node_type() == "Scan" and sensor_type == MOTION_SENSOR_ID:
@@ -127,7 +128,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
         if device_properties["class"] == "heater_central":
             _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
             data = api.get_device_data(dev_id)
-            for binary_sensor, b_s_type in BINARY_SENSOR_MAP.items():
+            for binary_sensor, dummy in BINARY_SENSOR_MAP.items():
                 _LOGGER.debug("Binary_sensor: %s", binary_sensor)
                 if binary_sensor not in data:
                     continue
@@ -181,6 +182,7 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
 
         self._is_on = False
         self._icon = None
+        self._state = None
 
         self._unique_id = f"{dev_id}-{binary_sensor}"
 
@@ -222,6 +224,7 @@ class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
 
         self._is_on = False
         self._icon = None
+        self._attributes = {}
 
         self._unique_id = f"{dev_id}-{binary_sensor}"
 
@@ -241,13 +244,13 @@ class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
         self._icon = NO_NOTIFICATION_ICON if notify == {} else NOTIFICATION_ICON
         self._attributes = {}
         if notify != {}:
-            for id, details in notify.items():
+            for notify_id, details in notify.items():
                 for msg_type, msg in details.items():
                     self._attributes[msg_type.upper()] = msg
                     self._hass.components.persistent_notification.async_create(
                         f"{msg_type.upper()}: {msg}",
                         "Plugwise Notification:",
-                        f"{DOMAIN}.{id}",
+                        f"{DOMAIN}.{notify_id}",
                     )
 
         self.async_write_ha_state()
