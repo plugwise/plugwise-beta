@@ -66,7 +66,7 @@ def plugwise_stick_entries(hass):
     sticks = []
     for entry in hass.config_entries.async_entries(DOMAIN):
         if entry.data.get(PW_TYPE) == STICK:
-            sticks.add(entry.data.get(CONF_USB_PATH))
+            sticks.append(entry.data.get(CONF_USB_PATH))
     return sticks
 
 async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
@@ -74,11 +74,12 @@ async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
     errors = {}
     if device_path is None:
         errors[CONF_BASE] = "connection_failed"
-        return errors
+        return errors, None
 
+    # Avoid creating a 2nd connection to an already configured stick
     if device_path in plugwise_stick_entries(self):
-        errors[CONF_BASE] = "connection_exists"
-        return errors
+        errors[CONF_BASE] = "already_configured"
+        return errors, None
 
     stick = await self.async_add_executor_job(plugwise.stick, device_path)
     try:
@@ -219,7 +220,6 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(
                     stick.get_mac_stick(), raise_on_progress=False
                 )
-                self._abort_if_unique_id_configured()
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path, PW_TYPE: STICK}
                 )
@@ -244,7 +244,6 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(
                     stick.get_mac_stick(), raise_on_progress=False
                 )
-                self._abort_if_unique_id_configured()
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )

@@ -49,7 +49,6 @@
     "error": {
       "invalid_auth": "Invalid authentication, check the 8 characters of your Smile ID",
       "cannot_connect": "Cannot connect",
-      "connection_exists": "Plugwise USB-Stick already configured",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "stick_init": "Initialization of Plugwise USB-stick failed",
