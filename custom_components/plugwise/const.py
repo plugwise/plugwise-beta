@@ -60,6 +60,8 @@ DEFAULT_USERNAME = "smile"
 DEVICE_CLASS_GAS = "gas"
 DEVICE_CLASS_VALVE = "valve"
 
+STRETCH_USERNAME = "stretch"
+
 # Configuration directives
 CONF_GAS = "gas"
 CONF_MAX_TEMP = "max_temp"
