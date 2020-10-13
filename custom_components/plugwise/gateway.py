@@ -33,6 +33,7 @@ from .const import (
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_USERNAME,
     DOMAIN,
     GATEWAY,
     PW_TYPE,
@@ -76,7 +77,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         connected = await api.connect()
 
         if not connected:
-            _LOGGER.error("Unable to connect to Smile %s", smile_name)
+            _LOGGER.error("Unable to connect to Smile %s", api.smile_name)
             raise ConfigEntryNotReady
 
     except Smile.InvalidAuthentication:

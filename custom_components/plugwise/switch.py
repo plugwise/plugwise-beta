@@ -56,7 +56,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         """Add newly discovered switch"""
         hass.async_create_task(async_add_switch(mac))
 
-    #Listen for discovered nodes
+    # Listen for discovered nodes
     stick.subscribe_stick_callback(discoved_switch, CB_NEW_NODE)
 
 

@@ -60,6 +60,7 @@ CONNECTION_SCHEMA = vol.Schema(
     },
 )
 
+
 @callback
 def plugwise_stick_entries(hass):
     """Return existing connections for Plugwise USB-stick domain."""
@@ -68,6 +69,7 @@ def plugwise_stick_entries(hass):
         if entry.data.get(PW_TYPE) == STICK:
             sticks.append(entry.data.get(CONF_USB_PATH))
     return sticks
+
 
 async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
     """Test if device_path is a real Plugwise USB-Stick."""
@@ -96,6 +98,7 @@ async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
         errors[CONF_BASE] = "network_timeout"
     return errors, stick
 
+
 def get_serial_by_id(dev_path: str) -> str:
     """Return a /dev/serial/by-id match for given device if available."""
     by_id = "/dev/serial/by-id"
@@ -106,6 +109,7 @@ def get_serial_by_id(dev_path: str) -> str:
             return path
     return dev_path
 
+
 def _base_gw_schema(discovery_info):
     """Generate base schema for gateways."""
     base_gw_schema = {}
@@ -113,16 +117,17 @@ def _base_gw_schema(discovery_info):
     if not discovery_info:
         base_gw_schema[vol.Required(CONF_HOST)] = str
         base_gw_schema[vol.Optional(CONF_PORT, default=DEFAULT_PORT)] = int
-        base_gw_schema[
-            vol.Required(CONF_USERNAME, default=SMILE)
-        ] = vol.In({
+        base_gw_schema[vol.Required(CONF_USERNAME, default=SMILE)] = vol.In(
+            {
                 SMILE: FLOW_SMILE,
                 STRETCH: FLOW_STRETCH,
-            })
+            }
+        )
 
     base_gw_schema.update({vol.Required(CONF_PASSWORD): str})
 
     return vol.Schema(base_gw_schema)
+
 
 async def validate_gw_input(hass: core.HomeAssistant, data):
     """

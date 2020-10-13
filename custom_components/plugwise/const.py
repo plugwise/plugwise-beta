@@ -4,7 +4,6 @@ from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION
 from homeassistant.components.switch import DEVICE_CLASS_OUTLET
 from homeassistant.const import (
     DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_ENERGY,
     DEVICE_CLASS_ILLUMINANCE,
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_PRESSURE,
@@ -248,9 +247,7 @@ SWITCH_CLASSES = ["plug", "switch_group"]
 
 # --- Const for Plugwise USB-stick.
 
-### DOMAIN = "plugwise_stick"
 CONF_USB_PATH = "usb_path"
-### UNDO_UPDATE_LISTENER = "undo_update_listener"
 
 # Callback types
 CB_NEW_NODE = "NEW_NODE"

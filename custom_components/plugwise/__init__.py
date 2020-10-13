@@ -1,6 +1,5 @@
 """Plugwise platform for Home Assistant Core."""
 
-import asyncio
 import logging
 
 import voluptuous as vol
@@ -10,10 +9,8 @@ from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 
 from .const import (
-    ALL_PLATFORMS,
     CONF_USB_PATH,
     DOMAIN,
-    UNDO_UPDATE_LISTENER,
 )
 
 from .gateway import async_setup_entry_gw, async_unload_entry_gw
