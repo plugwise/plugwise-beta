@@ -56,7 +56,7 @@
       "unknown": "Onbekende fout"
     },
     "abort": {
-      "already_configured": "Deze Smile is al geconfigureerd"
+      "already_configured": "Dit apparaat is al geconfigureerd"
     }
   }
 }

@@ -56,7 +56,7 @@
       "unknown": "Unknown error!"
     },
     "abort": {
-      "already_configured": "This Smile is already configured"
+      "already_configured": "This device is already configured"
     }
   }
 }
