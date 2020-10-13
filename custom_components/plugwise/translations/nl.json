@@ -49,7 +49,6 @@
     "error": {
       "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je Smile goed in",
       "cannot_connect": "Verbinding mislukt, probeer het opnieuw",
-      "connection_exists": "Plugwise USB-Stick al geconfigureerd",
       "network_down": "Plugwise Zigbee netwerk is down",
       "network_timeout": "Network communicatie timeout",
       "stick_init": "Initaliseren van USB-stick mislukt",
