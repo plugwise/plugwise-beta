@@ -47,6 +47,7 @@
       }
     },
     "error": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
       "invalid_auth": "Invalid authentication, check the 8 characters of your Smile ID",
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
       "network_down": "Plugwise Zigbee network is down",

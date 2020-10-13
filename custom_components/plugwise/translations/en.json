@@ -47,6 +47,7 @@
       }
     },
     "error": {
+      "already_configured": "This device is already configured",
       "invalid_auth": "Invalid authentication, check the 8 characters of your Smile ID",
       "cannot_connect": "Cannot connect",
       "network_down": "Plugwise Zigbee network is down",
