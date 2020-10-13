@@ -294,7 +294,7 @@ SENSORS = {
         "name": "Power usage 8 seconds",
         "state": "get_power_usage_8_sec",
         "unit": POWER_WATT,
-    },   
+    },
     "power_con_cur_hour": {
         "class": DEVICE_CLASS_POWER,
         "enabled_default": True,
@@ -317,7 +317,7 @@ SENSORS = {
         "icon": None,
         "name": "Power consumption today",
         "state": "get_power_consumption_today",
-        "unit": ENERGY_KILO_WATT_HOUR, 
+        "unit": ENERGY_KILO_WATT_HOUR,
     },
     "power_con_yesterday": {
         "class": DEVICE_CLASS_POWER,
@@ -325,7 +325,7 @@ SENSORS = {
         "icon": None,
         "name": "Power consumption yesterday",
         "state": "get_power_consumption_yesterday",
-        "unit": ENERGY_KILO_WATT_HOUR, 
+        "unit": ENERGY_KILO_WATT_HOUR,
     },
     "power_prod_cur_hour": {
         "class": DEVICE_CLASS_POWER,
@@ -333,7 +333,7 @@ SENSORS = {
         "icon": None,
         "name": "Power production current hour",
         "state": "get_power_production_current_hour",
-        "unit": ENERGY_KILO_WATT_HOUR, 
+        "unit": ENERGY_KILO_WATT_HOUR,
     },
     "power_prod_prev_hour": {
         "class": DEVICE_CLASS_POWER,
@@ -341,7 +341,7 @@ SENSORS = {
         "icon": None,
         "name": "Power production previous hour",
         "state": "get_power_production_previous_hour",
-        "unit": ENERGY_KILO_WATT_HOUR, 
+        "unit": ENERGY_KILO_WATT_HOUR,
     },
     "RSSI_in": {
         "class": DEVICE_CLASS_SIGNAL_STRENGTH,
@@ -349,7 +349,7 @@ SENSORS = {
         "icon": None,
         "name": "Inbound RSSI",
         "state": "get_in_RSSI",
-        "unit": "dBm", 
+        "unit": "dBm",
     },
     "RSSI_out": {
         "class": DEVICE_CLASS_SIGNAL_STRENGTH,
@@ -357,8 +357,8 @@ SENSORS = {
         "icon": None,
         "name": "Outbound RSSI",
         "state": "get_out_RSSI",
-        "unit": "dBm", 
-    }
+        "unit": "dBm",
+    },
 }
 BINARY_SENSORS = {
     MOTION_SENSOR_ID: {
@@ -367,7 +367,7 @@ BINARY_SENSORS = {
         "icon": None,
         "name": "Motion",
         "state": "get_motion",
-        "unit": None, 
+        "unit": None,
     }
 }
 
@@ -399,7 +399,11 @@ ATTR_SED_CLOCK_INTERVAL = "clock_interval"
 SCAN_SENSITIVITY_HIGH = "high"
 SCAN_SENSITIVITY_MEDIUM = "medium"
 SCAN_SENSITIVITY_OFF = "off"
-SCAN_SENSITIVITY_MODES = [SCAN_SENSITIVITY_HIGH, SCAN_SENSITIVITY_MEDIUM, SCAN_SENSITIVITY_OFF]
+SCAN_SENSITIVITY_MODES = [
+    SCAN_SENSITIVITY_HIGH,
+    SCAN_SENSITIVITY_MEDIUM,
+    SCAN_SENSITIVITY_OFF,
+]
 
 SERVICE_CONFIGURE_BATTERY = "configure_battery_savings"
 SERVICE_CONFIGURE_SCAN = "configure_scan"

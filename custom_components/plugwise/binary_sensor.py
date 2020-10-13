@@ -53,6 +53,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     # Considered default and for earlier setups without usb/network config_flow
     return await async_setup_entry_gateway(hass, config_entry, async_add_entities)
 
+
 async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     """Set up Plugwise binary sensor based on config_entry."""
     stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
@@ -111,6 +112,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
     # Listen for discovered nodes
     stick.subscribe_stick_callback(discoved_binary_sensor, CB_NEW_NODE)
+
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     """Set up the Smile binary_sensors from a config entry."""
@@ -249,6 +251,7 @@ class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
                     )
 
         self.async_write_ha_state()
+
 
 class USBBinarySensor(NodeEntity, BinarySensorEntity):
     """Representation of a Plugwise Binary Sensor."""

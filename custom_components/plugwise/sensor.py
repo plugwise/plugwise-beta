@@ -38,12 +38,14 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile switches from a config entry."""
     if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
         return await async_setup_entry_usb(hass, config_entry, async_add_entities)
     # Considered default and for earlier setups without usb/network config_flow
     return await async_setup_entry_gateway(hass, config_entry, async_add_entities)
+
 
 async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     """Set up Plugwise sensor based on config_entry."""
@@ -63,8 +65,9 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         """Add newly discovered sensor"""
         hass.async_create_task(async_add_sensor(mac))
 
-    #Listen for discovered nodes
+    # Listen for discovered nodes
     stick.subscribe_stick_callback(discoved_sensor, CB_NEW_NODE)
+
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
@@ -299,6 +302,7 @@ class GwPowerSensor(SmileSensor, Entity):
         self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 
         self.async_write_ha_state()
+
 
 class USBSensor(NodeEntity):
     """Representation of a Plugwise sensor."""
