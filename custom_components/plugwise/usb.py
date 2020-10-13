@@ -105,11 +105,11 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     ] = config_entry.add_update_listener(_async_update_listener)
 
     async def device_add(service):
-        """Manually add device to Plugwise zigbee network"""
+        """Manually add device to Plugwise zigbee network."""
         stick.node_join(service.data[ATTR_MAC_ADDRESS])
 
     async def device_remove(service):
-        """Manually remove device from Plugwise zigbee network"""
+        """Manually remove device from Plugwise zigbee network."""
         stick.node_unjoin(service.data[ATTR_MAC_ADDRESS])
 
     service_device_schema = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})

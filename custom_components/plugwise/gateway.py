@@ -227,8 +227,8 @@ class SmileGateway(CoordinatorEntity):
 
     def __init__(self, api, coordinator, name, dev_id):
         """Initialise the gateway."""
-
         super().__init__(coordinator)
+
         self._api = api
         self._name = name
         self._dev_id = dev_id

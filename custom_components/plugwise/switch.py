@@ -53,7 +53,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         hass.async_create_task(async_add_switch(mac))
 
     def discoved_switch(mac):
-        """Add newly discovered switch"""
+        """Add newly discovered switch."""
         hass.async_create_task(async_add_switch(mac))
 
     # Listen for discovered nodes

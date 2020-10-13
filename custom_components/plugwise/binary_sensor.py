@@ -108,7 +108,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         hass.async_create_task(async_add_sensor(mac))
 
     def discoved_binary_sensor(mac):
-        """Add newly discovered binary sensor"""
+        """Add newly discovered binary sensor."""
         hass.async_create_task(async_add_sensor(mac))
 
     # Listen for discovered nodes
