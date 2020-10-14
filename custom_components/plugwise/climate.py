@@ -290,3 +290,4 @@ class PwThermostat(SmileGateway, ClimateEntity):
             self._hvac_mode = HVAC_MODE_OFF
 
         self.async_write_ha_state()
+        
