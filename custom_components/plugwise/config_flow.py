@@ -168,7 +168,6 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
         """Prepare configuration for a discovered Plugwise Smile."""
-        # TODO discover username accordingly?
         self.discovery_info = discovery_info
         self.discovery_info[CONF_USERNAME] = DEFAULT_USERNAME
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
@@ -335,8 +334,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_none(self, user_input=None):
         """No options available."""
         if user_input is not None:
-            # Apparently not possible to abort an options flow
-            # at the moment
+            # Apparently not possible to abort an options flow at the moment
             return self.async_create_entry(title="", data=self.config_entry.options)
 
         return self.async_show_form(step_id="none")
