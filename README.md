@@ -59,26 +59,32 @@ The `water_heater`-device present in previous releases has been replaced by an A
 
 ## How to add the integration to HA Core
 
-For each Plugwise Smile (i.e. gateway) you will have to add it as an integration. For instance if you have an Adam and a Smile P1, you have to add them individually. If you have an Anna and an Adam, do not add the Anna, only add the Adam.
+For each Plugwise Smile (i.e. gateway) you will have to add it as an integration. For instance if you have an Adam and a Smile P1, you have to add them individually. If you have an Anna and an Adam, **do not add the Anna**, only add the Adam.
+
  - [ ] In Home Assitant click on `Configuration`
  - [ ] Click on `Integrations`
  - [ ] You should see one or more discovered Smiles
  - [ ] Click the `Configure` button and enter the Smile ID
  - [ ] Click Add to see the magic happens
  
- If there is no discovered Smile present:
+ If there is no discovered Smile present or you are using the USB stick:
+
  - [ ] Hit the `+` button in the right lower corner
  - [ ] Search or browse for 'Plugwise beta' and click it
  - [ ] Select the type of integration: Network or USB
- - For the Network-selection:
- - [ ] Enter your Smile IP-address and the 8 character ID of the smile
- - [ ] Click SUBMIT and FINISH and hopefully the magic happens
- - [ ] Repeat this process to add more Smiles
- - For the USB-selection:
- - [ ] Select or enter the USB-path
- - [ ] Click SUBMIT and FINISH
 
-HA Core wil continue to ask you if you want to put your Smile and detected other devices in area's and presto, things should be available to configure in lovelace.
+ - For the Network-selection:
+
+   - [ ] Enter your Smile IP-address and the 8 character ID of the smile
+   - [ ] Click SUBMIT and FINISH and hopefully the magic happens
+   - [ ] Repeat this process to add more Smiles
+
+ - For the USB-selection:
+
+   - [ ] Select or enter the USB-path
+   - [ ] Click SUBMIT and FINISH
+
+The config flow will then continue to ask you if you want to put your Smile and detected other devices in area's and presto, things should be available to configure in lovelace.
 
 ## Options ##
 
@@ -90,12 +96,15 @@ You can adjust these in `Configuration`, `Integration` -> `Entities` (e.g. `http
 
 Just click on the device and adjust accordingly!
 
+Please note that you can also click the cogwheel right top corner to rename all entities of a device at once.
+
 # It doesn't work
 
-If you notice issuess, we are on discord and on the Community. You can also create an Issue in these repos:
+If you notice issuess, we are on Discord and on the (Community forums)[https://community.home-assistant.io/t/plugwise-smile-custom-component-beta/183560]. You can also create an Issue in these repos:
 
   - [plugwise-beta](https://github.com/plugwise/plugwise-beta) - the `custom_component` for HA Core
   - [Plugwise-Smile](https://github.com/plugwise/Plugwise-Smile) - the python module interfacing between the plugwise component and your Smile
+  - [python-plugwise](https://github.com/plugwise/python-plugwise) - the python module interfacing with the plugwise USB-stick
 
 # Smile?
 
