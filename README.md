@@ -35,13 +35,13 @@ PLEASE NOTE: ~~at the moment you will need to remove the existing Core Plugwise 
 ## What do we support (in short)?
 
   - Thermostats
-    - Adam (firmware 2.3 + 3.0) and the accompanying Lisa's, Tom's, Floor's, Koen's and Plugs.
-    - Anna (firmware 1.8, 3.1 and 4.0)
+    - Adam (firmware 2.x and 3.x) and the accompanying Lisa's, Tom's, Floor's, Koen's and Plugs.
+    - Anna (firmware 1.x, 3.x and 4.x)
     - Notifications for both types
   - Power-related
-    - Smile P1 (firmware 2.1, 2.5, 3.3 and 4.0)
-    - Stretch (firmware 2.3 and 3.1)
-    - Stick (legacy Circle+'s, Circle's, Stealth's and Scan's)
+    - Smile P1 (firmware 2.x, 3.x and 4.x)
+    - Stretch (firmware 2.x and 3.x, legacy Circle's and Stealth's)
+    - Stick (legacy Circle's, Stealth's and Scan's)
 
 ## What can I expect in HA Core from this component
 
