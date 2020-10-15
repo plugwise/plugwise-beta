@@ -221,9 +221,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
             errors, stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(
-                    stick.get_mac_stick(), raise_on_progress=False
-                )
+                await self.async_set_unique_id(stick.get_mac_stick())
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path, PW_TYPE: STICK}
                 )
@@ -245,9 +243,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
             errors, stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(
-                    stick.get_mac_stick(), raise_on_progress=False
-                )
+                await self.async_set_unique_id(stick.get_mac_stick())
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
