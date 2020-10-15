@@ -28,7 +28,7 @@ from .const import (
     DOMAIN,
     SCHEDULE_OFF,
     SCHEDULE_ON,
-    THERMOSTAT_CLASSES
+    THERMOSTAT_CLASSES,
 )
 
 HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO, HVAC_MODE_OFF]
@@ -290,3 +290,4 @@ class PwThermostat(SmileGateway, ClimateEntity):
             self._hvac_mode = HVAC_MODE_OFF
 
         self.async_write_ha_state()
+        

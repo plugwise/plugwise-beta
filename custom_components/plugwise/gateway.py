@@ -1,4 +1,4 @@
-"""Plugwise platform for Home Assistant Core."""
+"""Plugwise network/gateway platform."""
 
 import asyncio
 import logging
@@ -33,7 +33,10 @@ from .const import (
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_USERNAME,
     DOMAIN,
+    GATEWAY,
+    PW_TYPE,
     SENSOR_PLATFORMS,
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
@@ -74,7 +77,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         connected = await api.connect()
 
         if not connected:
-            _LOGGER.error("Unable to connect to Smile %s", smile_name)
+            _LOGGER.error("Unable to connect to Smile %s", api.smile_name)
             raise ConfigEntryNotReady
 
     except Smile.InvalidAuthentication:
@@ -95,7 +98,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     )
 
-    async def async_update_data():
+    async def async_update_data_gw():
         """Update data via API endpoint."""
         _LOGGER.debug("Updating Smile %s", api.smile_name)
         try:
@@ -118,7 +121,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass,
         _LOGGER,
         name=f"Smile {api.smile_name}",
-        update_method=async_update_data,
+        update_method=async_update_data_gw,
         update_interval=update_interval,
     )
 
@@ -141,6 +144,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         API: api,
         COORDINATOR: coordinator,
+        PW_TYPE: GATEWAY,
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 
@@ -191,6 +195,25 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
+async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
+    """Unload a config entry."""
+    unload_ok = all(
+        await asyncio.gather(
+            *[
+                hass.config_entries.async_forward_entry_unload(entry, component)
+                for component in ALL_PLATFORMS
+            ]
+        )
+    )
+
+    hass.data[DOMAIN][entry.entry_id][UNDO_UPDATE_LISTENER]()
+
+    if unload_ok:
+        hass.data[DOMAIN].pop(entry.entry_id)
+
+    return unload_ok
+
+
 async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
     coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
@@ -204,8 +227,8 @@ class SmileGateway(CoordinatorEntity):
 
     def __init__(self, api, coordinator, name, dev_id):
         """Initialise the gateway."""
-
         super().__init__(coordinator)
+
         self._api = api
         self._name = name
         self._dev_id = dev_id
