@@ -236,14 +236,19 @@ class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        _LOGGER.debug("Update notification-binary_sensor called")
+        self._attributes = {}
 
         notify = self._api.notifications
-        self._is_on = False if notify == {} else True
-        self._state = STATE_OFF if notify == {} else STATE_ON
-        self._icon = NO_NOTIFICATION_ICON if notify == {} else NOTIFICATION_ICON
-        self._attributes = {}
+
+        self._is_on = False
+        self._state = STATE_OFF
+        self._icon = NO_NOTIFICATION_ICON
+
         if notify != {}:
+            self._is_on = True
+            self._state = STATE_ON
+            self._icon = NOTIFICATION_ICON
+
             for notify_id, details in notify.items():
                 for msg_type, msg in details.items():
                     self._attributes[msg_type.upper()] = msg
