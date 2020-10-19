@@ -84,8 +84,6 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             )
 
         api_stick.auto_update()
-        # Subscribe listener for new node joined to Plugwise network
-        api_stick.subscribe_stick_callback(add_new_node, CB_JOIN_REQUEST)
 
         if config_entry.system_options.disable_new_entities:
             _LOGGER.debug("Configuring stick NOT to accept any new join requests")
@@ -93,6 +91,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
         else:
             _LOGGER.debug("Configuring stick to automatically accept new join requests")
             api_stick.allow_join_requests(True, True)
+            api_stick.subscribe_stick_callback(add_new_node, CB_JOIN_REQUEST)
 
     def shutdown(event):
         hass.async_add_executor_job(api_stick.disconnect)
