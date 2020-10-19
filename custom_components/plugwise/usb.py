@@ -69,8 +69,13 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
                 hass.config_entries.async_forward_entry_setup(config_entry, component)
             )
         api_stick.auto_update()
-        # Enable reception of join request and automatically accept new node join requests
-        api_stick.allow_join_requests(True, True)
+
+        if config_entry.system_options.disable_new_entities:
+            _LOGGER.debug("Configuring stick NOT to accept any new join requests")
+            api_stick.allow_join_requests(True, False)
+        else:
+            _LOGGER.debug("Configuring stick to automatically accept new join requests")
+            api_stick.allow_join_requests(True, True)
 
     def shutdown(event):
         hass.async_add_executor_job(api_stick.disconnect)
@@ -124,9 +129,10 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
 
     service_device_schema = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_DEVICE_ADD, device_add, service_device_schema
-    )
+    if config_entry.system_options.disable_new_entities:
+        hass.services.async_register(
+            DOMAIN, SERVICE_DEVICE_ADD, device_add, service_device_schema
+        )
     hass.services.async_register(
         DOMAIN, SERVICE_DEVICE_REMOVE, device_remove, service_device_schema
     )
