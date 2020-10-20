@@ -109,7 +109,7 @@ def temperature_sensor(name_default = "Temperature", enabled_default = True):
     """Return standardized dict with temperature description."""
     return {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
-        ATTR_ENABELD_DEFAULT: enabled_default,
+        ATTR_ENABLED_DEFAULT: enabled_default,
         ATTR_ICON: None,
         "name": name_default,
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
@@ -119,7 +119,7 @@ def energy_sensor(name_default = "Power usage", unit_default = POWER_WATT, enabl
     """Return standardized dict with energy description."""
     return {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABELD_DEFAULT: enabled_default,
+        ATTR_ENABLED_DEFAULT: enabled_default,
         ATTR_ICON: None,
         "name": name_default,
         ATTR_UNIT_OF_MEASUREMENT: unit_default,
@@ -128,14 +128,14 @@ def energy_sensor(name_default = "Power usage", unit_default = POWER_WATT, enabl
 THERMOSTAT_SENSORS = {
     "battery": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_BATTERY,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         "name": "Charge",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
     },
     "illuminance": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_ILLUMINANCE,
-        ATTR_ENABELD_DEFAULT: False,
+        ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         "name": "Illuminance",
         ATTR_UNIT_OF_MEASUREMENT: UNIT_LUMEN,
@@ -146,7 +146,7 @@ THERMOSTAT_SENSORS = {
     "temperature_difference": temperature_sensor(),
     "valve_position": {
         ATTR_DEVICE_CLASS: None,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: "mdi:valve",
         "name": "Valve position",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
@@ -157,7 +157,7 @@ AUX_DEV_SENSORS = {
     "intended_boiler_temperature": temperature_sensor(),
     "modulation_level": {
         ATTR_DEVICE_CLASS: None,
-        ATTR_ENABELD_DEFAULT: False,
+        ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: "mdi:percent",
         "name": "Heater Modulation Level",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
@@ -165,7 +165,7 @@ AUX_DEV_SENSORS = {
     "return_temperature": temperature_sensor(False),
     "water_pressure": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_PRESSURE,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         "name": "Pressure",
         ATTR_UNIT_OF_MEASUREMENT: PRESSURE_BAR,
@@ -192,14 +192,14 @@ ENERGY_SENSORS = {
     "electricity_produced_peak_cumulative": energy_sensor("Cumulative Consumed Power", ENERGY_KILO_WATT_HOUR),
     "gas_consumed_interval": {
         ATTR_DEVICE_CLASS: None,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: "mdi:fire",
         "name": "Current Consumed Gas",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
     },
     "gas_consumed_cumulative": {
         ATTR_DEVICE_CLASS: None,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: "mdi:fire",
         "name": "CUmulative Consumed Gas",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
@@ -228,7 +228,7 @@ MOTION_SENSOR_ID = "motion"
 SENSORS = {
     AVAILABLE_SENSOR_ID: {
         ATTR_DEVICE_CLASS: None,
-        ATTR_ENABELD_DEFAULT: False,
+        ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: "mdi:signal-off",
         "name": "Available",
         "state": "get_available",
@@ -236,7 +236,7 @@ SENSORS = {
     },
     "ping": {
         ATTR_DEVICE_CLASS: None,
-        ATTR_ENABELD_DEFAULT: False,
+        ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: "mdi:speedometer",
         "name": "Ping roundtrip",
         "state": "get_ping",
@@ -244,7 +244,7 @@ SENSORS = {
     },
     CURRENT_POWER_SENSOR_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         "name": "Power usage",
         "state": "get_power_usage",
@@ -252,7 +252,7 @@ SENSORS = {
     },
     "power_8s": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABELD_DEFAULT: False,
+        ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         "name": "Power usage 8 seconds",
         "state": "get_power_usage_8_sec",
@@ -260,7 +260,7 @@ SENSORS = {
     },
     "power_con_cur_hour": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         "name": "Power consumption current hour",
         "state": "get_power_consumption_current_hour",
@@ -268,7 +268,7 @@ SENSORS = {
     },
     "power_con_prev_hour": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         "name": "Power consumption previous hour",
         "state": "get_power_consumption_prev_hour",
@@ -276,7 +276,7 @@ SENSORS = {
     },
     TODAY_ENERGY_SENSOR_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         "name": "Power consumption today",
         "state": "get_power_consumption_today",
@@ -284,7 +284,7 @@ SENSORS = {
     },
     "power_con_yesterday": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         "name": "Power consumption yesterday",
         "state": "get_power_consumption_yesterday",
@@ -292,7 +292,7 @@ SENSORS = {
     },
     "power_prod_cur_hour": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABELD_DEFAULT: False,
+        ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         "name": "Power production current hour",
         "state": "get_power_production_current_hour",
@@ -300,7 +300,7 @@ SENSORS = {
     },
     "power_prod_prev_hour": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABELD_DEFAULT: False,
+        ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         "name": "Power production previous hour",
         "state": "get_power_production_previous_hour",
@@ -308,7 +308,7 @@ SENSORS = {
     },
     "RSSI_in": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_SIGNAL_STRENGTH,
-        ATTR_ENABELD_DEFAULT: False,
+        ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         "name": "Inbound RSSI",
         "state": "get_in_RSSI",
@@ -316,7 +316,7 @@ SENSORS = {
     },
     "RSSI_out": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_SIGNAL_STRENGTH,
-        ATTR_ENABELD_DEFAULT: False,
+        ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         "name": "Outbound RSSI",
         "state": "get_out_RSSI",
@@ -326,7 +326,7 @@ SENSORS = {
 BINARY_SENSORS = {
     MOTION_SENSOR_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_MOTION,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         "name": "Motion",
         "state": "get_motion",
@@ -338,7 +338,7 @@ BINARY_SENSORS = {
 SWITCHES = {
     "relay": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_OUTLET,
-        ATTR_ENABELD_DEFAULT: True,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         "name": "Relay state",
         "state": "get_relay_state",
