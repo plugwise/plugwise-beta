@@ -176,7 +176,9 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
 
     def __init__(self, api, coordinator, name, dev_id, binary_sensor, model):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator, name, dev_id, binary_sensor)
+        self._enabled_default = True
+
+        super().__init__(api, coordinator, name, dev_id, self._enabled_default, binary_sensor)
 
         self._binary_sensor = binary_sensor
 
@@ -217,7 +219,9 @@ class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
 
     def __init__(self, hass, api, coordinator, name, dev_id, binary_sensor, model):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator, name, dev_id, binary_sensor, model)
+        self._enabled_default = True
+
+        super().__init__(api, coordinator, name, dev_id, self._enabled_default, binary_sensor, model)
 
         self._binary_sensor = binary_sensor
         self._hass = hass

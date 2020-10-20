@@ -20,6 +20,7 @@ from homeassistant.const import (
 )
 
 API = "api"
+ATTR_DEFAULT_ENABLED = "default_enabled"
 DOMAIN = "plugwise"
 COORDINATOR = "coordinator"
 GATEWAY = "gateway"
@@ -38,10 +39,9 @@ FLOW_STRETCH = "stretch (Stretch)"
 UNDO_UPDATE_LISTENER = "undo_update_listener"
 
 # Sensor mapping
-SENSOR_MAP_DEVICE_CLASS = 2
-SENSOR_MAP_ICON = 3
-SENSOR_MAP_MODEL = 0
-SENSOR_MAP_UOM = 1
+SENSORS_DEVICE_CLASS = "class"
+SENSORS_ICON = "icon"
+SENSORS_UOM = "unit"
 
 # Default directives
 DEFAULT_MAX_TEMP = 30
@@ -87,7 +87,6 @@ ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
 SERVICE_DELETE = "delete_notification"
 SENSOR_PLATFORMS = ["sensor", "switch"]
 
-# binary_sensor const:
 BINARY_SENSOR_MAP = {
     "dhw_state": ["Domestic Hot Water State", None],
     "slave_boiler_state": ["Secondary Heater Device State", None],
@@ -108,138 +107,107 @@ ZEROCONF_MAP = {
     "stretch": "Stretch",
 }
 
-# sensor consts:
-ATTR_TEMPERATURE = ["Temperature", TEMP_CELSIUS, DEVICE_CLASS_TEMPERATURE]
-ATTR_BATTERY_LEVEL = ["Charge", PERCENTAGE, DEVICE_CLASS_BATTERY]
-ATTR_ILLUMINANCE = ["Illuminance", UNIT_LUMEN, DEVICE_CLASS_ILLUMINANCE]
-ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE]
+def temperature_sensor(name_default = "Temperature", enabled_default = True): 
+    """Return standardized dict with temperature description."""
+    return {
+        "class": DEVICE_CLASS_TEMPERATURE,
+        "enabled_default": enabled_default,
+        "icon": None,
+        "name": name_default,
+        "unit": TEMP_CELCIUS,
+    }
 
-THERMOSTAT_SENSOR_MAP = {
-    "battery": ATTR_BATTERY_LEVEL,
-    "illuminance": ATTR_ILLUMINANCE,
-    "outdoor_temperature": ATTR_TEMPERATURE,
-    "setpoint": ATTR_TEMPERATURE,
-    "temperature": ATTR_TEMPERATURE,
-    "temperature_difference": ATTR_TEMPERATURE,
-    "valve_position": ["Valve Position", PERCENTAGE, None],
+def energy_sensor(name_default = "Power usage", unit_default = POWER_WATT, enabled_default = True): 
+    """Return standardized dict with energy description."""
+    return {
+        "class": DEVICE_CLASS_POWER,
+        "enabled_default": enabled_default,
+        "icon": None,
+        "name": name_default,
+        "unit": unit_default,
+    }
+
+THERMOSTAT_SENSORS = {
+    "battery": {
+        "class": DEVICE_CLASS_BATTERY,
+        "enabled_default": True,
+        "icon": None,
+        "name": "Charge",
+        "unit": PERCENTAGE,
+    },
+    "illuminance": {
+        "class": DEVICE_CLASS_ILLUMINANCE,
+        "enabled_default": True,
+        "icon": None,
+        "name": "Illuminance",
+        "unit": UNIT_LUMEN,
+    },
+    "outdoor_temperature": temperature_sensor(),
+    "setpoint": temperature_sensor(),
+    "temperature": temperature_sensor(),
+    "temperature_difference": temperature_sensor(),
+    "valve_position": {
+        "class": None,
+        "enabled_default": True,
+        "icon": "mdi:valve",
+        "name": "Valve position",
+        "unit": PERCENTAGE,
+    },
 }
 
-AUX_DEV_SENSOR_MAP = {
-    "intended_boiler_temperature": ATTR_TEMPERATURE,
-    "modulation_level": ["Heater Modulation Level", PERCENTAGE, None],
-    "return_temperature": ATTR_TEMPERATURE,
-    "water_pressure": ATTR_PRESSURE,
-    "water_temperature": ATTR_TEMPERATURE,
+AUX_DEV_SENSORS = {
+    "intended_boiler_temperature": temperature_sensor(),
+    "modulation_level": {
+        "class": None,
+        "enabled_default": False,
+        "icon": "mdi:percent",
+        "name": "Heater Modulation Level",
+        "unit": PERCENTAGE,
+    },
+    "return_temperature": temperature_sensor(False),
+    "water_pressure": {
+        "class": DEVICE_CLASS_PRESSURE,
+        "enabled_default": True,
+        "icon": None,
+        "name": "Pressure",
+        "unit": PRESSURE_BAR,
+    },
+    "water_temperature": temperature_sensor(),
 }
 
-ENERGY_SENSOR_MAP = {
-    "electricity_consumed": [
-        "Current Consumed Power",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced": [
-        "Current Produced Power",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_interval": [
-        "Consumed Power Interval",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_peak_interval": [
-        "Consumed Power Interval",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_off_peak_interval": [
-        "Consumed Power Interval (off peak)",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_interval": [
-        "Produced Power Interval",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_peak_interval": [
-        "Produced Power Interval",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_off_peak_interval": [
-        "Produced Power Interval (off peak)",
-        ENERGY_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_off_peak_point": [
-        "Current Consumed Power (off peak)",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_peak_point": [
-        "Current Consumed Power",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_off_peak_cumulative": [
-        "Cumulative Consumed Power (off peak)",
-        ENERGY_KILO_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_consumed_peak_cumulative": [
-        "Cumulative Consumed Power",
-        ENERGY_KILO_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_off_peak_point": [
-        "Current Consumed Power (off peak)",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_peak_point": [
-        "Current Consumed Power",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_off_peak_cumulative": [
-        "Cumulative Consumed Power (off peak)",
-        ENERGY_KILO_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "electricity_produced_peak_cumulative": [
-        "Cumulative Consumed Power",
-        ENERGY_KILO_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-    "gas_consumed_interval": [
-        "Current Consumed Gas",
-        VOLUME_CUBIC_METERS,
-        None,
-    ],
-    "gas_consumed_cumulative": [
-        "Cumulative Consumed Gas",
-        VOLUME_CUBIC_METERS,
-        None,
-    ],
-    "net_electricity_point": [
-        "Current net Power",
-        POWER_WATT,
-        DEVICE_CLASS_POWER,
-    ],
-    "net_electricity_cumulative": [
-        "Cumulative net Power",
-        ENERGY_KILO_WATT_HOUR,
-        DEVICE_CLASS_POWER,
-    ],
-}
-
-CUSTOM_ICONS = {
-    "gas_consumed_interval": "mdi:fire",
-    "gas_consumed_cumulative": "mdi:fire",
-    "modulation_level": "mdi:percent",
-    "valve_position": "mdi:valve",
+ENERGY_SENSORS = {
+    "electricity_consumed": energy_sensor("Current Consumed Power"), 
+    "electricity_produced": energy_sensor("Current Produced Power"),
+    "electricity_consumed_interval": energy_sensor("Consumed Power Interval", ENERGY_WATT_HOUR),
+    "electricity_consumed_peak_interval": energy_sensor("Consumed Power Interval", ENERGY_WATT_HOUR),
+    "electricity_consumed_off_peak_interval": energy_sensor("Consumed Power Interval (off peak)", ENERGY_WATT_HOUR),
+    "electricity_produced_interval": energy_sensor("Produced Power Interval", ENERGY_WATT_HOUR),
+    "electricity_produced_peak_interval": energy_sensor("Produced Power Interval", ENERGY_WATT_HOUR),
+    "electricity_produced_off_peak_interval": energy_sensor("Produced Power Interval (off peak)", ENERGY_WATT_HOUR),
+    "electricity_consumed_off_peak_point": energy_sensor("Current Consumed Power (off peak)"),
+    "electricity_consumed_peak_point": energy_sensor("Current Consumed Power"),
+    "electricity_consumed_off_peak_cumulative": energy_sensor("Cumulative Consumed Power (off peak)", ENERGY_KILO_WATT_HOUR),
+    "electricity_consumed_peak_cumulative": energy_sensor("Cumulative Consumed Power", ENERGY_KILO_WATT_HOUR),
+    "electricity_produced_off_peak_point": energy_sensor("Current Consumed Power (off peak)"),
+    "electricity_produced_peak_point": energy_sensor("Current Consumed Power"),
+    "electricity_produced_off_peak_cumulative": energy_sensor("Cumulative Consumed Power (off peak)", ENERGY_KILO_WATT_HOUR),
+    "electricity_produced_peak_cumulative": energy_sensor("Cumulative Consumed Power", ENERGY_KILO_WATT_HOUR),
+    "gas_consumed_interval": {
+        "class": None,
+        "enabled_default": True,
+        "icon": "mdi:fire",
+        "name": "Current Consumed Gas",
+        "unit": VOLUME_CUBIC_METERS,
+    },
+    "gas_consumed_cumulative": {
+        "class": None,
+        "enabled_default": True,
+        "icon": "mdi:fire",
+        "name": "CUmulative Consumed Gas",
+        "unit": VOLUME_CUBIC_METERS,
+    },
+    "net_electricity_point": energy_sensor("Current net Power"),
+    "net_electricity_cumulative": energy_sensor("Current net Power", ENERGY_KILO_WATT_HOUR),
 }
 
 # switch const:

@@ -16,23 +16,22 @@ from .usb import NodeEntity
 from .const import (
     API,
     AVAILABLE_SENSOR_ID,
-    AUX_DEV_SENSOR_MAP,
+    AUX_DEV_SENSORS,
     CB_NEW_NODE,
     COOL_ICON,
     COORDINATOR,
     CUSTOM_ICONS,
     DEVICE_STATE,
     DOMAIN,
-    ENERGY_SENSOR_MAP,
+    ENERGY_SENSORS,
     FLAME_ICON,
     IDLE_ICON,
     PW_TYPE,
-    SENSOR_MAP_DEVICE_CLASS,
-    SENSOR_MAP_MODEL,
-    SENSOR_MAP_UOM,
+    SENSORS_DEVICE_CLASS,
+    SENSORS_UOM,
     SENSORS,
     STICK,
-    THERMOSTAT_SENSOR_MAP,
+    THERMOSTAT_SENSORS,
     USB,
 )
 
@@ -85,7 +84,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
         _LOGGER.debug("Plugwise sensor Dev %s", device_properties["name"])
-        for sensor, sensor_type in ENERGY_SENSOR_MAP.items():
+        for sensor, sensor_type in ENERGY_SENSORS.items():
             if data.get(sensor) is None:
                 continue
 
@@ -106,7 +105,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             )
             _LOGGER.info("Added sensor.%s", device_properties["name"])
 
-        for sensor, sensor_type in THERMOSTAT_SENSOR_MAP.items():
+        for sensor, sensor_type in THERMOSTAT_SENSORS.items():
             if data.get(sensor) is None:
                 continue
 
@@ -118,11 +117,12 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     dev_id,
                     sensor,
                     sensor_type,
+                    THERMOSTAT_SENSORS,
                 )
             )
             _LOGGER.info("Added sensor.%s", device_properties["name"])
 
-        for sensor, sensor_type in AUX_DEV_SENSOR_MAP.items():
+        for sensor, sensor_type in AUX_DEV_SENSORS.items():
             if data.get(sensor) is None or not api.active_device_present:
                 continue
 
@@ -161,7 +161,7 @@ class SmileSensor(SmileGateway):
 
     def __init__(self, api, coordinator, name, dev_id, sensor):
         """Initialise the sensor."""
-        super().__init__(api, coordinator, name, dev_id)
+        super().__init__(api, coordinator, name, dev_id, enabled_default)
 
         self._sensor = sensor
 
@@ -207,12 +207,16 @@ class GwThermostatSensor(SmileSensor, Entity):
 
     def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator, name, dev_id, sensor)
+        _LOGGER.error("HOI sensor %s", sensor)
+        _LOGGER.error("HOI type   %s", sensor_type)
+        self._enabled_default = True
+
+        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
 
         self._icon = None
-        self._model = sensor_type[SENSOR_MAP_MODEL]
-        self._unit_of_measurement = sensor_type[SENSOR_MAP_UOM]
-        self._dev_class = sensor_type[SENSOR_MAP_DEVICE_CLASS]
+        self._model = sensor
+        self._unit_of_measurement = sensor_type[SENSORS_UOM]
+        self._dev_class = sensor_type[SENSORS_DEVICE_CLASS]
 
     @callback
     def _async_process_data(self):
@@ -238,7 +242,9 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
 
     def __init__(self, api, coordinator, name, dev_id, sensor):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator, name, dev_id, sensor)
+        self._enabled_default = True
+
+        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
 
         self._cooling_state = False
         self._heating_state = False
@@ -272,15 +278,17 @@ class GwPowerSensor(SmileSensor, Entity):
 
     def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type, model):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator, name, dev_id, sensor)
+        self._enabled_default = True
+
+        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
 
         self._icon = None
         self._model = model
         if model is None:
-            self._model = sensor_type[SENSOR_MAP_MODEL]
+            self._model = sensor
 
-        self._unit_of_measurement = sensor_type[SENSOR_MAP_UOM]
-        self._dev_class = sensor_type[SENSOR_MAP_DEVICE_CLASS]
+        self._unit_of_measurement = sensor_type[SENSORS_UOM]
+        self._dev_class = sensor_type[SENSORS_DEVICE_CLASS]
 
         if dev_id == self._api.gateway_id:
             self._model = "P1 DSMR"
