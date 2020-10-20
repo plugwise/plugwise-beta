@@ -161,13 +161,14 @@ class SmileSensor(SmileGateway):
 
     def __init__(self, api, coordinator, name, dev_id, enabled_default, sensor):
         """Initialise the sensor."""
-        super().__init__(api, coordinator, name, dev_id, enabled_default)
+        super().__init__(api, coordinator, name, dev_id)
 
         self._sensor = sensor
 
         self._dev_class = None
-        self._state = None
+        self._enabled_default = enabled_default
         self._icon = None
+        self._state = None
         self._unit_of_measurement = None
 
         if dev_id == self._api.heater_id:
@@ -185,6 +186,12 @@ class SmileSensor(SmileGateway):
     def device_class(self):
         """Return the device class of this entity, if any."""
         return self._dev_class
+
+    @property
+    def entity_registry_enabled_default(self) -> bool:
+        """Return if the entity should be enabled when first added to the entity registry."""
+        return self._enabled_default
+
 
     @property
     def icon(self):

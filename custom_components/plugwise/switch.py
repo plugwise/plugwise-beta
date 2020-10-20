@@ -12,6 +12,7 @@ from .gateway import SmileGateway
 from .usb import NodeEntity
 from .const import (
     API,
+    ATTR_ENABLED_DEFAULT,
     AVAILABLE_SENSOR_ID,
     CB_NEW_NODE,
     COORDINATOR,
@@ -197,7 +198,7 @@ class USBSwitch(NodeEntity, SwitchEntity):
     @property
     def entity_registry_enabled_default(self):
         """Return the switch registration state."""
-        return self.switch_type["enabled_default"]
+        return self.switch_type[ATTR_ENABLED_DEFAULT]
 
     @property
     def icon(self):

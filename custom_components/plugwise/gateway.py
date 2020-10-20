@@ -225,14 +225,13 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
 class SmileGateway(CoordinatorEntity):
     """Represent Smile Gateway."""
 
-    def __init__(self, api, coordinator, name, dev_id, enabled_default: bool = True):
+    def __init__(self, api, coordinator, name, dev_id):
         """Initialise the gateway."""
         super().__init__(coordinator)
 
         self._api = api
         self._name = name
         self._dev_id = dev_id
-        self._enabled_default = enabled_default
 
         self._unique_id = None
         self._model = None
@@ -243,11 +242,6 @@ class SmileGateway(CoordinatorEntity):
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
-
-    @property
-    def entity_registry_enabled_default(self) -> bool:
-        """Return if the entity should be enabled when first added to the entity registry."""
-        return self._enabled_default
 
     @property
     def name(self):

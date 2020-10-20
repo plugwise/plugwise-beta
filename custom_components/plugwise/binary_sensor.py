@@ -11,6 +11,7 @@ from homeassistant.helpers import config_validation as cv, entity_platform
 
 from .const import (
     API,
+    ATTR_ENABLED_DEFAULT,
     ATTR_SCAN_DAYLIGHT_MODE,
     ATTR_SCAN_SENSITIVITY_MODE,
     ATTR_SCAN_RESET_TIMER,
@@ -284,7 +285,7 @@ class USBBinarySensor(NodeEntity, BinarySensorEntity):
     @property
     def entity_registry_enabled_default(self):
         """Return the sensor registration state."""
-        return self.sensor_type["enabled_default"]
+        return self.sensor_type[ATTR_ENABLED_DEFAULT]
 
     @property
     def icon(self):
