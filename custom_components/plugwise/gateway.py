@@ -102,7 +102,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         """Update data via API endpoint."""
         _LOGGER.debug("Updating Smile %s", api.smile_name)
         try:
-            async with async_timeout.timeout(60):
+            async with async_timeout.timeout(update_interval.seconds):
                 await api.full_update_device()
                 _LOGGER.debug("Succesfully updated Smile %s", api.smile_name)
                 return True
