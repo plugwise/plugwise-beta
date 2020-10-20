@@ -210,7 +210,7 @@ class GwThermostatSensor(SmileSensor, Entity):
         """Set up the Plugwise API."""
         _LOGGER.error("HOI sensor %s", sensor)
         _LOGGER.error("HOI type   %s", sensor_type)
-        self._enabled_default = True
+        self._enabled_default = sensor_type["enabled_default"]
 
         super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
 

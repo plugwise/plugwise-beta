@@ -221,7 +221,7 @@ class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
         """Set up the Plugwise API."""
         self._enabled_default = True
 
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default, binary_sensor, model)
+        super().__init__(api, coordinator, name, dev_id, binary_sensor, model)
 
         self._binary_sensor = binary_sensor
         self._hass = hass
