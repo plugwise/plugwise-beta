@@ -114,7 +114,7 @@ def temperature_sensor(name_default = "Temperature", enabled_default = True):
         "enabled_default": enabled_default,
         "icon": None,
         "name": name_default,
-        "unit": TEMP_CELCIUS,
+        "unit": TEMP_CELSIUS,
     }
 
 def energy_sensor(name_default = "Power usage", unit_default = POWER_WATT, enabled_default = True): 
