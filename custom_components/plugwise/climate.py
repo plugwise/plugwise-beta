@@ -79,7 +79,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         """Set up the Plugwise API."""
         self._enabled_default = True
 
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default)
+        super().__init__(api, coordinator, name, dev_id)
 
         self._api = api
         self._loc_id = loc_id
