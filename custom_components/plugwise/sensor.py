@@ -2,7 +2,7 @@
 
 import logging
 
-from homeassistant.const import ENERGY_KILO_WATT_HOUR, PERCENTAGE
+from homeassistant.const import ENERGY_KILO_WATT_HOUR, PERCENTAGE, ATTR_UNIT_OF_MEASUREMENT, ATTR_DEVICE_CLASS, ATTR_ICON
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
@@ -20,15 +20,12 @@ from .const import (
     CB_NEW_NODE,
     COOL_ICON,
     COORDINATOR,
-    CUSTOM_ICONS,
     DEVICE_STATE,
     DOMAIN,
     ENERGY_SENSORS,
     FLAME_ICON,
     IDLE_ICON,
     PW_TYPE,
-    SENSORS_DEVICE_CLASS,
-    SENSORS_UOM,
     SENSORS,
     STICK,
     THERMOSTAT_SENSORS,
@@ -213,10 +210,11 @@ class GwThermostatSensor(SmileSensor, Entity):
 
         super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
 
-        self._icon = None
         self._model = sensor
-        self._unit_of_measurement = sensor_type[SENSORS_UOM]
-        self._dev_class = sensor_type[SENSORS_DEVICE_CLASS]
+        self._unit_of_measurement = sensor_type[ATTR_UNIT_OF_MEASUREMENT]
+        self._dev_class = sensor_type[ATTR_DEVICE_CLASS]
+        if not self._dev_class:
+            self._icon = sensor__type[ATTR_ICON]
 
     @callback
     def _async_process_data(self):
@@ -232,7 +230,6 @@ class GwThermostatSensor(SmileSensor, Entity):
         if self._unit_of_measurement == PERCENTAGE:
             measurement = int(measurement * 100)
         self._state = measurement
-        self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 
         self.async_write_ha_state()
 
@@ -287,8 +284,10 @@ class GwPowerSensor(SmileSensor, Entity):
         if model is None:
             self._model = sensor
 
-        self._unit_of_measurement = sensor_type[SENSORS_UOM]
-        self._dev_class = sensor_type[SENSORS_DEVICE_CLASS]
+        self._unit_of_measurement = sensor_type[ATTR_UNIT_OF_MEASUREMENT]
+        self._dev_class = sensor_type[ATTR_DEVICE_CLASS]
+        if not self._dev_class:
+            self._icon = sensor__type[ATTR_ICON]
 
         if dev_id == self._api.gateway_id:
             self._model = "P1 DSMR"
@@ -307,7 +306,6 @@ class GwPowerSensor(SmileSensor, Entity):
         if self._unit_of_measurement == ENERGY_KILO_WATT_HOUR:
             measurement = round((measurement / 1000), 1)
         self._state = measurement
-        self._icon = CUSTOM_ICONS.get(self._sensor, self._icon)
 
         self.async_write_ha_state()
 
