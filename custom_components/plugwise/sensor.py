@@ -106,6 +106,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             if data.get(sensor) is None:
                 continue
 
+            _LOGGER.error("HOI sensor %s", sensor)
+            _LOGGER.error("HOI type   %s", sensor_type)
             entities.append(
                 GwThermostatSensor(
                     api,
@@ -123,6 +125,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             if data.get(sensor) is None or not api.active_device_present:
                 continue
 
+            _LOGGER.error("HOI sensor %s", sensor)
+            _LOGGER.error("HOI type   %s", sensor_type)
             entities.append(
                 GwThermostatSensor(
                     api,
