@@ -116,7 +116,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     dev_id,
                     sensor,
                     sensor_type,
-                    THERMOSTAT_SENSORS,
                 )
             )
             _LOGGER.info("Added sensor.%s", device_properties["name"])
