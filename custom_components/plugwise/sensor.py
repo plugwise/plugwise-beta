@@ -160,7 +160,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 class SmileSensor(SmileGateway):
     """Represent Smile Sensors."""
 
-    def __init__(self, api, coordinator, name, dev_id, sensor, enabled_default):
+    def __init__(self, api, coordinator, name, dev_id, enabled_default, sensor):
         """Initialise the sensor."""
         super().__init__(api, coordinator, name, dev_id, enabled_default)
 
