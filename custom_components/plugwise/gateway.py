@@ -229,14 +229,19 @@ class SmileGateway(CoordinatorEntity):
         """Initialise the gateway."""
         super().__init__(coordinator)
 
+        self._coordinator = coordinator
+
         self._api = api
-        self._name = name
         self._dev_id = dev_id
-
-        self._unique_id = None
-        self._model = None
-
         self._entity_name = self._name
+        self._model = None
+        self._name = name
+        self._unique_id = None
+
+    @property
+    def available(self):
+        """Return True if entity is available."""
+        return self.coordinator.last_update_success
 
     @property
     def unique_id(self):
