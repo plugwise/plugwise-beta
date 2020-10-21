@@ -230,12 +230,12 @@ class SmileGateway(CoordinatorEntity):
         super().__init__(coordinator)
 
         self._coordinator = coordinator
+        self._name = name
 
         self._api = api
         self._dev_id = dev_id
         self._entity_name = self._name
         self._model = None
-        self._name = name
         self._unique_id = None
 
 
