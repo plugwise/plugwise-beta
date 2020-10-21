@@ -102,7 +102,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         """Update data via API endpoint."""
         _LOGGER.debug("Updating Smile %s", api.smile_name)
         try:
-            async with async_timeout.timeout(60):
+            async with async_timeout.timeout(update_interval.seconds):
                 await api.full_update_device()
                 _LOGGER.debug("Succesfully updated Smile %s", api.smile_name)
                 return True
@@ -229,19 +229,25 @@ class SmileGateway(CoordinatorEntity):
         """Initialise the gateway."""
         super().__init__(coordinator)
 
+        self._coordinator = coordinator
+
         self._api = api
-        self._name = name
         self._dev_id = dev_id
-
-        self._unique_id = None
-        self._model = None
-
         self._entity_name = self._name
+        self._model = None
+        self._name = name
+        self._unique_id = None
+
 
     @property
     def unique_id(self):
         """Return a unique ID."""
         return self._unique_id
+
+    @property
+     def available(self):
+         """Return True if entity is available."""
+         return self.coordinator.last_update_success
 
     @property
     def name(self):
