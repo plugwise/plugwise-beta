@@ -80,10 +80,10 @@ NOTIFICATION_ICON = "mdi:mailbox-up-outline"
 NO_NOTIFICATION_ICON = "mdi:mailbox-outline"
 SWITCH_ICON = "mdi:electric-switch"
 
-# __init__ consts:
+# gatewau consts:
 ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
-SERVICE_DELETE = "delete_notification"
 SENSOR_PLATFORMS = ["sensor", "switch"]
+SERVICE_DELETE = "delete_notification"
 
 BINARY_SENSOR_MAP = {
     "dhw_state": ["Domestic Hot Water State", None],

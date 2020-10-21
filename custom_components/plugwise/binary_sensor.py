@@ -44,6 +44,8 @@ from .const import (
 from .sensor import SmileSensor
 from .usb import NodeEntity
 
+PARALLEL_UPDATES = 0
+
 _LOGGER = logging.getLogger(__name__)
 
 
