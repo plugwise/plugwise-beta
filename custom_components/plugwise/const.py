@@ -142,7 +142,7 @@ THERMOSTAT_SENSORS = {
     },
     "illuminance": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_ILLUMINANCE,
-        ATTR_ENABLED_DEFAULT: False,
+        ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Illuminance",
         ATTR_UNIT_OF_MEASUREMENT: UNIT_LUMEN,
