@@ -108,7 +108,7 @@ ZEROCONF_MAP = {
 }
 
 
-def temperature_sensor(name_default="Temperature", enabled_default=True):
+def _temperatureSensor(name_default="Temperature", enabled_default=True):
     """Return standardized dict with temperature description."""
     return {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
@@ -119,7 +119,7 @@ def temperature_sensor(name_default="Temperature", enabled_default=True):
     }
 
 
-def energy_sensor(
+def _energySensor(
     name_default="Power usage", unit_default=POWER_WATT, enabled_default=True
 ):
     """Return standardized dict with energy description."""
@@ -147,10 +147,10 @@ THERMOSTAT_SENSORS = {
         ATTR_NAME: "Illuminance",
         ATTR_UNIT_OF_MEASUREMENT: UNIT_LUMEN,
     },
-    "outdoor_temperature": temperature_sensor(),
-    "setpoint": temperature_sensor(),
-    "temperature": temperature_sensor(),
-    "temperature_difference": temperature_sensor(),
+    "outdoor_temperature": _temperatureSensor(),
+    "setpoint": _temperatureSensor(),
+    "temperature": _temperatureSensor(),
+    "temperature_difference": _temperatureSensor(),
     "valve_position": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
@@ -161,7 +161,7 @@ THERMOSTAT_SENSORS = {
 }
 
 AUX_DEV_SENSORS = {
-    "intended_boiler_temperature": temperature_sensor(),
+    "intended_boiler_temperature": _temperatureSensor(),
     "modulation_level": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: False,
@@ -169,7 +169,7 @@ AUX_DEV_SENSORS = {
         ATTR_NAME: "Heater Modulation Level",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
     },
-    "return_temperature": temperature_sensor(False),
+    "return_temperature": _temperatureSensor(False),
     "water_pressure": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_PRESSURE,
         ATTR_ENABLED_DEFAULT: True,
@@ -177,48 +177,48 @@ AUX_DEV_SENSORS = {
         ATTR_NAME: "Pressure",
         ATTR_UNIT_OF_MEASUREMENT: PRESSURE_BAR,
     },
-    "water_temperature": temperature_sensor(),
+    "water_temperature": _temperatureSensor(),
 }
 
 ENERGY_SENSORS = {
-    "electricity_consumed": energy_sensor("Current Consumed Power"),
-    "electricity_produced": energy_sensor("Current Produced Power"),
-    "electricity_consumed_interval": energy_sensor(
+    "electricity_consumed": _energySensor("Current Consumed Power"),
+    "electricity_produced": _energySensor("Current Produced Power"),
+    "electricity_consumed_interval": _energySensor(
         "Consumed Power Interval", ENERGY_WATT_HOUR
     ),
-    "electricity_consumed_peak_interval": energy_sensor(
+    "electricity_consumed_peak_interval": _energySensor(
         "Consumed Power Interval", ENERGY_WATT_HOUR
     ),
-    "electricity_consumed_off_peak_interval": energy_sensor(
+    "electricity_consumed_off_peak_interval": _energySensor(
         "Consumed Power Interval (off peak)", ENERGY_WATT_HOUR
     ),
-    "electricity_produced_interval": energy_sensor(
+    "electricity_produced_interval": _energySensor(
         "Produced Power Interval", ENERGY_WATT_HOUR
     ),
-    "electricity_produced_peak_interval": energy_sensor(
+    "electricity_produced_peak_interval": _energySensor(
         "Produced Power Interval", ENERGY_WATT_HOUR
     ),
-    "electricity_produced_off_peak_interval": energy_sensor(
+    "electricity_produced_off_peak_interval": _energySensor(
         "Produced Power Interval (off peak)", ENERGY_WATT_HOUR
     ),
-    "electricity_consumed_off_peak_point": energy_sensor(
+    "electricity_consumed_off_peak_point": _energySensor(
         "Current Consumed Power (off peak)"
     ),
-    "electricity_consumed_peak_point": energy_sensor("Current Consumed Power"),
-    "electricity_consumed_off_peak_cumulative": energy_sensor(
+    "electricity_consumed_peak_point": _energySensor("Current Consumed Power"),
+    "electricity_consumed_off_peak_cumulative": _energySensor(
         "Cumulative Consumed Power (off peak)", ENERGY_KILO_WATT_HOUR
     ),
-    "electricity_consumed_peak_cumulative": energy_sensor(
+    "electricity_consumed_peak_cumulative": _energySensor(
         "Cumulative Consumed Power", ENERGY_KILO_WATT_HOUR
     ),
-    "electricity_produced_off_peak_point": energy_sensor(
+    "electricity_produced_off_peak_point": _energySensor(
         "Current Consumed Power (off peak)"
     ),
-    "electricity_produced_peak_point": energy_sensor("Current Consumed Power"),
-    "electricity_produced_off_peak_cumulative": energy_sensor(
+    "electricity_produced_peak_point": _energySensor("Current Consumed Power"),
+    "electricity_produced_off_peak_cumulative": _energySensor(
         "Cumulative Consumed Power (off peak)", ENERGY_KILO_WATT_HOUR
     ),
-    "electricity_produced_peak_cumulative": energy_sensor(
+    "electricity_produced_peak_cumulative": _energySensor(
         "Cumulative Consumed Power", ENERGY_KILO_WATT_HOUR
     ),
     "gas_consumed_interval": {
@@ -235,8 +235,8 @@ ENERGY_SENSORS = {
         ATTR_NAME: "CUmulative Consumed Gas",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
     },
-    "net_electricity_point": energy_sensor("Current net Power"),
-    "net_electricity_cumulative": energy_sensor(
+    "net_electricity_point": _energySensor("Current net Power"),
+    "net_electricity_cumulative": _energySensor(
         "Current net Power", ENERGY_KILO_WATT_HOUR
     ),
 }
