@@ -245,9 +245,9 @@ class SmileGateway(CoordinatorEntity):
         return self._unique_id
 
     @property
-     def available(self):
-         """Return True if entity is available."""
-         return self.coordinator.last_update_success
+    def available(self):
+        """Return True if entity is available."""
+        return self.coordinator.last_update_success
 
     @property
     def name(self):
