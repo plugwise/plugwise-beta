@@ -77,8 +77,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp
     ):
         """Set up the Plugwise API."""
-        self._enabled_default = True
-
         super().__init__(api, coordinator, name, dev_id)
 
         self._api = api
@@ -292,4 +290,3 @@ class PwThermostat(SmileGateway, ClimateEntity):
             self._hvac_mode = HVAC_MODE_OFF
 
         self.async_write_ha_state()
-        

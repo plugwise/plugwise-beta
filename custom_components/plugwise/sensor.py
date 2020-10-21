@@ -2,7 +2,13 @@
 
 import logging
 
-from homeassistant.const import ENERGY_KILO_WATT_HOUR, PERCENTAGE, ATTR_UNIT_OF_MEASUREMENT, ATTR_DEVICE_CLASS, ATTR_ICON
+from homeassistant.const import (
+    ENERGY_KILO_WATT_HOUR,
+    PERCENTAGE,
+    ATTR_UNIT_OF_MEASUREMENT,
+    ATTR_DEVICE_CLASS,
+    ATTR_ICON,
+)
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
@@ -193,7 +199,6 @@ class SmileSensor(SmileGateway):
     def entity_registry_enabled_default(self) -> bool:
         """Return if the entity should be enabled when first added to the entity registry."""
         return self._enabled_default
-
 
     @property
     def icon(self):

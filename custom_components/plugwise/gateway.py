@@ -238,7 +238,6 @@ class SmileGateway(CoordinatorEntity):
         self._model = None
         self._unique_id = None
 
-
     @property
     def unique_id(self):
         """Return a unique ID."""
