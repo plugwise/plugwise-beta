@@ -6,6 +6,17 @@ from typing import Dict
 
 import voluptuous as vol
 
+import plugwise
+from plugwise.smile import Smile
+from plugwise.exceptions import (
+    InvalidAuthentication,
+    NetworkDown,
+    PlugwiseException,
+    PortError,
+    StickInitError,
+    TimeoutException,
+)
+
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import (
     CONF_BASE,
@@ -19,17 +30,6 @@ from homeassistant.const import (
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
 from homeassistant.core import callback
-
-import plugwise
-from plugwise.smile import Smile
-from plugwise.exceptions import (
-    InvalidAuthentication,
-    NetworkDown,
-    PlugwiseException,
-    PortError,
-    StickInitError,
-    TimeoutException,
-)
 
 from .const import (
     API,
