@@ -231,7 +231,7 @@ class GwThermostatSensor(SmileSensor, Entity):
         self._unit_of_measurement = sensor_type[ATTR_UNIT_OF_MEASUREMENT]
         self._dev_class = sensor_type[ATTR_DEVICE_CLASS]
         if not self._dev_class:
-            self._icon = sensor__type[ATTR_ICON]
+            self._icon = sensor_type[ATTR_ICON]
 
     @callback
     def _async_process_data(self):
