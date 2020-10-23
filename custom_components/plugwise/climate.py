@@ -81,28 +81,27 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
         self._api = api
         self._loc_id = loc_id
-        self._model = model
-        self._min_temp = min_temp
         self._max_temp = max_temp
+        self._min_temp = min_temp
+        self._model = model
 
-        self._selected_schema = None
-        self._last_active_schema = None
-        self._preset_mode = None
-        self._presets = None
-        self._presets_list = None
-        self._heating_state = None
         self._cooling_state = None
         self._compressor_state = None
         self._dhw_state = None
+        self._heating_state = None
         self._hvac_mode = None
+        self._last_active_schema = None
         self._mode_off = None
+        self._preset_mode = None
+        self._presets = None
+        self._presets_list = None
+        self._schedule_temp = None
         self._schema_names = None
         self._schema_status = None
-        self._temperature = None
+        self._selected_schema = None
         self._setpoint = None
+        self._temperature = None
         self._water_pressure = None
-        self._schedule_temp = None
-        self._hvac_mode = None
 
         self._single_thermostat = self._api.single_master_thermostat()
         self._unique_id = f"{dev_id}-climate"
