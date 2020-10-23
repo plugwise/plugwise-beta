@@ -82,7 +82,8 @@ NOTIFICATION_ICON = "mdi:mailbox-up-outline"
 NO_NOTIFICATION_ICON = "mdi:mailbox-outline"
 SWITCH_ICON = "mdi:electric-switch"
 
-# gateway consts:
+# --- Const for Plugwise Smile and Stretch
+
 ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
 SENSOR_PLATFORMS = ["sensor", "switch"]
 SERVICE_DELETE = "delete_notification"
@@ -107,6 +108,7 @@ ZEROCONF_MAP = {
     "stretch": "Stretch",
 }
 
+# Helper functions for dicts of constants
 
 def _temperatureSensor(name_default="Temperature", enabled_default=True):
     """Return standardized dict with temperature description."""

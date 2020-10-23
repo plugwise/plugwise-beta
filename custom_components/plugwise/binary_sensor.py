@@ -70,7 +70,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         for sensor_type in node.get_sensors():
             if sensor_type in BINARY_SENSORS:
                 async_add_entities([USBBinarySensor(node, mac, sensor_type)])
-                _LOGGER.debug(f{"Added {sensor_type} as binary_sensors for %s", mac)
+                _LOGGER.debug("Added %s as binary_sensor", sensor_type)
 
                 if node.get_node_type() == "Scan" and sensor_type == MOTION_SENSOR_ID:
                     platform.async_register_entity_service(
