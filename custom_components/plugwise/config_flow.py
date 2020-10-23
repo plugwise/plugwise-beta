@@ -21,7 +21,15 @@ from homeassistant.helpers.typing import DiscoveryInfoType
 from homeassistant.core import callback
 
 import plugwise
-from Plugwise_Smile.Smile import Smile
+from plugwise.smile import Smile
+from plugwise.exceptions import (
+    InvalidAuthentication,
+    NetworkDown,
+    PlugwiseException,
+    PortError,
+    StickInitError,
+    TimeoutException,
+)
 
 from .const import (
     API,
@@ -42,8 +50,6 @@ from .const import (
     STRETCH_USERNAME,
     ZEROCONF_MAP,
 )  # pylint:disable=unused-import
-
-from plugwise.exceptions import NetworkDown, PortError, StickInitError, TimeoutException
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -142,9 +148,9 @@ async def validate_gw_input(hass: core.HomeAssistant, data):
 
     try:
         await api.connect()
-    except Smile.InvalidAuthentication as err:
+    except InvalidAuthentication as err:
         raise InvalidAuth from err
-    except Smile.PlugwiseError as err:
+    except PlugwiseException as err:
         raise CannotConnect from err
 
     return api

@@ -2,7 +2,8 @@
 
 import logging
 
-from Plugwise_Smile.Smile import Smile
+from plugwise.smile import Smile
+from plugwise.exceptions import PlugwiseException
 
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.components.switch import SwitchEntity
@@ -124,7 +125,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
             if state_on:
                 self._is_on = True
                 self.async_write_ha_state()
-        except Smile.PlugwiseError:
+        except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
     async def async_turn_off(self, **kwargs):
@@ -137,7 +138,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
             if state_off:
                 self._is_on = False
                 self.async_write_ha_state()
-        except Smile.PlugwiseError:
+        except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
     @callback
