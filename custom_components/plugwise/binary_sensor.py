@@ -182,7 +182,7 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
         self, api, coordinator, name, dev_id, enabled_default, binary_sensor, model
     ):
         """Set up the Plugwise API."""
-        self._enabled_default = enabled_default, True
+        self._enabled_default = enabled_default
 
         super().__init__(
             api, coordinator, name, dev_id, self._enabled_default, binary_sensor
