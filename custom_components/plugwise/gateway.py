@@ -104,7 +104,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         try:
             async with async_timeout.timeout(update_interval.seconds):
                 await api.full_update_device()
-                _LOGGER.debug("Succesfully updated Smile %s", api.smile_name)
+                _LOGGER.debug("Successfully updated Smile %s", api.smile_name)
                 return True
         except Smile.XMLDataMissingError as err:
             _LOGGER.debug(
@@ -150,7 +150,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.debug("Gateway is %s", api.gateway_id)
 
-    _LOGGER.debug("Gateway sofware version is %s", api.smile_version)
+    _LOGGER.debug("Gateway software version is %s", api.smile_version)
     _LOGGER.debug("Appliances is %s", api.get_all_appliances())
     _LOGGER.debug("Scan thermostats is %s", api.scan_thermostats())
     _LOGGER.debug("Locations (matched) is %s", api.match_locations())
