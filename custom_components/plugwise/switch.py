@@ -80,12 +80,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             _LOGGER.debug("Plugwise switch Dev %s", device_properties["name"])
             entities.append(
                 GwSwitch(
-                    api,
-                    coordinator,
-                    device_properties["name"],
-                    dev_id,
-                    members,
-                    model,
+                    api, coordinator, device_properties["name"], dev_id, members, model,
                 )
             )
             _LOGGER.info("Added switch.%s", "{}".format(device_properties["name"]))
