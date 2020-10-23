@@ -21,6 +21,7 @@ from .gateway import SmileGateway
 from .usb import NodeEntity
 from .const import (
     API,
+    ATTR_ENABLED_DEFAULT,
     AVAILABLE_SENSOR_ID,
     AUX_DEV_SENSORS,
     CB_NEW_NODE,

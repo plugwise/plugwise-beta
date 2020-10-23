@@ -110,6 +110,7 @@ ZEROCONF_MAP = {
 
 # Helper functions for dicts of constants
 
+
 def _temperatureSensor(name_default="Temperature", enabled_default=True):
     """Return standardized dict with temperature description."""
     return {
