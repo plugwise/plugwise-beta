@@ -118,8 +118,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             if data.get(sensor) is None:
                 continue
 
-            _LOGGER.error("HOI sensor %s", sensor)
-            _LOGGER.error("HOI type   %s", sensor_type)
             entities.append(
                 GwThermostatSensor(
                     api,
@@ -136,8 +134,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             if data.get(sensor) is None or not api.active_device_present:
                 continue
 
-            _LOGGER.error("HOI sensor %s", sensor)
-            _LOGGER.error("HOI type   %s", sensor_type)
             entities.append(
                 GwThermostatSensor(
                     api,
@@ -225,8 +221,6 @@ class GwThermostatSensor(SmileSensor, Entity):
 
     def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type):
         """Set up the Plugwise API."""
-        _LOGGER.error("HOI sensor %s", sensor)
-        _LOGGER.error("HOI type   %s", sensor_type)
         self._enabled_default = sensor_type[ATTR_ENABLED_DEFAULT]
 
         super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
