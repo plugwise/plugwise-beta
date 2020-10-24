@@ -310,14 +310,14 @@ ENERGY_SENSORS = {
     "gas_consumed_interval": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: "mdi:fire",
+        ATTR_ICON: FLAME_ICON,
         ATTR_NAME: "Current Consumed Gas",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
     },
     "gas_consumed_cumulative": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: "mdi:fire",
+        ATTR_ICON: FLAME_ICON,
         ATTR_NAME: "Cumulative Consumed Gas",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
     },
