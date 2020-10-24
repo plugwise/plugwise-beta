@@ -144,6 +144,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         coordinator,
                         device_properties["name"],
                         dev_id,
+                        True,
                         binary_sensor,
                         device_properties["class"],
                     )
