@@ -36,10 +36,10 @@ from .const import (
     IDLE_ICON,
     PW_CLASS,
     PW_TYPE,
-    SENSORS,
     STICK,
     THERMOSTAT_SENSORS,
     USB,
+    USB_SENSORS,
 )
 
 PARALLEL_UPDATES = 0
@@ -63,7 +63,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         """Add plugwise sensor."""
         node = stick.node(mac)
         for sensor_type in node.get_sensors():
-            if sensor_type in SENSORS and sensor_type != AVAILABLE_SENSOR_ID:
+            if sensor_type in USB_SENSORS and sensor_type != AVAILABLE_SENSOR_ID:
                 async_add_entities([USBSensor(node, mac, sensor_type)])
 
     for mac in hass.data[DOMAIN][config_entry.entry_id]["sensor"]:
@@ -332,7 +332,7 @@ class USBSensor(NodeEntity):
         """Initialize a Node entity."""
         super().__init__(node, mac)
         self.sensor_id = sensor_id
-        self.sensor_type = SENSORS[sensor_id]
+        self.sensor_type = USB_SENSORS[sensor_id]
         self.node_callbacks = (AVAILABLE_SENSOR_ID, sensor_id)
 
     @property

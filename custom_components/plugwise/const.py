@@ -356,7 +356,7 @@ TODAY_ENERGY_SENSOR_ID = "power_con_today"
 MOTION_SENSOR_ID = "motion"
 
 # Sensor types
-SENSORS = {
+USB_SENSORS = {
     AVAILABLE_SENSOR_ID: {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: False,

@@ -26,12 +26,12 @@ from .const import (
     DOMAIN,
     PLATFORMS_USB,
     PW_TYPE,
-    SENSORS,
     SERVICE_DEVICE_ADD,
     SERVICE_DEVICE_REMOVE,
     UNDO_UPDATE_LISTENER,
     STICK,
     USB,
+    USB_SENSORS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -169,7 +169,7 @@ class NodeEntity(Entity):
     @property
     def available(self):
         """Return the availability of this entity."""
-        return getattr(self._node, SENSORS[AVAILABLE_SENSOR_ID][ATTR_STATE])()
+        return getattr(self._node, USB_SENSORS[AVAILABLE_SENSOR_ID][ATTR_STATE])()
 
     @property
     def device_info(self):

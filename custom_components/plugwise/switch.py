@@ -27,7 +27,7 @@ from .const import (
     CURRENT_POWER_SENSOR_ID,
     DOMAIN,
     PW_TYPE,
-    SENSORS,
+    USB_SENSORS,
     STICK,
     SWITCH_CLASSES,
     SWITCH_ICON,
@@ -188,7 +188,7 @@ class USBSwitch(NodeEntity, SwitchEntity):
     @property
     def current_power_w(self):
         """Return the current power usage in W."""
-        current_power = getattr(self._node, SENSORS[CURRENT_POWER_SENSOR_ID][ATTR_STATE])()
+        current_power = getattr(self._node, USB_SENSORS[CURRENT_POWER_SENSOR_ID][ATTR_STATE])()
         if current_power:
             return float(round(current_power, 2))
         return None
@@ -216,7 +216,7 @@ class USBSwitch(NodeEntity, SwitchEntity):
     @property
     def today_energy_kwh(self):
         """Return the today total energy usage in kWh."""
-        today_energy = getattr(self._node, SENSORS[TODAY_ENERGY_SENSOR_ID][ATTR_STATE])()
+        today_energy = getattr(self._node, USB_SENSORS[TODAY_ENERGY_SENSOR_ID][ATTR_STATE])()
         if today_energy:
             return float(round(today_energy, 3))
         return None
