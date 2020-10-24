@@ -8,6 +8,8 @@ from homeassistant.const import (
     ATTR_UNIT_OF_MEASUREMENT,
     ATTR_DEVICE_CLASS,
     ATTR_ICON,
+    ATTR_NAME,
+    ATTR_STATE,
 )
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
@@ -341,27 +343,27 @@ class USBSensor(NodeEntity):
     @property
     def device_class(self):
         """Return the device class of the sensor."""
-        return self.sensor_type["class"]
+        return self.sensor_type[ATTR_DEVICE_CLASS]
 
     @property
     def entity_registry_enabled_default(self):
         """Return the sensor registration state."""
-        return self.sensor_type["enabled_default"]
+        return self.sensor_type[ATTR_ENABLED_DEFAULT]
 
     @property
     def icon(self):
         """Icon to use in the frontend, if any."""
-        return self.sensor_type["icon"]
+        return self.sensor_type[ATTR_ICON]
 
     @property
     def name(self):
         """Return the display name of this sensor."""
-        return f"{self.sensor_type['name']} ({self._mac[-5:]})"
+        return f"{self.sensor_type[ATTR_NAME]} ({self._mac[-5:]})"
 
     @property
     def state(self):
         """Return the state of the sensor."""
-        state_value = getattr(self._node, self.sensor_type["state"])()
+        state_value = getattr(self._node, self.sensor_type[ATTR_STATE])()
         if state_value is not None:
             return float(round(state_value, 3))
         return None
@@ -374,4 +376,4 @@ class USBSensor(NodeEntity):
     @property
     def unit_of_measurement(self):
         """Return the unit this state is expressed in."""
-        return self.sensor_type["unit"]
+        return self.sensor_type[ATTR_UNIT_OF_MEASUREMENT]
