@@ -33,7 +33,6 @@ from homeassistant.const import (
 )
 
 from .const import (
-    ALL_PLATFORMS,
     API,
     COORDINATOR,
     DEFAULT_PORT,
@@ -41,6 +40,7 @@ from .const import (
     DEFAULT_USERNAME,
     DOMAIN,
     GATEWAY,
+    PLATFORMS_GATEWAY,
     PW_TYPE,
     SENSOR_PLATFORMS,
     SERVICE_DELETE,
@@ -173,7 +173,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     single_master_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
 
-    platforms = ALL_PLATFORMS
+    platforms = PLATFORMS_GATEWAY
     if single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
@@ -206,7 +206,7 @@ async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
         await asyncio.gather(
             *[
                 hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in ALL_PLATFORMS
+                for component in PLATFORMS_GATEWAY
             ]
         )
     )

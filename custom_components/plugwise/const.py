@@ -80,7 +80,7 @@ SWITCH_ICON = "mdi:electric-switch"
 
 # --- Const for Plugwise Smile and Stretch
 
-ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
+PLATFORMS_GATEWAY = ["binary_sensor", "climate", "sensor", "switch"]
 SENSOR_PLATFORMS = ["sensor", "switch"]
 SERVICE_DELETE = "delete_notification"
 
