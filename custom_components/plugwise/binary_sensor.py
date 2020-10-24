@@ -173,7 +173,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     dev_id,
                     True,
                     "plugwise_notification",
-                    device_properties[PW_CLASS,
+                    device_properties[PW_CLASS],
                 )
             )
             _LOGGER.info(
