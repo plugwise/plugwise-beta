@@ -13,7 +13,7 @@ from plugwise.exceptions import (
 )
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import ATTR_STATE, EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv
@@ -169,7 +169,7 @@ class NodeEntity(Entity):
     @property
     def available(self):
         """Return the availability of this entity."""
-        return getattr(self._node, SENSORS[AVAILABLE_SENSOR_ID]["state"])()
+        return getattr(self._node, SENSORS[AVAILABLE_SENSOR_ID][ATTR_STATE])()
 
     @property
     def device_info(self):

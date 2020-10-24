@@ -34,6 +34,7 @@ from .const import (
     ENERGY_SENSORS,
     FLAME_ICON,
     IDLE_ICON,
+    PW_CLASS,
     PW_TYPE,
     SENSORS,
     STICK,
@@ -91,7 +92,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     for dev_id, device_properties in all_devices.items():
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
-        _LOGGER.debug("Plugwise sensor Dev %s", device_properties["name"])
+        _LOGGER.debug("Plugwise sensor Dev %s", device_properties[ATTR_NAME])
         for sensor, sensor_type in ENERGY_SENSORS.items():
             if data.get(sensor) is None:
                 continue
@@ -104,14 +105,14 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 GwPowerSensor(
                     api,
                     coordinator,
-                    device_properties["name"],
+                    device_properties[ATTR_NAME],
                     dev_id,
                     sensor,
                     sensor_type,
                     model,
                 )
             )
-            _LOGGER.info("Added sensor.%s", device_properties["name"])
+            _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
 
         for sensor, sensor_type in THERMOSTAT_SENSORS.items():
             if data.get(sensor) is None:
@@ -123,13 +124,13 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 GwThermostatSensor(
                     api,
                     coordinator,
-                    device_properties["name"],
+                    device_properties[ATTR_NAME],
                     dev_id,
                     sensor,
                     sensor_type,
                 )
             )
-            _LOGGER.info("Added sensor.%s", device_properties["name"])
+            _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
 
         for sensor, sensor_type in AUX_DEV_SENSORS.items():
             if data.get(sensor) is None or not api.active_device_present:
@@ -141,28 +142,28 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 GwThermostatSensor(
                     api,
                     coordinator,
-                    device_properties["name"],
+                    device_properties[ATTR_NAME],
                     dev_id,
                     sensor,
                     sensor_type,
                 )
             )
-            _LOGGER.info("Added sensor.%s", device_properties["name"])
+            _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
 
         # If not None and False (hence `is False`, not `not False`)
         if single_thermostat is False:
-            if device_properties["class"] == "heater_central":
-                _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties["name"])
+            if device_properties[PW_CLASS] == "heater_central":
+                _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties[ATTR_NAME])
                 entities.append(
                     GwAuxDeviceSensor(
                         api,
                         coordinator,
-                        device_properties["name"],
+                        device_properties[ATTR_NAME],
                         dev_id,
                         DEVICE_STATE,
                     )
                 )
-                _LOGGER.info("Added auxiliary sensor %s", device_properties["name"])
+                _LOGGER.info("Added auxiliary sensor %s", device_properties[ATTR_NAME])
 
     async_add_entities(entities, True)
 
