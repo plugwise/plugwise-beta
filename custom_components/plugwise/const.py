@@ -153,7 +153,7 @@ THERMOSTAT_SENSORS = {
     "outdoor_temperature": _temperatureSensor(),
     "setpoint": _temperatureSensor(),
     "temperature": _temperatureSensor(),
-    "temperature_difference": _temperatureSensor(),
+    "temperature_difference": _temperatureSensor(False),
     "valve_position": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
