@@ -35,7 +35,6 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-CB_TYPE_NEW_NODE = "NEW_NODE"
 
 
 async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
