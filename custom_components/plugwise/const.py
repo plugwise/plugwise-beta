@@ -32,9 +32,14 @@ GATEWAY = "gateway"
 PW_CLASS = "class"
 PW_LOCATION = "location"
 PW_TYPE = "plugwise_type"
+SCHEDULE_OFF = "false"
+SCHEDULE_ON = "true"
 SMILE = "smile"
 STICK = "stick"
 STRETCH = "stretch"
+STRETCH_USERNAME = "stretch"
+DEVICE_STATE = "device_state"
+UNIT_LUMEN = "lm"
 USB = "usb"
 
 FLOW_NET = "flow_network"
@@ -58,21 +63,9 @@ DEFAULT_SCAN_INTERVAL = {
 DEFAULT_TIMEOUT = 10
 DEFAULT_USERNAME = "smile"
 
-DEVICE_CLASS_GAS = "gas"
-DEVICE_CLASS_VALVE = "valve"
-
-STRETCH_USERNAME = "stretch"
-
 # Configuration directives
-CONF_GAS = "gas"
 CONF_MAX_TEMP = "max_temp"
 CONF_MIN_TEMP = "min_temp"
-CONF_THERMOSTAT = "thermostat"
-
-DEVICE_STATE = "device_state"
-UNIT_LUMEN = "lm"
-SCHEDULE_OFF = "false"
-SCHEDULE_ON = "true"
 
 # Icons
 COOL_ICON = "mdi:snowflake"
@@ -95,14 +88,14 @@ BINARY_SENSOR_MAP = {
     "slave_boiler_state": ["Secondary Heater Device State", None],
 }
 
-# climate const:
+# Climate const:
 THERMOSTAT_CLASSES = [
     "thermostat",
     "zone_thermostat",
     "thermostatic_radiator_valve",
 ]
 
-# config_flow const:
+# Config_flow const:
 ZEROCONF_MAP = {
     "smile": "P1",
     "smile_thermo": "Anna",
@@ -110,8 +103,7 @@ ZEROCONF_MAP = {
     "stretch": "Stretch",
 }
 
-# Helper functions for dicts of constants
-
+# Sensor maps:
 THERMOSTAT_SENSORS = {
     "battery": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_BATTERY,
@@ -159,7 +151,7 @@ THERMOSTAT_SENSORS = {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: "mdi:valve",
-        ATTR_NAME: "Valve position",
+        ATTR_NAME: "Valve Position",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
     },
 }
@@ -326,26 +318,26 @@ ENERGY_SENSORS = {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: "mdi:fire",
-        ATTR_NAME: "CUmulative Consumed Gas",
+        ATTR_NAME: "Cumulative Consumed Gas",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
     },
     "net_electricity_point": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Current net Power",
+        ATTR_NAME: "Current Net Power",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "net_electricity_cumulative": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Current net Power",
+        ATTR_NAME: "Current Net Power",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
     },
 }
 
-# switch const:
+# Switch const:
 SWITCH_CLASSES = ["plug", "switch_group"]
 
 # --- Const for Plugwise USB-stick.
