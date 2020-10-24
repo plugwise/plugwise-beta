@@ -24,6 +24,7 @@ from .const import (
     AVAILABLE_SENSOR_ID,
     CONF_USB_PATH,
     DOMAIN,
+    PLATFORMS_USB,
     PW_TYPE,
     SENSORS,
     SERVICE_DEVICE_ADD,
@@ -35,7 +36,6 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 CB_TYPE_NEW_NODE = "NEW_NODE"
-PLUGWISE_STICK_PLATFORMS = ["binary_sensor", "sensor", "switch"]
 
 
 async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
@@ -50,7 +50,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             str(len(nodes)),
             str(stick.registered_nodes()),
         )
-        for component in PLUGWISE_STICK_PLATFORMS:
+        for component in PLATFORMS_USB:
             hass.data[DOMAIN][config_entry.entry_id][component] = []
             for mac in nodes:
                 if component in stick.node(mac).get_categories():
@@ -130,7 +130,7 @@ async def async_unload_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry)
         await asyncio.gather(
             *[
                 hass.config_entries.async_forward_entry_unload(config_entry, component)
-                for component in PLUGWISE_STICK_PLATFORMS
+                for component in PLATFORMS_USB
             ]
         )
     )

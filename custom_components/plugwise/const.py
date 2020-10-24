@@ -343,6 +343,7 @@ SWITCH_CLASSES = ["plug", "switch_group"]
 
 # --- Const for Plugwise USB-stick.
 
+PLATFORMS_USB = ["binary_sensor", "sensor", "switch"]
 CONF_USB_PATH = "usb_path"
 
 # Callback types
