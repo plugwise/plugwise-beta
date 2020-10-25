@@ -271,14 +271,14 @@ ENERGY_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Cumulative Consumed Power (off peak)",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "electricity_consumed_peak_cumulative": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Cumulative Consumed Power",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "electricity_produced_off_peak_point": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
@@ -299,14 +299,28 @@ ENERGY_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Cumulative Produced Power (off peak)",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "electricity_produced_peak_cumulative": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Cumulative Produced Power",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
+    },
+    "net_electricity_point": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Current Net Power",
+        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
+    },
+    "net_electricity_cumulative": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Current Net Power",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "gas_consumed_interval": {
         ATTR_DEVICE_CLASS: None,
@@ -321,20 +335,6 @@ ENERGY_SENSORS = {
         ATTR_ICON: FLAME_ICON,
         ATTR_NAME: "Cumulative Consumed Gas",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
-    },
-    "net_electricity_point": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: None,
-        ATTR_NAME: "Current Net Power",
-        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
-    },
-    "net_electricity_cumulative": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: None,
-        ATTR_NAME: "Current Net Power",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
     },
 }
 
