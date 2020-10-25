@@ -5,7 +5,15 @@ import logging
 import voluptuous as vol
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.const import (
+    ATTR_DEVICE_CLASS,
+    ATTR_ICON,
+    ATTR_NAME,
+    ATTR_STATE,
+    STATE_OFF,
+    STATE_ON,
+)
+
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv, entity_platform
 
@@ -33,6 +41,7 @@ from .const import (
     MOTION_SENSOR_ID,
     NO_NOTIFICATION_ICON,
     NOTIFICATION_ICON,
+    PW_CLASS,
     PW_TYPE,
     SCAN_SENSITIVITY_MODES,
     SERVICE_CONFIGURE_BATTERY,
@@ -127,8 +136,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
     all_devices = api.get_all_devices()
     for dev_id, device_properties in all_devices.items():
-        if device_properties["class"] == "heater_central":
-            _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
+        if device_properties[PW_CLASS] == "heater_central":
+            _LOGGER.debug("Plugwise device_class %s found", device_properties[PW_CLASS])
             data = api.get_device_data(dev_id)
             for binary_sensor, dummy in BINARY_SENSOR_MAP.items():
                 _LOGGER.debug("Binary_sensor: %s", binary_sensor)
@@ -136,39 +145,40 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     continue
 
                 _LOGGER.debug(
-                    "Plugwise binary_sensor Dev %s", device_properties["name"]
+                    "Plugwise binary_sensor Dev %s", device_properties[ATTR_NAME]
                 )
                 entities.append(
                     GwBinarySensor(
                         api,
                         coordinator,
-                        device_properties["name"],
+                        device_properties[ATTR_NAME],
                         dev_id,
+                        True,
                         binary_sensor,
-                        device_properties["class"],
+                        device_properties[PW_CLASS],
                     )
                 )
                 _LOGGER.info(
                     "Added binary_sensor.%s",
-                    f"{device_properties['name']}_{binary_sensor}",
+                    f"{device_properties[ATTR_NAME]}_{binary_sensor}",
                 )
-        if device_properties["class"] == "gateway" and is_thermostat is not None:
-            _LOGGER.debug("Plugwise device_class %s found", device_properties["class"])
+        if device_properties[PW_CLASS] == "gateway" and is_thermostat is not None:
+            _LOGGER.debug("Plugwise device_class %s found", device_properties[PW_CLASS])
             entities.append(
                 GwNotifySensor(
                     hass,
                     api,
                     coordinator,
-                    device_properties["name"],
+                    device_properties[ATTR_NAME],
                     dev_id,
                     True,
                     "plugwise_notification",
-                    device_properties["class"],
+                    device_properties[PW_CLASS],
                 )
             )
             _LOGGER.info(
                 "Added binary_sensor.%s",
-                f"{device_properties['name']}_{'plugwise_notification'}",
+                f"{device_properties[ATTR_NAME]}_{'plugwise_notification'}",
             )
 
     async_add_entities(entities, True)
@@ -297,7 +307,7 @@ class USBBinarySensor(NodeEntity, BinarySensorEntity):
     @property
     def device_class(self):
         """Return the device class of the sensor."""
-        return self.sensor_type["class"]
+        return self.sensor_type[ATTR_DEVICE_CLASS]
 
     @property
     def entity_registry_enabled_default(self):
@@ -307,17 +317,17 @@ class USBBinarySensor(NodeEntity, BinarySensorEntity):
     @property
     def icon(self):
         """Icon to use in the frontend, if any."""
-        return self.sensor_type["icon"]
+        return self.sensor_type[ATTR_ICON]
 
     @property
     def name(self):
         """Return the display name of this sensor."""
-        return f"{self.sensor_type['name']} ({self._mac[-5:]})"
+        return f"{self.sensor_type[ATTR_NAME]} ({self._mac[-5:]})"
 
     @property
     def is_on(self):
         """Return true if the binary_sensor is on."""
-        return getattr(self._node, self.sensor_type["state"])()
+        return getattr(self._node, self.sensor_type[ATTR_STATE])()
 
     @property
     def unique_id(self):

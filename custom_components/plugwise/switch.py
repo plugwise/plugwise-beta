@@ -2,9 +2,17 @@
 
 import logging
 
-from Plugwise_Smile.Smile import Smile
+from plugwise.smile import Smile
+from plugwise.exceptions import PlugwiseException
 
-from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.const import (
+    ATTR_DEVICE_CLASS,
+    ATTR_ICON,
+    ATTR_NAME,
+    ATTR_STATE,
+    STATE_OFF,
+    STATE_ON,
+)
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import callback
 
@@ -19,7 +27,7 @@ from .const import (
     CURRENT_POWER_SENSOR_ID,
     DOMAIN,
     PW_TYPE,
-    SENSORS,
+    USB_SENSORS,
     STICK,
     SWITCH_CLASSES,
     SWITCH_ICON,
@@ -77,13 +85,13 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             if "switch_group" in device_properties["types"]:
                 members = device_properties["members"]
                 model = "Switch Group"
-            _LOGGER.debug("Plugwise switch Dev %s", device_properties["name"])
+            _LOGGER.debug("Plugwise switch Dev %s", device_properties[ATTR_NAME])
             entities.append(
                 GwSwitch(
-                    api, coordinator, device_properties["name"], dev_id, members, model,
+                    api, coordinator, device_properties[ATTR_NAME], dev_id, members, model,
                 )
             )
-            _LOGGER.info("Added switch.%s", "{}".format(device_properties["name"]))
+            _LOGGER.info("Added switch.%s", "{}".format(device_properties[ATTR_NAME]))
 
     async_add_entities(entities, True)
 
@@ -95,7 +103,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         """Set up the Plugwise API."""
         self._enabled_default = True
 
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default)
+        super().__init__(api, coordinator, name, dev_id)
 
         self._members = members
         self._model = model
@@ -124,7 +132,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
             if state_on:
                 self._is_on = True
                 self.async_write_ha_state()
-        except Smile.PlugwiseError:
+        except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
     async def async_turn_off(self, **kwargs):
@@ -137,7 +145,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
             if state_off:
                 self._is_on = False
                 self.async_write_ha_state()
-        except Smile.PlugwiseError:
+        except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
     @callback
@@ -180,7 +188,7 @@ class USBSwitch(NodeEntity, SwitchEntity):
     @property
     def current_power_w(self):
         """Return the current power usage in W."""
-        current_power = getattr(self._node, SENSORS[CURRENT_POWER_SENSOR_ID]["state"])()
+        current_power = getattr(self._node, USB_SENSORS[CURRENT_POWER_SENSOR_ID][ATTR_STATE])()
         if current_power:
             return float(round(current_power, 2))
         return None
@@ -188,7 +196,7 @@ class USBSwitch(NodeEntity, SwitchEntity):
     @property
     def device_class(self):
         """Return the device class of this switch."""
-        return self.switch_type["class"]
+        return self.switch_type[ATTR_DEVICE_CLASS]
 
     @property
     def entity_registry_enabled_default(self):
@@ -198,17 +206,17 @@ class USBSwitch(NodeEntity, SwitchEntity):
     @property
     def icon(self):
         """Return the icon."""
-        return None if self.switch_type["class"] else self.switch_type["icon"]
+        return None if self.switch_type[ATTR_DEVICE_CLASS] else self.switch_type[ATTR_ICON]
 
     @property
     def is_on(self):
         """Return true if the switch is on."""
-        return getattr(self._node, self.switch_type["state"])()
+        return getattr(self._node, self.switch_type[ATTR_STATE])()
 
     @property
     def today_energy_kwh(self):
         """Return the today total energy usage in kWh."""
-        today_energy = getattr(self._node, SENSORS[TODAY_ENERGY_SENSOR_ID]["state"])()
+        today_energy = getattr(self._node, USB_SENSORS[TODAY_ENERGY_SENSOR_ID][ATTR_STATE])()
         if today_energy:
             return float(round(today_energy, 3))
         return None

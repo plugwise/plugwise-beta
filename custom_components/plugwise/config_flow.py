@@ -6,6 +6,17 @@ from typing import Dict
 
 import voluptuous as vol
 
+import plugwise
+from plugwise.smile import Smile
+from plugwise.exceptions import (
+    InvalidAuthentication,
+    NetworkDown,
+    PlugwiseException,
+    PortError,
+    StickInitError,
+    TimeoutException,
+)
+
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import (
     CONF_BASE,
@@ -19,9 +30,6 @@ from homeassistant.const import (
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
 from homeassistant.core import callback
-
-import plugwise
-from Plugwise_Smile.Smile import Smile
 
 from .const import (
     API,
@@ -42,8 +50,6 @@ from .const import (
     STRETCH_USERNAME,
     ZEROCONF_MAP,
 )  # pylint:disable=unused-import
-
-from plugwise.exceptions import NetworkDown, PortError, StickInitError, TimeoutException
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -142,9 +148,9 @@ async def validate_gw_input(hass: core.HomeAssistant, data):
 
     try:
         await api.connect()
-    except Smile.InvalidAuthentication as err:
+    except InvalidAuthentication as err:
         raise InvalidAuth from err
-    except Smile.PlugwiseError as err:
+    except PlugwiseException as err:
         raise CannotConnect from err
 
     return api
@@ -255,6 +261,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user_gateway(self, user_input=None):
         """Handle the initial step when using network/gateway setups."""
+        api = None
         errors = {}
 
         if user_input is not None:

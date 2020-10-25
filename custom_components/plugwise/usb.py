@@ -13,7 +13,7 @@ from plugwise.exceptions import (
 )
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import ATTR_STATE, EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv
@@ -24,18 +24,17 @@ from .const import (
     AVAILABLE_SENSOR_ID,
     CONF_USB_PATH,
     DOMAIN,
+    PLATFORMS_USB,
     PW_TYPE,
-    SENSORS,
     SERVICE_DEVICE_ADD,
     SERVICE_DEVICE_REMOVE,
     UNDO_UPDATE_LISTENER,
     STICK,
     USB,
+    USB_SENSORS,
 )
 
 _LOGGER = logging.getLogger(__name__)
-CB_TYPE_NEW_NODE = "NEW_NODE"
-PLUGWISE_STICK_PLATFORMS = ["binary_sensor", "sensor", "switch"]
 
 
 async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
@@ -50,7 +49,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             str(len(nodes)),
             str(stick.registered_nodes()),
         )
-        for component in PLUGWISE_STICK_PLATFORMS:
+        for component in PLATFORMS_USB:
             hass.data[DOMAIN][config_entry.entry_id][component] = []
             for mac in nodes:
                 if component in stick.node(mac).get_categories():
@@ -130,7 +129,7 @@ async def async_unload_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry)
         await asyncio.gather(
             *[
                 hass.config_entries.async_forward_entry_unload(config_entry, component)
-                for component in PLUGWISE_STICK_PLATFORMS
+                for component in PLATFORMS_USB
             ]
         )
     )
@@ -169,7 +168,7 @@ class NodeEntity(Entity):
     @property
     def available(self):
         """Return the availability of this entity."""
-        return getattr(self._node, SENSORS[AVAILABLE_SENSOR_ID]["state"])()
+        return getattr(self._node, USB_SENSORS[AVAILABLE_SENSOR_ID][ATTR_STATE])()
 
     @property
     def device_info(self):

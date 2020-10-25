@@ -2,7 +2,8 @@
 
 import logging
 
-from Plugwise_Smile.Smile import Smile
+from plugwise.smile import Smile
+from plugwise.exceptions import PlugwiseException
 
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
@@ -13,10 +14,13 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_HEAT,
     HVAC_MODE_HEAT_COOL,
     HVAC_MODE_OFF,
+    PRESET_AWAY,
+    PRESET_HOME,
+    PRESET_NONE,
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
 )
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
+from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
 
 from .gateway import SmileGateway
@@ -26,6 +30,8 @@ from .const import (
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
     DOMAIN,
+    PW_CLASS,
+    PW_LOCATION,
     SCHEDULE_OFF,
     SCHEDULE_ON,
     THERMOSTAT_CLASSES,
@@ -49,23 +55,23 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     for dev_id, device_properties in all_devices.items():
 
-        if device_properties["class"] not in THERMOSTAT_CLASSES:
+        if device_properties[PW_CLASS] not in THERMOSTAT_CLASSES:
             continue
 
-        _LOGGER.debug("Plugwise climate Dev %s", device_properties["name"])
+        _LOGGER.debug("Plugwise climate Dev %s", device_properties[ATTR_NAME])
         thermostat = PwThermostat(
             api,
             coordinator,
-            device_properties["name"],
+            device_properties[ATTR_NAME],
             dev_id,
-            device_properties["location"],
-            device_properties["class"],
+            device_properties[PW_LOCATION],
+            device_properties[PW_CLASS],
             DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
         )
 
         entities.append(thermostat)
-        _LOGGER.info("Added climate.%s", "{}".format(device_properties["name"]))
+        _LOGGER.info("Added climate.%s", "{}".format(device_properties[ATTR_NAME]))
 
     async_add_entities(entities, True)
 
@@ -196,7 +202,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 await self._api.set_temperature(self._loc_id, temperature)
                 self._setpoint = temperature
                 self.async_write_ha_state()
-            except Smile.PlugwiseError:
+            except PlugwiseException:
                 _LOGGER.error("Error while communicating to device")
         else:
             _LOGGER.error("Invalid temperature requested")
@@ -210,7 +216,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
             try:
                 await self._api.set_temperature(self._loc_id, self._schedule_temp)
                 self._setpoint = self._schedule_temp
-            except Smile.PlugwiseError:
+            except PlugwiseException:
                 _LOGGER.error("Error while communicating to device")
         try:
             await self._api.set_schedule_state(
@@ -219,18 +225,18 @@ class PwThermostat(SmileGateway, ClimateEntity):
             self._mode_off = False
             if hvac_mode == HVAC_MODE_OFF:
                 self._mode_off = True
-                preset_mode = "away"
+                preset_mode = PRESET_AWAY
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._preset_mode = preset_mode
-                self._setpoint = self._presets.get(self._preset_mode, "none")[0]
-            if hvac_mode == HVAC_MODE_HEAT and self._preset_mode == "away":
-                preset_mode = "home"
+                self._setpoint = self._presets.get(self._preset_mode, PRESET_NONE)[0]
+            if hvac_mode == HVAC_MODE_HEAT and self._preset_mode == PRESET_AWAY:
+                preset_mode = PRESET_HOME
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._preset_mode = preset_mode
-                self._setpoint = self._presets.get(self._preset_mode, "none")[0]
+                self._setpoint = self._presets.get(self._preset_mode, PRESET_NONE)[0]
             self._hvac_mode = hvac_mode
             self.async_write_ha_state()
-        except Smile.PlugwiseError:
+        except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
     async def async_set_preset_mode(self, preset_mode):
@@ -239,9 +245,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
         try:
             await self._api.set_preset(self._loc_id, preset_mode)
             self._preset_mode = preset_mode
-            self._setpoint = self._presets.get(self._preset_mode, "none")[0]
+            self._setpoint = self._presets.get(self._preset_mode, PRESET_NONE)[0]
             self.async_write_ha_state()
-        except Smile.PlugwiseError:
+        except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
     @callback

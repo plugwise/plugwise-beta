@@ -19,6 +19,7 @@ from homeassistant.const import (
     PERCENTAGE,
     POWER_WATT,
     PRESSURE_BAR,
+    SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     TEMP_CELSIUS,
     TIME_MILLISECONDS,
     VOLUME_CUBIC_METERS,
@@ -29,10 +30,17 @@ ATTR_ENABLED_DEFAULT = "enabled_default"
 DOMAIN = "plugwise"
 COORDINATOR = "coordinator"
 GATEWAY = "gateway"
+PW_CLASS = "class"
+PW_LOCATION = "location"
 PW_TYPE = "plugwise_type"
+SCHEDULE_OFF = "false"
+SCHEDULE_ON = "true"
 SMILE = "smile"
 STICK = "stick"
 STRETCH = "stretch"
+STRETCH_USERNAME = "stretch"
+DEVICE_STATE = "device_state"
+UNIT_LUMEN = "lm"
 USB = "usb"
 
 FLOW_NET = "flow_network"
@@ -56,21 +64,9 @@ DEFAULT_SCAN_INTERVAL = {
 DEFAULT_TIMEOUT = 10
 DEFAULT_USERNAME = "smile"
 
-DEVICE_CLASS_GAS = "gas"
-DEVICE_CLASS_VALVE = "valve"
-
-STRETCH_USERNAME = "stretch"
-
 # Configuration directives
-CONF_GAS = "gas"
 CONF_MAX_TEMP = "max_temp"
 CONF_MIN_TEMP = "min_temp"
-CONF_THERMOSTAT = "thermostat"
-
-DEVICE_STATE = "device_state"
-UNIT_LUMEN = "lm"
-SCHEDULE_OFF = "false"
-SCHEDULE_ON = "true"
 
 # Icons
 COOL_ICON = "mdi:snowflake"
@@ -84,7 +80,7 @@ SWITCH_ICON = "mdi:electric-switch"
 
 # --- Const for Plugwise Smile and Stretch
 
-ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
+PLATFORMS_GATEWAY = ["binary_sensor", "climate", "sensor", "switch"]
 SENSOR_PLATFORMS = ["sensor", "switch"]
 SERVICE_DELETE = "delete_notification"
 
@@ -93,14 +89,14 @@ BINARY_SENSOR_MAP = {
     "slave_boiler_state": ["Secondary Heater Device State", None],
 }
 
-# climate const:
+# Climate const:
 THERMOSTAT_CLASSES = [
     "thermostat",
     "zone_thermostat",
     "thermostatic_radiator_valve",
 ]
 
-# config_flow const:
+# Config_flow const:
 ZEROCONF_MAP = {
     "smile": "P1",
     "smile_thermo": "Anna",
@@ -108,32 +104,7 @@ ZEROCONF_MAP = {
     "stretch": "Stretch",
 }
 
-# Helper functions for dicts of constants
-
-def _temperatureSensor(name_default="Temperature", enabled_default=True):
-    """Return standardized dict with temperature description."""
-    return {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
-        ATTR_ENABLED_DEFAULT: enabled_default,
-        ATTR_ICON: None,
-        ATTR_NAME: name_default,
-        ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
-    }
-
-
-def _energySensor(
-    name_default="Power usage", unit_default=POWER_WATT, enabled_default=True
-):
-    """Return standardized dict with energy description."""
-    return {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: enabled_default,
-        ATTR_ICON: None,
-        ATTR_NAME: name_default,
-        ATTR_UNIT_OF_MEASUREMENT: unit_default,
-    }
-
-
+# Sensor maps:
 THERMOSTAT_SENSORS = {
     "battery": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_BATTERY,
@@ -149,21 +120,51 @@ THERMOSTAT_SENSORS = {
         ATTR_NAME: "Illuminance",
         ATTR_UNIT_OF_MEASUREMENT: UNIT_LUMEN,
     },
-    "outdoor_temperature": _temperatureSensor(),
-    "setpoint": _temperatureSensor(),
-    "temperature": _temperatureSensor(),
-    "temperature_difference": _temperatureSensor(),
+    "outdoor_temperature": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Temperature",
+        ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
+    },
+    "setpoint": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Temperature",
+        ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
+    },
+    "temperature": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Temperature",
+        ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
+    },
+    "temperature_difference": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_ENABLED_DEFAULT: False,
+        ATTR_ICON: None,
+        ATTR_NAME: "Temperature",
+        ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
+    },
     "valve_position": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: "mdi:valve",
-        ATTR_NAME: "Valve position",
+        ATTR_NAME: "Valve Position",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
     },
 }
 
 AUX_DEV_SENSORS = {
-    "intended_boiler_temperature": _temperatureSensor(),
+    "intended_boiler_temperature": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Temperature",
+        ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
+    },
     "modulation_level": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: False,
@@ -171,7 +172,13 @@ AUX_DEV_SENSORS = {
         ATTR_NAME: "Heater Modulation Level",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
     },
-    "return_temperature": _temperatureSensor(False),
+    "return_temperature": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_ENABLED_DEFAULT: False,
+        ATTR_ICON: None,
+        ATTR_NAME: "Temperature",
+        ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
+    },
     "water_pressure": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_PRESSURE,
         ATTR_ENABLED_DEFAULT: True,
@@ -179,75 +186,164 @@ AUX_DEV_SENSORS = {
         ATTR_NAME: "Pressure",
         ATTR_UNIT_OF_MEASUREMENT: PRESSURE_BAR,
     },
-    "water_temperature": _temperatureSensor(),
+    "water_temperature": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Temperature",
+        ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
+    },
 }
 
 ENERGY_SENSORS = {
-    "electricity_consumed": _energySensor("Current Consumed Power"),
-    "electricity_produced": _energySensor("Current Produced Power"),
-    "electricity_consumed_interval": _energySensor(
-        "Consumed Power Interval", ENERGY_WATT_HOUR
-    ),
-    "electricity_consumed_peak_interval": _energySensor(
-        "Consumed Power Interval", ENERGY_WATT_HOUR
-    ),
-    "electricity_consumed_off_peak_interval": _energySensor(
-        "Consumed Power Interval (off peak)", ENERGY_WATT_HOUR
-    ),
-    "electricity_produced_interval": _energySensor(
-        "Produced Power Interval", ENERGY_WATT_HOUR
-    ),
-    "electricity_produced_peak_interval": _energySensor(
-        "Produced Power Interval", ENERGY_WATT_HOUR
-    ),
-    "electricity_produced_off_peak_interval": _energySensor(
-        "Produced Power Interval (off peak)", ENERGY_WATT_HOUR
-    ),
-    "electricity_consumed_off_peak_point": _energySensor(
-        "Current Consumed Power (off peak)"
-    ),
-    "electricity_consumed_peak_point": _energySensor("Current Consumed Power"),
-    "electricity_consumed_off_peak_cumulative": _energySensor(
-        "Cumulative Consumed Power (off peak)", ENERGY_KILO_WATT_HOUR
-    ),
-    "electricity_consumed_peak_cumulative": _energySensor(
-        "Cumulative Consumed Power", ENERGY_KILO_WATT_HOUR
-    ),
-    "electricity_produced_off_peak_point": _energySensor(
-        "Current Consumed Power (off peak)"
-    ),
-    "electricity_produced_peak_point": _energySensor("Current Consumed Power"),
-    "electricity_produced_off_peak_cumulative": _energySensor(
-        "Cumulative Consumed Power (off peak)", ENERGY_KILO_WATT_HOUR
-    ),
-    "electricity_produced_peak_cumulative": _energySensor(
-        "Cumulative Consumed Power", ENERGY_KILO_WATT_HOUR
-    ),
+    "electricity_consumed": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Current Consumed Power",
+        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
+    },
+    "electricity_produced": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Current Produced Power",
+        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
+    },
+    "electricity_consumed_interval": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Consumed Power Interval",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
+    },
+    "electricity_consumed_peak_interval": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Consumed Power Interval",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
+    },
+    "electricity_consumed_off_peak_interval": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Consumed Power Interval (off peak)",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
+    },
+    "electricity_produced_interval": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Produced Power Interval",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
+    },
+    "electricity_produced_peak_interval": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Produced Power Interval",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
+    },
+    "electricity_produced_off_peak_interval": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Produced Power Interval (off peak)",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
+    },
+    "electricity_consumed_off_peak_point": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Current Consumed Power (off peak)",
+        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
+    },
+    "electricity_consumed_peak_point": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Current Consumed Power",
+        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
+    },
+    "electricity_consumed_off_peak_cumulative": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Cumulative Consumed Power (off peak)",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
+    },
+    "electricity_consumed_peak_cumulative": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Cumulative Consumed Power",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
+    },
+    "electricity_produced_off_peak_point": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Current Produced Power (off peak)",
+        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
+    },
+    "electricity_produced_peak_point": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Current Produced Power",
+        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
+    },
+    "electricity_produced_off_peak_cumulative": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Cumulative Produced Power (off peak)",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
+    },
+    "electricity_produced_peak_cumulative": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Cumulative Produced Power",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
+    },
+    "net_electricity_point": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Current Net Power",
+        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
+    },
+    "net_electricity_cumulative": {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Current Net Power",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
+    },
     "gas_consumed_interval": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: "mdi:fire",
+        ATTR_ICON: FLAME_ICON,
         ATTR_NAME: "Current Consumed Gas",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
     },
     "gas_consumed_cumulative": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: "mdi:fire",
-        ATTR_NAME: "CUmulative Consumed Gas",
+        ATTR_ICON: FLAME_ICON,
+        ATTR_NAME: "Cumulative Consumed Gas",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
     },
-    "net_electricity_point": _energySensor("Current net Power"),
-    "net_electricity_cumulative": _energySensor(
-        "Current net Power", ENERGY_KILO_WATT_HOUR
-    ),
 }
 
-# switch const:
+# Switch const:
 SWITCH_CLASSES = ["plug", "switch_group"]
 
 # --- Const for Plugwise USB-stick.
 
+PLATFORMS_USB = ["binary_sensor", "sensor", "switch"]
 CONF_USB_PATH = "usb_path"
 
 # Callback types
@@ -260,7 +356,7 @@ TODAY_ENERGY_SENSOR_ID = "power_con_today"
 MOTION_SENSOR_ID = "motion"
 
 # Sensor types
-SENSORS = {
+USB_SENSORS = {
     AVAILABLE_SENSOR_ID: {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: False,
@@ -347,7 +443,7 @@ SENSORS = {
         ATTR_ICON: None,
         ATTR_NAME: "Inbound RSSI",
         ATTR_STATE: "get_in_RSSI",
-        ATTR_UNIT_OF_MEASUREMENT: "dBm",
+        ATTR_UNIT_OF_MEASUREMENT: SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     },
     "RSSI_out": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_SIGNAL_STRENGTH,
@@ -355,7 +451,7 @@ SENSORS = {
         ATTR_ICON: None,
         ATTR_NAME: "Outbound RSSI",
         ATTR_STATE: "get_out_RSSI",
-        ATTR_UNIT_OF_MEASUREMENT: "dBm",
+        ATTR_UNIT_OF_MEASUREMENT: SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     },
 }
 BINARY_SENSORS = {

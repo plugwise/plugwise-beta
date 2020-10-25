@@ -8,6 +8,8 @@ from homeassistant.const import (
     ATTR_UNIT_OF_MEASUREMENT,
     ATTR_DEVICE_CLASS,
     ATTR_ICON,
+    ATTR_NAME,
+    ATTR_STATE,
 )
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
@@ -21,6 +23,7 @@ from .gateway import SmileGateway
 from .usb import NodeEntity
 from .const import (
     API,
+    ATTR_ENABLED_DEFAULT,
     AVAILABLE_SENSOR_ID,
     AUX_DEV_SENSORS,
     CB_NEW_NODE,
@@ -31,11 +34,12 @@ from .const import (
     ENERGY_SENSORS,
     FLAME_ICON,
     IDLE_ICON,
+    PW_CLASS,
     PW_TYPE,
-    SENSORS,
     STICK,
     THERMOSTAT_SENSORS,
     USB,
+    USB_SENSORS,
 )
 
 PARALLEL_UPDATES = 0
@@ -59,7 +63,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         """Add plugwise sensor."""
         node = stick.node(mac)
         for sensor_type in node.get_sensors():
-            if sensor_type in SENSORS and sensor_type != AVAILABLE_SENSOR_ID:
+            if sensor_type in USB_SENSORS and sensor_type != AVAILABLE_SENSOR_ID:
                 async_add_entities([USBSensor(node, mac, sensor_type)])
 
     for mac in hass.data[DOMAIN][config_entry.entry_id]["sensor"]:
@@ -88,7 +92,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     for dev_id, device_properties in all_devices.items():
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
-        _LOGGER.debug("Plugwise sensor Dev %s", device_properties["name"])
+        _LOGGER.debug("Plugwise sensor Dev %s", device_properties[ATTR_NAME])
         for sensor, sensor_type in ENERGY_SENSORS.items():
             if data.get(sensor) is None:
                 continue
@@ -101,65 +105,61 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 GwPowerSensor(
                     api,
                     coordinator,
-                    device_properties["name"],
+                    device_properties[ATTR_NAME],
                     dev_id,
                     sensor,
                     sensor_type,
                     model,
                 )
             )
-            _LOGGER.info("Added sensor.%s", device_properties["name"])
+            _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
 
         for sensor, sensor_type in THERMOSTAT_SENSORS.items():
             if data.get(sensor) is None:
                 continue
 
-            _LOGGER.error("HOI sensor %s", sensor)
-            _LOGGER.error("HOI type   %s", sensor_type)
             entities.append(
                 GwThermostatSensor(
                     api,
                     coordinator,
-                    device_properties["name"],
+                    device_properties[ATTR_NAME],
                     dev_id,
                     sensor,
                     sensor_type,
                 )
             )
-            _LOGGER.info("Added sensor.%s", device_properties["name"])
+            _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
 
         for sensor, sensor_type in AUX_DEV_SENSORS.items():
             if data.get(sensor) is None or not api.active_device_present:
                 continue
 
-            _LOGGER.error("HOI sensor %s", sensor)
-            _LOGGER.error("HOI type   %s", sensor_type)
             entities.append(
                 GwThermostatSensor(
                     api,
                     coordinator,
-                    device_properties["name"],
+                    device_properties[ATTR_NAME],
                     dev_id,
                     sensor,
                     sensor_type,
                 )
             )
-            _LOGGER.info("Added sensor.%s", device_properties["name"])
+            _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
 
         # If not None and False (hence `is False`, not `not False`)
         if single_thermostat is False:
-            if device_properties["class"] == "heater_central":
-                _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties["name"])
+            if device_properties[PW_CLASS] == "heater_central":
+                _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties[ATTR_NAME])
                 entities.append(
                     GwAuxDeviceSensor(
                         api,
                         coordinator,
-                        device_properties["name"],
+                        device_properties[ATTR_NAME],
                         dev_id,
                         DEVICE_STATE,
                     )
                 )
-                _LOGGER.info("Added auxiliary sensor %s", device_properties["name"])
+                _LOGGER.info("Added auxiliary sensor %s", device_properties[ATTR_NAME])
 
     async_add_entities(entities, True)
 
@@ -221,8 +221,6 @@ class GwThermostatSensor(SmileSensor, Entity):
 
     def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type):
         """Set up the Plugwise API."""
-        _LOGGER.error("HOI sensor %s", sensor)
-        _LOGGER.error("HOI type   %s", sensor_type)
         self._enabled_default = sensor_type[ATTR_ENABLED_DEFAULT]
 
         super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
@@ -334,33 +332,33 @@ class USBSensor(NodeEntity):
         """Initialize a Node entity."""
         super().__init__(node, mac)
         self.sensor_id = sensor_id
-        self.sensor_type = SENSORS[sensor_id]
+        self.sensor_type = USB_SENSORS[sensor_id]
         self.node_callbacks = (AVAILABLE_SENSOR_ID, sensor_id)
 
     @property
     def device_class(self):
         """Return the device class of the sensor."""
-        return self.sensor_type["class"]
+        return self.sensor_type[ATTR_DEVICE_CLASS]
 
     @property
     def entity_registry_enabled_default(self):
         """Return the sensor registration state."""
-        return self.sensor_type["enabled_default"]
+        return self.sensor_type[ATTR_ENABLED_DEFAULT]
 
     @property
     def icon(self):
         """Icon to use in the frontend, if any."""
-        return self.sensor_type["icon"]
+        return self.sensor_type[ATTR_ICON]
 
     @property
     def name(self):
         """Return the display name of this sensor."""
-        return f"{self.sensor_type['name']} ({self._mac[-5:]})"
+        return f"{self.sensor_type[ATTR_NAME]} ({self._mac[-5:]})"
 
     @property
     def state(self):
         """Return the state of the sensor."""
-        state_value = getattr(self._node, self.sensor_type["state"])()
+        state_value = getattr(self._node, self.sensor_type[ATTR_STATE])()
         if state_value is not None:
             return float(round(state_value, 3))
         return None
@@ -373,4 +371,4 @@ class USBSensor(NodeEntity):
     @property
     def unit_of_measurement(self):
         """Return the unit this state is expressed in."""
-        return self.sensor_type["unit"]
+        return self.sensor_type[ATTR_UNIT_OF_MEASUREMENT]
