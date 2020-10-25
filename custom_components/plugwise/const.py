@@ -19,7 +19,6 @@ from homeassistant.const import (
     PERCENTAGE,
     POWER_WATT,
     PRESSURE_BAR,
-    SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     TEMP_CELSIUS,
     TIME_MILLISECONDS,
     VOLUME_CUBIC_METERS,
@@ -35,6 +34,7 @@ PW_LOCATION = "location"
 PW_TYPE = "plugwise_type"
 SCHEDULE_OFF = "false"
 SCHEDULE_ON = "true"
+SIGNAL_STRENGTH_DECIBELS_MILLIWATT = "dBm"
 SMILE = "smile"
 STICK = "stick"
 STRETCH = "stretch"
