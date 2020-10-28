@@ -16,7 +16,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_STATE, EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import config_validation as cv, device_registry as dr
 from homeassistant.helpers.entity import Entity
 
 from .const import (
@@ -46,6 +46,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     """Establish connection with plugwise USB-stick."""
     hass.data.setdefault(DOMAIN, {})
+    device_registry = await dr.async_get_registry(hass)
 
     def discover_finished():
         """Create entities for all discovered nodes."""
@@ -126,6 +127,12 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     async def device_remove(service):
         """Manually remove device from Plugwise zigbee network."""
         api_stick.node_unjoin(service.data[ATTR_MAC_ADDRESS])
+        device_entry = device_registry.async_get_device(
+            {(DOMAIN, service.data[ATTR_MAC_ADDRESS])}, set()
+        )
+        if device_entry:
+            _LOGGER.debug("Remove device %s from Home Assistant", service.data[ATTR_MAC_ADDRESS])
+            device_registry.async_remove_device(device_entry.id)
 
     service_device_schema = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
 
