@@ -319,7 +319,7 @@ ENERGY_SENSORS = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Current Net Power",
+        ATTR_NAME: "Cumulative Net Power",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "gas_consumed_interval": {
