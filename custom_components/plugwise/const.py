@@ -73,6 +73,7 @@ COOL_ICON = "mdi:snowflake"
 FLAME_ICON = "mdi:fire"
 FLOW_OFF_ICON = "mdi:water-pump-off"
 FLOW_ON_ICON = "mdi:water-pump"
+HEATING_ICON = "mdi:radiator"
 IDLE_ICON = "mdi:circle-off-outline"
 NOTIFICATION_ICON = "mdi:mailbox-up-outline"
 NO_NOTIFICATION_ICON = "mdi:mailbox-outline"
@@ -83,11 +84,6 @@ SWITCH_ICON = "mdi:electric-switch"
 PLATFORMS_GATEWAY = ["binary_sensor", "climate", "sensor", "switch"]
 SENSOR_PLATFORMS = ["sensor", "switch"]
 SERVICE_DELETE = "delete_notification"
-
-BINARY_SENSOR_MAP = {
-    "dhw_state": ["Domestic Hot Water State", None],
-    "slave_boiler_state": ["Secondary Heater Device State", None],
-}
 
 # Climate const:
 THERMOSTAT_CLASSES = [
@@ -104,13 +100,38 @@ ZEROCONF_MAP = {
     "stretch": "Stretch",
 }
 
+# Binary sensor map:
+GW_BINARY_SENSORS = {
+    "dhw_state": {
+        ATTR_DEVICE_CLASS: None,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Domestic Hot Water State",
+        ATTR_UNIT_OF_MEASUREMENT: None,
+    },
+    "flame_state": {
+        ATTR_DEVICE_CLASS: None,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Flame State",
+        ATTR_UNIT_OF_MEASUREMENT: None,
+    },
+    "slave_boiler_state": {
+        ATTR_DEVICE_CLASS: None,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Secondary Heater Device State",
+        ATTR_UNIT_OF_MEASUREMENT: None,
+    },
+}
+
 # Sensor maps:
 THERMOSTAT_SENSORS = {
     "battery": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_BATTERY,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Charge",
+        ATTR_NAME: "Charge Level",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
     },
     "illuminance": {
@@ -124,14 +145,14 @@ THERMOSTAT_SENSORS = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Temperature",
+        ATTR_NAME: "Outdoor Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
     "setpoint": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Temperature",
+        ATTR_NAME: "Setpoint Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
     "temperature": {
@@ -145,7 +166,7 @@ THERMOSTAT_SENSORS = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
-        ATTR_NAME: "Temperature",
+        ATTR_NAME: "Temperature Difference",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
     "valve_position": {
@@ -162,7 +183,7 @@ AUX_DEV_SENSORS = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Temperature",
+        ATTR_NAME: "Intended Boiler Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
     "modulation_level": {
@@ -176,21 +197,21 @@ AUX_DEV_SENSORS = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
-        ATTR_NAME: "Temperature",
+        ATTR_NAME: "Return Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
     "water_pressure": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_PRESSURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Pressure",
+        ATTR_NAME: "Water Pressure",
         ATTR_UNIT_OF_MEASUREMENT: PRESSURE_BAR,
     },
     "water_temperature": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Temperature",
+        ATTR_NAME: "Water Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
 }
@@ -454,7 +475,7 @@ USB_SENSORS = {
         ATTR_UNIT_OF_MEASUREMENT: SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     },
 }
-BINARY_SENSORS = {
+USB_BINARY_SENSORS = {
     MOTION_SENSOR_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_MOTION,
         ATTR_ENABLED_DEFAULT: True,

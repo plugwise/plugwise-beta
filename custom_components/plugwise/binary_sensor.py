@@ -29,8 +29,8 @@ from .const import (
     ATTR_SED_CLOCK_SYNC,
     ATTR_SED_CLOCK_INTERVAL,
     AVAILABLE_SENSOR_ID,
-    BINARY_SENSORS,
-    BINARY_SENSOR_MAP,
+    GW_BINARY_SENSORS,
+    USB_BINARY_SENSORS,
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
@@ -77,7 +77,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
         node = stick.node(mac)
         for sensor_type in node.get_sensors():
-            if sensor_type in BINARY_SENSORS:
+            if sensor_type in USB_BINARY_SENSORS:
                 async_add_entities([USBBinarySensor(node, mac, sensor_type)])
                 _LOGGER.debug("Added %s as binary_sensor", sensor_type)
 
@@ -139,7 +139,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
         if device_properties[PW_CLASS] == "heater_central":
             _LOGGER.debug("Plugwise device_class %s found", device_properties[PW_CLASS])
             data = api.get_device_data(dev_id)
-            for binary_sensor, dummy in BINARY_SENSOR_MAP.items():
+            for binary_sensor, sensor_type in GW_BINARY_SENSORS.items():
                 _LOGGER.debug("Binary_sensor: %s", binary_sensor)
                 if binary_sensor not in data:
                     continue
@@ -153,8 +153,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         coordinator,
                         device_properties[ATTR_NAME],
                         dev_id,
-                        True,
                         binary_sensor,
+                        sensor_type,
                         device_properties[PW_CLASS],
                     )
                 )
@@ -171,7 +171,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     coordinator,
                     device_properties[ATTR_NAME],
                     dev_id,
-                    True,
                     "plugwise_notification",
                     device_properties[PW_CLASS],
                 )
@@ -188,10 +187,10 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
     """Representation of a Plugwise binary_sensor."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, model
+        self, api, coordinator, name, dev_id, binary_sensor, sensor_type, model
     ):
         """Set up the Plugwise API."""
-        self._enabled_default = enabled_default
+        self._enabled_default = sensor_type[ATTR_ENABLED_DEFAULT]
 
         super().__init__(
             api, coordinator, name, dev_id, self._enabled_default, binary_sensor
@@ -201,6 +200,7 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
 
         self._is_on = False
         self._icon = None
+        self._name = sensor_type[ATTR_NAME]
         self._state = None
 
         self._unique_id = f"{dev_id}-{binary_sensor}"
@@ -225,13 +225,15 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
         self._state = STATE_ON if self._is_on else STATE_OFF
         if self._binary_sensor == "dhw_state":
             self._icon = FLOW_ON_ICON if self._is_on else FLOW_OFF_ICON
+        if self._binary_sensor == "flame_state":
+            self._icon = FLAME_ICON if self._is_on else IDLE_ICON
         if self._binary_sensor == "slave_boiler_state":
             self._icon = FLAME_ICON if self._is_on else IDLE_ICON
 
         self.async_write_ha_state()
 
 
-class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
+class GwNotifySensor(SmileSensor, BinarySensorEntity):
     """Representation of a Plugwise Notification binary_sensor."""
 
     def __init__(
@@ -241,25 +243,31 @@ class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
         coordinator,
         name,
         dev_id,
-        enabled_default,
         binary_sensor,
         model,
     ):
         """Set up the Plugwise API."""
-        self._enabled_default = enabled_default, True
+        self._enabled_default = True
 
         super().__init__(
-            api, coordinator, name, dev_id, self._enabled_default, binary_sensor, model
+            api, coordinator, name, dev_id, self._enabled_default, binary_sensor
         )
 
         self._binary_sensor = binary_sensor
         self._hass = hass
 
+        self._attributes = {}
         self._is_on = False
         self._icon = None
-        self._attributes = {}
+        self._name = "Plugwise Notification"
+        self._state = None
 
         self._unique_id = f"{dev_id}-{binary_sensor}"
+
+    @property
+    def is_on(self):
+        """Return true if the binary sensor is on."""
+        return self._is_on
 
     @property
     def device_state_attributes(self):
@@ -301,7 +309,7 @@ class USBBinarySensor(NodeEntity, BinarySensorEntity):
         """Initialize a Node entity."""
         super().__init__(node, mac)
         self.sensor_id = sensor_id
-        self.sensor_type = BINARY_SENSORS[sensor_id]
+        self.sensor_type = USB_BINARY_SENSORS[sensor_id]
         self.node_callbacks = (AVAILABLE_SENSOR_ID, sensor_id)
 
     @property

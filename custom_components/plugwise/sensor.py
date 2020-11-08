@@ -32,7 +32,7 @@ from .const import (
     DEVICE_STATE,
     DOMAIN,
     ENERGY_SENSORS,
-    FLAME_ICON,
+    HEATING_ICON,
     IDLE_ICON,
     PW_CLASS,
     PW_TYPE,
@@ -102,7 +102,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 model = "Metered Switch"
 
             entities.append(
-                GwPowerSensor(
+                GWSensor(
                     api,
                     coordinator,
                     device_properties[ATTR_NAME],
@@ -119,13 +119,14 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 continue
 
             entities.append(
-                GwThermostatSensor(
+                GWSensor(
                     api,
                     coordinator,
                     device_properties[ATTR_NAME],
                     dev_id,
                     sensor,
                     sensor_type,
+                    None,
                 )
             )
             _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
@@ -135,13 +136,14 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 continue
 
             entities.append(
-                GwThermostatSensor(
+                GWSensor(
                     api,
                     coordinator,
                     device_properties[ATTR_NAME],
                     dev_id,
                     sensor,
                     sensor_type,
+                    None,
                 )
             )
             _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
@@ -216,52 +218,24 @@ class SmileSensor(SmileGateway):
         return self._unit_of_measurement
 
 
-class GwThermostatSensor(SmileSensor, Entity):
-    """Thermostat (or generic) sensor devices."""
+class GWSensor(SmileSensor, Entity):
+    """Gateway sensor devices."""
 
-    def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type):
+    def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type, model):
         """Set up the Plugwise API."""
         self._enabled_default = sensor_type[ATTR_ENABLED_DEFAULT]
 
         super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
 
-        self._model = sensor
-        self._unit_of_measurement = sensor_type[ATTR_UNIT_OF_MEASUREMENT]
-        self._dev_class = sensor_type[ATTR_DEVICE_CLASS]
-        if not self._dev_class:
-            self._icon = sensor_type[ATTR_ICON]
-
-    @callback
-    def _async_process_data(self):
-        """Update the entity."""
-        _LOGGER.debug("Update sensor called")
-        data = self._api.get_device_data(self._dev_id)
-
-        if self._sensor not in data:
-            self.async_write_ha_state()
-            return
-
-        self._state = data[self._sensor]
-
-        self.async_write_ha_state()
-
-
-class GwPowerSensor(SmileSensor, Entity):
-    """Power sensor devices."""
-
-    def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type, model):
-        """Set up the Plugwise API."""
-        self._enabled_default = True
-
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
-
         self._icon = None
-        self._model = model
-        if model is None:
-            self._model = sensor
+        self._model = model if model else sensor
+        #if self._model is None:
+        #    self._model = sensor
 
-        self._unit_of_measurement = sensor_type[ATTR_UNIT_OF_MEASUREMENT]
         self._dev_class = sensor_type[ATTR_DEVICE_CLASS]
+        self._name = sensor_type[ATTR_NAME]
+        self._unit_of_measurement = sensor_type[ATTR_UNIT_OF_MEASUREMENT]
+
         if not self._dev_class:
             self._icon = sensor_type[ATTR_ICON]
 
@@ -311,7 +285,7 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
         self._icon = IDLE_ICON
         if self._heating_state:
             self._state = CURRENT_HVAC_HEAT
-            self._icon = FLAME_ICON
+            self._icon = HEATING_ICON
         if self._cooling_state:
             self._state = CURRENT_HVAC_COOL
             self._icon = COOL_ICON
