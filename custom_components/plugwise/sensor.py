@@ -241,46 +241,7 @@ class GwThermostatSensor(SmileSensor, Entity):
             self.async_write_ha_state()
             return
 
-        measurement = data[self._sensor]
-        if self._unit_of_measurement == PERCENTAGE:
-            measurement = int(measurement * 100)
-        self._state = measurement
-
-        self.async_write_ha_state()
-
-
-class GwAuxDeviceSensor(SmileSensor, Entity):
-    """Auxiliary Device sensors."""
-
-    def __init__(self, api, coordinator, name, dev_id, sensor):
-        """Set up the Plugwise API."""
-        self._enabled_default = True
-
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
-
-        self._cooling_state = False
-        self._heating_state = False
-        self._icon = None
-
-    @callback
-    def _async_process_data(self):
-        """Update the entity."""
-        _LOGGER.debug("Update aux dev sensor called")
-        data = self._api.get_device_data(self._dev_id)
-
-        if "heating_state" in data:
-            self._heating_state = data["heating_state"]
-        if "cooling_state" in data:
-            self._cooling_state = data["cooling_state"]
-
-        self._state = CURRENT_HVAC_IDLE
-        self._icon = IDLE_ICON
-        if self._heating_state:
-            self._state = CURRENT_HVAC_HEAT
-            self._icon = FLAME_ICON
-        if self._cooling_state:
-            self._state = CURRENT_HVAC_COOL
-            self._icon = COOL_ICON
+        self._state = data[self._sensor]
 
         self.async_write_ha_state()
 
@@ -317,10 +278,43 @@ class GwPowerSensor(SmileSensor, Entity):
             self.async_write_ha_state()
             return
 
-        measurement = data[self._sensor]
-        if self._unit_of_measurement == ENERGY_KILO_WATT_HOUR:
-            measurement = round((measurement / 1000), 1)
-        self._state = measurement
+        self._state = data[self._sensor]
+
+        self.async_write_ha_state()
+
+
+class GwAuxDeviceSensor(SmileSensor, Entity):
+    """Auxiliary Device sensors."""
+
+    def __init__(self, api, coordinator, name, dev_id, sensor):
+        """Set up the Plugwise API."""
+        self._enabled_default = True
+
+        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
+
+        self._cooling_state = False
+        self._heating_state = False
+        self._icon = None
+
+    @callback
+    def _async_process_data(self):
+        """Update the entity."""
+        _LOGGER.debug("Update aux dev sensor called")
+        data = self._api.get_device_data(self._dev_id)
+
+        if "heating_state" in data:
+            self._heating_state = data["heating_state"]
+        if "cooling_state" in data:
+            self._cooling_state = data["cooling_state"]
+
+        self._state = CURRENT_HVAC_IDLE
+        self._icon = IDLE_ICON
+        if self._heating_state:
+            self._state = CURRENT_HVAC_HEAT
+            self._icon = FLAME_ICON
+        if self._cooling_state:
+            self._state = CURRENT_HVAC_COOL
+            self._icon = COOL_ICON
 
         self.async_write_ha_state()
 
