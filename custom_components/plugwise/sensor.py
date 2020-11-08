@@ -229,8 +229,6 @@ class GWSensor(SmileSensor, Entity):
 
         self._icon = None
         self._model = model if model else sensor
-        #if self._model is None:
-        #    self._model = sensor
 
         self._dev_class = sensor_type[ATTR_DEVICE_CLASS]
         self._name = sensor_type[ATTR_NAME]
