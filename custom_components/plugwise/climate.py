@@ -280,8 +280,8 @@ class PwThermostat(SmileGateway, ClimateEntity):
         if "active_preset" in climate_data:
             self._preset_mode = climate_data["active_preset"]
 
-        if heater_central_data.get("heating_state") is not None:
-            self._heating_state = heater_central_data["heating_state"]
+        if heater_central_data.get("intended_central_heating_state") is not None:
+            self._heating_state = heater_central_data["intended_central_heating_state"]
         if heater_central_data.get("cooling_state") is not None:
             self._cooling_state = heater_central_data["cooling_state"]
         if heater_central_data.get("compressor_state") is not None:

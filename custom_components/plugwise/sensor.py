@@ -267,8 +267,8 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
         _LOGGER.debug("Update aux dev sensor called")
         data = self._api.get_device_data(self._dev_id)
 
-        if "heating_state" in data:
-            self._heating_state = data["heating_state"]
+        if "intended_central_heating_state" in data:
+            self._heating_state = data["intended_central_heating_state"]
         if "cooling_state" in data:
             self._cooling_state = data["cooling_state"]
 
