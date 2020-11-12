@@ -98,7 +98,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
 
 class GwSwitch(SmileGateway, SwitchEntity):
-    """Representation of a Plugwise plug."""
+    """Representation of a Smile Gateway switch."""
 
     def __init__(self, api, coordinator, name, dev_id, members, model):
         """Set up the Plugwise API."""
@@ -167,7 +167,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
 
 class USBSwitch(NodeEntity, SwitchEntity):
-    """Representation of a switch."""
+    """Representation of a Sitck Node switch."""
 
     def __init__(self, node, mac, switch_id):
         """Initialize a Node entity."""

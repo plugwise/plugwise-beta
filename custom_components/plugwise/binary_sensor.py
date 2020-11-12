@@ -29,14 +29,13 @@ from .const import (
     ATTR_SED_CLOCK_SYNC,
     ATTR_SED_CLOCK_INTERVAL,
     AVAILABLE_SENSOR_ID,
-    GW_BINARY_SENSORS,
-    USB_BINARY_SENSORS,
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
     FLAME_ICON,
     FLOW_OFF_ICON,
     FLOW_ON_ICON,
+    GW_BINARY_SENSORS,
     IDLE_ICON,
     MOTION_SENSOR_ID,
     NO_NOTIFICATION_ICON,
@@ -49,6 +48,7 @@ from .const import (
     SERVICE_CONFIGURE_SCAN,
     STICK,
     USB,
+    USB_BINARY_SENSORS,
 )
 
 from .sensor import SmileSensor
@@ -187,7 +187,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
 
 class GwBinarySensor(SmileSensor, BinarySensorEntity):
-    """Representation of a Plugwise binary_sensor."""
+    """Representation of a Gateway binary_sensor."""
 
     def __init__(
         self, api, coordinator, name, dev_id, enabled_default, binary_sensor, sensor_type, model
@@ -299,7 +299,7 @@ class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
 
 
 class USBBinarySensor(NodeEntity, BinarySensorEntity):
-    """Representation of a Plugwise Binary Sensor."""
+    """Representation of a Stick Node Binary Sensor."""
 
     def __init__(self, node, mac, sensor_id):
         """Initialize a Node entity."""

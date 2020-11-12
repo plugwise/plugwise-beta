@@ -165,7 +165,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
 
 class SmileSensor(SmileGateway):
-    """Represent Smile Sensors."""
+    """Representation of a Smile Sensor."""
 
     def __init__(self, api, coordinator, name, dev_id, enabled_default, sensor):
         """Initialise the sensor."""
@@ -214,7 +214,7 @@ class SmileSensor(SmileGateway):
 
 
 class GWSensor(SmileSensor, Entity):
-    """Thermostat (or generic) sensor devices."""
+    """Representation of a Smile Gateway sensor."""
 
     def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type, model):
         """Set up the Plugwise API."""
@@ -248,7 +248,7 @@ class GWSensor(SmileSensor, Entity):
 
 
 class GwAuxDeviceSensor(SmileSensor, Entity):
-    """Auxiliary Device sensors."""
+    """Representation of an Auxiliary Device sensor."""
 
     def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type):
         """Set up the Plugwise API."""
@@ -285,7 +285,7 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
 
 
 class USBSensor(NodeEntity):
-    """Representation of a Plugwise sensor."""
+    """Representation of a Stick Node sensor."""
 
     def __init__(self, node, mac, sensor_id):
         """Initialize a Node entity."""
