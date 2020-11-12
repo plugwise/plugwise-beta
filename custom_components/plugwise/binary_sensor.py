@@ -42,6 +42,7 @@ from .const import (
     NO_NOTIFICATION_ICON,
     NOTIFICATION_ICON,
     PW_CLASS,
+    PW_MODEL,
     PW_TYPE,
     SCAN_SENSITIVITY_MODES,
     SERVICE_CONFIGURE_BATTERY,
@@ -153,9 +154,10 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         coordinator,
                         device_properties[ATTR_NAME],
                         dev_id,
+                        True,
                         binary_sensor,
                         sensor_type,
-                        device_properties[PW_CLASS],
+                        device_properties[PW_MODEL],
                     )
                 )
                 _LOGGER.info(
@@ -171,8 +173,9 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     coordinator,
                     device_properties[ATTR_NAME],
                     dev_id,
+                    True,
                     "plugwise_notification",
-                    device_properties[PW_CLASS],
+                    device_properties[PW_MODEL],
                 )
             )
             _LOGGER.info(
@@ -187,20 +190,19 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
     """Representation of a Plugwise binary_sensor."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, binary_sensor, sensor_type, model
+        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, sensor_type, model
     ):
         """Set up the Plugwise API."""
-        self._enabled_default = sensor_type[ATTR_ENABLED_DEFAULT]
+        self._enabled_default = enabled_default
 
         super().__init__(
             api, coordinator, name, dev_id, self._enabled_default, binary_sensor
         )
 
         self._binary_sensor = binary_sensor
-
         self._is_on = False
         self._icon = None
-        self._name = sensor_type[ATTR_NAME]
+        self._name = sensor_type[ATTR_NAME] if sensor_type else None
         self._state = None
 
         self._unique_id = f"{dev_id}-{binary_sensor}"
@@ -223,7 +225,7 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
         self._is_on = data[self._binary_sensor]
 
         self._state = STATE_ON if self._is_on else STATE_OFF
-        if self._binary_sensor == "dhw_state":
+        if self._binary_sensor == "domestic_hot_water_state":
             self._icon = FLOW_ON_ICON if self._is_on else FLOW_OFF_ICON
         if self._binary_sensor == "flame_state":
             self._icon = FLAME_ICON if self._is_on else IDLE_ICON
@@ -233,7 +235,7 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
         self.async_write_ha_state()
 
 
-class GwNotifySensor(SmileSensor, BinarySensorEntity):
+class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
     """Representation of a Plugwise Notification binary_sensor."""
 
     def __init__(
@@ -243,31 +245,25 @@ class GwNotifySensor(SmileSensor, BinarySensorEntity):
         coordinator,
         name,
         dev_id,
+        enabled_default,
         binary_sensor,
         model,
     ):
         """Set up the Plugwise API."""
-        self._enabled_default = True
+        self._enabled_default = enabled_default, True
 
         super().__init__(
-            api, coordinator, name, dev_id, self._enabled_default, binary_sensor
+            api, coordinator, name, dev_id, self._enabled_default, binary_sensor, None, model
         )
 
+        self._attributes = {}
         self._binary_sensor = binary_sensor
         self._hass = hass
-
-        self._attributes = {}
         self._is_on = False
         self._icon = None
-        self._name = "Plugwise Notification"
-        self._state = None
+        self._name = f"{name} {binary_sensor}"
 
         self._unique_id = f"{dev_id}-{binary_sensor}"
-
-    @property
-    def is_on(self):
-        """Return true if the binary sensor is on."""
-        return self._is_on
 
     @property
     def device_state_attributes(self):

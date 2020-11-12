@@ -32,9 +32,10 @@ from .const import (
     DEVICE_STATE,
     DOMAIN,
     ENERGY_SENSORS,
-    HEATING_ICON,
+    FLAME_ICON,
     IDLE_ICON,
     PW_CLASS,
+    PW_MODEL,
     PW_TYPE,
     STICK,
     THERMOSTAT_SENSORS,
@@ -97,10 +98,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             if data.get(sensor) is None:
                 continue
 
-            model = None
-            if "plug" in device_properties["types"]:
-                model = "Metered Switch"
-
             entities.append(
                 GWSensor(
                     api,
@@ -109,7 +106,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     dev_id,
                     sensor,
                     sensor_type,
-                    model,
+                    device_properties[PW_MODEL],
                 )
             )
             _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
@@ -126,7 +123,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     dev_id,
                     sensor,
                     sensor_type,
-                    None,
+                    device_properties[PW_MODEL],
                 )
             )
             _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
@@ -143,7 +140,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     dev_id,
                     sensor,
                     sensor_type,
-                    None,
+                    device_properties[PW_MODEL],
                 )
             )
             _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
@@ -159,6 +156,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         device_properties[ATTR_NAME],
                         dev_id,
                         DEVICE_STATE,
+                        None,
                     )
                 )
                 _LOGGER.info("Added auxiliary sensor %s", device_properties[ATTR_NAME])
@@ -183,9 +181,6 @@ class SmileSensor(SmileGateway):
 
         if dev_id == self._api.heater_id:
             self._entity_name = "Auxiliary"
-
-        sensorname = sensor.replace("_", " ").title()
-        self._name = f"{self._entity_name} {sensorname}"
 
         if dev_id == self._api.gateway_id:
             self._entity_name = f"Smile {self._entity_name}"
@@ -219,7 +214,7 @@ class SmileSensor(SmileGateway):
 
 
 class GWSensor(SmileSensor, Entity):
-    """Gateway sensor devices."""
+    """Thermostat (or generic) sensor devices."""
 
     def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type, model):
         """Set up the Plugwise API."""
@@ -227,18 +222,15 @@ class GWSensor(SmileSensor, Entity):
 
         super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
 
-        self._icon = None
-        self._model = model if model else sensor
-
         self._dev_class = sensor_type[ATTR_DEVICE_CLASS]
-        self._name = sensor_type[ATTR_NAME]
-        self._unit_of_measurement = sensor_type[ATTR_UNIT_OF_MEASUREMENT]
-
+        self._icon = None
         if not self._dev_class:
             self._icon = sensor_type[ATTR_ICON]
-
-        if dev_id == self._api.gateway_id:
-            self._model = "P1 DSMR"
+        self._model = model
+        self._name = f"{name} {sensor_type[ATTR_NAME]}"
+        if "Auxiliary" in sensor_type[ATTR_NAME]:
+            self._name = sensor_type[ATTR_NAME]
+        self._unit_of_measurement = sensor_type[ATTR_UNIT_OF_MEASUREMENT]
 
     @callback
     def _async_process_data(self):
@@ -258,7 +250,7 @@ class GWSensor(SmileSensor, Entity):
 class GwAuxDeviceSensor(SmileSensor, Entity):
     """Auxiliary Device sensors."""
 
-    def __init__(self, api, coordinator, name, dev_id, sensor):
+    def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type):
         """Set up the Plugwise API."""
         self._enabled_default = True
 
@@ -267,6 +259,7 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
         self._cooling_state = False
         self._heating_state = False
         self._icon = None
+        self._name = "Auxiliary Device State"
 
     @callback
     def _async_process_data(self):
@@ -283,7 +276,7 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
         self._icon = IDLE_ICON
         if self._heating_state:
             self._state = CURRENT_HVAC_HEAT
-            self._icon = HEATING_ICON
+            self._icon = FLAME_ICON
         if self._cooling_state:
             self._state = CURRENT_HVAC_COOL
             self._icon = COOL_ICON

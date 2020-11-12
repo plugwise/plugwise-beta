@@ -140,7 +140,7 @@ async def validate_gw_input(hass: core.HomeAssistant, data):
     api = Smile(
         host=data[CONF_HOST],
         username=data[CONF_USERNAME],
-        password=data[CONF_PASSWORD],
+        smile_id=data[CONF_PASSWORD],
         port=data[CONF_PORT],
         timeout=30,
         websession=websession,

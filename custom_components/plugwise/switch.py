@@ -26,6 +26,7 @@ from .const import (
     COORDINATOR,
     CURRENT_POWER_SENSOR_ID,
     DOMAIN,
+    PW_MODEL,
     PW_TYPE,
     USB_SENSORS,
     STICK,
@@ -80,15 +81,15 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
         members = None
         model = None
         if any(dummy in device_properties["types"] for dummy in SWITCH_CLASSES):
-            if "plug" in device_properties["types"]:
-                model = "Metered Switch"
-            if "switch_group" in device_properties["types"]:
-                members = device_properties["members"]
-                model = "Switch Group"
             _LOGGER.debug("Plugwise switch Dev %s", device_properties[ATTR_NAME])
             entities.append(
                 GwSwitch(
-                    api, coordinator, device_properties[ATTR_NAME], dev_id, members, model,
+                    api,
+                    coordinator,
+                    device_properties[ATTR_NAME],
+                    dev_id, 
+                    members,
+                    device_properties[PW_MODEL],
                 )
             )
             _LOGGER.info("Added switch.%s", "{}".format(device_properties[ATTR_NAME]))
@@ -105,10 +106,10 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
         super().__init__(api, coordinator, name, dev_id)
 
+        self._is_on = False
         self._members = members
         self._model = model
-
-        self._is_on = False
+        self._name = f"{name}"
 
         self._unique_id = f"{dev_id}-plug"
 

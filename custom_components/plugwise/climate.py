@@ -32,6 +32,7 @@ from .const import (
     DOMAIN,
     PW_CLASS,
     PW_LOCATION,
+    PW_MODEL,
     SCHEDULE_OFF,
     SCHEDULE_ON,
     THERMOSTAT_CLASSES,
@@ -65,7 +66,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             device_properties[ATTR_NAME],
             dev_id,
             device_properties[PW_LOCATION],
-            device_properties[PW_CLASS],
+            device_properties[PW_MODEL],
             DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
         )
@@ -257,8 +258,8 @@ class PwThermostat(SmileGateway, ClimateEntity):
         climate_data = self._api.get_device_data(self._dev_id)
         heater_central_data = self._api.get_device_data(self._api.heater_id)
 
-        if "setpoint" in climate_data:
-            self._setpoint = climate_data["setpoint"]
+        if "thermostat" in climate_data:
+            self._setpoint = climate_data["thermostat"]
         if "temperature" in climate_data:
             self._temperature = climate_data["temperature"]
         if "schedule_temperature" in climate_data:

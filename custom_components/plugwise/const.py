@@ -32,6 +32,7 @@ COORDINATOR = "coordinator"
 GATEWAY = "gateway"
 PW_CLASS = "class"
 PW_LOCATION = "location"
+PW_MODEL = "model"
 PW_TYPE = "plugwise_type"
 SCHEDULE_OFF = "false"
 SCHEDULE_ON = "true"
@@ -102,25 +103,25 @@ ZEROCONF_MAP = {
 
 # Binary sensor map:
 GW_BINARY_SENSORS = {
-    "dhw_state": {
+    "domestic_hot_water_state": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Domestic Hot Water State",
+        ATTR_NAME: "Auxiliary Dhw State",
         ATTR_UNIT_OF_MEASUREMENT: None,
     },
     "flame_state": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Flame State",
+        ATTR_NAME: "Auxiliary Flame State",
         ATTR_UNIT_OF_MEASUREMENT: None,
     },
     "slave_boiler_state": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Secondary Heater Device State",
+        ATTR_NAME: "Auxiliary Secondary Heater Device State",
         ATTR_UNIT_OF_MEASUREMENT: None,
     },
 }
@@ -131,7 +132,7 @@ THERMOSTAT_SENSORS = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_BATTERY,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Charge Level",
+        ATTR_NAME: "Battery",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
     },
     "illuminance": {
@@ -148,11 +149,11 @@ THERMOSTAT_SENSORS = {
         ATTR_NAME: "Outdoor Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
-    "setpoint": {
+    "thermostat": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Setpoint Temperature",
+        ATTR_NAME: "Setpoint",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
     "temperature": {
@@ -183,35 +184,35 @@ AUX_DEV_SENSORS = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Intended Boiler Temperature",
+        ATTR_NAME: "Auxiliary Intended Boiler Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
     "modulation_level": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: "mdi:percent",
-        ATTR_NAME: "Heater Modulation Level",
+        ATTR_NAME: "Auxiliary Heater Modulation Level",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
     },
-    "return_temperature": {
+    "return_water_temperature": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
-        ATTR_NAME: "Return Temperature",
+        ATTR_NAME: "Auxiliary Return Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
-    "water_pressure": {
+    "central_heater_water_pressure": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_PRESSURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Water Pressure",
+        ATTR_NAME: "Auxiliary Water Pressure",
         ATTR_UNIT_OF_MEASUREMENT: PRESSURE_BAR,
     },
-    "water_temperature": {
+    "boiler_temperature": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Water Temperature",
+        ATTR_NAME: "Auxiliary Water Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
 }
@@ -221,140 +222,140 @@ ENERGY_SENSORS = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Current Consumed Power",
+        ATTR_NAME: "Electricity Consumed",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "electricity_produced": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Current Produced Power",
+        ATTR_NAME: "Electricity Produced",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "electricity_consumed_interval": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Consumed Power Interval",
+        ATTR_NAME: "Electricity Consumed Interval",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
     },
     "electricity_consumed_peak_interval": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Consumed Power Interval",
+        ATTR_NAME: "Electricity Consumed Peak Interval",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
     },
     "electricity_consumed_off_peak_interval": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Consumed Power Interval (off peak)",
+        ATTR_NAME: "Electricity Consumed Off Peak Interval",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
     },
     "electricity_produced_interval": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Produced Power Interval",
+        ATTR_NAME: "Electricity Produced Interval",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
     },
     "electricity_produced_peak_interval": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Produced Power Interval",
+        ATTR_NAME: "Electricity Produced Peak Interval",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
     },
     "electricity_produced_off_peak_interval": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Produced Power Interval (off peak)",
+        ATTR_NAME: "Electricity Produced Off Peak Interval",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_WATT_HOUR,
     },
     "electricity_consumed_off_peak_point": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Current Consumed Power (off peak)",
+        ATTR_NAME: "Electricity Consumed Off Peak Point",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "electricity_consumed_peak_point": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Current Consumed Power",
+        ATTR_NAME: "Electricity Consumed Peak Point",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "electricity_consumed_off_peak_cumulative": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Cumulative Consumed Power (off peak)",
+        ATTR_NAME: "Electricity Consumed Off Peak Cumulative",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "electricity_consumed_peak_cumulative": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Cumulative Consumed Power",
+        ATTR_NAME: "Electricity Consumed Peak Cumulative",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "electricity_produced_off_peak_point": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Current Produced Power (off peak)",
+        ATTR_NAME: "Electricity Produced Off Peak Point)",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "electricity_produced_peak_point": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Current Produced Power",
+        ATTR_NAME: "Electricity Produced Peak Point",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "electricity_produced_off_peak_cumulative": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Cumulative Produced Power (off peak)",
+        ATTR_NAME: "Electricity Produced Off Peak Cumulative",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "electricity_produced_peak_cumulative": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Cumulative Produced Power",
+        ATTR_NAME: "Electricity Produced Peak Cumulative",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "net_electricity_point": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Current Net Power",
+        ATTR_NAME: "Net Electricity Point",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "net_electricity_cumulative": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
-        ATTR_NAME: "Cumulative Net Power",
+        ATTR_NAME: "Net Electricity Cumulative",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "gas_consumed_interval": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: FLAME_ICON,
-        ATTR_NAME: "Current Consumed Gas",
+        ATTR_NAME: "Gas Consumed Interval",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
     },
     "gas_consumed_cumulative": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: FLAME_ICON,
-        ATTR_NAME: "Cumulative Consumed Gas",
+        ATTR_NAME: "Gas_Consumed_Cumulative",
         ATTR_UNIT_OF_MEASUREMENT: VOLUME_CUBIC_METERS,
     },
 }
