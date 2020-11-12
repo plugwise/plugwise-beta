@@ -32,7 +32,7 @@ from .const import (
     DEVICE_STATE,
     DOMAIN,
     ENERGY_SENSORS,
-    FLAME_ICON,
+    HEATING_ICON
     IDLE_ICON,
     PW_CLASS,
     PW_MODEL,
@@ -276,7 +276,7 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
         self._icon = IDLE_ICON
         if self._heating_state:
             self._state = CURRENT_HVAC_HEAT
-            self._icon = FLAME_ICON
+            self._icon = HEATING_ICON
         if self._cooling_state:
             self._state = CURRENT_HVAC_COOL
             self._icon = COOL_ICON
