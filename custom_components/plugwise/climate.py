@@ -78,7 +78,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class PwThermostat(SmileGateway, ClimateEntity):
-    """Representation of an Plugwise thermostat."""
+    """Representation of a Plugwise (zone) thermostat."""
 
     def __init__(
         self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp
