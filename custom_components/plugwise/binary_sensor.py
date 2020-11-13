@@ -185,7 +185,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
 
 class GwBinarySensor(SmileSensor, BinarySensorEntity):
-    """Representation of a Plugwise binary_sensor."""
+    """Representation of a Gateway binary_sensor."""
 
     def __init__(
         self, api, coordinator, name, dev_id, binary_sensor, sensor_type, model
