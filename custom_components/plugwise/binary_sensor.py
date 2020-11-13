@@ -154,7 +154,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         coordinator,
                         device_properties[ATTR_NAME],
                         dev_id,
-                        True,
                         binary_sensor,
                         sensor_type,
                         device_properties[PW_MODEL],
@@ -173,7 +172,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     coordinator,
                     device_properties[ATTR_NAME],
                     dev_id,
-                    True,
                     "plugwise_notification",
                     device_properties[PW_MODEL],
                 )
@@ -187,13 +185,13 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
 
 class GwBinarySensor(SmileSensor, BinarySensorEntity):
-    """Representation of a Gateway binary_sensor."""
+    """Representation of a Plugwise binary_sensor."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, sensor_type, model
+        self, api, coordinator, name, dev_id, binary_sensor, sensor_type, model
     ):
         """Set up the Plugwise API."""
-        self._enabled_default = enabled_default
+        self._enabled_default = True
 
         super().__init__(
             api, coordinator, name, dev_id, self._enabled_default, binary_sensor
@@ -245,15 +243,14 @@ class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
         coordinator,
         name,
         dev_id,
-        enabled_default,
         binary_sensor,
         model,
     ):
         """Set up the Plugwise API."""
-        self._enabled_default = enabled_default, True
+        self._enabled_default = False
 
         super().__init__(
-            api, coordinator, name, dev_id, self._enabled_default, binary_sensor, None, model
+            api, coordinator, name, dev_id, binary_sensor, None, model
         )
 
         self._attributes = {}
