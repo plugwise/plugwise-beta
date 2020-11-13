@@ -71,9 +71,9 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     api = Smile(
         host=entry.data[CONF_HOST],
-        password=entry.data[CONF_PASSWORD],
+        username=entry.data[CONF_USERNAME],
+        smile_id=entry.data[CONF_PASSWORD],
         port=entry.data.get(CONF_PORT, DEFAULT_PORT),
-        username=entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
         timeout=30,
         websession=websession,
     )
