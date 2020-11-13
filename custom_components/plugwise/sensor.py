@@ -32,7 +32,7 @@ from .const import (
     DEVICE_STATE,
     DOMAIN,
     ENERGY_SENSORS,
-    HEATING_ICON
+    HEATING_ICON,
     IDLE_ICON,
     PW_CLASS,
     PW_MODEL,
