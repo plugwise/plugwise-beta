@@ -135,10 +135,10 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     entities = []
     is_thermostat = api.single_master_thermostat()
 
-    all_devices = api.get_all_devices()
-    for dev_id, device_properties in all_devices.items():
-        if device_properties[PW_CLASS] == "heater_central":
-            _LOGGER.debug("Plugwise device_class %s found", device_properties[PW_CLASS])
+    devices = api.get_all_devices()
+    for dev_id in devices:
+        if devices[dev_id][PW_CLASS] == "heater_central":
+            _LOGGER.debug("Plugwise device_class %s found", devices[dev_id][PW_CLASS])
             data = api.get_device_data(dev_id)
             for binary_sensor in GW_BINARY_SENSORS:
                 _LOGGER.debug("Binary_sensor: %s", binary_sensor)
@@ -146,40 +146,40 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     continue
 
                 _LOGGER.debug(
-                    "Plugwise binary_sensor Dev %s", device_properties[ATTR_NAME]
+                    "Plugwise binary_sensor Dev %s", devices[dev_id][ATTR_NAME]
                 )
                 entities.append(
                     GwBinarySensor(
                         api,
                         coordinator,
-                        device_properties[ATTR_NAME],
+                        devices[dev_id][ATTR_NAME],
                         dev_id,
                         True,
                         binary_sensor,
                         GW_BINARY_SENSORS[binary_sensor],
-                        device_properties[PW_MODEL],
+                        devices[dev_id][PW_MODEL],
                     )
                 )
                 _LOGGER.info(
                     "Added binary_sensor.%s",
-                    f"{device_properties[ATTR_NAME]}_{binary_sensor}",
+                    f"{devices[dev_id][ATTR_NAME]}_{binary_sensor}",
                 )
-        if device_properties[PW_CLASS] == "gateway" and is_thermostat is not None:
-            _LOGGER.debug("Plugwise device_class %s found", device_properties[PW_CLASS])
+        if devices[dev_id][PW_CLASS] == "gateway" and is_thermostat is not None:
+            _LOGGER.debug("Plugwise device_class %s found", devices[dev_id][PW_CLASS])
             entities.append(
                 GwNotifySensor(
                     hass,
                     api,
                     coordinator,
-                    device_properties[ATTR_NAME],
+                    devices[dev_id][ATTR_NAME],
                     dev_id,
                     "plugwise_notification",
-                    device_properties[PW_MODEL],
+                    devices[dev_id][PW_MODEL],
                 )
             )
             _LOGGER.info(
                 "Added binary_sensor.%s",
-                f"{device_properties[ATTR_NAME]}_{'plugwise_notification'}",
+                f"{devices[dev_id][ATTR_NAME]}_{'plugwise_notification'}",
             )
 
     async_add_entities(entities, True)
