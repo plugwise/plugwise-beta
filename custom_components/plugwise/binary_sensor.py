@@ -201,7 +201,7 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
         self._binary_sensor = binary_sensor
         self._is_on = False
         self._icon = None
-        self._name = key[ATTR_NAME] if sensor_type else None
+        self._name = key[ATTR_NAME] if key else None
         self._state = None
 
         self._unique_id = f"{dev_id}-{binary_sensor}"
