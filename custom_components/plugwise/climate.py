@@ -52,27 +52,27 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    all_devices = api.get_all_devices()
+    devices = api.get_all_devices()
 
-    for dev_id, device_properties in all_devices.items():
+    for dev_id in devices:
 
-        if device_properties[PW_CLASS] not in THERMOSTAT_CLASSES:
+        if devices[dev_id][PW_CLASS] not in THERMOSTAT_CLASSES:
             continue
 
-        _LOGGER.debug("Plugwise climate Dev %s", device_properties[ATTR_NAME])
+        _LOGGER.debug("Plugwise climate Dev %s", devices[dev_id][ATTR_NAME])
         thermostat = PwThermostat(
             api,
             coordinator,
-            device_properties[ATTR_NAME],
+            devices[dev_id][ATTR_NAME],
             dev_id,
-            device_properties[PW_LOCATION],
-            device_properties[PW_MODEL],
+            devices[dev_id][PW_LOCATION],
+            devices[dev_id][PW_MODEL],
             DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
         )
 
         entities.append(thermostat)
-        _LOGGER.info("Added climate.%s", "{}".format(device_properties[ATTR_NAME]))
+        _LOGGER.info("Added climate.%s", "{}".format(devices[dev_id][ATTR_NAME]))
 
     async_add_entities(entities, True)
 
