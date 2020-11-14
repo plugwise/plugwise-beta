@@ -140,7 +140,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
         if device_properties[PW_CLASS] == "heater_central":
             _LOGGER.debug("Plugwise device_class %s found", device_properties[PW_CLASS])
             data = api.get_device_data(dev_id)
-            for binary_sensor, sensor_type in GW_BINARY_SENSORS.items():
+            for binary_sensor in GW_BINARY_SENSORS:
                 _LOGGER.debug("Binary_sensor: %s", binary_sensor)
                 if binary_sensor not in data:
                     continue
@@ -156,7 +156,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         dev_id,
                         True,
                         binary_sensor,
-                        sensor_type,
+                        GW_BINARY_SENSORS[binary_sensor],
                         device_properties[PW_MODEL],
                     )
                 )
@@ -189,7 +189,7 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
     """Representation of a Gateway binary_sensor."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, sensor_type, model
+        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model
     ):
         """Set up the Plugwise API."""
         self._enabled_default = enabled_default
@@ -201,7 +201,7 @@ class GwBinarySensor(SmileSensor, BinarySensorEntity):
         self._binary_sensor = binary_sensor
         self._is_on = False
         self._icon = None
-        self._name = sensor_type[ATTR_NAME] if sensor_type else None
+        self._name = key[ATTR_NAME] if sensor_type else None
         self._state = None
 
         self._unique_id = f"{dev_id}-{binary_sensor}"
@@ -290,7 +290,7 @@ class GwNotifySensor(GwBinarySensor, BinarySensorEntity):
                     self._hass.components.persistent_notification.async_create(
                         f"{msg_type.upper()}: {msg}",
                         "Plugwise Notification:",
-                        f"{DOMAIN}.{notify_id}",
+                        "{DOMAIN}",
                     )
 
         self.async_write_ha_state()
