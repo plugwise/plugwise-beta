@@ -258,34 +258,26 @@ class PwThermostat(SmileGateway, ClimateEntity):
         climate_data = self._api.get_device_data(self._dev_id)
         heater_central_data = self._api.get_device_data(self._api.heater_id)
 
-        if "thermostat" in climate_data:
-            self._setpoint = climate_data["thermostat"]
-        if "temperature" in climate_data:
-            self._temperature = climate_data["temperature"]
-        if "schedule_temperature" in climate_data:
-            self._schedule_temp = climate_data["schedule_temperature"]
-        if "available_schedules" in climate_data:
-            self._schema_names = climate_data["available_schedules"]
+        self._setpoint = climate_data.get("thermostat", None)
+        self._temperature = climate_data.get("temperature", None)
+        self._schedule_temp = climate_data.get("schedule_temperature", None)
+        self._schema_names = climate_data.get("available_schedules", None)
         if "selected_schedule" in climate_data:
             self._selected_schema = climate_data["selected_schedule"]
             self._schema_status = False
             if self._selected_schema is not None:
                 self._schema_status = True
-        if "last_used" in climate_data:
-            self._last_active_schema = climate_data["last_used"]
-        if "presets" in climate_data:
-            self._presets = climate_data["presets"]
-            if self._presets:
-                self._presets_list = list(self._presets)
-        if "active_preset" in climate_data:
-            self._preset_mode = climate_data["active_preset"]
+        self._last_active_schema = climate_data.get("last_used", None)
+        self._presets = climate_data.get("presets", None)
+        if self._presets:
+            self._presets_list = list(self._presets)
+        self._preset_mode = climate_data.get("active_preset", None)
 
-        if heater_central_data.get("intended_central_heating_state") is not None:
-            self._heating_state = heater_central_data["intended_central_heating_state"]
-        if heater_central_data.get("cooling_state") is not None:
-            self._cooling_state = heater_central_data["cooling_state"]
-        if heater_central_data.get("compressor_state") is not None:
-            self._compressor_state = heater_central_data["compressor_state"]
+        self._heating_state = heater_central_data.get(
+            "intended_central_heating_state", None
+        )
+        self._cooling_state = heater_central_data.get("cooling_state", None)
+        self._compressor_state = heater_central_data.get("compressor_state", None)
 
         self._hvac_mode = HVAC_MODE_HEAT
         if self._compressor_state is not None:
