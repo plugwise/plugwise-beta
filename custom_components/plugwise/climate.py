@@ -258,7 +258,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         climate_data = self._api.get_device_data(self._dev_id)
         heater_central_data = self._api.get_device_data(self._api.heater_id)
 
-        self._setpoint = climate_data.get("thermostat", None)
+        self._setpoint = climate_data.get("setpoint", None)
         self._temperature = climate_data.get("temperature", None)
         self._schedule_temp = climate_data.get("schedule_temperature", None)
         self._schema_names = climate_data.get("available_schedules", None)
@@ -274,7 +274,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._preset_mode = climate_data.get("active_preset", None)
 
         self._heating_state = heater_central_data.get(
-            "intended_central_heating_state", None
+            "heating_state", None
         )
         self._cooling_state = heater_central_data.get("cooling_state", None)
         self._compressor_state = heater_central_data.get("compressor_state", None)

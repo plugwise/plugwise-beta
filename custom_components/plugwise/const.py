@@ -103,7 +103,7 @@ ZEROCONF_MAP = {
 
 # Binary sensor map:
 GW_BINARY_SENSORS = {
-    "domestic_hot_water_state": {
+    "dhw_state": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
@@ -149,7 +149,7 @@ THERMOSTAT_SENSORS = {
         ATTR_NAME: "Outdoor Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
-    "thermostat": {
+    "setpoint": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
@@ -194,21 +194,21 @@ AUX_DEV_SENSORS = {
         ATTR_NAME: "Auxiliary Heater Modulation Level",
         ATTR_UNIT_OF_MEASUREMENT: PERCENTAGE,
     },
-    "return_water_temperature": {
+    "return_temperature": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Auxiliary Return Temperature",
         ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS,
     },
-    "central_heater_water_pressure": {
+    "water_pressure": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_PRESSURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Auxiliary Water Pressure",
         ATTR_UNIT_OF_MEASUREMENT: PRESSURE_BAR,
     },
-    "boiler_temperature": {
+    "water_temperature": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
