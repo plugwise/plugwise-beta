@@ -87,14 +87,14 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     _LOGGER.debug("Plugwise sensor type %s", api.smile_type)
 
     entities = []
-    all_devices = api.get_all_devices()
+    devices = api.get_all_devices()
     single_thermostat = api.single_master_thermostat()
-    _LOGGER.debug("Plugwise all devices (not just sensor) %s", all_devices)
-    for dev_id, device_properties in all_devices.items():
+    _LOGGER.debug("Plugwise all devices (not just sensor) %s", devices)
+    for dev_id in devices:
         data = api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
-        _LOGGER.debug("Plugwise sensor Dev %s", device_properties[ATTR_NAME])
-        for sensor, sensor_type in ENERGY_SENSORS.items():
+        _LOGGER.debug("Plugwise sensor Dev %s", devices[dev_id][ATTR_NAME])
+        for sensor in ENERGY_SENSORS:
             if data.get(sensor) is None:
                 continue
 
@@ -102,16 +102,16 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 GWSensor(
                     api,
                     coordinator,
-                    device_properties[ATTR_NAME],
+                    devices[dev_id][ATTR_NAME],
                     dev_id,
                     sensor,
-                    sensor_type,
-                    device_properties[PW_MODEL],
+                    ENERGY_SENSORS[sensor],
+                    devices[dev_id][PW_MODEL],
                 )
             )
-            _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
+            _LOGGER.info("Added sensor.%s", devices[dev_id][ATTR_NAME])
 
-        for sensor, sensor_type in THERMOSTAT_SENSORS.items():
+        for sensor in THERMOSTAT_SENSORS:
             if data.get(sensor) is None:
                 continue
 
@@ -119,16 +119,16 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 GWSensor(
                     api,
                     coordinator,
-                    device_properties[ATTR_NAME],
+                    devices[dev_id][ATTR_NAME],
                     dev_id,
                     sensor,
-                    sensor_type,
-                    device_properties[PW_MODEL],
+                    THERMOSTAT_SENSORS[sensor],
+                    devices[dev_id][PW_MODEL],
                 )
             )
-            _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
+            _LOGGER.info("Added sensor.%s", devices[dev_id][ATTR_NAME])
 
-        for sensor, sensor_type in AUX_DEV_SENSORS.items():
+        for sensor in AUX_DEV_SENSORS:
             if data.get(sensor) is None or not api.active_device_present:
                 continue
 
@@ -136,30 +136,29 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 GWSensor(
                     api,
                     coordinator,
-                    device_properties[ATTR_NAME],
+                    devices[dev_id][ATTR_NAME],
                     dev_id,
                     sensor,
-                    sensor_type,
-                    device_properties[PW_MODEL],
+                    AUX_DEV_SENSORS[sensor],
+                    devices[dev_id][PW_MODEL],
                 )
             )
-            _LOGGER.info("Added sensor.%s", device_properties[ATTR_NAME])
+            _LOGGER.info("Added sensor.%s", devices[dev_id][ATTR_NAME])
 
         # If not None and False (hence `is False`, not `not False`)
         if single_thermostat is False:
-            if device_properties[PW_CLASS] == "heater_central":
-                _LOGGER.debug("Plugwise aux sensor Dev %s", device_properties[ATTR_NAME])
+            if devices[dev_id][PW_CLASS] == "heater_central":
+                _LOGGER.debug("Plugwise aux sensor Dev %s", devices[dev_id][ATTR_NAME])
                 entities.append(
                     GwAuxDeviceSensor(
                         api,
                         coordinator,
-                        device_properties[ATTR_NAME],
+                        devices[dev_id][ATTR_NAME],
                         dev_id,
                         DEVICE_STATE,
-                        None,
                     )
                 )
-                _LOGGER.info("Added auxiliary sensor %s", device_properties[ATTR_NAME])
+                _LOGGER.info("Added auxiliary sensor %s", devices[dev_id][ATTR_NAME])
 
     async_add_entities(entities, True)
 
@@ -216,21 +215,21 @@ class SmileSensor(SmileGateway):
 class GWSensor(SmileSensor, Entity):
     """Representation of a Smile Gateway sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type, model):
+    def __init__(self, api, coordinator, name, dev_id, sensor, key, model):
         """Set up the Plugwise API."""
-        self._enabled_default = sensor_type[ATTR_ENABLED_DEFAULT]
+        self._enabled_default = key[ATTR_ENABLED_DEFAULT]
 
         super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
 
-        self._dev_class = sensor_type[ATTR_DEVICE_CLASS]
+        self._dev_class = key[ATTR_DEVICE_CLASS]
         self._icon = None
         if not self._dev_class:
-            self._icon = sensor_type[ATTR_ICON]
+            self._icon = key[ATTR_ICON]
         self._model = model
-        self._name = f"{name} {sensor_type[ATTR_NAME]}"
-        if "Auxiliary" in sensor_type[ATTR_NAME]:
-            self._name = sensor_type[ATTR_NAME]
-        self._unit_of_measurement = sensor_type[ATTR_UNIT_OF_MEASUREMENT]
+        self._name = f"{name} {key[ATTR_NAME]}"
+        if "Auxiliary" in key[ATTR_NAME]:
+            self._name = key[ATTR_NAME]
+        self._unit_of_measurement = key[ATTR_UNIT_OF_MEASUREMENT]
 
     @callback
     def _async_process_data(self):
@@ -250,7 +249,7 @@ class GWSensor(SmileSensor, Entity):
 class GwAuxDeviceSensor(SmileSensor, Entity):
     """Representation of an Auxiliary Device sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, sensor, sensor_type):
+    def __init__(self, api, coordinator, name, dev_id, sensor):
         """Set up the Plugwise API."""
         self._enabled_default = True
 
