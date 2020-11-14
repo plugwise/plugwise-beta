@@ -76,23 +76,23 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    all_devices = api.get_all_devices()
-    for dev_id, device_properties in all_devices.items():
+    devices = api.get_all_devices()
+
+    for dev_id in devices:
         members = None
-        model = None
-        if any(dummy in device_properties["types"] for dummy in SWITCH_CLASSES):
-            _LOGGER.debug("Plugwise switch Dev %s", device_properties[ATTR_NAME])
+        if any(dummy in devices[dev_id]["types"] for dummy in SWITCH_CLASSES):
+            _LOGGER.debug("Plugwise switch Dev %s", devices[dev_id][ATTR_NAME])
             entities.append(
                 GwSwitch(
                     api,
                     coordinator,
-                    device_properties[ATTR_NAME],
+                    devices[dev_id][ATTR_NAME],
                     dev_id, 
                     members,
-                    device_properties[PW_MODEL],
+                    devices[dev_id][PW_MODEL],
                 )
             )
-            _LOGGER.info("Added switch.%s", "{}".format(device_properties[ATTR_NAME]))
+            _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
 
     async_add_entities(entities, True)
 
