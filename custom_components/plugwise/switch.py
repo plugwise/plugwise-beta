@@ -26,6 +26,7 @@ from .const import (
     COORDINATOR,
     CURRENT_POWER_SENSOR_ID,
     DOMAIN,
+    PW_MODEL,
     PW_TYPE,
     USB_SENSORS,
     STICK,
@@ -75,29 +76,29 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    all_devices = api.get_all_devices()
-    for dev_id, device_properties in all_devices.items():
+    devices = api.get_all_devices()
+
+    for dev_id in devices:
         members = None
-        model = None
-        if any(dummy in device_properties["types"] for dummy in SWITCH_CLASSES):
-            if "plug" in device_properties["types"]:
-                model = "Metered Switch"
-            if "switch_group" in device_properties["types"]:
-                members = device_properties["members"]
-                model = "Switch Group"
-            _LOGGER.debug("Plugwise switch Dev %s", device_properties[ATTR_NAME])
+        if any(dummy in devices[dev_id]["types"] for dummy in SWITCH_CLASSES):
+            _LOGGER.debug("Plugwise switch Dev %s", devices[dev_id][ATTR_NAME])
             entities.append(
                 GwSwitch(
-                    api, coordinator, device_properties[ATTR_NAME], dev_id, members, model,
+                    api,
+                    coordinator,
+                    devices[dev_id][ATTR_NAME],
+                    dev_id, 
+                    members,
+                    devices[dev_id][PW_MODEL],
                 )
             )
-            _LOGGER.info("Added switch.%s", "{}".format(device_properties[ATTR_NAME]))
+            _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
 
     async_add_entities(entities, True)
 
 
 class GwSwitch(SmileGateway, SwitchEntity):
-    """Representation of a Plugwise plug."""
+    """Representation of a Smile Gateway switch."""
 
     def __init__(self, api, coordinator, name, dev_id, members, model):
         """Set up the Plugwise API."""
@@ -105,10 +106,10 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
         super().__init__(api, coordinator, name, dev_id)
 
+        self._is_on = False
         self._members = members
         self._model = model
-
-        self._is_on = False
+        self._name = f"{name}"
 
         self._unique_id = f"{dev_id}-plug"
 
@@ -166,7 +167,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
 
 class USBSwitch(NodeEntity, SwitchEntity):
-    """Representation of a switch."""
+    """Representation of a Sitck Node switch."""
 
     def __init__(self, node, mac, switch_id):
         """Initialize a Node entity."""

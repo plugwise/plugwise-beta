@@ -1,24 +1,13 @@
 """Plugwise platform for Home Assistant Core."""
 
-import logging
-
-import voluptuous as vol
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 
-from .const import (
-    CONF_USB_PATH,
-    DOMAIN,
-)
+from .const import CONF_USB_PATH
 
 from .gateway import async_setup_entry_gw, async_unload_entry_gw
 from .usb import async_setup_entry_usb, async_unload_entry_usb
-
-CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup(hass: HomeAssistant, config: dict):

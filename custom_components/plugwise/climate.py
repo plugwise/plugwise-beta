@@ -32,6 +32,7 @@ from .const import (
     DOMAIN,
     PW_CLASS,
     PW_LOCATION,
+    PW_MODEL,
     SCHEDULE_OFF,
     SCHEDULE_ON,
     THERMOSTAT_CLASSES,
@@ -51,33 +52,33 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    all_devices = api.get_all_devices()
+    devices = api.get_all_devices()
 
-    for dev_id, device_properties in all_devices.items():
+    for dev_id in devices:
 
-        if device_properties[PW_CLASS] not in THERMOSTAT_CLASSES:
+        if devices[dev_id][PW_CLASS] not in THERMOSTAT_CLASSES:
             continue
 
-        _LOGGER.debug("Plugwise climate Dev %s", device_properties[ATTR_NAME])
+        _LOGGER.debug("Plugwise climate Dev %s", devices[dev_id][ATTR_NAME])
         thermostat = PwThermostat(
             api,
             coordinator,
-            device_properties[ATTR_NAME],
+            devices[dev_id][ATTR_NAME],
             dev_id,
-            device_properties[PW_LOCATION],
-            device_properties[PW_CLASS],
+            devices[dev_id][PW_LOCATION],
+            devices[dev_id][PW_MODEL],
             DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
         )
 
         entities.append(thermostat)
-        _LOGGER.info("Added climate.%s", "{}".format(device_properties[ATTR_NAME]))
+        _LOGGER.info("Added climate.%s", "{}".format(devices[dev_id][ATTR_NAME]))
 
     async_add_entities(entities, True)
 
 
 class PwThermostat(SmileGateway, ClimateEntity):
-    """Representation of an Plugwise thermostat."""
+    """Representation of a Plugwise (zone) thermostat."""
 
     def __init__(
         self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp
@@ -257,34 +258,24 @@ class PwThermostat(SmileGateway, ClimateEntity):
         climate_data = self._api.get_device_data(self._dev_id)
         heater_central_data = self._api.get_device_data(self._api.heater_id)
 
-        if "setpoint" in climate_data:
-            self._setpoint = climate_data["setpoint"]
-        if "temperature" in climate_data:
-            self._temperature = climate_data["temperature"]
-        if "schedule_temperature" in climate_data:
-            self._schedule_temp = climate_data["schedule_temperature"]
-        if "available_schedules" in climate_data:
-            self._schema_names = climate_data["available_schedules"]
+        self._setpoint = climate_data.get("setpoint")
+        self._temperature = climate_data.get("temperature")
+        self._schedule_temp = climate_data.get("schedule_temperature")
+        self._schema_names = climate_data.get("available_schedules")
         if "selected_schedule" in climate_data:
             self._selected_schema = climate_data["selected_schedule"]
             self._schema_status = False
             if self._selected_schema is not None:
                 self._schema_status = True
-        if "last_used" in climate_data:
-            self._last_active_schema = climate_data["last_used"]
-        if "presets" in climate_data:
-            self._presets = climate_data["presets"]
-            if self._presets:
-                self._presets_list = list(self._presets)
-        if "active_preset" in climate_data:
-            self._preset_mode = climate_data["active_preset"]
+        self._last_active_schema = climate_data.get("last_used")
+        self._presets = climate_data.get("presets")
+        if self._presets:
+            self._presets_list = list(self._presets)
+        self._preset_mode = climate_data.get("active_preset")
 
-        if heater_central_data.get("heating_state") is not None:
-            self._heating_state = heater_central_data["heating_state"]
-        if heater_central_data.get("cooling_state") is not None:
-            self._cooling_state = heater_central_data["cooling_state"]
-        if heater_central_data.get("compressor_state") is not None:
-            self._compressor_state = heater_central_data["compressor_state"]
+        self._heating_state = heater_central_data.get("heating_state")
+        self._cooling_state = heater_central_data.get("cooling_state")
+        self._compressor_state = heater_central_data.get("compressor_state")
 
         self._hvac_mode = HVAC_MODE_HEAT
         if self._compressor_state is not None:
