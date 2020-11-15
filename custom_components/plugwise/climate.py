@@ -258,26 +258,24 @@ class PwThermostat(SmileGateway, ClimateEntity):
         climate_data = self._api.get_device_data(self._dev_id)
         heater_central_data = self._api.get_device_data(self._api.heater_id)
 
-        self._setpoint = climate_data.get("setpoint", None)
-        self._temperature = climate_data.get("temperature", None)
-        self._schedule_temp = climate_data.get("schedule_temperature", None)
-        self._schema_names = climate_data.get("available_schedules", None)
+        self._setpoint = climate_data.get("setpoint")
+        self._temperature = climate_data.get("temperature")
+        self._schedule_temp = climate_data.get("schedule_temperature")
+        self._schema_names = climate_data.get("available_schedules")
         if "selected_schedule" in climate_data:
             self._selected_schema = climate_data["selected_schedule"]
             self._schema_status = False
             if self._selected_schema is not None:
                 self._schema_status = True
-        self._last_active_schema = climate_data.get("last_used", None)
-        self._presets = climate_data.get("presets", None)
+        self._last_active_schema = climate_data.get("last_used")
+        self._presets = climate_data.get("presets")
         if self._presets:
             self._presets_list = list(self._presets)
-        self._preset_mode = climate_data.get("active_preset", None)
+        self._preset_mode = climate_data.get("active_preset")
 
-        self._heating_state = heater_central_data.get(
-            "heating_state", None
-        )
-        self._cooling_state = heater_central_data.get("cooling_state", None)
-        self._compressor_state = heater_central_data.get("compressor_state", None)
+        self._heating_state = heater_central_data.get("heating_state")
+        self._cooling_state = heater_central_data.get("cooling_state")
+        self._compressor_state = heater_central_data.get("compressor_state")
 
         self._hvac_mode = HVAC_MODE_HEAT
         if self._compressor_state is not None:
