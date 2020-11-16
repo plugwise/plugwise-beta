@@ -80,6 +80,8 @@ NOTIFICATION_ICON = "mdi:mailbox-up-outline"
 NO_NOTIFICATION_ICON = "mdi:mailbox-outline"
 SWITCH_ICON = "mdi:electric-switch"
 
+SEVERITIES = ["other", "info", "warning", "error"]
+
 # --- Const for Plugwise Smile and Stretch
 
 PLATFORMS_GATEWAY = ["binary_sensor", "climate", "sensor", "switch"]
