@@ -34,6 +34,7 @@ from .const import (
     NO_NOTIFICATION_ICON,
     NOTIFICATION_ICON,
     PW_CLASS,
+    PW_MODEL,
     PW_TYPE,
     SCAN_SENSITIVITY_MODES,
     SERVICE_CONFIGURE_BATTERY,
@@ -150,6 +151,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         True,
                         binary_sensor,
                         GW_BINARY_SENSORS[binary_sensor],
+                        devices[dev_id][PW_MODEL],
                     )
                 )
                 _LOGGER.info(
@@ -165,6 +167,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     devices[dev_id][ATTR_NAME],
                     dev_id,
                     "plugwise_notification",
+                    devices[dev_id][PW_MODEL],
                 )
             )
             _LOGGER.info(
@@ -179,13 +182,14 @@ class SmileBinarySensor(SmileGateway):
     """Represent Smile Binary Sensors."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, key
+        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model
     ):
         """Initialise the binary_sensor."""
         super().__init__(api, coordinator, name, dev_id)
 
         self._binary_sensor = binary_sensor
         self._enabled_default = enabled_default
+        self._model = model
 
         self._icon = None
         self._is_on = False
