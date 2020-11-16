@@ -257,9 +257,11 @@ class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
 class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
     """Representation of a Plugwise Notification binary_sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, binary_sensor):
+    def __init__(self, api, coordinator, name, dev_id, binary_sensor, model):
         """Initialise the notification binary_sensor."""
-        super().__init__(api, coordinator, name, dev_id, False, binary_sensor, None)
+        super().__init__(
+            api, coordinator, name, dev_id, False, binary_sensor, None, model
+        )
 
         self._attributes = {}
 
