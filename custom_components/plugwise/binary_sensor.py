@@ -289,7 +289,7 @@ class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
                 for msg_type, msg in details.items():
                     self._attributes[msg_type.upper()] = msg
                     self.hass.components.persistent_notification.async_create(
-                        f"{msg_type.upper()}: {msg}",
+                        f"{msg_type.title()}: {msg}",
                         "Plugwise Notification:",
                         "f{DOMAIN}.{notify_id}",
                     )
