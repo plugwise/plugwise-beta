@@ -290,7 +290,7 @@ class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
                     if msg_type not in SEVERITIES:
                         msg_type = "other"
 
-                    self._attributes[msg_type.upper()] = msg
+                    self._attributes[f"{msg_type.upper()}_msg"].append(msg)
                     self.hass.components.persistent_notification.async_create(
                         f"{msg_type.title()}: {msg}",
                         "Plugwise Notification:",
