@@ -133,7 +133,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     for dev_id in devices:
         if devices[dev_id][PW_CLASS] == "heater_central":
             _LOGGER.debug("Plugwise device_class %s found", devices[dev_id][PW_CLASS])
-            data = api.get_device_data(dev_id)
+            data = await api.get_device_data(dev_id)
             for binary_sensor in GW_BINARY_SENSORS:
                 _LOGGER.debug("Binary_sensor: %s", binary_sensor)
                 if binary_sensor not in data:
@@ -224,7 +224,7 @@ class SmileBinarySensor(SmileGateway):
         return self._is_on
 
     @callback
-    def _async_process_data(self):
+    async def _async_process_data(self):
         """Update the entity."""
         raise NotImplementedError
 
@@ -233,10 +233,10 @@ class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
     """Representation of a Gateway binary_sensor."""
 
     @callback
-    def _async_process_data(self):
+    async def _async_process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update binary_sensor called")
-        data = self._api.get_device_data(self._dev_id)
+        data = await self._api.get_device_data(self._dev_id)
 
         if self._binary_sensor not in data:
             self.async_write_ha_state()
@@ -271,7 +271,7 @@ class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
         return self._attributes
 
     @callback
-    def _async_process_data(self):
+    async def _async_process_data(self):
         """Update the entity."""
         for severity in SEVERITIES:
             self._attributes[f"{severity}_msg"] = []
@@ -281,7 +281,7 @@ class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
         self._is_on = False
         self._icon = NO_NOTIFICATION_ICON
 
-        if notify != {}:
+        if notify:
             self._is_on = True
             self._icon = NOTIFICATION_ICON
 
@@ -292,9 +292,9 @@ class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
 
                     self._attributes[f"{msg_type.upper()}_msg"].append(msg)
                     self.hass.components.persistent_notification.async_create(
-                        f"{msg_type.title()}: {msg}",
+                        f"{msg_type.upper()}: {msg}",
                         "Plugwise Notification:",
-                        "f{DOMAIN}.{notify_id}",
+                        f"{DOMAIN}.{notify_id}",
                     )
 
         self.async_write_ha_state()

@@ -150,11 +150,11 @@ class GwSwitch(SmileGateway, SwitchEntity):
             _LOGGER.error("Error while communicating to device")
 
     @callback
-    def _async_process_data(self):
+    async def _async_process_data(self):
         """Update the data from the Plugs."""
         _LOGGER.debug("Update switch called")
 
-        data = self._api.get_device_data(self._dev_id)
+        data = await self._api.get_device_data(self._dev_id)
 
         if "relay" not in data:
             self.async_write_ha_state()

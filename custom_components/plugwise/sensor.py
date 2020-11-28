@@ -91,7 +91,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     single_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Plugwise all devices (not just sensor) %s", devices)
     for dev_id in devices:
-        data = api.get_device_data(dev_id)
+        data = await api.get_device_data(dev_id)
         _LOGGER.debug("Plugwise all device data (not just sensor) %s", data)
         _LOGGER.debug("Plugwise sensor Dev %s", devices[dev_id][ATTR_NAME])
         for sensor in ENERGY_SENSORS:
@@ -232,10 +232,10 @@ class GWSensor(SmileSensor, Entity):
         self._unit_of_measurement = key[ATTR_UNIT_OF_MEASUREMENT]
 
     @callback
-    def _async_process_data(self):
+    async def _async_process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update sensor called")
-        data = self._api.get_device_data(self._dev_id)
+        data = await self._api.get_device_data(self._dev_id)
 
         if self._sensor not in data:
             self.async_write_ha_state()
@@ -261,10 +261,10 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
         self._name = "Auxiliary Device State"
 
     @callback
-    def _async_process_data(self):
+    async def _async_process_data(self):
         """Update the entity."""
         _LOGGER.debug("Update aux dev sensor called")
-        data = self._api.get_device_data(self._dev_id)
+        data = await self._api.get_device_data(self._dev_id)
 
         self._heating_state = data.get("heating_state")
         self._cooling_state = data.get("cooling_state")

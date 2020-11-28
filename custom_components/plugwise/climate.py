@@ -252,11 +252,11 @@ class PwThermostat(SmileGateway, ClimateEntity):
             _LOGGER.error("Error while communicating to device")
 
     @callback
-    def _async_process_data(self):
+    async def _async_process_data(self):
         """Update the data for this climate device."""
         _LOGGER.info("Updating climate...")
-        climate_data = self._api.get_device_data(self._dev_id)
-        heater_central_data = self._api.get_device_data(self._api.heater_id)
+        climate_data = await self._api.get_device_data(self._dev_id)
+        heater_central_data = await self._api.get_device_data(self._api.heater_id)
 
         self._setpoint = climate_data.get("setpoint")
         self._temperature = climate_data.get("temperature")
