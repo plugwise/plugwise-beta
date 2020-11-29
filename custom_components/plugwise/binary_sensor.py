@@ -294,7 +294,7 @@ class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
                     self.hass.components.persistent_notification.async_create(
                         f"{msg_type.title()}: {msg}",
                         "Plugwise Notification:",
-                        "f{DOMAIN}.{notify_id}",
+                        f"{DOMAIN}.{notify_id}",
                     )
 
         self.async_write_ha_state()
