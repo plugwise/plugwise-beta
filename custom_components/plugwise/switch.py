@@ -50,11 +50,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     """Set up the USB switches from a config entry."""
-    stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
+    api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
     async def async_add_switch(mac):
         """Add plugwise switch."""
-        node = stick.node(mac)
+        node = api_stick.node(mac)
         for switch_type in node.switches:
             if switch_type in SWITCHES:
                 async_add_entities([USBSwitch(node, mac, switch_type)])
@@ -67,7 +67,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         hass.async_create_task(async_add_switch(mac))
 
     # Listen for discovered nodes
-    stick.subscribe_stick_callback(discoved_switch, CB_NEW_NODE)
+    api_stick.subscribe_stick_callback(discoved_switch, CB_NEW_NODE)
 
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):

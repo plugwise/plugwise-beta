@@ -58,11 +58,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     """Set up Plugwise sensor based on config_entry."""
-    stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
+    api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
     async def async_add_sensor(mac):
         """Add plugwise sensor."""
-        node = stick.node(mac)
+        node = api_stick.node(mac)
         for sensor_type in node.sensors:
             if sensor_type in USB_SENSORS and sensor_type != AVAILABLE_SENSOR_ID:
                 async_add_entities([USBSensor(node, mac, sensor_type)])
@@ -75,7 +75,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         hass.async_create_task(async_add_sensor(mac))
 
     # Listen for discovered nodes
-    stick.subscribe_stick_callback(discoved_sensor, CB_NEW_NODE)
+    api_stick.subscribe_stick_callback(discoved_sensor, CB_NEW_NODE)
 
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):

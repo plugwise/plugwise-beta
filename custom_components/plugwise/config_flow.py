@@ -86,11 +86,11 @@ async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
         errors[CONF_BASE] = "already_configured"
         return errors, None
 
-    stick = await self.async_add_executor_job(plugwise.stick, device_path)
+    api_stick = await self.async_add_executor_job(plugwise.stick, device_path)
     try:
-        await self.async_add_executor_job(stick.connect)
-        await self.async_add_executor_job(stick.initialize_stick)
-        await self.async_add_executor_job(stick.disconnect)
+        await self.async_add_executor_job(api_stick.connect)
+        await self.async_add_executor_job(api_stick.initialize_stick)
+        await self.async_add_executor_job(api_stick.disconnect)
     except PortError:
         errors[CONF_BASE] = "cannot_connect"
     except StickInitError:
@@ -219,9 +219,9 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 device_path = await self.hass.async_add_executor_job(
                     get_serial_by_id, user_selection
                 )
-            errors, stick = await validate_usb_connection(self.hass, device_path)
+            errors, api_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(stick.get_mac_stick())
+                await self.async_set_unique_id(api_stick.get_mac_stick())
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path, PW_TYPE: STICK}
                 )
@@ -241,9 +241,9 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             device_path = await self.hass.async_add_executor_job(
                 get_serial_by_id, user_input.get(CONF_USB_PATH)
             )
-            errors, stick = await validate_usb_connection(self.hass, device_path)
+            errors, api_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(stick.mac)
+                await self.async_set_unique_id(api_stick.mac)
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )

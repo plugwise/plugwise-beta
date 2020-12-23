@@ -45,54 +45,54 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
         """Create entities for all discovered nodes."""
         _LOGGER.debug(
             "Successfully discovered %s out of %s registered nodes",
-            str(len(stick.discovered_nodes)),
-            str(stick.joined_nodes),
+            str(len(api_stick.discovered_nodes)),
+            str(api_stick.joined_nodes),
         )
         for component in PLATFORMS_USB:
             hass.data[DOMAIN][config_entry.entry_id][component] = []
-            for mac in stick.discovered_nodes:
-                if component in stick.node(mac).categories:
+            for mac in api_stick.discovered_nodes:
+                if component in api_stick.node(mac).categories:
                     hass.data[DOMAIN][config_entry.entry_id][component].append(mac)
             hass.async_create_task(
                 hass.config_entries.async_forward_entry_setup(config_entry, component)
             )
-        stick.auto_update()
+        api_stick.auto_update()
         # Enable reception of join request and automatically accept new node join requests
-        stick.allow_join_requests(True, True)
+        api_stick.allow_join_requests(True, True)
 
     def shutdown(event):
-        hass.async_add_executor_job(stick.disconnect)
+        hass.async_add_executor_job(api_stick.disconnect)
 
-    stick = plugwise.stick(config_entry.data[CONF_USB_PATH])
-    hass.data[DOMAIN][config_entry.entry_id] = {PW_TYPE: USB, STICK: stick}
+    api_stick = plugwise.stick(config_entry.data[CONF_USB_PATH])
+    hass.data[DOMAIN][config_entry.entry_id] = {PW_TYPE: USB, STICK: api_stick}
     try:
         _LOGGER.debug("Connect to USB-Stick")
-        await hass.async_add_executor_job(stick.connect)
+        await hass.async_add_executor_job(api_stick.connect)
         _LOGGER.debug("Initialize USB-stick")
-        await hass.async_add_executor_job(stick.initialize_stick)
+        await hass.async_add_executor_job(api_stick.initialize_stick)
         _LOGGER.debug("Discover Circle+ node")
-        await hass.async_add_executor_job(stick.initialize_circle_plus)
+        await hass.async_add_executor_job(api_stick.initialize_circle_plus)
     except PortError:
         _LOGGER.error("Connecting to Plugwise USBstick communication failed")
         raise ConfigEntryNotReady
     except StickInitError:
         _LOGGER.error("Initializing of Plugwise USBstick communication failed")
-        await hass.async_add_executor_job(stick.disconnect)
+        await hass.async_add_executor_job(api_stick.disconnect)
         raise ConfigEntryNotReady
     except NetworkDown:
         _LOGGER.warning("Plugwise zigbee network down")
-        await hass.async_add_executor_job(stick.disconnect)
+        await hass.async_add_executor_job(api_stick.disconnect)
         raise ConfigEntryNotReady
     except CirclePlusError:
         _LOGGER.warning("Failed to connect to Circle+ node")
-        await hass.async_add_executor_job(stick.disconnect)
+        await hass.async_add_executor_job(api_stick.disconnect)
         raise ConfigEntryNotReady
     except TimeoutException:
         _LOGGER.warning("Timeout")
-        await hass.async_add_executor_job(stick.disconnect)
+        await hass.async_add_executor_job(api_stick.disconnect)
         raise ConfigEntryNotReady
     _LOGGER.debug("Start discovery of registered nodes")
-    stick.scan(discover_finished)
+    api_stick.scan(discover_finished)
 
     # Listen when EVENT_HOMEASSISTANT_STOP is fired
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, shutdown)
@@ -104,11 +104,11 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
 
     async def device_add(service):
         """Manually add device to Plugwise zigbee network."""
-        stick.node_join(service.data[ATTR_MAC_ADDRESS])
+        api_stick.node_join(service.data[ATTR_MAC_ADDRESS])
 
     async def device_remove(service):
         """Manually remove device from Plugwise zigbee network."""
-        stick.node_unjoin(service.data[ATTR_MAC_ADDRESS])
+        api_stick.node_unjoin(service.data[ATTR_MAC_ADDRESS])
 
     service_device_schema = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
 
@@ -134,8 +134,8 @@ async def async_unload_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry)
     )
     hass.data[DOMAIN][config_entry.entry_id][UNDO_UPDATE_LISTENER]()
     if unload_ok:
-        stick = hass.data[DOMAIN][config_entry.entry_id]["stick"]
-        await hass.async_add_executor_job(stick.disconnect)
+        api_stick = hass.data[DOMAIN][config_entry.entry_id]["stick"]
+        await hass.async_add_executor_job(api_stick.disconnect)
         hass.data[DOMAIN].pop(config_entry.entry_id)
     return unload_ok
 
