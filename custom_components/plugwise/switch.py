@@ -167,7 +167,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
 
 class USBSwitch(NodeEntity, SwitchEntity):
-    """Representation of a Sitck Node switch."""
+    """Representation of a Stick Node switch."""
 
     def __init__(self, node, mac, switch_id):
         """Initialize a Node entity."""
