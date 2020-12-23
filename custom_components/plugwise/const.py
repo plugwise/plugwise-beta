@@ -386,7 +386,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: "mdi:signal-off",
         ATTR_NAME: "Available",
-        ATTR_STATE: "get_available",
+        ATTR_STATE: "available",
         ATTR_UNIT_OF_MEASUREMENT: None,
     },
     "ping": {
@@ -394,7 +394,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: "mdi:speedometer",
         ATTR_NAME: "Ping roundtrip",
-        ATTR_STATE: "get_ping",
+        ATTR_STATE: "ping",
         ATTR_UNIT_OF_MEASUREMENT: TIME_MILLISECONDS,
     },
     CURRENT_POWER_SENSOR_ID: {
@@ -402,7 +402,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Power usage",
-        ATTR_STATE: "get_power_usage",
+        ATTR_STATE: "current_power_usage",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "power_8s": {
@@ -410,7 +410,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Power usage 8 seconds",
-        ATTR_STATE: "get_power_usage_8_sec",
+        ATTR_STATE: "current_power_usage_8_sec",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "power_con_cur_hour": {
@@ -418,7 +418,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Power consumption current hour",
-        ATTR_STATE: "get_power_consumption_current_hour",
+        ATTR_STATE: "power_consumption_current_hour",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "power_con_prev_hour": {
@@ -426,7 +426,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Power consumption previous hour",
-        ATTR_STATE: "get_power_consumption_prev_hour",
+        ATTR_STATE: "power_consumption_previous_hour",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     TODAY_ENERGY_SENSOR_ID: {
@@ -434,7 +434,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Power consumption today",
-        ATTR_STATE: "get_power_consumption_today",
+        ATTR_STATE: "power_consumption_today",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "power_con_yesterday": {
@@ -442,7 +442,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Power consumption yesterday",
-        ATTR_STATE: "get_power_consumption_yesterday",
+        ATTR_STATE: "power_consumption_yesterday",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "power_prod_cur_hour": {
@@ -450,7 +450,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Power production current hour",
-        ATTR_STATE: "get_power_production_current_hour",
+        ATTR_STATE: "power_production_current_hour",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "power_prod_prev_hour": {
@@ -458,7 +458,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Power production previous hour",
-        ATTR_STATE: "get_power_production_previous_hour",
+        ATTR_STATE: "power_production_previous_hour",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "RSSI_in": {
@@ -466,7 +466,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Inbound RSSI",
-        ATTR_STATE: "get_in_RSSI",
+        ATTR_STATE: "rssi_in",
         ATTR_UNIT_OF_MEASUREMENT: SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     },
     "RSSI_out": {
@@ -474,7 +474,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Outbound RSSI",
-        ATTR_STATE: "get_out_RSSI",
+        ATTR_STATE: "rssi_out",
         ATTR_UNIT_OF_MEASUREMENT: SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     },
 }
@@ -484,7 +484,7 @@ USB_BINARY_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Motion",
-        ATTR_STATE: "get_motion",
+        ATTR_STATE: "motion",
         ATTR_UNIT_OF_MEASUREMENT: None,
     }
 }
@@ -496,8 +496,7 @@ SWITCHES = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Relay state",
-        ATTR_STATE: "get_relay_state",
-        "switch": "set_relay_state",
+        ATTR_STATE: "relay_state",
         ATTR_UNIT_OF_MEASUREMENT: "state",
     }
 }

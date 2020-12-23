@@ -63,7 +63,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     async def async_add_sensor(mac):
         """Add plugwise sensor."""
         node = stick.node(mac)
-        for sensor_type in node.get_sensors():
+        for sensor_type in node.sensors:
             if sensor_type in USB_SENSORS and sensor_type != AVAILABLE_SENSOR_ID:
                 async_add_entities([USBSensor(node, mac, sensor_type)])
 
@@ -314,7 +314,7 @@ class USBSensor(NodeEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        state_value = getattr(self._node, self.sensor_type[ATTR_STATE])()
+        state_value = getattr(self._node, self.sensor_type[ATTR_STATE])
         if state_value is not None:
             return float(round(state_value, 3))
         return None

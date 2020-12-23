@@ -71,12 +71,12 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         _LOGGER.debug("Add binary_sensors for %s", mac)
 
         node = stick.node(mac)
-        for sensor_type in node.get_sensors():
+        for sensor_type in node.sensors:
             if sensor_type in USB_BINARY_SENSORS:
                 async_add_entities([USBBinarySensor(node, mac, sensor_type)])
                 _LOGGER.debug("Added %s as binary_sensor", sensor_type)
 
-                if node.get_node_type() == "Scan" and sensor_type == MOTION_SENSOR_ID:
+                if node.hardware_model == "Scan" and sensor_type == MOTION_SENSOR_ID:
                     platform.async_register_entity_service(
                         SERVICE_CONFIGURE_SCAN,
                         {
@@ -333,7 +333,7 @@ class USBBinarySensor(NodeEntity, BinarySensorEntity):
     @property
     def is_on(self):
         """Return true if the binary_sensor is on."""
-        return getattr(self._node, self.sensor_type[ATTR_STATE])()
+        return getattr(self._node, self.sensor_type[ATTR_STATE])
 
     @property
     def unique_id(self):

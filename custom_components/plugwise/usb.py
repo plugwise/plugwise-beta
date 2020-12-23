@@ -43,16 +43,15 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
 
     def discover_finished():
         """Create entities for all discovered nodes."""
-        nodes = stick.nodes()
         _LOGGER.debug(
             "Successfully discovered %s out of %s registered nodes",
-            str(len(nodes)),
-            str(stick.registered_nodes()),
+            str(len(stick.discovered_nodes)),
+            str(stick.joined_nodes),
         )
         for component in PLATFORMS_USB:
             hass.data[DOMAIN][config_entry.entry_id][component] = []
-            for mac in nodes:
-                if component in stick.node(mac).get_categories():
+            for mac in stick.discovered_nodes:
+                if component in stick.node(mac).categories:
                     hass.data[DOMAIN][config_entry.entry_id][component].append(mac)
             hass.async_create_task(
                 hass.config_entries.async_forward_entry_setup(config_entry, component)
@@ -168,23 +167,23 @@ class NodeEntity(Entity):
     @property
     def available(self):
         """Return the availability of this entity."""
-        return getattr(self._node, USB_SENSORS[AVAILABLE_SENSOR_ID][ATTR_STATE])()
+        return getattr(self._node, USB_SENSORS[AVAILABLE_SENSOR_ID][ATTR_STATE])
 
     @property
     def device_info(self):
         """Return the device info."""
         return {
             "identifiers": {(DOMAIN, self._mac)},
-            "name": f"{self._node.get_node_type()} ({self._mac})",
+            "name": f"{self._node.hardware_model} ({self._mac})",
             "manufacturer": "Plugwise",
-            "model": self._node.get_node_type(),
-            "sw_version": f"{self._node.get_firmware_version()}",
+            "model": self._node.hardware_model,
+            "sw_version": f"{self._node.firmware_version}",
         }
 
     @property
     def name(self):
         """Return the display name of this entity."""
-        return f"{self._node.get_node_type()} {self._mac[-5:]}"
+        return f"{self._node.hardware_model} {self._mac[-5:]}"
 
     def sensor_update(self, state):
         """Handle status update of Entity."""
@@ -198,4 +197,4 @@ class NodeEntity(Entity):
     @property
     def unique_id(self):
         """Get unique ID."""
-        return f"{self._mac}-{self._node.get_node_type()}"
+        return f"{self._mac}-{self._node.hardware_model}"

@@ -55,7 +55,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     async def async_add_switch(mac):
         """Add plugwise switch."""
         node = stick.node(mac)
-        for switch_type in node.get_switches():
+        for switch_type in node.switches:
             if switch_type in SWITCHES:
                 async_add_entities([USBSwitch(node, mac, switch_type)])
 
@@ -174,8 +174,8 @@ class USBSwitch(NodeEntity, SwitchEntity):
         super().__init__(node, mac)
         self.switch_id = switch_id
         self.switch_type = SWITCHES[self.switch_id]
-        if (CURRENT_POWER_SENSOR_ID in node.get_sensors()) and (
-            TODAY_ENERGY_SENSOR_ID in node.get_sensors()
+        if (CURRENT_POWER_SENSOR_ID in node.sensors) and (
+            TODAY_ENERGY_SENSOR_ID in node.sensors
         ):
             self.node_callbacks = (
                 AVAILABLE_SENSOR_ID,
@@ -191,7 +191,7 @@ class USBSwitch(NodeEntity, SwitchEntity):
         """Return the current power usage in W."""
         current_power = getattr(
             self._node, USB_SENSORS[CURRENT_POWER_SENSOR_ID][ATTR_STATE]
-        )()
+        )
         if current_power:
             return float(round(current_power, 2))
         return None
@@ -216,25 +216,25 @@ class USBSwitch(NodeEntity, SwitchEntity):
     @property
     def is_on(self):
         """Return true if the switch is on."""
-        return getattr(self._node, self.switch_type[ATTR_STATE])()
+        return getattr(self._node, self.switch_type[ATTR_STATE])
 
     @property
     def today_energy_kwh(self):
         """Return the today total energy usage in kWh."""
         today_energy = getattr(
             self._node, USB_SENSORS[TODAY_ENERGY_SENSOR_ID][ATTR_STATE]
-        )()
+        )
         if today_energy:
             return float(round(today_energy, 3))
         return None
 
     def turn_off(self, **kwargs):
         """Instruct the switch to turn off."""
-        getattr(self._node, self.switch_type["switch"])(False)
+        setattr(self._node, self.switch_type[ATTR_STATE], False)
 
     def turn_on(self, **kwargs):
         """Instruct the switch to turn on."""
-        getattr(self._node, self.switch_type["switch"])(True)
+        setattr(self._node, self.switch_type[ATTR_STATE], True)
 
     @property
     def unique_id(self):
