@@ -99,7 +99,7 @@ async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
         errors[CONF_BASE] = "network_down"
     except TimeoutException:
         errors[CONF_BASE] = "network_timeout"
-    return errors, stick
+    return errors, api_stick
 
 
 def get_serial_by_id(dev_path: str) -> str:
