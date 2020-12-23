@@ -26,6 +26,7 @@ from .const import (
     ATTR_MAC_ADDRESS,
     ATTR_NAME,
     CONF_USB_PATH,
+    CB_JOIN_REQUEST,
     DOMAIN,
     PLATFORMS_USB,
     PW_TYPE,
@@ -69,7 +70,27 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             hass.async_create_task(
                 hass.config_entries.async_forward_entry_setup(config_entry, component)
             )
+
+        def add_new_node(mac):
+            """Callback when a Plugwise node requests to join network"""
+            _LOGGER.debug("# add_new_node - start for %s", mac)
+            try:
+                device = device_registry.async_get_device({(DOMAIN, mac)}, set())
+                _LOGGER.debug("add_new_node - device.id = %s", device.id)
+                hass.components.persistent_notification.async_create(
+                    title="New Plugwise device",
+                    message=(
+                        "A new Plugwise device has been joined : \n\n"
+                        f" - {api_stick.node(mac).hardware_model} ({mac[-5:]})\n\n"
+                        f"Configure this device at the [device dashboard](/config/devices/device/{device.id})"
+                    ),
+                )
+                _LOGGER.debug("add_new_node - end")
+            except Exception as e:
+                _LOGGER.error("add_new_node error : %s", e)
+
         api_stick.auto_update()
+        api_stick.subscribe_stick_callback(add_new_node, CB_JOIN_REQUEST)
 
         if config_entry.system_options.disable_new_entities:
             _LOGGER.debug("Configuring stick NOT to accept any new join requests")
@@ -127,6 +148,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     async def device_remove(service):
         """Manually remove device from Plugwise zigbee network."""
         api_stick.node_unjoin(service.data[ATTR_MAC_ADDRESS])
+        _LOGGER.debug("Send request to remove device using mac %s from Plugwise network", service.data[ATTR_MAC_ADDRESS])
         device_entry = device_registry.async_get_device(
             {(DOMAIN, service.data[ATTR_MAC_ADDRESS])}, set()
         )

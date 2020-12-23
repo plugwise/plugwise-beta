@@ -372,6 +372,7 @@ CONF_USB_PATH = "usb_path"
 
 # Callback types
 CB_NEW_NODE = "NEW_NODE"
+CB_JOIN_REQUEST = "JOIN_REQUEST"
 
 # Sensor IDs
 USB_AVAILABLE_ID = "available"
