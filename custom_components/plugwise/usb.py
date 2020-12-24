@@ -72,24 +72,19 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             )
 
         def add_new_node(mac):
-            """Callback when a Plugwise node requests to join network"""
-            _LOGGER.debug("# add_new_node - start for %s", mac)
-            try:
-                device = device_registry.async_get_device({(DOMAIN, mac)}, set())
-                _LOGGER.debug("add_new_node - device.id = %s", device.id)
-                hass.components.persistent_notification.async_create(
-                    title="New Plugwise device",
-                    message=(
-                        "A new Plugwise device has been joined : \n\n"
-                        f" - {api_stick.node(mac).hardware_model} ({mac[-5:]})\n\n"
-                        f"Configure this device at the [device dashboard](/config/devices/device/{device.id})"
-                    ),
-                )
-                _LOGGER.debug("add_new_node - end")
-            except Exception as e:
-                _LOGGER.error("add_new_node error : %s", e)
+            """Listener when a new Plugwise node joined network"""
+            device = device_registry.async_get_device({(DOMAIN, mac)}, set())
+            hass.components.persistent_notification.async_create(
+                title="New Plugwise device",
+                message=(
+                    "A new Plugwise device has been joined : \n\n"
+                    f" - {api_stick.node(mac).hardware_model} ({mac[-5:]})\n\n"
+                    f"Configure this device at the [device dashboard](/config/devices/device/{device.id})"
+                ),
+            )
 
         api_stick.auto_update()
+        # Subscribe listener for new node joined to Plugwise network
         api_stick.subscribe_stick_callback(add_new_node, CB_JOIN_REQUEST)
 
         if config_entry.system_options.disable_new_entities:
@@ -148,20 +143,23 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     async def device_remove(service):
         """Manually remove device from Plugwise zigbee network."""
         api_stick.node_unjoin(service.data[ATTR_MAC_ADDRESS])
-        _LOGGER.debug("Send request to remove device using mac %s from Plugwise network", service.data[ATTR_MAC_ADDRESS])
+        _LOGGER.debug(
+            "Send request to remove device using mac %s from Plugwise network",
+            service.data[ATTR_MAC_ADDRESS],
+        )
         device_entry = device_registry.async_get_device(
             {(DOMAIN, service.data[ATTR_MAC_ADDRESS])}, set()
         )
         if device_entry:
-            _LOGGER.debug("Remove device %s from Home Assistant", service.data[ATTR_MAC_ADDRESS])
+            _LOGGER.debug(
+                "Remove device %s from Home Assistant", service.data[ATTR_MAC_ADDRESS]
+            )
             device_registry.async_remove_device(device_entry.id)
 
     service_device_schema = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
-
-    if config_entry.system_options.disable_new_entities:
-        hass.services.async_register(
-            DOMAIN, SERVICE_DEVICE_ADD, device_add, service_device_schema
-        )
+    hass.services.async_register(
+        DOMAIN, SERVICE_DEVICE_ADD, device_add, service_device_schema
+    )
     hass.services.async_register(
         DOMAIN, SERVICE_DEVICE_REMOVE, device_remove, service_device_schema
     )
