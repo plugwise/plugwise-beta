@@ -66,7 +66,6 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
     platform = entity_platform.current_platform.get()
 
-    async def async_add_sensor(mac):
         """Add plugwise sensor."""
         _LOGGER.debug("Add binary_sensors for %s", mac)
 
@@ -109,13 +108,14 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
                         },
                         "_service_configure_battery_savings",
                     )
+    async def async_add_binary_sensor(mac):
 
     for mac in hass.data[DOMAIN][config_entry.entry_id]["binary_sensor"]:
-        hass.async_create_task(async_add_sensor(mac))
+        hass.async_create_task(async_add_binary_sensor(mac))
 
     def discoved_binary_sensor(mac):
         """Add newly discovered binary sensor."""
-        hass.async_create_task(async_add_sensor(mac))
+        hass.async_create_task(async_add_binary_sensor(mac))
 
     # Listen for discovered nodes
     api_stick.subscribe_stick_callback(discoved_binary_sensor, CB_NEW_NODE)
