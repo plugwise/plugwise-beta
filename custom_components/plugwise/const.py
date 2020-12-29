@@ -374,14 +374,16 @@ CONF_USB_PATH = "usb_path"
 CB_NEW_NODE = "NEW_NODE"
 
 # Sensor IDs
-AVAILABLE_SENSOR_ID = "available"
-CURRENT_POWER_SENSOR_ID = "power_1s"
-TODAY_ENERGY_SENSOR_ID = "power_con_today"
-MOTION_SENSOR_ID = "motion"
+USB_AVAILABLE_ID = "available"
+USB_CURRENT_POWER_ID = "power_1s"
+USB_CURRENT_POWER_8S_ID = "power_8s"
+USB_POWER_CONSUMPTION_TODAY_ID = "power_con_today"
+USB_MOTION_ID = "motion"
+USB_RELAY_ID = "relay"
 
 # Sensor types
-USB_SENSORS = {
-    AVAILABLE_SENSOR_ID: {
+STICK_API = {
+    USB_AVAILABLE_ID: {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: "mdi:signal-off",
@@ -397,7 +399,7 @@ USB_SENSORS = {
         ATTR_STATE: "ping",
         ATTR_UNIT_OF_MEASUREMENT: TIME_MILLISECONDS,
     },
-    CURRENT_POWER_SENSOR_ID: {
+    USB_CURRENT_POWER_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
@@ -405,7 +407,7 @@ USB_SENSORS = {
         ATTR_STATE: "current_power_usage",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
-    "power_8s": {
+    USB_CURRENT_POWER_8S_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
@@ -429,7 +431,7 @@ USB_SENSORS = {
         ATTR_STATE: "power_consumption_previous_hour",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
-    TODAY_ENERGY_SENSOR_ID: {
+    USB_POWER_CONSUMPTION_TODAY_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
@@ -477,21 +479,15 @@ USB_SENSORS = {
         ATTR_STATE: "rssi_out",
         ATTR_UNIT_OF_MEASUREMENT: SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     },
-}
-USB_BINARY_SENSORS = {
-    MOTION_SENSOR_ID: {
+    USB_MOTION_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_MOTION,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Motion",
         ATTR_STATE: "motion",
         ATTR_UNIT_OF_MEASUREMENT: None,
-    }
-}
-
-# Switch types
-SWITCHES = {
-    "relay": {
+    },
+    USB_RELAY_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_OUTLET,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,

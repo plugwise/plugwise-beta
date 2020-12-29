@@ -20,8 +20,11 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.entity import Entity
 
 from .const import (
+    ATTR_DEVICE_CLASS,
+    ATTR_ENABLED_DEFAULT,
+    ATTR_ICON,
     ATTR_MAC_ADDRESS,
-    AVAILABLE_SENSOR_ID,
+    ATTR_NAME,
     CONF_USB_PATH,
     DOMAIN,
     PLATFORMS_USB,
@@ -30,8 +33,11 @@ from .const import (
     SERVICE_DEVICE_REMOVE,
     UNDO_UPDATE_LISTENER,
     STICK,
+    STICK_API,
     USB,
-    USB_SENSORS,
+    USB_AVAILABLE_ID,
+    USB_MOTION_ID,
+    USB_RELAY_ID,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,9 +56,15 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
         )
         for component in PLATFORMS_USB:
             hass.data[DOMAIN][config_entry.entry_id][component] = []
-            for mac in api_stick.discovered_nodes:
-                if component in api_stick.node(mac).categories:
-                    hass.data[DOMAIN][config_entry.entry_id][component].append(mac)
+
+        for mac in api_stick.discovered_nodes:
+            if USB_RELAY_ID in api_stick.node(mac).features:
+                hass.data[DOMAIN][config_entry.entry_id]["switch"].append(mac)
+            if USB_MOTION_ID in api_stick.node(mac).features:
+                hass.data[DOMAIN][config_entry.entry_id]["binary_sensor"].append(mac)
+            hass.data[DOMAIN][config_entry.entry_id]["sensor"].append(mac)
+
+        for component in PLATFORMS_USB:
             hass.async_create_task(
                 hass.config_entries.async_forward_entry_setup(config_entry, component)
             )
@@ -148,11 +160,11 @@ async def _async_update_listener(hass: HomeAssistant, config_entry: ConfigEntry)
 class NodeEntity(Entity):
     """Base class for a Plugwise entities."""
 
-    def __init__(self, node, mac):
+    def __init__(self, node, api_type):
         """Initialize a Node entity."""
         self._node = node
-        self._mac = mac
-        self.node_callbacks = (AVAILABLE_SENSOR_ID,)
+        self._api_type = api_type
+        self.node_callbacks = None
 
     async def async_added_to_hass(self):
         """Subscribe to updates."""
@@ -167,23 +179,42 @@ class NodeEntity(Entity):
     @property
     def available(self):
         """Return the availability of this entity."""
-        return getattr(self._node, USB_SENSORS[AVAILABLE_SENSOR_ID][ATTR_STATE])
+        return getattr(self._node, STICK_API[USB_AVAILABLE_ID][ATTR_STATE])
+
+    @property
+    def device_class(self):
+        """Return the device class of the binary sensor."""
+        return STICK_API[self._api_type][ATTR_DEVICE_CLASS]
 
     @property
     def device_info(self):
         """Return the device info."""
         return {
-            "identifiers": {(DOMAIN, self._mac)},
-            "name": f"{self._node.hardware_model} ({self._mac})",
+            "identifiers": {(DOMAIN, self._node.mac)},
+            "name": f"{self._node.hardware_model} ({self._node.mac})",
             "manufacturer": "Plugwise",
             "model": self._node.hardware_model,
             "sw_version": f"{self._node.firmware_version}",
         }
 
     @property
+    def entity_registry_enabled_default(self):
+        """Return the binary sensor registration state."""
+        return STICK_API[self._api_type][ATTR_ENABLED_DEFAULT]
+
+    @property
+    def icon(self):
+        """Return the icon."""
+        return (
+            None
+            if STICK_API[self._api_type][ATTR_DEVICE_CLASS]
+            else STICK_API[self._api_type][ATTR_ICON]
+        )
+
+    @property
     def name(self):
         """Return the display name of this entity."""
-        return f"{self._node.hardware_model} {self._mac[-5:]}"
+        return f"{STICK_API[self._api_type][ATTR_NAME]} ({self._node.mac[-5:]})"
 
     def sensor_update(self, state):
         """Handle status update of Entity."""
@@ -197,4 +228,4 @@ class NodeEntity(Entity):
     @property
     def unique_id(self):
         """Get unique ID."""
-        return f"{self._mac}-{self._node.hardware_model}"
+        return f"{self._node.mac}-{self._node.hardware_model}"

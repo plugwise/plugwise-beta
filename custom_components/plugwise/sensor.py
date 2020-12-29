@@ -24,7 +24,6 @@ from .usb import NodeEntity
 from .const import (
     API,
     ATTR_ENABLED_DEFAULT,
-    AVAILABLE_SENSOR_ID,
     AUX_DEV_SENSORS,
     CB_NEW_NODE,
     COOL_ICON,
@@ -38,9 +37,12 @@ from .const import (
     PW_MODEL,
     PW_TYPE,
     STICK,
+    STICK_API,
     THERMOSTAT_SENSORS,
     USB,
-    USB_SENSORS,
+    USB_AVAILABLE_ID,
+    USB_MOTION_ID,
+    USB_RELAY_ID,
 )
 
 PARALLEL_UPDATES = 0
@@ -62,10 +64,9 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
     async def async_add_sensor(mac):
         """Add plugwise sensor."""
-        node = api_stick.node(mac)
-        for sensor_type in node.sensors:
-            if sensor_type in USB_SENSORS and sensor_type != AVAILABLE_SENSOR_ID:
-                async_add_entities([USBSensor(node, mac, sensor_type)])
+        for feature in api_stick.node(mac).features:
+            if feature not in (USB_MOTION_ID, USB_RELAY_ID):
+                async_add_entities([USBSensor(api_stick.node(mac), feature)])
 
     for mac in hass.data[DOMAIN][config_entry.entry_id]["sensor"]:
         hass.async_create_task(async_add_sensor(mac))
@@ -284,37 +285,16 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
 class USBSensor(NodeEntity):
     """Representation of a Stick Node sensor."""
 
-    def __init__(self, node, mac, sensor_id):
+    def __init__(self, node, sensor_id):
         """Initialize a Node entity."""
-        super().__init__(node, mac)
+        super().__init__(node, sensor_id)
         self.sensor_id = sensor_id
-        self.sensor_type = USB_SENSORS[sensor_id]
-        self.node_callbacks = (AVAILABLE_SENSOR_ID, sensor_id)
-
-    @property
-    def device_class(self):
-        """Return the device class of the sensor."""
-        return self.sensor_type[ATTR_DEVICE_CLASS]
-
-    @property
-    def entity_registry_enabled_default(self):
-        """Return the sensor registration state."""
-        return self.sensor_type[ATTR_ENABLED_DEFAULT]
-
-    @property
-    def icon(self):
-        """Icon to use in the frontend, if any."""
-        return self.sensor_type[ATTR_ICON]
-
-    @property
-    def name(self):
-        """Return the display name of this sensor."""
-        return f"{self.sensor_type[ATTR_NAME]} ({self._mac[-5:]})"
+        self.node_callbacks = (USB_AVAILABLE_ID, sensor_id)
 
     @property
     def state(self):
         """Return the state of the sensor."""
-        state_value = getattr(self._node, self.sensor_type[ATTR_STATE])
+        state_value = getattr(self._node, STICK_API[self.sensor_id][ATTR_STATE])
         if state_value is not None:
             return float(round(state_value, 3))
         return None
@@ -322,9 +302,9 @@ class USBSensor(NodeEntity):
     @property
     def unique_id(self):
         """Get unique ID."""
-        return f"{self._mac}-{self.sensor_id}"
+        return f"{self._node.mac}-{self.sensor_id}"
 
     @property
     def unit_of_measurement(self):
         """Return the unit this state is expressed in."""
-        return self.sensor_type[ATTR_UNIT_OF_MEASUREMENT]
+        return STICK_API[self.sensor_id][ATTR_UNIT_OF_MEASUREMENT]
