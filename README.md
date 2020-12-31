@@ -12,7 +12,21 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing.
 
-## NEW Oct 2020 ##
+## NEW Jan 2021 [0.14.0]
+
+- USB-Stick
+  - New: Automatically accepting of joining request of new Plugwise devices if the `Enable newly added entries` system option is turned on (default). A notification will be popup after a new devices is joined.
+  - Improved: For quicker response switch (relay) requests are handled with priority
+  - Improved: Dynamically set the refresh interval based on the actual discovered devices with power measurement capabilities
+  - Improved: Response messages received from Plugwise devices are now validated to their checksums.
+  - Improved: Using the `device_remove` services will remove the devices from the device registry too.
+  - Improved: Better handling of timeout issues and reduced communication messages.
+  - Improved: Corrected log level assignments (debug, info, warning, errors)
+  - Fixed: Missing power history values during last week of the month.
+  - Fixed: Prevent a few rarely occurring communication failures.
+
+## Oct 2020 [0.13.1]
+
 The developer of the Plugwise Stick integration, @brefra, has joined the team. As a result we have added support for the Plugwise Stick.
 
 ## Sept 2020
