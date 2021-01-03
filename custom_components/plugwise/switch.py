@@ -2,18 +2,10 @@
 
 import logging
 
-from plugwise.smile import Smile
 from plugwise.exceptions import PlugwiseException
 
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ICON,
-    ATTR_NAME,
-    ATTR_STATE,
-    STATE_OFF,
-    STATE_ON,
-)
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.const import ATTR_NAME, ATTR_STATE, STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .gateway import SmileGateway
