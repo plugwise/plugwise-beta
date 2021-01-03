@@ -12,6 +12,9 @@ from plugwise.exceptions import (
 )
 from plugwise.stick import stick
 
+from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_STATE, EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import HomeAssistant
@@ -61,10 +64,10 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
 
         for mac in api_stick.discovered_nodes:
             if USB_RELAY_ID in api_stick.node(mac).features:
-                hass.data[DOMAIN][config_entry.entry_id]["switch"].append(mac)
             if USB_MOTION_ID in api_stick.node(mac).features:
-                hass.data[DOMAIN][config_entry.entry_id]["binary_sensor"].append(mac)
-            hass.data[DOMAIN][config_entry.entry_id]["sensor"].append(mac)
+                    hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN].append(mac)
+                    hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN].append(mac)
+                hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN].append(mac)
 
         for component in PLATFORMS_USB:
             hass.async_create_task(

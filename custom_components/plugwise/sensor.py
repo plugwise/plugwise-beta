@@ -18,6 +18,7 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 
 from .gateway import SmileGateway
 from .usb import NodeEntity
@@ -68,7 +69,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
             if feature not in (USB_MOTION_ID, USB_RELAY_ID):
                 async_add_entities([USBSensor(api_stick.node(mac), feature)])
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id]["sensor"]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN]:
         hass.async_create_task(async_add_sensor(mac))
 
     def discoved_sensor(mac):

@@ -1,7 +1,8 @@
 """Constants for Plugwise beta component."""
 
-from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION
-from homeassistant.components.switch import DEVICE_CLASS_OUTLET
+from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION, DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.switch import DEVICE_CLASS_OUTLET, DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_ICON,
@@ -84,8 +85,8 @@ SEVERITIES = ["other", "info", "warning", "error"]
 
 # --- Const for Plugwise Smile and Stretch
 
-PLATFORMS_GATEWAY = ["binary_sensor", "climate", "sensor", "switch"]
-SENSOR_PLATFORMS = ["sensor", "switch"]
+PLATFORMS_GATEWAY = [BINARY_SENSOR_DOMAIN, "climate", SENSOR_DOMAIN, SWITCH_DOMAIN]
+SENSOR_PLATFORMS = [SENSOR_DOMAIN, SWITCH_DOMAIN]
 SERVICE_DELETE = "delete_notification"
 
 # Climate const:
@@ -367,7 +368,7 @@ SWITCH_CLASSES = ["plug", "switch_group"]
 
 # --- Const for Plugwise USB-stick.
 
-PLATFORMS_USB = ["binary_sensor", "sensor", "switch"]
+PLATFORMS_USB = [BINARY_SENSOR_DOMAIN, SENSOR_DOMAIN, SWITCH_DOMAIN]
 CONF_USB_PATH = "usb_path"
 
 # Callback types

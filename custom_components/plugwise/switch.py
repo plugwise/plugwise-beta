@@ -4,7 +4,7 @@ import logging
 
 from plugwise.exceptions import PlugwiseException
 
-from homeassistant.components.switch import SwitchEntity
+from homeassistant.components.switch import SwitchEntity, DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import ATTR_NAME, ATTR_STATE, STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
@@ -48,7 +48,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         if USB_RELAY_ID in api_stick.node(mac).features:
             async_add_entities([USBSwitch(api_stick.node(mac))])
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id]["switch"]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN]:
         hass.async_create_task(async_add_switch(mac))
 
     def discoved_switch(mac):

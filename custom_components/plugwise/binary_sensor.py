@@ -4,7 +4,7 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.components.binary_sensor import BinarySensorEntity, DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.const import ATTR_DEVICE_CLASS, ATTR_ICON, ATTR_NAME, ATTR_STATE
 
 from homeassistant.core import callback
@@ -105,7 +105,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
                 "_service_configure_battery_savings",
             )
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id]["binary_sensor"]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN]:
         hass.async_create_task(async_add_binary_sensor(mac))
 
     def discoved_binary_sensor(mac):
