@@ -67,9 +67,9 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
     async def async_add_binary_sensor(mac):
         """Add plugwise binary sensor."""
-        if USB_MOTION_ID in api_stick.node(mac).features:
+        if USB_MOTION_ID in api_stick.devices[mac].features:
             _LOGGER.debug("Add binary_sensors for %s", mac)
-            async_add_entities([USBBinarySensor(api_stick.node(mac))])
+            async_add_entities([USBBinarySensor(api_stick.devices[mac])])
 
             # Register services
             platform.async_register_entity_service(

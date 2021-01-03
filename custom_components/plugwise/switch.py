@@ -45,8 +45,8 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
     async def async_add_switch(mac):
         """Add plugwise switch."""
-        if USB_RELAY_ID in api_stick.node(mac).features:
-            async_add_entities([USBSwitch(api_stick.node(mac))])
+        if USB_RELAY_ID in api_stick.devices[mac].features:
+            async_add_entities([USBSwitch(api_stick.devices[mac])])
 
     for mac in hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN]:
         hass.async_create_task(async_add_switch(mac))

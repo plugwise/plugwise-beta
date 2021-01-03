@@ -56,16 +56,18 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
         """Create entities for all discovered nodes."""
         _LOGGER.debug(
             "Successfully discovered %s out of %s registered nodes",
-            str(len(api_stick.discovered_nodes)),
+            str(len(api_stick.devices)),
             str(api_stick.joined_nodes),
         )
         for component in PLATFORMS_USB:
             hass.data[DOMAIN][config_entry.entry_id][component] = []
 
-        for mac in api_stick.discovered_nodes:
-            if USB_RELAY_ID in api_stick.node(mac).features:
-            if USB_MOTION_ID in api_stick.node(mac).features:
+        for mac in api_stick.devices:
+            # Skip unsupported devices
+            if api_stick.devices[mac]:
+                if USB_RELAY_ID in api_stick.devices[mac].features:
                     hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN].append(mac)
+                if USB_MOTION_ID in api_stick.devices[mac].features:
                     hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN].append(mac)
                 hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN].append(mac)
 

@@ -65,9 +65,9 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
     async def async_add_sensor(mac):
         """Add plugwise sensor."""
-        for feature in api_stick.node(mac).features:
+        for feature in api_stick.devices[mac].features:
             if feature not in (USB_MOTION_ID, USB_RELAY_ID):
-                async_add_entities([USBSensor(api_stick.node(mac), feature)])
+                async_add_entities([USBSensor(api_stick.devices[mac], feature)])
 
     for mac in hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN]:
         hass.async_create_task(async_add_sensor(mac))
