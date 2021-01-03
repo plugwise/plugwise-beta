@@ -3,7 +3,6 @@ import asyncio
 import logging
 import voluptuous as vol
 
-import plugwise
 from plugwise.exceptions import (
     CirclePlusError,
     NetworkDown,
@@ -11,6 +10,7 @@ from plugwise.exceptions import (
     StickInitError,
     TimeoutException,
 )
+from plugwise.stick import stick
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_STATE, EVENT_HOMEASSISTANT_STOP
@@ -96,7 +96,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     def shutdown(event):
         hass.async_add_executor_job(api_stick.disconnect)
 
-    api_stick = plugwise.stick(config_entry.data[CONF_USB_PATH])
+    api_stick = stick(config_entry.data[CONF_USB_PATH])
     hass.data[DOMAIN][config_entry.entry_id] = {PW_TYPE: USB, STICK: api_stick}
     try:
         _LOGGER.debug("Connect to USB-Stick")

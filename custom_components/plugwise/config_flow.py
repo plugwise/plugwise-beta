@@ -6,8 +6,6 @@ from typing import Dict
 
 import voluptuous as vol
 
-import plugwise
-from plugwise.smile import Smile
 from plugwise.exceptions import (
     InvalidAuthentication,
     NetworkDown,
@@ -16,6 +14,8 @@ from plugwise.exceptions import (
     StickInitError,
     TimeoutException,
 )
+from plugwise.stick import stick
+from plugwise.smile import Smile
 
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import (
@@ -86,7 +86,7 @@ async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
         errors[CONF_BASE] = "already_configured"
         return errors, None
 
-    api_stick = await self.async_add_executor_job(plugwise.stick, device_path)
+    api_stick = await self.async_add_executor_job(stick, device_path)
     try:
         await self.async_add_executor_job(api_stick.connect)
         await self.async_add_executor_job(api_stick.initialize_stick)
