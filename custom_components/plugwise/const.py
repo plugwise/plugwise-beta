@@ -385,14 +385,6 @@ USB_RELAY_ID = "relay"
 
 # Sensor types
 STICK_API = {
-    USB_AVAILABLE_ID: {
-        ATTR_DEVICE_CLASS: None,
-        ATTR_ENABLED_DEFAULT: False,
-        ATTR_ICON: "mdi:signal-off",
-        ATTR_NAME: "Available",
-        ATTR_STATE: "available",
-        ATTR_UNIT_OF_MEASUREMENT: None,
-    },
     "ping": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: False,

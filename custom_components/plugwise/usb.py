@@ -216,7 +216,7 @@ class NodeEntity(Entity):
     @property
     def available(self):
         """Return the availability of this entity."""
-        return getattr(self._node, STICK_API[USB_AVAILABLE_ID][ATTR_STATE])
+        return self._node.available
 
     @property
     def device_class(self):
