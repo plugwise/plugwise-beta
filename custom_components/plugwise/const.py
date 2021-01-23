@@ -1,7 +1,8 @@
 """Constants for Plugwise beta component."""
 
-from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION
-from homeassistant.components.switch import DEVICE_CLASS_OUTLET
+from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION, DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.switch import DEVICE_CLASS_OUTLET, DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_ICON,
@@ -84,8 +85,8 @@ SEVERITIES = ["other", "info", "warning", "error"]
 
 # --- Const for Plugwise Smile and Stretch
 
-PLATFORMS_GATEWAY = ["binary_sensor", "climate", "sensor", "switch"]
-SENSOR_PLATFORMS = ["sensor", "switch"]
+PLATFORMS_GATEWAY = [BINARY_SENSOR_DOMAIN, "climate", SENSOR_DOMAIN, SWITCH_DOMAIN]
+SENSOR_PLATFORMS = [SENSOR_DOMAIN, SWITCH_DOMAIN]
 SERVICE_DELETE = "delete_notification"
 
 # Climate const:
@@ -367,50 +368,45 @@ SWITCH_CLASSES = ["plug", "switch_group"]
 
 # --- Const for Plugwise USB-stick.
 
-PLATFORMS_USB = ["binary_sensor", "sensor", "switch"]
+PLATFORMS_USB = [BINARY_SENSOR_DOMAIN, SENSOR_DOMAIN, SWITCH_DOMAIN]
 CONF_USB_PATH = "usb_path"
 
 # Callback types
 CB_NEW_NODE = "NEW_NODE"
+CB_JOIN_REQUEST = "JOIN_REQUEST"
 
 # Sensor IDs
-AVAILABLE_SENSOR_ID = "available"
-CURRENT_POWER_SENSOR_ID = "power_1s"
-TODAY_ENERGY_SENSOR_ID = "power_con_today"
-MOTION_SENSOR_ID = "motion"
+USB_AVAILABLE_ID = "available"
+USB_CURRENT_POWER_ID = "power_1s"
+USB_CURRENT_POWER_8S_ID = "power_8s"
+USB_POWER_CONSUMPTION_TODAY_ID = "power_con_today"
+USB_MOTION_ID = "motion"
+USB_RELAY_ID = "relay"
 
 # Sensor types
-USB_SENSORS = {
-    AVAILABLE_SENSOR_ID: {
-        ATTR_DEVICE_CLASS: None,
-        ATTR_ENABLED_DEFAULT: False,
-        ATTR_ICON: "mdi:signal-off",
-        ATTR_NAME: "Available",
-        ATTR_STATE: "get_available",
-        ATTR_UNIT_OF_MEASUREMENT: None,
-    },
+STICK_API = {
     "ping": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: "mdi:speedometer",
         ATTR_NAME: "Ping roundtrip",
-        ATTR_STATE: "get_ping",
+        ATTR_STATE: "ping",
         ATTR_UNIT_OF_MEASUREMENT: TIME_MILLISECONDS,
     },
-    CURRENT_POWER_SENSOR_ID: {
+    USB_CURRENT_POWER_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Power usage",
-        ATTR_STATE: "get_power_usage",
+        ATTR_STATE: "current_power_usage",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
-    "power_8s": {
+    USB_CURRENT_POWER_8S_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Power usage 8 seconds",
-        ATTR_STATE: "get_power_usage_8_sec",
+        ATTR_STATE: "current_power_usage_8_sec",
         ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
     },
     "power_con_cur_hour": {
@@ -418,7 +414,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Power consumption current hour",
-        ATTR_STATE: "get_power_consumption_current_hour",
+        ATTR_STATE: "power_consumption_current_hour",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "power_con_prev_hour": {
@@ -426,15 +422,15 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Power consumption previous hour",
-        ATTR_STATE: "get_power_consumption_prev_hour",
+        ATTR_STATE: "power_consumption_previous_hour",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
-    TODAY_ENERGY_SENSOR_ID: {
+    USB_POWER_CONSUMPTION_TODAY_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Power consumption today",
-        ATTR_STATE: "get_power_consumption_today",
+        ATTR_STATE: "power_consumption_today",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "power_con_yesterday": {
@@ -442,7 +438,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Power consumption yesterday",
-        ATTR_STATE: "get_power_consumption_yesterday",
+        ATTR_STATE: "power_consumption_yesterday",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "power_prod_cur_hour": {
@@ -450,7 +446,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Power production current hour",
-        ATTR_STATE: "get_power_production_current_hour",
+        ATTR_STATE: "power_production_current_hour",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "power_prod_prev_hour": {
@@ -458,7 +454,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Power production previous hour",
-        ATTR_STATE: "get_power_production_previous_hour",
+        ATTR_STATE: "power_production_previous_hour",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     "RSSI_in": {
@@ -466,7 +462,7 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Inbound RSSI",
-        ATTR_STATE: "get_in_RSSI",
+        ATTR_STATE: "rssi_in",
         ATTR_UNIT_OF_MEASUREMENT: SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     },
     "RSSI_out": {
@@ -474,30 +470,23 @@ USB_SENSORS = {
         ATTR_ENABLED_DEFAULT: False,
         ATTR_ICON: None,
         ATTR_NAME: "Outbound RSSI",
-        ATTR_STATE: "get_out_RSSI",
+        ATTR_STATE: "rssi_out",
         ATTR_UNIT_OF_MEASUREMENT: SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     },
-}
-USB_BINARY_SENSORS = {
-    MOTION_SENSOR_ID: {
+    USB_MOTION_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_MOTION,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Motion",
-        ATTR_STATE: "get_motion",
+        ATTR_STATE: "motion",
         ATTR_UNIT_OF_MEASUREMENT: None,
-    }
-}
-
-# Switch types
-SWITCHES = {
-    "relay": {
+    },
+    USB_RELAY_ID: {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_OUTLET,
         ATTR_ENABLED_DEFAULT: True,
         ATTR_ICON: None,
         ATTR_NAME: "Relay state",
-        ATTR_STATE: "get_relay_state",
-        "switch": "set_relay_state",
+        ATTR_STATE: "relay_state",
         ATTR_UNIT_OF_MEASUREMENT: "state",
     }
 }

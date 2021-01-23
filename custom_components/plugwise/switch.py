@@ -2,39 +2,30 @@
 
 import logging
 
-from plugwise.smile import Smile
 from plugwise.exceptions import PlugwiseException
 
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ICON,
-    ATTR_NAME,
-    ATTR_STATE,
-    STATE_OFF,
-    STATE_ON,
-)
-from homeassistant.components.switch import SwitchEntity
+from homeassistant.components.switch import SwitchEntity, DOMAIN as SWITCH_DOMAIN
+from homeassistant.const import ATTR_NAME, ATTR_STATE, STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .gateway import SmileGateway
 from .usb import NodeEntity
 from .const import (
     API,
-    ATTR_ENABLED_DEFAULT,
-    AVAILABLE_SENSOR_ID,
     CB_NEW_NODE,
     COORDINATOR,
-    CURRENT_POWER_SENSOR_ID,
     DOMAIN,
     PW_MODEL,
     PW_TYPE,
-    USB_SENSORS,
     STICK,
+    STICK_API,
     SWITCH_CLASSES,
     SWITCH_ICON,
-    SWITCHES,
-    TODAY_ENERGY_SENSOR_ID,
     USB,
+    USB_AVAILABLE_ID,
+    USB_CURRENT_POWER_ID,
+    USB_POWER_CONSUMPTION_TODAY_ID,
+    USB_RELAY_ID,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,16 +41,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     """Set up the USB switches from a config entry."""
-    stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
+    api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
     async def async_add_switch(mac):
         """Add plugwise switch."""
-        node = stick.node(mac)
-        for switch_type in node.get_switches():
-            if switch_type in SWITCHES:
-                async_add_entities([USBSwitch(node, mac, switch_type)])
+        if USB_RELAY_ID in api_stick.devices[mac].features:
+            async_add_entities([USBSwitch(api_stick.devices[mac])])
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id]["switch"]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN]:
         hass.async_create_task(async_add_switch(mac))
 
     def discoved_switch(mac):
@@ -67,7 +56,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         hass.async_create_task(async_add_switch(mac))
 
     # Listen for discovered nodes
-    stick.subscribe_stick_callback(discoved_switch, CB_NEW_NODE)
+    api_stick.subscribe_stick_callback(discoved_switch, CB_NEW_NODE)
 
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
@@ -167,76 +156,50 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
 
 class USBSwitch(NodeEntity, SwitchEntity):
-    """Representation of a Sitck Node switch."""
+    """Representation of a Stick Node switch."""
 
-    def __init__(self, node, mac, switch_id):
+    def __init__(self, node):
         """Initialize a Node entity."""
-        super().__init__(node, mac)
-        self.switch_id = switch_id
-        self.switch_type = SWITCHES[self.switch_id]
-        if (CURRENT_POWER_SENSOR_ID in node.get_sensors()) and (
-            TODAY_ENERGY_SENSOR_ID in node.get_sensors()
-        ):
-            self.node_callbacks = (
-                AVAILABLE_SENSOR_ID,
-                switch_id,
-                CURRENT_POWER_SENSOR_ID,
-                TODAY_ENERGY_SENSOR_ID,
-            )
-        else:
-            self.node_callbacks = (AVAILABLE_SENSOR_ID, self.switch_id)
+        super().__init__(node, USB_RELAY_ID)
+        self.node_callbacks = (
+            USB_AVAILABLE_ID,
+            USB_CURRENT_POWER_ID,
+            USB_POWER_CONSUMPTION_TODAY_ID,
+            USB_RELAY_ID,
+        )
 
     @property
     def current_power_w(self):
         """Return the current power usage in W."""
-        current_power = getattr(
-            self._node, USB_SENSORS[CURRENT_POWER_SENSOR_ID][ATTR_STATE]
-        )()
+        current_power = getattr(self._node, STICK_API[USB_CURRENT_POWER_ID][ATTR_STATE])
         if current_power:
             return float(round(current_power, 2))
         return None
 
     @property
-    def device_class(self):
-        """Return the device class of this switch."""
-        return self.switch_type[ATTR_DEVICE_CLASS]
-
-    @property
-    def entity_registry_enabled_default(self):
-        """Return the switch registration state."""
-        return self.switch_type[ATTR_ENABLED_DEFAULT]
-
-    @property
-    def icon(self):
-        """Return the icon."""
-        return (
-            None if self.switch_type[ATTR_DEVICE_CLASS] else self.switch_type[ATTR_ICON]
-        )
-
-    @property
     def is_on(self):
         """Return true if the switch is on."""
-        return getattr(self._node, self.switch_type[ATTR_STATE])()
+        return getattr(self._node, STICK_API[USB_RELAY_ID][ATTR_STATE])
 
     @property
     def today_energy_kwh(self):
         """Return the today total energy usage in kWh."""
         today_energy = getattr(
-            self._node, USB_SENSORS[TODAY_ENERGY_SENSOR_ID][ATTR_STATE]
-        )()
+            self._node, STICK_API[USB_POWER_CONSUMPTION_TODAY_ID][ATTR_STATE]
+        )
         if today_energy:
             return float(round(today_energy, 3))
         return None
 
     def turn_off(self, **kwargs):
         """Instruct the switch to turn off."""
-        getattr(self._node, self.switch_type["switch"])(False)
+        setattr(self._node, STICK_API[USB_RELAY_ID][ATTR_STATE], False)
 
     def turn_on(self, **kwargs):
         """Instruct the switch to turn on."""
-        getattr(self._node, self.switch_type["switch"])(True)
+        setattr(self._node, STICK_API[USB_RELAY_ID][ATTR_STATE], True)
 
     @property
     def unique_id(self):
         """Get unique ID."""
-        return f"{self._mac}-{self.switch_id}"
+        return f"{self._node.mac}-{USB_RELAY_ID}"
