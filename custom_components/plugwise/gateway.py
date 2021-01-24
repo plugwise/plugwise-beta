@@ -47,6 +47,8 @@ from .const import (
     UNDO_UPDATE_LISTENER,
 )
 
+SERVICE_PRESET_SETPOINT = "set_preset_setpoint"
+
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__name__)
@@ -177,7 +179,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
-    async def async_delete_notification(self):
+    async def delete_notification(self):
         """Service: delete the Plugwise Notification."""
         _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
         try:
@@ -188,15 +190,28 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 "Failed to delete the Plugwise Notification for %s", api.smile_name
             )
 
+    async def set_preset_setpoint(self, loc_name, pr_name, s_type, s_point):
+        """Service: delete the Plugwise Notification."""
+        _LOGGER.debug("Service set Preset Setpoint called for %s", api.smile_name)
+        try:
+            await api.set_preset_setpoint(loc_name, pr_name, s_type, s_point)
+            _LOGGER.debug("%s Preset %s setpoint updated to %s C", loc_name, s_type, s_point )
+        except PlugwiseException:
+            _LOGGER.debug(
+                "Failed to update the %s Preset %s setpoint", loc_name, s_type
+            )
+
     for component in platforms:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
         if component == "climate":
             hass.services.async_register(
-                DOMAIN, SERVICE_DELETE, async_delete_notification, schema=vol.Schema({})
+                DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
             )
-
+            hass.services.async_register(
+                DOMAIN, SERVICE_PRESET_SETPOINT, set_preset_setpoint, schema=vol.Schema({})
+            )
     return True
 
 
