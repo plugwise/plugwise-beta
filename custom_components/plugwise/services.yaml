@@ -9,7 +9,7 @@ set_preset_setpoint:
     pr_name:
       description: Name of the preset (lower-case).
       example: away
-    s_type:
+    sp_type:
       description: Type of setpoint to change - heating or cooling
       example: heating
     sp_value:
