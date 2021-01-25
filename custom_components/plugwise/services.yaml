@@ -1,5 +1,20 @@
 delete_notification:
   description: Delete the Plugwise Notification(s).
+set_preset_setpoint:
+  description: Change a preset setpoint.
+  fields:
+    loc_name:
+      description: Name of thermostat location.
+      example: Living room
+    pr_name:
+      description: Name of the preset (lower-case).
+      example: away
+    s_type:
+      description: Type of setpoint to change - heating or cooling
+      example: heating
+    sp_value:
+      description: Target value in Celsius
+      example: 16.5
 device_add:
   description: Manually add a new plugwise device.
   fields:
