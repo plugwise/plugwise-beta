@@ -51,6 +51,15 @@ SERVICE_PRESET_SETPOINT = "set_preset_setpoint"
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
+SCHEMA_PRESET_SERVICE = vol.Schema(
+    {
+        vol.Required("loc_name"): cv.string,
+        vol.Required("p_name"): cv.string,
+        vol.Required("s_type"): cv.string,
+        vol.Required("s_point"): cv.string,
+    }
+)
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -190,9 +199,13 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 "Failed to delete the Plugwise Notification for %s", api.smile_name
             )
 
-    async def set_preset_setpoint(self, loc_name, pr_name, s_type, s_point):
+    async def set_preset_setpoint(service):
         """Service: delete the Plugwise Notification."""
         _LOGGER.debug("Service set Preset Setpoint called for %s", api.smile_name)
+        loc_name = service.data["loc_name"]
+        pr_name = service.data["pr_name"]
+        s_type = service.data["s_type"]
+        s_point = service.data["sp_value"]
         try:
             await api.set_preset_setpoint(loc_name, pr_name, s_type, s_point)
             _LOGGER.debug("%s Preset %s setpoint updated to %s C", loc_name, s_type, s_point )
@@ -210,7 +223,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
             )
             hass.services.async_register(
-                DOMAIN, SERVICE_PRESET_SETPOINT, set_preset_setpoint, schema=vol.Schema({})
+                DOMAIN, SERVICE_PRESET_SETPOINT, set_preset_setpoint, schema=SCHEMA_PRESET_SERVICE
             )
     return True
 
