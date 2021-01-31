@@ -56,6 +56,15 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
 
+    api = Smile(
+        host=entry.data[CONF_HOST],
+        username=entry.data[CONF_USERNAME],
+        password=entry.data[CONF_PASSWORD],
+        port=entry.data.get(CONF_PORT, DEFAULT_PORT),
+        timeout=30,
+        websession=websession,
+    )
+
     # When migrating from Core to beta, add the username to ConfigEntry
     entry_updates = {}
     try:
@@ -69,32 +78,24 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if entry_updates:
         hass.config_entries.async_update_entry(entry, **entry_updates)
 
-    api = Smile(
-        host=entry.data[CONF_HOST],
-        username=entry.data[CONF_USERNAME],
-        password=entry.data[CONF_PASSWORD],
-        port=entry.data.get(CONF_PORT, DEFAULT_PORT),
-        timeout=30,
-        websession=websession,
-    )
+    # Migrate to a valid unique_id when needed
+    if entry.unique_id is None:
+        if api.smile_version[0] != "1.8.0":
+            hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     try:
         connected = await api.connect()
-
         if not connected:
-            _LOGGER.error("Unable to connect to Smile %s", api.smile_name)
+            _LOGGER.error("Unable to connect to the Smile/Stretch")
             raise ConfigEntryNotReady
-
     except InvalidAuthentication:
         _LOGGER.error("Invalid username or Smile ID")
         return False
-
     except PlugwiseException as err:
-        _LOGGER.error("Error while communicating to Smile %s", api.smile_name)
+        _LOGGER.error("Error while communicating to the Smile/Stretch")
         raise ConfigEntryNotReady from err
-
     except asyncio.TimeoutError as err:
-        _LOGGER.error("Timeout while connecting to Smile %s", api.smile_name)
+        _LOGGER.error("Timeout while connecting to the Smile/Stretch")
         raise ConfigEntryNotReady from err
 
     update_interval = timedelta(
@@ -135,16 +136,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if not coordinator.last_update_success:
         raise ConfigEntryNotReady
 
-    _LOGGER.debug("Async update interval %s", update_interval)
-
-    api.get_all_devices()
-
     undo_listener = entry.add_update_listener(_update_listener)
-
-    # Migrate to a valid unique_id when needed
-    if entry.unique_id is None:
-        if api.smile_version[0] != "1.8.0":
-            hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         API: api,
@@ -154,7 +146,6 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     }
 
     _LOGGER.debug("Gateway is %s", api.gateway_id)
-
     _LOGGER.debug("Gateway software version is %s", api.smile_version)
     _LOGGER.debug("Appliances is %s", api.get_all_appliances())
     _LOGGER.debug("Scan thermostats is %s", api.scan_thermostats())
