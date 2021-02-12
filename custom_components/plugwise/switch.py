@@ -116,7 +116,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._model = model
         self._name = f"{name}"
 
-        self._unique_id = f"{dev_id}-self._model.lower()"
+        self._unique_id = f"{dev_id}-{self._model.lower()}"
 
     @property
     def icon(self):
