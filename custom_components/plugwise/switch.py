@@ -88,83 +88,18 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             data = api.get_device_data(dev_id)
             if "dhw_mode" in data:
                 entities.append(
-                    DHW_Mode_Switch(
+                    GwSwitch(
                         api,
                         coordinator,
                         "dhw_comfort_mode",
                         dev_id,
+                        None,
+                        "dhw_cm_switch"
                 )
             )
 
 
     async_add_entities(entities, True)
-
-class DHW_Mode_Switch(SmileGateway, SwitchEntity):
-    """Representation of a Smile Gateway switch."""
-
-    def __init__(self, api, coordinator, name, dev_id):
-        """Set up the Plugwise API."""
-        self._enabled_default = True
-
-        super().__init__(api, coordinator, name, dev_id)
-
-        self._is_on = False
-        self._model = "dhw_mode_switch"
-        self._name = f"{name}"
-
-        self._unique_id = f"{dev_id}-dhw_mode_switch"
-
-    @property
-    def icon(self):
-        """Return the icon of the entity."""
-        return SWITCH_ICON
-
-    @property
-    def is_on(self):
-        """Return true if device is on."""
-        return self._is_on
-
-    async def async_turn_on(self, **kwargs):
-        """Turn the device on."""
-        _LOGGER.debug("Turn switch.%s on.", self._name)
-        try:
-            state_on = await self._api.set_dhw_mode_state(
-                self._dev_id, STATE_ON,
-            )
-            if state_on:
-                self._is_on = True
-                self.async_write_ha_state()
-        except PlugwiseException:
-            _LOGGER.error("Error while communicating to device")
-
-    async def async_turn_off(self, **kwargs):
-        """Turn the device off."""
-        _LOGGER.debug("Turn switch.%s off.", self._name)
-        try:
-            state_off = await self._api.set_dhw_mode_state(
-                self._dev_id, STATE_OFF
-            )
-            if state_off:
-                self._is_on = False
-                self.async_write_ha_state()
-        except PlugwiseException:
-            _LOGGER.error("Error while communicating to device")
-
-    @callback
-    def _async_process_data(self):
-        """Update the data from the Plugs."""
-        _LOGGER.debug("Update switch called")
-
-        data = self._api.get_device_data(self._dev_id)
-
-        if "dhw_mode" not in data:
-            self.async_write_ha_state()
-            return
-
-        self._is_on = data["dhw_mode"]
-        _LOGGER.debug("Switch is ON is %s.", self._is_on)
-
-        self.async_write_ha_state()
 
 
 class GwSwitch(SmileGateway, SwitchEntity):
@@ -181,7 +116,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._model = model
         self._name = f"{name}"
 
-        self._unique_id = f"{dev_id}-plug"
+        self._unique_id = f"{dev_id}-self._model.lower()"
 
     @property
     def icon(self):
@@ -197,8 +132,8 @@ class GwSwitch(SmileGateway, SwitchEntity):
         """Turn the device on."""
         _LOGGER.debug("Turn switch.%s on.", self._name)
         try:
-            state_on = await self._api.set_relay_state(
-                self._dev_id, self._members, STATE_ON
+            state_on = await self._api.set_switch_state(
+                self._dev_id, self._members, self._model, STATE_ON
             )
             if state_on:
                 self._is_on = True
@@ -210,8 +145,8 @@ class GwSwitch(SmileGateway, SwitchEntity):
         """Turn the device off."""
         _LOGGER.debug("Turn switch.%s off.", self._name)
         try:
-            state_off = await self._api.set_relay_state(
-                self._dev_id, self._members, STATE_OFF
+            state_off = await self._api.set_switch_state(
+                self._dev_id, self._members, self._model, STATE_OFF
             )
             if state_off:
                 self._is_on = False
@@ -223,14 +158,16 @@ class GwSwitch(SmileGateway, SwitchEntity):
     def _async_process_data(self):
         """Update the data from the Plugs."""
         _LOGGER.debug("Update switch called")
-
         data = self._api.get_device_data(self._dev_id)
+        sw_type = "relay"
+        if self._name == "dhw_cm_switch":
+            sw_type = "dhw_mode"
 
-        if "relay" not in data:
+        if sw_type not in data:
             self.async_write_ha_state()
             return
 
-        self._is_on = data["relay"]
+        self._is_on = data[sw_type]
         _LOGGER.debug("Switch is ON is %s.", self._is_on)
 
         self.async_write_ha_state()
