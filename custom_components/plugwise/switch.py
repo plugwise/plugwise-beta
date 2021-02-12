@@ -86,7 +86,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
         if devices[dev_id][PW_CLASS] == "heater_central":
             data = api.get_device_data(dev_id)
-            if "dhw_mode" in data:
+            if "dhw_comf_mode" in data:
                 entities.append(
                     GwSwitch(
                         api,
@@ -161,7 +161,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         data = self._api.get_device_data(self._dev_id)
         sw_type = "relay"
         if self._name == "dhw_cm_switch":
-            sw_type = "dhw_mode"
+            sw_type = "dhw_comf_mode"
 
         if sw_type not in data:
             self.async_write_ha_state()
