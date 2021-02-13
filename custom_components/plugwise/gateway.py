@@ -61,9 +61,8 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     try:
         username = entry.data[CONF_USERNAME]
     except KeyError:
-        username = DEFAULT_USERNAME
         data = {**entry.data}
-        data.update({"username": username})
+        data.update({"username": DEFAULT_USERNAME})
         entry_updates["data"] = data
 
     if entry_updates:
