@@ -167,7 +167,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
-    async def async_delete_notification(self):
+    async def delete_notification(self):
         """Service: delete the Plugwise Notification."""
         _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
         try:
@@ -184,7 +184,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         if component == "climate":
             hass.services.async_register(
-                DOMAIN, SERVICE_DELETE, async_delete_notification, schema=vol.Schema({})
+                DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
             )
 
     return True
