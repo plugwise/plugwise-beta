@@ -79,6 +79,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     devices[dev_id][ATTR_NAME],
                     dev_id,
                     True,
+                    "relay",
                     members,
                     devices[dev_id][PW_MODEL],
                 )
@@ -95,6 +96,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         "Auxiliary",
                         dev_id,
                         True,
+                        "dhw_cm_switch",
                         None,
                     devices[dev_id][PW_MODEL],
                 )
@@ -107,7 +109,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 class GwSwitch(SmileGateway, SwitchEntity):
     """Representation of a Smile Gateway switch."""
 
-    def __init__(self, api, coordinator, name, dev_id, enabled_default, members, model):
+    def __init__(self, api, coordinator, name, dev_id, enabled_default, switch, members, model):
         """Set up the Plugwise API."""
 
         super().__init__(api, coordinator, name, dev_id)
@@ -117,6 +119,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._members = members
         self._model = model
         self._name = f"{name}"
+        self._switch = switch
 
         if dev_id == self._api.heater_id:
             self._entity_name = "Auxiliary"
@@ -144,7 +147,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         _LOGGER.debug("Turn switch.%s on.", self._name)
         try:
             state_on = await self._api.set_switch_state(
-                self._dev_id, self._members, self._model, STATE_ON
+                self._dev_id, self._members, self._switch, STATE_ON
             )
             if state_on:
                 self._is_on = True
@@ -157,7 +160,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         _LOGGER.debug("Turn switch.%s off.", self._name)
         try:
             state_off = await self._api.set_switch_state(
-                self._dev_id, self._members, self._model, STATE_OFF
+                self._dev_id, self._members, self._switch, STATE_OFF
             )
             if state_off:
                 self._is_on = False
@@ -170,15 +173,12 @@ class GwSwitch(SmileGateway, SwitchEntity):
         """Update the data from the Plugs."""
         _LOGGER.debug("Update switch called")
         data = self._api.get_device_data(self._dev_id)
-        sw_type = "relay"
-        if self._name == "dhw_cm_switch":
-            sw_type = "dhw_comf_mode"
 
-        if sw_type not in data:
+        if self._switch not in data:
             self.async_write_ha_state()
             return
 
-        self._is_on = data[sw_type]
+        self._is_on = data[self._switch]
         _LOGGER.debug("Switch is ON is %s.", self._is_on)
 
         self.async_write_ha_state()
