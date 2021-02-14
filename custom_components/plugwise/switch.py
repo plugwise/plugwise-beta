@@ -78,6 +78,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     coordinator,
                     devices[dev_id][ATTR_NAME],
                     dev_id,
+                    True,
                     members,
                     devices[dev_id][PW_MODEL],
                 )
@@ -91,10 +92,11 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     GwSwitch(
                         api,
                         coordinator,
-                        "dhw_comfort_mode",
+                        "Auxiliary",
                         dev_id,
+                        True,
                         None,
-                        "dhw_cm_switch"
+                    devices[dev_id][PW_MODEL],
                 )
             )
 
@@ -105,18 +107,27 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 class GwSwitch(SmileGateway, SwitchEntity):
     """Representation of a Smile Gateway switch."""
 
-    def __init__(self, api, coordinator, name, dev_id, members, model):
+    def __init__(self, api, coordinator, name, dev_id, enabled_default, members, model):
         """Set up the Plugwise API."""
-        self._enabled_default = True
 
         super().__init__(api, coordinator, name, dev_id)
 
         self._is_on = False
+        self._enabled_default = enabled_default
         self._members = members
         self._model = model
         self._name = f"{name}"
 
+        if dev_id == self._api.heater_id:
+            self._entity_name = "Auxiliary"
+            self._name = f"{self._entity_name} DHW Comfort Mode"
+
         self._unique_id = f"{dev_id}-{self._model.lower()}"
+
+    @property
+    def entity_registry_enabled_default(self) -> bool:
+        """Return if the entity should be enabled when first added to the entity registry."""
+        return self._enabled_default
 
     @property
     def icon(self):
