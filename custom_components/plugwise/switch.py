@@ -125,7 +125,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
             self._entity_name = "Auxiliary"
             self._name = f"{self._entity_name} DHW Comfort Mode"
 
-        self._unique_id = f"{dev_id}-{self._model.lower()}"
+        self._unique_id = f"{dev_id}-{self._switch}"
 
     @property
     def entity_registry_enabled_default(self) -> bool:
