@@ -2,7 +2,7 @@
   "domain": "plugwise",
   "name": "Plugwise Beta",
   "documentation": "https://github.com/plugwise/plugwise-beta",
-  "requirements": ["plugwise==0.9.0"],
+  "requirements": ["plugwise==0.9.1"],
   "codeowners": ["@CoMPaTech","@bouwew","@brefra"],
   "config_flow": true
 }
