@@ -128,7 +128,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._unique_id = f"{dev_id}-{self._switch}"
         # For backwards compatibility:
         if self._name == "plug":
-                    self._unique_id = f"{dev_id}-plug"
+            self._unique_id = f"{dev_id}-plug"
 
 
     @property
