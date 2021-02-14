@@ -126,6 +126,10 @@ class GwSwitch(SmileGateway, SwitchEntity):
             self._name = f"{self._entity_name} DHW Comfort Mode"
 
         self._unique_id = f"{dev_id}-{self._switch}"
+        # For backwards compatibility:
+        if self._name == "plug":
+                    self._unique_id = f"{dev_id}-plug"
+
 
     @property
     def entity_registry_enabled_default(self) -> bool:
