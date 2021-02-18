@@ -147,6 +147,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         binary_sensor,
                         GW_BINARY_SENSORS[binary_sensor],
                         devices[dev_id][PW_MODEL],
+                        devices[dev_id]["vendor"],
+                        devices[dev_id]["fw"],
                     )
                 )
                 _LOGGER.info(
@@ -163,6 +165,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     dev_id,
                     "plugwise_notification",
                     devices[dev_id][PW_MODEL],
+                    devices[dev_id]["vendor"],
+                    devices[dev_id]["fw"],
                 )
             )
             _LOGGER.info(
@@ -177,23 +181,20 @@ class SmileBinarySensor(SmileGateway):
     """Represent Smile Binary Sensors."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model
+        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model,
     ):
         """Initialise the binary_sensor."""
         super().__init__(api, coordinator, name, dev_id)
 
         self._binary_sensor = binary_sensor
         self._enabled_default = enabled_default
-        self._model = model
-
+        self._fw_version = None
         self._icon = None
         self._is_on = False
+        self._manufacturer = None
+        self._model = None
 
         self._name = key[ATTR_NAME] if key else None
-
-        if dev_id == self._api.heater_id:
-            self._entity_name = "Auxiliary"
-
         if not self._name:
             sensorname = binary_sensor.replace("_", " ").title()
             self._name = f"{self._entity_name} {sensorname}"
@@ -227,6 +228,20 @@ class SmileBinarySensor(SmileGateway):
 class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
     """Representation of a Gateway binary_sensor."""
 
+    def __init__(
+        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model, vendor, fw
+    ):
+        """Initialise the binary_sensor."""
+        super().__init__(
+            api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model,
+        )
+
+        self._enabled_default = enabled_default
+        self._fw_version = fw
+        self._manufacturer = vendor
+        self._model = model
+        self._name = f"{key[ATTR_NAME]}"
+
     @callback
     def _async_process_data(self):
         """Update the entity."""
@@ -252,13 +267,16 @@ class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
 class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
     """Representation of a Plugwise Notification binary_sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, binary_sensor, model):
+    def __init__(self, api, coordinator, name, dev_id, binary_sensor, model, vendor, fw):
         """Initialise the notification binary_sensor."""
         super().__init__(
-            api, coordinator, name, dev_id, False, binary_sensor, None, model
+            api, coordinator, name, dev_id, False, binary_sensor, None, model,
         )
 
         self._attributes = {}
+        self._fw_version = fw
+        self._manufacturer = vendor
+        self._model = model
 
     @property
     def device_state_attributes(self):

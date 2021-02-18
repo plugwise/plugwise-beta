@@ -82,6 +82,9 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     "relay",
                     members,
                     devices[dev_id][PW_MODEL],
+                    devices[dev_id]["vendor"],
+                    None,
+
                 )
             )
             _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
@@ -98,10 +101,11 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         True,
                         "dhw_cm_switch",
                         None,
-                    devices[dev_id][PW_MODEL],
+                        devices[dev_id][PW_MODEL],
+                        devices[dev_id]["vendor"],
+                        devices[dev_id]["fw"],
                 )
             )
-
 
     async_add_entities(entities, True)
 
@@ -109,27 +113,27 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 class GwSwitch(SmileGateway, SwitchEntity):
     """Representation of a Smile Gateway switch."""
 
-    def __init__(self, api, coordinator, name, dev_id, enabled_default, switch, members, model):
+    def __init__(self, api, coordinator, name, dev_id, enabled_default, switch, members, model, vendor, fw):
         """Set up the Plugwise API."""
 
         super().__init__(api, coordinator, name, dev_id)
 
         self._is_on = False
         self._enabled_default = enabled_default
+        self._fw_version = fw
+        self._manufacturer = vendor
         self._members = members
         self._model = model
-        self._name = f"{name}"
+        self._name = name
         self._switch = switch
 
         if dev_id == self._api.heater_id:
-            self._entity_name = "Auxiliary"
-            self._name = f"{self._entity_name} DHW Comfort Mode"
+            self._name = "Auxiliary DHW Comfort Mode"
 
-        self._unique_id = f"{dev_id}-{self._switch}"
+        self._unique_id = f"{dev_id}-{self._model.lower()}"
         # For backwards compatibility:
         if self._switch == "relay":
             self._unique_id = f"{dev_id}-plug"
-
 
     @property
     def entity_registry_enabled_default(self) -> bool:

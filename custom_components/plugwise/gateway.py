@@ -108,7 +108,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.debug("Updating Smile %s", api.smile_name)
         try:
             async with async_timeout.timeout(update_interval.seconds):
-                await api.full_update_device()
+                await api.update_device()
                 _LOGGER.debug("Successfully updated Smile %s", api.smile_name)
                 return True
         except XMLDataMissingError as err:
@@ -144,11 +144,11 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 
+    api.get_all_devices()
     _LOGGER.debug("Gateway is %s", api.gateway_id)
     _LOGGER.debug("Gateway software version is %s", api.smile_version)
-    _LOGGER.debug("Appliances is %s", api.get_all_appliances())
-    _LOGGER.debug("Scan thermostats is %s", api.scan_thermostats())
-    _LOGGER.debug("Locations (matched) is %s", api.match_locations())
+    _LOGGER.debug("Appliances is %s", api.appl_data)
+    _LOGGER.debug("Locations (matched) is %s", api.thermo_locs)
 
     device_registry = await dr.async_get_registry(hass)
     device_registry.async_get_or_create(
@@ -224,13 +224,14 @@ class SmileGateway(CoordinatorEntity):
         """Initialise the gateway."""
         super().__init__(coordinator)
 
-        self._coordinator = coordinator
-        self._name = name
-
         self._api = api
+        self._coordinator = coordinator
         self._dev_id = dev_id
-        self._entity_name = self._name
+        self._entity_name = name
+        self._fw_version = None
+        self._manufacturer = None
         self._model = None
+        self._name = None
         self._unique_id = None
 
     @property
@@ -254,11 +255,9 @@ class SmileGateway(CoordinatorEntity):
         device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._entity_name,
-            "manufacturer": "Plugwise",
+            "manufacturer": self._manufacturer,
+            "sw_version": self._fw_version,
         }
-
-        if self._model is not None:
-            device_information["model"] = self._model.replace("_", " ").title()
 
         if self._dev_id != self._api.gateway_id:
             device_information["via_device"] = (DOMAIN, self._api.gateway_id)
