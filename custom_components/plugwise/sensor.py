@@ -163,6 +163,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         devices[dev_id][ATTR_NAME],
                         dev_id,
                         DEVICE_STATE,
+                        devices[dev_id][PW_MODEL],
                         devices[dev_id]["vendor"],
                         devices[dev_id]["fw"],
                     )
@@ -175,9 +176,9 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 class SmileSensor(SmileGateway):
     """Representation of a Smile Sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, enabled_default, sensor):
+    def __init__(self, api, coordinator, name, dev_id, enabled_default, sensor, model, vendor, fw):
         """Initialise the sensor."""
-        super().__init__(api, coordinator, name, dev_id)
+        super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
 
         self._sensor = sensor
 
@@ -189,7 +190,7 @@ class SmileSensor(SmileGateway):
         self._unit_of_measurement = None
 
         if dev_id == self._api.gateway_id:
-            self._entity_name = f"Smile {self._entity_name}"
+            self._name = f"Smile {self._name}"
 
         self._unique_id = f"{dev_id}-{sensor}"
 
@@ -226,14 +227,12 @@ class GWSensor(SmileSensor, Entity):
         """Set up the Plugwise API."""
         self._enabled_default = key[ATTR_ENABLED_DEFAULT]
 
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
+        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor, model, vendor, fw)
 
         self._dev_class = key[ATTR_DEVICE_CLASS]
-        self._fw_version = fw
         self._icon = None
         if not self._dev_class:
             self._icon = key[ATTR_ICON]
-        self._manufacturer = vendor
         self._model = model
         self._name = f"{name} {key[ATTR_NAME]}"
         self._unit_of_measurement = key[ATTR_UNIT_OF_MEASUREMENT]
@@ -256,17 +255,14 @@ class GWSensor(SmileSensor, Entity):
 class GwAuxDeviceSensor(SmileSensor, Entity):
     """Representation of an Auxiliary Device sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, sensor, vendor, fw):
+    def __init__(self, api, coordinator, name, dev_id, sensor, model, vendor, fw):
         """Set up the Plugwise API."""
         self._enabled_default = True
 
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
+        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor, model, vendor, fw)
 
         self._cooling_state = False
-        self._fw_version = fw
         self._heating_state = False
-        self._icon = None
-        self._manufacturer = vendor
         self._name = "Auxiliary Device State"
 
     @callback

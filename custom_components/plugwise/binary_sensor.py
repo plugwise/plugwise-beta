@@ -181,26 +181,23 @@ class SmileBinarySensor(SmileGateway):
     """Represent Smile Binary Sensors."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model,
+        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model, vendor, fw,
     ):
         """Initialise the binary_sensor."""
-        super().__init__(api, coordinator, name, dev_id)
+        super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
 
         self._binary_sensor = binary_sensor
         self._enabled_default = enabled_default
-        self._fw_version = None
         self._icon = None
         self._is_on = False
-        self._manufacturer = None
-        self._model = None
 
         self._name = key[ATTR_NAME] if key else None
         if not self._name:
             sensorname = binary_sensor.replace("_", " ").title()
-            self._name = f"{self._entity_name} {sensorname}"
+            self._name = f"{self._name} {sensorname}"
 
         if dev_id == self._api.gateway_id:
-            self._entity_name = f"Smile {self._entity_name}"
+            self._name = f"Smile {self._name}"
 
         self._unique_id = f"{dev_id}-{binary_sensor}"
 
@@ -233,13 +230,10 @@ class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
     ):
         """Initialise the binary_sensor."""
         super().__init__(
-            api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model,
+            api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model, vendor, fw,
         )
 
         self._enabled_default = enabled_default
-        self._fw_version = fw
-        self._manufacturer = vendor
-        self._model = model
         self._name = f"{key[ATTR_NAME]}"
 
     @callback
@@ -270,13 +264,10 @@ class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
     def __init__(self, api, coordinator, name, dev_id, binary_sensor, model, vendor, fw):
         """Initialise the notification binary_sensor."""
         super().__init__(
-            api, coordinator, name, dev_id, False, binary_sensor, None, model,
+            api, coordinator, name, dev_id, False, binary_sensor, None, model, vendor, fw,
         )
 
         self._attributes = {}
-        self._fw_version = fw
-        self._manufacturer = vendor
-        self._model = model
 
     @property
     def device_state_attributes(self):

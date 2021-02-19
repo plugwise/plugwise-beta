@@ -150,16 +150,6 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.debug("Appliances is %s", api.appl_data)
     _LOGGER.debug("Locations (matched) is %s", api.thermo_locs)
 
-    device_registry = await dr.async_get_registry(hass)
-    device_registry.async_get_or_create(
-        config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, api.gateway_id)},
-        manufacturer="Plugwise",
-        name=entry.title,
-        model=f"Smile {api.smile_name}",
-        sw_version=api.smile_version[0],
-    )
-
     single_master_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
 
@@ -220,17 +210,17 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
 class SmileGateway(CoordinatorEntity):
     """Represent Smile Gateway."""
 
-    def __init__(self, api, coordinator, name, dev_id):
+    def __init__(self, api, coordinator, name, dev_id, model, vendor, fw):
         """Initialise the gateway."""
         super().__init__(coordinator)
 
         self._api = api
         self._coordinator = coordinator
         self._dev_id = dev_id
-        self._entity_name = name
-        self._fw_version = None
-        self._manufacturer = None
-        self._model = None
+        self._device_name = name
+        self._fw_version = fw
+        self._manufacturer = vendor
+        self._model = model
         self._name = None
         self._unique_id = None
 
@@ -254,8 +244,9 @@ class SmileGateway(CoordinatorEntity):
         """Return the device information."""
         device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._entity_name,
+            "name": self._device_name,
             "manufacturer": self._manufacturer,
+            "model": self._model,
             "sw_version": self._fw_version,
         }
 

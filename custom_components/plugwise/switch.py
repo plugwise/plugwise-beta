@@ -116,15 +116,11 @@ class GwSwitch(SmileGateway, SwitchEntity):
     def __init__(self, api, coordinator, name, dev_id, enabled_default, switch, members, model, vendor, fw):
         """Set up the Plugwise API."""
 
-        super().__init__(api, coordinator, name, dev_id)
+        super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
 
         self._is_on = False
         self._enabled_default = enabled_default
-        self._fw_version = fw
-        self._manufacturer = vendor
         self._members = members
-        self._model = model
-        self._name = name
         self._switch = switch
 
         if dev_id == self._api.heater_id:
