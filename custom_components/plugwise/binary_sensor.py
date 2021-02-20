@@ -191,7 +191,7 @@ class SmileBinarySensor(SmileGateway):
         self._icon = None
         self._is_on = False
 
-        self._name = key[ATTR_NAME] if key else None
+        #self._name = key[ATTR_NAME] if key else None
         if not self._name:
             sensorname = binary_sensor.replace("_", " ").title()
             self._name = f"{self._name} {sensorname}"
@@ -234,7 +234,7 @@ class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
         )
 
         self._enabled_default = enabled_default
-        self._name = f"{key[ATTR_NAME]}"
+        self._name = f"{name} {key[ATTR_NAME]}"
 
     @callback
     def _async_process_data(self):
@@ -268,6 +268,8 @@ class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
         )
 
         self._attributes = {}
+        sensorname = binary_sensor.replace("_", " ").title()
+        self._name = f"{name} {sensorname}"
 
     @property
     def device_state_attributes(self):

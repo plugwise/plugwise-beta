@@ -252,6 +252,8 @@ class SmileGateway(CoordinatorEntity):
 
         if self._dev_id != self._api.gateway_id:
             device_information["via_device"] = (DOMAIN, self._api.gateway_id)
+        else:
+            device_information["name"] = f"Smile {self._device_name}"
 
         return device_information
 

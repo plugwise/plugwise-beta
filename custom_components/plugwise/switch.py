@@ -121,12 +121,13 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._is_on = False
         self._enabled_default = enabled_default
         self._members = members
+        self._name = name
         self._switch = switch
 
         if dev_id == self._api.heater_id:
             self._name = "Auxiliary DHW Comfort Mode"
 
-        self._unique_id = f"{dev_id}-{self._model.lower()}"
+        self._unique_id = f"{dev_id}-{self._switch.lower()}"
         # For backwards compatibility:
         if self._switch == "relay":
             self._unique_id = f"{dev_id}-plug"

@@ -93,6 +93,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._max_temp = max_temp
         self._min_temp = min_temp
         self._model = model
+        self._name = name
 
         self._cooling_state = None
         self._compressor_state = None
