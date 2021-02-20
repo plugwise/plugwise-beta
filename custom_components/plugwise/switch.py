@@ -83,7 +83,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     members,
                     devices[dev_id][PW_MODEL],
                     devices[dev_id]["vendor"],
-                    None,
+                    devices[dev_id]["fw"],
 
                 )
             )
