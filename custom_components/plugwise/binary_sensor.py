@@ -191,11 +191,6 @@ class SmileBinarySensor(SmileGateway):
         self._icon = None
         self._is_on = False
 
-        #self._name = key[ATTR_NAME] if key else None
-        if not self._name:
-            sensorname = binary_sensor.replace("_", " ").title()
-            self._name = f"{self._name} {sensorname}"
-
         if dev_id == self._api.gateway_id:
             self._name = f"Smile {self._name}"
 
