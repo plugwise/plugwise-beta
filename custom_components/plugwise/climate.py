@@ -114,6 +114,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._water_pressure = None
 
         self._single_thermostat = self._api.single_master_thermostat()
+        self._active_device = self._api.active_device_present
         self._unique_id = f"{dev_id}-climate"
 
     @property
@@ -259,7 +260,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
         """Update the data for this climate device."""
         _LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)
-        heater_central_data = self._api.get_device_data(self._api.heater_id)
 
         self._setpoint = climate_data.get("setpoint")
         self._temperature = climate_data.get("temperature")
@@ -276,9 +276,11 @@ class PwThermostat(SmileGateway, ClimateEntity):
             self._presets_list = list(self._presets)
         self._preset_mode = climate_data.get("active_preset")
 
-        self._heating_state = heater_central_data.get("heating_state")
-        self._cooling_state = heater_central_data.get("cooling_state")
-        self._compressor_state = heater_central_data.get("compressor_state")
+        if self._active_device:
+            heater_central_data = self._api.get_device_data(self._api.heater_id)
+            self._heating_state = heater_central_data.get("heating_state")
+            self._cooling_state = heater_central_data.get("cooling_state")
+            self._compressor_state = heater_central_data.get("compressor_state")
 
         self._hvac_mode = HVAC_MODE_HEAT
         if self._compressor_state is not None:
