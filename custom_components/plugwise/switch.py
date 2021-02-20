@@ -84,7 +84,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     devices[dev_id][PW_MODEL],
                     devices[dev_id]["vendor"],
                     devices[dev_id]["fw"],
-
                 )
             )
             _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
@@ -104,8 +103,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         devices[dev_id][PW_MODEL],
                         devices[dev_id]["vendor"],
                         devices[dev_id]["fw"],
+                    )
                 )
-            )
 
     async_add_entities(entities, True)
 
