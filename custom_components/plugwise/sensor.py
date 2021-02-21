@@ -240,7 +240,7 @@ class GWSensor(SmileSensor, Entity):
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        _LOGGER.debug("Update sensor called")
+        #_LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
 
         if self._sensor not in data:
@@ -268,7 +268,7 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        _LOGGER.debug("Update aux dev sensor called")
+        #_LOGGER.debug("Update aux dev sensor called")
         data = self._api.get_device_data(self._dev_id)
 
         self._heating_state = data.get("heating_state")

@@ -234,7 +234,7 @@ class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        _LOGGER.debug("Update binary_sensor called")
+        #_LOGGER.debug("Update binary_sensor called")
         data = self._api.get_device_data(self._dev_id)
 
         if self._binary_sensor not in data:

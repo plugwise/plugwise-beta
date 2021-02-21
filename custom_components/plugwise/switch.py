@@ -175,7 +175,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
     @callback
     def _async_process_data(self):
         """Update the data from the Plugs."""
-        _LOGGER.debug("Update switch called")
+        #_LOGGER.debug("Update switch called")
         data = self._api.get_device_data(self._dev_id)
 
         if self._switch not in data:
@@ -183,7 +183,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
             return
 
         self._is_on = data[self._switch]
-        _LOGGER.debug("Switch is ON is %s.", self._is_on)
+        #_LOGGER.debug("Switch is ON is %s.", self._is_on)
 
         self.async_write_ha_state()
 
