@@ -170,6 +170,23 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 )
                 _LOGGER.info("Added auxiliary sensor %s", devices[dev_id][ATTR_NAME])
 
+        if not api.active_device_present:
+            if devices[dev_id][PW_CLASS] == "gateway" and "heating_state" in data:
+                _LOGGER.debug("Plugwise Adam sensor Dev %s", devices[dev_id][ATTR_NAME])
+                entities.append(
+                    GwAuxDeviceSensor(
+                        api,
+                        coordinator,
+                        devices[dev_id][ATTR_NAME],
+                        dev_id,
+                        DEVICE_STATE,
+                        devices[dev_id][PW_MODEL],
+                        devices[dev_id]["vendor"],
+                        devices[dev_id]["fw"],
+                    )
+                )
+                _LOGGER.info("Added adam sensor %s", devices[dev_id][ATTR_NAME])
+
     async_add_entities(entities, True)
 
 
@@ -263,7 +280,7 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
 
         self._cooling_state = False
         self._heating_state = False
-        self._name = "Auxiliary Device State"
+        self._name = f"{name} Device State"
 
     @callback
     def _async_process_data(self):
