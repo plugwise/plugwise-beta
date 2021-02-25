@@ -16,6 +16,7 @@ A fully asynchronous approach to supporting Plugwise devices. This repository is
 
 - Smile/Stretch
   - Show more device information: manufacturer name, model name and firmware as available on the Smile/Stretch
+  - Connect the heating_state for city heating to Adam and remove the Auxiliary device
   - Link to plugwise v0.9.2 https://github.com/plugwise/python-plugwise/releases/tag/0.9.2
 
 ## Febr 2021 [0.14.3]
