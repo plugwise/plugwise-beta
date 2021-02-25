@@ -12,7 +12,18 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing.
 
-## NEW Jan 2021 [0.14.0]
+## NEW Febr 2021 [0.14.4]
+
+- Smile/Stretch
+  - Show more device information: manufacturer name, model name and firmware as available on the Smile/Stretch
+  - Link to plugwise v0.9.2 https://github.com/plugwise/python-plugwise/releases/tag/0.9.2
+
+## Febr 2021 [0.14.3]
+
+- Smile
+   - Add a DHW Comfort Mode switch (Feature Request)
+
+## Jan 2021 [0.14.0]
 
 - USB-Stick
   - New: Automatically accepting of joining request of new Plugwise devices if the `Enable newly added entries` system option is turned on (default). A notification will be popup after a new devices is joined.
