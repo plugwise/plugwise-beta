@@ -69,6 +69,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             devices[dev_id][PW_MODEL],
             DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
+            devices[dev_id]["vendor"],
+            devices[dev_id]["fw"],
         )
 
         entities.append(thermostat)
@@ -81,16 +83,17 @@ class PwThermostat(SmileGateway, ClimateEntity):
     """Representation of a Plugwise (zone) thermostat."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp
+        self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp, vendor, fw,
     ):
         """Set up the Plugwise API."""
-        super().__init__(api, coordinator, name, dev_id)
+        super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
 
         self._api = api
         self._loc_id = loc_id
         self._max_temp = max_temp
         self._min_temp = min_temp
         self._model = model
+        self._name = name
 
         self._cooling_state = None
         self._compressor_state = None
@@ -111,6 +114,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._water_pressure = None
 
         self._single_thermostat = self._api.single_master_thermostat()
+        self._active_device = self._api.active_device_present
         self._unique_id = f"{dev_id}-climate"
 
     @property
@@ -254,9 +258,8 @@ class PwThermostat(SmileGateway, ClimateEntity):
     @callback
     def _async_process_data(self):
         """Update the data for this climate device."""
-        _LOGGER.info("Updating climate...")
+        #_LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)
-        heater_central_data = self._api.get_device_data(self._api.heater_id)
 
         self._setpoint = climate_data.get("setpoint")
         self._temperature = climate_data.get("temperature")
@@ -273,9 +276,11 @@ class PwThermostat(SmileGateway, ClimateEntity):
             self._presets_list = list(self._presets)
         self._preset_mode = climate_data.get("active_preset")
 
-        self._heating_state = heater_central_data.get("heating_state")
-        self._cooling_state = heater_central_data.get("cooling_state")
-        self._compressor_state = heater_central_data.get("compressor_state")
+        if self._active_device:
+            heater_central_data = self._api.get_device_data(self._api.heater_id)
+            self._heating_state = heater_central_data.get("heating_state")
+            self._cooling_state = heater_central_data.get("cooling_state")
+            self._compressor_state = heater_central_data.get("compressor_state")
 
         self._hvac_mode = HVAC_MODE_HEAT
         if self._compressor_state is not None:

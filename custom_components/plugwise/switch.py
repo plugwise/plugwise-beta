@@ -82,6 +82,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     "relay",
                     members,
                     devices[dev_id][PW_MODEL],
+                    devices[dev_id]["vendor"],
+                    devices[dev_id]["fw"],
                 )
             )
             _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
@@ -98,10 +100,11 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         True,
                         "dhw_cm_switch",
                         None,
-                    devices[dev_id][PW_MODEL],
+                        devices[dev_id][PW_MODEL],
+                        devices[dev_id]["vendor"],
+                        devices[dev_id]["fw"],
+                    )
                 )
-            )
-
 
     async_add_entities(entities, True)
 
@@ -109,27 +112,24 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 class GwSwitch(SmileGateway, SwitchEntity):
     """Representation of a Smile Gateway switch."""
 
-    def __init__(self, api, coordinator, name, dev_id, enabled_default, switch, members, model):
+    def __init__(self, api, coordinator, name, dev_id, enabled_default, switch, members, model, vendor, fw):
         """Set up the Plugwise API."""
 
-        super().__init__(api, coordinator, name, dev_id)
+        super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
 
         self._is_on = False
         self._enabled_default = enabled_default
         self._members = members
-        self._model = model
-        self._name = f"{name}"
+        self._name = name
         self._switch = switch
 
         if dev_id == self._api.heater_id:
-            self._entity_name = "Auxiliary"
-            self._name = f"{self._entity_name} DHW Comfort Mode"
+            self._name = "Auxiliary DHW Comfort Mode"
 
-        self._unique_id = f"{dev_id}-{self._switch}"
+        self._unique_id = f"{dev_id}-{self._switch.lower()}"
         # For backwards compatibility:
         if self._switch == "relay":
             self._unique_id = f"{dev_id}-plug"
-
 
     @property
     def entity_registry_enabled_default(self) -> bool:
@@ -175,7 +175,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
     @callback
     def _async_process_data(self):
         """Update the data from the Plugs."""
-        _LOGGER.debug("Update switch called")
+        #_LOGGER.debug("Update switch called")
         data = self._api.get_device_data(self._dev_id)
 
         if self._switch not in data:
@@ -183,7 +183,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
             return
 
         self._is_on = data[self._switch]
-        _LOGGER.debug("Switch is ON is %s.", self._is_on)
+        #_LOGGER.debug("Switch is ON is %s.", self._is_on)
 
         self.async_write_ha_state()
 

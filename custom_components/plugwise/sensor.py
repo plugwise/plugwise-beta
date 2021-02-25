@@ -90,7 +90,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
     entities = []
     devices = api.get_all_devices()
-    single_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Plugwise all devices (not just sensor) %s", devices)
     for dev_id in devices:
         data = api.get_device_data(dev_id)
@@ -109,6 +108,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     sensor,
                     ENERGY_SENSORS[sensor],
                     devices[dev_id][PW_MODEL],
+                    devices[dev_id]["vendor"],
+                    devices[dev_id]["fw"],
                 )
             )
             _LOGGER.info("Added sensor.%s", devices[dev_id][ATTR_NAME])
@@ -126,6 +127,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     sensor,
                     THERMOSTAT_SENSORS[sensor],
                     devices[dev_id][PW_MODEL],
+                    devices[dev_id]["vendor"],
+                    devices[dev_id]["fw"],
                 )
             )
             _LOGGER.info("Added sensor.%s", devices[dev_id][ATTR_NAME])
@@ -143,12 +146,14 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     sensor,
                     AUX_DEV_SENSORS[sensor],
                     devices[dev_id][PW_MODEL],
+                    devices[dev_id]["vendor"],
+                    devices[dev_id]["fw"],
                 )
             )
             _LOGGER.info("Added sensor.%s", devices[dev_id][ATTR_NAME])
 
         # If not None and False (hence `is False`, not `not False`)
-        if single_thermostat is False:
+        if api.single_master_thermostat() is False:
             if devices[dev_id][PW_CLASS] == "heater_central":
                 _LOGGER.debug("Plugwise aux sensor Dev %s", devices[dev_id][ATTR_NAME])
                 entities.append(
@@ -158,9 +163,29 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         devices[dev_id][ATTR_NAME],
                         dev_id,
                         DEVICE_STATE,
+                        devices[dev_id][PW_MODEL],
+                        devices[dev_id]["vendor"],
+                        devices[dev_id]["fw"],
                     )
                 )
                 _LOGGER.info("Added auxiliary sensor %s", devices[dev_id][ATTR_NAME])
+
+        if not api.active_device_present:
+            if devices[dev_id][PW_CLASS] == "gateway" and "heating_state" in data:
+                _LOGGER.debug("Plugwise Adam sensor Dev %s", devices[dev_id][ATTR_NAME])
+                entities.append(
+                    GwAuxDeviceSensor(
+                        api,
+                        coordinator,
+                        devices[dev_id][ATTR_NAME],
+                        dev_id,
+                        DEVICE_STATE,
+                        devices[dev_id][PW_MODEL],
+                        devices[dev_id]["vendor"],
+                        devices[dev_id]["fw"],
+                    )
+                )
+                _LOGGER.info("Added adam sensor %s", devices[dev_id][ATTR_NAME])
 
     async_add_entities(entities, True)
 
@@ -168,23 +193,21 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 class SmileSensor(SmileGateway):
     """Representation of a Smile Sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, enabled_default, sensor):
+    def __init__(self, api, coordinator, name, dev_id, enabled_default, sensor, model, vendor, fw):
         """Initialise the sensor."""
-        super().__init__(api, coordinator, name, dev_id)
+        super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
 
         self._sensor = sensor
 
         self._dev_class = None
         self._enabled_default = enabled_default
         self._icon = None
+        self._name = None
         self._state = None
         self._unit_of_measurement = None
 
-        if dev_id == self._api.heater_id:
-            self._entity_name = "Auxiliary"
-
         if dev_id == self._api.gateway_id:
-            self._entity_name = f"Smile {self._entity_name}"
+            self._name = f"Smile {self._name}"
 
         self._unique_id = f"{dev_id}-{sensor}"
 
@@ -217,11 +240,11 @@ class SmileSensor(SmileGateway):
 class GWSensor(SmileSensor, Entity):
     """Representation of a Smile Gateway sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, sensor, key, model):
+    def __init__(self, api, coordinator, name, dev_id, sensor, key, model, vendor, fw):
         """Set up the Plugwise API."""
         self._enabled_default = key[ATTR_ENABLED_DEFAULT]
 
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
+        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor, model, vendor, fw)
 
         self._dev_class = key[ATTR_DEVICE_CLASS]
         self._icon = None
@@ -229,14 +252,12 @@ class GWSensor(SmileSensor, Entity):
             self._icon = key[ATTR_ICON]
         self._model = model
         self._name = f"{name} {key[ATTR_NAME]}"
-        if "Auxiliary" in key[ATTR_NAME]:
-            self._name = key[ATTR_NAME]
         self._unit_of_measurement = key[ATTR_UNIT_OF_MEASUREMENT]
 
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        _LOGGER.debug("Update sensor called")
+        #_LOGGER.debug("Update sensor called")
         data = self._api.get_device_data(self._dev_id)
 
         if self._sensor not in data:
@@ -251,21 +272,20 @@ class GWSensor(SmileSensor, Entity):
 class GwAuxDeviceSensor(SmileSensor, Entity):
     """Representation of an Auxiliary Device sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, sensor):
+    def __init__(self, api, coordinator, name, dev_id, sensor, model, vendor, fw):
         """Set up the Plugwise API."""
         self._enabled_default = True
 
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor)
+        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor, model, vendor, fw)
 
         self._cooling_state = False
         self._heating_state = False
-        self._icon = None
-        self._name = "Auxiliary Device State"
+        self._name = f"{name} Device State"
 
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        _LOGGER.debug("Update aux dev sensor called")
+        #_LOGGER.debug("Update aux dev sensor called")
         data = self._api.get_device_data(self._dev_id)
 
         self._heating_state = data.get("heating_state")
