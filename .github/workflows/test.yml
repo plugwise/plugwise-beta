@@ -117,6 +117,13 @@ jobs:
         egrep -i "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ~/tmp/requirements_test_extra.txt
         pip install -r ~/tmp/requirements_test_extra.txt
         pip install $(grep require ~/work/plugwise-beta/plugwise-beta/custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+    # Remove this pytest eventually so we first flake/lint like pre-commit behaves
+    - name: pytest-temp-before-flake
+      run: |
+        cd ~/ha-core
+        . venv/bin/activate
+        pytest --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/
+
     - name: flake8
       run: |
         cd ~/ha-core
