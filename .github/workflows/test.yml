@@ -116,6 +116,7 @@ jobs:
         mkdir ~/tmp
         egrep -i "sqlalchemy|zeroconf" requirements_test_all.txt > ~/tmp/requirements_test_extra.txt
         pip install -r ~/tmp/requirements_test_extra.txt
+        pip install $(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
     - name: flake8
       run: |
         cd ~/ha-core
@@ -134,7 +135,5 @@ jobs:
       run: |
         cd ~/ha-core
         . venv/bin/activate
-        pip install $(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
-        #pip install plugwise==0.8.5
         pytest --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/
 
