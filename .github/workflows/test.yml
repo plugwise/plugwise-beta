@@ -4,7 +4,7 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 7
+  CACHE_VERSION: 1
   DEFAULT_PYTHON: 3.9
 
 on: 
