@@ -249,8 +249,9 @@ async def test_form_username(hass):
 
     # TODO: we re-register to ensure already_configured but it comes back
     # with create_entry .... missing one more step or should it already have bailed out?
-    #assert result5["type"] == "abort"
-    #assert result5["reason"] == "already_configured"
+    assert result5
+    # assert result5["type"] == "abort"
+    # assert result5["reason"] == "already_configured"
 
 
 async def test_form_invalid_auth(hass, mock_smile):
