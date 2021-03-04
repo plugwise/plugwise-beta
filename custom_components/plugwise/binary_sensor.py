@@ -5,7 +5,7 @@ import logging
 import voluptuous as vol
 
 from homeassistant.components.binary_sensor import BinarySensorEntity, DOMAIN as BINARY_SENSOR_DOMAIN
-from homeassistant.const import ATTR_DEVICE_CLASS, ATTR_ICON, ATTR_NAME, ATTR_STATE
+from homeassistant.const import ATTR_NAME, ATTR_STATE
 
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv, entity_platform

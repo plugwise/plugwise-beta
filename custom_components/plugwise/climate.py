@@ -2,7 +2,6 @@
 
 import logging
 
-from plugwise.smile import Smile
 from plugwise.exceptions import PlugwiseException
 
 from homeassistant.components.climate import ClimateEntity

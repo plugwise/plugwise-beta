@@ -16,7 +16,7 @@ from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAI
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_STATE, EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv, device_registry as dr
@@ -39,7 +39,6 @@ from .const import (
     STICK,
     STICK_API,
     USB,
-    USB_AVAILABLE_ID,
     USB_MOTION_ID,
     USB_RELAY_ID,
 )
@@ -77,7 +76,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             )
 
         def add_new_node(mac):
-            """Listener when a new Plugwise node joined network"""
+            """Add Listener when a new Plugwise node joined the network."""
             device = device_registry.async_get_device({(DOMAIN, mac)}, set())
             hass.components.persistent_notification.async_create(
                 title="New Plugwise device",

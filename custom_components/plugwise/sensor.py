@@ -3,8 +3,6 @@
 import logging
 
 from homeassistant.const import (
-    ENERGY_KILO_WATT_HOUR,
-    PERCENTAGE,
     ATTR_UNIT_OF_MEASUREMENT,
     ATTR_DEVICE_CLASS,
     ATTR_ICON,
