@@ -37,7 +37,7 @@ jobs:
         key: >-
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
           steps.python.outputs.python-version }}-${{
-          hashFiles('~/custom_components/plugwise/manifest.json') }}
+          hashFiles('custom_components/plugwise/manifest.json') }}
         restore-keys: |
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
@@ -87,7 +87,7 @@ jobs:
         key: >-
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
           steps.python.outputs.python-version }}-${{
-          hashFiles('~/custom_components/plugwise/manifest.json') }}
+          hashFiles('custom_components/plugwise/manifest.json') }}
         restore-keys: |
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
@@ -116,9 +116,7 @@ jobs:
         mkdir ~/tmp
         egrep -i "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ~/tmp/requirements_test_extra.txt
         pip install -r ~/tmp/requirements_test_extra.txt
-        ls -lR ~/
-        grep require ~/custom_components/plugwise/manifest.json
-        pip install $(grep require ~/custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+        pip install $(grep require ~/work/plugwise-beta/plugwise-beta/custom_components/plugwise/manifest.json | cut -f 4 -d '"')
     - name: flake8
       run: |
         cd ~/ha-core
