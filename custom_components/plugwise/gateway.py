@@ -52,15 +52,13 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:  # noqa: C901
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
 
     # When migrating from Core to beta, add the username to ConfigEntry
     entry_updates = {}
-    try:
-        username = entry.data[CONF_USERNAME]
-    except KeyError:
+    if CONF_USERNAME not in entry.data:
         data = {**entry.data}
         data.update({"username": DEFAULT_USERNAME})
         entry_updates["data"] = data

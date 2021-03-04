@@ -258,7 +258,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
     @callback
     def _async_process_data(self):
         """Update the data for this climate device."""
-        #_LOGGER.info("Updating climate...")
+        # _LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)
 
         self._setpoint = climate_data.get("setpoint")
