@@ -69,7 +69,10 @@ def _get_device_data(chosen_env, device_id):
 def mock_smile_adam():
     """Create a Mock Adam environment for testing exceptions."""
     chosen_env = "adam_multiple_devices_per_zone"
-    with patch("homeassistant.components.plugwise.gateway.Smile") as smile_mock:
+    with patch(
+        "homeassistant.components.plugwise.binary_sensor.GwNotifySensor.entity_registry_enabled_default",
+        return_value=True,
+    ), patch("homeassistant.components.plugwise.gateway.Smile") as smile_mock:
         smile_mock.InvalidAuthentication = InvalidAuthentication
         smile_mock.ConnectionFailedError = ConnectionFailedError
         smile_mock.XMLDataMissingError = XMLDataMissingError
