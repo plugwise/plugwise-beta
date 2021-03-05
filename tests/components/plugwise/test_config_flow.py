@@ -1,6 +1,20 @@
 """Test the Plugwise config flow."""
 from unittest.mock import MagicMock, patch
 
+"""
+Things that need coverage/fixing (besides USB which isn't included now)
+ - [ ] L231 is not aborting any more ... investigate how/why
+
+ - [ ] these lines from config_flow.py are not tested yet
+  180         if DEFAULT_USERNAME not in unique_id:
+  181             self.discovery_info[CONF_USERNAME] = STRETCH_USERNAME
+  and
+  341         if not self.config_entry.data.get(CONF_HOST):
+  342             return await self.async_step_none(user_input)
+
+ - [ ] config_flow.py def async_step_none is not tested yet
+"""
+
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -228,7 +242,7 @@ async def test_form_username(hass):
 
     await hass.async_block_till_done()
 
-    # TODO: investigate why it isn't aborting
+    # Investigate why it isn't aborting
     # assert result4["type"] == "abort"
     # assert result4["reason"] == "already_configured"
     assert result4
