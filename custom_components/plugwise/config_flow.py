@@ -281,10 +281,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if not errors:
                 await self.async_set_unique_id(
-                    api.smile_hostname
-                    or api.gateway_id
-                    or user_input[CONF_HOST].split(".")[0],
-                    raise_on_progress=False,
+                    api.smile_hostname or api.gateway_id, raise_on_progress=False
                 )
                 self._abort_if_unique_id_configured()
 
