@@ -1,20 +1,6 @@
 """Test the Plugwise config flow."""
 from unittest.mock import MagicMock, patch
 
-"""
-Things that need coverage/fixing (besides USB which isn't included now)
- - [ ] L231 is not aborting any more ... investigate how/why
-
- - [ ] these lines from config_flow.py are not tested yet
-  180         if DEFAULT_USERNAME not in unique_id:
-  181             self.discovery_info[CONF_USERNAME] = STRETCH_USERNAME
-  and
-  341         if not self.config_entry.data.get(CONF_HOST):
-  342             return await self.async_step_none(user_input)
-
- - [ ] config_flow.py def async_step_none is not tested yet
-"""
-
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -45,6 +31,20 @@ from homeassistant.const import (
 from homeassistant.data_entry_flow import RESULT_TYPE_CREATE_ENTRY, RESULT_TYPE_FORM
 
 from tests.common import MockConfigEntry
+
+"""
+Things that need coverage/fixing (besides USB which isn't included now)
+ - [ ] L231 is not aborting any more ... investigate how/why
+
+ - [ ] these lines from config_flow.py are not tested yet
+  180         if DEFAULT_USERNAME not in unique_id:
+  181             self.discovery_info[CONF_USERNAME] = STRETCH_USERNAME
+  and
+  341         if not self.config_entry.data.get(CONF_HOST):
+  342             return await self.async_step_none(user_input)
+
+ - [ ] config_flow.py def async_step_none is not tested yet
+"""
 
 TEST_HOST = "1.1.1.1"
 TEST_HOSTNAME = "smileabcdef"
