@@ -8,7 +8,7 @@ from plugwise.exceptions import (
 )
 import pytest
 
-from homeassistant import config_entries, setup
+from homeassistant import setup
 from homeassistant.components.plugwise.const import (
     API,
     DEFAULT_PORT,
