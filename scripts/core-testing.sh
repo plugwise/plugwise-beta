@@ -71,7 +71,7 @@ echo "Activating venv and installing selected test modules (zeroconf,pyserial, e
 echo ""
 . venv/bin/activate
 mkdir ./tmp
-egrep -i "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
+grep -Ei "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 pip install -r ./tmp/requirements_test_extra.txt
 echo ""
 echo "Checking manifest for current python-plugwise to install"
