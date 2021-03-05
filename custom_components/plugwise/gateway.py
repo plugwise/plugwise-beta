@@ -74,11 +74,6 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         websession=websession,
     )
 
-    # Migrate to a valid unique_id when needed
-    if entry.unique_id is None:
-        if api.smile_version[0] != "1.8.0":
-            hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
-
     try:
         connected = await api.connect()
         if not connected:
@@ -93,6 +88,11 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except asyncio.TimeoutError as err:
         _LOGGER.error("Timeout while connecting to the Smile/Stretch")
         raise ConfigEntryNotReady from err
+
+    # Migrate to a valid unique_id when needed
+    if entry.unique_id is None:
+        if api.smile_version[0] != "1.8.0":
+            hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     update_interval = timedelta(
         seconds=entry.options.get(
