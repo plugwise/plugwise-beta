@@ -67,7 +67,7 @@ pip install $(grep require ../custom_components/plugwise/manifest.json | cut -f 
 echo ""
 echo "Test commencing ..."
 echo ""
-pytest --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/
+pytest --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/$1
 
 # Future, flake/pylint as well (not rewritten yet from test.yml workflow)
 #        pip install flake8
