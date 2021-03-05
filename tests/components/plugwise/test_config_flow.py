@@ -1,5 +1,5 @@
 """Test the Plugwise config flow."""
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from plugwise.exceptions import (
     ConnectionFailedError,
