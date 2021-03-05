@@ -1,6 +1,9 @@
 """Constants for Plugwise beta component."""
 
-from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION, DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.binary_sensor import (
+    DEVICE_CLASS_MOTION,
+    DOMAIN as BINARY_SENSOR_DOMAIN,
+)
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DEVICE_CLASS_OUTLET, DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import (
@@ -488,7 +491,7 @@ STICK_API = {
         ATTR_NAME: "Relay state",
         ATTR_STATE: "relay_state",
         ATTR_UNIT_OF_MEASUREMENT: "state",
-    }
+    },
 }
 
 ATTR_MAC_ADDRESS = "mac"

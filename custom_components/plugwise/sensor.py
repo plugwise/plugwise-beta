@@ -191,7 +191,9 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 class SmileSensor(SmileGateway):
     """Representation of a Smile Sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, enabled_default, sensor, model, vendor, fw):
+    def __init__(
+        self, api, coordinator, name, dev_id, enabled_default, sensor, model, vendor, fw
+    ):
         """Initialise the sensor."""
         super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
 
@@ -242,7 +244,17 @@ class GWSensor(SmileSensor, Entity):
         """Set up the Plugwise API."""
         self._enabled_default = key[ATTR_ENABLED_DEFAULT]
 
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor, model, vendor, fw)
+        super().__init__(
+            api,
+            coordinator,
+            name,
+            dev_id,
+            self._enabled_default,
+            sensor,
+            model,
+            vendor,
+            fw,
+        )
 
         self._dev_class = key[ATTR_DEVICE_CLASS]
         self._icon = None
@@ -274,7 +286,17 @@ class GwAuxDeviceSensor(SmileSensor, Entity):
         """Set up the Plugwise API."""
         self._enabled_default = True
 
-        super().__init__(api, coordinator, name, dev_id, self._enabled_default, sensor, model, vendor, fw)
+        super().__init__(
+            api,
+            coordinator,
+            name,
+            dev_id,
+            self._enabled_default,
+            sensor,
+            model,
+            vendor,
+            fw,
+        )
 
         self._cooling_state = False
         self._heating_state = False

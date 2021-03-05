@@ -26,9 +26,7 @@ def _read_json(environment, call):
 @pytest.fixture(name="mock_smile")
 def mock_smile():
     """Create a Mock Smile for testing exceptions."""
-    with patch(
-        "homeassistant.components.plugwise.config_flow.Smile",
-    ) as smile_mock:
+    with patch("homeassistant.components.plugwise.config_flow.Smile",) as smile_mock:
         smile_mock.InvalidAuthentication = InvalidAuthentication
         smile_mock.ConnectionFailedError = ConnectionFailedError
         smile_mock.return_value.connect.return_value = True

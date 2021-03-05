@@ -70,7 +70,7 @@ jobs:
   # Reset GIT, preload and execute tests
   ha-core-test:
     runs-on: ubuntu-latest
-    name: Restore and test against HA-core
+    name: Test against HA-core
     needs: ha-core-prepare
     steps:
     - name: Check out committed code
@@ -102,11 +102,13 @@ jobs:
       run: |
         echo "Failed to restore Python ${{ env.DEFAULT_PYTHON }} virtual environment from cache"
         exit 1
+    - name: Show last commit message
+      run: |
+        echo "Last commit message:"
+        git log -1 --pretty=%B
     - name: Remove current code and tests
       run: |
         cd ~/ha-core
-        echo "Last commit message:"
-        git log -1 --pretty=%B
         rm -r homeassistant/components/plugwise tests/fixtures/plugwise tests/components/plugwise
     - name: Copy code and tests
       run: |
@@ -162,11 +164,13 @@ jobs:
       run: |
         echo "Failed to restore Python ${{ env.DEFAULT_PYTHON }} virtual environment from cache"
         exit 1
+    - name: Show last commit message
+      run: |
+        echo "Last commit message:"
+        git log -1 --pretty=%B
     - name: Remove current code and tests
       run: |
         cd ~/ha-core
-        echo "Last commit message:"
-        git log -1 --pretty=%B
         rm -r homeassistant/components/plugwise tests/fixtures/plugwise tests/components/plugwise
     - name: Copy code and tests
       run: |

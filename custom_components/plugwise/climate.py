@@ -82,7 +82,17 @@ class PwThermostat(SmileGateway, ClimateEntity):
     """Representation of a Plugwise (zone) thermostat."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp, vendor, fw,
+        self,
+        api,
+        coordinator,
+        name,
+        dev_id,
+        loc_id,
+        model,
+        min_temp,
+        max_temp,
+        vendor,
+        fw,
     ):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id, model, vendor, fw)

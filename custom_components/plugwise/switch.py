@@ -112,7 +112,19 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 class GwSwitch(SmileGateway, SwitchEntity):
     """Representation of a Smile Gateway switch."""
 
-    def __init__(self, api, coordinator, name, dev_id, enabled_default, switch, members, model, vendor, fw):
+    def __init__(
+        self,
+        api,
+        coordinator,
+        name,
+        dev_id,
+        enabled_default,
+        switch,
+        members,
+        model,
+        vendor,
+        fw,
+    ):
         """Set up the Plugwise API."""
 
         super().__init__(api, coordinator, name, dev_id, model, vendor, fw)

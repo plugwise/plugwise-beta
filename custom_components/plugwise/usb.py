@@ -67,7 +67,9 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
                 if USB_RELAY_ID in api_stick.devices[mac].features:
                     hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN].append(mac)
                 if USB_MOTION_ID in api_stick.devices[mac].features:
-                    hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN].append(mac)
+                    hass.data[DOMAIN][config_entry.entry_id][
+                        BINARY_SENSOR_DOMAIN
+                    ].append(mac)
                 hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN].append(mac)
 
         for component in PLATFORMS_USB:

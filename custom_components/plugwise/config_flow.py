@@ -309,9 +309,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await self.async_step_user_usb()
 
         return self.async_show_form(
-            step_id="user",
-            data_schema=CONNECTION_SCHEMA,
-            errors=errors,
+            step_id="user", data_schema=CONNECTION_SCHEMA, errors=errors,
         )
 
     @staticmethod
