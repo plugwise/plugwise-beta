@@ -4,7 +4,7 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 1
+  CACHE_VERSION: 2
   DEFAULT_PYTHON: 3.9
 
 on:
@@ -37,7 +37,8 @@ jobs:
         key: >-
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
           steps.python.outputs.python-version }}-${{
-          hashFiles('custom_components/plugwise/manifest.json') }}
+          hashFiles('custom_components/plugwise/manifest.json') }}-${{
+          hashFiles('~/ha-core/.git/plugwise-tracking') }}
         restore-keys: |
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
@@ -53,6 +54,7 @@ jobs:
         script/setup
         . venv/bin/activate
         pip install -r requirements_test.txt
+        git log -1 | head -1 > ~/ha-core/.git/plugwise-tracking
     - name: Reset git
       if: steps.cache-hacore.outputs.cache-hit == 'true'
       run: |
@@ -60,6 +62,7 @@ jobs:
         git config pull.rebase true
         git reset --hard
         git pull
+        git log -1 | head -1 > ~/ha-core/.git/plugwise-tracking
         echo "Last commit message:"
         git log -1 --pretty=%B
 
