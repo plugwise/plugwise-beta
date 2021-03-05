@@ -90,7 +90,8 @@ jobs:
         key: >-
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
           steps.python.outputs.python-version }}-${{
-          hashFiles('custom_components/plugwise/manifest.json') }}
+          hashFiles('custom_components/plugwise/manifest.json') }}-${{
+          hashFiles('~/ha-core/.git/plugwise-tracking') }}
         restore-keys: |
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
           ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
