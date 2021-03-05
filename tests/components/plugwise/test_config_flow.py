@@ -48,6 +48,7 @@ Things that need coverage/fixing (besides USB which isn't included now)
 
 TEST_HOST = "1.1.1.1"
 TEST_HOSTNAME = "smileabcdef"
+TEST_HOSTNAME2 = "stretchabc"
 TEST_PASSWORD = "test_password"
 TEST_PORT = 81
 TEST_USERNAME = "smile"
@@ -62,6 +63,17 @@ TEST_DISCOVERY = {
         "product": "smile",
         "version": "1.2.3",
         "hostname": f"{TEST_HOSTNAME}.local.",
+    },
+}
+TEST_DISCOVERY2 = {
+    "host": TEST_HOST,
+    "port": DEFAULT_PORT,
+    "hostname": f"{TEST_HOSTNAME2}.local.",
+    "server": f"{TEST_HOSTNAME2}.local.",
+    "properties": {
+        "product": "stretch",
+        "version": "1.2.3",
+        "hostname": f"{TEST_HOSTNAME2}.local.",
     },
 }
 
@@ -176,6 +188,89 @@ async def test_zeroconf_form(hass):
     assert len(mock_setup.mock_calls) == 1
     assert len(mock_setup_entry.mock_calls) == 1
 
+
+async def test_zeroconf_stretch_form(hass):
+    """Test we get the form."""
+    await setup.async_setup_component(hass, "persistent_notification", {})
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN,
+        context={CONF_SOURCE: SOURCE_ZEROCONF},
+        data=TEST_DISCOVERY2,
+    )
+    assert result["type"] == RESULT_TYPE_FORM
+    assert result["errors"] == {}
+
+    with patch(
+        "homeassistant.components.plugwise.config_flow.Smile.connect",
+        return_value=True,
+    ), patch(
+        "homeassistant.components.plugwise.async_setup",
+        return_value=True,
+    ) as mock_setup, patch(
+        "homeassistant.components.plugwise.async_setup_entry",
+        return_value=True,
+    ) as mock_setup_entry:
+        result2 = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            user_input={CONF_PASSWORD: TEST_PASSWORD},
+        )
+
+    await hass.async_block_till_done()
+
+    assert result2["type"] == RESULT_TYPE_CREATE_ENTRY
+    assert result2["data"] == {
+        CONF_HOST: TEST_HOST,
+        CONF_PASSWORD: TEST_PASSWORD,
+        CONF_PORT: DEFAULT_PORT,
+        CONF_USERNAME: TEST_USERNAME2,
+        PW_TYPE: API,
+    }
+
+    assert len(mock_setup.mock_calls) == 1
+    assert len(mock_setup_entry.mock_calls) == 1
+
+
+async def test_form_username(hass):
+    """Test we get the username data back."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_NET}
+    )
+    assert result["type"] == RESULT_TYPE_FORM
+    assert result["errors"] == {}
+
+    with patch(
+        "homeassistant.components.plugwise.config_flow.Smile.connect",
+        return_value=True,
+    ), patch(
+        "homeassistant.components.plugwise.async_setup",
+        return_value=True,
+    ) as mock_setup, patch(
+        "homeassistant.components.plugwise.async_setup_entry",
+        return_value=True,
+    ) as mock_setup_entry:
+        result2 = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            user_input={
+                CONF_HOST: TEST_HOST,
+                CONF_PASSWORD: TEST_PASSWORD,
+                CONF_USERNAME: TEST_USERNAME2,
+            },
+        )
+
+    await hass.async_block_till_done()
+
+    assert result2["type"] == RESULT_TYPE_CREATE_ENTRY
+    assert result2["data"] == {
+        CONF_HOST: TEST_HOST,
+        CONF_PASSWORD: TEST_PASSWORD,
+        CONF_PORT: DEFAULT_PORT,
+        CONF_USERNAME: TEST_USERNAME2,
+        PW_TYPE: API,
+    }
+
+    assert len(mock_setup.mock_calls) == 1
+    assert len(mock_setup_entry.mock_calls) == 1
+
     await setup.async_setup_component(hass, "persistent_notification", {})
     result3 = await hass.config_entries.flow.async_init(
         DOMAIN,
@@ -203,48 +298,6 @@ async def test_zeroconf_form(hass):
 
     assert result4["type"] == "abort"
     assert result4["reason"] == "already_configured"
-
-
-async def test_form_username(hass):
-    """Test we get the username data back."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_NET}
-    )
-    assert result["type"] == RESULT_TYPE_FORM
-    assert result["errors"] == {}
-
-    with patch(
-        "homeassistant.components.plugwise.config_flow.Smile.connect",
-        return_value=True,
-    ), patch(
-        "homeassistant.components.plugwise.async_setup",
-        return_value=True,
-    ) as mock_setup, patch(
-        "homeassistant.components.plugwise.async_setup_entry",
-        return_value=True,
-    ) as mock_setup_entry:
-        result2 = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
-            {
-                CONF_HOST: TEST_HOST,
-                CONF_PASSWORD: TEST_PASSWORD,
-                CONF_USERNAME: TEST_USERNAME2,
-            },
-        )
-
-    await hass.async_block_till_done()
-
-    assert result2["type"] == RESULT_TYPE_CREATE_ENTRY
-    assert result2["data"] == {
-        CONF_HOST: TEST_HOST,
-        CONF_PASSWORD: TEST_PASSWORD,
-        CONF_PORT: DEFAULT_PORT,
-        CONF_USERNAME: TEST_USERNAME2,
-        PW_TYPE: API,
-    }
-
-    assert len(mock_setup.mock_calls) == 1
-    assert len(mock_setup_entry.mock_calls) == 1
 
 
 async def test_form_invalid_auth(hass, mock_smile):
