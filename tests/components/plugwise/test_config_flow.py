@@ -32,20 +32,6 @@ from homeassistant.data_entry_flow import RESULT_TYPE_CREATE_ENTRY, RESULT_TYPE_
 
 from tests.common import MockConfigEntry
 
-"""
-Things that need coverage/fixing (besides USB which isn't included now)
- - [ ] L231 is not aborting any more ... investigate how/why
-
- - [ ] these lines from config_flow.py are not tested yet
-  180         if DEFAULT_USERNAME not in unique_id:
-  181             self.discovery_info[CONF_USERNAME] = STRETCH_USERNAME
-  and
-  341         if not self.config_entry.data.get(CONF_HOST):
-  342             return await self.async_step_none(user_input)
-
- - [ ] config_flow.py def async_step_none is not tested yet
-"""
-
 TEST_HOST = "1.1.1.1"
 TEST_HOSTNAME = "smileabcdef"
 TEST_HOSTNAME2 = "stretchabc"
@@ -81,9 +67,7 @@ TEST_DISCOVERY2 = {
 @pytest.fixture(name="mock_smile")
 def mock_smile():
     """Create a Mock Smile for testing exceptions."""
-    with patch(
-        "homeassistant.components.plugwise.config_flow.Smile",
-    ) as smile_mock:
+    with patch("homeassistant.components.plugwise.config_flow.Smile",) as smile_mock:
         smile_mock.PlugwiseException = PlugwiseException
         smile_mock.InvalidAuthentication = InvalidAuthentication
         smile_mock.ConnectionFailedError = ConnectionFailedError
@@ -122,11 +106,9 @@ async def test_form(hass):
         "homeassistant.components.plugwise.config_flow.Smile.connect",
         return_value=True,
     ), patch(
-        "homeassistant.components.plugwise.async_setup",
-        return_value=True,
+        "homeassistant.components.plugwise.async_setup", return_value=True,
     ) as mock_setup, patch(
-        "homeassistant.components.plugwise.async_setup_entry",
-        return_value=True,
+        "homeassistant.components.plugwise.async_setup_entry", return_value=True,
     ) as mock_setup_entry:
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
@@ -152,9 +134,7 @@ async def test_zeroconf_form(hass):
     """Test we get the form."""
     await setup.async_setup_component(hass, "persistent_notification", {})
     result = await hass.config_entries.flow.async_init(
-        DOMAIN,
-        context={CONF_SOURCE: SOURCE_ZEROCONF},
-        data=TEST_DISCOVERY,
+        DOMAIN, context={CONF_SOURCE: SOURCE_ZEROCONF}, data=TEST_DISCOVERY,
     )
     assert result["type"] == RESULT_TYPE_FORM
     assert result["errors"] == {}
@@ -163,15 +143,12 @@ async def test_zeroconf_form(hass):
         "homeassistant.components.plugwise.config_flow.Smile.connect",
         return_value=True,
     ), patch(
-        "homeassistant.components.plugwise.async_setup",
-        return_value=True,
+        "homeassistant.components.plugwise.async_setup", return_value=True,
     ) as mock_setup, patch(
-        "homeassistant.components.plugwise.async_setup_entry",
-        return_value=True,
+        "homeassistant.components.plugwise.async_setup_entry", return_value=True,
     ) as mock_setup_entry:
         result2 = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
-            user_input={CONF_PASSWORD: TEST_PASSWORD},
+            result["flow_id"], user_input={CONF_PASSWORD: TEST_PASSWORD},
         )
 
     await hass.async_block_till_done()
@@ -193,9 +170,7 @@ async def test_zeroconf_stretch_form(hass):
     """Test we get the form."""
     await setup.async_setup_component(hass, "persistent_notification", {})
     result = await hass.config_entries.flow.async_init(
-        DOMAIN,
-        context={CONF_SOURCE: SOURCE_ZEROCONF},
-        data=TEST_DISCOVERY2,
+        DOMAIN, context={CONF_SOURCE: SOURCE_ZEROCONF}, data=TEST_DISCOVERY2,
     )
     assert result["type"] == RESULT_TYPE_FORM
     assert result["errors"] == {}
@@ -204,15 +179,12 @@ async def test_zeroconf_stretch_form(hass):
         "homeassistant.components.plugwise.config_flow.Smile.connect",
         return_value=True,
     ), patch(
-        "homeassistant.components.plugwise.async_setup",
-        return_value=True,
+        "homeassistant.components.plugwise.async_setup", return_value=True,
     ) as mock_setup, patch(
-        "homeassistant.components.plugwise.async_setup_entry",
-        return_value=True,
+        "homeassistant.components.plugwise.async_setup_entry", return_value=True,
     ) as mock_setup_entry:
         result2 = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
-            user_input={CONF_PASSWORD: TEST_PASSWORD},
+            result["flow_id"], user_input={CONF_PASSWORD: TEST_PASSWORD},
         )
 
     await hass.async_block_till_done()
@@ -242,11 +214,9 @@ async def test_form_username(hass):
         "homeassistant.components.plugwise.config_flow.Smile.connect",
         return_value=True,
     ), patch(
-        "homeassistant.components.plugwise.async_setup",
-        return_value=True,
+        "homeassistant.components.plugwise.async_setup", return_value=True,
     ) as mock_setup, patch(
-        "homeassistant.components.plugwise.async_setup_entry",
-        return_value=True,
+        "homeassistant.components.plugwise.async_setup_entry", return_value=True,
     ) as mock_setup_entry:
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
@@ -273,9 +243,7 @@ async def test_form_username(hass):
 
     await setup.async_setup_component(hass, "persistent_notification", {})
     result3 = await hass.config_entries.flow.async_init(
-        DOMAIN,
-        context={CONF_SOURCE: SOURCE_ZEROCONF},
-        data=TEST_DISCOVERY,
+        DOMAIN, context={CONF_SOURCE: SOURCE_ZEROCONF}, data=TEST_DISCOVERY,
     )
     assert result3["type"] == RESULT_TYPE_FORM
 
@@ -283,15 +251,12 @@ async def test_form_username(hass):
         "homeassistant.components.plugwise.config_flow.Smile.connect",
         return_value=True,
     ), patch(
-        "homeassistant.components.plugwise.async_setup",
-        return_value=True,
+        "homeassistant.components.plugwise.async_setup", return_value=True,
     ) as mock_setup, patch(
-        "homeassistant.components.plugwise.async_setup_entry",
-        return_value=True,
+        "homeassistant.components.plugwise.async_setup_entry", return_value=True,
     ) as mock_setup_entry:
         result4 = await hass.config_entries.flow.async_configure(
-            result3["flow_id"],
-            user_input={CONF_PASSWORD: TEST_PASSWORD},
+            result3["flow_id"], user_input={CONF_PASSWORD: TEST_PASSWORD},
         )
 
     await hass.async_block_till_done()
