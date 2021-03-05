@@ -8,7 +8,7 @@ from plugwise.exceptions import (
 )
 import pytest
 
-from homeassistant import config_entries, data_entry_flow, setup
+from homeassistant import config_entries, setup
 from homeassistant.components.plugwise.const import (
     API,
     DEFAULT_PORT,
@@ -25,8 +25,10 @@ from homeassistant.const import (
     CONF_PASSWORD,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
+    CONF_SOURCE,
     CONF_USERNAME,
 )
+from homeassistant.data_entry_flow import RESULT_TYPE_CREATE_ENTRY, RESULT_TYPE_FORM
 
 from tests.common import MockConfigEntry
 
@@ -56,20 +58,38 @@ def mock_smile():
     with patch(
         "homeassistant.components.plugwise.config_flow.Smile",
     ) as smile_mock:
-        smile_mock.PlugwiseError = PlugwiseException
+        smile_mock.PlugwiseException = PlugwiseException
         smile_mock.InvalidAuthentication = InvalidAuthentication
         smile_mock.ConnectionFailedError = ConnectionFailedError
         smile_mock.return_value.connect.return_value = True
         yield smile_mock.return_value
 
 
+async def test_form_flow_gateway(hass):
+    """Test we get the form for Plugwise Gateway product type."""
+    await setup.async_setup_component(hass, "persistent_notification", {})
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={CONF_SOURCE: SOURCE_USER}
+    )
+    assert result["type"] == RESULT_TYPE_FORM
+    assert result["errors"] == {}
+    assert result["step_id"] == "user"
+
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], user_input={FLOW_TYPE: FLOW_NET}
+    )
+    assert result["type"] == RESULT_TYPE_FORM
+    assert result["errors"] == {}
+    assert result["step_id"] == "user_gateway"
+
+
 async def test_form(hass):
     """Test we get the form."""
     await setup.async_setup_component(hass, "persistent_notification", {})
     result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": SOURCE_USER}
+        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_NET}
     )
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == RESULT_TYPE_FORM
     assert result["errors"] == {}
 
     with patch(
@@ -84,32 +104,13 @@ async def test_form(hass):
     ) as mock_setup_entry:
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
-            {FLOW_TYPE: FLOW_NET}
+            user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
         )
 
     await hass.async_block_till_done()
 
-    assert result2["type"] == data_entry_flow.RESULT_TYPE_FORM
-
-    with patch(
-        "homeassistant.components.plugwise.config_flow.Smile.connect",
-        return_value=True,
-    ), patch(
-        "homeassistant.components.plugwise.async_setup",
-        return_value=True,
-    ) as mock_setup, patch(
-        "homeassistant.components.plugwise.async_setup_entry",
-        return_value=True,
-    ) as mock_setup_entry:
-        result3 = await hass.config_entries.flow.async_configure(
-            result2["flow_id"],
-            {CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD}
-        )
-
-    await hass.async_block_till_done()
-
-    assert result3["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
-    assert result3["data"] == {
+    assert result2["type"] == RESULT_TYPE_CREATE_ENTRY
+    assert result2["data"] == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
@@ -126,10 +127,10 @@ async def test_zeroconf_form(hass):
     await setup.async_setup_component(hass, "persistent_notification", {})
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
-        context={"source": SOURCE_ZEROCONF},
+        context={CONF_SOURCE: SOURCE_ZEROCONF},
         data=TEST_DISCOVERY,
     )
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == RESULT_TYPE_FORM
     assert result["errors"] == {}
 
     with patch(
@@ -144,12 +145,12 @@ async def test_zeroconf_form(hass):
     ) as mock_setup_entry:
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
-            {CONF_PASSWORD: TEST_PASSWORD},
+            user_input={CONF_PASSWORD: TEST_PASSWORD},
         )
 
     await hass.async_block_till_done()
 
-    assert result2["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+    assert result2["type"] == RESULT_TYPE_CREATE_ENTRY
     assert result2["data"] == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
@@ -165,9 +166,9 @@ async def test_zeroconf_form(hass):
 async def test_form_username(hass):
     """Test we get the username data back."""
     result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": SOURCE_USER}
+        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_NET}
     )
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == RESULT_TYPE_FORM
     assert result["errors"] == {}
 
     with patch(
@@ -182,25 +183,6 @@ async def test_form_username(hass):
     ) as mock_setup_entry:
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
-            {FLOW_TYPE: FLOW_NET},
-        )
-
-    await hass.async_block_till_done()
-
-    assert result2["type"] == data_entry_flow.RESULT_TYPE_FORM
-
-    with patch(
-        "homeassistant.components.plugwise.config_flow.Smile.connect",
-        return_value=True,
-    ), patch(
-        "homeassistant.components.plugwise.async_setup",
-        return_value=True,
-    ) as mock_setup, patch(
-        "homeassistant.components.plugwise.async_setup_entry",
-        return_value=True,
-    ) as mock_setup_entry:
-        result3 = await hass.config_entries.flow.async_configure(
-            result2["flow_id"],
             {
                 CONF_HOST: TEST_HOST,
                 CONF_PASSWORD: TEST_PASSWORD,
@@ -210,8 +192,8 @@ async def test_form_username(hass):
 
     await hass.async_block_till_done()
 
-    assert result3["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
-    assert result3["data"] == {
+    assert result2["type"] == RESULT_TYPE_CREATE_ENTRY
+    assert result2["data"] == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
@@ -222,13 +204,13 @@ async def test_form_username(hass):
     assert len(mock_setup.mock_calls) == 1
     assert len(mock_setup_entry.mock_calls) == 1
 
-    result4 = await hass.config_entries.flow.async_init(
+    result3 = await hass.config_entries.flow.async_init(
         DOMAIN,
-        context={"source": SOURCE_ZEROCONF},
+        context={CONF_SOURCE: SOURCE_ZEROCONF},
         data=TEST_DISCOVERY,
     )
-    assert result4["type"] == data_entry_flow.RESULT_TYPE_FORM
-    assert result4["errors"] == {}
+    assert result3["type"] == RESULT_TYPE_FORM
+    assert result3["errors"] == {}
 
     with patch(
         "homeassistant.components.plugwise.config_flow.Smile.connect",
@@ -240,24 +222,22 @@ async def test_form_username(hass):
         "homeassistant.components.plugwise.async_setup_entry",
         return_value=True,
     ) as mock_setup_entry:
-        result5 = await hass.config_entries.flow.async_configure(
-            result4["flow_id"],
-            {CONF_PASSWORD: TEST_PASSWORD}
+        result4 = await hass.config_entries.flow.async_configure(
+            result3["flow_id"], user_input={CONF_PASSWORD: TEST_PASSWORD}
         )
 
     await hass.async_block_till_done()
 
-    # TODO: we re-register to ensure already_configured but it comes back
-    # with create_entry .... missing one more step or should it already have bailed out?
-    assert result5
-    # assert result5["type"] == "abort"
-    # assert result5["reason"] == "already_configured"
+    # TODO: investigate why it isn't aborting
+    # assert result4["type"] == "abort"
+    # assert result4["reason"] == "already_configured"
+    assert result4
 
 
 async def test_form_invalid_auth(hass, mock_smile):
     """Test we handle invalid auth."""
     result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": config_entries.SOURCE_USER}
+        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_NET}
     )
 
     mock_smile.connect.side_effect = InvalidAuthentication
@@ -265,24 +245,17 @@ async def test_form_invalid_auth(hass, mock_smile):
 
     result2 = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        {FLOW_TYPE: FLOW_NET},
+        user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
     )
 
-    await hass.async_block_till_done()
-
-    result3 = await hass.config_entries.flow.async_configure(
-        result2["flow_id"],
-        {CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
-    )
-
-    assert result3["type"] == data_entry_flow.RESULT_TYPE_FORM
-    assert result3["errors"] == {"base": "invalid_auth"}
+    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["errors"] == {"base": "invalid_auth"}
 
 
 async def test_form_cannot_connect(hass, mock_smile):
     """Test we handle cannot connect error."""
     result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": config_entries.SOURCE_USER}
+        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_NET}
     )
 
     mock_smile.connect.side_effect = ConnectionFailedError
@@ -290,31 +263,17 @@ async def test_form_cannot_connect(hass, mock_smile):
 
     result2 = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        {FLOW_TYPE: FLOW_NET},
+        user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
     )
 
-    await hass.async_block_till_done()
-
-    result3 = await hass.config_entries.flow.async_configure(
-        result2["flow_id"],
-        {CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
-    )
-
-    await hass.async_block_till_done()
-
-    result4 = await hass.config_entries.flow.async_configure(
-        result3["flow_id"],
-        {CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
-    )
-
-    assert result4["type"] == data_entry_flow.RESULT_TYPE_FORM
-    assert result4["errors"] == {"base": "cannot_connect"}
+    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["errors"] == {"base": "cannot_connect"}
 
 
 async def test_form_cannot_connect_port(hass, mock_smile):
     """Test we handle cannot connect to port error."""
     result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": config_entries.SOURCE_USER}
+        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_NET}
     )
 
     mock_smile.connect.side_effect = ConnectionFailedError
@@ -322,24 +281,21 @@ async def test_form_cannot_connect_port(hass, mock_smile):
 
     result2 = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        {FLOW_TYPE: FLOW_NET},
+        user_input={
+            CONF_HOST: TEST_HOST,
+            CONF_PASSWORD: TEST_PASSWORD,
+            CONF_PORT: TEST_PORT,
+        },
     )
 
-    await hass.async_block_till_done()
-
-    result3 = await hass.config_entries.flow.async_configure(
-        result2["flow_id"],
-        {CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD, CONF_PORT: TEST_PORT},
-    )
-
-    assert result3["type"] == data_entry_flow.RESULT_TYPE_FORM
-    assert result3["errors"] == {"base": "cannot_connect"}
+    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["errors"] == {"base": "cannot_connect"}
 
 
 async def test_form_other_problem(hass, mock_smile):
     """Test we handle cannot connect error."""
     result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": config_entries.SOURCE_USER}
+        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_NET}
     )
 
     mock_smile.connect.side_effect = TimeoutError
@@ -347,18 +303,11 @@ async def test_form_other_problem(hass, mock_smile):
 
     result2 = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        {FLOW_TYPE: FLOW_NET},
+        user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
     )
 
-    await hass.async_block_till_done()
-
-    result3 = await hass.config_entries.flow.async_configure(
-        result2["flow_id"],
-        {CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
-    )
-
-    assert result3["type"] == data_entry_flow.RESULT_TYPE_FORM
-    assert result3["errors"] == {"base": "unknown"}
+    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["errors"] == {"base": "unknown"}
 
 
 async def test_options_flow_power(hass, mock_smile) -> None:
@@ -381,13 +330,13 @@ async def test_options_flow_power(hass, mock_smile) -> None:
 
         result = await hass.config_entries.options.async_init(entry.entry_id)
 
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == RESULT_TYPE_FORM
         assert result["step_id"] == "init"
 
         result = await hass.config_entries.options.async_configure(
             result["flow_id"], user_input={CONF_SCAN_INTERVAL: 10}
         )
-        assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+        assert result["type"] == RESULT_TYPE_CREATE_ENTRY
         assert result["data"] == {
             CONF_SCAN_INTERVAL: 10,
         }
@@ -413,14 +362,14 @@ async def test_options_flow_thermo(hass, mock_smile) -> None:
 
         result = await hass.config_entries.options.async_init(entry.entry_id)
 
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == RESULT_TYPE_FORM
         assert result["step_id"] == "init"
 
         result = await hass.config_entries.options.async_configure(
             result["flow_id"], user_input={CONF_SCAN_INTERVAL: 60}
         )
 
-        assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+        assert result["type"] == RESULT_TYPE_CREATE_ENTRY
         assert result["data"] == {
             CONF_SCAN_INTERVAL: 60,
         }
