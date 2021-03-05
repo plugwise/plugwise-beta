@@ -17,9 +17,6 @@ async def test_adam_climate_sensor_entities(hass, mock_smile_adam):
     state = hass.states.get("sensor.cv_pomp_electricity_consumed")
     assert float(state.state) == 35.6
 
-    state = hass.states.get("sensor.auxiliary_water_temperature")
-    assert float(state.state) == 70.0
-
     state = hass.states.get("sensor.cv_pomp_electricity_consumed_interval")
     assert float(state.state) == 7.37
 
