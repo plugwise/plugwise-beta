@@ -1,12 +1,17 @@
 #!/bin/sh
 
+which python3.9 || ( echo "You should have python3.9 installed, or change the script yourself, exiting"; exit 1)
+which git || ( echo "You should have git installed, exiting"; exit 1)
+
 if [ ! -d ha-core ]; then
+	echo ""
 	echo "This script expects to be executed from the 'root' of the cloned plugwise-beta directory"
 	echo "Then 'mkdir ha-core' and rerun this script (which will take some time, disk-space and prayers"
 	echo ""
 	echo "Cowardly stopping now ... ow, and you *should* have python3.9 and virtualenv installed"
 	echo ""
 	echo "(this script largely resembles the 'Test with HA-core' action on github stored in .github/workflows/test.yml in the repo"
+	echo ""
 	exit 1
 fi
 
@@ -16,6 +21,14 @@ if [ ! -f ha-core/requirements_test_all.txt ]; then
 	echo " ** Cloning HA core **"
 	echo ""
 	git clone https://github.com/home-assistant/core.git ./ha-core
+        if [ ! -f ha-core/requirements_test_all.txt ]; then
+		echo ""
+		echo "Cloning failed .. make sure ./ha-core exists and is an empty directory"
+		echo ""
+		echo "Stopping"
+		echo ""
+		exit 1
+        fi
 	cd ./ha-core
 	echo ""
 	echo " ** Resetting to dev **"
