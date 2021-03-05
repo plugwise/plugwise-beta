@@ -2,7 +2,11 @@
 
 from plugwise.exceptions import PlugwiseException
 
-from homeassistant.components.climate.const import HVAC_MODE_AUTO, HVAC_MODE_HEAT
+from homeassistant.components.climate.const import (
+    HVAC_MODE_AUTO,
+    HVAC_MODE_HEAT,
+    HVAC_MODE_OFF,
+)
 from homeassistant.config_entries import ENTRY_STATE_LOADED
 
 from tests.components.plugwise.common import async_init_integration
@@ -16,7 +20,7 @@ async def test_adam_climate_entity_attributes(hass, mock_smile_adam):
     state = hass.states.get("climate.zone_lisa_wk")
     attrs = state.attributes
 
-    assert attrs["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
+    assert attrs["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_AUTO, HVAC_MODE_OFF]
 
     assert "preset_modes" in attrs
     assert "no_frost" in attrs["preset_modes"]
@@ -32,7 +36,7 @@ async def test_adam_climate_entity_attributes(hass, mock_smile_adam):
     state = hass.states.get("climate.zone_thermostat_jessie")
     attrs = state.attributes
 
-    assert attrs["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
+    assert attrs["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_AUTO, HVAC_MODE_OFF]
 
     assert "preset_modes" in attrs
     assert "no_frost" in attrs["preset_modes"]
