@@ -81,6 +81,7 @@ echo ""
 echo "Test commencing ..."
 echo ""
 pytest --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/$1
+deactivate
 
 # Future, flake/pylint as well (not rewritten yet from test.yml workflow)
 #        pip install flake8
