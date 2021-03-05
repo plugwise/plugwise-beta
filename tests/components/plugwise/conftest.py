@@ -52,7 +52,7 @@ def mock_smile_error(aioclient_mock: AiohttpClientMocker) -> None:
 @pytest.fixture(name="mock_smile_notconnect")
 def mock_smile_notconnect():
     """Mock the Plugwise Smile general connection failure for Home Assistant."""
-    with patch("homeassistant.components.plugwise.gateway.Smile") as smile_mock:
+    with patch("homeassistant.components.plugwise.config_flow.Smile") as smile_mock:
         smile_mock.InvalidAuthentication = InvalidAuthentication
         smile_mock.ConnectionFailedError = ConnectionFailedError
         smile_mock.PlugwiseException = PlugwiseException
@@ -83,6 +83,7 @@ def mock_smile_adam():
         smile_mock.return_value.notifications = _read_json(chosen_env, "notifications")
 
         smile_mock.return_value.connect.side_effect = AsyncMock(return_value=True)
+        smile_mock.return_value.update_device.side_effect = AsyncMock(return_value=True)
         smile_mock.return_value.full_update_device.side_effect = AsyncMock(
             return_value=True
         )
@@ -128,6 +129,7 @@ def mock_smile_anna():
         smile_mock.return_value.notifications = _read_json(chosen_env, "notifications")
 
         smile_mock.return_value.connect.side_effect = AsyncMock(return_value=True)
+        smile_mock.return_value.update_device.side_effect = AsyncMock(return_value=True)
         smile_mock.return_value.full_update_device.side_effect = AsyncMock(
             return_value=True
         )
@@ -173,6 +175,7 @@ def mock_smile_p1():
         smile_mock.return_value.notifications = _read_json(chosen_env, "notifications")
 
         smile_mock.return_value.connect.side_effect = AsyncMock(return_value=True)
+        smile_mock.return_value.update_device.side_effect = AsyncMock(return_value=True)
         smile_mock.return_value.full_update_device.side_effect = AsyncMock(
             return_value=True
         )
@@ -207,6 +210,7 @@ def mock_stretch():
         smile_mock.return_value.smile_hostname = "stretch98765"
 
         smile_mock.return_value.connect.side_effect = AsyncMock(return_value=True)
+        smile_mock.return_value.update_device.side_effect = AsyncMock(return_value=True)
         smile_mock.return_value.full_update_device.side_effect = AsyncMock(
             return_value=True
         )
