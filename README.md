@@ -12,7 +12,13 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
 
 A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing.
 
-## NEW Febr 2021 [0.14.4]
+## New Mar 2021 [0.14.5]
+- Smile/Stretch
+  - Add lock-switches for Plugs, Circles, Stealths, etc.
+  - Various small code improvements
+  - Link to plugwise v0.9.3 https://github.com/plugwise/python-plugwise/releases/tag/0.9.3
+
+## Febr 2021 [0.14.4]
 
 - Smile/Stretch
   - Show more device information: manufacturer name, model name and firmware as available on the Smile/Stretch
