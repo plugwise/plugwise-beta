@@ -17,7 +17,6 @@ from plugwise.exceptions import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
@@ -52,15 +51,15 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry_gw(
+    hass: HomeAssistant, entry: ConfigEntry
+) -> bool:  # noqa: C901
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
 
     # When migrating from Core to beta, add the username to ConfigEntry
     entry_updates = {}
-    try:
-        username = entry.data[CONF_USERNAME]
-    except KeyError:
+    if CONF_USERNAME not in entry.data:
         data = {**entry.data}
         data.update({"username": DEFAULT_USERNAME})
         entry_updates["data"] = data
@@ -77,11 +76,6 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         websession=websession,
     )
 
-    # Migrate to a valid unique_id when needed
-    if entry.unique_id is None:
-        if api.smile_version[0] != "1.8.0":
-            hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
-
     try:
         connected = await api.connect()
         if not connected:
@@ -96,6 +90,11 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except asyncio.TimeoutError as err:
         _LOGGER.error("Timeout while connecting to the Smile/Stretch")
         raise ConfigEntryNotReady from err
+
+    # Migrate to a valid unique_id when needed
+    if entry.unique_id is None:
+        if api.smile_version[0] != "1.8.0":
+            hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     update_interval = timedelta(
         seconds=entry.options.get(

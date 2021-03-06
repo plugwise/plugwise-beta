@@ -2,7 +2,6 @@
 
 import logging
 
-from plugwise.smile import Smile
 from plugwise.exceptions import PlugwiseException
 
 from homeassistant.components.climate import ClimateEntity
@@ -83,7 +82,17 @@ class PwThermostat(SmileGateway, ClimateEntity):
     """Representation of a Plugwise (zone) thermostat."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, loc_id, model, min_temp, max_temp, vendor, fw,
+        self,
+        api,
+        coordinator,
+        name,
+        dev_id,
+        loc_id,
+        model,
+        min_temp,
+        max_temp,
+        vendor,
+        fw,
     ):
         """Set up the Plugwise API."""
         super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
@@ -258,7 +267,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
     @callback
     def _async_process_data(self):
         """Update the data for this climate device."""
-        #_LOGGER.info("Updating climate...")
+        # _LOGGER.info("Updating climate...")
         climate_data = self._api.get_device_data(self._dev_id)
 
         self._setpoint = climate_data.get("setpoint")

@@ -4,8 +4,11 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.binary_sensor import BinarySensorEntity, DOMAIN as BINARY_SENSOR_DOMAIN
-from homeassistant.const import ATTR_DEVICE_CLASS, ATTR_ICON, ATTR_NAME, ATTR_STATE
+from homeassistant.components.binary_sensor import (
+    BinarySensorEntity,
+    DOMAIN as BINARY_SENSOR_DOMAIN,
+)
+from homeassistant.const import ATTR_NAME, ATTR_STATE
 
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv, entity_platform
@@ -181,7 +184,17 @@ class SmileBinarySensor(SmileGateway):
     """Represent Smile Binary Sensors."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model, vendor, fw,
+        self,
+        api,
+        coordinator,
+        name,
+        dev_id,
+        enabled_default,
+        binary_sensor,
+        key,
+        model,
+        vendor,
+        fw,
     ):
         """Initialise the binary_sensor."""
         super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
@@ -221,11 +234,30 @@ class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
     """Representation of a Gateway binary_sensor."""
 
     def __init__(
-        self, api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model, vendor, fw
+        self,
+        api,
+        coordinator,
+        name,
+        dev_id,
+        enabled_default,
+        binary_sensor,
+        key,
+        model,
+        vendor,
+        fw,
     ):
         """Initialise the binary_sensor."""
         super().__init__(
-            api, coordinator, name, dev_id, enabled_default, binary_sensor, key, model, vendor, fw,
+            api,
+            coordinator,
+            name,
+            dev_id,
+            enabled_default,
+            binary_sensor,
+            key,
+            model,
+            vendor,
+            fw,
         )
 
         self._enabled_default = enabled_default
@@ -234,7 +266,7 @@ class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        #_LOGGER.debug("Update binary_sensor called")
+        # _LOGGER.debug("Update binary_sensor called")
         data = self._api.get_device_data(self._dev_id)
 
         if self._binary_sensor not in data:
@@ -256,10 +288,21 @@ class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
 class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
     """Representation of a Plugwise Notification binary_sensor."""
 
-    def __init__(self, api, coordinator, name, dev_id, binary_sensor, model, vendor, fw):
+    def __init__(
+        self, api, coordinator, name, dev_id, binary_sensor, model, vendor, fw
+    ):
         """Initialise the notification binary_sensor."""
         super().__init__(
-            api, coordinator, name, dev_id, False, binary_sensor, None, model, vendor, fw,
+            api,
+            coordinator,
+            name,
+            dev_id,
+            False,
+            binary_sensor,
+            None,
+            model,
+            vendor,
+            fw,
         )
 
         self._attributes = {}
@@ -350,9 +393,5 @@ class USBBinarySensor(NodeEntity, BinarySensorEntity):
             str(clock_interval),
         )
         self._node.Configure_SED(
-            stay_active,
-            maintenance_interval,
-            sleep_for,
-            clock_sync,
-            clock_interval,
+            stay_active, maintenance_interval, sleep_for, clock_sync, clock_interval,
         )

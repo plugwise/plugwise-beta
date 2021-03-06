@@ -16,7 +16,7 @@ from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAI
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_STATE, EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv, device_registry as dr
@@ -39,7 +39,6 @@ from .const import (
     STICK,
     STICK_API,
     USB,
-    USB_AVAILABLE_ID,
     USB_MOTION_ID,
     USB_RELAY_ID,
 )
@@ -68,7 +67,9 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
                 if USB_RELAY_ID in api_stick.devices[mac].features:
                     hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN].append(mac)
                 if USB_MOTION_ID in api_stick.devices[mac].features:
-                    hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN].append(mac)
+                    hass.data[DOMAIN][config_entry.entry_id][
+                        BINARY_SENSOR_DOMAIN
+                    ].append(mac)
                 hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN].append(mac)
 
         for component in PLATFORMS_USB:
@@ -77,7 +78,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             )
 
         def add_new_node(mac):
-            """Listener when a new Plugwise node joined network"""
+            """Add Listener when a new Plugwise node joined the network."""
             device = device_registry.async_get_device({(DOMAIN, mac)}, set())
             hass.components.persistent_notification.async_create(
                 title="New Plugwise device",
@@ -112,23 +113,23 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
         await hass.async_add_executor_job(api_stick.initialize_circle_plus)
     except PortError:
         _LOGGER.error("Connecting to Plugwise USBstick communication failed")
-        raise ConfigEntryNotReady
+        raise ConfigEntryNotReady from PortError
     except StickInitError:
         _LOGGER.error("Initializing of Plugwise USBstick communication failed")
         await hass.async_add_executor_job(api_stick.disconnect)
-        raise ConfigEntryNotReady
+        raise ConfigEntryNotReady from StickInitError
     except NetworkDown:
         _LOGGER.warning("Plugwise zigbee network down")
         await hass.async_add_executor_job(api_stick.disconnect)
-        raise ConfigEntryNotReady
+        raise ConfigEntryNotReady from NetworkDown
     except CirclePlusError:
         _LOGGER.warning("Failed to connect to Circle+ node")
         await hass.async_add_executor_job(api_stick.disconnect)
-        raise ConfigEntryNotReady
+        raise ConfigEntryNotReady from CirclePlusError
     except TimeoutException:
         _LOGGER.warning("Timeout")
         await hass.async_add_executor_job(api_stick.disconnect)
-        raise ConfigEntryNotReady
+        raise ConfigEntryNotReady from TimeoutException
     _LOGGER.debug("Start discovery of registered nodes")
     api_stick.scan(discover_finished)
 

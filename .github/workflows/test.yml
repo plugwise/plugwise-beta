@@ -1,0 +1,202 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test with HA-core
+
+env:
+  CACHE_VERSION: 2
+  DEFAULT_PYTHON: 3.9
+
+on:
+  workflow_dispatch:
+  push:
+#  schedule:
+#    - cron: '0 0 * * 0' # weekly
+# pull_request:
+
+jobs:
+  # Prepare default python version environment
+  ha-core-prepare:
+    runs-on: ubuntu-latest
+    name: Setup for HA-core
+    steps:
+    - name: Check out committed code
+      uses: actions/checkout@v2
+    - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+      id: python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.DEFAULT_PYTHON }}
+    - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} virtual environment
+      id: cache-hacore
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-hacore
+      with:
+        path: ~/ha-core
+        key: >-
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
+          steps.python.outputs.python-version }}-${{
+          hashFiles('custom_components/plugwise/manifest.json') }}-${{
+          hashFiles('~/ha-core/.git/plugwise-tracking') }}
+        restore-keys: |
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}
+          ${{ env.CACHE_VERSION}}
+    - name: Create HA-core Python virtual environment
+      if: steps.cache-hacore.outputs.cache-hit != 'true'
+      run: |
+        git clone https://github.com/home-assistant/core.git ~/ha-core
+        cd ~/ha-core
+        git config pull.rebase true
+        git checkout dev
+        script/setup
+        . venv/bin/activate
+        pip install -r requirements_test.txt
+        git log -1 | head -1 > ~/ha-core/.git/plugwise-tracking
+    - name: Reset git
+      if: steps.cache-hacore.outputs.cache-hit == 'true'
+      run: |
+        cd ~/ha-core
+        git config pull.rebase true
+        git reset --hard
+        git pull
+        git log -1 | head -1 > ~/ha-core/.git/plugwise-tracking
+        echo "Last commit message:"
+        git log -1 --pretty=%B
+
+
+  # Reset GIT, preload and execute tests
+  ha-core-test:
+    runs-on: ubuntu-latest
+    name: Test against HA-core
+    needs: ha-core-prepare
+    steps:
+    - name: Check out committed code
+      uses: actions/checkout@v2
+    - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+      id: python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.DEFAULT_PYTHON }}
+    - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} virtual environment
+      id: cache-hacore
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-hacore
+      with:
+        path: ~/ha-core
+        key: >-
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
+          steps.python.outputs.python-version }}-${{
+          hashFiles('custom_components/plugwise/manifest.json') }}-${{
+          hashFiles('~/ha-core/.git/plugwise-tracking') }}
+        restore-keys: |
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}
+          ${{ env.CACHE_VERSION}}
+    - name: Fail job if Python cache restore failed
+      if: steps.cache-hacore.outputs.cache-hit != 'true'
+      run: |
+        echo "Failed to restore Python ${{ env.DEFAULT_PYTHON }} virtual environment from cache"
+        exit 1
+    - name: Show last commit message
+      run: |
+        echo "Last commit message:"
+        git log -1 --pretty=%B
+    - name: Remove current code and tests
+      run: |
+        cd ~/ha-core
+        rm -r homeassistant/components/plugwise tests/fixtures/plugwise tests/components/plugwise
+    - name: Copy code and tests
+      run: |
+        cp -r custom_components/plugwise ~/ha-core/homeassistant/components/
+        cp -r tests/fixtures/plugwise ~/ha-core/tests/fixtures/
+        cp -r tests/components/plugwise ~/ha-core/tests/components/
+    - name: Prepare requirements (be)for(e) plugwise
+      run: |
+        cd ~/ha-core
+        . venv/bin/activate
+        mkdir ~/tmp
+        egrep -i "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ~/tmp/requirements_test_extra.txt
+        pip install -r ~/tmp/requirements_test_extra.txt
+        pip install $(grep require ~/work/plugwise-beta/plugwise-beta/custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+    - name: pytest
+      run: |
+        cd ~/ha-core
+        . venv/bin/activate
+        pytest --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/
+
+  # Reset GIT, preload and validate code
+  ha-core-quality:
+    runs-on: ubuntu-latest
+    name: Verify code quality
+    needs: ha-core-test
+    steps:
+    - name: Check out committed code
+      uses: actions/checkout@v2
+    - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+      id: python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.DEFAULT_PYTHON }}
+    - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} virtual environment
+      id: cache-hacore
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-hacore
+      with:
+        path: ~/ha-core
+        key: >-
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
+          steps.python.outputs.python-version }}-${{
+          hashFiles('custom_components/plugwise/manifest.json') }}-${{
+          hashFiles('~/ha-core/.git/plugwise-tracking') }}
+        restore-keys: |
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
+          ${{ env.CACHE_VERSION}}-${{ runner.os }}
+          ${{ env.CACHE_VERSION}}
+    - name: Fail job if Python cache restore failed
+      if: steps.cache-hacore.outputs.cache-hit != 'true'
+      run: |
+        echo "Failed to restore Python ${{ env.DEFAULT_PYTHON }} virtual environment from cache"
+        exit 1
+    - name: Show last commit message
+      run: |
+        echo "Last commit message:"
+        git log -1 --pretty=%B
+    - name: Remove current code and tests
+      run: |
+        cd ~/ha-core
+        rm -r homeassistant/components/plugwise tests/fixtures/plugwise tests/components/plugwise
+    - name: Copy code and tests
+      run: |
+        cp -r custom_components/plugwise ~/ha-core/homeassistant/components/
+        cp -r tests/fixtures/plugwise ~/ha-core/tests/fixtures/
+        cp -r tests/components/plugwise ~/ha-core/tests/components/
+    - name: Prepare requirements (be)for(e) plugwise
+      run: |
+        cd ~/ha-core
+        . venv/bin/activate
+        mkdir ~/tmp
+        egrep -i "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ~/tmp/requirements_test_extra.txt
+        pip install -r ~/tmp/requirements_test_extra.txt
+        pip install $(grep require ~/work/plugwise-beta/plugwise-beta/custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+    - name: flake8
+      run: |
+        cd ~/ha-core
+        . venv/bin/activate
+        pip install flake8
+        flake8 homeassistant/components/plugwise/*py
+        flake8 tests/components/plugwise/*py
+    - name: pylint
+      run: |
+        cd ~/ha-core
+        . venv/bin/activate
+        pip install pylint
+        pylint homeassistant/components/plugwise/*py
+        # disable for further figuring out, apparently HA doesn't pylint against test
+        #pylint tests/components/plugwise/*py

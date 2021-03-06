@@ -112,7 +112,19 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 class GwSwitch(SmileGateway, SwitchEntity):
     """Representation of a Smile Gateway switch."""
 
-    def __init__(self, api, coordinator, name, dev_id, enabled_default, switch, members, model, vendor, fw):
+    def __init__(
+        self,
+        api,
+        coordinator,
+        name,
+        dev_id,
+        enabled_default,
+        switch,
+        members,
+        model,
+        vendor,
+        fw,
+    ):
         """Set up the Plugwise API."""
 
         super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
@@ -175,7 +187,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
     @callback
     def _async_process_data(self):
         """Update the data from the Plugs."""
-        #_LOGGER.debug("Update switch called")
+        # _LOGGER.debug("Update switch called")
         data = self._api.get_device_data(self._dev_id)
 
         if self._switch not in data:
@@ -183,7 +195,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
             return
 
         self._is_on = data[self._switch]
-        #_LOGGER.debug("Switch is ON is %s.", self._is_on)
+        # _LOGGER.debug("Switch is ON is %s.", self._is_on)
 
         self.async_write_ha_state()
 
