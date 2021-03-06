@@ -3,7 +3,7 @@
   "name": "Plugwise Beta",
   "version": "0.14.4",
   "documentation": "https://github.com/plugwise/plugwise-beta",
-  "requirements": ["https://test-files.pythonhosted.org/packages/27/23/ac388c400dc8135b60b40b4724b649427bbba40b09d20638cb0f0e6ee33e/plugwise-0.9.3a2.tar.gz#plugwise==0.9.3a2"],
+  "requirements": ["https://test-files.pythonhosted.org/packages/41/b9/fbc7059fba5b7a0e3cd8d5b48de59461085887d63d0c6794ccfc38010c93/plugwise-0.9.3a3.tar.gz#plugwise==0.9.3a3"],
   "codeowners": ["@CoMPaTech","@bouwew","@brefra"],
   "config_flow": true
 }
