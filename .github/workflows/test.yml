@@ -48,7 +48,7 @@ jobs:
     # cache-hit isn't registered (although cache is restored
     - name: Create HA-core Python virtual environment
       run: |
-        if [ -f ha-core/requirements_test_all.txt ]; then
+        if [ -f ~/ha-core/requirements_test_all.txt ]; then
             cd ~/ha-core
             git config pull.rebase true
             git reset --hard
