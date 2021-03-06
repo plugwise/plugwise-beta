@@ -29,6 +29,7 @@ from .const import (
     FLAME_ICON,
     FLOW_OFF_ICON,
     FLOW_ON_ICON,
+    FW,
     GW_BINARY_SENSORS,
     IDLE_ICON,
     NO_NOTIFICATION_ICON,
@@ -45,6 +46,7 @@ from .const import (
     USB,
     USB_AVAILABLE_ID,
     USB_MOTION_ID,
+    VENDOR,
 )
 
 from .gateway import SmileGateway
@@ -150,8 +152,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         binary_sensor,
                         GW_BINARY_SENSORS[binary_sensor],
                         devices[dev_id][PW_MODEL],
-                        devices[dev_id]["vendor"],
-                        devices[dev_id]["fw"],
+                        devices[dev_id][VENDOR],
+                        devices[dev_id][FW],
                     )
                 )
                 _LOGGER.info(
@@ -168,8 +170,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     dev_id,
                     "plugwise_notification",
                     devices[dev_id][PW_MODEL],
-                    devices[dev_id]["vendor"],
-                    devices[dev_id]["fw"],
+                    devices[dev_id][VENDOR],
+                    devices[dev_id][FW],
                 )
             )
             _LOGGER.info(
