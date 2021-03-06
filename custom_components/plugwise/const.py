@@ -4,6 +4,7 @@ from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_MOTION,
     DOMAIN as BINARY_SENSOR_DOMAIN,
 )
+from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DEVICE_CLASS_OUTLET, DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import (
@@ -33,6 +34,7 @@ API = "api"
 ATTR_ENABLED_DEFAULT = "enabled_default"
 DOMAIN = "plugwise"
 COORDINATOR = "coordinator"
+FW = "fw",
 GATEWAY = "gateway"
 PW_CLASS = "class"
 PW_LOCATION = "location"
@@ -46,13 +48,14 @@ STRETCH = "stretch"
 STRETCH_USERNAME = "stretch"
 DEVICE_STATE = "device_state"
 UNIT_LUMEN = "lm"
+VERSION = "version"
 USB = "usb"
 
 FLOW_NET = "flow_network"
-FLOW_TYPE = "flow_type"
-FLOW_USB = "flow_usb"
 FLOW_SMILE = "smile (Adam/Anna/P1)"
 FLOW_STRETCH = "stretch (Stretch)"
+FLOW_TYPE = "flow_type"
+FLOW_USB = "flow_usb"
 
 UNDO_UPDATE_LISTENER = "undo_update_listener"
 
