@@ -48,7 +48,7 @@ STRETCH = "stretch"
 STRETCH_USERNAME = "stretch"
 DEVICE_STATE = "device_state"
 UNIT_LUMEN = "lm"
-VERSION = "version"
+VENDOR = "vendor"
 USB = "usb"
 
 FLOW_NET = "flow_network"
