@@ -15,6 +15,7 @@ from .const import (
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
+    FW,
     PW_CLASS,
     PW_MODEL,
     PW_TYPE,
@@ -27,6 +28,7 @@ from .const import (
     USB_CURRENT_POWER_ID,
     USB_POWER_CONSUMPTION_TODAY_ID,
     USB_RELAY_ID,
+    VENDOR,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -83,8 +85,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     "relay",
                     members,
                     devices[dev_id][PW_MODEL],
-                    devices[dev_id]["vendor"],
-                    devices[dev_id]["fw"],
+                    devices[dev_id][VENDOR],
+                    devices[dev_id][FW],
                 )
             )
             _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
@@ -99,8 +101,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         "lock",
                         None,
                         devices[dev_id][PW_MODEL],
-                        devices[dev_id]["vendor"],
-                        devices[dev_id]["fw"],
+                        devices[dev_id][VENDOR],
+                        devices[dev_id][FW],
                     )
                 )
                 _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
@@ -117,8 +119,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         "dhw_cm_switch",
                         None,
                         devices[dev_id][PW_MODEL],
-                        devices[dev_id]["vendor"],
-                        devices[dev_id]["fw"],
+                        devices[dev_id][VENDOR],
+                        devices[dev_id][FW],
                     )
                 )
 
