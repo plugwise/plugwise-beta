@@ -127,7 +127,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
         self._single_thermostat = self._api.single_master_thermostat()
         self._active_device = self._api.active_device_present
-        self._unique_id = f"{dev_id}-"CLIMATE_DOMAIN
+        self._unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
 
     @property
     def hvac_action(self):
