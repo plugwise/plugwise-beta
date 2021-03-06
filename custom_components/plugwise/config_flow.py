@@ -173,7 +173,12 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
 
-        if DEFAULT_USERNAME not in self.discovery_info.get("hostname"):
+        # unique_id is needed here, to be able to determine whether the discovered device is known, or not.
+        unique_id = self.discovery_info.get("hostname").split(".")[0]
+        await self.async_set_unique_id(unique_id)
+        self._abort_if_unique_id_configured()
+
+        if DEFAULT_USERNAME not in unique_id:
             self.discovery_info[CONF_USERNAME] = STRETCH_USERNAME
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
