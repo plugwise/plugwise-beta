@@ -1,9 +1,9 @@
 
-**:warning::warning::warning:Read the release notes (<https://github.com/plugwise/plugwise-beta/releases>) before upgrading, in case there are BREAKING changes!:warning::warning::warning:**
+**:warning::warning::warning:Read the [release notes](<https://github.com/plugwise/plugwise-beta/releases>) before upgrading, in case there are BREAKING changes!:warning::warning::warning:**
 
-# Plugwise Smile custom_component (BETA)
+# Plugwise custom_component (BETA)
 
-Our main usage for this module is supporting [Home Assistant](https://www.home-assistant.io) / [home-assistant](http://github.com/home-assistant/core/)
+Always first attempt to use the native [Home Assistant](https://www.home-assistant.io) [`Plugwise`](https://www.home-assistant.io/integrations/plugwise/)-component using the [![Open your Home Assistant instance and show your integrations.](https://my.home-assistant.io/badges/integrations.svg)](https://my.home-assistant.io/redirect/integrations/) before switching to this BETA `custom_component`. We develop and maintain both versions. Our status on the `custom_component` is:
 
  [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/plugwise)
  [![CodeFactor](https://www.codefactor.io/repository/github/plugwise/plugwise-beta/badge)](https://www.codefactor.io/repository/github/plugwise/plugwise-beta)
@@ -11,7 +11,18 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
  [![HA-Core](https://github.com/plugwise/plugwise-beta/workflows/Test%20with%20HA-core/badge.svg)](https://github.com/plugwise/plugwise-beta/actions)
  [![Generic badge](https://img.shields.io/github/v/release/plugwise/plugwise-beta)](https://github.com/plugwise/plugwise-beta)
 
-A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. As of March 2021 we include testing against latest `dev` in Home-Assistant Core, the above batches should indicate compatibility and compliance.
+A fully asynchronous approach to supporting Plugwise devices in Home-Assistant. This repository is **meant** for use of beta-testing. As of March 2021 we include testing against latest `dev` in Home-Assistant Core, the above batches should indicate compatibility and compliance.
+
+## Required python module (status)
+
+Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python module accompanies both the native and the `custom_component`. It's status is is:
+
+ [![Latest release](https://github.com/plugwise/python-plugwise/workflows/Latest%20release/badge.svg)](https://github.com/plugwise/python-plugwise/actions)
+ [![CodeFactor](https://www.codefactor.io/repository/github/plugwise/python-plugwise/badge)](https://www.codefactor.io/repository/github/plugwise/python-plugwise)
+ [![codecov](https://codecov.io/gh/plugwise/python-plugwise/branch/main/graph/badge.svg)](https://codecov.io/gh/plugwise/python-plugwise)
+ [![PyPI version fury.io](https://badge.fury.io/py/plugwise.svg)](https://pypi.python.org/pypi/plugwise/)
+
+# Changelog
 
 ## New Mar 2021 [0.14.5]
 - Smile/Stretch
@@ -61,14 +72,7 @@ Due to this it behaves exactly as the HA Core Plugwise component: discovery work
 
 PLEASE NOTE: ~~at the moment you will need to remove the existing Core Plugwise integration(s) before you install this beta custom_component. This is at the moment also needed when you want to return to using the Core Plugwise integration. When this is no longer needed, you can read about it here.~~ Since Core v0.115.0 this is no longer needed.
 
-### Required python module (status)
-
- [![Build Status](https://travis-ci.org/plugwise/Plugwise-Smile.svg?branch=master)](https://travis-ci.org/plugwise/Plugwise-Smile)
- [![codecov](https://codecov.io/gh/plugwise/Plugwise-Smile/branch/master/graph/badge.svg)](https://codecov.io/gh/plugwise/Plugwise-Smile)
- [![PyPI version fury.io](https://badge.fury.io/py/Plugwise-Smile.svg)](https://pypi.python.org/pypi/Plugwise-Smile/)
- [![PyPI version fury.io](https://badge.fury.io/py/python-plugwise.svg)](https://pypi.org/pypi/python-plugwise/)
-
-## What do we support (in short)?
+# What do we support (in short)?
 
 - Thermostats
   - Adam (firmware 2.x and 3.x) and the accompanying Lisa's, Tom's, Floor's, Koen's and Plugs.
@@ -87,11 +91,12 @@ PLEASE NOTE: ~~at the moment you will need to remove the existing Core Plugwise 
 
 The `water_heater`-device present in previous releases has been replaced by an Auxiliary Device state-sensor. This sensor will only show up when there are more (than one) thermostats present in your climate-system.
 
-## How to install?
+# How to install?
 
 - Use [HACS](https://hacs.xyz)
-- Use the link to this page and add it on the `custom repo` page .
-- Look for `Plugwise beta custom component` in `integrations` and install it!
+- Navigate to the `Integrations` page and use the three-dots icon on the top right to add a custom repository.
+- Use the link to this page as the URL and select 'Integrations' as the category.
+- Look for `Plugwise beta custom component` in `Integrations` and install it!
 
 ## How to add the integration to HA Core
 
@@ -124,7 +129,9 @@ The config flow will then continue to ask you if you want to put your Smile and 
 
 Using the OPTIONS-button, the default Smile-data refresh-interval can be modified. There are no OPTIONS available for the Stick. The refresh interval of the devices connected to the Stick is automatically determined on the number of devices connecteda
 
-# I don't like the name of the sensor or the icon
+# Frequently Asked Questions (FAQ)
+
+## I don't like the name of the sensor or the icon
 
 You can adjust these in `Configuration`, `Integration` -> `Entities` (e.g. `https://{Your HA address}/config/entities`)
 
@@ -132,34 +139,37 @@ Just click on the device and adjust accordingly!
 
 Please note that you can also click the cogwheel right top corner to rename all entities of a device at once.
 
-# It doesn't work
+## It doesn't work
 
 If you notice issues, we are on Discord and on the [Community forums](https://community.home-assistant.io/t/plugwise-core-and-custom-component/236250). You can also create an Issue in these repositories:
 
 - [plugwise-beta](https://github.com/plugwise/plugwise-beta) - the `custom_component` for HA Core
 - [python-plugwise](https://github.com/plugwise/python-plugwise) - the python module interfacing with the plugwise Smile or USB-stick
 
-# Smile?
+## Why 'Smile'?
 
 We use the term Smile for the 'device connected to your home network', called Smile P1 for their power-meter, Smile if you have an Anna or Adam.
 
-# Testing
+## Is it tested?
 
 While we try to make sure that everything works as intended, we can't really test out changes happening to hardware devices. Our testing is done through testing against files from community members (see [python-plugwise tests](https://github.com/plugwise/python-plugwise/tree/main/tests)) and if you have a setup you are willing to share we highly welcome that. Just send us the files or submit a PR. Including your test code into the `tests/test_Smile.py` code is highly recommended.
 
 Results of our tests are checked by Travis, click the left button (the one that should say 'Build passing' :)) on the [python-plugwise repository](https://github.com/plugwise/python-plugwise/).
 
-# ~~There is Anna support in HA Core already~~ Replaced by the new Plugwise component, based on this beta-version
+## There is Plugwise / used to be Anna support in HA Core already?
 
-From the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech. Right after that @bouwew joined to improve and help maintain the code. As of 2020 @brefra joined so we have a full range of Plugwise products supported.
+**The former 'anna' support was replaced by the new Plugwise component, based on this beta-version.**
 
-As things like async were in high demand from HA Core, desired by the original author and a great challenge for us we rewrote it largely. The Plugwise Smile Beta repository (accompanying the Plugwise-Smile python module) is intended for development purposes, just as `anna-ha` was for `haanna` (respectively the original before upstreaming and original python module).
+From the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech for Anna. Right after that @bouwew joined to improve and help maintain the code - as a result also Adam and P1 became supported. As of 2020 @brefra joined for the USB part(s) so we have a full range of Plugwise products supported.
+
+As things like async were in high demand from HA Core, desired by the original author and a great challenge for us we rewrote it largely. The Plugwise Beta repository (accompanying the Plugwise python module) is intended for development purposes, just as `anna-ha` was for `haanna` (respectively the original before upstreaming and original python module). Note that 'Plugwise-Smile' existed for a while before @brefra joined.
 
 With the three combined forces we now support, maintain and improve on:
 
 - `plugwise-beta` (this repository) for beta-testing new features to go into the `plugwise`-integration for HA
-- `python-plugwise` for connectivity with
+- [`python-plugwise`](https://github.com/plugwise/python-plugwise) for connectivity with
   - Smile (Adam, Anna and P1) and Stretch products (i.e. the new Plugs)
   - Stick (USB-device) (i.e. the old Plugs: Circle(+), Stealths and Scans)
+- [`progress`](https://github.com/plugwise/progress) showing what are the differences between HA-core and this `custom_component` on https://plugwise.github.io/progress/
 
-And yes anna-ha with haanna (to some degree) support Anna v1.8 - but they don't support Adam nor the Smile P1
+And yes anna-ha with haanna (to some degree) support Anna v1.8 - but they don't support Adam nor the Smile P1.
