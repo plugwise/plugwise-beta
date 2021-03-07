@@ -60,7 +60,7 @@ jobs:
             git checkout dev
             script/setup
             . venv/bin/activate
-            pip install -r requirements_test.txt
+            pip install -r -q requirements_test.txt
         fi
         git log -1 | head -1 > ~/ha-core/.git/plugwise-tracking
 
@@ -119,8 +119,8 @@ jobs:
         . venv/bin/activate
         mkdir ~/tmp
         egrep -i "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ~/tmp/requirements_test_extra.txt
-        pip install -r ~/tmp/requirements_test_extra.txt
-        pip install $(grep require ~/work/plugwise-beta/plugwise-beta/custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+        pip install -r -q ~/tmp/requirements_test_extra.txt
+        pip install -q $(grep require ~/work/plugwise-beta/plugwise-beta/custom_components/plugwise/manifest.json | cut -f 4 -d '"')
     - name: pytest
       run: |
         cd ~/ha-core
