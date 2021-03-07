@@ -206,17 +206,14 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             user_input.pop(FLOW_TYPE, None)
             user_selection = user_input[CONF_USB_PATH]
+
             if user_selection == CONF_MANUAL_PATH:
                 return await self.async_step_manual_path()
-            if user_selection in list_of_ports:
-                port = ports[list_of_ports.index(user_selection)]
-                device_path = await self.hass.async_add_executor_job(
-                    get_serial_by_id, port.device
-                )
-            else:
-                device_path = await self.hass.async_add_executor_job(
-                    get_serial_by_id, user_selection
-                )
+
+            port = ports[list_of_ports.index(user_selection)]
+            device_path = await self.hass.async_add_executor_job(
+                get_serial_by_id, port.device
+            )
             errors, api_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 await self.async_set_unique_id(api_stick.mac)
