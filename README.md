@@ -15,7 +15,7 @@ Always first attempt to use the native [Home Assistant](https://www.home-assista
 
 [![Open your Home Assistant instance and show your integrations.](https://my.home-assistant.io/badges/integrations.svg)](https://my.home-assistant.io/redirect/integrations/) 
 
-If you are unable to configure your plugwise product and/or are a willing participant helping us test you can start using this BETA `custom_component`. We develop and maintain both versions.
+If you don't mind a bug now and then and are interested in helping us test new features and improvements, you can start using this BETA `custom_component`. We develop and maintain both versions.
 
 ## Required python module (status)
 
