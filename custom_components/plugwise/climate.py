@@ -25,16 +25,19 @@ from homeassistant.core import callback
 from .gateway import SmileGateway
 from .const import (
     API,
+    CLIMATE_DOMAIN,
     COORDINATOR,
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
     DOMAIN,
+    FW,
     PW_CLASS,
     PW_LOCATION,
     PW_MODEL,
     SCHEDULE_OFF,
     SCHEDULE_ON,
     THERMOSTAT_CLASSES,
+    VENDOR,
 )
 
 HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO, HVAC_MODE_OFF]
@@ -68,8 +71,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             devices[dev_id][PW_MODEL],
             DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
-            devices[dev_id]["vendor"],
-            devices[dev_id]["fw"],
+            devices[dev_id][VENDOR],
+            devices[dev_id][FW],
         )
 
         entities.append(thermostat)
@@ -124,7 +127,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
         self._single_thermostat = self._api.single_master_thermostat()
         self._active_device = self._api.active_device_present
-        self._unique_id = f"{dev_id}-climate"
+        self._unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
 
     @property
     def hvac_action(self):

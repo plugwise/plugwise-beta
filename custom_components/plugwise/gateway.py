@@ -33,13 +33,14 @@ from homeassistant.const import (
 
 from .const import (
     API,
+    CLIMATE_DOMAIN,
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_USERNAME,
     DOMAIN,
     GATEWAY,
-    PLATFORMS_GATEWAY,
+    GATEWAY_PLATFORMS,
     PW_TYPE,
     SENSOR_PLATFORMS,
     SERVICE_DELETE,
@@ -61,7 +62,7 @@ async def async_setup_entry_gw(
     entry_updates = {}
     if CONF_USERNAME not in entry.data:
         data = {**entry.data}
-        data.update({"username": DEFAULT_USERNAME})
+        data.update({CONF_USERNAME: DEFAULT_USERNAME})
         entry_updates["data"] = data
 
     if entry_updates:
@@ -152,7 +153,7 @@ async def async_setup_entry_gw(
     single_master_thermostat = api.single_master_thermostat()
     _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
 
-    platforms = PLATFORMS_GATEWAY
+    platforms = GATEWAY_PLATFORMS
     if single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
@@ -171,7 +172,7 @@ async def async_setup_entry_gw(
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
-        if component == "climate":
+        if component == CLIMATE_DOMAIN:
             hass.services.async_register(
                 DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
             )
@@ -185,7 +186,7 @@ async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
         await asyncio.gather(
             *[
                 hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in PLATFORMS_GATEWAY
+                for component in GATEWAY_PLATFORMS
             ]
         )
     )

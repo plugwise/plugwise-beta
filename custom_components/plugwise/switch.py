@@ -15,6 +15,7 @@ from .const import (
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
+    FW,
     PW_CLASS,
     PW_MODEL,
     PW_TYPE,
@@ -27,6 +28,7 @@ from .const import (
     USB_CURRENT_POWER_ID,
     USB_POWER_CONSUMPTION_TODAY_ID,
     USB_RELAY_ID,
+    VENDOR,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -69,6 +71,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     devices = api.get_all_devices()
 
     for dev_id in devices:
+        data = api.get_device_data(dev_id)
         members = None
         if any(dummy in devices[dev_id]["types"] for dummy in SWITCH_CLASSES):
             _LOGGER.debug("Plugwise switch Dev %s", devices[dev_id][ATTR_NAME])
@@ -82,14 +85,29 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     "relay",
                     members,
                     devices[dev_id][PW_MODEL],
-                    devices[dev_id]["vendor"],
-                    devices[dev_id]["fw"],
+                    devices[dev_id][VENDOR],
+                    devices[dev_id][FW],
                 )
             )
             _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
+            if "lock" in data:
+                entities.append(
+                    GwSwitch(
+                        api,
+                        coordinator,
+                        devices[dev_id][ATTR_NAME],
+                        dev_id,
+                        True,
+                        "lock",
+                        None,
+                        devices[dev_id][PW_MODEL],
+                        devices[dev_id][VENDOR],
+                        devices[dev_id][FW],
+                    )
+                )
+                _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
 
         if devices[dev_id][PW_CLASS] == "heater_central":
-            data = api.get_device_data(dev_id)
             if "dhw_comf_mode" in data:
                 entities.append(
                     GwSwitch(
@@ -101,8 +119,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         "dhw_cm_switch",
                         None,
                         devices[dev_id][PW_MODEL],
-                        devices[dev_id]["vendor"],
-                        devices[dev_id]["fw"],
+                        devices[dev_id][VENDOR],
+                        devices[dev_id][FW],
                     )
                 )
 
@@ -132,7 +150,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._is_on = False
         self._enabled_default = enabled_default
         self._members = members
-        self._name = name
+        self._name = f"{name} {switch.title()}"
         self._switch = switch
 
         if dev_id == self._api.heater_id:
@@ -142,6 +160,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         # For backwards compatibility:
         if self._switch == "relay":
             self._unique_id = f"{dev_id}-plug"
+            self._name = name
 
     @property
     def entity_registry_enabled_default(self) -> bool:
