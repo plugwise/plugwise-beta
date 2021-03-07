@@ -171,9 +171,7 @@ As things like async were in high demand from HA Core, desired by the original a
 With the three combined forces we now support, maintain and improve on:
 
 - `plugwise-beta` (this repository) for beta-testing new features to go into the `plugwise`-integration for HA
-- [`python-plugwise`](https://github.com/plugwise/python-plugwise) for connectivity with
-  - Smile (Adam, Anna and P1) and Stretch products (i.e. the new Plugs)
-  - Stick (USB-device) (i.e. the old Plugs: Circle(+), Stealths and Scans)
+- [`python-plugwise`](https://github.com/plugwise/python-plugwise) for connecting to Plugwise products
 - [`progress`](https://github.com/plugwise/progress) showing what are the differences between HA-core and this `custom_component` on https://plugwise.github.io/progress/
 
 And yes anna-ha with haanna (to some degree) support Anna v1.8 - but they don't support Adam nor the Smile P1.
