@@ -80,6 +80,7 @@ echo ""
 mkdir -p ./tmp
 grep -Ei "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 pip install -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
+pip install -q flake8
 echo ""
 echo "Checking manifest for current python-plugwise to install"
 echo ""
@@ -87,13 +88,8 @@ pip install -q --disable-pip-version-check $(grep require ../custom_components/p
 echo ""
 echo "Test commencing ..."
 echo ""
-pytest $2 --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/$1
+pytest $2 --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/$1 && echo "" && echo "... flake8-ing ..." && flake8 homeassistant/components/plugwise/*py && echo "..." && flake8 tests/components/plugwise/*py && echo "... pylint-ing ..." && pylint homeassistant/components/plugwise/*py && echo "... black-ing ..." && black homeassistant/components/plugwise/*py tests/components/plugwise/*py
 deactivate
 
-# Future, flake/pylint as well (not rewritten yet from test.yml workflow)
-#        pip install flake8
-#        flake8 homeassistant/components/plugwise/*py
-#        flake8 tests/components/plugwise/*py
-#        pylint homeassistant/components/plugwise/*py
 #        # disable for further figuring out, apparently HA doesn't pylint against test
 #        #pylint tests/components/plugwise/*py
