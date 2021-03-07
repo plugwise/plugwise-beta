@@ -1,5 +1,5 @@
 
-** Read the release notes (<https://github.com/plugwise/plugwise-beta/releases>) before upgrading, in case there are BREAKING changes! **
+**:warning::warning::warning:Read the release notes (<https://github.com/plugwise/plugwise-beta/releases>) before upgrading, in case there are BREAKING changes!:warning::warning::warning:**
 
 # Plugwise Smile custom_component (BETA)
 
@@ -11,7 +11,7 @@ Our main usage for this module is supporting [Home Assistant](https://www.home-a
  [![HA-Core](https://github.com/plugwise/plugwise-beta/workflows/Test%20with%20HA-core/badge.svg)](https://github.com/plugwise/plugwise-beta/actions)
  [![Generic badge](https://img.shields.io/github/v/release/plugwise/plugwise-beta)](https://github.com/plugwise/plugwise-beta)
 
-A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing.
+A fully asynchronous approach to supporting Plugwise devices. This repository is **meant** for use of beta-testing. As of March 2021 we include testing against latest `dev` in Home-Assistant Core, the above batches should indicate compatibility and compliance.
 
 ## New Mar 2021 [0.14.5]
 - Smile/Stretch
