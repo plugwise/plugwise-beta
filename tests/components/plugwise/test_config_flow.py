@@ -743,4 +743,3 @@ async def test_options_flow_stick_with_input(hass) -> None:
 
         assert result["type"] == RESULT_TYPE_CREATE_ENTRY
         assert result["title"] == ""
-
