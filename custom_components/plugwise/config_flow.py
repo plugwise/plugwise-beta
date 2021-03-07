@@ -77,9 +77,6 @@ def plugwise_stick_entries(hass):
 async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
-    if device_path is None:
-        errors[CONF_BASE] = "connection_failed"
-        return errors, None
 
     # Avoid creating a 2nd connection to an already configured stick
     if device_path in plugwise_stick_entries(self):
