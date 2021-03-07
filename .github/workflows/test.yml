@@ -121,7 +121,12 @@ jobs:
         egrep -i "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ~/tmp/requirements_test_extra.txt
         pip install -q -r ~/tmp/requirements_test_extra.txt
         pip install -q $(grep require ~/work/plugwise-beta/plugwise-beta/custom_components/plugwise/manifest.json | cut -f 4 -d '"')
-    - name: pytest
+    - name: Run tests
+      run: |
+        cd ~/ha-core
+        . venv/bin/activate
+        pytest -- tests/components/plugwise/
+    - name: Show coverage
       run: |
         cd ~/ha-core
         . venv/bin/activate
