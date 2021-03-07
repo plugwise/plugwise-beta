@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# If you want to test a single file
+# run as "scripts/core_testing.sh test_config_flow.py" or 
+# "scripts/core_testing.sh test_sensor.py"
+#
+# if you fancy more options (i.e. show test results)
+# run as "scripts/core_testing.sh test_config_flow.py -rP"
+
 which python3.9 || ( echo "You should have python3.9 installed, or change the script yourself, exiting"; exit 1)
 which git || ( echo "You should have git installed, exiting"; exit 1)
 
@@ -80,7 +87,7 @@ pip install -q --disable-pip-version-check $(grep require ../custom_components/p
 echo ""
 echo "Test commencing ..."
 echo ""
-pytest --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/$1
+pytest $2 --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/$1
 deactivate
 
 # Future, flake/pylint as well (not rewritten yet from test.yml workflow)
