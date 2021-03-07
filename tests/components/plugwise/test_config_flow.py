@@ -744,15 +744,3 @@ async def test_options_flow_stick_with_input(hass) -> None:
         assert result["type"] == RESULT_TYPE_CREATE_ENTRY
         assert result["title"] == ""
 
-
-async def test_user_flow_manual_usb2(hass):
-    """Test user step form when manual path is selected."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_USB}
-    )
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={CONF_USB_PATH: TEST_USBPORT2},
-    )
-    assert result["type"] == RESULT_TYPE_FORM
-    assert result["step_id"] == "manual_path"
