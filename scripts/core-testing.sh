@@ -70,13 +70,13 @@ echo ""
 echo "Activating venv and installing selected test modules (zeroconf,pyserial, etc)"
 echo ""
 . venv/bin/activate
-mkdir ./tmp
+mkdir -p ./tmp
 grep -Ei "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
-pip install -q -r ./tmp/requirements_test_extra.txt
+pip install -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
 echo ""
 echo "Checking manifest for current python-plugwise to install"
 echo ""
-pip install -q $(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+pip install -q --disable-pip-version-check $(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
 echo ""
 echo "Test commencing ..."
 echo ""
