@@ -72,11 +72,11 @@ echo ""
 . venv/bin/activate
 mkdir ./tmp
 grep -Ei "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
-pip install -r ./tmp/requirements_test_extra.txt
+pip install -q -r ./tmp/requirements_test_extra.txt
 echo ""
 echo "Checking manifest for current python-plugwise to install"
 echo ""
-pip install $(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+pip install -q $(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
 echo ""
 echo "Test commencing ..."
 echo ""
