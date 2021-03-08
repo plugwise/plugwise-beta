@@ -2,6 +2,7 @@
 
 from homeassistant.config_entries import ENTRY_STATE_LOADED
 from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.helpers.entity_registry import async_get_registry
 
 from tests.components.plugwise.common import async_init_integration
 
@@ -39,10 +40,25 @@ async def test_anna_climate_binary_sensor_change(hass, mock_smile_anna):
 
 async def test_adam_climate_binary_sensor_change(hass, mock_smile_adam):
     """Test change of climate related binary_sensor entities."""
+
+    n_sensor = "binary_sensor.adam_plugwise_notification"
+
     entry = await async_init_integration(hass, mock_smile_adam)
     assert entry.state == ENTRY_STATE_LOADED
 
-    state = hass.states.get("binary_sensor.adam_plugwise_notification")
+    # Enable the notification sensor
+    registry = await async_get_registry(hass)
+    updated_entry = registry.async_update_entity(n_sensor, disabled_by=None)
+
+    assert updated_entry != entry
+    assert updated_entry.disabled is False
+
+    await hass.async_block_till_done()
+
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+
+    state = hass.states.get(n_sensor)
     assert str(state.state) == STATE_ON
     assert "unreachable" in state.attributes.get("WARNING_msg")[0]
     assert not state.attributes.get("error_msg")
