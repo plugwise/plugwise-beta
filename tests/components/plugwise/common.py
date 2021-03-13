@@ -8,12 +8,15 @@ from tests.test_util.aiohttp import AiohttpClientMocker
 
 
 async def async_init_integration(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, skip_setup: bool = False,
+    hass: HomeAssistant,
+    aioclient_mock: AiohttpClientMocker,
+    skip_setup: bool = False,
 ):
     """Initialize the Smile integration."""
 
     entry = MockConfigEntry(
-        domain=DOMAIN, data={"host": "1.1.1.1", "password": "test-password"}
+        domain=DOMAIN,
+        data={"host": "1.1.1.1", "password": "test-password"},
     )
     entry.add_to_hass(hass)
 
