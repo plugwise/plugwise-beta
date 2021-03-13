@@ -113,7 +113,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._heating_state = None
         self._hvac_mode = None
         self._last_active_schema = None
-        self._mode_off = None
         self._preset_mode = None
         self._presets = None
         self._presets_list = None
@@ -225,7 +224,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
             _LOGGER.error("Invalid temperature requested")
 
     async def async_set_hvac_mode(self, hvac_mode):
-        """Set the hvac mode."""
+        """Set the hvac mode, options are 'off', 'heat'/'heat_cool' and 'auto'."""
         _LOGGER.debug("Set hvac_mode to: %s", hvac_mode)
         state = SCHEDULE_OFF
         if hvac_mode == HVAC_MODE_AUTO:
@@ -239,14 +238,12 @@ class PwThermostat(SmileGateway, ClimateEntity):
             await self._api.set_schedule_state(
                 self._loc_id, self._last_active_schema, state
             )
-            self._mode_off = False
             if hvac_mode == HVAC_MODE_OFF:
-                self._mode_off = True
                 preset_mode = PRESET_AWAY
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._preset_mode = preset_mode
                 self._setpoint = self._presets.get(self._preset_mode, PRESET_NONE)[0]
-            if hvac_mode == HVAC_MODE_HEAT and self._preset_mode == PRESET_AWAY:
+            if hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_HEAT_COOL] and self._preset_mode == PRESET_AWAY:
                 preset_mode = PRESET_HOME
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._preset_mode = preset_mode
@@ -294,12 +291,13 @@ class PwThermostat(SmileGateway, ClimateEntity):
             self._cooling_state = heater_central_data.get("cooling_state")
             self._compressor_state = heater_central_data.get("compressor_state")
 
-        self._hvac_mode = HVAC_MODE_HEAT
-        if self._compressor_state is not None:
-            self._hvac_mode = HVAC_MODE_HEAT_COOL
-        if self._schema_status:
-            self._hvac_mode = HVAC_MODE_AUTO
-        if self._mode_off:
-            self._hvac_mode = HVAC_MODE_OFF
+        self._hvac_mode = HVAC_MODE_AUTO
+        if not self._schema_status:
+            if self._preset_mode == PRESET_AWAY:
+                self._hvac_mode = HVAC_MODE_OFF
+            else:
+                self._hvac_mode = HVAC_MODE_HEAT
+                if self._compressor_state is not None:
+                    self._hvac_mode = HVAC_MODE_HEAT_COOL
 
         self.async_write_ha_state()
