@@ -255,7 +255,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
     async def async_set_preset_mode(self, preset_mode):
         """Set the preset mode."""
-        _LOGGER.debug("Set preset mode to %s.", preset_mode)
+        _LOGGER.debug("Set preset mode to %s", preset_mode)
         try:
             await self._api.set_preset(self._loc_id, preset_mode)
             self._preset_mode = preset_mode
