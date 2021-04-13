@@ -84,7 +84,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
                 title="New Plugwise device",
                 message=(
                     "A new Plugwise device has been joined : \n\n"
-                    f" - {api_stick.node(mac).hardware_model} ({mac[-5:]})\n\n"
+                    f" - {api_stick.devices[mac].hardware_model} ({mac[-5:]})\n\n"
                     f"Configure this device at the [device dashboard](/config/devices/device/{device.id})"
                 ),
             )
