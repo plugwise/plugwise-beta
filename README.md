@@ -28,7 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## New Mar 2021 [0.14.5]
+## New Apr 2021 [0.14.6]
+- Link to plugwise v0.9.4 https://github.com/plugwise/python-plugwise/releases/tag/0.9.4
+- Fix a small Stick-related bug in a LOG-message
+
+## Mar 2021 [0.14.5]
 - Smile/Stretch
   - Add lock-switches for Plugs, Circles, Stealths, etc.
   - Various small code improvements
