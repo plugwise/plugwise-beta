@@ -1,9 +1,9 @@
 {
   "domain": "plugwise",
   "name": "Plugwise Beta",
-  "version": "0.14.6",
+  "version": "0.15.0a0",
   "documentation": "https://github.com/plugwise/plugwise-beta",
-  "requirements": ["plugwise==0.9.4"],
+  "requirements": ["https://test-files.pythonhosted.org/packages/1f/40/7eac95c48ae8a5c0ae111d68ce0a938bcb1b69786514f591cef1dffa5057/plugwise-0.10.0a4.tar.gz#plugwise==0.10.0a4"],
   "codeowners": ["@CoMPaTech","@bouwew","@brefra"],
   "iot_class": "local_polling",
   "config_flow": true
