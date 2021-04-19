@@ -8,12 +8,13 @@ from datetime import timedelta
 
 import async_timeout
 import voluptuous as vol
-from plugwise.smile import Smile
 from plugwise.exceptions import (
     InvalidAuthentication,
     PlugwiseException,
     XMLDataMissingError,
 )
+from plugwise.gw_device import GWDevice
+from plugwise.smile import Smile
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
@@ -45,6 +46,7 @@ from .const import (
     PW_TYPE,
     SENSOR_PLATFORMS,
     SERVICE_DELETE,
+    SMILE,
     UNDO_UPDATE_LISTENER,
 )
 
@@ -69,18 +71,15 @@ async def async_setup_entry_gw(
     if entry_updates:
         hass.config_entries.async_update_entry(entry, **entry_updates)
 
-    api = Smile(
+    smile = GWDevice(
         host=entry.data[CONF_HOST],
-        username=entry.data[CONF_USERNAME],
         password=entry.data[CONF_PASSWORD],
-        port=entry.data.get(CONF_PORT, DEFAULT_PORT),
-        timeout=30,
         websession=websession,
     )
 
     try:
-        connected = await api.connect()
-        if not connected:
+        api = await smile.discover()
+        if not api:
             _LOGGER.error("Unable to connect to the Smile/Stretch")
             raise ConfigEntryNotReady
     except InvalidAuthentication:
@@ -95,38 +94,38 @@ async def async_setup_entry_gw(
 
     # Migrate to a valid unique_id when needed
     if entry.unique_id is None:
-        if api.smile_version[0] != "1.8.0":
-            hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
+        if smile.firmware_version != "1.8.0":
+            hass.config_entries.async_update_entry(entry, unique_id=smile.hostname)
 
     update_interval = timedelta(
         seconds=entry.options.get(
-            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL[api.smile_type]
+            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL[smile.s_type]
         )
     )
 
     async def async_update_data_gw():
         """Update data via API endpoint."""
-        _LOGGER.debug("Updating Smile %s", api.smile_name)
+        _LOGGER.debug(f"Updating {smile.friendly_name}")
         try:
             async with async_timeout.timeout(update_interval.seconds):
                 await api.update_device()
-                _LOGGER.debug("Successfully updated Smile %s", api.smile_name)
+                _LOGGER.debug(f"Successfully updated {smile.friendly_name}")
                 return True
         except XMLDataMissingError as err:
             _LOGGER.debug(
-                "Updating Smile failed, expected XML data for %s", api.smile_name
+                f"Updating Smile failed, expected XML data for {smile.friendly_name}"
             )
             raise UpdateFailed("Smile update failed") from err
         except PlugwiseException as err:
             _LOGGER.debug(
-                "Updating Smile failed, generic failure for %s", api.smile_name
+                f"Updating failed, generic failure for {smile.friendly_name}"
             )
             raise UpdateFailed("Smile update failed") from err
 
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name=f"Smile {api.smile_name}",
+        name=f"{smile.friendly_name}",
         update_method=async_update_data_gw,
         update_interval=update_interval,
     )
@@ -140,33 +139,33 @@ async def async_setup_entry_gw(
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         API: api,
+        SMILE: smile,
         COORDINATOR: coordinator,
         PW_TYPE: GATEWAY,
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 
-    api.get_all_devices()
-    _LOGGER.debug("Gateway is %s", api.gateway_id)
-    _LOGGER.debug("Gateway software version is %s", api.smile_version)
-    _LOGGER.debug("Appliances is %s", api.appl_data)
-    _LOGGER.debug("Locations (matched) is %s", api.thermo_locs)
+    #api.get_all_devices()
+    _LOGGER.debug(f"Gateway is {smile.gateway_id}")
+    _LOGGER.debug(f"Gateway software version is {smile.firmware_version}")
+    _LOGGER.debug(f"Appliances is {api.appl_data}")
+    _LOGGER.debug(f"Locations (matched) are {api.thermo_locs}")
 
-    single_master_thermostat = api.single_master_thermostat()
-    _LOGGER.debug("Single master thermostat = %s", single_master_thermostat)
+    _LOGGER.debug(f"Single master thermostat = {smile.single_master_thermostat}")
 
     platforms = GATEWAY_PLATFORMS
-    if single_master_thermostat is None:
+    if smile.single_master_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
     async def delete_notification(self):
         """Service: delete the Plugwise Notification."""
-        _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
+        _LOGGER.debug(f"Service delete PW Notification called for {smile.friendly_name}")
         try:
             deleted = await api.delete_notification()
-            _LOGGER.debug("PW Notification deleted: %s", deleted)
+            _LOGGER.debug(f"PW Notification deleted: {deleted}")
         except PlugwiseException:
             _LOGGER.debug(
-                "Failed to delete the Plugwise Notification for %s", api.smile_name
+                f"Failed to delete the Plugwise Notification for {smile.friendly_name}"
             )
 
     for component in platforms:
@@ -211,18 +210,17 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
 class SmileGateway(CoordinatorEntity):
     """Represent Smile Gateway."""
 
-    def __init__(self, api, coordinator, name, dev_id, model, vendor, fw):
+    def __init__(self, coordinator, dev_id, smile, model, vendor, fw):
         """Initialise the gateway."""
         super().__init__(coordinator)
 
-        self._api = api
         self._coordinator = coordinator
         self._dev_id = dev_id
-        self._device_name = name
         self._fw_version = fw
         self._manufacturer = vendor
         self._model = model
         self._name = None
+        self._smile = smile
         self._unique_id = None
 
     @property
@@ -245,16 +243,16 @@ class SmileGateway(CoordinatorEntity):
         """Return the device information."""
         device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._device_name,
+            "name": self._name,
             "manufacturer": self._manufacturer,
             "model": self._model,
             "sw_version": self._fw_version,
         }
 
-        if self._dev_id != self._api.gateway_id:
-            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
+        if self._dev_id != self._smile.gateway_id:
+            device_information["via_device"] = (DOMAIN, self._smile.gateway_id)
         else:
-            device_information["name"] = f"Smile {self._device_name}"
+            device_information["name"] = f"{self._smile.friendly_name}"
 
         return device_information
 
