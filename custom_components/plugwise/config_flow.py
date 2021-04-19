@@ -16,8 +16,9 @@ from plugwise.exceptions import (
     StickInitError,
     TimeoutException,
 )
+from plugwise.gw_device import GWDevice
 from plugwise.stick import stick
-from plugwise.smile import Smile
+#from plugwise.smile import Smile
 
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import (
@@ -136,23 +137,20 @@ async def validate_gw_input(hass: core.HomeAssistant, data):
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
 
-    api = Smile(
+    smile = GWDevice(
         host=data[CONF_HOST],
-        username=data[CONF_USERNAME],
         password=data[CONF_PASSWORD],
-        port=data[CONF_PORT],
-        timeout=30,
         websession=websession,
     )
 
     try:
-        await api.connect()
+        await smile.discover()
     except InvalidAuthentication as err:
         raise InvalidAuth from err
     except PlugwiseException as err:
         raise CannotConnect from err
 
-    return api
+    return smile
 
 
 class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -258,7 +256,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user_gateway(self, user_input=None):
         """Handle the initial step when using network/gateway setups."""
-        api = None
+        smile = None
         errors = {}
 
         if user_input is not None:
@@ -270,7 +268,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input[CONF_USERNAME] = self.discovery_info[CONF_USERNAME]
 
             try:
-                api = await validate_gw_input(self.hass, user_input)
+                smile = await validate_gw_input(self.hass, user_input)
 
             except CannotConnect:
                 errors[CONF_BASE] = "cannot_connect"
@@ -282,12 +280,12 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if not errors:
                 await self.async_set_unique_id(
-                    api.smile_hostname or api.gateway_id, raise_on_progress=False
+                    smile.hostname or smile.gateway_id, raise_on_progress=False
                 )
                 self._abort_if_unique_id_configured()
 
                 user_input[PW_TYPE] = API
-                return self.async_create_entry(title=api.smile_name, data=user_input)
+                return self.async_create_entry(title=smile.friendly_name, data=user_input)
 
         return self.async_show_form(
             step_id="user_gateway",
@@ -341,8 +339,8 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        api = self.hass.data[DOMAIN][self.config_entry.entry_id][API]
-        interval = DEFAULT_SCAN_INTERVAL[api.smile_type]
+        smile = self.hass.data[DOMAIN][self.config_entry.entry_id][SMILE]
+        interval = DEFAULT_SCAN_INTERVAL[smile.s_type]
 
         data = {
             vol.Optional(
