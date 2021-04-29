@@ -1,9 +1,10 @@
 """Plugwise network/gateway platform."""
 
+from __future__ import annotations
+
 import asyncio
 import logging
 from datetime import timedelta
-from typing import Dict
 
 import async_timeout
 import voluptuous as vol
@@ -240,7 +241,7 @@ class SmileGateway(CoordinatorEntity):
         return self._name
 
     @property
-    def device_info(self) -> Dict[str, any]:
+    def device_info(self) -> dict[str, any]:
         """Return the device information."""
         device_information = {
             "identifiers": {(DOMAIN, self._dev_id)},

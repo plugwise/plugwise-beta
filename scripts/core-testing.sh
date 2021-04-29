@@ -13,7 +13,7 @@ which git || ( echo "You should have git installed, exiting"; exit 1)
 if [ ! -d ha-core ]; then
 	echo ""
 	echo "This script expects to be executed from the 'root' of the cloned plugwise-beta directory"
-	echo "Then 'mkdir ha-core' and rerun this script (which will take some time, disk-space and prayers"
+	echo "Then 'mkdir ha-core' and rerun this script (which will take some time, disk-space and prayers)"
 	echo ""
 	echo "Cowardly stopping now ... ow, and you *should* have python3.9 and virtualenv installed"
 	echo ""
@@ -78,7 +78,7 @@ echo "Activating venv and installing selected test modules (zeroconf,pyserial, e
 echo ""
 . venv/bin/activate
 mkdir -p ./tmp
-grep -Ei "sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
+grep -Ei "pyroute2|sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 pip install -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
 pip install -q flake8
 echo ""
