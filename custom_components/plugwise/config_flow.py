@@ -1,8 +1,10 @@
 """Config flow for Plugwise integration."""
+
+from __future__ import annotations
+
 import logging
 import os
 import serial.tools.list_ports
-from typing import Dict
 
 import voluptuous as vol
 
@@ -74,7 +76,7 @@ def plugwise_stick_entries(hass):
     return sticks
 
 
-async def validate_usb_connection(self, device_path=None) -> Dict[str, str]:
+async def validate_usb_connection(self, device_path=None) -> dict[str, str]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
 
