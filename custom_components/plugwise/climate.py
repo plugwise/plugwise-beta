@@ -23,7 +23,6 @@ from homeassistant.components.climate.const import (
 from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
 
-from .gateway import SmileGateway
 from .const import (
     API,
     CLIMATE_DOMAIN,
@@ -31,13 +30,17 @@ from .const import (
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
     DOMAIN,
+    FW,
+    MASTER_THERMOSTATS,
     PW_CLASS,
     PW_LOCATION,
+    PW_MODEL,
     SCHEDULE_OFF,
     SCHEDULE_ON,
     SMILE,
-    THERMOSTAT_CLASSES,
+    VENDOR,
 )
+from .gateway import SmileGateway
 
 HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO, HVAC_MODE_OFF]
 HVAC_MODES_HEAT_COOL = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO, HVAC_MODE_OFF]
@@ -54,22 +57,21 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    devices = smile.devices
-    for dev_id in devices:
-        if devices[dev_id][PW_CLASS] not in THERMOSTAT_CLASSES:
+    for dev_id in smile.devices:
+        if smile.devices[dev_id][PW_CLASS] not in MASTER_THERMOSTATS:
             continue
 
         thermostat = PwThermostat(
             api,
             coordinator,
             smile,
+            smile.devices[dev_id][ATTR_NAME],
             dev_id,
             DEFAULT_MIN_TEMP,
             DEFAULT_MAX_TEMP,
         )
-
         entities.append(thermostat)
-        _LOGGER.info(f"Added climate.{devices[dev_id][ATTR_NAME]}")
+        _LOGGER.info(f"Added climate.{smile.devices[dev_id][ATTR_NAME]}")
 
     async_add_entities(entities, True)
 
@@ -82,29 +84,31 @@ class PwThermostat(SmileGateway, ClimateEntity):
         api,
         coordinator,
         smile,
+        name,
         dev_id,
         min_temp,
         max_temp,
     ):
         """Set up the PwThermostat."""
-        self._thermostat = Thermostat(api, smile.devices, dev_id)
-
         super().__init__(
             coordinator,
             dev_id,
             smile,
-            self._thermostat.model,
-            self._thermostat.vendor,
-            self._thermostat.firmware_version
+            name,
+            smile.devices[dev_id][PW_MODEL],
+            smile.devices[dev_id][VENDOR],
+            smile.devices[dev_id][FW]
         )
+
+        self._thermostat = Thermostat(api, dev_id)
 
         self._api = api
         self._smile = smile
 
-        self._loc_id = smile.devices[dev_id][PW_LOCATION]
+        self._device_name = self._name = name
+        self._loc_id = self._smile.devices[dev_id][PW_LOCATION]
         self._max_temp = max_temp
         self._min_temp = min_temp
-        self._name = self._thermostat.friendly_name
 
         self._unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
 
@@ -119,8 +123,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
             return CURRENT_HVAC_IDLE
 
         if self._thermostat.target_temperature > self._thermostat.current_temperature:
-            return CURRENT_HVAC_HEAT
-
+                return CURRENT_HVAC_HEAT
         return CURRENT_HVAC_IDLE
 
     @property
