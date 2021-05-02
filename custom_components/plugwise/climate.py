@@ -106,9 +106,12 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._smile = smile
 
         self._device_name = self._name = name
+        self._last_active_schema = self._thermostat.last_active_schema
         self._loc_id = self._smile.devices[dev_id][PW_LOCATION]
         self._max_temp = max_temp
         self._min_temp = min_temp
+        self._presets = self._thermostat.presets
+        self._schedule_temp = self._thermostat.schedule_temperature
 
         self._unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
 
