@@ -5,24 +5,30 @@ import logging
 from plugwise.exceptions import PlugwiseException
 
 from homeassistant.components.switch import SwitchEntity, DOMAIN as SWITCH_DOMAIN
-from homeassistant.const import ATTR_NAME, ATTR_STATE, STATE_OFF, STATE_ON
+from homeassistant.const import (
+    ATTR_DEVICE_CLASS,
+    ATTR_ICON,
+    ATTR_ID,
+    ATTR_NAME,
+    ATTR_STATE,
+    STATE_OFF,
+    STATE_ON,
+)
 from homeassistant.core import callback
 
 from .gateway import SmileGateway
 from .usb import NodeEntity
 from .const import (
     API,
+    ATTR_ENABLED_DEFAULT,
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
     FW,
-    PW_CLASS,
     PW_MODEL,
     PW_TYPE,
     STICK,
     STICK_API,
-    SWITCH_CLASSES,
-    SWITCH_ICON,
     USB,
     USB_AVAILABLE_ID,
     USB_CURRENT_POWER_ID,
@@ -68,59 +74,19 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    devices = api.get_all_devices()
+    for dev_id in api.gw_devices:
+        for key in api.gw_devices[dev_id]:
+            if key != "switches":
+                continue
 
-    for dev_id in devices:
-        data = api.get_device_data(dev_id)
-        members = None
-        if any(dummy in devices[dev_id]["types"] for dummy in SWITCH_CLASSES):
-            _LOGGER.debug("Plugwise switch Dev %s", devices[dev_id][ATTR_NAME])
-            entities.append(
-                GwSwitch(
-                    api,
-                    coordinator,
-                    devices[dev_id][ATTR_NAME],
-                    dev_id,
-                    True,
-                    "relay",
-                    members,
-                    devices[dev_id][PW_MODEL],
-                    devices[dev_id][VENDOR],
-                    devices[dev_id][FW],
-                )
-            )
-            _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
-            if "lock" in data:
+            for data in api.gw_devices[dev_id]["switches"]:
                 entities.append(
                     GwSwitch(
                         api,
                         coordinator,
-                        devices[dev_id][ATTR_NAME],
                         dev_id,
-                        True,
-                        "lock",
-                        None,
-                        devices[dev_id][PW_MODEL],
-                        devices[dev_id][VENDOR],
-                        devices[dev_id][FW],
-                    )
-                )
-                _LOGGER.info("Added switch.%s", "{}".format(devices[dev_id][ATTR_NAME]))
-
-        if devices[dev_id][PW_CLASS] == "heater_central":
-            if "dhw_comf_mode" in data:
-                entities.append(
-                    GwSwitch(
-                        api,
-                        coordinator,
-                        "Auxiliary",
-                        dev_id,
-                        True,
-                        "dhw_cm_switch",
-                        None,
-                        devices[dev_id][PW_MODEL],
-                        devices[dev_id][VENDOR],
-                        devices[dev_id][FW],
+                        api.gw_devices[dev_id][ATTR_NAME],
+                        data,
                     )
                 )
 
@@ -128,35 +94,41 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
 
 class GwSwitch(SmileGateway, SwitchEntity):
-    """Representation of a Smile Gateway switch."""
+    """Representation of a Smile Gateway sensor."""
 
     def __init__(
         self,
         api,
         coordinator,
-        name,
         dev_id,
-        enabled_default,
-        switch,
-        members,
-        model,
-        vendor,
-        fw,
+        name,
+        sw_data,
     ):
-        """Set up the Plugwise API."""
+        """Initialise the sensor."""
+        super().__init__(
+            api,
+            coordinator,
+            dev_id,
+            name,
+            api.gw_devices[dev_id][PW_MODEL],
+            api.gw_devices[dev_id][VENDOR],
+            api.gw_devices[dev_id][FW],
+        )
 
-        super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
-
+        self._api = api
+        self._device_class = sw_data[ATTR_DEVICE_CLASS]
+        self._device_name = name
+        self._enabled_default = sw_data[ATTR_ENABLED_DEFAULT]
+        self._icon = None
         self._is_on = False
-        self._enabled_default = enabled_default
-        self._members = members
-        self._name = f"{name} {switch.title()}"
-        self._switch = switch
+        self._members = None
+        if "members" in api.devices[dev_id]:
+            self._members = api.devices[dev_id]["members"]
+        self._name = f"{name} {sw_data[ATTR_NAME]}"
+        self._switch = sw_data[ATTR_ID]
+        self._sw_data = sw_data
 
-        if dev_id == self._api.heater_id:
-            self._name = "Auxiliary DHW Comfort Mode"
-
-        self._unique_id = f"{dev_id}-{self._switch.lower()}"
+        self._unique_id = f"{dev_id}-{self._switch}"
         # For backwards compatibility:
         if self._switch == "relay":
             self._unique_id = f"{dev_id}-plug"
@@ -169,8 +141,8 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
     @property
     def icon(self):
-        """Return the icon of the entity."""
-        return SWITCH_ICON
+        """Return the icon of this entity."""
+        return self._icon
 
     @property
     def is_on(self):
@@ -206,15 +178,8 @@ class GwSwitch(SmileGateway, SwitchEntity):
     @callback
     def _async_process_data(self):
         """Update the data from the Plugs."""
-        # _LOGGER.debug("Update switch called")
-        data = self._api.get_device_data(self._dev_id)
-
-        if self._switch not in data:
-            self.async_write_ha_state()
-            return
-
-        self._is_on = data[self._switch]
-        # _LOGGER.debug("Switch is ON is %s.", self._is_on)
+        self._icon = self._sw_data[ATTR_ICON]
+        self._is_on = self._sw_data[ATTR_STATE]
 
         self.async_write_ha_state()
 
