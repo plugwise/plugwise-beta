@@ -213,8 +213,9 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._icon = self._gw_b_sensor.icon
 
         if self._gw_b_sensor.notification:
-            self.hass.components.persistent_notification.async_create(
-                self._gw_b_sensor.notification
+            for notify_id, message in self._gw_b_sensor.notification.items():
+                self.hass.components.persistent_notification.async_create(
+                message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}",
             )
 
         self.async_write_ha_state()
