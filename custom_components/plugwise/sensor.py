@@ -2,8 +2,6 @@
 
 import logging
 
-from plugwise.entities import GW_Sensor
-
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_ICON,
@@ -118,8 +116,6 @@ class GwSensor(SmileGateway, Entity):
             api.gw_devices[dev_id][FW],
         )
 
-        self._gw_sensor = GW_Sensor(api, dev_id, sr_data[ATTR_ID])
-
         self._api = api
         self._device_class = sr_data[ATTR_DEVICE_CLASS]
         self._device_name = name
@@ -156,9 +152,8 @@ class GwSensor(SmileGateway, Entity):
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        self._gw_sensor.update_data()
-        self._icon = self._gw_sensor.icon
-        self._state = self._gw_sensor.state
+        self._icon = self._sr_data[ATTR_ICON]
+        self._state = self._sr_data[ATTR_STATE]
 
         self.async_write_ha_state()
 
