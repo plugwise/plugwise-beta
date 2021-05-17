@@ -86,7 +86,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         api,
                         coordinator,
                         dev_id,
-                        api.gw_devices[dev_id][ATTR_NAME],
+                        api.gw_devices[dev_id].get(ATTR_NAME),
                         data,
                     )
                 )
@@ -111,21 +111,21 @@ class GwSensor(SmileGateway, Entity):
             coordinator,
             dev_id,
             name,
-            api.gw_devices[dev_id][PW_MODEL],
-            api.gw_devices[dev_id][VENDOR],
-            api.gw_devices[dev_id][FW],
+            api.gw_devices[dev_id].get(PW_MODEL),
+            api.gw_devices[dev_id].get(VENDOR),
+            api.gw_devices[dev_id].get(FW),
         )
 
         self._api = api
-        self._device_class = sr_data[ATTR_DEVICE_CLASS]
+        self._device_class = sr_data.get(ATTR_DEVICE_CLASS)
         self._device_name = name
-        self._enabled_default = sr_data[ATTR_ENABLED_DEFAULT]
+        self._enabled_default = sr_data.get(ATTR_ENABLED_DEFAULT)
         self._icon = None
-        self._name = f"{name} {sr_data[ATTR_NAME]}"
-        self._sensor = sr_data[ATTR_ID]
+        self._name = f"{name} {sr_data.get(ATTR_NAME)}"
+        self._sensor = sr_data.get(ATTR_ID)
         self._sr_data = sr_data
         self._state = None
-        self._unit_of_measurement = self._sr_data[ATTR_UNIT_OF_MEASUREMENT]
+        self._unit_of_measurement = self._sr_data.get(ATTR_UNIT_OF_MEASUREMENT)
 
         self._unique_id = f"{dev_id}-{self._sensor}"
 
@@ -152,8 +152,8 @@ class GwSensor(SmileGateway, Entity):
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        self._icon = self._sr_data[ATTR_ICON]
-        self._state = self._sr_data[ATTR_STATE]
+        self._icon = self._sr_data.get(ATTR_ICON)
+        self._state = self._sr_data.get(ATTR_STATE)
 
         self.async_write_ha_state()
 

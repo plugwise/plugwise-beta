@@ -63,12 +63,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             api,
             coordinator,
             dev_id,
-            api.gw_devices[dev_id][ATTR_NAME],
+            api.gw_devices[dev_id].get(ATTR_NAME),
             DEFAULT_MAX_TEMP,
             DEFAULT_MIN_TEMP,
         )
         entities.append(thermostat)
-        _LOGGER.info(f"Added climate.{api.gw_devices[dev_id][ATTR_NAME]}")
+        _LOGGER.info(f"Added climate.{api.gw_devices[dev_id].get(ATTR_NAME)}")
 
     async_add_entities(entities, True)
 
@@ -91,9 +91,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
             coordinator,
             dev_id,
             name,
-            api.gw_devices[dev_id][PW_MODEL],
-            api.gw_devices[dev_id][VENDOR],
-            api.gw_devices[dev_id][FW]
+            api.gw_devices[dev_id].get(PW_MODEL),
+            api.gw_devices[dev_id].get(VENDOR),
+            api.gw_devices[dev_id].get(FW),
         )
 
         self._gw_thermostat = GW_Thermostat(api, dev_id)
@@ -101,7 +101,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._api = api
         self._device_class = None
         self._device_name = self._name = name
-        self._loc_id = self._api.gw_devices[dev_id][PW_LOCATION]
+        self._loc_id = self._api.gw_devices[dev_id].get(PW_LOCATION)
         self._max_temp = max_temp
         self._min_temp = min_temp
 
