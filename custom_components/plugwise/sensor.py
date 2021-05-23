@@ -116,7 +116,6 @@ class GwSensor(SmileGateway, Entity):
             api.gw_devices[dev_id].get(FW),
         )
 
-        self._api = api
         self._device_class = sr_data.get(ATTR_DEVICE_CLASS)
         self._device_name = name
         self._enabled_default = sr_data.get(ATTR_ENABLED_DEFAULT)
