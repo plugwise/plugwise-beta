@@ -105,7 +105,7 @@ async def async_setup_entry_gw(
         )
     )
 
-    async def async_update_data_gw():
+    async def async_update_gw_data():
         """Update data via API endpoint."""
         _LOGGER.debug(f"Updating {api.smile_name}")
         try:
@@ -128,7 +128,7 @@ async def async_setup_entry_gw(
         hass,
         _LOGGER,
         name=f"{api.smile_name}",
-        update_method=async_update_data_gw,
+        update_method=async_update_gw_data,
         update_interval=update_interval,
     )
 
