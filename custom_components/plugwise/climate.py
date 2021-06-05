@@ -206,10 +206,13 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 self._setpoint = schedule_temp
             except PlugwiseException:
                 _LOGGER.error("Error while communicating to device")
+
         try:
             await self._api.set_schedule_state(
                 self._loc_id, self._gw_thermostat.last_active_schema, state
             )
+
+            # Feature request - mimic HomeKit behavior
             if hvac_mode == HVAC_MODE_OFF:
                 preset_mode = PRESET_AWAY
                 await self._api.set_preset(self._loc_id, preset_mode)
@@ -220,6 +223,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._preset_mode = preset_mode
                 self._setpoint = self._gw_thermostat.presets.get(preset_mode, PRESET_NONE)[0]
+
             self._hvac_mode = hvac_mode
             self.async_write_ha_state()
         except PlugwiseException:
