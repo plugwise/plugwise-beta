@@ -28,7 +28,14 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## New Apr 2021 [0.14.6]
+## NEW Jun 2021 [0.15.0]
+- Link to plugwise v0.10.0 https://github.com/plugwise/python-plugwise/releases/tag/0.10.0
+- Smile/Stretch: adapt to changes in plugwise v0.10.0 resulting in simpler/less code
+
+## NEW Jun 2021 [0.14.7]
+- Stick: adapt to changed storage format of "system options" in HA 2021.6
+
+## Apr 2021 [0.14.6]
 - Link to plugwise v0.9.4 https://github.com/plugwise/python-plugwise/releases/tag/0.9.4
 - Stick
   - Fix Issue #168
