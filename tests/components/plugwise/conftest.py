@@ -96,12 +96,12 @@ def mock_smile_adam():
             return_value=True
         )
 
-        smile_mock.return_value.get_all_devices.return_value = _read_json(
+        smile_mock.return_value.gw_devices = _read_json(
             chosen_env, "all_devices"
         )
-        smile_mock.return_value.get_device_data.side_effect = partial(
-            _get_device_data, chosen_env
-        )
+        #smile_mock.return_value.get_device_data.side_effect = partial(
+        #    _get_device_data, chosen_env
+        #)
 
         yield smile_mock.return_value
 
@@ -139,12 +139,12 @@ def mock_smile_anna():
             return_value=True
         )
 
-        smile_mock.return_value.get_all_devices.return_value = _read_json(
+        smile_mock.return_value.gw_devices = _read_json(
             chosen_env, "all_devices"
         )
-        smile_mock.return_value.get_device_data.side_effect = partial(
-            _get_device_data, chosen_env
-        )
+        #smile_mock.return_value.get_device_data.side_effect = partial(
+        #    _get_device_data, chosen_env
+        #)
 
         yield smile_mock.return_value
 
@@ -173,12 +173,12 @@ def mock_smile_p1():
             return_value=None
         )
 
-        smile_mock.return_value.get_all_devices.return_value = _read_json(
+        smile_mock.return_value.gw_devices = _read_json(
             chosen_env, "all_devices"
         )
-        smile_mock.return_value.get_device_data.side_effect = partial(
-            _get_device_data, chosen_env
-        )
+        #smile_mock.return_value.get_device_data.side_effect = partial(
+        #    _get_device_data, chosen_env
+        #)
 
         yield smile_mock.return_value
 
@@ -204,11 +204,11 @@ def mock_stretch():
             return_value=True
         )
 
-        smile_mock.return_value.get_all_devices.return_value = _read_json(
+        smile_mock.return_value.gw_devices = _read_json(
             chosen_env, "all_devices"
         )
-        smile_mock.return_value.get_device_data.side_effect = partial(
-            _get_device_data, chosen_env
-        )
+        #smile_mock.return_value.get_device_data.side_effect = partial(
+        #    _get_device_data, chosen_env
+        #)
 
         yield smile_mock.return_value
