@@ -1,6 +1,5 @@
 """Setup mocks for the Plugwise integration tests."""
 
-from functools import partial
 import re
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -99,9 +98,6 @@ def mock_smile_adam():
         smile_mock.return_value.gw_devices = _read_json(
             chosen_env, "all_devices"
         )
-        #smile_mock.return_value.get_device_data.side_effect = partial(
-        #    _get_device_data, chosen_env
-        #)
 
         yield smile_mock.return_value
 
@@ -142,9 +138,6 @@ def mock_smile_anna():
         smile_mock.return_value.gw_devices = _read_json(
             chosen_env, "all_devices"
         )
-        #smile_mock.return_value.get_device_data.side_effect = partial(
-        #    _get_device_data, chosen_env
-        #)
 
         yield smile_mock.return_value
 
@@ -176,9 +169,6 @@ def mock_smile_p1():
         smile_mock.return_value.gw_devices = _read_json(
             chosen_env, "all_devices"
         )
-        #smile_mock.return_value.get_device_data.side_effect = partial(
-        #    _get_device_data, chosen_env
-        #)
 
         yield smile_mock.return_value
 
@@ -207,8 +197,5 @@ def mock_stretch():
         smile_mock.return_value.gw_devices = _read_json(
             chosen_env, "all_devices"
         )
-        #smile_mock.return_value.get_device_data.side_effect = partial(
-        #    _get_device_data, chosen_env
-        #)
 
         yield smile_mock.return_value
