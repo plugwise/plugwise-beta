@@ -27,6 +27,7 @@ async def test_adam_climate_sensor_entities(hass, mock_smile_adam):
     state = hass.states.get("sensor.zone_lisa_wk_battery")
     assert int(state.state) == 34
 
+
 async def test_anna_as_smt_climate_sensor_entities(hass, mock_smile_anna):
     """Test creation of climate related sensor entities."""
     entry = await async_init_integration(hass, mock_smile_anna)
