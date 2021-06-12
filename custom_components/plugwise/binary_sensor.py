@@ -1,20 +1,25 @@
 """Plugwise Binary Sensor component for Home Assistant."""
 
 import logging
-
 import voluptuous as vol
+
+from plugwise.entities import GW_B_Sensor
 
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     DOMAIN as BINARY_SENSOR_DOMAIN,
 )
-from homeassistant.const import ATTR_NAME, ATTR_STATE
-
+from homeassistant.const import (
+    ATTR_ID,
+    ATTR_NAME,
+    ATTR_STATE,
+)
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv, entity_platform
 
 from .const import (
     API,
+    ATTR_ENABLED_DEFAULT,
     ATTR_SCAN_DAYLIGHT_MODE,
     ATTR_SCAN_SENSITIVITY_MODE,
     ATTR_SCAN_RESET_TIMER,
@@ -26,21 +31,13 @@ from .const import (
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
-    FLAME_ICON,
-    FLOW_OFF_ICON,
-    FLOW_ON_ICON,
     FW,
-    GW_BINARY_SENSORS,
-    IDLE_ICON,
-    NO_NOTIFICATION_ICON,
-    NOTIFICATION_ICON,
     PW_CLASS,
     PW_MODEL,
     PW_TYPE,
     SCAN_SENSITIVITY_MODES,
     SERVICE_CONFIGURE_BATTERY,
     SERVICE_CONFIGURE_SCAN,
-    SEVERITIES,
     STICK,
     STICK_API,
     USB,
@@ -127,94 +124,73 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    is_thermostat = api.single_master_thermostat()
+    for dev_id in api.gw_devices:
+        for key in api.gw_devices[dev_id]:
+            if key != "binary_sensors":
+                continue
 
-    devices = api.get_all_devices()
-    for dev_id in devices:
-        if devices[dev_id][PW_CLASS] == "heater_central":
-            _LOGGER.debug("Plugwise device_class %s found", devices[dev_id][PW_CLASS])
-            data = api.get_device_data(dev_id)
-            for binary_sensor in GW_BINARY_SENSORS:
-                _LOGGER.debug("Binary_sensor: %s", binary_sensor)
-                if binary_sensor not in data:
-                    continue
-
-                _LOGGER.debug(
-                    "Plugwise binary_sensor Dev %s", devices[dev_id][ATTR_NAME]
-                )
+            for data in api.gw_devices[dev_id]["binary_sensors"]:
                 entities.append(
                     GwBinarySensor(
                         api,
                         coordinator,
-                        devices[dev_id][ATTR_NAME],
                         dev_id,
-                        True,
-                        binary_sensor,
-                        GW_BINARY_SENSORS[binary_sensor],
-                        devices[dev_id][PW_MODEL],
-                        devices[dev_id][VENDOR],
-                        devices[dev_id][FW],
+                        api.gw_devices[dev_id].get(ATTR_NAME),
+                        data,
                     )
                 )
-                _LOGGER.info(
-                    "Added binary_sensor.%s",
-                    f"{devices[dev_id][ATTR_NAME]}_{binary_sensor}",
-                )
-        if devices[dev_id][PW_CLASS] == "gateway" and is_thermostat is not None:
-            _LOGGER.debug("Plugwise device_class %s found", devices[dev_id][PW_CLASS])
-            entities.append(
-                GwNotifySensor(
-                    api,
-                    coordinator,
-                    devices[dev_id][ATTR_NAME],
-                    dev_id,
-                    "plugwise_notification",
-                    devices[dev_id][PW_MODEL],
-                    devices[dev_id][VENDOR],
-                    devices[dev_id][FW],
-                )
-            )
-            _LOGGER.info(
-                "Added binary_sensor.%s",
-                f"{devices[dev_id][ATTR_NAME]}_{'plugwise_notification'}",
-            )
 
     async_add_entities(entities, True)
 
 
-class SmileBinarySensor(SmileGateway):
-    """Represent Smile Binary Sensors."""
+class GwBinarySensor(SmileGateway, BinarySensorEntity):
+    """Representation of a Gateway binary_sensor."""
 
     def __init__(
         self,
         api,
         coordinator,
-        name,
         dev_id,
-        enabled_default,
-        binary_sensor,
-        key,
-        model,
-        vendor,
-        fw,
+        name,
+        bs_data,
     ):
         """Initialise the binary_sensor."""
-        super().__init__(api, coordinator, name, dev_id, model, vendor, fw)
+        super().__init__(
+            api,
+            coordinator,
+            dev_id,
+            name,
+            api.gw_devices[dev_id].get(PW_MODEL),
+            api.gw_devices[dev_id].get(VENDOR),
+            api.gw_devices[dev_id].get(FW),
+        )
 
-        self._binary_sensor = binary_sensor
-        self._enabled_default = enabled_default
+        self._gw_b_sensor = GW_B_Sensor(api, dev_id, bs_data[ATTR_ID])
+
+        self._api = api
+        self._attributes = {}
+        self._binary_sensor = bs_data.get(ATTR_ID)
+        self._bs_data = bs_data
+        self._dev_id = dev_id
+        self._device_class = None
+        self._device_name = name
+        if self._api.gw_devices[self._dev_id][PW_CLASS] == "gateway":
+            self._device_name = f"Smile {name}"
+        self._enabled_default = self._bs_data.get(ATTR_ENABLED_DEFAULT)
         self._icon = None
         self._is_on = False
-
-        if dev_id == self._api.gateway_id:
-            self._name = f"Smile {self._name}"
-
-        self._unique_id = f"{dev_id}-{binary_sensor}"
+        self._name = f"{name} {self._bs_data.get(ATTR_NAME)}"
+        self._unique_id = f"{dev_id}-{self._binary_sensor}"
 
     @property
     def entity_registry_enabled_default(self) -> bool:
         """Return if the entity should be enabled when first added to the entity registry."""
         return self._enabled_default
+
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        return self._attributes
 
     @property
     def icon(self):
@@ -229,119 +205,16 @@ class SmileBinarySensor(SmileGateway):
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        raise NotImplementedError
+        self._gw_b_sensor.update_data()
+        self._attributes = self._gw_b_sensor.extra_state_attributes
+        self._is_on = self._gw_b_sensor.is_on
+        self._icon = self._gw_b_sensor.icon
 
-
-class GwBinarySensor(SmileBinarySensor, BinarySensorEntity):
-    """Representation of a Gateway binary_sensor."""
-
-    def __init__(
-        self,
-        api,
-        coordinator,
-        name,
-        dev_id,
-        enabled_default,
-        binary_sensor,
-        key,
-        model,
-        vendor,
-        fw,
-    ):
-        """Initialise the binary_sensor."""
-        super().__init__(
-            api,
-            coordinator,
-            name,
-            dev_id,
-            enabled_default,
-            binary_sensor,
-            key,
-            model,
-            vendor,
-            fw,
-        )
-
-        self._enabled_default = enabled_default
-        self._name = f"{name} {key[ATTR_NAME]}"
-
-    @callback
-    def _async_process_data(self):
-        """Update the entity."""
-        # _LOGGER.debug("Update binary_sensor called")
-        data = self._api.get_device_data(self._dev_id)
-
-        if self._binary_sensor not in data:
-            self.async_write_ha_state()
-            return
-
-        self._is_on = data[self._binary_sensor]
-
-        if self._binary_sensor == "dhw_state":
-            self._icon = FLOW_ON_ICON if self._is_on else FLOW_OFF_ICON
-        if self._binary_sensor == "flame_state":
-            self._icon = FLAME_ICON if self._is_on else IDLE_ICON
-        if self._binary_sensor == "slave_boiler_state":
-            self._icon = FLAME_ICON if self._is_on else IDLE_ICON
-
-        self.async_write_ha_state()
-
-
-class GwNotifySensor(SmileBinarySensor, BinarySensorEntity):
-    """Representation of a Plugwise Notification binary_sensor."""
-
-    def __init__(
-        self, api, coordinator, name, dev_id, binary_sensor, model, vendor, fw
-    ):
-        """Initialise the notification binary_sensor."""
-        super().__init__(
-            api,
-            coordinator,
-            name,
-            dev_id,
-            False,
-            binary_sensor,
-            None,
-            model,
-            vendor,
-            fw,
-        )
-
-        self._attributes = {}
-        sensorname = binary_sensor.replace("_", " ").title()
-        self._name = f"{name} {sensorname}"
-
-    @property
-    def device_state_attributes(self):
-        """Return the state attributes."""
-        return self._attributes
-
-    @callback
-    def _async_process_data(self):
-        """Update the entity."""
-        for severity in SEVERITIES:
-            self._attributes[f"{severity.upper()}_msg"] = []
-
-        notify = self._api.notifications
-
-        self._is_on = False
-        self._icon = NO_NOTIFICATION_ICON
-
-        if notify != {}:
-            self._is_on = True
-            self._icon = NOTIFICATION_ICON
-
-            for notify_id, details in notify.items():
-                for msg_type, msg in details.items():
-                    if msg_type not in SEVERITIES:
-                        msg_type = "other"
-
-                    self._attributes[f"{msg_type.upper()}_msg"].append(msg)
-                    self.hass.components.persistent_notification.async_create(
-                        f"{msg_type.title()}: {msg}",
-                        "Plugwise Notification:",
-                        f"{DOMAIN}.{notify_id}",
-                    )
+        if self._gw_b_sensor.notification:
+            for notify_id, message in self._gw_b_sensor.notification.items():
+                self.hass.components.persistent_notification.async_create(
+                    message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
+                )
 
         self.async_write_ha_state()
 
@@ -395,5 +268,9 @@ class USBBinarySensor(NodeEntity, BinarySensorEntity):
             str(clock_interval),
         )
         self._node.Configure_SED(
-            stay_active, maintenance_interval, sleep_for, clock_sync, clock_interval,
+            stay_active,
+            maintenance_interval,
+            sleep_for,
+            clock_sync,
+            clock_interval,
         )
