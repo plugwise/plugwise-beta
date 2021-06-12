@@ -89,6 +89,12 @@ echo ""
 echo "Test commencing ..."
 echo ""
 pytest $2 --cov=homeassistant/components/plugwise/ --cov-report term-missing -- tests/components/plugwise/$1 && echo "" && echo "... flake8-ing ..." && flake8 homeassistant/components/plugwise/*py && echo "..." && flake8 tests/components/plugwise/*py && echo "... pylint-ing ..." && pylint homeassistant/components/plugwise/*py && echo "... black-ing ..." && black homeassistant/components/plugwise/*py tests/components/plugwise/*py
+echo ""
+echo "Copy back modified files ..."
+echo ""
+cp -r ./homeassistant/components/plugwise ../custom_components/
+cp -r ./tests/fixtures/plugwise ../tests/fixtures/
+cp -r ./tests/components/plugwise ../tests/components/
 deactivate
 
 #        # disable for further figuring out, apparently HA doesn't pylint against test
