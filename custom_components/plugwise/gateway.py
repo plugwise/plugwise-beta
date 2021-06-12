@@ -114,7 +114,7 @@ async def async_setup_entry_gw(
                 return True
         except XMLDataMissingError as err:
             _LOGGER.debug(
-                "Updating Smile failed, expected XML data for %s"m api.smile_name
+                "Updating Smile failed, expected XML data for %s", api.smile_name
             )
             raise UpdateFailed("Smile update failed") from err
         except PlugwiseException as err:
@@ -147,7 +147,7 @@ async def async_setup_entry_gw(
 
     api.get_all_devices()
     _LOGGER.debug("Gateway is %s", api.gateway_id)
-    _LOGGER.debug("Gateway software version is %s", api.smile_version[0]}
+    _LOGGER.debug("Gateway software version is %s", api.smile_version[0])
     _LOGGER.debug("Appliances are %s", api.gw_devices)
 
     _LOGGER.debug("Single master thermostat = %s", api.single_master_thermostat())
