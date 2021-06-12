@@ -1,0 +1,1 @@
+{"class": "switching", "fw": null, "location": null, "members": ["5ca521ac179d468e91d772eeeb8a2117"], "model": "Group Switch", "name": "Test", "types": {"py/set": ["switch_group"]}, "vendor": "Plugwise", "switches": [{"id": "relay", "enabled_default": true, "name": "", "state": true, "device_class": "outlet", "icon": null}]}
