@@ -106,20 +106,20 @@ async def async_setup_entry_gw(
 
     async def async_update_gw_data():
         """Update data via API endpoint."""
-        _LOGGER.debug(f"Updating {api.smile_name}")
+        _LOGGER.debug("Updating %s", api.smile_name)
         try:
             async with async_timeout.timeout(update_interval.seconds):
                 await api.update_gw_devices()
-                _LOGGER.debug(f"Successfully updated {api.smile_name}")
+                _LOGGER.debug("Successfully updated %s", api.smile_name)
                 return True
         except XMLDataMissingError as err:
             _LOGGER.debug(
-                f"Updating Smile failed, expected XML data for {api.smile_name}"
+                "Updating Smile failed, expected XML data for %s"m api.smile_name
             )
             raise UpdateFailed("Smile update failed") from err
         except PlugwiseException as err:
             _LOGGER.debug(
-                f"Updating failed, generic failure for {api.smile_name}"
+                "Updating failed, generic failure for %s", api.smile_name
             )
             raise UpdateFailed("Smile update failed") from err
 
@@ -146,11 +146,11 @@ async def async_setup_entry_gw(
     }
 
     api.get_all_devices()
-    _LOGGER.debug(f"Gateway is {api.gateway_id}")
-    _LOGGER.debug(f"Gateway software version is {api.smile_version[0]}")
-    _LOGGER.debug(f"Appliances are {api.gw_devices}")
+    _LOGGER.debug("Gateway is %s", api.gateway_id)
+    _LOGGER.debug("Gateway software version is %s", api.smile_version[0]}
+    _LOGGER.debug("Appliances are %s", api.gw_devices)
 
-    _LOGGER.debug(f"Single master thermostat = {api.single_master_thermostat()}")
+    _LOGGER.debug("Single master thermostat = %s", api.single_master_thermostat())
 
     platforms = GATEWAY_PLATFORMS
     if api.single_master_thermostat is None:
@@ -158,13 +158,13 @@ async def async_setup_entry_gw(
 
     async def delete_notification(self):
         """Service: delete the Plugwise Notification."""
-        _LOGGER.debug(f"Service delete PW Notification called for {api.smile_name}")
+        _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
         try:
             deleted = await api.delete_notification()
             _LOGGER.debug(f"PW Notification deleted: {deleted}")
         except PlugwiseException:
             _LOGGER.debug(
-                f"Failed to delete the Plugwise Notification for {api.smile_name}"
+                "Failed to delete the Plugwise Notification for %s", api.smile_name
             )
 
     for component in platforms:
@@ -216,6 +216,7 @@ class SmileGateway(CoordinatorEntity):
         self._api = api
         self._coordinator = coordinator
         self._dev_id = dev_id
+        self._device_class = None
         self._device_name = name
         self._fw_version = fw
         self._manufacturer = vendor

@@ -68,7 +68,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             DEFAULT_MIN_TEMP,
         )
         entities.append(thermostat)
-        _LOGGER.info(f"Added climate.{api.gw_devices[dev_id].get(ATTR_NAME)}")
+        _LOGGER.info("Added climate %s entity", api.gw_devices[dev_id].get(ATTR_NAME))
 
     async_add_entities(entities, True)
 
@@ -101,9 +101,12 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._api = api
         self._device_class = None
         self._device_name = self._name = name
+        self._hvac_mode = None
         self._loc_id = self._api.gw_devices[dev_id].get(PW_LOCATION)
         self._max_temp = max_temp
         self._min_temp = min_temp
+        self._preset_mode = None
+        self._setpoint = None
 
         self._unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
 
@@ -117,7 +120,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 return CURRENT_HVAC_COOL
             return CURRENT_HVAC_IDLE
 
-        if self._therm_gw_thermostatostat.target_temperature > self._gw_thermostat.current_temperature:
+        if self._gw_thermostatostat.target_temperature > self._gw_thermostat.current_temperature:
             return CURRENT_HVAC_HEAT
         return CURRENT_HVAC_IDLE
 
