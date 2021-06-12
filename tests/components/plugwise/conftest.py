@@ -60,7 +60,7 @@ def mock_smile_notconnect():
 
 def _get_device_data(chosen_env, device_id):
     """Mock return data for specific devices."""
-    return _read_json(chosen_env, "get_device_data/" + device_id)
+    return _read_json(chosen_env, "device_data/" + device_id)
 
 
 @pytest.fixture(name="mock_smile_adam")
@@ -97,7 +97,7 @@ def mock_smile_adam():
         )
 
         smile_mock.return_value.get_all_devices.return_value = _read_json(
-            chosen_env, "get_all_devices"
+            chosen_env, "all_devices"
         )
         smile_mock.return_value.get_device_data.side_effect = partial(
             _get_device_data, chosen_env
@@ -140,7 +140,7 @@ def mock_smile_anna():
         )
 
         smile_mock.return_value.get_all_devices.return_value = _read_json(
-            chosen_env, "get_all_devices"
+            chosen_env, "all_devices"
         )
         smile_mock.return_value.get_device_data.side_effect = partial(
             _get_device_data, chosen_env
@@ -174,7 +174,7 @@ def mock_smile_p1():
         )
 
         smile_mock.return_value.get_all_devices.return_value = _read_json(
-            chosen_env, "get_all_devices"
+            chosen_env, "all_devices"
         )
         smile_mock.return_value.get_device_data.side_effect = partial(
             _get_device_data, chosen_env
@@ -205,7 +205,7 @@ def mock_stretch():
         )
 
         smile_mock.return_value.get_all_devices.return_value = _read_json(
-            chosen_env, "get_all_devices"
+            chosen_env, "all_devices"
         )
         smile_mock.return_value.get_device_data.side_effect = partial(
             _get_device_data, chosen_env
