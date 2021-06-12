@@ -73,7 +73,7 @@ def mock_smile_adam():
         smile_mock.XMLDataMissingError = XMLDataMissingError
 
         smile_mock.return_value.gateway_id = "fe799307f1624099878210aa0b9f1475"
-        smile_mock.return_value.heater_id = "90986d591dcd426cae3ec3e8111ff730"
+        smile_mock.return_value.active_device_present = False
         smile_mock.return_value.smile_version = "3.0.15"
         smile_mock.return_value.smile_type = "thermostat"
         smile_mock.return_value.smile_hostname = "smile98765"
