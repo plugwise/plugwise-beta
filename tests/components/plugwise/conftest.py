@@ -81,7 +81,7 @@ def mock_smile_adam():
         smile_mock.return_value.notifications = _read_json(chosen_env, "notifications")
 
         smile_mock.return_value.connect.side_effect = AsyncMock(return_value=True)
-        smile_mock.return_value.update_device.side_effect = AsyncMock(return_value=True)
+        smile_mock.return_value.update_gw_devices.side_effect = AsyncMock(return_value=True)
         smile_mock.return_value.single_master_thermostat.side_effect = Mock(
             return_value=False
         )
@@ -124,7 +124,7 @@ def mock_smile_anna():
         smile_mock.return_value.notifications = _read_json(chosen_env, "notifications")
 
         smile_mock.return_value.connect.side_effect = AsyncMock(return_value=True)
-        smile_mock.return_value.update_device.side_effect = AsyncMock(return_value=True)
+        smile_mock.return_value.update_gw_devices.side_effect = AsyncMock(return_value=True)
         smile_mock.return_value.single_master_thermostat.side_effect = Mock(
             return_value=True
         )
@@ -167,7 +167,7 @@ def mock_smile_p1():
         smile_mock.return_value.notifications = _read_json(chosen_env, "notifications")
 
         smile_mock.return_value.connect.side_effect = AsyncMock(return_value=True)
-        smile_mock.return_value.update_device.side_effect = AsyncMock(return_value=True)
+        smile_mock.return_value.update_gw_devices.side_effect = AsyncMock(return_value=True)
 
         smile_mock.return_value.single_master_thermostat.side_effect = Mock(
             return_value=None
@@ -199,7 +199,7 @@ def mock_stretch():
         smile_mock.return_value.smile_hostname = "stretch98765"
 
         smile_mock.return_value.connect.side_effect = AsyncMock(return_value=True)
-        smile_mock.return_value.update_device.side_effect = AsyncMock(return_value=True)
+        smile_mock.return_value.update_gw_devices.side_effect = AsyncMock(return_value=True)
         smile_mock.return_value.set_switch_state.side_effect = AsyncMock(
             return_value=True
         )
