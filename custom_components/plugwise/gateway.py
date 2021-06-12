@@ -53,9 +53,7 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry_gw(
-    hass: HomeAssistant, entry: ConfigEntry
-) -> bool:
+async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     websession = async_get_clientsession(hass, verify_ssl=False)
 
@@ -118,9 +116,7 @@ async def async_setup_entry_gw(
             )
             raise UpdateFailed("Smile update failed") from err
         except PlugwiseException as err:
-            _LOGGER.debug(
-                "Updating failed, generic failure for %s", api.smile_name
-            )
+            _LOGGER.debug("Updating failed, generic failure for %s", api.smile_name)
             raise UpdateFailed("Smile update failed") from err
 
     coordinator = DataUpdateCoordinator(

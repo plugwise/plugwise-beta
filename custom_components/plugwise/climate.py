@@ -120,7 +120,10 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 return CURRENT_HVAC_COOL
             return CURRENT_HVAC_IDLE
 
-        if self._gw_thermostat.target_temperature > self._gw_thermostat.current_temperature:
+        if (
+            self._gw_thermostat.target_temperature
+            > self._gw_thermostat.current_temperature
+        ):
             return CURRENT_HVAC_HEAT
         return CURRENT_HVAC_IDLE
 
@@ -220,12 +223,19 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 preset_mode = PRESET_AWAY
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._preset_mode = preset_mode
-                self._setpoint = self._gw_thermostat.presets.get(preset_mode, PRESET_NONE)[0]
-            if hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_HEAT_COOL] and self._preset_mode == PRESET_AWAY:
+                self._setpoint = self._gw_thermostat.presets.get(
+                    preset_mode, PRESET_NONE
+                )[0]
+            if (
+                hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_HEAT_COOL]
+                and self._preset_mode == PRESET_AWAY
+            ):
                 preset_mode = PRESET_HOME
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._preset_mode = preset_mode
-                self._setpoint = self._gw_thermostat.presets.get(preset_mode, PRESET_NONE)[0]
+                self._setpoint = self._gw_thermostat.presets.get(
+                    preset_mode, PRESET_NONE
+                )[0]
 
             self._hvac_mode = hvac_mode
             self.async_write_ha_state()
@@ -237,7 +247,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
         try:
             await self._api.set_preset(self._loc_id, preset_mode)
             self._preset_mode = preset_mode
-            self._setpoint = self._gw_thermostat.presets.get(preset_mode, PRESET_NONE)[0]
+            self._setpoint = self._gw_thermostat.presets.get(preset_mode, PRESET_NONE)[
+                0
+            ]
             self.async_write_ha_state()
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")

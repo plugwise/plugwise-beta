@@ -738,7 +738,8 @@ async def test_options_flow_stick_with_input(hass) -> None:
 
         result = await hass.config_entries.options.async_init(entry.entry_id)
         result = await hass.config_entries.options.async_configure(
-            result["flow_id"], user_input={CONF_USB_PATH: TEST_USBPORT2},
+            result["flow_id"],
+            user_input={CONF_USB_PATH: TEST_USBPORT2},
         )
 
         assert result["type"] == RESULT_TYPE_CREATE_ENTRY

@@ -268,5 +268,9 @@ class USBBinarySensor(NodeEntity, BinarySensorEntity):
             str(clock_interval),
         )
         self._node.Configure_SED(
-            stay_active, maintenance_interval, sleep_for, clock_sync, clock_interval,
+            stay_active,
+            maintenance_interval,
+            sleep_for,
+            clock_sync,
+            clock_interval,
         )
