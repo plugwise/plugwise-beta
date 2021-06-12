@@ -9,10 +9,24 @@ from tests.components.plugwise.common import async_init_integration
 
 async def test_anna_climate_binary_sensor_entities(hass, mock_smile_anna):
     """Test creation of climate related binary_sensor entities."""
+    a_sensor = "binary_sensor.auxiliary_slave_boiler_state"
+
     entry = await async_init_integration(hass, mock_smile_anna)
     assert entry.state == ConfigEntryState.LOADED
 
-    state = hass.states.get("binary_sensor.auxiliary_secondary_heater_device_state")
+    # Enable the auxiliary sensor
+    registry = await async_get_registry(hass)
+    updated_entry = registry.async_update_entity(a_sensor, disabled_by=None)
+
+    assert updated_entry != entry
+    assert updated_entry.disabled is False
+
+    await hass.async_block_till_done()
+
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+
+    state = hass.states.get("binary_sensor.auxiliary_slave_boiler_state")
     assert str(state.state) == STATE_OFF
 
     state = hass.states.get("binary_sensor.auxiliary_dhw_state")
