@@ -45,7 +45,6 @@ from .const import (
     PW_TYPE,
     SENSOR_PLATFORMS,
     SERVICE_DELETE,
-    SMILE,
     UNDO_UPDATE_LISTENER,
 )
 

@@ -10,8 +10,6 @@ from homeassistant.components.binary_sensor import (
     DOMAIN as BINARY_SENSOR_DOMAIN,
 )
 from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ICON,
     ATTR_ID,
     ATTR_NAME,
     ATTR_STATE,
@@ -215,8 +213,8 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         if self._gw_b_sensor.notification:
             for notify_id, message in self._gw_b_sensor.notification.items():
                 self.hass.components.persistent_notification.async_create(
-                message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}",
-            )
+                    message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
+                )
 
         self.async_write_ha_state()
 
