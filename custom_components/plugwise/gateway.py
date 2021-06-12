@@ -161,7 +161,7 @@ async def async_setup_entry_gw(
         _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
         try:
             deleted = await api.delete_notification()
-            _LOGGER.debug(f"PW Notification deleted: {deleted}")
+            _LOGGER.debug("PW Notification deleted: %s", deleted)
         except PlugwiseException:
             _LOGGER.debug(
                 "Failed to delete the Plugwise Notification for %s", api.smile_name
