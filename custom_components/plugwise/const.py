@@ -67,7 +67,12 @@ SENSOR_PLATFORMS = [SENSOR_DOMAIN, SWITCH_DOMAIN]
 SERVICE_DELETE = "delete_notification"
 
 # Climate const:
-MASTER_THERMOSTATS = ["thermostat", "zone_thermostat", "thermostatic_radiator_valve"]
+MASTER_THERMOSTATS = [
+    "thermostat",
+    "zone_thermometer",
+    "zone_thermostat",
+    "thermostatic_radiator_valve",
+]
 
 # Config_flow const:
 ZEROCONF_MAP = {
