@@ -122,7 +122,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._icon = None
         self._is_on = False
         self._members = None
-        if "members" in api.devices[dev_id]:
+        if "members" in api.gw_devices[dev_id]:
             self._members = api.gw_devices[dev_id].get("members")
         self._name = f"{name} {sw_data.get(ATTR_NAME)}"
         self._switch = sw_data.get(ATTR_ID)
