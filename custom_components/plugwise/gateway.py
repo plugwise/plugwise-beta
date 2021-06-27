@@ -149,7 +149,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.debug("Single master thermostat = %s", api.single_master_thermostat())
 
     platforms = GATEWAY_PLATFORMS
-    if api.single_master_thermostat is None:
+    if api.single_master_thermostat() is None:
         platforms = SENSOR_PLATFORMS
 
     async def delete_notification(self):
