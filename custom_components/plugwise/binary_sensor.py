@@ -3,7 +3,7 @@
 import logging
 import voluptuous as vol
 
-from plugwise.entities import GW_B_Sensor
+from plugwise.entities import GWBinarySensor
 
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
@@ -165,7 +165,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
             api.gw_devices[dev_id].get(FW),
         )
 
-        self._gw_b_sensor = GW_B_Sensor(api, dev_id, bs_data[ATTR_ID])
+        self._gw_b_sensor = GWBinarySensor(api, dev_id, bs_data[ATTR_ID])
 
         self._api = api
         self._attributes = {}
