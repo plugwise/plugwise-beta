@@ -16,7 +16,7 @@ from plugwise.exceptions import (
     StickInitError,
     TimeoutException,
 )
-from plugwise.stick import stick
+from plugwise.stick import Stick
 from plugwise.smile import Smile
 
 from homeassistant import config_entries, core, exceptions
@@ -85,7 +85,7 @@ async def validate_usb_connection(self, device_path=None) -> dict[str, str]:
         errors[CONF_BASE] = "already_configured"
         return errors, None
 
-    api_stick = await self.async_add_executor_job(stick, device_path)
+    api_stick = await self.async_add_executor_job(Stick, device_path)
     try:
         await self.async_add_executor_job(api_stick.connect)
         await self.async_add_executor_job(api_stick.initialize_stick)

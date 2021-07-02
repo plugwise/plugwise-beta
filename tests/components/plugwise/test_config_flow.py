@@ -480,9 +480,9 @@ async def test_options_flow_thermo(hass, mock_smile) -> None:
 
 
 @patch("serial.tools.list_ports.comports", MagicMock(return_value=[com_port()]))
-@patch("plugwise.stick.connect", MagicMock(return_value=None))
-@patch("plugwise.stick.initialize_stick", MagicMock(return_value=None))
-@patch("plugwise.stick.disconnect", MagicMock(return_value=None))
+@patch("plugwise.Stick.connect", MagicMock(return_value=None))
+@patch("plugwise.Stick.initialize_stick", MagicMock(return_value=None))
+@patch("plugwise.Stick.disconnect", MagicMock(return_value=None))
 async def test_user_flow_select(hass):
     """Test user flow when USB-stick is selected from list."""
     port = com_port()
@@ -532,7 +532,7 @@ async def test_user_flow_manual(hass):
     )
 
     with patch(
-        "homeassistant.components.plugwise.config_flow.stick",
+        "homeassistant.components.plugwise.config_flow.Stick",
     ) as usb_mock:
         usb_mock.return_value.connect = MagicMock(return_value=True)
         usb_mock.return_value.initialize_stick = MagicMock(return_value=True)
@@ -589,8 +589,8 @@ async def test_empty_connection(hass):
     assert result["errors"] == {}
 
 
-@patch("plugwise.stick.connect", MagicMock(return_value=None))
-@patch("plugwise.stick.initialize_stick", MagicMock(side_effect=(StickInitError)))
+@patch("plugwise.Stick.connect", MagicMock(return_value=None))
+@patch("plugwise.Stick.initialize_stick", MagicMock(side_effect=(StickInitError)))
 async def test_failed_initialization(hass):
     """Test we handle failed initialization of Plugwise USB-stick."""
     result = await hass.config_entries.flow.async_init(
@@ -610,8 +610,8 @@ async def test_failed_initialization(hass):
     assert result["errors"] == {"base": "stick_init"}
 
 
-@patch("plugwise.stick.connect", MagicMock(return_value=None))
-@patch("plugwise.stick.initialize_stick", MagicMock(side_effect=(NetworkDown)))
+@patch("plugwise.Stick.connect", MagicMock(return_value=None))
+@patch("plugwise.Stick.initialize_stick", MagicMock(side_effect=(NetworkDown)))
 async def test_network_down_exception(hass):
     """Test we handle network_down exception."""
     result = await hass.config_entries.flow.async_init(
@@ -631,8 +631,8 @@ async def test_network_down_exception(hass):
     assert result["errors"] == {"base": "network_down"}
 
 
-@patch("plugwise.stick.connect", MagicMock(return_value=None))
-@patch("plugwise.stick.initialize_stick", MagicMock(side_effect=(TimeoutException)))
+@patch("plugwise.Stick.connect", MagicMock(return_value=None))
+@patch("plugwise.Stick.initialize_stick", MagicMock(side_effect=(TimeoutException)))
 async def test_timeout_exception(hass):
     """Test we handle time exception."""
     result = await hass.config_entries.flow.async_init(
