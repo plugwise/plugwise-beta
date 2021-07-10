@@ -33,7 +33,7 @@
         }
       },
       "user_usb": {
-        "title": "Setup direct connection to Plugwise USB-stick",
+        "title": "Connect to Plugwise Stick",
         "description": "Please enter:",
         "data": {
           "usb_path": "USB Path"

@@ -33,7 +33,7 @@
         }
       },
       "user_usb": {
-        "title": "Verbinden met een legacy USB-stick",
+        "title": "Verbinden met de Plugwise Stick",
         "description": "Aub invoeren:",
         "data": {
           "usb_path": "USB pad"
