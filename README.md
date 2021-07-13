@@ -28,7 +28,12 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW Jun 2021
+## NEW Jul 2021
+## [0.16.1]
+- Link to plugwise v0.11.2 https://github.com/plugwise/python-plugwise/releases/tag/0.11.2
+- Fix issue #183: config_flow looks different in Core 2021.7.0
+
+## Jun 2021
 ## [0.16.0]
 - Link to plugwise v0.11.0 https://github.com/plugwise/python-plugwise/releases/tag/0.11.0
 - Smile: 
