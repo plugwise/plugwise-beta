@@ -33,16 +33,15 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 - Link to plugwise v0.11.2 https://github.com/plugwise/python-plugwise/releases/tag/0.11.2
 - Fix issue #183: config_flow looks different in Core 2021.7.0
 
-## Jun 2021
-## [0.16.0]
+## Jun 2021 [0.16.0]
 - Link to plugwise v0.11.0 https://github.com/plugwise/python-plugwise/releases/tag/0.11.0
 - Smile: 
   - add support for Plugwise Jip
   - bugfix: fix missing Tom/Floor climate-devices
-## [0.15.0]
+## Jun 2021 [0.15.0]
 - Link to plugwise v0.10.0 https://github.com/plugwise/python-plugwise/releases/tag/0.10.0
 - Smile/Stretch: adapt to changes in plugwise v0.10.0 resulting in simpler/less code
-## [0.14.7]
+## Jun 2021 [0.14.7]
 - Stick: adapt to changed storage format of "system options" in HA 2021.6
 
 ## Apr 2021 [0.14.6]
