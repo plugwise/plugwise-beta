@@ -41,11 +41,11 @@ STRETCH_USERNAME = "stretch"
 VENDOR = "vendor"
 USB = "usb"
 
-FLOW_NET = "flow_network"
-FLOW_SMILE = "smile (Adam/Anna/P1)"
-FLOW_STRETCH = "stretch (Stretch)"
+FLOW_NET = "Network: Smile/Stretch"
+FLOW_SMILE = "Smile (Adam/Anna/P1)"
+FLOW_STRETCH = "Stretch (Stretch)"
 FLOW_TYPE = "flow_type"
-FLOW_USB = "flow_usb"
+FLOW_USB = "USB: Stick"
 
 UNDO_UPDATE_LISTENER = "undo_update_listener"
 

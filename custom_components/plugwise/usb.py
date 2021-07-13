@@ -11,7 +11,7 @@ from plugwise.exceptions import (
     StickInitError,
     TimeoutException,
 )
-from plugwise.stick import stick
+from plugwise.stick import Stick
 
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
@@ -118,7 +118,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     def shutdown(event):
         hass.async_add_executor_job(api_stick.disconnect)
 
-    api_stick = stick(config_entry.data[CONF_USB_PATH])
+    api_stick = Stick(config_entry.data[CONF_USB_PATH])
     hass.data[DOMAIN][config_entry.entry_id] = {PW_TYPE: USB, STICK: api_stick}
     try:
         _LOGGER.debug("Connect to USB-Stick")

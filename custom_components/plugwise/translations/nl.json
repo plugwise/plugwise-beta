@@ -6,7 +6,7 @@
         "description": "Deze Integratie heeft geen Opties"
       },
       "init": {
-        "description": "Plugwise Opties aanpassen",
+        "description": "Smile/Stretch Opties aanpassen",
         "data": {
           "scan_interval": "Scan Interval (seconden)"
         }
@@ -14,27 +14,26 @@
     }
   },
   "config": {
-    "flow_title": "Smile: {name}",
+    "flow_title": "Plugwise {name}",
     "step": {
       "user": {
-        "title": "Plugwise type",
-        "description": "Product:",
+        "description": "Selecteer je Plugwise connectie-type",
         "data": {
-          "flow_type": "Connectie type"
+          "flow_type": "Connectie-type"
         }
       },
       "user_gateway": {
-        "title": "Verbinden met de Plugwise Smile",
+        "title": "Verbinden met de Plugwise Smile/Stretch",
         "description": "Aub invoeren:",
         "data": {
-          "password": "Smile ID",
-          "username" : "Smile gebruikersnaam",
-          "host": "Smile IP-adres",
-          "port": "Smile poort nummer"
+          "password": "ID",
+          "username" : "Gebruikersnaam",
+          "host": "IP-adres",
+          "port": "Poortnummer"
         }
       },
       "user_usb": {
-        "title": "Verbinden met een legacy USB-stick",
+        "title": "Verbinden met de Plugwise Stick",
         "description": "Aub invoeren:",
         "data": {
           "usb_path": "USB pad"
@@ -48,12 +47,12 @@
     },
     "error": {
       "already_configured": "Dit apparaat is al geconfigureerd",
-      "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je Smile goed in",
+      "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je ID goed in",
       "cannot_connect": "Verbinding mislukt, probeer het opnieuw",
       "network_down": "Plugwise Zigbee netwerk is down",
       "network_timeout": "Network communicatie timeout",
       "stick_init": "Initaliseren van USB-stick mislukt",
-      "unknown": "Onbekende fout"
+      "unknown": "Onbekende fout!"
     },
     "abort": {
       "already_configured": "Dit apparaat is al geconfigureerd"

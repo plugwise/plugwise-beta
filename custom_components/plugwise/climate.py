@@ -2,7 +2,7 @@
 
 import logging
 
-from plugwise.entities import GW_Thermostat
+from plugwise.entities import GWThermostat
 from plugwise.exceptions import PlugwiseException
 
 from homeassistant.components.climate import ClimateEntity
@@ -96,7 +96,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
             api.gw_devices[dev_id].get(FW),
         )
 
-        self._gw_thermostat = GW_Thermostat(api, dev_id)
+        self._gw_thermostat = GWThermostat(api, dev_id)
 
         self._api = api
         self._device_class = None
