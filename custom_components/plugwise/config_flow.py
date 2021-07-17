@@ -60,7 +60,7 @@ CONF_MANUAL_PATH = "Enter Manually"
 CONNECTION_SCHEMA = vol.Schema(
     {
         vol.Required(FLOW_TYPE, default=FLOW_NET): vol.In(
-            {FLOW_NET: f"Network: {SMILE} / {STRETCH}", FLOW_USB: "USB: Stick"}
+            {FLOW_NET, FLOW_USB}
         ),
     },
 )
