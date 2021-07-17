@@ -58,9 +58,7 @@ _LOGGER = logging.getLogger(__name__)
 CONF_MANUAL_PATH = "Enter Manually"
 
 CONNECTION_SCHEMA = vol.Schema(
-    {
-        vol.Required(FLOW_TYPE, default=FLOW_NET): vol.In({FLOW_NET, FLOW_USB}),
-    },
+    {vol.Required(FLOW_TYPE, default=FLOW_NET): vol.In([FLOW_NET, FLOW_USB])}
 )
 
 
