@@ -127,7 +127,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         update_interval=update_interval,
     )
 
-    await coordinator.async_refresh()
+    await coordinator.async_config_entry_first_refresh()
 
     if not coordinator.last_update_success:
         raise ConfigEntryNotReady
@@ -179,10 +179,10 @@ async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
     unload_ok = all(
         await asyncio.gather(
-            *[
+            *(
                 hass.config_entries.async_forward_entry_unload(entry, component)
                 for component in GATEWAY_PLATFORMS
-            ]
+            )
         )
     )
 
