@@ -12,7 +12,11 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.sensor import (
+    DOMAIN as SENSOR_DOMAIN,
+    ATTR_LAST_RESET,
+    ATTR_STATE_CLASS,
+)
 
 from .gateway import SmileGateway
 from .usb import NodeEntity
@@ -117,6 +121,8 @@ class GwSensor(SmileGateway, Entity):
         )
 
         self._device_class = sr_data.get(ATTR_DEVICE_CLASS)
+        self._state_class = sr_data.get(ATTR_STATE_CLASS)
+        self._last_reset = sr_data.get(ATTR_LAST_RESET)
         self._device_name = name
         self._enabled_default = sr_data.get(ATTR_ENABLED_DEFAULT)
         self._icon = None
@@ -139,9 +145,19 @@ class GwSensor(SmileGateway, Entity):
         return self._icon
 
     @property
+    def last_reset(self):
+        """Return the last_reset state of this entity."""
+        return self._last_reset
+
+    @property
     def state(self):
         """Return the state of this entity."""
         return self._state
+
+    @property
+    def state_class(self):
+        """Return the state_class of this entity."""
+        return self._state_class
 
     @property
     def unit_of_measurement(self):
