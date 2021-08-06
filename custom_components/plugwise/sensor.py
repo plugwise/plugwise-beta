@@ -11,11 +11,9 @@ from homeassistant.const import (
     ATTR_UNIT_OF_MEASUREMENT,
 )
 from homeassistant.core import callback
-from homeassistant.helpers.entity import Entity
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
-    ATTR_LAST_RESET,
-    ATTR_STATE_CLASS,
+    SensorEntity,
 )
 
 from .gateway import SmileGateway
@@ -98,7 +96,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     async_add_entities(entities, True)
 
 
-class GwSensor(SmileGateway, Entity):
+class GwSensor(SmileGateway, SensorEntity):
     """Representation of a Smile Gateway sensor."""
 
     def __init__(
@@ -120,9 +118,9 @@ class GwSensor(SmileGateway, Entity):
             api.gw_devices[dev_id].get(FW),
         )
 
+        self._attr_state_class = sr_data.get("state_class")
+        self._attr_last_reset = sr_data.get("last_reset")
         self._device_class = sr_data.get(ATTR_DEVICE_CLASS)
-        self._state_class = sr_data.get(ATTR_STATE_CLASS)
-        self._last_reset = sr_data.get(ATTR_LAST_RESET)
         self._device_name = name
         self._enabled_default = sr_data.get(ATTR_ENABLED_DEFAULT)
         self._icon = None
@@ -145,19 +143,9 @@ class GwSensor(SmileGateway, Entity):
         return self._icon
 
     @property
-    def last_reset(self):
-        """Return the last_reset state of this entity."""
-        return self._last_reset
-
-    @property
     def state(self):
         """Return the state of this entity."""
         return self._state
-
-    @property
-    def state_class(self):
-        """Return the state_class of this entity."""
-        return self._state_class
 
     @property
     def unit_of_measurement(self):
