@@ -13,6 +13,7 @@ from homeassistant.const import (
     ATTR_NAME,
     ATTR_STATE,
     ATTR_UNIT_OF_MEASUREMENT,
+    DEVICE_CLASS_ENERGY,
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_SIGNAL_STRENGTH,
     ENERGY_KILO_WATT_HOUR,
@@ -96,6 +97,7 @@ CB_JOIN_REQUEST = "JOIN_REQUEST"
 USB_AVAILABLE_ID = "available"
 USB_CURRENT_POWER_ID = "power_1s"
 USB_CURRENT_POWER_8S_ID = "power_8s"
+USB_ENERGY_CONSUMPTION_TODAY_ID = "energy_consumption_today"
 USB_POWER_CONSUMPTION_TODAY_ID = "power_con_today"
 USB_MOTION_ID = "motion"
 USB_RELAY_ID = "relay"
@@ -140,6 +142,14 @@ STICK_API = {
         ATTR_ICON: None,
         ATTR_NAME: "Power consumption previous hour",
         ATTR_STATE: "power_consumption_previous_hour",
+        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
+    },
+    USB_ENERGY_CONSUMPTION_TODAY_ID: {
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_ENERGY,
+        ATTR_ENABLED_DEFAULT: True,
+        ATTR_ICON: None,
+        ATTR_NAME: "Energy consumption today",
+        ATTR_STATE: "energy_consumption_today",
         ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
     },
     USB_POWER_CONSUMPTION_TODAY_ID: {
