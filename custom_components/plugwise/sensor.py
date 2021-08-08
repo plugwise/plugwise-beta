@@ -184,14 +184,14 @@ class USBSensor(NodeEntity, SensorEntity):
 
     @property
     def last_reset(self):
-        """Last reset timestamp of measurement state class"""
+        """Last reset timestamp of measurement state class."""
         if self.sensor_id == USB_ENERGY_CONSUMPTION_TODAY_ID:
             return self._node.energy_consumption_today_last_reset
         return None
 
     @property
     def state_class(self):
-        """Return the state class"""
+        """Return the state class."""
         if self.sensor_id == USB_ENERGY_CONSUMPTION_TODAY_ID:
             return "measurement"
         return None
