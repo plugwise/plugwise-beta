@@ -2,6 +2,8 @@
 
 import logging
 
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_ICON,
@@ -11,13 +13,7 @@ from homeassistant.const import (
     ATTR_UNIT_OF_MEASUREMENT,
 )
 from homeassistant.core import callback
-from homeassistant.components.sensor import (
-    DOMAIN as SENSOR_DOMAIN,
-    SensorEntity,
-)
 
-from .gateway import SmileGateway
-from .usb import NodeEntity
 from .const import (
     API,
     ATTR_ENABLED_DEFAULT,
@@ -31,10 +27,13 @@ from .const import (
     STICK_API,
     USB,
     USB_AVAILABLE_ID,
+    USB_ENERGY_CONSUMPTION_TODAY_ID,
     USB_MOTION_ID,
     USB_RELAY_ID,
     VENDOR,
 )
+from .gateway import SmileGateway
+from .usb import NodeEntity
 
 PARALLEL_UPDATES = 0
 
@@ -161,7 +160,7 @@ class GwSensor(SmileGateway, SensorEntity):
         self.async_write_ha_state()
 
 
-class USBSensor(NodeEntity):
+class USBSensor(NodeEntity, SensorEntity):
     """Representation of a Stick Node sensor."""
 
     def __init__(self, node, sensor_id):
@@ -182,6 +181,20 @@ class USBSensor(NodeEntity):
     def unique_id(self):
         """Get unique ID."""
         return f"{self._node.mac}-{self.sensor_id}"
+
+    @property
+    def last_reset(self):
+        """Last reset timestamp of measurement state class."""
+        if self.sensor_id == USB_ENERGY_CONSUMPTION_TODAY_ID:
+            return self._node.energy_consumption_today_last_reset
+        return None
+
+    @property
+    def state_class(self):
+        """Return the state class."""
+        if self.sensor_id == USB_ENERGY_CONSUMPTION_TODAY_ID:
+            return "measurement"
+        return None
 
     @property
     def unit_of_measurement(self):

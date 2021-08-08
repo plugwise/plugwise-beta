@@ -1,8 +1,20 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
-from awesomeversion import AwesomeVersion
 import asyncio
 import logging
+
 import voluptuous as vol
+from awesomeversion import AwesomeVersion
+from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import __version__ as current_ha_version
+from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.entity import Entity
 
 from plugwise.exceptions import (
     CirclePlusError,
@@ -13,33 +25,22 @@ from plugwise.exceptions import (
 )
 from plugwise.stick import Stick
 
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EVENT_HOMEASSISTANT_STOP
-from homeassistant.const import __version__ as current_ha_version
-from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import config_validation as cv, device_registry as dr
-from homeassistant.helpers.entity import Entity
-
 from .const import (
     ATTR_DEVICE_CLASS,
     ATTR_ENABLED_DEFAULT,
     ATTR_ICON,
     ATTR_MAC_ADDRESS,
     ATTR_NAME,
-    CONF_USB_PATH,
     CB_JOIN_REQUEST,
+    CONF_USB_PATH,
     DOMAIN,
     PLATFORMS_USB,
     PW_TYPE,
     SERVICE_DEVICE_ADD,
     SERVICE_DEVICE_REMOVE,
-    UNDO_UPDATE_LISTENER,
     STICK,
     STICK_API,
+    UNDO_UPDATE_LISTENER,
     USB,
     USB_MOTION_ID,
     USB_RELAY_ID,
@@ -63,12 +64,12 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
         for component in PLATFORMS_USB:
             hass.data[DOMAIN][config_entry.entry_id][component] = []
 
-        for mac in api_stick.devices:
+        for mac, pw_device in api_stick.devices.items():
             # Skip unsupported devices
-            if api_stick.devices.get(mac) is not None:
-                if USB_RELAY_ID in api_stick.devices[mac].features:
+            if pw_device is not None:
+                if USB_RELAY_ID in pw_device.features:
                     hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN].append(mac)
-                if USB_MOTION_ID in api_stick.devices[mac].features:
+                if USB_MOTION_ID in pw_device.features:
                     hass.data[DOMAIN][config_entry.entry_id][
                         BINARY_SENSOR_DOMAIN
                     ].append(mac)
