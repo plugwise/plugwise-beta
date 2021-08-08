@@ -2,6 +2,7 @@
 
 import logging
 
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
@@ -12,13 +13,8 @@ from homeassistant.const import (
     ATTR_UNIT_OF_MEASUREMENT,
 )
 from homeassistant.core import callback
-from homeassistant.components.sensor import (
-    DOMAIN as SENSOR_DOMAIN,
-    SensorEntity,
-)
+from homeassistant.helpers.entity import Entity
 
-from .gateway import SmileGateway
-from .usb import NodeEntity
 from .const import (
     API,
     ATTR_ENABLED_DEFAULT,
@@ -37,6 +33,8 @@ from .const import (
     USB_RELAY_ID,
     VENDOR,
 )
+from .gateway import SmileGateway
+from .usb import NodeEntity
 
 PARALLEL_UPDATES = 0
 
