@@ -36,6 +36,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
   - Bugfix: Make energy consumption monitoring more reliable and possible fixes reported issues #149 & #157
 - Smile:
   - Implement the new sensor attributes needed to support HA Core Energy
+  - Correct the unit_of_measurement for cumulative energy sensors (Wh --> kWh)
 
 ## Jul 2021 [0.16.1]
 
