@@ -1,33 +1,28 @@
 """Plugwise Binary Sensor component for Home Assistant."""
 
 import logging
+
 import voluptuous as vol
+from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.const import ATTR_ID, ATTR_NAME, ATTR_STATE
+from homeassistant.core import callback
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_platform
 
 from plugwise.entities import GWBinarySensor
-
-from homeassistant.components.binary_sensor import (
-    BinarySensorEntity,
-    DOMAIN as BINARY_SENSOR_DOMAIN,
-)
-from homeassistant.const import (
-    ATTR_ID,
-    ATTR_NAME,
-    ATTR_STATE,
-)
-from homeassistant.core import callback
-from homeassistant.helpers import config_validation as cv, entity_platform
 
 from .const import (
     API,
     ATTR_ENABLED_DEFAULT,
     ATTR_SCAN_DAYLIGHT_MODE,
-    ATTR_SCAN_SENSITIVITY_MODE,
     ATTR_SCAN_RESET_TIMER,
-    ATTR_SED_STAY_ACTIVE,
-    ATTR_SED_SLEEP_FOR,
-    ATTR_SED_MAINTENANCE_INTERVAL,
-    ATTR_SED_CLOCK_SYNC,
+    ATTR_SCAN_SENSITIVITY_MODE,
     ATTR_SED_CLOCK_INTERVAL,
+    ATTR_SED_CLOCK_SYNC,
+    ATTR_SED_MAINTENANCE_INTERVAL,
+    ATTR_SED_SLEEP_FOR,
+    ATTR_SED_STAY_ACTIVE,
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
@@ -45,7 +40,6 @@ from .const import (
     USB_MOTION_ID,
     VENDOR,
 )
-
 from .gateway import SmileGateway
 from .usb import NodeEntity
 

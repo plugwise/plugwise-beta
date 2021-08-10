@@ -28,7 +28,18 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW Jul 2021 [0.16.1]
+## NEW Aug 2021 [0.17.0]
+
+- Link to plugwise v0.12.0 https://github.com/plugwise/python-plugwise/releases/tag/0.12.0
+- Stick:
+  - Feature: Add "Energy Consumption Today" sensor to allow adding devices to the new 'Energy' dashboard introduced in Home-Assistant 2021.8
+  - Bugfix: Make energy consumption monitoring more reliable and possible fixes reported issues #149 & #157
+- Smile:
+  - Implement the new sensor attributes needed to support HA Core Energy
+  - Correct the unit_of_measurement for cumulative energy sensors (Wh --> kWh)
+
+## Jul 2021 [0.16.1]
+
 - Link to plugwise v0.11.2 https://github.com/plugwise/python-plugwise/releases/tag/0.11.2
 - Fix issue #183: config_flow looks different in Core 2021.7.0
 
