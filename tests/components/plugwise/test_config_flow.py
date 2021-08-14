@@ -279,7 +279,7 @@ async def test_zeroconf_firmware_fail_form(hass):
         data=TEST_DISCOVERY3,
     )
     assert result["type"] == RESULT_TYPE_ABORT
-    assert not "errors" in result
+    assert "errors" not in result
 
 
 async def test_form_username(hass):
