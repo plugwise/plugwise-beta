@@ -41,7 +41,7 @@ from homeassistant.const import (
     CONF_SOURCE,
     CONF_USERNAME,
 )
-from homeassistant.data_entry_flow import RESULT_TYPE_CREATE_ENTRY, RESULT_TYPE_FORM
+from homeassistant.data_entry_flow import RESULT_TYPE_ABORT, RESULT_TYPE_CREATE_ENTRY, RESULT_TYPE_FORM
 
 from tests.common import MockConfigEntry
 
@@ -62,7 +62,7 @@ TEST_DISCOVERY = {
     "server": f"{TEST_HOSTNAME}.local.",
     "properties": {
         "product": "smile",
-        "version": "1.2.3",
+        "version": "4.3.2",
         "hostname": f"{TEST_HOSTNAME}.local.",
     },
 }
@@ -73,8 +73,19 @@ TEST_DISCOVERY2 = {
     "server": f"{TEST_HOSTNAME2}.local.",
     "properties": {
         "product": "stretch",
-        "version": "1.2.3",
+        "version": "3.2.1",
         "hostname": f"{TEST_HOSTNAME2}.local.",
+    },
+}
+TEST_DISCOVERY3 = {
+    "host": TEST_HOST,
+    "port": DEFAULT_PORT,
+    "hostname": f"{TEST_HOSTNAME}.local.",
+    "server": f"{TEST_HOSTNAME}.local.",
+    "properties": {
+        "product": "smile",
+        "version": "1.2.3",
+        "hostname": f"{TEST_HOSTNAME}.local.",
     },
 }
 
@@ -257,6 +268,18 @@ async def test_zeroconf_stretch_form(hass):
 
     assert len(mock_setup.mock_calls) == 1
     assert len(mock_setup_entry.mock_calls) == 1
+
+
+async def test_zeroconf_firmware_fail_form(hass):
+    """Test if discovery fails because of invalid firmware."""
+    await setup.async_setup_component(hass, "persistent_notification", {})
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN,
+        context={CONF_SOURCE: SOURCE_ZEROCONF},
+        data=TEST_DISCOVERY3,
+    )
+    assert result["type"] == RESULT_TYPE_ABORT
+    assert not "errors" in result
 
 
 async def test_form_username(hass):
