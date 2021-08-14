@@ -161,12 +161,45 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Initialize the Plugwise config flow."""
         self.discovery_info = {}
 
+
+
+    def __init__(self):
+        """Initialize the Plugwise config flow."""
+        self.discovery_info = {}
+
+    def fw_compare(self, properties):
+        """Simply compare major version allowing pass above minimal."""
+        #[custom_components.plugwise.config_flow] Discovery info: {'host': '127.0.0.2', 'port': 80, 'hostname': 'smile00fa1c.local.', 'type': '_plugwise._tcp.local.', 'name': 'Plugwise on smileabcdefg._plugwise._tcp.local.', 'properties': {'_raw': {'product': b'smile_thermo', 'version': b'4.0.27', 'path': b'/', 'status': b'/system'}, 'product': 'smile_thermo', 'version': '4.0.27', 'path': '/', 'status': '/system'}, 'username': 'smile'}
+        #[custom_components.plugwise.config_flow] Discovery info: {'host': '127.0.0.3', 'port': 80, 'hostname': 'smile136e15.local.', 'type': '_plugwise._tcp.local.', 'name': 'Plugwise on smileabcdefg._plugwise._tcp.local.', 'properties': {'_raw': {'product': b'smile', 'version': b'4.1.5', 'path': b'/', 'status': b'/system'}, 'product': 'smile', 'version': '4.1.5', 'path': '/', 'status': '/system'}, 'username': 'smile'}
+        SKIP_FIRMWARE = {
+                "Plugwise P1 fw 1": { "product": "smile", "version": "5.0.0"},
+                "Plugwise Anna/Adam fw 1": { "product": "smile_thermo", "version": "5.0.0"},
+        }
+        # Skip discovery for illegal FW
+        for reason, details in SKIP_FIRMWARE.items():
+            if properties['product'] == details['product']:
+                try:
+                    current_major = properties['version'].split(".")[0]
+                    minimal_major = details['version'].split(".")[0]
+                    if current_major > minimal_major:
+                        return True
+                    _LOGGER.info("Disallowing firmware for discovery, %s", reason)
+                    return False
+                except e:
+                    _LOGGER.info("Unable to determine version, not allowing for discovery to be safe")
+                    return True
+
     async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
         self.discovery_info[CONF_USERNAME] = DEFAULT_USERNAME
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
+
+        # Disallow firmware below certain versions for discovery
+        if not self.fw_compare(_properties):
+            _LOGGER.info("Firmware check disallows discovery, discovery information following: %s", self.discovery_info)
+            return self.async_abort(reason="unknown")
 
         # unique_id is needed here, to be able to determine whether the discovered device is known, or not.
         unique_id = self.discovery_info.get("hostname").split(".")[0]
