@@ -29,8 +29,8 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 # Changelog
 
 ## NEW Aug 2021 [0.17.5]
-- Link to plugwise v0.13.0a7
-- Smile: fully support P1 legacy (specifically with firmware 2.1.13), fixing #187
+- Link to plugwise v0.13.1
+- Smile: fully support legacy Smile P1 (specifically with firmware 2.1.13), fixing #187
 
 ## Aug 2021 [0.17.0]
 
