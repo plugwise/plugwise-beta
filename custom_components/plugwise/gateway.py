@@ -67,7 +67,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if entry_updates:
         hass.config_entries.async_update_entry(entry, **entry_updates)
 
-    api = Smile(
+    self.api = Smile(
         host=entry.data[CONF_HOST],
         username=entry.data[CONF_USERNAME],
         password=entry.data[CONF_PASSWORD],
@@ -102,31 +102,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     )
 
-    async def async_update_gw_data():
-        """Update data via API endpoint."""
-        _LOGGER.debug("Updating %s", api.smile_name)
-        try:
-            async with async_timeout.timeout(update_interval.seconds):
-                await api.update_gw_devices()
-                _LOGGER.debug("Successfully updated %s", api.smile_name)
-                return True
-        except XMLDataMissingError as err:
-            _LOGGER.debug(
-                "Updating Smile failed, expected XML data for %s", api.smile_name
-            )
-            raise UpdateFailed("Smile update failed") from err
-        except PlugwiseException as err:
-            _LOGGER.debug("Updating failed, generic failure for %s", api.smile_name)
-            raise UpdateFailed("Smile update failed") from err
-
-    coordinator = DataUpdateCoordinator(
-        hass,
-        _LOGGER,
-        name=f"{api.smile_name}",
-        update_method=async_update_gw_data,
-        update_interval=update_interval,
-    )
-
+    coordinator = PWDataUpdateCoordinator(api)
     await coordinator.async_config_entry_first_refresh()
 
     if not coordinator.last_update_success:
@@ -141,26 +117,26 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 
-    api.get_all_devices()
-    _LOGGER.debug("Gateway is %s", api.gateway_id)
-    _LOGGER.debug("Gateway software version is %s", api.smile_version[0])
-    _LOGGER.debug("Appliances are %s", api.gw_devices)
+    self.api.get_all_devices()
+    _LOGGER.debug("Gateway is %s", self.api.gateway_id)
+    _LOGGER.debug("Gateway software version is %s", self.api.smile_version[0])
+    _LOGGER.debug("Appliances are %s", self.api.gw_devices)
 
-    _LOGGER.debug("Single master thermostat = %s", api.single_master_thermostat())
+    _LOGGER.debug("Single master thermostat = %s", self.api.single_master_thermostat())
 
     platforms = GATEWAY_PLATFORMS
-    if api.single_master_thermostat() is None:
+    if self.api.single_master_thermostat() is None:
         platforms = SENSOR_PLATFORMS
 
     async def delete_notification(self):
         """Service: delete the Plugwise Notification."""
-        _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
+        _LOGGER.debug("Service delete PW Notification called for %s", self.api.smile_name)
         try:
             deleted = await api.delete_notification()
             _LOGGER.debug("PW Notification deleted: %s", deleted)
         except PlugwiseException:
             _LOGGER.debug(
-                "Failed to delete the Plugwise Notification for %s", api.smile_name
+                "Failed to delete the Plugwise Notification for %s", self.api.smile_name
             )
 
     for component in platforms:
@@ -200,6 +176,36 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     coordinator.update_interval = timedelta(
         seconds=entry.options.get(CONF_SCAN_INTERVAL)
     )
+
+
+class PWDataUpdateCoordinator(DataUpdateCoordinator):
+    """Class to manage fetching Plugwise API data from a single endpoint."""
+
+    def __init__(self, hass, api):
+        """Initialize the coordinator."""
+        super().__init__(
+            hass,
+            _LOGGER, name=f"{self.api.smile_name}",
+            timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL))
+        )
+        self.data = api.gw_devices
+
+    async def _async_update_data(self):
+        """Update data via API endpoint."""
+        _LOGGER.debug("Updating %s", api.smile_name)
+        try:
+            async with async_timeout.timeout(update_interval.seconds):
+                await self.data.update()
+                _LOGGER.debug("Successfully updated %s", api.smile_name)
+        except XMLDataMissingError as err:
+            _LOGGER.debug(
+                "Updating Smile failed, expected XML data for %s", api.smile_name
+            )
+            raise UpdateFailed("Smile update failed") from err
+        except PlugwiseException as err:
+            _LOGGER.debug("Updating failed, generic failure for %s", api.smile_name)
+            raise UpdateFailed("Smile update failed") from err
+        return self.data
 
 
 class SmileGateway(CoordinatorEntity):
