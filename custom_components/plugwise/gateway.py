@@ -105,13 +105,9 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = PWDataUpdateCoordinator(api)
     await coordinator.async_config_entry_first_refresh()
 
-    if not coordinator.last_update_success:
-        raise ConfigEntryNotReady
-
     undo_listener = entry.add_update_listener(_update_listener)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
-        API: api,
         COORDINATOR: coordinator,
         PW_TYPE: GATEWAY,
         UNDO_UPDATE_LISTENER: undo_listener,
