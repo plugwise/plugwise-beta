@@ -74,18 +74,18 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    for dev_id in api.gw_devices:
-        for key in api.gw_devices[dev_id]:
+    for dev_id in coordinator.data[1]:
+        for key in coordinator.data[1][dev_id]:
             if key != "switches":
                 continue
 
-            for data in api.gw_devices[dev_id]["switches"]:
+            for data in coordinator.data[1][dev_id]["switches"]:
                 entities.append(
                     GwSwitch(
                         api,
                         coordinator,
                         dev_id,
-                        api.gw_devices[dev_id].get(ATTR_NAME),
+                        coordinator.data[1][dev_id].get(ATTR_NAME),
                         data,
                     )
                 )
@@ -106,13 +106,12 @@ class GwSwitch(SmileGateway, SwitchEntity):
     ):
         """Initialise the sensor."""
         super().__init__(
-            api,
             coordinator,
             dev_id,
             name,
-            api.gw_devices[dev_id].get(PW_MODEL),
-            api.gw_devices[dev_id].get(VENDOR),
-            api.gw_devices[dev_id].get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
         self._api = api
@@ -122,8 +121,8 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._icon = None
         self._is_on = False
         self._members = None
-        if "members" in api.gw_devices[dev_id]:
-            self._members = api.gw_devices[dev_id].get("members")
+        if "members" in coordinator.data[1][dev_id]:
+            self._members = coordinator.data[1][dev_id].get("members")
         self._name = f"{name} {sw_data.get(ATTR_NAME)}"
         self._switch = sw_data.get(ATTR_ID)
         self._sw_data = sw_data
