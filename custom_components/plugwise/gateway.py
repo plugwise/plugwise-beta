@@ -241,8 +241,8 @@ class SmileGateway(CoordinatorEntity):
             "sw_version": self._fw_version,
         }
 
-        gw_id = self._coordinator.data["gateway']
-        device_information["name"] = f"Smile {self._coordinator.data["name']}"
+        gw_id = self._coordinator.data[0]["gateway']
+        device_information["name"] = f"Smile {self._coordinator.data[0]["name']}"
         if self._dev_id != gw_id:
             device_information["via_device"] = (DOMAIN, gw_id)
 
