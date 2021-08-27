@@ -55,20 +55,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    for dev_id in api.gw_devices:
-        if api.gw_devices[dev_id][PW_CLASS] not in MASTER_THERMOSTATS:
+    for dev_id in coordinator.data[1]:
+        if coordinator.data[1][dev_id][PW_CLASS] not in MASTER_THERMOSTATS:
             continue
 
         thermostat = PwThermostat(
-            api,
             coordinator,
             dev_id,
-            api.gw_devices[dev_id].get(ATTR_NAME),
+            coordinator.data[1][dev_id].get(ATTR_NAME),
             DEFAULT_MAX_TEMP,
             DEFAULT_MIN_TEMP,
         )
         entities.append(thermostat)
-        _LOGGER.info("Added climate %s entity", api.gw_devices[dev_id].get(ATTR_NAME))
+        _LOGGER.info("Added climate %s entity", coordinator.data[1][dev_id].get(ATTR_NAME))
 
     async_add_entities(entities, True)
 
@@ -87,22 +86,21 @@ class PwThermostat(SmileGateway, ClimateEntity):
     ):
         """Set up the PwThermostat."""
         super().__init__(
-            api,
             coordinator,
             dev_id,
             name,
-            api.gw_devices[dev_id].get(PW_MODEL),
-            api.gw_devices[dev_id].get(VENDOR),
-            api.gw_devices[dev_id].get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
-        self._gw_thermostat = GWThermostat(api, dev_id)
-
         self._api = api
+        self._cdata = coordinator.data
+        self._gw_thermostat = GWThermostat(self._cdata, dev_id)
         self._device_class = None
         self._device_name = self._name = name
         self._hvac_mode = None
-        self._loc_id = self._api.gw_devices[dev_id].get(PW_LOCATION)
+        self._loc_id = self._cdata[1][dev_id].get(PW_LOCATION)
         self._max_temp = max_temp
         self._min_temp = min_temp
         self._preset_mode = None
@@ -113,7 +111,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
     @property
     def hvac_action(self):
         """Return the current action."""
-        if self._api.single_master_thermostat():
+        if self._cdata[0]["single_master"]:
             if self._gw_thermostat.heating_state:
                 return CURRENT_HVAC_HEAT
             if self._gw_thermostat.cooling_state:
