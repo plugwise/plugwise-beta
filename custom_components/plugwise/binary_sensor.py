@@ -13,7 +13,6 @@ from homeassistant.helpers import entity_platform
 from plugwise.entities import GWBinarySensor
 
 from .const import (
-    API,
     ATTR_ENABLED_DEFAULT,
     ATTR_SCAN_DAYLIGHT_MODE,
     ATTR_SCAN_RESET_TIMER,
