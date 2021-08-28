@@ -82,7 +82,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             for data in coordinator.data[1][dev_id]["sensors"]:
                 entities.append(
                     GwSensor(
-                        api,
                         coordinator,
                         dev_id,
                         coordinator.data[1][dev_id].get(ATTR_NAME),
