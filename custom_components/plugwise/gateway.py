@@ -113,7 +113,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.debug("Gateway software version is %s", api.smile_version[0])
     _LOGGER.debug("Appliances are %s", coordinator.data[1])
     s_m_thermostat = coordinator.data[0]["single_master_thermostat"]
-    _LOGGER.debug("Single master thermostat = %s", sm_thermostat)
+    _LOGGER.debug("Single master thermostat = %s", s_m_thermostat)
 
     platforms = GATEWAY_PLATFORMS
     if s_m_thermostat is None:
