@@ -116,14 +116,14 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 
-    _LOGGER.debug("Gateway is %s", coordinator.data[0]["gateway"])
+    _LOGGER.debug("Gateway is %s", coordinator.data[0]["gateway_id"])
     _LOGGER.debug("Gateway software version is %s", api.smile_version[0])
     _LOGGER.debug("Appliances are %s", coordinator.data[1])
-
-    _LOGGER.debug("Single master thermostat = %s", coordinator.data[0]["single_master"])
+    s_m_thermostat = coordinator.data[0]["single_master_thermostat"]
+    _LOGGER.debug("Single master thermostat = %s", sm_thermostat)
 
     platforms = GATEWAY_PLATFORMS
-    if coordinator.data[0]["single_master"] is None:
+    if s_m_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
     async def delete_notification(self):
@@ -245,11 +245,11 @@ class SmileGateway(CoordinatorEntity):
             "sw_version": self._fw_version,
         }
 
-        gw_id = self._coordinator.data[0]["gateway"]
+        gw_id = self._coordinator.data[0]["gateway_id"]
         if self._dev_id != gw_id:
             device_information["via_device"] = (DOMAIN, gw_id)
         else:
-            device_information["name"] = f"Smile {self._coordinator.data[0]['name']}"
+            device_information["name"] = f"Smile {self._coordinator.data[0]['smile_name']}"
 
         return device_information
 
