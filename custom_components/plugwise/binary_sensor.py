@@ -124,7 +124,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
             for data in coordinator.data[1][dev_id]["binary_sensors"]:
                 entities.append(
                     GwBinarySensor(
-                        api,
                         coordinator,
                         dev_id,
                         coordinator.data[1][dev_id].get(ATTR_NAME),
@@ -140,7 +139,6 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
 
     def __init__(
         self,
-        api,
         coordinator,
         dev_id,
         name,
@@ -148,7 +146,6 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
     ):
         """Initialise the binary_sensor."""
         super().__init__(
-            api,
             coordinator,
             dev_id,
             name,
