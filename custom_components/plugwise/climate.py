@@ -60,6 +60,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             continue
 
         thermostat = PwThermostat(
+            api,
             coordinator,
             dev_id,
             coordinator.data[1][dev_id].get(ATTR_NAME),
