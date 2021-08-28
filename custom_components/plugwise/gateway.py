@@ -8,22 +8,14 @@ from datetime import timedelta
 
 from async_timeout import timeout
 import voluptuous as vol
-from plugwise.exceptions import (
-    InvalidAuthentication,
-    PlugwiseException,
-    XMLDataMissingError,
-)
+from plugwise.exceptions import InvalidAuthentication, PlugwiseException
 from plugwise.smile import Smile
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
-    DataUpdateCoordinator,
-    UpdateFailed,
-)
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,

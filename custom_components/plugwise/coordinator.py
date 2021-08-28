@@ -3,10 +3,10 @@ import logging
 
 from async_timeout import timeout
 
+from plugwise.exceptions import PlugwiseException, XMLDataMissingError
+
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-
-from .exceptions import PlugwiseException, XMLDataMissingError
 
 _LOGGER = logging.getLogger(__name__)
 
