@@ -6,7 +6,7 @@ import asyncio
 import logging
 from datetime import timedelta
 
-import async_timeout
+from async_timeout import timeout
 import voluptuous as vol
 from plugwise.exceptions import (
     InvalidAuthentication,
@@ -33,6 +33,7 @@ from homeassistant.const import (
 )
 
 from .const import (
+    API,
     CLIMATE_DOMAIN,
     COORDINATOR,
     DEFAULT_PORT,
@@ -101,37 +102,39 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     )
 
-    coordinator = PWDataUpdateCoordinator(api)
+    coordinator = PWDataUpdateCoordinator(hass, api, update_interval)
+
+    api.get_all_devices()
     await coordinator.async_config_entry_first_refresh()
 
     undo_listener = entry.add_update_listener(_update_listener)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
+        API: api,
         COORDINATOR: coordinator,
         PW_TYPE: GATEWAY,
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 
-    self.api.get_all_devices()
-    _LOGGER.debug("Gateway is %s", self.api.gateway_id)
-    _LOGGER.debug("Gateway software version is %s", self.api.smile_version[0])
-    _LOGGER.debug("Appliances are %s", self.api.gw_devices)
+    _LOGGER.debug("Gateway is %s", coordinator.data[0]["gateway"])
+    _LOGGER.debug("Gateway software version is %s", api.smile_version[0])
+    _LOGGER.debug("Appliances are %s", coordinator.data[1])
 
-    _LOGGER.debug("Single master thermostat = %s", self.api.single_master_thermostat())
+    _LOGGER.debug("Single master thermostat = %s", coordinator.data[0]["single_master"])
 
     platforms = GATEWAY_PLATFORMS
-    if self.api.single_master_thermostat() is None:
+    if coordinator.data[0]["single_master"] is None:
         platforms = SENSOR_PLATFORMS
 
     async def delete_notification(self):
         """Service: delete the Plugwise Notification."""
-        _LOGGER.debug("Service delete PW Notification called for %s", self.api.smile_name)
+        _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
         try:
             deleted = await api.delete_notification()
             _LOGGER.debug("PW Notification deleted: %s", deleted)
         except PlugwiseException:
             _LOGGER.debug(
-                "Failed to delete the Plugwise Notification for %s", self.api.smile_name
+                "Failed to delete the Plugwise Notification for %s", api.smile_name
             )
 
     for component in platforms:
@@ -175,31 +178,32 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
 
 class PWDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching Plugwise API data from a single endpoint."""
-
-    def __init__(self, hass, api):
+    def __init__(self, hass, api, update_interval):
         """Initialize the coordinator."""
         super().__init__(
             hass,
-            _LOGGER, name=f"{self.api.smile_name}",
-            timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL))
+            _LOGGER, 
+            name=f"{api.smile_name}",
+            update_interval = update_interval
         )
-        self.api = api
+        self._api = api
+        self._u_interval = update_interval
 
     async def _async_update_data(self):
         """Update data via API endpoint."""
-        _LOGGER.debug("Updating %s", api.smile_name)
+        _LOGGER.debug("Updating %s", self._api.smile_name)
         try:
-            async with async_timeout.timeout(update_interval.seconds):
-                data = await self.api.update()
-                _LOGGER.debug("Successfully updated %s", api.smile_name)
+            with timeout(self._u_interval.seconds):
+                data = await self._api.update()
                 return data
+                _LOGGER.debug("Successfully updated %s", self._api.smile_name)
         except XMLDataMissingError as err:
             _LOGGER.debug(
-                "Updating Smile failed, expected XML data for %s", self.api.smile_name
+                "Updating Smile failed, expected XML data for %s", self._api.smile_name
             )
             raise UpdateFailed("Smile update failed") from err
         except PlugwiseException as err:
-            _LOGGER.debug("Updating failed, generic failure for %s", self.api.smile_name)
+            _LOGGER.debug("Updating failed, generic failure for %s", self._api.smile_name)
             raise UpdateFailed("Smile update failed") from err
 
 
@@ -241,10 +245,11 @@ class SmileGateway(CoordinatorEntity):
             "sw_version": self._fw_version,
         }
 
-        gw_id = self._coordinator.data[0]["gateway']
-        device_information["name"] = f"Smile {self._coordinator.data[0]["name']}"
+        gw_id = self._coordinator.data[0]["gateway"]
         if self._dev_id != gw_id:
             device_information["via_device"] = (DOMAIN, gw_id)
+        else:
+            device_information["name"] = f"Smile {self._coordinator.data[0]['name']}"
 
         return device_information
 
