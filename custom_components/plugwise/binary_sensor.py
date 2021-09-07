@@ -40,7 +40,7 @@ from .const import (
     VENDOR,
 )
 from .gateway import SmileGateway
-from .usb import NodeEntity
+from .usb import PlugwiseUSBEntity
 
 PARALLEL_UPDATES = 0
 
@@ -207,7 +207,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self.async_write_ha_state()
 
 
-class USBBinarySensor(NodeEntity, BinarySensorEntity):
+class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
     """Representation of a Stick Node Binary Sensor."""
 
     def __init__(self, node):

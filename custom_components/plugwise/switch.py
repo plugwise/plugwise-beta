@@ -17,7 +17,6 @@ from homeassistant.const import (
 from homeassistant.core import callback
 
 from .gateway import SmileGateway
-from .usb import NodeEntity
 from .const import (
     API,
     ATTR_ENABLED_DEFAULT,
@@ -34,6 +33,7 @@ from .const import (
     USB_RELAY_ID,
     VENDOR,
 )
+from .usb import PlugwiseUSBEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -181,7 +181,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self.async_write_ha_state()
 
 
-class USBSwitch(NodeEntity, SwitchEntity):
+class USBSwitch(PlugwiseUSBEntity, SwitchEntity):
     """Representation of a Stick Node switch."""
 
     def __init__(self, node):

@@ -196,8 +196,8 @@ async def _async_update_listener(hass: HomeAssistant, config_entry: ConfigEntry)
     await hass.config_entries.async_reload(config_entry.entry_id)
 
 
-class NodeEntity(Entity):
-    """Base class for a Plugwise entities."""
+class PlugwiseUSBEntity(Entity):
+    """Base class for Plugwise USB entities."""
 
     def __init__(self, node, api_type):
         """Initialize a Node entity."""
