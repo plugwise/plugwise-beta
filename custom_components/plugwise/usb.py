@@ -3,13 +3,11 @@ import asyncio
 import logging
 
 import voluptuous as vol
-from awesomeversion import AwesomeVersion
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
-from homeassistant.const import __version__ as current_ha_version
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv
@@ -94,27 +92,13 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
 
         api_stick.auto_update()
 
-        # Home Assistant version 2021.6 changed the stored format of system options
-        if AwesomeVersion(current_ha_version) >= AwesomeVersion("2021.6.0"):
-            if config_entry.pref_disable_new_entities:
-                _LOGGER.debug("Configuring stick NOT to accept any new join requests")
-                api_stick.allow_join_requests(True, False)
-            else:
-                _LOGGER.debug(
-                    "Configuring stick to automatically accept new join requests"
-                )
-                api_stick.allow_join_requests(True, True)
-                api_stick.subscribe_stick_callback(add_new_node, CB_JOIN_REQUEST)
+        if config_entry.pref_disable_new_entities:
+            _LOGGER.debug("Configuring stick NOT to accept any new join requests")
+            api_stick.allow_join_requests(True, False)
         else:
-            if config_entry.system_options.disable_new_entities:
-                _LOGGER.debug("Configuring stick NOT to accept any new join requests")
-                api_stick.allow_join_requests(True, False)
-            else:
-                _LOGGER.debug(
-                    "Configuring stick to automatically accept new join requests"
-                )
-                api_stick.allow_join_requests(True, True)
-                api_stick.subscribe_stick_callback(add_new_node, CB_JOIN_REQUEST)
+            _LOGGER.debug("Configuring stick to automatically accept new join requests")
+            api_stick.allow_join_requests(True, True)
+            api_stick.subscribe_stick_callback(add_new_node, CB_JOIN_REQUEST)
 
     def shutdown(event):
         hass.async_add_executor_job(api_stick.disconnect)
