@@ -31,8 +31,6 @@ from .const import (
     STICK_API,
     USB,
     USB_AVAILABLE_ID,
-    USB_CURRENT_POWER_ID,
-    USB_POWER_CONSUMPTION_TODAY_ID,
     USB_RELAY_ID,
     VENDOR,
 )
@@ -191,33 +189,13 @@ class USBSwitch(NodeEntity, SwitchEntity):
         super().__init__(node, USB_RELAY_ID)
         self.node_callbacks = (
             USB_AVAILABLE_ID,
-            USB_CURRENT_POWER_ID,
-            USB_POWER_CONSUMPTION_TODAY_ID,
             USB_RELAY_ID,
         )
-
-    @property
-    def current_power_w(self):
-        """Return the current power usage in W."""
-        current_power = getattr(self._node, STICK_API[USB_CURRENT_POWER_ID][ATTR_STATE])
-        if current_power:
-            return float(round(current_power, 2))
-        return None
 
     @property
     def is_on(self):
         """Return true if the switch is on."""
         return getattr(self._node, STICK_API[USB_RELAY_ID][ATTR_STATE])
-
-    @property
-    def today_energy_kwh(self):
-        """Return the today total energy usage in kWh."""
-        today_energy = getattr(
-            self._node, STICK_API[USB_POWER_CONSUMPTION_TODAY_ID][ATTR_STATE]
-        )
-        if today_energy:
-            return float(round(today_energy, 3))
-        return None
 
     def turn_off(self, **kwargs):
         """Instruct the switch to turn off."""
