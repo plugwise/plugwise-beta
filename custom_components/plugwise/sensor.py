@@ -164,8 +164,8 @@ class USBSensor(NodeEntity, SensorEntity):
         self.node_callbacks = (USB_AVAILABLE_ID, sensor_id)
 
     @property
-    def state(self):
-        """Return the state of the sensor."""
+    def native_value(self):
+        """Return the native value of the sensor."""
         state_value = getattr(self._node, STICK_API[self.sensor_id][ATTR_STATE])
         if state_value is not None:
             return float(round(state_value, 3))
@@ -175,13 +175,6 @@ class USBSensor(NodeEntity, SensorEntity):
     def unique_id(self):
         """Get unique ID."""
         return f"{self._node.mac}-{self.sensor_id}"
-
-    @property
-    def last_reset(self):
-        """Last reset timestamp of measurement state class."""
-        if self.sensor_id == USB_ENERGY_CONSUMPTION_TODAY_ID:
-            return self._node.energy_consumption_today_last_reset
-        return None
 
     @property
     def state_class(self):
