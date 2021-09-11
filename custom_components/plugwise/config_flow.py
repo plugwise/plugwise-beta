@@ -20,6 +20,7 @@ from plugwise.stick import Stick
 from plugwise.smile import Smile
 
 from homeassistant import config_entries, core, exceptions
+from homeassistant.components import usb
 from homeassistant.const import (
     CONF_BASE,
     CONF_HOST,
@@ -95,17 +96,6 @@ async def validate_usb_connection(self, device_path=None) -> dict[str, str]:
     except TimeoutException:
         errors[CONF_BASE] = "network_timeout"
     return errors, api_stick
-
-
-def get_serial_by_id(dev_path: str) -> str:
-    """Return a /dev/serial/by-id match for given device if available."""
-    by_id = "/dev/serial/by-id"
-    if not os.path.isdir(by_id):
-        return dev_path
-    for path in (entry.path for entry in os.scandir(by_id) if entry.is_symlink()):
-        if os.path.realpath(path) == dev_path:
-            return path
-    return dev_path
 
 
 def _base_gw_schema(discovery_info):
@@ -210,7 +200,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             port = ports[list_of_ports.index(user_selection)]
             device_path = await self.hass.async_add_executor_job(
-                get_serial_by_id, port.device
+                usb.get_serial_by_id, port.device
             )
             errors, api_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
@@ -232,7 +222,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             user_input.pop(FLOW_TYPE, None)
             device_path = await self.hass.async_add_executor_job(
-                get_serial_by_id, user_input.get(CONF_USB_PATH)
+                usb.get_serial_by_id, user_input.get(CONF_USB_PATH)
             )
             errors, api_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
