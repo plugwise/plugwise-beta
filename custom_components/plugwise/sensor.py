@@ -1,4 +1,5 @@
 """Plugwise Sensor component for Home Assistant."""
+from __future__ import annotations
 
 import logging
 
@@ -23,13 +24,12 @@ from .const import (
     PW_MODEL,
     PW_TYPE,
     STICK,
-    STICK_API,
     USB,
-    USB_AVAILABLE_ID,
-    USB_ENERGY_CONSUMPTION_TODAY_ID,
     USB_MOTION_ID,
     USB_RELAY_ID,
+    USB_SENSOR_TYPES,
     VENDOR,
+    PlugwiseUSBSensorEntityDescription,
 )
 from .gateway import SmileGateway
 from .usb import PlugwiseUSBEntity
@@ -51,21 +51,27 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     """Set up Plugwise sensor based on config_entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
-    async def async_add_sensor(mac):
-        """Add plugwise sensor."""
-        for feature in api_stick.devices[mac].features:
-            if feature not in (USB_MOTION_ID, USB_RELAY_ID):
-                async_add_entities([USBSensor(api_stick.devices[mac], feature)])
+    async def async_add_sensors(mac):
+        """Add plugwise sensors for device."""
+        entities = []
+        entities.extend(
+            [
+                USBSensor(api_stick.devices[mac], description)
+                for description in USB_SENSOR_TYPES
+                if description.key in api_stick.devices[mac].features
+            ]
+        )
+        async_add_entities(entities)
 
     for mac in hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN]:
-        hass.async_create_task(async_add_sensor(mac))
+        hass.async_create_task(async_add_sensors(mac))
 
-    def discoved_sensor(mac):
-        """Add newly discovered sensor."""
-        hass.async_create_task(async_add_sensor(mac))
+    def discoved_device(mac):
+        """Add sensors for newly discovered device."""
+        hass.async_create_task(async_add_sensors(mac))
 
     # Listen for discovered nodes
-    api_stick.subscribe_stick_callback(discoved_sensor, CB_NEW_NODE)
+    api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
@@ -155,35 +161,16 @@ class GwSensor(SmileGateway, SensorEntity):
 
 
 class USBSensor(PlugwiseUSBEntity, SensorEntity):
-    """Representation of a Stick Node sensor."""
+    """Representation of a Plugwise USB sensor."""
 
-    def __init__(self, node, sensor_id):
-        """Initialize a Node entity."""
-        super().__init__(node, sensor_id)
-        self.sensor_id = sensor_id
-        self.node_callbacks = (USB_AVAILABLE_ID, sensor_id)
+    def __init__(self, node, description: PlugwiseUSBSensorEntityDescription):
+        """Initialize sensor entity."""
+        super().__init__(node, description)
 
     @property
     def native_value(self):
         """Return the native value of the sensor."""
-        state_value = getattr(self._node, STICK_API[self.sensor_id][ATTR_STATE])
+        state_value = getattr(self._node, self.entity_description.state_request_method)
         if state_value is not None:
             return float(round(state_value, 3))
         return None
-
-    @property
-    def unique_id(self):
-        """Get unique ID."""
-        return f"{self._node.mac}-{self.sensor_id}"
-
-    @property
-    def state_class(self):
-        """Return the state class."""
-        if self.sensor_id == USB_ENERGY_CONSUMPTION_TODAY_ID:
-            return "measurement"
-        return None
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit this state is expressed in."""
-        return STICK_API[self.sensor_id][ATTR_UNIT_OF_MEASUREMENT]

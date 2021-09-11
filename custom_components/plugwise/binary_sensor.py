@@ -1,11 +1,12 @@
 """Plugwise Binary Sensor component for Home Assistant."""
+from __future__ import annotations
 
 import logging
 
 import voluptuous as vol
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME, ATTR_STATE
+from homeassistant.const import ATTR_ID, ATTR_NAME
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import entity_platform
@@ -33,9 +34,8 @@ from .const import (
     SERVICE_CONFIGURE_BATTERY,
     SERVICE_CONFIGURE_SCAN,
     STICK,
-    STICK_API,
     USB,
-    USB_AVAILABLE_ID,
+    USB_BINARY_SENSOR_TYPES,
     USB_MOTION_ID,
     VENDOR,
 )
@@ -60,11 +60,20 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
     platform = entity_platform.current_platform.get()
 
-    async def async_add_binary_sensor(mac):
-        """Add plugwise binary sensor."""
+    async def async_add_binary_sensors(mac):
+        """Add plugwise binary sensors for device."""
+        entities = []
+        entities.extend(
+            [
+                USBBinarySensor(api_stick.devices[mac], description)
+                for description in USB_BINARY_SENSOR_TYPES
+                if description.key in api_stick.devices[mac].features
+            ]
+        )
+        async_add_entities(entities)
+
         if USB_MOTION_ID in api_stick.devices[mac].features:
             _LOGGER.debug("Add binary_sensors for %s", mac)
-            async_add_entities([USBBinarySensor(api_stick.devices[mac])])
 
             # Register services
             platform.async_register_entity_service(
@@ -101,14 +110,14 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
             )
 
     for mac in hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN]:
-        hass.async_create_task(async_add_binary_sensor(mac))
+        hass.async_create_task(async_add_binary_sensors(mac))
 
-    def discoved_binary_sensor(mac):
-        """Add newly discovered binary sensor."""
-        hass.async_create_task(async_add_binary_sensor(mac))
+    def discoved_device(mac):
+        """Add binary sensors for newly discovered device."""
+        hass.async_create_task(async_add_binary_sensors(mac))
 
     # Listen for discovered nodes
-    api_stick.subscribe_stick_callback(discoved_binary_sensor, CB_NEW_NODE)
+    api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
@@ -208,22 +217,12 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
 
 
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
-    """Representation of a Stick Node Binary Sensor."""
-
-    def __init__(self, node):
-        """Initialize a Node entity."""
-        super().__init__(node, USB_MOTION_ID)
-        self.node_callbacks = (USB_AVAILABLE_ID, USB_MOTION_ID)
+    """Representation of a Plugwise USB Binary Sensor."""
 
     @property
     def is_on(self):
         """Return true if the binary_sensor is on."""
-        return getattr(self._node, STICK_API[USB_MOTION_ID][ATTR_STATE])
-
-    @property
-    def unique_id(self):
-        """Get unique ID."""
-        return f"{self._node.mac}-{USB_MOTION_ID}"
+        return getattr(self._node, self.entity_description.state_request_method)
 
     def _service_configure_scan(self, **kwargs):
         """Service call to configure motion sensor of Scan device."""

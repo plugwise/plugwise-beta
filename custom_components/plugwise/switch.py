@@ -1,10 +1,10 @@
 """Plugwise Switch component for HomeAssistant."""
+from __future__ import annotations
 
 import logging
 
-from plugwise.exceptions import PlugwiseException
-
-from homeassistant.components.switch import SwitchEntity, DOMAIN as SWITCH_DOMAIN
+from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_ICON,
@@ -16,7 +16,8 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 
-from .gateway import SmileGateway
+from plugwise.exceptions import PlugwiseException
+
 from .const import (
     API,
     ATTR_ENABLED_DEFAULT,
@@ -27,12 +28,12 @@ from .const import (
     PW_MODEL,
     PW_TYPE,
     STICK,
-    STICK_API,
     USB,
-    USB_AVAILABLE_ID,
-    USB_RELAY_ID,
+    USB_SWITCH_TYPES,
     VENDOR,
+    PlugwiseUSBSwitchEntityDescription,
 )
+from .gateway import SmileGateway
 from .usb import PlugwiseUSBEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,20 +51,27 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     """Set up the USB switches from a config entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
-    async def async_add_switch(mac):
-        """Add plugwise switch."""
-        if USB_RELAY_ID in api_stick.devices[mac].features:
-            async_add_entities([USBSwitch(api_stick.devices[mac])])
+    async def async_add_switches(mac):
+        """Add plugwise switches."""
+        entities = []
+        entities.extend(
+            [
+                USBSwitch(api_stick.devices[mac], description)
+                for description in USB_SWITCH_TYPES
+                if description.key in api_stick.devices[mac].features
+            ]
+        )
+        async_add_entities(entities)
 
     for mac in hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN]:
-        hass.async_create_task(async_add_switch(mac))
+        hass.async_create_task(async_add_switches(mac))
 
-    def discoved_switch(mac):
-        """Add newly discovered switch."""
-        hass.async_create_task(async_add_switch(mac))
+    def discoved_device(mac):
+        """Add switches for newly discovered device."""
+        hass.async_create_task(async_add_switches(mac))
 
     # Listen for discovered nodes
-    api_stick.subscribe_stick_callback(discoved_switch, CB_NEW_NODE)
+    api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
@@ -184,28 +192,19 @@ class GwSwitch(SmileGateway, SwitchEntity):
 class USBSwitch(PlugwiseUSBEntity, SwitchEntity):
     """Representation of a Stick Node switch."""
 
-    def __init__(self, node):
-        """Initialize a Node entity."""
-        super().__init__(node, USB_RELAY_ID)
-        self.node_callbacks = (
-            USB_AVAILABLE_ID,
-            USB_RELAY_ID,
-        )
+    def __init__(self, node, description: PlugwiseUSBSwitchEntityDescription):
+        """Initialize a switch entity."""
+        super().__init__(node, description)
 
     @property
     def is_on(self):
         """Return true if the switch is on."""
-        return getattr(self._node, STICK_API[USB_RELAY_ID][ATTR_STATE])
+        return getattr(self._node, self.entity_description.state_request_method)
 
     def turn_off(self, **kwargs):
         """Instruct the switch to turn off."""
-        setattr(self._node, STICK_API[USB_RELAY_ID][ATTR_STATE], False)
+        setattr(self._node, self.entity_description.state_request_method, False)
 
     def turn_on(self, **kwargs):
         """Instruct the switch to turn on."""
-        setattr(self._node, STICK_API[USB_RELAY_ID][ATTR_STATE], True)
-
-    @property
-    def unique_id(self):
-        """Get unique ID."""
-        return f"{self._node.mac}-{USB_RELAY_ID}"
+        setattr(self._node, self.entity_description.state_request_method, True)

@@ -20,14 +20,11 @@ from plugwise.exceptions import (
     StickInitError,
     TimeoutException,
 )
+from plugwise.nodes import PlugwiseNode
 from plugwise.stick import Stick
 
 from .const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ENABLED_DEFAULT,
-    ATTR_ICON,
     ATTR_MAC_ADDRESS,
-    ATTR_NAME,
     CB_JOIN_REQUEST,
     CONF_USB_PATH,
     DOMAIN,
@@ -36,11 +33,12 @@ from .const import (
     SERVICE_DEVICE_ADD,
     SERVICE_DEVICE_REMOVE,
     STICK,
-    STICK_API,
     UNDO_UPDATE_LISTENER,
     USB,
+    USB_AVAILABLE_ID,
     USB_MOTION_ID,
     USB_RELAY_ID,
+    PlugwiseUSBEntityDescription,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -191,14 +189,25 @@ async def _async_update_listener(hass: HomeAssistant, config_entry: ConfigEntry)
 class PlugwiseUSBEntity(Entity):
     """Base class for Plugwise USB entities."""
 
-    def __init__(self, node, api_type):
-        """Initialize a Node entity."""
+    def __init__(
+        self, node: PlugwiseNode, entity_description: PlugwiseUSBEntityDescription
+    ):
+        """Initialize a Pluswise USB entity."""
         self._node = node
-        self._api_type = api_type
-        self.node_callbacks = None
+        self.entity_description = entity_description
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, self._node.mac)},
+            "name": f"{self._node.hardware_model} ({self._node.mac})",
+            "manufacturer": "Plugwise",
+            "model": self._node.hardware_model,
+            "sw_version": f"{self._node.firmware_version}",
+        }
+        self._attr_should_poll = False
+        self._attr_unique_id = f"{self._node.mac}-{entity_description.key}"
+        self.node_callbacks = (USB_AVAILABLE_ID, entity_description.key)
 
     async def async_added_to_hass(self):
-        """Subscribe to updates."""
+        """Subscribe for updates."""
         for node_callback in self.node_callbacks:
             self._node.subscribe_callback(self.sensor_update, node_callback)
 
@@ -207,56 +216,6 @@ class PlugwiseUSBEntity(Entity):
         for node_callback in self.node_callbacks:
             self._node.unsubscribe_callback(self.sensor_update, node_callback)
 
-    @property
-    def available(self):
-        """Return the availability of this entity."""
-        return self._node.available
-
-    @property
-    def device_class(self):
-        """Return the device class of the binary sensor."""
-        return STICK_API[self._api_type][ATTR_DEVICE_CLASS]
-
-    @property
-    def device_info(self):
-        """Return the device info."""
-        return {
-            "identifiers": {(DOMAIN, self._node.mac)},
-            "name": f"{self._node.hardware_model} ({self._node.mac})",
-            "manufacturer": "Plugwise",
-            "model": self._node.hardware_model,
-            "sw_version": f"{self._node.firmware_version}",
-        }
-
-    @property
-    def entity_registry_enabled_default(self):
-        """Return the binary sensor registration state."""
-        return STICK_API[self._api_type][ATTR_ENABLED_DEFAULT]
-
-    @property
-    def icon(self):
-        """Return the icon."""
-        return (
-            None
-            if STICK_API[self._api_type][ATTR_DEVICE_CLASS]
-            else STICK_API[self._api_type][ATTR_ICON]
-        )
-
-    @property
-    def name(self):
-        """Return the display name of this entity."""
-        return f"{STICK_API[self._api_type][ATTR_NAME]} ({self._node.mac[-5:]})"
-
     def sensor_update(self, state):
         """Handle status update of Entity."""
         self.schedule_update_ha_state()
-
-    @property
-    def should_poll(self):
-        """Disable polling."""
-        return False
-
-    @property
-    def unique_id(self):
-        """Get unique ID."""
-        return f"{self._node.mac}-{self._node.hardware_model}"
