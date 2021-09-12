@@ -17,7 +17,6 @@ from voluptuous.error import MultipleInvalid
 from homeassistant import setup
 from homeassistant.components.plugwise.config_flow import (
     CONF_MANUAL_PATH,
-    get_serial_by_id,
 )
 from homeassistant.components.plugwise.const import (
     API,
@@ -650,52 +649,6 @@ async def test_timeout_exception(hass):
     )
     assert result["type"] == "form"
     assert result["errors"] == {"base": "network_timeout"}
-
-
-def test_get_serial_by_id_no_dir():
-    """Test serial by id conversion if there's no /dev/serial/by-id."""
-    with patch("os.path.isdir", MagicMock(return_value=False)) as is_dir_mock, patch(
-        "os.scandir"
-    ) as scan_mock:
-        res = get_serial_by_id(sentinel.path)
-        assert res is sentinel.path
-        assert is_dir_mock.call_count == 1
-        assert scan_mock.call_count == 0
-
-
-def test_get_serial_by_id():
-    """Test serial by id conversion."""
-
-    def _realpath(path):
-        if path is sentinel.matched_link:
-            return sentinel.path
-        return sentinel.serial_link_path
-
-    with patch("os.path.isdir", MagicMock(return_value=True)) as is_dir_mock, patch(
-        "os.scandir"
-    ) as scan_mock, patch("os.path.realpath", side_effect=_realpath):
-        res = get_serial_by_id(sentinel.path)
-        assert res is sentinel.path
-        assert is_dir_mock.call_count == 1
-        assert scan_mock.call_count == 1
-
-        entry1 = MagicMock(spec_set=os.DirEntry)
-        entry1.is_symlink.return_value = True
-        entry1.path = sentinel.some_path
-
-        entry2 = MagicMock(spec_set=os.DirEntry)
-        entry2.is_symlink.return_value = False
-        entry2.path = sentinel.other_path
-
-        entry3 = MagicMock(spec_set=os.DirEntry)
-        entry3.is_symlink.return_value = True
-        entry3.path = sentinel.matched_link
-
-        scan_mock.return_value = [entry1, entry2, entry3]
-        res = get_serial_by_id(sentinel.path)
-        assert res is sentinel.matched_link
-        assert is_dir_mock.call_count == 2
-        assert scan_mock.call_count == 2
 
 
 async def test_options_flow_stick(hass) -> None:
