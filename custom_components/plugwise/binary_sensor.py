@@ -31,9 +31,10 @@ from .const import (
     PW_CLASS,
     PW_MODEL,
     PW_TYPE,
-    SCAN_SENSITIVITY_MODES,
-    SERVICE_CONFIGURE_BATTERY,
-    SERVICE_CONFIGURE_SCAN,
+    SERVICE_USB_SCAN_CONFIG,
+    SERVICE_USB_SCAN_CONFIG_SCHEMA,
+    SERVICE_USB_SED_BATTERY_CONFIG,
+    SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
     STICK,
     USB,
     USB_MOTION_ID,
@@ -79,36 +80,14 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
             # Register services
             platform.async_register_entity_service(
-                SERVICE_CONFIGURE_SCAN,
-                {
-                    vol.Required(ATTR_SCAN_SENSITIVITY_MODE): vol.In(
-                        SCAN_SENSITIVITY_MODES
-                    ),
-                    vol.Required(ATTR_SCAN_RESET_TIMER): vol.All(
-                        vol.Coerce(int), vol.Range(min=1, max=240)
-                    ),
-                    vol.Required(ATTR_SCAN_DAYLIGHT_MODE): cv.boolean,
-                },
-                "_service_configure_scan",
+                SERVICE_USB_SCAN_CONFIG,
+                SERVICE_USB_SCAN_CONFIG_SCHEMA,
+                "_service_scan_config",
             )
             platform.async_register_entity_service(
-                SERVICE_CONFIGURE_BATTERY,
-                {
-                    vol.Required(ATTR_SED_STAY_ACTIVE): vol.All(
-                        vol.Coerce(int), vol.Range(min=1, max=120)
-                    ),
-                    vol.Required(ATTR_SED_SLEEP_FOR): vol.All(
-                        vol.Coerce(int), vol.Range(min=10, max=60)
-                    ),
-                    vol.Required(ATTR_SED_MAINTENANCE_INTERVAL): vol.All(
-                        vol.Coerce(int), vol.Range(min=5, max=1440)
-                    ),
-                    vol.Required(ATTR_SED_CLOCK_SYNC): cv.boolean,
-                    vol.Required(ATTR_SED_CLOCK_INTERVAL): vol.All(
-                        vol.Coerce(int), vol.Range(min=60, max=10080)
-                    ),
-                },
-                "_service_configure_battery_savings",
+                SERVICE_USB_SED_BATTERY_CONFIG,
+                SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
+                "_service_sed_battery_config",
             )
 
     for mac in hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN]:
@@ -232,7 +211,7 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
         """Return true if the binary_sensor is on."""
         return getattr(self._node, self.entity_description.state_request_method)
 
-    def _service_configure_scan(self, **kwargs):
+    def _service_scan_config(self, **kwargs):
         """Service call to configure motion sensor of Scan device."""
         sensitivity_mode = kwargs.get(ATTR_SCAN_SENSITIVITY_MODE)
         reset_timer = kwargs.get(ATTR_SCAN_RESET_TIMER)
@@ -246,7 +225,7 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
         )
         self._node.Configure_scan(reset_timer, sensitivity_mode, daylight_mode)
 
-    def _service_configure_battery_savings(self, **kwargs):
+    def _service_sed_battery_config(self, **kwargs):
         """Configure battery powered (sed) device service call."""
         stay_active = kwargs.get(ATTR_SED_STAY_ACTIVE)
         sleep_for = kwargs.get(ATTR_SED_SLEEP_FOR)

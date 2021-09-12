@@ -9,7 +9,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity import Entity
 
@@ -30,8 +29,9 @@ from .const import (
     DOMAIN,
     PLATFORMS_USB,
     PW_TYPE,
-    SERVICE_DEVICE_ADD,
-    SERVICE_DEVICE_REMOVE,
+    SERVICE_USB_DEVICE_ADD,
+    SERVICE_USB_DEVICE_REMOVE,
+    SERVICE_USB_DEVICE_SCHEMA,
     STICK,
     UNDO_UPDATE_LISTENER,
     USB,
@@ -156,12 +156,11 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             )
             device_registry.async_remove_device(device_entry.id)
 
-    service_device_schema = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
     hass.services.async_register(
-        DOMAIN, SERVICE_DEVICE_ADD, device_add, service_device_schema
+        DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
     )
     hass.services.async_register(
-        DOMAIN, SERVICE_DEVICE_REMOVE, device_remove, service_device_schema
+        DOMAIN, SERVICE_USB_DEVICE_REMOVE, device_remove, SERVICE_USB_DEVICE_SCHEMA
     )
 
     return True
