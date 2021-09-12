@@ -2,18 +2,8 @@
 import os
 from unittest.mock import AsyncMock, MagicMock, patch, sentinel
 
-from plugwise.exceptions import (
-    ConnectionFailedError,
-    InvalidAuthentication,
-    NetworkDown,
-    PlugwiseException,
-    StickInitError,
-    TimeoutException,
-)
 import pytest
 import serial.tools.list_ports
-from voluptuous.error import MultipleInvalid
-
 from homeassistant import setup
 from homeassistant.components.plugwise.config_flow import (
     CONF_MANUAL_PATH,
@@ -24,8 +14,8 @@ from homeassistant.components.plugwise.const import (
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
-    FLOW_TYPE,
     FLOW_NET,
+    FLOW_TYPE,
     FLOW_USB,
     PW_TYPE,
     STICK,
@@ -41,8 +31,17 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from homeassistant.data_entry_flow import RESULT_TYPE_CREATE_ENTRY, RESULT_TYPE_FORM
-
 from tests.common import MockConfigEntry
+from voluptuous.error import MultipleInvalid
+
+from plugwise.exceptions import (
+    ConnectionFailedError,
+    InvalidAuthentication,
+    NetworkDown,
+    PlugwiseException,
+    StickInitError,
+    TimeoutException,
+)
 
 TEST_HOST = "1.1.1.1"
 TEST_HOSTNAME = "smileabcdef"
