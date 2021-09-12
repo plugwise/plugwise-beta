@@ -73,10 +73,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
                     ].append(mac)
                 hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN].append(mac)
 
-        for component in PLATFORMS_USB:
-            hass.async_create_task(
-                hass.config_entries.async_forward_entry_setup(config_entry, component)
-            )
+        hass.config_entries.async_setup_platforms(config_entry, PLATFORMS_USB)
 
         def add_new_node(mac):
             """Add Listener when a new Plugwise node joined the network."""
@@ -175,13 +172,9 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
 
 async def async_unload_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     """Unload the Plugwise stick connection."""
-    unload_ok = all(
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(config_entry, component)
-                for component in PLATFORMS_USB
-            ]
-        )
+
+    unload_ok = await hass.config_entries.async_unload_platforms(
+        config_entry, PLATFORMS_USB
     )
     hass.data[DOMAIN][config_entry.entry_id][UNDO_UPDATE_LISTENER]()
     if unload_ok:
