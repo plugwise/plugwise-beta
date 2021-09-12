@@ -86,7 +86,7 @@ ATTR_MAC_ADDRESS = "mac"
 
 SERVICE_USB_DEVICE_ADD = "device_add"
 SERVICE_USB_DEVICE_REMOVE = "device_remove"
-SERVICE_USB_DEVICE_SCHEMA = {vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})}
+SERVICE_USB_DEVICE_SCHEMA = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
 
 
 # USB Relay device constants
