@@ -3,21 +3,9 @@
 from __future__ import annotations
 
 import logging
+
 import serial.tools.list_ports
-
 import voluptuous as vol
-
-from plugwise.exceptions import (
-    InvalidAuthentication,
-    NetworkDown,
-    PlugwiseException,
-    PortError,
-    StickInitError,
-    TimeoutException,
-)
-from plugwise.stick import Stick
-from plugwise.smile import Smile
-
 from homeassistant import config_entries, core, exceptions
 from homeassistant.components import usb
 from homeassistant.const import (
@@ -29,9 +17,20 @@ from homeassistant.const import (
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
 )
+from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
-from homeassistant.core import callback
+
+from plugwise.exceptions import (
+    InvalidAuthentication,
+    NetworkDown,
+    PlugwiseException,
+    PortError,
+    StickInitError,
+    TimeoutException,
+)
+from plugwise.smile import Smile
+from plugwise.stick import Stick
 
 from .const import (
     API,
@@ -51,7 +50,7 @@ from .const import (
     STRETCH,
     STRETCH_USERNAME,
     ZEROCONF_MAP,
-)  # pylint:disable=unused-import
+)
 
 _LOGGER = logging.getLogger(__name__)
 
