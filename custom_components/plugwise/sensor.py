@@ -15,6 +15,8 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 
+from plugwise.nodes import PlugwiseNode
+
 from .const import (
     ATTR_ENABLED_DEFAULT,
     CB_NEW_NODE,
@@ -48,7 +50,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     """Set up Plugwise sensor based on config_entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
-    async def async_add_sensors(mac):
+    async def async_add_sensors(mac: str):
         """Add plugwise sensors for device."""
         entities = []
         entities.extend(
@@ -161,12 +163,14 @@ class GwSensor(SmileGateway, SensorEntity):
 class USBSensor(PlugwiseUSBEntity, SensorEntity):
     """Representation of a Plugwise USB sensor."""
 
-    def __init__(self, node, description: PlugwiseUSBSensorEntityDescription):
+    def __init__(
+        self, node: PlugwiseNode, description: PlugwiseSensorEntityDescription
+    ):
         """Initialize sensor entity."""
         super().__init__(node, description)
 
     @property
-    def native_value(self):
+    def native_value(self) -> float | None:
         """Return the native value of the sensor."""
         state_value = getattr(self._node, self.entity_description.state_request_method)
         if state_value is not None:

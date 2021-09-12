@@ -12,6 +12,7 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import entity_platform
 
 from plugwise.entities import GWBinarySensor
+from plugwise.nodes import PlugwiseNode
 
 from .const import (
     ATTR_ENABLED_DEFAULT,
@@ -220,8 +221,14 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
     """Representation of a Plugwise USB Binary Sensor."""
 
+    def __init__(
+        self, node: PlugwiseNode, description: PlugwiseBinarySensorEntityDescription
+    ):
+        """Initialize a binary sensor entity."""
+        super().__init__(node, description)
+
     @property
-    def is_on(self):
+    def is_on(self) -> bool:
         """Return true if the binary_sensor is on."""
         return getattr(self._node, self.entity_description.state_request_method)
 

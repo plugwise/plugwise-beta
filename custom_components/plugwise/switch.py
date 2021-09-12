@@ -17,6 +17,7 @@ from homeassistant.const import (
 from homeassistant.core import callback
 
 from plugwise.exceptions import PlugwiseException
+from plugwise.nodes import PlugwiseNode
 
 from .const import (
     API,
@@ -192,12 +193,14 @@ class GwSwitch(SmileGateway, SwitchEntity):
 class USBSwitch(PlugwiseUSBEntity, SwitchEntity):
     """Representation of a Stick Node switch."""
 
-    def __init__(self, node, description: PlugwiseUSBSwitchEntityDescription):
+    def __init__(
+        self, node: PlugwiseNode, description: PlugwiseSwitchEntityDescription
+    ):
         """Initialize a switch entity."""
         super().__init__(node, description)
 
     @property
-    def is_on(self):
+    def is_on(self) -> bool:
         """Return true if the switch is on."""
         return getattr(self._node, self.entity_description.state_request_method)
 
