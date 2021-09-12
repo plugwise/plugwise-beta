@@ -29,11 +29,10 @@ from .const import (
     PW_TYPE,
     STICK,
     USB,
-    USB_SWITCH_TYPES,
     VENDOR,
-    PlugwiseUSBSwitchEntityDescription,
 )
 from .gateway import SmileGateway
+from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
 from .usb import PlugwiseUSBEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -57,8 +56,9 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         entities.extend(
             [
                 USBSwitch(api_stick.devices[mac], description)
-                for description in USB_SWITCH_TYPES
-                if description.key in api_stick.devices[mac].features
+                for description in PW_SWITCH_TYPES
+                if description.plugwise_api == STICK
+                and description.key in api_stick.devices[mac].features
             ]
         )
         async_add_entities(entities)

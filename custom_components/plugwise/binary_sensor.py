@@ -35,11 +35,11 @@ from .const import (
     SERVICE_CONFIGURE_SCAN,
     STICK,
     USB,
-    USB_BINARY_SENSOR_TYPES,
     USB_MOTION_ID,
     VENDOR,
 )
 from .gateway import SmileGateway
+from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
 from .usb import PlugwiseUSBEntity
 
 PARALLEL_UPDATES = 0
@@ -66,8 +66,9 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         entities.extend(
             [
                 USBBinarySensor(api_stick.devices[mac], description)
-                for description in USB_BINARY_SENSOR_TYPES
-                if description.key in api_stick.devices[mac].features
+                for description in PW_BINARY_SENSOR_TYPES
+                if description.plugwise_api == STICK
+                and description.key in api_stick.devices[mac].features
             ]
         )
         async_add_entities(entities)

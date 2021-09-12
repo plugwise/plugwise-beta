@@ -38,8 +38,8 @@ from .const import (
     USB_AVAILABLE_ID,
     USB_MOTION_ID,
     USB_RELAY_ID,
-    PlugwiseUSBEntityDescription,
 )
+from .models import PlugwiseEntityDescription
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -190,7 +190,7 @@ class PlugwiseUSBEntity(Entity):
     """Base class for Plugwise USB entities."""
 
     def __init__(
-        self, node: PlugwiseNode, entity_description: PlugwiseUSBEntityDescription
+        self, node: PlugwiseNode, entity_description: PlugwiseEntityDescription
     ):
         """Initialize a Pluswise USB entity."""
         self._node = node
