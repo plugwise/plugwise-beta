@@ -1,13 +1,10 @@
 """Test the Plugwise config flow."""
-import os
-from unittest.mock import AsyncMock, MagicMock, patch, sentinel
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 import serial.tools.list_ports
 from homeassistant import setup
-from homeassistant.components.plugwise.config_flow import (
-    CONF_MANUAL_PATH,
-)
+from homeassistant.components.plugwise.config_flow import CONF_MANUAL_PATH
 from homeassistant.components.plugwise.const import (
     API,
     CONF_USB_PATH,
