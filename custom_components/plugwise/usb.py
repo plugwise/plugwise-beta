@@ -1,5 +1,4 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
-import asyncio
 import logging
 
 import voluptuous as vol

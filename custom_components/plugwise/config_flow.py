@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import serial.tools.list_ports
 
 import voluptuous as vol
