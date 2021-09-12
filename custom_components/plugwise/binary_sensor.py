@@ -73,7 +73,8 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
                 and description.key in api_stick.devices[mac].features
             ]
         )
-        async_add_entities(entities)
+        if entities:
+            async_add_entities(entities)
 
         if USB_MOTION_ID in api_stick.devices[mac].features:
             _LOGGER.debug("Add binary_sensors for %s", mac)

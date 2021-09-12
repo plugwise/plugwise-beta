@@ -62,7 +62,8 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
                 and description.key in api_stick.devices[mac].features
             ]
         )
-        async_add_entities(entities)
+        if entities:
+            async_add_entities(entities)
 
     for mac in hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN]:
         hass.async_create_task(async_add_switches(mac))
