@@ -194,6 +194,7 @@ class PlugwiseUSBEntity(Entity):
         """Initialize a Pluswise USB entity."""
         self._node = node
         self.entity_description = entity_description
+        self._attr_available = self._node.available
         self._attr_device_info = {
             "identifiers": {(DOMAIN, self._node.mac)},
             "name": f"{self._node.hardware_model} ({self._node.mac})",
@@ -202,6 +203,7 @@ class PlugwiseUSBEntity(Entity):
             "sw_version": f"{self._node.firmware_version}",
         }
         self._attr_should_poll = False
+        self._attr_name = f"{entity_description.name} ({self._node.mac[-5:]})"
         self._attr_unique_id = f"{self._node.mac}-{entity_description.key}"
         self.node_callbacks = (USB_AVAILABLE_ID, entity_description.key)
 
@@ -218,3 +220,4 @@ class PlugwiseUSBEntity(Entity):
     def sensor_update(self, state):
         """Handle status update of Entity."""
         self.schedule_update_ha_state()
+        self._attr_available = self._node.available
