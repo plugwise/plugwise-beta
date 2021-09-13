@@ -128,6 +128,15 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
+        key="power_prod_cur_hour",
+        plugwise_api=STICK,
+        name="Power production current hour",
+        device_class=DEVICE_CLASS_POWER,
+        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        state_request_method="power_production_current_hour",
+        entity_registry_enabled_default=False,
+    ),
+    PlugwiseSensorEntityDescription(
         key="power_con_today",
         plugwise_api=STICK,
         name="Power consumption today",
