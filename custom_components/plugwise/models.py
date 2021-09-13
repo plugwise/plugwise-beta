@@ -33,6 +33,7 @@ class PlugwiseRequiredKeysMixin:
 
     state_request_method: str
     plugwise_api: str
+    should_poll: bool = False
 
 
 @dataclass
@@ -70,7 +71,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=POWER_WATT,
         state_request_method="current_power_usage",
-        should_poll=False,
     ),
     PlugwiseSensorEntityDescription(
         key="energy_consumption_today",
@@ -80,7 +80,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         state_request_method="energy_consumption_today",
-        should_poll=False,
     ),
     PlugwiseSensorEntityDescription(
         key="ping",
@@ -91,7 +90,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=TIME_MILLISECONDS,
         state_request_method="ping",
         entity_registry_enabled_default=False,
-        should_poll=False,
     ),
     PlugwiseSensorEntityDescription(
         key="power_8s",
@@ -102,7 +100,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=POWER_WATT,
         state_request_method="current_power_usage_8_sec",
         entity_registry_enabled_default=False,
-        should_poll=False,
     ),
     PlugwiseSensorEntityDescription(
         key="RSSI_in",
@@ -112,7 +109,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
         state_request_method="rssi_in",
         entity_registry_enabled_default=False,
-        should_poll=False,
     ),
     PlugwiseSensorEntityDescription(
         key="RSSI_out",
@@ -122,7 +118,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
         state_request_method="rssi_out",
         entity_registry_enabled_default=False,
-        should_poll=False,
     ),
     PlugwiseSensorEntityDescription(
         key="power_con_cur_hour",
@@ -132,7 +127,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         state_request_method="power_consumption_current_hour",
         entity_registry_enabled_default=False,
-        should_poll=False,
     ),
     PlugwiseSensorEntityDescription(
         key="power_prod_cur_hour",
@@ -142,7 +136,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         state_request_method="power_production_current_hour",
         entity_registry_enabled_default=False,
-        should_poll=False,
     ),
     PlugwiseSensorEntityDescription(
         key="power_con_today",
@@ -152,7 +145,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         state_request_method="power_consumption_today",
         entity_registry_enabled_default=False,
-        should_poll=False,
     ),
     PlugwiseSensorEntityDescription(
         key="power_con_prev_hour",
@@ -162,7 +154,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         state_request_method="power_consumption_previous_hour",
         entity_registry_enabled_default=False,
-        should_poll=False,
     ),
     PlugwiseSensorEntityDescription(
         key="power_con_yesterday",
@@ -172,7 +163,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         state_request_method="power_consumption_yesterday",
         entity_registry_enabled_default=False,
-        should_poll=False,
     ),
 )
 
@@ -183,7 +173,6 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         device_class=DEVICE_CLASS_OUTLET,
         name="Relay state",
         state_request_method="relay_state",
-        should_poll=False,
     ),
 )
 
@@ -194,6 +183,5 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         name="Motion",
         device_class=DEVICE_CLASS_MOTION,
         state_request_method="motion",
-        should_poll=False,
     ),
 )

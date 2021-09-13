@@ -203,6 +203,7 @@ class PlugwiseUSBEntity(Entity):
             "sw_version": f"{self._node.firmware_version}",
         }
         self._attr_name = f"{entity_description.name} ({self._node.mac[-5:]})"
+        self._attr_should_poll = entity_description.should_poll
         self._attr_unique_id = f"{self._node.mac}-{entity_description.key}"
         self.node_callbacks = (USB_AVAILABLE_ID, entity_description.key)
 
