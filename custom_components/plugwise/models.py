@@ -33,7 +33,6 @@ class PlugwiseRequiredKeysMixin:
 
     state_request_method: str
     plugwise_api: str
-    should_poll: bool = False
 
 
 @dataclass
@@ -47,6 +46,8 @@ class PlugwiseSensorEntityDescription(
 ):
     """Describes Plugwise sensor entity."""
 
+    should_poll: bool = False
+
 
 @dataclass
 class PlugwiseSwitchEntityDescription(
@@ -54,12 +55,16 @@ class PlugwiseSwitchEntityDescription(
 ):
     """Describes Plugwise switch entity."""
 
+    should_poll: bool = False
+
 
 @dataclass
 class PlugwiseBinarySensorEntityDescription(
     BinarySensorEntityDescription, PlugwiseEntityDescription
 ):
     """Describes Plugwise binary sensor entity."""
+
+    should_poll: bool = False
 
 
 PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
