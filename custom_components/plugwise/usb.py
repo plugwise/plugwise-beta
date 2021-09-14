@@ -1,7 +1,6 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
 import logging
 
-import voluptuous as vol
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
