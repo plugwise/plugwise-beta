@@ -62,7 +62,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
     platform = entity_platform.current_platform.get()
 
-    async def async_add_binary_sensors(mac):
+    async def async_add_binary_sensors(mac: str):
         """Add plugwise binary sensors for device."""
         entities = []
         entities.extend(
@@ -94,7 +94,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     for mac in hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN]:
         hass.async_create_task(async_add_binary_sensors(mac))
 
-    def discoved_device(mac):
+    def discoved_device(mac: str):
         """Add binary sensors for newly discovered device."""
         hass.async_create_task(async_add_binary_sensors(mac))
 

@@ -67,7 +67,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     for mac in hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN]:
         hass.async_create_task(async_add_sensors(mac))
 
-    def discoved_device(mac):
+    def discoved_device(mac: str):
         """Add sensors for newly discovered device."""
         hass.async_create_task(async_add_sensors(mac))
 

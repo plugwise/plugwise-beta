@@ -51,7 +51,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     """Set up the USB switches from a config entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
-    async def async_add_switches(mac):
+    async def async_add_switches(mac: str):
         """Add plugwise switches."""
         entities = []
         entities.extend(
@@ -68,7 +68,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     for mac in hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN]:
         hass.async_create_task(async_add_switches(mac))
 
-    def discoved_device(mac):
+    def discoved_device(mac: str):
         """Add switches for newly discovered device."""
         hass.async_create_task(async_add_switches(mac))
 
