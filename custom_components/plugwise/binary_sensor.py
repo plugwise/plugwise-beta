@@ -3,12 +3,10 @@ from __future__ import annotations
 
 import logging
 
-import voluptuous as vol
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.const import ATTR_ID, ATTR_NAME
 from homeassistant.core import callback
-from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import entity_platform
 
 from plugwise.entities import GWBinarySensor
