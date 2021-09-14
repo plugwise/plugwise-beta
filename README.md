@@ -28,7 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW Aug 2021 [v0.17.5]
+## NEW Sept 2021 [v0.17.8, v0.17.7]
+- Link to plugwise v0.14.1 https://github.com/plugwise/python-plugwise/releases/tag/v0.14.1
+- Smile: adapt to HA Core 2021.9 sensor-changes (Remove last_reset, use total_increasing instead) 
+
+## Aug 2021 [v0.17.5]
 - Link to plugwise v0.13.1 https://github.com/plugwise/python-plugwise/releases/tag/v0.13.1
 - Smile: fully support legacy Smile P1 (specifically with firmware 2.1.13), fixing #187
 
