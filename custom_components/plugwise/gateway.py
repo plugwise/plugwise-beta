@@ -6,7 +6,6 @@ import asyncio
 import logging
 from datetime import timedelta
 
-from async_timeout import timeout
 import voluptuous as vol
 from plugwise.exceptions import InvalidAuthentication, PlugwiseException
 from plugwise.smile import Smile
