@@ -113,7 +113,6 @@ class GwSensor(SmileGateway, SensorEntity):
         )
 
         self._attr_state_class = sr_data.get("state_class")
-        self._attr_last_reset = sr_data.get("last_reset")
         self._device_class = sr_data.get(ATTR_DEVICE_CLASS)
         self._device_name = name
         self._enabled_default = sr_data.get(ATTR_ENABLED_DEFAULT)
