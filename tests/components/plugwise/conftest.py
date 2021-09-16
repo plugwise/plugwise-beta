@@ -59,11 +59,6 @@ def mock_smile_notconnect():
         yield smile_mock.return_value
 
 
-def _get_device_data(chosen_env, device_id):
-    """Mock return data for specific devices."""
-    return _read_json(chosen_env, "device_data/" + device_id)
-
-
 @pytest.fixture(name="mock_smile_adam")
 def mock_smile_adam():
     """Create a Mock Adam environment for testing exceptions."""
