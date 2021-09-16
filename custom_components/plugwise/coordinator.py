@@ -5,20 +5,21 @@ from async_timeout import timeout
 
 from plugwise.exceptions import PlugwiseException, XMLDataMissingError
 
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class PWDataUpdateCoordinator(DataUpdateCoordinator):
+
     """Class to manage fetching Plugwise API data from a single endpoint."""
     def __init__(self, hass, api, interval):
         """Initialize the coordinator."""
         super().__init__(
             hass,
-            _LOGGER, 
+            _LOGGER,
             name=f"{api.smile_name}",
-            update_interval = interval
+            update_interval=interval
         )
         self._api = api
         self._data = {}
