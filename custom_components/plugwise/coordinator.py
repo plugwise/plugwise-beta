@@ -11,8 +11,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class PWDataUpdateCoordinator(DataUpdateCoordinator):
-
     """Class to manage fetching Plugwise API data from a single endpoint."""
+
     def __init__(self, hass, api, interval):
         """Initialize the coordinator."""
         super().__init__(
