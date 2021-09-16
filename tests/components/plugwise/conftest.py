@@ -156,7 +156,7 @@ def mock_smile_p1():
         smile_mock.return_value.async_update.side_effect = AsyncMock(
             return_value=_read_json(chosen_env, "all_data")
         )
-  
+
         smile_mock.return_value.single_master_thermostat.side_effect = Mock(
             return_value=None
         )
