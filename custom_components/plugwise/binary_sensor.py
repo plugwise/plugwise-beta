@@ -13,7 +13,6 @@ from homeassistant.helpers import entity_platform
 from plugwise.entities import GWBinarySensor
 
 from .const import (
-    API,
     ATTR_ENABLED_DEFAULT,
     ATTR_SCAN_DAYLIGHT_MODE,
     ATTR_SCAN_RESET_TIMER,
@@ -114,22 +113,20 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     """Set up the Smile binary_sensors from a config entry."""
-    api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    for dev_id in api.gw_devices:
-        for key in api.gw_devices[dev_id]:
+    for dev_id in coordinator.data[1]:
+        for key in coordinator.data[1][dev_id]:
             if key != "binary_sensors":
                 continue
 
-            for data in api.gw_devices[dev_id]["binary_sensors"]:
+            for data in coordinator.data[1][dev_id]["binary_sensors"]:
                 entities.append(
                     GwBinarySensor(
-                        api,
                         coordinator,
                         dev_id,
-                        api.gw_devices[dev_id].get(ATTR_NAME),
+                        coordinator.data[1][dev_id].get(ATTR_NAME),
                         data,
                     )
                 )
@@ -142,7 +139,6 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
 
     def __init__(
         self,
-        api,
         coordinator,
         dev_id,
         name,
@@ -150,25 +146,23 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
     ):
         """Initialise the binary_sensor."""
         super().__init__(
-            api,
             coordinator,
             dev_id,
             name,
-            api.gw_devices[dev_id].get(PW_MODEL),
-            api.gw_devices[dev_id].get(VENDOR),
-            api.gw_devices[dev_id].get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
-        self._gw_b_sensor = GWBinarySensor(api, dev_id, bs_data[ATTR_ID])
-
-        self._api = api
+        self._cdata = coordinator.data
+        self._gw_b_sensor = GWBinarySensor(self._cdata, dev_id, bs_data[ATTR_ID])
         self._attributes = {}
         self._binary_sensor = bs_data.get(ATTR_ID)
         self._bs_data = bs_data
         self._dev_id = dev_id
         self._device_class = None
         self._device_name = name
-        if self._api.gw_devices[self._dev_id][PW_CLASS] == "gateway":
+        if self._cdata[1][self._dev_id][PW_CLASS] == "gateway":
             self._device_name = f"Smile {name}"
         self._enabled_default = self._bs_data.get(ATTR_ENABLED_DEFAULT)
         self._icon = None

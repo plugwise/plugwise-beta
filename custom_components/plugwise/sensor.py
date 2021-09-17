@@ -15,7 +15,6 @@ from homeassistant.const import (
 from homeassistant.core import callback
 
 from .const import (
-    API,
     ATTR_ENABLED_DEFAULT,
     CB_NEW_NODE,
     COORDINATOR,
@@ -72,22 +71,20 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
-    api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    for dev_id in api.gw_devices:
-        for key in api.gw_devices[dev_id]:
+    for dev_id in coordinator.data[1]:
+        for key in coordinator.data[1][dev_id]:
             if key != "sensors":
                 continue
 
-            for data in api.gw_devices[dev_id]["sensors"]:
+            for data in coordinator.data[1][dev_id]["sensors"]:
                 entities.append(
                     GwSensor(
-                        api,
                         coordinator,
                         dev_id,
-                        api.gw_devices[dev_id].get(ATTR_NAME),
+                        coordinator.data[1][dev_id].get(ATTR_NAME),
                         data,
                     )
                 )
@@ -100,7 +97,6 @@ class GwSensor(SmileGateway, SensorEntity):
 
     def __init__(
         self,
-        api,
         coordinator,
         dev_id,
         name,
@@ -108,13 +104,12 @@ class GwSensor(SmileGateway, SensorEntity):
     ):
         """Initialise the sensor."""
         super().__init__(
-            api,
             coordinator,
             dev_id,
             name,
-            api.gw_devices[dev_id].get(PW_MODEL),
-            api.gw_devices[dev_id].get(VENDOR),
-            api.gw_devices[dev_id].get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
         self._attr_state_class = sr_data.get("state_class")

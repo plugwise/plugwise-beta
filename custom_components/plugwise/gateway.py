@@ -6,24 +6,15 @@ import asyncio
 import logging
 from datetime import timedelta
 
-import async_timeout
 import voluptuous as vol
-from plugwise.exceptions import (
-    InvalidAuthentication,
-    PlugwiseException,
-    XMLDataMissingError,
-)
+from plugwise.exceptions import InvalidAuthentication, PlugwiseException
 from plugwise.smile import Smile
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
-    DataUpdateCoordinator,
-    UpdateFailed,
-)
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,
@@ -47,6 +38,7 @@ from .const import (
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
+from .coordinator import PWDataUpdateCoordinator
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -102,35 +94,10 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     )
 
-    async def async_update_gw_data():
-        """Update data via API endpoint."""
-        _LOGGER.debug("Updating %s", api.smile_name)
-        try:
-            async with async_timeout.timeout(update_interval.seconds):
-                await api.update_gw_devices()
-                _LOGGER.debug("Successfully updated %s", api.smile_name)
-                return True
-        except XMLDataMissingError as err:
-            _LOGGER.debug(
-                "Updating Smile failed, expected XML data for %s", api.smile_name
-            )
-            raise UpdateFailed("Smile update failed") from err
-        except PlugwiseException as err:
-            _LOGGER.debug("Updating failed, generic failure for %s", api.smile_name)
-            raise UpdateFailed("Smile update failed") from err
+    coordinator = PWDataUpdateCoordinator(hass, api, update_interval)
 
-    coordinator = DataUpdateCoordinator(
-        hass,
-        _LOGGER,
-        name=f"{api.smile_name}",
-        update_method=async_update_gw_data,
-        update_interval=update_interval,
-    )
-
+    api.get_all_devices()
     await coordinator.async_config_entry_first_refresh()
-
-    if not coordinator.last_update_success:
-        raise ConfigEntryNotReady
 
     undo_listener = entry.add_update_listener(_update_listener)
 
@@ -141,15 +108,14 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 
-    api.get_all_devices()
-    _LOGGER.debug("Gateway is %s", api.gateway_id)
+    _LOGGER.debug("Gateway is %s", coordinator.data[0]["gateway_id"])
     _LOGGER.debug("Gateway software version is %s", api.smile_version[0])
-    _LOGGER.debug("Appliances are %s", api.gw_devices)
-
-    _LOGGER.debug("Single master thermostat = %s", api.single_master_thermostat())
+    _LOGGER.debug("Appliances are %s", coordinator.data[1])
+    s_m_thermostat = coordinator.data[0]["single_master_thermostat"]
+    _LOGGER.debug("Single master thermostat = %s", s_m_thermostat)
 
     platforms = GATEWAY_PLATFORMS
-    if api.single_master_thermostat() is None:
+    if s_m_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
     async def delete_notification(self):
@@ -205,11 +171,10 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
 class SmileGateway(CoordinatorEntity):
     """Represent Smile Gateway."""
 
-    def __init__(self, api, coordinator, dev_id, name, model, vendor, fw):
+    def __init__(self, coordinator, dev_id, name, model, vendor, fw):
         """Initialise the gateway."""
         super().__init__(coordinator)
 
-        self._api = api
         self._coordinator = coordinator
         self._dev_id = dev_id
         self._device_class = None
@@ -223,7 +188,7 @@ class SmileGateway(CoordinatorEntity):
     @property
     def available(self):
         """Return True if entity is available."""
-        return self.coordinator.last_update_success
+        return self._coordinator.last_update_success
 
     @property
     def device_class(self):
@@ -241,10 +206,11 @@ class SmileGateway(CoordinatorEntity):
             "sw_version": self._fw_version,
         }
 
-        if self._dev_id != self._api.gateway_id:
-            device_information["via_device"] = (DOMAIN, self._api.gateway_id)
+        gw_id = self._coordinator.data[0]["gateway_id"]
+        if self._dev_id != gw_id:
+            device_information["via_device"] = (DOMAIN, gw_id)
         else:
-            device_information["name"] = f"Smile {self._api.smile_name}"
+            device_information["name"] = f"Smile {self._coordinator.data[0]['smile_name']}"
 
         return device_information
 
@@ -262,7 +228,7 @@ class SmileGateway(CoordinatorEntity):
         """Subscribe to updates."""
         self._async_process_data()
         self.async_on_remove(
-            self.coordinator.async_add_listener(self._async_process_data)
+            self._coordinator.async_add_listener(self._async_process_data)
         )
 
     @callback
