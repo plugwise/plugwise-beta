@@ -166,7 +166,7 @@ class USBSensor(PlugwiseUSBEntity, SensorEntity):
 
     def __init__(
         self, node: PlugwiseNode, description: PlugwiseSensorEntityDescription
-    ):
+    ) -> None:
         """Initialize sensor entity."""
         super().__init__(node, description)
 

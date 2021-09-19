@@ -201,7 +201,7 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
 
     def __init__(
         self, node: PlugwiseNode, description: PlugwiseBinarySensorEntityDescription
-    ):
+    ) -> None:
         """Initialize a binary sensor entity."""
         super().__init__(node, description)
 

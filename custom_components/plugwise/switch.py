@@ -196,7 +196,7 @@ class USBSwitch(PlugwiseUSBEntity, SwitchEntity):
 
     def __init__(
         self, node: PlugwiseNode, description: PlugwiseSwitchEntityDescription
-    ):
+    ) -> None:
         """Initialize a switch entity."""
         super().__init__(node, description)
 

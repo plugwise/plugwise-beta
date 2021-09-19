@@ -189,7 +189,7 @@ class PlugwiseUSBEntity(Entity):
 
     def __init__(
         self, node: PlugwiseNode, entity_description: PlugwiseEntityDescription
-    ):
+    ) -> None:
         """Initialize a Pluswise USB entity."""
         self._attr_available = node.available
         self._attr_device_info = {
