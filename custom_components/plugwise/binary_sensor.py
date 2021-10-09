@@ -5,7 +5,7 @@ import logging
 
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME
+from homeassistant.const import ATTR_DEVICE_CLASS, ATTR_ID, ATTR_NAME
 from homeassistant.core import callback
 from homeassistant.helpers import entity_platform
 
@@ -13,7 +13,6 @@ from plugwise.entities import GWBinarySensor
 from plugwise.nodes import PlugwiseNode
 
 from .const import (
-    ATTR_DEVICE_CLASS,
     ATTR_ENABLED_DEFAULT,
     ATTR_SCAN_DAYLIGHT_MODE,
     ATTR_SCAN_RESET_TIMER,
