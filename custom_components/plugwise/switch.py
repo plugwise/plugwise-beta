@@ -123,7 +123,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         )
 
         self._api = api
-        self._attr_enabled_default = sw_data.get(ATTR_ENABLED_DEFAULT)
+        self._attr_entity_registry_enabled_default = sw_data.get(ATTR_ENABLED_DEFAULT)
         self._attr_icon = None
         self._attr_is_on = False
         self._attr_name = f"{name} {sw_data.get(ATTR_NAME)}"
