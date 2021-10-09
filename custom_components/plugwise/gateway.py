@@ -182,7 +182,6 @@ class SmileGateway(CoordinatorEntity):
         self._fw_version = fw
         self._manufacturer = vendor
         self._model = model
-        self._name = None
         self._unique_id = None
 
         gw_id = self._coordinator.data[0]["gateway_id"]
@@ -196,7 +195,6 @@ class SmileGateway(CoordinatorEntity):
             "sw_version": self._fw_version,
             "via_device": (DOMAIN, gw_id) if self._dev_id != gw_id else None
         }
-        self._attr_name = self._name
         self._attr_unique_id = self._unique_id
 
 

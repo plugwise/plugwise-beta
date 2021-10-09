@@ -99,7 +99,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._cdata = coordinator.data
         self._gw_thermostat = GWThermostat(self._cdata, dev_id)
         self._device_class = None
-        self._device_name = self._name = name
+        self._device_name = self._attr_name = name
         self._hvac_mode = None
         self._loc_id = self._cdata[1][dev_id].get(PW_LOCATION)
         self._max_temp = max_temp

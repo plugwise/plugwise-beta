@@ -146,6 +146,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._attr_enabled_default = bs_data.get(ATTR_ENABLED_DEFAULT)
         self._attr_icon = None
         self._attr_is_on = False
+        self._attr_name = f"{name} {self._bs_data.get(ATTR_NAME)}"
         self._cdata = coordinator.data
         self._gw_b_sensor = GWBinarySensor(self._cdata, dev_id, bs_data[ATTR_ID])
         self._attributes = {}
@@ -157,7 +158,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         if self._cdata[1][self._dev_id][PW_CLASS] == "gateway":
             self._device_name = f"Smile {name}"
 
-        self._name = f"{name} {self._bs_data.get(ATTR_NAME)}"
+
         self._unique_id = f"{dev_id}-{self._binary_sensor}"
 
     @property
