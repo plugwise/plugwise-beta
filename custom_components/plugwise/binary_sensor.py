@@ -144,17 +144,15 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         )
 
         self._attr_enabled_default = bs_data.get(ATTR_ENABLED_DEFAULT)
+        self._attr_extra_state_attributes = None
         self._attr_icon = None
         self._attr_is_on = False
         self._attr_name = f"{name} {bs_data.get(ATTR_NAME)}"
-        self._attributes = {}
-        self._binary_sensor = bs_data.get(ATTR_ID)
         self._cdata = coordinator.data
-        self._dev_id = dev_id
         self._device_class = bs_data.get(ATTR_DEVICE_CLASS)
-        bs_class = self._cdata[1][self._dev_id][PW_CLASS]
+        bs_class = self._cdata[1][dev_id][PW_CLASS]
         self._gw_b_sensor = GWBinarySensor(self._cdata, dev_id, bs_data[ATTR_ID])
-        self._unique_id = f"{dev_id}-{self._binary_sensor}"
+        self._unique_id = f"{dev_id}-{bs_data.get(ATTR_ID)}"
 
     @property
     def extra_state_attributes(self):
@@ -165,7 +163,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
     def _async_process_data(self):
         """Update the entity."""
         self._gw_b_sensor.update_data()
-        self._attributes = self._gw_b_sensor.extra_state_attributes
+        self._attr_extra_state_attributes = self._gw_b_sensor.extra_state_attributes
         self._attr_icon = self._gw_b_sensor.icon
         self._attr_is_on = self._gw_b_sensor.is_on
 

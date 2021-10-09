@@ -144,11 +144,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
         return SUPPORT_FLAGS
 
     @property
-    def extra_state_attributes(self):
-        """Return the device specific state attributes."""
-        return self._gw_thermostat.extra_state_attributes
-
-    @property
     def preset_modes(self):
         """Return the available preset modes list."""
         return self._gw_thermostat.preset_modes
@@ -257,7 +252,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
     def _async_process_data(self):
         """Update the data for this climate device."""
         self._gw_thermostat.update_data()
-
+        self._attr_extra_state_attributes = self._gw_thermostat.extra_state_attributes
         self._hvac_mode = self._gw_thermostat.hvac_mode
         self._preset_mode = self._gw_thermostat.preset_mode
         self._setpoint = self._gw_thermostat.target_temperature
