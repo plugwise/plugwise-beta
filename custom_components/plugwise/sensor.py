@@ -119,7 +119,6 @@ class GwSensor(SmileGateway, SensorEntity):
             coordinator.data[1][dev_id].get(FW),
         )
 
-        self._attr_state_class = sr_data.get("state_class")
         self._device_class = sr_data.get(ATTR_DEVICE_CLASS)
         self._device_name = name
         self._enabled_default = sr_data.get(ATTR_ENABLED_DEFAULT)
@@ -132,25 +131,12 @@ class GwSensor(SmileGateway, SensorEntity):
 
         self._unique_id = f"{dev_id}-{self._sensor}"
 
-    @property
-    def entity_registry_enabled_default(self) -> bool:
-        """Return if the entity should be enabled when first added to the entity registry."""
-        return self._enabled_default
 
-    @property
-    def icon(self):
-        """Return the icon of this entity."""
-        return self._icon
-
-    @property
-    def native_value(self):
-        """Return the state of this entity."""
-        return self._state
-
-    @property
-    def native_unit_of_measurement(self):
-        """Return the unit of measurement of this entity, if any."""
-        return self._unit_of_measurement
+    self._attr_entity_registry_enabled_default = self._enabled_default
+    self._attr_icon = self._icon
+    self._attr_native_value = self._state
+    self._attr_native_unit_of_measurement = self._unit_of_measurement
+    self._attr_state_class = sr_data.get("state_class")
 
     @callback
     def _async_process_data(self):
