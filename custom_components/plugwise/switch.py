@@ -144,7 +144,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
-        _LOGGER.debug("Turn switch.%s on", self._name)
+        _LOGGER.debug("Turn switch.%s on", self._attr_name)
         try:
             state_on = await self._api.set_switch_state(
                 self._dev_id, self._members, self._switch, STATE_ON
@@ -157,7 +157,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
     async def async_turn_off(self, **kwargs):
         """Turn the device off."""
-        _LOGGER.debug("Turn switch.%s off", self._name)
+        _LOGGER.debug("Turn switch.%s off", self._attr_name)
         try:
             state_off = await self._api.set_switch_state(
                 self._dev_id, self._members, self._switch, STATE_OFF
