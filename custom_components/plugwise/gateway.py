@@ -185,44 +185,20 @@ class SmileGateway(CoordinatorEntity):
         self._name = None
         self._unique_id = None
 
-    @property
-    def available(self):
-        """Return True if entity is available."""
-        return self._coordinator.last_update_success
-
-    @property
-    def device_class(self):
-        """Return the class of this device, from component DEVICE_CLASSES."""
-        return self._device_class
-
-    @property
-    def device_info(self) -> dict[str, any]:
-        """Return the device information."""
-        device_information = {
+        gw_id = self._coordinator.data[0]["gateway_id"]
+        self._attr_available = self._coordinator.last_update_success
+        self._attr_device_class = self._device_class
+        self._attr_device_info = {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._device_name,
+            "name": self._device_name if self._dev_id != gw_id else f"Smile {self._coordinator.data[0]['smile_name']}",
             "manufacturer": self._manufacturer,
             "model": self._model,
             "sw_version": self._fw_version,
+            "via_device": (DOMAIN, gw_id) if self._dev_id != gw_id else None
         }
+        self._attr_name = self._name
+        self._attr_unique_id = self._unique_id
 
-        gw_id = self._coordinator.data[0]["gateway_id"]
-        if self._dev_id != gw_id:
-            device_information["via_device"] = (DOMAIN, gw_id)
-        else:
-            device_information["name"] = f"Smile {self._coordinator.data[0]['smile_name']}"
-
-        return device_information
-
-    @property
-    def name(self):
-        """Return the name of the entity, if any."""
-        return self._name
-
-    @property
-    def unique_id(self):
-        """Return a unique ID."""
-        return self._unique_id
 
     async def async_added_to_hass(self):
         """Subscribe to updates."""
