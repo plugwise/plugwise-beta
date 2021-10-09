@@ -153,7 +153,6 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._dev_id = dev_id
         self._device_class = bs_data.get(ATTR_DEVICE_CLASS)
         bs_class = self._cdata[1][self._dev_id][PW_CLASS]
-        self._device_name = name if bs_class != "gateway" else f"Smile {name}"
         self._gw_b_sensor = GWBinarySensor(self._cdata, dev_id, bs_data[ATTR_ID])
         self._unique_id = f"{dev_id}-{self._binary_sensor}"
 

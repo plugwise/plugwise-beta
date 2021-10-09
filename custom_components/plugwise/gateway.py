@@ -178,7 +178,6 @@ class SmileGateway(CoordinatorEntity):
         self._coordinator = coordinator
         self._dev_id = dev_id
         self._device_class = None
-        self._device_name = name
         self._fw_version = fw
         self._manufacturer = vendor
         self._model = model
@@ -189,7 +188,7 @@ class SmileGateway(CoordinatorEntity):
         self._attr_device_class = self._device_class
         self._attr_device_info = {
             "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._device_name if self._dev_id != gw_id else f"Smile {self._coordinator.data[0]['smile_name']}",
+            "name": name if self._dev_id != gw_id else f"Smile {self._coordinator.data[0]['smile_name']}",
             "manufacturer": self._manufacturer,
             "model": self._model,
             "sw_version": self._fw_version,
