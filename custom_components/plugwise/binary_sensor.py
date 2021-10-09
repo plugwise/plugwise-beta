@@ -154,11 +154,6 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._gw_b_sensor = GWBinarySensor(self._cdata, dev_id, bs_data[ATTR_ID])
         self._unique_id = f"{dev_id}-{bs_data.get(ATTR_ID)}"
 
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        return self._attributes
-
     @callback
     def _async_process_data(self):
         """Update the entity."""
