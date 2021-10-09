@@ -119,30 +119,24 @@ class GwSensor(SmileGateway, SensorEntity):
             coordinator.data[1][dev_id].get(FW),
         )
 
+        self._attr_entity_registry_enabled_default = sr_data.get(ATTR_ENABLED_DEFAULT)
+        self._attr_icon = None
+        self._attr_native_value = None
+        self._attr_native_unit_of_measurement = sr_data.get(ATTR_UNIT_OF_MEASUREMENT)
+        self._attr_state_class = sr_data.get("state_class")
+
         self._device_class = sr_data.get(ATTR_DEVICE_CLASS)
         self._device_name = name
-        self._enabled_default = sr_data.get(ATTR_ENABLED_DEFAULT)
-        self._icon = None
         self._name = f"{name} {sr_data.get(ATTR_NAME)}"
         self._sensor = sr_data.get(ATTR_ID)
         self._sr_data = sr_data
-        self._state = None
-        self._unit_of_measurement = self._sr_data.get(ATTR_UNIT_OF_MEASUREMENT)
-
         self._unique_id = f"{dev_id}-{self._sensor}"
-
-
-    self._attr_entity_registry_enabled_default = self._enabled_default
-    self._attr_icon = self._icon
-    self._attr_native_value = self._state
-    self._attr_native_unit_of_measurement = self._unit_of_measurement
-    self._attr_state_class = sr_data.get("state_class")
 
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        self._icon = self._sr_data.get(ATTR_ICON)
-        self._state = self._sr_data.get(ATTR_STATE)
+        self._attr_icon = self._sr_data.get(ATTR_ICON)
+        self._attr_native_value = self._sr_data.get(ATTR_STATE)
 
         self.async_write_ha_state()
 
