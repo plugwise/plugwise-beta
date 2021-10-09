@@ -150,7 +150,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
                 self._dev_id, self._members, self._switch, STATE_ON
             )
             if state_on:
-                self._is_on = True
+                self._attr_is_on = True
                 self.async_write_ha_state()
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
@@ -163,7 +163,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
                 self._dev_id, self._members, self._switch, STATE_OFF
             )
             if state_off:
-                self._is_on = False
+                self._attr_is_on = False
                 self.async_write_ha_state()
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
