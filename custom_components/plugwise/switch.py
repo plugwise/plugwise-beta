@@ -126,13 +126,12 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._attr_enabled_default = sw_data.get(ATTR_ENABLED_DEFAULT)
         self._attr_icon = None
         self._attr_is_on = False
+        self._attr_name = f"{name} {sw_data.get(ATTR_NAME)}"
         self._device_class = sw_data.get(ATTR_DEVICE_CLASS)
         self._device_name = name
-
         self._members = None
         if "members" in coordinator.data[1][dev_id]:
             self._members = coordinator.data[1][dev_id].get("members")
-        self._name = f"{name} {sw_data.get(ATTR_NAME)}"
         self._switch = sw_data.get(ATTR_ID)
         self._sw_data = sw_data
 
@@ -140,7 +139,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         # For backwards compatibility:
         if self._switch == "relay":
             self._unique_id = f"{dev_id}-plug"
-            self._name = name
+            self._attr_name = name
 
 
     async def async_turn_on(self, **kwargs):
