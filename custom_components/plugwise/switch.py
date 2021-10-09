@@ -123,11 +123,12 @@ class GwSwitch(SmileGateway, SwitchEntity):
         )
 
         self._api = api
+        self._attr_enabled_default = sw_data.get(ATTR_ENABLED_DEFAULT)
+        self._attr_icon = None
+        self._attr_is_on = False
         self._device_class = sw_data.get(ATTR_DEVICE_CLASS)
         self._device_name = name
-        self._enabled_default = sw_data.get(ATTR_ENABLED_DEFAULT)
-        self._icon = None
-        self._is_on = False
+
         self._members = None
         if "members" in coordinator.data[1][dev_id]:
             self._members = coordinator.data[1][dev_id].get("members")
@@ -141,20 +142,6 @@ class GwSwitch(SmileGateway, SwitchEntity):
             self._unique_id = f"{dev_id}-plug"
             self._name = name
 
-    @property
-    def entity_registry_enabled_default(self) -> bool:
-        """Return if the entity should be enabled when first added to the entity registry."""
-        return self._enabled_default
-
-    @property
-    def icon(self):
-        """Return the icon of this entity."""
-        return self._icon
-
-    @property
-    def is_on(self):
-        """Return true if device is on."""
-        return self._is_on
 
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
@@ -185,8 +172,8 @@ class GwSwitch(SmileGateway, SwitchEntity):
     @callback
     def _async_process_data(self):
         """Update the data from the Plugs."""
-        self._icon = self._sw_data.get(ATTR_ICON)
-        self._is_on = self._sw_data.get(ATTR_STATE)
+        self._attr_icon = self._sw_data.get(ATTR_ICON)
+        self._attr_is_on = self._sw_data.get(ATTR_STATE)
 
         self.async_write_ha_state()
 
