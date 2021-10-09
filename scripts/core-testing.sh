@@ -78,7 +78,7 @@ echo "Activating venv and installing selected test modules (zeroconf,pyserial, e
 echo ""
 . venv/bin/activate
 mkdir -p ./tmp
-grep -Ei "pyroute2|sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
+grep -hEi "pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket" requirements_test_all.txt requirements_test.txt > ./tmp/requirements_test_extra.txt
 pip install -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
 pip install -q flake8
 echo ""
