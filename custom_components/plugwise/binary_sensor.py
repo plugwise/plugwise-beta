@@ -13,6 +13,7 @@ from plugwise.entities import GWBinarySensor
 from plugwise.nodes import PlugwiseNode
 
 from .const import (
+    ATTR_DEVICE_CLASS,
     ATTR_ENABLED_DEFAULT,
     ATTR_SCAN_DAYLIGHT_MODE,
     ATTR_SCAN_RESET_TIMER,
@@ -147,18 +148,14 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._attr_icon = None
         self._attr_is_on = False
         self._attr_name = f"{name} {bs_data.get(ATTR_NAME)}"
-        self._cdata = coordinator.data
-        self._gw_b_sensor = GWBinarySensor(self._cdata, dev_id, bs_data[ATTR_ID])
         self._attributes = {}
         self._binary_sensor = bs_data.get(ATTR_ID)
-        self._bs_data = bs_data
+        self._cdata = coordinator.data
         self._dev_id = dev_id
-        self._device_class = None
-        self._device_name = name
-        if self._cdata[1][self._dev_id][PW_CLASS] == "gateway":
-            self._device_name = f"Smile {name}"
-
-
+        self._device_class = bs_data.get(ATTR_DEVICE_CLASS)
+        bs_class = self._cdata[1][self._dev_id][PW_CLASS]
+        self._device_name = name if bs_class != "gateway" else f"Smile {name}"
+        self._gw_b_sensor = GWBinarySensor(self._cdata, dev_id, bs_data[ATTR_ID])
         self._unique_id = f"{dev_id}-{self._binary_sensor}"
 
     @property
