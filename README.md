@@ -28,7 +28,13 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW Sept 2021 [v0.18.0]
+## NEW Okt 2021 [v0.18.1]
+
+- Set minimal required version of Home Assistant core to 2021.9.0
+- Stick: adapt to HA Core 2021.9 sensor-changes (Remove last_reset, use total_increasing instead) fixes issue #204
+
+## Sept 2021 [v0.18.0]
+
 - Link to plugwise v0.14.5 https://github.com/plugwise/python-plugwise/releases/tag/v0.14.5
 - Smile: fully use the HA Core DataUpdateCoordinator, providing the smile-data in coordinator.data
 - Smile: change state_class to "total" for interval- and net_cumulative sensors, remove all remnants of the last_reset-related code

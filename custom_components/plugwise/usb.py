@@ -1,18 +1,13 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
-import asyncio
 import logging
 
-import voluptuous as vol
-from awesomeversion import AwesomeVersion
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
-from homeassistant.const import __version__ as current_ha_version
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity import Entity
 
@@ -23,28 +18,27 @@ from plugwise.exceptions import (
     StickInitError,
     TimeoutException,
 )
+from plugwise.nodes import PlugwiseNode
 from plugwise.stick import Stick
 
 from .const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ENABLED_DEFAULT,
-    ATTR_ICON,
     ATTR_MAC_ADDRESS,
-    ATTR_NAME,
     CB_JOIN_REQUEST,
     CONF_USB_PATH,
     DOMAIN,
     PLATFORMS_USB,
     PW_TYPE,
-    SERVICE_DEVICE_ADD,
-    SERVICE_DEVICE_REMOVE,
+    SERVICE_USB_DEVICE_ADD,
+    SERVICE_USB_DEVICE_REMOVE,
+    SERVICE_USB_DEVICE_SCHEMA,
     STICK,
-    STICK_API,
     UNDO_UPDATE_LISTENER,
     USB,
+    USB_AVAILABLE_ID,
     USB_MOTION_ID,
     USB_RELAY_ID,
 )
+from .models import PlugwiseEntityDescription
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -75,10 +69,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
                     ].append(mac)
                 hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN].append(mac)
 
-        for component in PLATFORMS_USB:
-            hass.async_create_task(
-                hass.config_entries.async_forward_entry_setup(config_entry, component)
-            )
+        hass.config_entries.async_setup_platforms(config_entry, PLATFORMS_USB)
 
         def add_new_node(mac):
             """Add Listener when a new Plugwise node joined the network."""
@@ -94,27 +85,13 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
 
         api_stick.auto_update()
 
-        # Home Assistant version 2021.6 changed the stored format of system options
-        if AwesomeVersion(current_ha_version) >= AwesomeVersion("2021.6.0"):
-            if config_entry.pref_disable_new_entities:
-                _LOGGER.debug("Configuring stick NOT to accept any new join requests")
-                api_stick.allow_join_requests(True, False)
-            else:
-                _LOGGER.debug(
-                    "Configuring stick to automatically accept new join requests"
-                )
-                api_stick.allow_join_requests(True, True)
-                api_stick.subscribe_stick_callback(add_new_node, CB_JOIN_REQUEST)
+        if config_entry.pref_disable_new_entities:
+            _LOGGER.debug("Configuring stick NOT to accept any new join requests")
+            api_stick.allow_join_requests(True, False)
         else:
-            if config_entry.system_options.disable_new_entities:
-                _LOGGER.debug("Configuring stick NOT to accept any new join requests")
-                api_stick.allow_join_requests(True, False)
-            else:
-                _LOGGER.debug(
-                    "Configuring stick to automatically accept new join requests"
-                )
-                api_stick.allow_join_requests(True, True)
-                api_stick.subscribe_stick_callback(add_new_node, CB_JOIN_REQUEST)
+            _LOGGER.debug("Configuring stick to automatically accept new join requests")
+            api_stick.allow_join_requests(True, True)
+            api_stick.subscribe_stick_callback(add_new_node, CB_JOIN_REQUEST)
 
     def shutdown(event):
         hass.async_add_executor_job(api_stick.disconnect)
@@ -178,12 +155,11 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             )
             device_registry.async_remove_device(device_entry.id)
 
-    service_device_schema = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
     hass.services.async_register(
-        DOMAIN, SERVICE_DEVICE_ADD, device_add, service_device_schema
+        DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
     )
     hass.services.async_register(
-        DOMAIN, SERVICE_DEVICE_REMOVE, device_remove, service_device_schema
+        DOMAIN, SERVICE_USB_DEVICE_REMOVE, device_remove, SERVICE_USB_DEVICE_SCHEMA
     )
 
     return True
@@ -191,13 +167,9 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
 
 async def async_unload_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     """Unload the Plugwise stick connection."""
-    unload_ok = all(
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(config_entry, component)
-                for component in PLATFORMS_USB
-            ]
-        )
+
+    unload_ok = await hass.config_entries.async_unload_platforms(
+        config_entry, PLATFORMS_USB
     )
     hass.data[DOMAIN][config_entry.entry_id][UNDO_UPDATE_LISTENER]()
     if unload_ok:
@@ -212,17 +184,30 @@ async def _async_update_listener(hass: HomeAssistant, config_entry: ConfigEntry)
     await hass.config_entries.async_reload(config_entry.entry_id)
 
 
-class NodeEntity(Entity):
-    """Base class for a Plugwise entities."""
+class PlugwiseUSBEntity(Entity):
+    """Base class for Plugwise USB entities."""
 
-    def __init__(self, node, api_type):
-        """Initialize a Node entity."""
+    def __init__(
+        self, node: PlugwiseNode, entity_description: PlugwiseEntityDescription
+    ) -> None:
+        """Initialize a Pluswise USB entity."""
+        self._attr_available = node.available
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, node.mac)},
+            "name": f"{node.hardware_model} ({node.mac})",
+            "manufacturer": "Plugwise",
+            "model": node.hardware_model,
+            "sw_version": f"{node.firmware_version}",
+        }
+        self._attr_name = f"{entity_description.name} ({node.mac[-5:]})"
+        self._attr_should_poll = entity_description.should_poll
+        self._attr_unique_id = f"{node.mac}-{entity_description.key}"
         self._node = node
-        self._api_type = api_type
-        self.node_callbacks = None
+        self.entity_description = entity_description
+        self.node_callbacks = (USB_AVAILABLE_ID, entity_description.key)
 
     async def async_added_to_hass(self):
-        """Subscribe to updates."""
+        """Subscribe for updates."""
         for node_callback in self.node_callbacks:
             self._node.subscribe_callback(self.sensor_update, node_callback)
 
@@ -231,56 +216,7 @@ class NodeEntity(Entity):
         for node_callback in self.node_callbacks:
             self._node.unsubscribe_callback(self.sensor_update, node_callback)
 
-    @property
-    def available(self):
-        """Return the availability of this entity."""
-        return self._node.available
-
-    @property
-    def device_class(self):
-        """Return the device class of the binary sensor."""
-        return STICK_API[self._api_type][ATTR_DEVICE_CLASS]
-
-    @property
-    def device_info(self):
-        """Return the device info."""
-        return {
-            "identifiers": {(DOMAIN, self._node.mac)},
-            "name": f"{self._node.hardware_model} ({self._node.mac})",
-            "manufacturer": "Plugwise",
-            "model": self._node.hardware_model,
-            "sw_version": f"{self._node.firmware_version}",
-        }
-
-    @property
-    def entity_registry_enabled_default(self):
-        """Return the binary sensor registration state."""
-        return STICK_API[self._api_type][ATTR_ENABLED_DEFAULT]
-
-    @property
-    def icon(self):
-        """Return the icon."""
-        return (
-            None
-            if STICK_API[self._api_type][ATTR_DEVICE_CLASS]
-            else STICK_API[self._api_type][ATTR_ICON]
-        )
-
-    @property
-    def name(self):
-        """Return the display name of this entity."""
-        return f"{STICK_API[self._api_type][ATTR_NAME]} ({self._node.mac[-5:]})"
-
     def sensor_update(self, state):
         """Handle status update of Entity."""
         self.schedule_update_ha_state()
-
-    @property
-    def should_poll(self):
-        """Disable polling."""
-        return False
-
-    @property
-    def unique_id(self):
-        """Get unique ID."""
-        return f"{self._node.mac}-{self._node.hardware_model}"
+        self._attr_available = self._node.available

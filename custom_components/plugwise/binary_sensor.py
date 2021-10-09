@@ -1,16 +1,16 @@
 """Plugwise Binary Sensor component for Home Assistant."""
+from __future__ import annotations
 
 import logging
 
-import voluptuous as vol
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME, ATTR_STATE
+from homeassistant.const import ATTR_ID, ATTR_NAME
 from homeassistant.core import callback
-from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import entity_platform
 
 from plugwise.entities import GWBinarySensor
+from plugwise.nodes import PlugwiseNode
 
 from .const import (
     ATTR_ENABLED_DEFAULT,
@@ -29,18 +29,18 @@ from .const import (
     PW_CLASS,
     PW_MODEL,
     PW_TYPE,
-    SCAN_SENSITIVITY_MODES,
-    SERVICE_CONFIGURE_BATTERY,
-    SERVICE_CONFIGURE_SCAN,
+    SERVICE_USB_SCAN_CONFIG,
+    SERVICE_USB_SCAN_CONFIG_SCHEMA,
+    SERVICE_USB_SED_BATTERY_CONFIG,
+    SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
     STICK,
-    STICK_API,
     USB,
-    USB_AVAILABLE_ID,
     USB_MOTION_ID,
     VENDOR,
 )
 from .gateway import SmileGateway
-from .usb import NodeEntity
+from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
+from .usb import PlugwiseUSBEntity
 
 PARALLEL_UPDATES = 0
 
@@ -60,55 +60,44 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
     platform = entity_platform.current_platform.get()
 
-    async def async_add_binary_sensor(mac):
-        """Add plugwise binary sensor."""
+    async def async_add_binary_sensors(mac: str):
+        """Add plugwise binary sensors for device."""
+        entities = []
+        entities.extend(
+            [
+                USBBinarySensor(api_stick.devices[mac], description)
+                for description in PW_BINARY_SENSOR_TYPES
+                if description.plugwise_api == STICK
+                and description.key in api_stick.devices[mac].features
+            ]
+        )
+        if entities:
+            async_add_entities(entities)
+
         if USB_MOTION_ID in api_stick.devices[mac].features:
             _LOGGER.debug("Add binary_sensors for %s", mac)
-            async_add_entities([USBBinarySensor(api_stick.devices[mac])])
 
             # Register services
             platform.async_register_entity_service(
-                SERVICE_CONFIGURE_SCAN,
-                {
-                    vol.Required(ATTR_SCAN_SENSITIVITY_MODE): vol.In(
-                        SCAN_SENSITIVITY_MODES
-                    ),
-                    vol.Required(ATTR_SCAN_RESET_TIMER): vol.All(
-                        vol.Coerce(int), vol.Range(min=1, max=240)
-                    ),
-                    vol.Required(ATTR_SCAN_DAYLIGHT_MODE): cv.boolean,
-                },
-                "_service_configure_scan",
+                SERVICE_USB_SCAN_CONFIG,
+                SERVICE_USB_SCAN_CONFIG_SCHEMA,
+                "_service_scan_config",
             )
             platform.async_register_entity_service(
-                SERVICE_CONFIGURE_BATTERY,
-                {
-                    vol.Required(ATTR_SED_STAY_ACTIVE): vol.All(
-                        vol.Coerce(int), vol.Range(min=1, max=120)
-                    ),
-                    vol.Required(ATTR_SED_SLEEP_FOR): vol.All(
-                        vol.Coerce(int), vol.Range(min=10, max=60)
-                    ),
-                    vol.Required(ATTR_SED_MAINTENANCE_INTERVAL): vol.All(
-                        vol.Coerce(int), vol.Range(min=5, max=1440)
-                    ),
-                    vol.Required(ATTR_SED_CLOCK_SYNC): cv.boolean,
-                    vol.Required(ATTR_SED_CLOCK_INTERVAL): vol.All(
-                        vol.Coerce(int), vol.Range(min=60, max=10080)
-                    ),
-                },
-                "_service_configure_battery_savings",
+                SERVICE_USB_SED_BATTERY_CONFIG,
+                SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
+                "_service_sed_battery_config",
             )
 
     for mac in hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN]:
-        hass.async_create_task(async_add_binary_sensor(mac))
+        hass.async_create_task(async_add_binary_sensors(mac))
 
-    def discoved_binary_sensor(mac):
-        """Add newly discovered binary sensor."""
-        hass.async_create_task(async_add_binary_sensor(mac))
+    def discoved_device(mac: str):
+        """Add binary sensors for newly discovered device."""
+        hass.async_create_task(async_add_binary_sensors(mac))
 
     # Listen for discovered nodes
-    api_stick.subscribe_stick_callback(discoved_binary_sensor, CB_NEW_NODE)
+    api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
@@ -207,25 +196,21 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self.async_write_ha_state()
 
 
-class USBBinarySensor(NodeEntity, BinarySensorEntity):
-    """Representation of a Stick Node Binary Sensor."""
+class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
+    """Representation of a Plugwise USB Binary Sensor."""
 
-    def __init__(self, node):
-        """Initialize a Node entity."""
-        super().__init__(node, USB_MOTION_ID)
-        self.node_callbacks = (USB_AVAILABLE_ID, USB_MOTION_ID)
+    def __init__(
+        self, node: PlugwiseNode, description: PlugwiseBinarySensorEntityDescription
+    ) -> None:
+        """Initialize a binary sensor entity."""
+        super().__init__(node, description)
 
     @property
-    def is_on(self):
+    def is_on(self) -> bool:
         """Return true if the binary_sensor is on."""
-        return getattr(self._node, STICK_API[USB_MOTION_ID][ATTR_STATE])
+        return getattr(self._node, self.entity_description.state_request_method)
 
-    @property
-    def unique_id(self):
-        """Get unique ID."""
-        return f"{self._node.mac}-{USB_MOTION_ID}"
-
-    def _service_configure_scan(self, **kwargs):
+    def _service_scan_config(self, **kwargs):
         """Service call to configure motion sensor of Scan device."""
         sensitivity_mode = kwargs.get(ATTR_SCAN_SENSITIVITY_MODE)
         reset_timer = kwargs.get(ATTR_SCAN_RESET_TIMER)
@@ -239,7 +224,7 @@ class USBBinarySensor(NodeEntity, BinarySensorEntity):
         )
         self._node.Configure_scan(reset_timer, sensitivity_mode, daylight_mode)
 
-    def _service_configure_battery_savings(self, **kwargs):
+    def _service_sed_battery_config(self, **kwargs):
         """Configure battery powered (sed) device service call."""
         stay_active = kwargs.get(ATTR_SED_STAY_ACTIVE)
         sleep_for = kwargs.get(ATTR_SED_SLEEP_FOR)

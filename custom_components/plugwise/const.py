@@ -1,26 +1,11 @@
 """Constants for Plugwise beta component."""
 
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_MOTION,
-    DOMAIN as BINARY_SENSOR_DOMAIN,
-)
+import voluptuous as vol
+from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-from homeassistant.components.switch import DEVICE_CLASS_OUTLET, DOMAIN as SWITCH_DOMAIN
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ICON,
-    ATTR_NAME,
-    ATTR_STATE,
-    ATTR_UNIT_OF_MEASUREMENT,
-    DEVICE_CLASS_ENERGY,
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_SIGNAL_STRENGTH,
-    ENERGY_KILO_WATT_HOUR,
-    POWER_WATT,
-    SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-    TIME_MILLISECONDS,
-)
+from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.helpers import config_validation as cv
 
 API = "api"
 ATTR_ENABLED_DEFAULT = "enabled_default"
@@ -93,142 +78,52 @@ CONF_USB_PATH = "usb_path"
 CB_NEW_NODE = "NEW_NODE"
 CB_JOIN_REQUEST = "JOIN_REQUEST"
 
-# Sensor IDs
-USB_AVAILABLE_ID = "available"
-USB_CURRENT_POWER_ID = "power_1s"
-USB_CURRENT_POWER_8S_ID = "power_8s"
-USB_ENERGY_CONSUMPTION_TODAY_ID = "energy_consumption_today"
-USB_POWER_CONSUMPTION_TODAY_ID = "power_con_today"
-USB_MOTION_ID = "motion"
-USB_RELAY_ID = "relay"
 
-# Sensor types
-STICK_API = {
-    "ping": {
-        ATTR_DEVICE_CLASS: None,
-        ATTR_ENABLED_DEFAULT: False,
-        ATTR_ICON: "mdi:speedometer",
-        ATTR_NAME: "Ping roundtrip",
-        ATTR_STATE: "ping",
-        ATTR_UNIT_OF_MEASUREMENT: TIME_MILLISECONDS,
-    },
-    USB_CURRENT_POWER_ID: {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: None,
-        ATTR_NAME: "Power usage",
-        ATTR_STATE: "current_power_usage",
-        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
-    },
-    USB_CURRENT_POWER_8S_ID: {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: False,
-        ATTR_ICON: None,
-        ATTR_NAME: "Power usage 8 seconds",
-        ATTR_STATE: "current_power_usage_8_sec",
-        ATTR_UNIT_OF_MEASUREMENT: POWER_WATT,
-    },
-    "power_con_cur_hour": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: None,
-        ATTR_NAME: "Power consumption current hour",
-        ATTR_STATE: "power_consumption_current_hour",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
-    },
-    "power_con_prev_hour": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: None,
-        ATTR_NAME: "Power consumption previous hour",
-        ATTR_STATE: "power_consumption_previous_hour",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
-    },
-    USB_ENERGY_CONSUMPTION_TODAY_ID: {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_ENERGY,
-        ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: None,
-        ATTR_NAME: "Energy consumption today",
-        ATTR_STATE: "energy_consumption_today",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
-    },
-    USB_POWER_CONSUMPTION_TODAY_ID: {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: None,
-        ATTR_NAME: "Power consumption today",
-        ATTR_STATE: "power_consumption_today",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
-    },
-    "power_con_yesterday": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: None,
-        ATTR_NAME: "Power consumption yesterday",
-        ATTR_STATE: "power_consumption_yesterday",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
-    },
-    "power_prod_cur_hour": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: False,
-        ATTR_ICON: None,
-        ATTR_NAME: "Power production current hour",
-        ATTR_STATE: "power_production_current_hour",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
-    },
-    "power_prod_prev_hour": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
-        ATTR_ENABLED_DEFAULT: False,
-        ATTR_ICON: None,
-        ATTR_NAME: "Power production previous hour",
-        ATTR_STATE: "power_production_previous_hour",
-        ATTR_UNIT_OF_MEASUREMENT: ENERGY_KILO_WATT_HOUR,
-    },
-    "RSSI_in": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_SIGNAL_STRENGTH,
-        ATTR_ENABLED_DEFAULT: False,
-        ATTR_ICON: None,
-        ATTR_NAME: "Inbound RSSI",
-        ATTR_STATE: "rssi_in",
-        ATTR_UNIT_OF_MEASUREMENT: SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-    },
-    "RSSI_out": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_SIGNAL_STRENGTH,
-        ATTR_ENABLED_DEFAULT: False,
-        ATTR_ICON: None,
-        ATTR_NAME: "Outbound RSSI",
-        ATTR_STATE: "rssi_out",
-        ATTR_UNIT_OF_MEASUREMENT: SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-    },
-    USB_MOTION_ID: {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_MOTION,
-        ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: None,
-        ATTR_NAME: "Motion",
-        ATTR_STATE: "motion",
-        ATTR_UNIT_OF_MEASUREMENT: None,
-    },
-    USB_RELAY_ID: {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_OUTLET,
-        ATTR_ENABLED_DEFAULT: True,
-        ATTR_ICON: None,
-        ATTR_NAME: "Relay state",
-        ATTR_STATE: "relay_state",
-        ATTR_UNIT_OF_MEASUREMENT: "state",
-    },
-}
+# USB generic device constants
+USB_AVAILABLE_ID = "available"
 
 ATTR_MAC_ADDRESS = "mac"
 
-ATTR_SCAN_DAYLIGHT_MODE = "day_light"
-ATTR_SCAN_SENSITIVITY_MODE = "sensitivity_mode"
-ATTR_SCAN_RESET_TIMER = "reset_timer"
+SERVICE_USB_DEVICE_ADD = "device_add"
+SERVICE_USB_DEVICE_REMOVE = "device_remove"
+SERVICE_USB_DEVICE_SCHEMA = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
 
+
+# USB Relay device constants
+USB_RELAY_ID = "relay"
+
+
+# USB SED (battery powered) device constants
 ATTR_SED_STAY_ACTIVE = "stay_active"
 ATTR_SED_SLEEP_FOR = "sleep_for"
 ATTR_SED_MAINTENANCE_INTERVAL = "maintenance_interval"
 ATTR_SED_CLOCK_SYNC = "clock_sync"
 ATTR_SED_CLOCK_INTERVAL = "clock_interval"
+
+SERVICE_USB_SED_BATTERY_CONFIG = "configure_battery_savings"
+SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA = {
+    vol.Required(ATTR_SED_STAY_ACTIVE): vol.All(
+        vol.Coerce(int), vol.Range(min=1, max=120)
+    ),
+    vol.Required(ATTR_SED_SLEEP_FOR): vol.All(
+        vol.Coerce(int), vol.Range(min=10, max=60)
+    ),
+    vol.Required(ATTR_SED_MAINTENANCE_INTERVAL): vol.All(
+        vol.Coerce(int), vol.Range(min=5, max=1440)
+    ),
+    vol.Required(ATTR_SED_CLOCK_SYNC): cv.boolean,
+    vol.Required(ATTR_SED_CLOCK_INTERVAL): vol.All(
+        vol.Coerce(int), vol.Range(min=60, max=10080)
+    ),
+}
+
+
+# USB Scan device constants
+USB_MOTION_ID = "motion"
+
+ATTR_SCAN_DAYLIGHT_MODE = "day_light"
+ATTR_SCAN_SENSITIVITY_MODE = "sensitivity_mode"
+ATTR_SCAN_RESET_TIMER = "reset_timer"
 
 SCAN_SENSITIVITY_HIGH = "high"
 SCAN_SENSITIVITY_MEDIUM = "medium"
@@ -239,7 +134,13 @@ SCAN_SENSITIVITY_MODES = [
     SCAN_SENSITIVITY_OFF,
 ]
 
-SERVICE_CONFIGURE_BATTERY = "configure_battery_savings"
-SERVICE_CONFIGURE_SCAN = "configure_scan"
-SERVICE_DEVICE_ADD = "device_add"
-SERVICE_DEVICE_REMOVE = "device_remove"
+SERVICE_USB_SCAN_CONFIG = "configure_scan"
+SERVICE_USB_SCAN_CONFIG_SCHEMA = (
+    {
+        vol.Required(ATTR_SCAN_SENSITIVITY_MODE): vol.In(SCAN_SENSITIVITY_MODES),
+        vol.Required(ATTR_SCAN_RESET_TIMER): vol.All(
+            vol.Coerce(int), vol.Range(min=1, max=240)
+        ),
+        vol.Required(ATTR_SCAN_DAYLIGHT_MODE): cv.boolean,
+    },
+)
