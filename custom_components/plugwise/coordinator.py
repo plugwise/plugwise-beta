@@ -16,10 +16,7 @@ class PWDataUpdateCoordinator(DataUpdateCoordinator):
     def __init__(self, hass, api, interval):
         """Initialize the coordinator."""
         super().__init__(
-            hass,
-            _LOGGER,
-            name=f"{api.smile_name}",
-            update_interval=interval
+            hass, _LOGGER, name=f"{api.smile_name}", update_interval=interval
         )
         self._api = api
         self._data = {}
@@ -38,6 +35,8 @@ class PWDataUpdateCoordinator(DataUpdateCoordinator):
             )
             raise UpdateFailed("Smile update failed") from err
         except PlugwiseException as err:
-            _LOGGER.debug("Updating failed, generic failure for %s", self._api.smile_name)
+            _LOGGER.debug(
+                "Updating failed, generic failure for %s", self._api.smile_name
+            )
             raise UpdateFailed("Smile update failed") from err
         return self._data

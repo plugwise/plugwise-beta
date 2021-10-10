@@ -68,7 +68,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             DEFAULT_MIN_TEMP,
         )
         entities.append(thermostat)
-        _LOGGER.info("Added climate %s entity", coordinator.data[1][dev_id].get(ATTR_NAME))
+        _LOGGER.info(
+            "Added climate %s entity", coordinator.data[1][dev_id].get(ATTR_NAME)
+        )
 
     async_add_entities(entities, True)
 
