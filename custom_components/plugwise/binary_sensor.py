@@ -151,8 +151,8 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._attr_icon = None
         self._attr_is_on = False
         self._attr_name = f"{name} {bs_data.get(ATTR_NAME)}"
-        self._device_class = bs_data.get(ATTR_DEVICE_CLASS)
-        self._unique_id = f"{dev_id}-{bs_data.get(ATTR_ID)}"
+        self._attr_device_class = bs_data.get(ATTR_DEVICE_CLASS)
+        self._attr_unique_id = f"{dev_id}-{bs_data.get(ATTR_ID)}"
 
     @callback
     def _async_process_data(self):

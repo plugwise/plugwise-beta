@@ -176,16 +176,11 @@ class SmileGateway(CoordinatorEntity):
         super().__init__(coordinator)
 
         self._coordinator = coordinator
-        self._dev_id = dev_id
-        self._device_class = None
         self._fw_version = fw
         self._manufacturer = vendor
-        self._model = model
-        self._unique_id = None
 
         gw_id = self._coordinator.data[0]["gateway_id"]
         self._attr_available = self._coordinator.last_update_success
-        self._attr_device_class = self._device_class
         self._attr_device_info = {
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": name if self._dev_id != gw_id else f"Smile {self._coordinator.data[0]['smile_name']}",
@@ -194,8 +189,6 @@ class SmileGateway(CoordinatorEntity):
             "sw_version": self._fw_version,
             "via_device": (DOMAIN, gw_id) if self._dev_id != gw_id else None
         }
-        self._attr_unique_id = self._unique_id
-
 
     async def async_added_to_hass(self):
         """Subscribe to updates."""

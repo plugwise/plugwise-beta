@@ -96,18 +96,17 @@ class PwThermostat(SmileGateway, ClimateEntity):
         )
 
         self._api = api
+        self._attr_device_class = None
         self._attr_name = name
+        self._attr_unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
         self._cdata = coordinator.data
         self._gw_thermostat = GWThermostat(self._cdata, dev_id)
-        self._device_class = None
         self._hvac_mode = None
         self._loc_id = self._cdata[1][dev_id].get(PW_LOCATION)
         self._max_temp = max_temp
         self._min_temp = min_temp
         self._preset_mode = None
         self._setpoint = None
-
-        self._unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
 
     @property
     def hvac_action(self):
