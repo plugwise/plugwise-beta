@@ -26,7 +26,6 @@ from .const import (
     COORDINATOR,
     DOMAIN,
     FW,
-    PW_CLASS,
     PW_MODEL,
     PW_TYPE,
     SERVICE_USB_SCAN_CONFIG,
