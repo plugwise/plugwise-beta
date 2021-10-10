@@ -141,7 +141,6 @@ class GwSwitch(SmileGateway, SwitchEntity):
             self._attr_unique_id = f"{dev_id}-plug"
             self._attr_name = name
 
-
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
         _LOGGER.debug("Turn switch.%s on", self._attr_name)
