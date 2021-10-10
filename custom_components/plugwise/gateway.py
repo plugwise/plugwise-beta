@@ -176,17 +176,15 @@ class SmileGateway(CoordinatorEntity):
         super().__init__(coordinator)
 
         self._coordinator = coordinator
-        self._fw_version = fw
-        self._manufacturer = vendor
 
         gw_id = self._coordinator.data[0]["gateway_id"]
         self._attr_available = self._coordinator.last_update_success
         self._attr_device_info = {
             "identifiers": {(DOMAIN, dev_id)},
             "name": name if dev_id != gw_id else f"Smile {self._coordinator.data[0]['smile_name']}",
-            "manufacturer": self._manufacturer,
-            "model": self._model,
-            "sw_version": self._fw_version,
+            "manufacturer": vendor,
+            "model": model,
+            "sw_version": fw,
             "via_device": (DOMAIN, gw_id) if dev_id != gw_id else None
         }
 
