@@ -126,8 +126,7 @@ class GwSensor(SmileGateway, SensorEntity):
         self._attr_native_value = None
         self._attr_native_unit_of_measurement = sr_data.get(ATTR_UNIT_OF_MEASUREMENT)
         self._attr_state_class = sr_data.get("state_class")
-        self._attr_unique_id = f"{dev_id}-{self._sensor}"
-        self._sensor = sr_data.get(ATTR_ID)
+        self._attr_unique_id = f"{dev_id}-{sr_data.get(ATTR_ID)}"
         self._sr_data = sr_data
 
     @callback
