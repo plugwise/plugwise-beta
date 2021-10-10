@@ -182,12 +182,12 @@ class SmileGateway(CoordinatorEntity):
         gw_id = self._coordinator.data[0]["gateway_id"]
         self._attr_available = self._coordinator.last_update_success
         self._attr_device_info = {
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": name if self._dev_id != gw_id else f"Smile {self._coordinator.data[0]['smile_name']}",
+            "identifiers": {(DOMAIN, dev_id)},
+            "name": name if dev_id != gw_id else f"Smile {self._coordinator.data[0]['smile_name']}",
             "manufacturer": self._manufacturer,
             "model": self._model,
             "sw_version": self._fw_version,
-            "via_device": (DOMAIN, gw_id) if self._dev_id != gw_id else None
+            "via_device": (DOMAIN, gw_id) if dev_id != gw_id else None
         }
 
     async def async_added_to_hass(self):
