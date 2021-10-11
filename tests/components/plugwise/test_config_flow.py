@@ -40,7 +40,7 @@ from plugwise.exceptions import (
     TimeoutException,
 )
 
-TEST_HOST = "1.1.1.1"
+TEST_HOST = "127.0.0.1"
 TEST_HOSTNAME = "smileabcdef"
 TEST_HOSTNAME2 = "stretchabc"
 TEST_PASSWORD = "test_password"
