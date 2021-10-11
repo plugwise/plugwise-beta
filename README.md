@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW Okt 2021 [v0.18.1]
+## NEW Oct 2021 [v0.18.2]
+- Smile: adapt to HA Core platform-changes
+
+## Oct 2021 [v0.18.1]
 
 - Set minimal required version of Home Assistant core to 2021.9.0
 - Stick: adapt to HA Core 2021.9 sensor-changes (Remove last_reset, use total_increasing instead) fixes issue #204
