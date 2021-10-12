@@ -5,7 +5,7 @@ import logging
 
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME
+from homeassistant.const import ATTR_DEVICE_CLASS, ATTR_ID, ATTR_NAME
 from homeassistant.core import callback
 from homeassistant.helpers import entity_platform
 
@@ -26,7 +26,6 @@ from .const import (
     COORDINATOR,
     DOMAIN,
     FW,
-    PW_CLASS,
     PW_MODEL,
     PW_TYPE,
     SERVICE_USB_SCAN_CONFIG,
@@ -143,49 +142,24 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
             coordinator.data[1][dev_id].get(FW),
         )
 
-        self._cdata = coordinator.data
-        self._gw_b_sensor = GWBinarySensor(self._cdata, dev_id, bs_data[ATTR_ID])
-        self._attributes = {}
-        self._binary_sensor = bs_data.get(ATTR_ID)
-        self._bs_data = bs_data
-        self._dev_id = dev_id
-        self._device_class = None
-        self._device_name = name
-        if self._cdata[1][self._dev_id][PW_CLASS] == "gateway":
-            self._device_name = f"Smile {name}"
-        self._enabled_default = self._bs_data.get(ATTR_ENABLED_DEFAULT)
-        self._icon = None
-        self._is_on = False
-        self._name = f"{name} {self._bs_data.get(ATTR_NAME)}"
-        self._unique_id = f"{dev_id}-{self._binary_sensor}"
-
-    @property
-    def entity_registry_enabled_default(self) -> bool:
-        """Return if the entity should be enabled when first added to the entity registry."""
-        return self._enabled_default
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        return self._attributes
-
-    @property
-    def icon(self):
-        """Return the icon of this entity."""
-        return self._icon
-
-    @property
-    def is_on(self):
-        """Return true if the binary sensor is on."""
-        return self._is_on
+        self._gw_b_sensor = GWBinarySensor(
+            coordinator.data, dev_id, bs_data.get(ATTR_ID)
+        )
+        self._attr_entity_registry_enabled_default = bs_data.get(ATTR_ENABLED_DEFAULT)
+        self._attr_extra_state_attributes = None
+        self._attr_icon = None
+        self._attr_is_on = False
+        self._attr_name = f"{name} {bs_data.get(ATTR_NAME)}"
+        self._attr_device_class = bs_data.get(ATTR_DEVICE_CLASS)
+        self._attr_unique_id = f"{dev_id}-{bs_data.get(ATTR_ID)}"
 
     @callback
     def _async_process_data(self):
         """Update the entity."""
         self._gw_b_sensor.update_data()
-        self._attributes = self._gw_b_sensor.extra_state_attributes
-        self._is_on = self._gw_b_sensor.is_on
-        self._icon = self._gw_b_sensor.icon
+        self._attr_extra_state_attributes = self._gw_b_sensor.extra_state_attributes
+        self._attr_icon = self._gw_b_sensor.icon
+        self._attr_is_on = self._gw_b_sensor.is_on
 
         if self._gw_b_sensor.notification:
             for notify_id, message in self._gw_b_sensor.notification.items():

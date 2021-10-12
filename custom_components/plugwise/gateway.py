@@ -175,54 +175,19 @@ class SmileGateway(CoordinatorEntity):
         """Initialise the gateway."""
         super().__init__(coordinator)
 
-        self._coordinator = coordinator
-        self._dev_id = dev_id
-        self._device_class = None
-        self._device_name = name
-        self._fw_version = fw
-        self._manufacturer = vendor
-        self._model = model
-        self._name = None
-        self._unique_id = None
-
-    @property
-    def available(self):
-        """Return True if entity is available."""
-        return self._coordinator.last_update_success
-
-    @property
-    def device_class(self):
-        """Return the class of this device, from component DEVICE_CLASSES."""
-        return self._device_class
-
-    @property
-    def device_info(self) -> dict[str, any]:
-        """Return the device information."""
-        device_information = {
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._device_name,
-            "manufacturer": self._manufacturer,
-            "model": self._model,
-            "sw_version": self._fw_version,
+        self._attr_available = super().available
+        gw_id = coordinator.data[0]["gateway_id"]
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, dev_id)},
+            "name": name
+            if dev_id != gw_id
+            else f"Smile {coordinator.data[0]['smile_name']}",
+            "manufacturer": vendor,
+            "model": model,
+            "sw_version": fw,
+            "via_device": (DOMAIN, gw_id) if dev_id != gw_id else None,
         }
-
-        gw_id = self._coordinator.data[0]["gateway_id"]
-        if self._dev_id != gw_id:
-            device_information["via_device"] = (DOMAIN, gw_id)
-        else:
-            device_information["name"] = f"Smile {self._coordinator.data[0]['smile_name']}"
-
-        return device_information
-
-    @property
-    def name(self):
-        """Return the name of the entity, if any."""
-        return self._name
-
-    @property
-    def unique_id(self):
-        """Return a unique ID."""
-        return self._unique_id
+        self._coordinator = coordinator
 
     async def async_added_to_hass(self):
         """Subscribe to updates."""

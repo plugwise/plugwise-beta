@@ -68,7 +68,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             DEFAULT_MIN_TEMP,
         )
         entities.append(thermostat)
-        _LOGGER.info("Added climate %s entity", coordinator.data[1][dev_id].get(ATTR_NAME))
+        _LOGGER.info(
+            "Added climate %s entity", coordinator.data[1][dev_id].get(ATTR_NAME)
+        )
 
     async_add_entities(entities, True)
 
@@ -96,18 +98,17 @@ class PwThermostat(SmileGateway, ClimateEntity):
         )
 
         self._api = api
+        self._attr_device_class = None
+        self._attr_name = name
+        self._attr_unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
         self._cdata = coordinator.data
         self._gw_thermostat = GWThermostat(self._cdata, dev_id)
-        self._device_class = None
-        self._device_name = self._name = name
         self._hvac_mode = None
         self._loc_id = self._cdata[1][dev_id].get(PW_LOCATION)
         self._max_temp = max_temp
         self._min_temp = min_temp
         self._preset_mode = None
         self._setpoint = None
-
-        self._unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
 
     @property
     def hvac_action(self):
@@ -142,11 +143,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
     def supported_features(self):
         """Return the list of supported features."""
         return SUPPORT_FLAGS
-
-    @property
-    def extra_state_attributes(self):
-        """Return the device specific state attributes."""
-        return self._gw_thermostat.extra_state_attributes
 
     @property
     def preset_modes(self):
@@ -257,7 +253,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
     def _async_process_data(self):
         """Update the data for this climate device."""
         self._gw_thermostat.update_data()
-
+        self._attr_extra_state_attributes = self._gw_thermostat.extra_state_attributes
         self._hvac_mode = self._gw_thermostat.hvac_mode
         self._preset_mode = self._gw_thermostat.preset_mode
         self._setpoint = self._gw_thermostat.target_temperature

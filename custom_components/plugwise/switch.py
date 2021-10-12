@@ -123,61 +123,46 @@ class GwSwitch(SmileGateway, SwitchEntity):
         )
 
         self._api = api
-        self._device_class = sw_data.get(ATTR_DEVICE_CLASS)
-        self._device_name = name
-        self._enabled_default = sw_data.get(ATTR_ENABLED_DEFAULT)
-        self._icon = None
-        self._is_on = False
+        self._attr_device_class = sw_data.get(ATTR_DEVICE_CLASS)
+        self._attr_entity_registry_enabled_default = sw_data.get(ATTR_ENABLED_DEFAULT)
+        self._attr_icon = None
+        self._attr_is_on = False
+        self._attr_name = f"{name} {sw_data.get(ATTR_NAME)}"
+        self._dev_id = dev_id
         self._members = None
         if "members" in coordinator.data[1][dev_id]:
             self._members = coordinator.data[1][dev_id].get("members")
-        self._name = f"{name} {sw_data.get(ATTR_NAME)}"
         self._switch = sw_data.get(ATTR_ID)
         self._sw_data = sw_data
 
-        self._unique_id = f"{dev_id}-{self._switch}"
+        self._attr_unique_id = f"{dev_id}-{self._switch}"
         # For backwards compatibility:
         if self._switch == "relay":
-            self._unique_id = f"{dev_id}-plug"
-            self._name = name
-
-    @property
-    def entity_registry_enabled_default(self) -> bool:
-        """Return if the entity should be enabled when first added to the entity registry."""
-        return self._enabled_default
-
-    @property
-    def icon(self):
-        """Return the icon of this entity."""
-        return self._icon
-
-    @property
-    def is_on(self):
-        """Return true if device is on."""
-        return self._is_on
+            self._attr_unique_id = f"{dev_id}-plug"
+            self._attr_name = name
 
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
-        _LOGGER.debug("Turn switch.%s on", self._name)
+        _LOGGER.debug("Turn switch.%s on", self._attr_name)
         try:
             state_on = await self._api.set_switch_state(
                 self._dev_id, self._members, self._switch, STATE_ON
             )
             if state_on:
-                self._is_on = True
+                self._attr_is_on = True
                 self.async_write_ha_state()
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
     async def async_turn_off(self, **kwargs):
         """Turn the device off."""
-        _LOGGER.debug("Turn switch.%s off", self._name)
+        _LOGGER.debug("Turn switch.%s off", self._attr_name)
         try:
             state_off = await self._api.set_switch_state(
                 self._dev_id, self._members, self._switch, STATE_OFF
             )
             if state_off:
-                self._is_on = False
+                self._attr_is_on = False
                 self.async_write_ha_state()
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
@@ -185,8 +170,8 @@ class GwSwitch(SmileGateway, SwitchEntity):
     @callback
     def _async_process_data(self):
         """Update the data from the Plugs."""
-        self._icon = self._sw_data.get(ATTR_ICON)
-        self._is_on = self._sw_data.get(ATTR_STATE)
+        self._attr_icon = self._sw_data.get(ATTR_ICON)
+        self._attr_is_on = self._sw_data.get(ATTR_STATE)
 
         self.async_write_ha_state()
 
