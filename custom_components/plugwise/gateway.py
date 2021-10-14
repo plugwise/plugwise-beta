@@ -14,6 +14,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import (
     CONF_HOST,
@@ -196,15 +197,18 @@ class SmileGateway(CoordinatorEntity):
         return self._device_class
 
     @property
-    def device_info(self) -> dict[str, any]:
+    def device_info(self) -> DeviceInfo:
         """Return the device information."""
-        device_information = {
+        device_information = DeviceInfo(
             "identifiers": {(DOMAIN, self._dev_id)},
             "name": self._device_name,
             "manufacturer": self._manufacturer,
             "model": self._model,
             "sw_version": self._fw_version,
-        }
+        )
+
+        if entry := self.coordinator.config_entry:
+            device_information["configuration_url"] = f"http://{entry.data[CONF_HOST]}"
 
         gw_id = self._coordinator.data[0]["gateway_id"]
         if self._dev_id != gw_id:
