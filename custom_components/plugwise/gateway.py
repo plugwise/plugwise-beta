@@ -200,11 +200,11 @@ class SmileGateway(CoordinatorEntity):
     def device_info(self) -> DeviceInfo:
         """Return the device information."""
         device_information = DeviceInfo(
-            "identifiers": {(DOMAIN, self._dev_id)},
-            "name": self._device_name,
-            "manufacturer": self._manufacturer,
-            "model": self._model,
-            "sw_version": self._fw_version,
+            "identifiers" = {(DOMAIN, self._dev_id)},
+            "name" = self._device_name,
+            "manufacturer" = self._manufacturer,
+            "model" = self._model,
+            "sw_version" = self._fw_version,
         )
 
         if entry := self.coordinator.config_entry:
