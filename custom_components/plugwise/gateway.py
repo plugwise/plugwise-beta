@@ -14,6 +14,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import (
     CONF_HOST,
@@ -176,24 +177,27 @@ class SmileGateway(CoordinatorEntity):
         super().__init__(coordinator)
 
         self._attr_available = super().available
+        entry = coordinator.config_entry
         gw_id = coordinator.data[0]["gateway_id"]
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, dev_id)},
-            "name": name
+        self._attr_device_info = DeviceInfo(
+            configuration_url=f"http://{entry.data[CONF_HOST]}"
+            if dev_id == gw_id
+            else None,
+            identifiers={(DOMAIN, dev_id)},
+            name=name
             if dev_id != gw_id
             else f"Smile {coordinator.data[0]['smile_name']}",
-            "manufacturer": vendor,
-            "model": model,
-            "sw_version": fw,
-            "via_device": (DOMAIN, gw_id) if dev_id != gw_id else None,
-        }
-        self._coordinator = coordinator
+            manufacturer=vendor,
+            model=model,
+            sw_version=fw,
+            via_device=(DOMAIN, gw_id) if dev_id != gw_id else None,
+        )
 
     async def async_added_to_hass(self):
         """Subscribe to updates."""
         self._async_process_data()
         self.async_on_remove(
-            self._coordinator.async_add_listener(self._async_process_data)
+            self.coordinator.async_add_listener(self._async_process_data)
         )
 
     @callback
