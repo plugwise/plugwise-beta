@@ -180,9 +180,13 @@ class SmileGateway(CoordinatorEntity):
         entry = coordinator.config_entry
         gw_id = coordinator.data[0]["gateway_id"]
         self._attr_device_info = DeviceInfo(
-            configuration_url=f"http://{entry.data[CONF_HOST]}" if dev_id == gw_id else None,
+            configuration_url=f"http://{entry.data[CONF_HOST]}"
+            if dev_id == gw_id
+            else None,
             identifiers={(DOMAIN, dev_id)},
-            name=name if dev_id != gw_id else f"Smile {coordinator.data[0]['smile_name']}",
+            name=name
+            if dev_id != gw_id
+            else f"Smile {coordinator.data[0]['smile_name']}",
             manufacturer=vendor,
             model=model,
             sw_version=fw,
