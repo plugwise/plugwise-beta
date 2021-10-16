@@ -176,21 +176,24 @@ class SmileGateway(CoordinatorEntity):
         """Initialise the gateway."""
         super().__init__(coordinator)
 
-        self._attr_available = super().available
+        via_device = None
         entry = coordinator.config_entry
         gw_id = coordinator.data[0]["gateway_id"]
+        if dev_id != gw_id:
+            dev_name = name
+            via_device = (DOMAIN, gw_id)
+        else:
+            dev_name = f"Smile {coordinator.data[0]['smile_name']}"
+
+        self._attr_available = super().available
         self._attr_device_info = DeviceInfo(
-            configuration_url=f"http://{entry.data[CONF_HOST]}"
-            if dev_id == gw_id
-            else None,
+            configuration_url=f"http://{entry.data[CONF_HOST]}",
             identifiers={(DOMAIN, dev_id)},
-            name=name
-            if dev_id != gw_id
-            else f"Smile {coordinator.data[0]['smile_name']}",
+            name=dev_name,
             manufacturer=vendor,
             model=model,
             sw_version=fw,
-            via_device=(DOMAIN, gw_id) if dev_id != gw_id else None,
+            via_device=via_device,
         )
 
     async def async_added_to_hass(self):
