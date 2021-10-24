@@ -189,4 +189,24 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         device_class=DEVICE_CLASS_MOTION,
         state_request_method="motion",
     ),
+    PlugwiseBinarySensorEntityDescription(
+        key=DHW_STATE,
+        plugwise_api=SMILE,
+        name="DHW State",
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key=FLAME_STATE,
+        plugwise_api=SMILE,
+        name="Flame State",
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key=PW_NOTIFICATION,
+        plugwise_api=SMILE,
+        name="Plugwise Notification",
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key=SLAVE_BOILER_STATE,
+        plugwise_api=SMILE,
+        name="Slave Boiler State",
+    ),
 )
