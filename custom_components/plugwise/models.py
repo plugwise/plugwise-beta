@@ -14,14 +14,27 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.components.switch import DEVICE_CLASS_OUTLET, SwitchEntityDescription
 from homeassistant.const import (
+    DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_ENERGY,
+    DEVICE_CLASS_GAS,
+    DEVICE_CLASS_HUMIDITY,
+    DEVICE_CLASS_ILLUMINANCE,
     DEVICE_CLASS_POWER,
+    DEVICE_CLASS_PRESSURE
     DEVICE_CLASS_SIGNAL_STRENGTH,
+    DEVICE_CLASS_SWITCH,
+    DEVICE_CLASS_TEMPERATURE,
     ENERGY_KILO_WATT_HOUR,
+    ENERGY_WATT_HOUR,
     ILLUMINANCE,
+    PERCENTAGE,
     POWER_WATT,
+    PRESSURE_BAR,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+    TEMP_CELSIUS,
+    TEMP_KELVIN,
     TIME_MILLISECONDS,
+    UNIT_LUMEN,
 )
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.components.humidifier.const import ATTR_HUMIDITY
@@ -530,6 +543,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Water Pressure",
         device_class=DEVICE_CLASS_PRESSURE,
         state_class=STATE_CLASS_MEASUREMENT,
+        native_unit_of_measurement=PRESSURE_BAR,
         should_poll=True,
     ),
     PlugwiseSensorEntityDescription(
