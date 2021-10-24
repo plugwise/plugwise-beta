@@ -24,7 +24,18 @@ from homeassistant.const import (
 )
 from homeassistant.helpers.entity import EntityDescription
 
-from .const import STICK, USB_MOTION_ID, USB_RELAY_ID
+from .const import (
+    DHW_COMF_MODE,
+    DHW_STATE,
+    FLAME_STATE,
+    LOCK,
+    RELAY,
+    SMILE,
+    SLAVE_BOILER_STATE,
+    STICK,
+    USB_MOTION_ID,
+    USB_RELAY_ID,
+)
 
 
 @dataclass
@@ -178,6 +189,27 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         device_class=DEVICE_CLASS_OUTLET,
         name="Relay state",
         state_request_method="relay_state",
+    ),
+    PlugwiseSwitchEntityDescription(
+        key=DHW_COMF_MODE,
+        plugwise_api=SMILE,
+        device_class=DEVICE_CLASS_SWITCH,
+        name="DHW Comfort Mode",
+        should_poll=True,
+    ),
+    PlugwiseSwitchEntityDescription(
+        key=LOCK,
+        plugwise_api=SMILE,
+        device_class=DEVICE_CLASS_SWITCH,
+        name="Lock",
+        entity_registry_enabled_default=False,
+        should_poll=True,
+    ),
+    PlugwiseSwitchEntityDescription(
+        key=RELAY,
+        plugwise_api=SMILE,
+        device_class=DEVICE_CLASS_SWITCH,
+        should_poll=True,
     ),
 )
 
