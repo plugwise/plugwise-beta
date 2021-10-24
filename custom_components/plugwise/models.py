@@ -9,6 +9,7 @@ from homeassistant.components.binary_sensor import (
 )
 from homeassistant.components.sensor import (
     STATE_CLASS_MEASUREMENT,
+    STATE_CLASS_TOTAL,
     STATE_CLASS_TOTAL_INCREASING,
     SensorEntityDescription,
 )
@@ -20,7 +21,7 @@ from homeassistant.const import (
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_ILLUMINANCE,
     DEVICE_CLASS_POWER,
-    DEVICE_CLASS_PRESSURE
+    DEVICE_CLASS_PRESSURE,
     DEVICE_CLASS_SIGNAL_STRENGTH,
     DEVICE_CLASS_SWITCH,
     DEVICE_CLASS_TEMPERATURE,
@@ -35,6 +36,7 @@ from homeassistant.const import (
     TEMP_KELVIN,
     TIME_MILLISECONDS,
     UNIT_LUMEN,
+    VOLUME_CUBIC_METERS,
 )
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.components.humidifier.const import ATTR_HUMIDITY
@@ -73,6 +75,7 @@ from .const import (
     NET_EL_CUMULATIVE,
     NET_EL_POINT,
     OUTDOOR_TEMP,
+    PW_NOTIFICATION,
     RELAY,
     RETURN_TEMP,
     SMILE,
