@@ -193,20 +193,24 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         key=DHW_STATE,
         plugwise_api=SMILE,
         name="DHW State",
+        should_poll=True,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=FLAME_STATE,
         plugwise_api=SMILE,
         name="Flame State",
+        should_poll=True,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=PW_NOTIFICATION,
         plugwise_api=SMILE,
         name="Plugwise Notification",
+        should_poll=True,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=SLAVE_BOILER_STATE,
         plugwise_api=SMILE,
         name="Slave Boiler State",
+        should_poll=True,
     ),
 )

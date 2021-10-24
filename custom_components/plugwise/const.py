@@ -68,6 +68,53 @@ ZEROCONF_MAP = {
     "stretch": "Stretch",
 }
 
+# Binary Sensors:
+DHW_STATE = "dhw_state"
+FLAME_STATE = "flame_state"
+PW_NOTIFICATION = "plugwise_notification"
+SLAVE_BOILER_STATE = "slave_boiler_state"
+
+# Sensors:
+BATT_SOC = "battery"
+CURRENT_TEMP = "temperature"
+DEVICE_STATE = "device_state"
+EL_CONSUMED = "electricity_consumed"
+EL_CONSUMED_INTERVAL = "electricity_consumed_interval"
+EL_CONSUMED_OFF_PEAK_CUMULATIVE = "electricity_consumed_off_peak_cumulative"
+EL_CONSUMED_OFF_PEAK_INTERVAL = "electricity_consumed_off_peak_interval"
+EL_CONSUMED_OFF_PEAK_POINT = "electricity_consumed_off_peak_point"
+EL_CONSUMED_PEAK_CUMULATIVE = "electricity_consumed_peak_cumulative"
+EL_CONSUMED_PEAK_INTERVAL = "electricity_consumed_peak_interval"
+EL_CONSUMED_PEAK_POINT = "electricity_consumed_peak_point"
+EL_CONSUMED_POINT = "electricity_consumed_point"
+EL_PRODUCED = "electricity_produced"
+EL_PRODUCED_INTERVAL = "electricity_produced_interval"
+EL_PRODUCED_OFF_PEAK_CUMULATIVE = "electricity_produced_off_peak_cumulative"
+EL_PRODUCED_OFF_PEAK_INTERVAL = "electricity_produced_off_peak_interval"
+EL_PRODUCED_OFF_PEAK_POINT = "electricity_produced_off_peak_point"
+EL_PRODUCED_PEAK_CUMULATIVE = "electricity_produced_peak_cumulative"
+EL_PRODUCED_PEAK_INTERVAL = "electricity_produced_peak_interval"
+EL_PRODUCED_PEAK_POINT = "electricity_produced_peak_point"
+EL_PRODUCED_POINT = "electricity_produced_point"
+GAS_CONSUMED_CUMULATIVE = "gas_consumed_cumulative"
+GAS_CONSUMED_INTERVAL = "gas_consumed_interval"
+INTENDED_BOILER_TEMP = "intended_boiler_temperature"
+MOD_LEVEL = "modulation_level"
+NET_EL_CUMULATIVE = "net_electricity_cumulative"
+NET_EL_POINT = "net_electricity_point"
+OUTDOOR_TEMP = "outdoor_temperature"
+RETURN_TEMP = "return_temperature"
+TARGET_TEMP = "setpoint"
+TEMP_DIFF = "temperature_difference"
+VALVE_POS = "valve_position"
+WATER_PRESSURE = "water_pressure"
+WATER_TEMP = "water_temperature"
+
+# Switches
+DHW_COMF_MODE = "dhw_cm_switch"
+LOCK = "lock"
+RELAY = "relay",
+
 
 # --- Const for Plugwise USB-stick.
 
