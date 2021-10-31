@@ -253,6 +253,7 @@ async def test_zeroconf_stretch_form(hass):
     assert len(mock_setup.mock_calls) == 1
     assert len(mock_setup_entry.mock_calls) == 1
 
+
 async def test_zercoconf_discovery_update_configuration(hass):
     """Test if a discovered device is configured and updated with new host."""
     entry = MockConfigEntry(
@@ -274,6 +275,7 @@ async def test_zercoconf_discovery_update_configuration(hass):
     assert result["type"] == "abort"
     assert result["reason"] == "already_configured"
     assert entry.data[CONF_HOST] == "127.0.0.1"
+
 
 async def test_form_username(hass):
     """Test we get the username data back."""
