@@ -25,6 +25,7 @@ STICK = "stick"
 STRETCH = "stretch"
 STRETCH_USERNAME = "stretch"
 VENDOR = "vendor"
+UNIT_LUMEN = "lm"
 USB = "usb"
 
 FLOW_NET = "Network: Smile/Stretch"
@@ -75,7 +76,7 @@ PW_NOTIFICATION = "plugwise_notification"
 SLAVE_BOILER_STATE = "slave_boiler_state"
 
 # Sensors:
-BATT_SOC = "battery"
+BATTERY = "battery"
 CURRENT_TEMP = "temperature"
 DEVICE_STATE = "device_state"
 EL_CONSUMED = "electricity_consumed"
@@ -98,6 +99,7 @@ EL_PRODUCED_PEAK_POINT = "electricity_produced_peak_point"
 EL_PRODUCED_POINT = "electricity_produced_point"
 GAS_CONSUMED_CUMULATIVE = "gas_consumed_cumulative"
 GAS_CONSUMED_INTERVAL = "gas_consumed_interval"
+HUMIDITY = "humidity"
 INTENDED_BOILER_TEMP = "intended_boiler_temperature"
 MOD_LEVEL = "modulation_level"
 NET_EL_CUMULATIVE = "net_electricity_cumulative"
@@ -113,7 +115,7 @@ WATER_TEMP = "water_temperature"
 # Switches
 DHW_COMF_MODE = "dhw_cm_switch"
 LOCK = "lock"
-RELAY = "relay",
+RELAY = "relay"
 
 
 # --- Const for Plugwise USB-stick.
