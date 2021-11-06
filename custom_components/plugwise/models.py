@@ -13,7 +13,11 @@ from homeassistant.components.sensor import (
     STATE_CLASS_TOTAL_INCREASING,
     SensorEntityDescription,
 )
-from homeassistant.components.switch import DEVICE_CLASS_OUTLET, SwitchEntityDescription
+from homeassistant.components.switch import (
+    DEVICE_CLASS_OUTLET,
+    DEVICE_CLASS_SWITCH,
+    SwitchEntityDescription
+)
 from homeassistant.const import (
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_ENERGY,
@@ -23,7 +27,6 @@ from homeassistant.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_PRESSURE,
     DEVICE_CLASS_SIGNAL_STRENGTH,
-    DEVICE_CLASS_SWITCH,
     DEVICE_CLASS_TEMPERATURE,
     ENERGY_KILO_WATT_HOUR,
     ENERGY_WATT_HOUR,
@@ -35,7 +38,6 @@ from homeassistant.const import (
     TEMP_CELSIUS,
     TEMP_KELVIN,
     TIME_MILLISECONDS,
-    UNIT_LUMEN,
     VOLUME_CUBIC_METERS,
 )
 from homeassistant.helpers.entity import EntityDescription
@@ -83,6 +85,7 @@ from .const import (
     STICK,
     TARGET_TEMP,
     TEMP_DIFF,
+    UNIT_LUMEN,
     USB_MOTION_ID,
     USB_RELAY_ID,
     VALVE_POS,
@@ -241,6 +244,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=PERCENTAGE,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=CURRENT_TEMP,
@@ -250,12 +254,15 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=TEMP_CELSIUS,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=DEVICE_STATE,
         plugwise_api=SMILE,
+        name="Device State",
         state_class=STATE_CLASS_MEASUREMENT,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED,
@@ -265,6 +272,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=POWER_WATT,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_INTERVAL,
@@ -274,6 +282,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_OFF_PEAK_CUMULATIVE,
@@ -283,6 +292,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_OFF_PEAK_INTERVAL,
@@ -292,6 +302,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_OFF_PEAK_POINT,
@@ -301,6 +312,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=POWER_WATT,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_PEAK_CUMULATIVE,
@@ -310,6 +322,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_PEAK_INTERVAL,
@@ -319,6 +332,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_PEAK_POINT,
@@ -328,6 +342,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=POWER_WATT,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_POINT,
@@ -337,6 +352,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=POWER_WATT,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED,
@@ -347,6 +363,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=POWER_WATT,
         entity_registry_enabled_default=False,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_INTERVAL,
@@ -357,6 +374,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=ENERGY_WATT_HOUR,
         entity_registry_enabled_default=False,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_OFF_PEAK_CUMULATIVE,
@@ -366,6 +384,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_OFF_PEAK_INTERVAL,
@@ -375,6 +394,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_OFF_PEAK_POINT,
@@ -384,6 +404,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=POWER_WATT,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_PEAK_CUMULATIVE,
@@ -393,6 +414,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_PEAK_INTERVAL,
@@ -402,6 +424,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_PEAK_POINT,
@@ -411,6 +434,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=POWER_WATT,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_POINT,
@@ -420,6 +444,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=POWER_WATT,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=GAS_CONSUMED_CUMULATIVE,
@@ -429,6 +454,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL_INCREASING,
         native_unit_of_measurement=VOLUME_CUBIC_METERS,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=GAS_CONSUMED_INTERVAL,
@@ -438,6 +464,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL,
         native_unit_of_measurement=VOLUME_CUBIC_METERS,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=HUMIDITY,
@@ -447,6 +474,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=PERCENTAGE,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=ILLUMINANCE,
@@ -456,6 +484,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=UNIT_LUMEN,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=INTENDED_BOILER_TEMP,
@@ -465,6 +494,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=TEMP_CELSIUS,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=MOD_LEVEL,
@@ -474,6 +504,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=PERCENTAGE,
         icon="mdi:percent",
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=NET_EL_CUMULATIVE,
@@ -483,6 +514,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_TOTAL,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=NET_EL_POINT,
@@ -492,6 +524,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=POWER_WATT,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=OUTDOOR_TEMP,
@@ -501,6 +534,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=TEMP_CELSIUS,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=RETURN_TEMP,
@@ -510,6 +544,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=TEMP_CELSIUS,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=TARGET_TEMP,
@@ -520,6 +555,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=TEMP_CELSIUS,
         entity_registry_enabled_default=False,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=TEMP_DIFF,
@@ -530,6 +566,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=TEMP_KELVIN,
         entity_registry_enabled_default=False,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=VALVE_POS,
@@ -539,6 +576,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=PERCENTAGE,
         icon="mdi:valve",
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=WATER_PRESSURE,
@@ -548,6 +586,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=PRESSURE_BAR,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSensorEntityDescription(
         key=WATER_TEMP,
@@ -557,6 +596,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
         native_unit_of_measurement=TEMP_CELSIUS,
         should_poll=True,
+        state_request_method = None,
     ),
 )
 
@@ -574,20 +614,25 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         device_class=DEVICE_CLASS_SWITCH,
         name="DHW Comfort Mode",
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSwitchEntityDescription(
         key=LOCK,
         plugwise_api=SMILE,
         device_class=DEVICE_CLASS_SWITCH,
+        icon="mdi:lock",
         name="Lock",
         entity_registry_enabled_default=False,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseSwitchEntityDescription(
         key=RELAY,
         plugwise_api=SMILE,
         device_class=DEVICE_CLASS_SWITCH,
+        name="Relay",
         should_poll=True,
+        state_request_method = None,
     ),
 )
 
@@ -604,12 +649,14 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="DHW State",
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=FLAME_STATE,
         plugwise_api=SMILE,
         name="Flame State",
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=PW_NOTIFICATION,
@@ -617,6 +664,7 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         name="Plugwise Notification",
         entity_registry_enabled_default=False,
         should_poll=True,
+        state_request_method = None,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=SLAVE_BOILER_STATE,
@@ -624,5 +672,6 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         name="Slave Boiler State",
         entity_registry_enabled_default=False,
         should_poll=True,
+        state_request_method = None,
     ),
 )
