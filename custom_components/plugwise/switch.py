@@ -28,6 +28,7 @@ from .const import (
     FW,
     PW_MODEL,
     PW_TYPE,
+    SMILE,
     STICK,
     USB,
     VENDOR,
@@ -88,21 +89,31 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 continue
 
             for data in coordinator.data[1][dev_id]["switches"]:
-                entities.append(
-                    GwSwitch(
-                        api,
-                        coordinator,
-                        dev_id,
-                        coordinator.data[1][dev_id].get(ATTR_NAME),
-                        data,
-                    )
-                )
+                for description in PW_SWITCH_TYPES:
+                    if (
+                        description.plugwise_api == SMILE
+                        and description.key == data.get(ATTR_ID)
+                    ):
+                        entities.extend(
+                            [
+                                GwSwitch(
+                                    api,
+                                    coordinator,
+                                    dev_id,
+                                    coordinator.data[1][dev_id].get(ATTR_NAME),
+                                    data,
+                                    description,
+                                )
+                            ]
+                        )
+                        _LOGGER.debug("Add %s switch", description.key)
 
-    async_add_entities(entities, True)
+    if entities:
+        async_add_entities(entities, True)
 
 
 class GwSwitch(SmileGateway, SwitchEntity):
-    """Representation of a Smile Gateway sensor."""
+    """Representation of a Smile Gateway switch."""
 
     def __init__(
         self,
@@ -111,6 +122,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         dev_id,
         name,
         sw_data,
+        description: PlugwiseSwitchEntityDescription,
     ):
         """Initialise the sensor."""
         super().__init__(
@@ -120,22 +132,25 @@ class GwSwitch(SmileGateway, SwitchEntity):
             coordinator.data[1][dev_id].get(PW_MODEL),
             coordinator.data[1][dev_id].get(VENDOR),
             coordinator.data[1][dev_id].get(FW),
+            description,
         )
 
         self._api = api
-        self._attr_device_class = sw_data.get(ATTR_DEVICE_CLASS)
-        self._attr_entity_registry_enabled_default = sw_data.get(ATTR_ENABLED_DEFAULT)
-        self._attr_icon = None
+        self._attr_device_class = description.device_class
+        self._attr_entity_registry_enabled_default = (
+            description.entity_registry_enabled_default
+        )
+        self._attr_icon = description.icon
         self._attr_is_on = False
-        self._attr_name = f"{name} {sw_data.get(ATTR_NAME)}"
+        self._attr_name = f"{name} {description.name}"
         self._dev_id = dev_id
         self._members = None
         if "members" in coordinator.data[1][dev_id]:
             self._members = coordinator.data[1][dev_id].get("members")
-        self._switch = sw_data.get(ATTR_ID)
+        self._switch = description.key
         self._sw_data = sw_data
 
-        self._attr_unique_id = f"{dev_id}-{self._switch}"
+        self._attr_unique_id = f"{dev_id}-{description.key}"
         # For backwards compatibility:
         if self._switch == "relay":
             self._attr_unique_id = f"{dev_id}-plug"
@@ -170,9 +185,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
     @callback
     def _async_process_data(self):
         """Update the data from the Plugs."""
-        self._attr_icon = self._sw_data.get(ATTR_ICON)
         self._attr_is_on = self._sw_data.get(ATTR_STATE)
-
         self.async_write_ha_state()
 
 
