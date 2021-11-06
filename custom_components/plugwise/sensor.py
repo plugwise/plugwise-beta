@@ -25,6 +25,7 @@ from .const import (
     FW,
     PW_MODEL,
     PW_TYPE,
+    SMILE,
     STICK,
     USB,
     VENDOR,
@@ -87,16 +88,25 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 continue
 
             for data in coordinator.data[1][dev_id]["sensors"]:
-                entities.append(
-                    GwSensor(
-                        coordinator,
-                        dev_id,
-                        coordinator.data[1][dev_id].get(ATTR_NAME),
-                        data,
-                    )
-                )
+                for description in PW_SENSOR_TYPES:
+                    if (
+                        description.plugwise_api == SMILE
+                        and description.key == data.get(ATTR_ID)
+                    ):
+                        entities.extend(
+                            [
+                                GwSensor(
+                                    coordinator,
+                                    dev_id,
+                                    coordinator.data[1][dev_id].get(ATTR_NAME),
+                                    data,
+                                    description,
+                                )
+                            ]
+                        )
 
-    async_add_entities(entities, True)
+    if entities:
+        async_add_entities(entities, True)
 
 
 class GwSensor(SmileGateway, SensorEntity):
@@ -108,6 +118,7 @@ class GwSensor(SmileGateway, SensorEntity):
         dev_id,
         name,
         sr_data,
+        description: PlugwiseSensorEntityDescription,
     ):
         """Initialise the sensor."""
         super().__init__(
@@ -117,24 +128,25 @@ class GwSensor(SmileGateway, SensorEntity):
             coordinator.data[1][dev_id].get(PW_MODEL),
             coordinator.data[1][dev_id].get(VENDOR),
             coordinator.data[1][dev_id].get(FW),
+            description,
         )
 
-        self._attr_device_class = sr_data.get(ATTR_DEVICE_CLASS)
-        self._attr_entity_registry_enabled_default = sr_data.get(ATTR_ENABLED_DEFAULT)
-        self._attr_icon = None
-        self._attr_name = f"{name} {sr_data.get(ATTR_NAME)}"
+        self._attr_device_class = description.device_class
+        self._attr_entity_registry_enabled_default = (
+            description.entity_registry_enabled_default
+        )
+        self._attr_icon = description.icon
+        self._attr_name = f"{name} {description.name}"
         self._attr_native_value = None
-        self._attr_native_unit_of_measurement = sr_data.get(ATTR_UNIT_OF_MEASUREMENT)
-        self._attr_state_class = sr_data.get("state_class")
-        self._attr_unique_id = f"{dev_id}-{sr_data.get(ATTR_ID)}"
+        self._attr_native_unit_of_measurement = description.native_unit_of_measurement
+        self._attr_state_class = description.state_class
+        self._attr_unique_id = f"{dev_id}-{description.key}"
         self._sr_data = sr_data
 
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        self._attr_icon = self._sr_data.get(ATTR_ICON)
         self._attr_native_value = self._sr_data.get(ATTR_STATE)
-
         self.async_write_ha_state()
 
 
