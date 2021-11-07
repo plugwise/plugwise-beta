@@ -152,10 +152,9 @@ class GwSensor(SmileGateway, SensorEntity):
     def _async_process_data(self):
         """Update the entity."""
         self._attr_native_value = self._sr_data.get(ATTR_STATE)
-        _LOGGER.debug("Sensor data: %s, %s", self._sr_data.get(ATTR_ID), self._sr_data.get(ATTR_STATE))
+
         if self._sr_data.get(ATTR_ID) == "device_state":
-            if self._attr_native_value == "idle":
-                self._attr_icon = IDLE_ICON
+            self._attr_icon = IDLE_ICON
             if self._attr_native_value == "dhw-heating":
                 self._attr_icon = FLAME_ICON
             if self._attr_native_value == "heating":
