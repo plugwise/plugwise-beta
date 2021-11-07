@@ -64,6 +64,21 @@ class GWBinarySensor:
         }
         return selector.get(arg)
 
+    def _update_notify(self):
+        """Notification update helper."""
+        notify = self._data[0]["notifications"]
+        self._notification = {}
+        for severity in SEVERITIES:
+            self._attributes[f"{severity.upper()}_msg"] = []
+        if notify != {}:
+            for notify_id, details in notify.items():
+                for msg_type, msg in details.items():
+                    if msg_type not in SEVERITIES:
+                        msg_type = "other"  # pragma: no cover
+
+                    self._attributes[f"{msg_type.upper()}_msg"].append(msg)
+                    self._notification[notify_id] = f"{msg_type.title()}: {msg}"
+
     def update_data(self):
         """Handle update callbacks."""
         data = self._data[1][self._dev_id]
@@ -82,18 +97,8 @@ class GWBinarySensor:
                 if self._binary_sensor != "plugwise_notification":
                     continue
 
-                notify = self._data[0]["notifications"]
-                self._notification = {}
-                for severity in SEVERITIES:
-                    self._attributes[f"{severity.upper()}_msg"] = []
-                if notify != {}:
-                    for notify_id, details in notify.items():
-                        for msg_type, msg in details.items():
-                            if msg_type not in SEVERITIES:
-                                msg_type = "other"  # pragma: no cover
+                self._update_notify()
 
-                            self._attributes[f"{msg_type.upper()}_msg"].append(msg)
-                            self._notification[notify_id] = f"{msg_type.title()}: {msg}"
 
 
 class GWThermostat:
