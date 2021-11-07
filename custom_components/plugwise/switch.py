@@ -143,6 +143,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._attr_icon = description.icon
         self._attr_is_on = False
         self._attr_name = f"{name} {description.name}"
+        self._attr_should_poll = self.entity_description.should_poll
         self._dev_id = dev_id
         self._members = None
         if "members" in coordinator.data[1][dev_id]:

@@ -197,7 +197,6 @@ class SmileGateway(CoordinatorEntity):
             model=model,
             sw_version=fw,
         )
-        self._attr_should_poll = entity_description.should_poll
         self.entity_description = entity_description
 
         if dev_id != gw_id:

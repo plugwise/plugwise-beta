@@ -20,9 +20,13 @@ from plugwise.nodes import PlugwiseNode
 from .const import (
     ATTR_ENABLED_DEFAULT,
     CB_NEW_NODE,
+    COOLING_ICON,
     COORDINATOR,
     DOMAIN,
+    FLAME_ICON,
     FW,
+    HEATING_ICON,
+    IDLE_ICON,
     PW_MODEL,
     PW_TYPE,
     SMILE,
@@ -139,6 +143,7 @@ class GwSensor(SmileGateway, SensorEntity):
         self._attr_name = f"{name} {description.name}"
         self._attr_native_value = None
         self._attr_native_unit_of_measurement = description.native_unit_of_measurement
+        self._attr_should_poll = self.entity_description.should_poll
         self._attr_state_class = description.state_class
         self._attr_unique_id = f"{dev_id}-{description.key}"
         self._sr_data = sr_data
@@ -147,6 +152,21 @@ class GwSensor(SmileGateway, SensorEntity):
     def _async_process_data(self):
         """Update the entity."""
         self._attr_native_value = self._sr_data.get(ATTR_STATE)
+        _LOGGER.debug("Sensor data: %s, %s", self._sr_data.get(ATTR_ID), self._sr_data.get(ATTR_STATE))
+        if self._sr_data.get(ATTR_ID) == "device_state":
+            if self._attr_native_value == "idle":
+                self._attr_icon = IDLE_ICON
+            if self._attr_native_value == "dhw-heating":
+                self._attr_icon = FLAME_ICON
+            if self._attr_native_value == "heating":
+                self._attr_icon = HEATING_ICON
+            if self._attr_native_value == "dhw and heating":
+                self._attr_icon = HEATING_ICON
+            if self._attr_native_value == "cooling":
+                self._attr_icon = COOLING_ICON
+            if self._attr_native_value == "dhw and cooling":
+                self._attr_icon = COOLING_ICON
+
         self.async_write_ha_state()
 
 

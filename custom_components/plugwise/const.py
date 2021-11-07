@@ -52,6 +52,7 @@ DEFAULT_USERNAME = "smile"
 GATEWAY_PLATFORMS = [BINARY_SENSOR_DOMAIN, CLIMATE_DOMAIN, SENSOR_DOMAIN, SWITCH_DOMAIN]
 SENSOR_PLATFORMS = [SENSOR_DOMAIN, SWITCH_DOMAIN]
 SERVICE_DELETE = "delete_notification"
+SEVERITIES = ["other", "info", "warning", "error"]
 
 # Climate const:
 MASTER_THERMOSTATS = [
@@ -68,6 +69,17 @@ ZEROCONF_MAP = {
     "smile_open_therm": "Adam",
     "stretch": "Stretch",
 }
+
+# Icons
+COOLING_ICON = "mdi:snowflake"
+FLAME_ICON = "mdi:fire"
+FLOW_OFF_ICON = "mdi:water-pump-off"
+FLOW_ON_ICON = "mdi:water-pump"
+HEATING_ICON = "mdi:radiator"
+IDLE_ICON = "mdi:circle-off-outline"
+NOTIFICATION_ICON = "mdi:mailbox-up-outline"
+NO_NOTIFICATION_ICON = "mdi:mailbox-outline"
+SWITCH_ICON = "mdi:electric-switch"
 
 # Binary Sensors:
 DHW_STATE = "dhw_state"
