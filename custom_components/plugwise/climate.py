@@ -63,7 +63,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             api,
             coordinator,
             ClimateEntityDescription(
-                key= f"{dev_id}_thermostat",
+                key=f"{dev_id}_thermostat",
                 name=coordinator.data[1][dev_id].get(ATTR_NAME),
             ),
             dev_id,
@@ -220,7 +220,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
     def _async_process_data(self):
         """Update the data for this climate device."""
         self._gw_thermostat.update_data()
-        
+
         self._attr_current_temperature = self._gw_thermostat.current_temperature
         self._attr_extra_state_attributes = self._gw_thermostat.extra_state_attributes
         self._attr_hvac_mode = self._gw_thermostat.hvac_mode

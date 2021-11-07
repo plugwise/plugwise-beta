@@ -6,19 +6,15 @@ import logging
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ICON,
     ATTR_ID,
     ATTR_NAME,
     ATTR_STATE,
-    ATTR_UNIT_OF_MEASUREMENT,
 )
 from homeassistant.core import callback
 
 from plugwise.nodes import PlugwiseNode
 
 from .const import (
-    ATTR_ENABLED_DEFAULT,
     CB_NEW_NODE,
     COOLING_ICON,
     COORDINATOR,

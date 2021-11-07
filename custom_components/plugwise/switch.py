@@ -6,8 +6,6 @@ import logging
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ICON,
     ATTR_ID,
     ATTR_NAME,
     ATTR_STATE,
@@ -21,7 +19,6 @@ from plugwise.nodes import PlugwiseNode
 
 from .const import (
     API,
-    ATTR_ENABLED_DEFAULT,
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
