@@ -16,7 +16,7 @@ from homeassistant.components.sensor import (
 from homeassistant.components.switch import (
     DEVICE_CLASS_OUTLET,
     DEVICE_CLASS_SWITCH,
-    SwitchEntityDescription
+    SwitchEntityDescription,
 )
 from homeassistant.const import (
     DEVICE_CLASS_BATTERY,
