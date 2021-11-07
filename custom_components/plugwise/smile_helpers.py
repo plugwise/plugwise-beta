@@ -1,4 +1,4 @@
-""" Plugwise Smile Helper Classes."""
+"""Plugwise Smile Helper Classes."""
 from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
     HVAC_MODE_HEAT,
@@ -20,7 +20,8 @@ from .const import (
 
 
 class GWBinarySensor:
-    """ Represent the Plugwise Smile/Stretch binary_sensor."""
+    """Represent the Plugwise Smile/Stretch binary_sensor."""
+
     def __init__(self, data, dev_id, binary_sensor):
         """Initialize the Gateway."""
         self._binary_sensor = binary_sensor
@@ -238,4 +239,3 @@ class GWThermostat:
         if self._selected_schema:
             attributes["selected_schema"] = self._selected_schema
         self._extra_state_attributes = attributes
-        
