@@ -100,7 +100,6 @@ class GWBinarySensor:
                 self._update_notify()
 
 
-
 class GWThermostat:
     """Represent a Plugwise Thermostat Device."""
 
