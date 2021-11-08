@@ -19,16 +19,24 @@ from .const import (
 )
 
 
-def device_state_icon_selector(state):
+def icon_selector(arg, state):
     selector = {
+        # Device State icons
         "cooling": COOLING_ICON,
-        "dhw and cooling": COOLING_ICON,
         "dhw-heating": FLAME_ICON,
+        "dhw and cooling": COOLING_ICON,
         "dhw and heating": HEATING_ICON,
         "heating": HEATING_ICON,
         "idle": IDLE_ICON,
+        # Binary Sensor icons
+        "dhw_state": FLOW_ON_ICON if state else FLOW_OFF_ICON,
+        "flame_state": FLAME_ICON if state else IDLE_ICON,
+        "slave_boiler_state": FLAME_ICON if state else IDLE_ICON,
+        "plugwise_notification": NOTIFICATION_ICON
+        if state
+        else NO_NOTIFICATION_ICON,
     }
-    return selector.get(state)
+    return selector.get(arg)
 
 
 class GWBinarySensor:
@@ -64,18 +72,6 @@ class GWBinarySensor:
         """Plugwise Notification message."""
         return self._notification
 
-    @staticmethod
-    def _icon_selector(arg, state):
-        selector = {
-            "dhw_state": FLOW_ON_ICON if state else FLOW_OFF_ICON,
-            "flame_state": FLAME_ICON if state else IDLE_ICON,
-            "slave_boiler_state": FLAME_ICON if state else IDLE_ICON,
-            "plugwise_notification": NOTIFICATION_ICON
-            if state
-            else NO_NOTIFICATION_ICON,
-        }
-        return selector.get(arg)
-
     def _update_notify(self):
         """Notification update helper."""
         notify = self._data[0]["notifications"]
@@ -104,7 +100,7 @@ class GWBinarySensor:
                     continue
 
                 self._is_on = item[ATTR_STATE]
-                self._icon = self._icon_selector(self._binary_sensor, self._is_on)
+                self._icon = icon_selector(self._binary_sensor, self._is_on)
 
                 if self._binary_sensor != "plugwise_notification":
                     continue
