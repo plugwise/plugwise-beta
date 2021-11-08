@@ -67,7 +67,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 name=coordinator.data[1][dev_id].get(ATTR_NAME),
             ),
             dev_id,
-            coordinator.data[1][dev_id].get(ATTR_NAME),
             DEFAULT_MAX_TEMP,
             DEFAULT_MIN_TEMP,
         )
@@ -88,7 +87,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
         coordinator,
         description: ClimateEntityDescription,
         dev_id,
-        name,
         max_temp,
         min_temp,
     ):
@@ -96,7 +94,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         super().__init__(
             coordinator,
             dev_id,
-            name,
+            description.name,
             coordinator.data[1][dev_id].get(PW_MODEL),
             coordinator.data[1][dev_id].get(VENDOR),
             coordinator.data[1][dev_id].get(FW),
@@ -111,7 +109,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._attr_hvac_mode = None
         self._attr_max_temp = max_temp
         self._attr_min_temp = min_temp
-        self._attr_name = name
+        self._attr_name = description.name
         self._attr_preset_mode = None
         self._attr_preset_modes = None
         self._attr_supported_features = SUPPORT_FLAGS
