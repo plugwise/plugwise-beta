@@ -32,7 +32,7 @@ from .const import (
 )
 from .gateway import SmileGateway
 from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
-from .smile_helpers import device_state_icon_selector
+from .smile_helpers import icon_selector
 from .usb import PlugwiseUSBEntity
 
 PARALLEL_UPDATES = 0
@@ -150,7 +150,7 @@ class GwSensor(SmileGateway, SensorEntity):
         """Update the entity."""
         self._attr_native_value = self._sr_data.get(ATTR_STATE)
         if self._sr_data.get(ATTR_ID) == "device_state":
-            device_state_icon_selector(self._attr_native_value)
+            icon_selector(self._attr_native_value, None)
 
         self.async_write_ha_state()
 
