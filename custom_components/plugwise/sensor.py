@@ -16,13 +16,9 @@ from plugwise.nodes import PlugwiseNode
 
 from .const import (
     CB_NEW_NODE,
-    COOLING_ICON,
     COORDINATOR,
     DOMAIN,
-    FLAME_ICON,
     FW,
-    HEATING_ICON,
-    IDLE_ICON,
     PW_MODEL,
     PW_TYPE,
     SMILE,

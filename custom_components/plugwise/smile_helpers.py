@@ -9,9 +9,11 @@ from homeassistant.components.climate.const import (
 from homeassistant.const import ATTR_ID, ATTR_STATE
 
 from .const import (
+    COOLING_ICON,
     FLAME_ICON,
     FLOW_OFF_ICON,
     FLOW_ON_ICON,
+    HEATING_ICON,
     IDLE_ICON,
     NO_NOTIFICATION_ICON,
     NOTIFICATION_ICON,
