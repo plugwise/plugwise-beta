@@ -19,6 +19,18 @@ from .const import (
 )
 
 
+def device_state_icon_selector(state):
+    selector = {
+        "cooling": COOLING_ICON,
+        "dhw and cooling": COOLING_ICON
+        "dhw-heating": FLAME_ICON,
+        "dhw and heating": HEATING_ICON,
+        "heating": HEATING_ICON,
+        "idle": IDLE_ICON,
+    }
+    return selector.get(state)
+
+
 class GWBinarySensor:
     """Represent the Plugwise Smile/Stretch binary_sensor."""
 
