@@ -95,7 +95,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                 GwSensor(
                                     coordinator,
                                     dev_id,
-                                    coordinator.data[1][dev_id].get(ATTR_NAME),
                                     data,
                                     description,
                                 )
@@ -113,18 +112,18 @@ class GwSensor(SmileGateway, SensorEntity):
         self,
         coordinator,
         dev_id,
-        name,
         sr_data,
         description: PlugwiseSensorEntityDescription,
     ):
         """Initialise the sensor."""
+        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             dev_id,
-            name,
-            coordinator.data[1][dev_id].get(PW_MODEL),
-            coordinator.data[1][dev_id].get(VENDOR),
-            coordinator.data[1][dev_id].get(FW),
+            _cdata.get(ATTR_NAME),
+            _cdata.get(PW_MODEL),
+            _cdata.get(VENDOR),
+            _cdata.get(FW),
             description,
         )
 
@@ -133,7 +132,7 @@ class GwSensor(SmileGateway, SensorEntity):
             description.entity_registry_enabled_default
         )
         self._attr_icon = description.icon
-        self._attr_name = f"{name} {description.name}"
+        self._attr_name = f"{ _cdata.get(ATTR_NAME)} {description.name}"
         self._attr_native_value = None
         self._attr_native_unit_of_measurement = description.native_unit_of_measurement
         self._attr_should_poll = self.entity_description.should_poll

@@ -97,7 +97,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                     api,
                                     coordinator,
                                     dev_id,
-                                    coordinator.data[1][dev_id].get(ATTR_NAME),
                                     data,
                                     description,
                                 )
@@ -117,18 +116,18 @@ class GwSwitch(SmileGateway, SwitchEntity):
         api,
         coordinator,
         dev_id,
-        name,
         sw_data,
         description: PlugwiseSwitchEntityDescription,
     ):
         """Initialise the sensor."""
+        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             dev_id,
-            name,
-            coordinator.data[1][dev_id].get(PW_MODEL),
-            coordinator.data[1][dev_id].get(VENDOR),
-            coordinator.data[1][dev_id].get(FW),
+            _cdata.get(ATTR_NAME),
+            _cdata.get(PW_MODEL),
+            _cdata.get(VENDOR),
+            _cdata.get(FW),
             description,
         )
 
@@ -139,7 +138,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         )
         self._attr_icon = description.icon
         self._attr_is_on = False
-        self._attr_name = f"{name} {description.name}"
+        self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
         self._attr_should_poll = self.entity_description.should_poll
         self._dev_id = dev_id
         self._members = None
@@ -152,7 +151,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         # For backwards compatibility:
         if self._switch == "relay":
             self._attr_unique_id = f"{dev_id}-plug"
-            self._attr_name = name
+            self._attr_name = _cdata.get(ATTR_NAME)
 
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
