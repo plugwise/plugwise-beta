@@ -145,7 +145,7 @@ class GwSensor(SmileGateway, SensorEntity):
         """Update the entity."""
         self._attr_native_value = self._sr_data.get(ATTR_STATE)
         if self._sr_data.get(ATTR_ID) == "device_state":
-            icon_selector(self._attr_native_value, None)
+            self._attr_icon = icon_selector(self._attr_native_value, None)
 
         self.async_write_ha_state()
 
