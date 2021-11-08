@@ -96,9 +96,9 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                 GwSwitch(
                                     api,
                                     coordinator,
-                                    data,
                                     description,
                                     dev_id,
+                                    data,
                                 )
                             ]
                         )
