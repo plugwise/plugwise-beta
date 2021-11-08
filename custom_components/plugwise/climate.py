@@ -93,12 +93,12 @@ class PwThermostat(SmileGateway, ClimateEntity):
         """Set up the PwThermostat."""
         super().__init__(
             coordinator,
+            description,
             dev_id,
-            description.name,
             coordinator.data[1][dev_id].get(PW_MODEL),
+            description.name,
             coordinator.data[1][dev_id].get(VENDOR),
             coordinator.data[1][dev_id].get(FW),
-            description,
         )
 
         self._gw_thermostat = GWThermostat(coordinator.data, dev_id)

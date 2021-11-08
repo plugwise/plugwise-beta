@@ -176,12 +176,12 @@ class SmileGateway(CoordinatorEntity):
     def __init__(
         self,
         coordinator,
+        description: PlugwiseEntityDescription,
         dev_id,
-        name,
         model,
+        name,
         vendor,
         fw,
-        entity_description: PlugwiseEntityDescription,
     ) -> None:
         """Initialise the gateway."""
         super().__init__(coordinator)
@@ -192,12 +192,12 @@ class SmileGateway(CoordinatorEntity):
         self._attr_device_info = DeviceInfo(
             configuration_url=f"http://{entry.data[CONF_HOST]}",
             identifiers={(DOMAIN, dev_id)},
-            name=f"Smile {coordinator.data[0]['smile_name']}",
             manufacturer=vendor,
             model=model,
+            name=f"Smile {coordinator.data[0]['smile_name']}",
             sw_version=fw,
         )
-        self.entity_description = entity_description
+        self.entity_description = description
 
         if dev_id != gw_id:
             self._attr_device_info.update(

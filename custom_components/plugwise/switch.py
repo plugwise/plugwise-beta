@@ -96,9 +96,9 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                 GwSwitch(
                                     api,
                                     coordinator,
-                                    dev_id,
                                     data,
                                     description,
+                                    dev_id,
                                 )
                             ]
                         )
@@ -115,20 +115,20 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self,
         api,
         coordinator,
+        description: PlugwiseSwitchEntityDescription,
         dev_id,
         sw_data,
-        description: PlugwiseSwitchEntityDescription,
     ):
         """Initialise the sensor."""
         _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
+            description,
             dev_id,
-            _cdata.get(ATTR_NAME),
             _cdata.get(PW_MODEL),
+            _cdata.get(ATTR_NAME),
             _cdata.get(VENDOR),
             _cdata.get(FW),
-            description,
         )
 
         self._api = api
