@@ -91,23 +91,19 @@ class GWBinarySensor:
 
     def update_data(self):
         """Handle update callbacks."""
-        data = self._data[1][self._dev_id]
+        data = self._data[1][self._dev_id]["binary_sensors"]
 
-        for key, _ in data.items():
-            if key != "binary_sensors":
+        for _, item in enumerate(data):
+            if item[ATTR_ID] != self._binary_sensor:
                 continue
 
-            for _, item in enumerate(data["binary_sensors"]):
-                if item[ATTR_ID] != self._binary_sensor:
-                    continue
+            self._is_on = item[ATTR_STATE]
+            self._icon = icon_selector(self._binary_sensor, self._is_on)
 
-                self._is_on = item[ATTR_STATE]
-                self._icon = icon_selector(self._binary_sensor, self._is_on)
+            if self._binary_sensor != "plugwise_notification":
+                continue
 
-                if self._binary_sensor != "plugwise_notification":
-                    continue
-
-                self._update_notify()
+            self._update_notify()
 
 
 class GWThermostat:
