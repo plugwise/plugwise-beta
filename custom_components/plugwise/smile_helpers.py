@@ -22,6 +22,7 @@ from .const import (
 
 
 def icon_selector(arg, state):
+    """Icon-selection helper function."""
     selector = {
         # Device State icons
         "cooling": COOLING_ICON,
