@@ -100,10 +100,8 @@ class GWBinarySensor:
             self._is_on = item[ATTR_STATE]
             self._icon = icon_selector(self._binary_sensor, self._is_on)
 
-            if self._binary_sensor != "plugwise_notification":
-                continue
-
-            self._update_notify()
+            if self._binary_sensor == "plugwise_notification":
+                self._update_notify()
 
 
 class GWThermostat:
