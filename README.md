@@ -28,7 +28,18 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW Oct 2021 [v0.18.2]
+## NEW Nov 2021 [v0.19.5]
+- Refactor Smile-related code:
+  - Implement Core `EntityDescription`-updates including `entity_category`.
+- Link to plugwise v0.15.1 - remove all previously added Core-related functionality.
+- Move testfixtures into tests/components/plugwise directory.
+- Various test-related fixes.
+
+## Nov 2021 [v0.19.0]
+- Support new Core 2021.11 functionalit: implement Visit Device button
+- Bug fix: handle changing Smile IP (Core PR #58819)
+
+## Oct 2021 [v0.18.2]
 - Smile: adapt to HA Core platform-changes
 
 ## Oct 2021 [v0.18.1]
