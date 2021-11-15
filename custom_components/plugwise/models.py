@@ -7,6 +7,7 @@ from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_MOTION,
     BinarySensorEntityDescription,
 )
+from homeassistant.components.humidifier.const import ATTR_HUMIDITY
 from homeassistant.components.sensor import (
     STATE_CLASS_MEASUREMENT,
     STATE_CLASS_TOTAL,
@@ -43,7 +44,6 @@ from homeassistant.const import (
     VOLUME_CUBIC_METERS,
 )
 from homeassistant.helpers.entity import EntityDescription
-from homeassistant.components.humidifier.const import ATTR_HUMIDITY
 
 from .const import (
     BATTERY,
@@ -81,8 +81,8 @@ from .const import (
     PW_NOTIFICATION,
     RELAY,
     RETURN_TEMP,
-    SMILE,
     SLAVE_BOILER_STATE,
+    SMILE,
     STICK,
     TARGET_TEMP,
     TEMP_DIFF,
