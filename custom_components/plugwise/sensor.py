@@ -5,11 +5,7 @@ import logging
 
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import (
-    ATTR_ID,
-    ATTR_NAME,
-    ATTR_STATE,
-)
+from homeassistant.const import ATTR_ID, ATTR_NAME, ATTR_STATE
 from homeassistant.core import callback
 
 from plugwise.nodes import PlugwiseNode
