@@ -35,9 +35,7 @@ def icon_selector(arg, state):
         "dhw_state": FLOW_ON_ICON if state else FLOW_OFF_ICON,
         "flame_state": FLAME_ICON if state else IDLE_ICON,
         "slave_boiler_state": FLAME_ICON if state else IDLE_ICON,
-        "plugwise_notification": NOTIFICATION_ICON
-        if state
-        else NO_NOTIFICATION_ICON,
+        "plugwise_notification": NOTIFICATION_ICON if state else NO_NOTIFICATION_ICON,
     }
     return selector.get(arg)
 
