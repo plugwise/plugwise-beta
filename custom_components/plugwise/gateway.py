@@ -189,6 +189,7 @@ class SmileGateway(CoordinatorEntity):
         entry = coordinator.config_entry
         gw_id = coordinator.data[0]["gateway_id"]
         self._attr_available = super().available
+        self._attr_device_class = description.device_class
         self._attr_device_info = DeviceInfo(
             configuration_url=f"http://{entry.data[CONF_HOST]}",
             identifiers={(DOMAIN, dev_id)},

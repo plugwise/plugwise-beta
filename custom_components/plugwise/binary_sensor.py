@@ -156,7 +156,6 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
             coordinator.data, dev_id, bs_data.get(ATTR_ID)
         )
 
-        self._attr_device_class = description.device_class
         self._attr_entity_registry_enabled_default = (
             description.entity_registry_enabled_default
         )
