@@ -91,14 +91,15 @@ class PwThermostat(SmileGateway, ClimateEntity):
         min_temp,
     ):
         """Set up the PwThermostat."""
+        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             description,
             dev_id,
-            coordinator.data[1][dev_id].get(PW_MODEL),
+            _cdata.get(PW_MODEL),
             description.name,
-            coordinator.data[1][dev_id].get(VENDOR),
-            coordinator.data[1][dev_id].get(FW),
+            _cdata.get(VENDOR),
+            _cdata.get(FW),
         )
 
         self._gw_thermostat = GWThermostat(coordinator.data, dev_id)
@@ -116,13 +117,13 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._attr_target_temperature = None
         self._attr_temperature_unit = TEMP_CELSIUS
         self._attr_unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
-        self._cdata = coordinator.data
-        self._loc_id = self._cdata[1][dev_id].get(PW_LOCATION)
+        self._cor_data = coordinator.data
+        self._loc_id = _cdata.get(PW_LOCATION)
 
     @property
     def hvac_action(self):
         """Return the current action."""
-        if self._cdata[0]["single_master_thermostat"]:
+        if self._cor_data[0]["single_master_thermostat"]:
             if self._gw_thermostat.heating_state:
                 return CURRENT_HVAC_HEAT
             if self._gw_thermostat.cooling_state:
