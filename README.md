@@ -31,7 +31,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 ## NEW Nov 2021 [v0.19.5]
 - Refactor Smile-related code:
   - Implement Core `EntityDescription`-updates including `entity_category`.
-- Link to plugwise v0.15.1 - remove all previously added Core-related functionality.
+- Link to plugwise v0.15.2 - https://github.com/plugwise/python-plugwise/releases/tag/v0.15.2
 - Move testfixtures into tests/components/plugwise directory.
 - Various test-related fixes.
 
