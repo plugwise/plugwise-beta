@@ -100,3 +100,5 @@ class GwSensor(SmileGateway, SensorEntity):
             self._attr_icon = icon_selector(self._attr_native_value, None)
 
         self.async_write_ha_state()
+
+# PLACEHOLDER for class USBSensor()

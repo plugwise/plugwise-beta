@@ -112,3 +112,5 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
                 )
 
         self.async_write_ha_state()
+
+# PLACEHOLDER for class USBBinarySensor()
