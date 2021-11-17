@@ -4,7 +4,7 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 1
+  CACHE_VERSION: 3
   DEFAULT_PYTHON: 3.9
 
 on:
@@ -107,11 +107,10 @@ jobs:
     - name: Remove current code and tests
       run: |
         cd ~/ha-core
-        rm -r homeassistant/components/plugwise tests/fixtures/plugwise tests/components/plugwise
+        rm -r homeassistant/components/plugwise tests/components/plugwise
     - name: Copy code and tests
       run: |
         cp -r custom_components/plugwise ~/ha-core/homeassistant/components/
-        cp -r tests/fixtures/plugwise ~/ha-core/tests/fixtures/
         cp -r tests/components/plugwise ~/ha-core/tests/components/
     - name: Prepare requirements (be)for(e) plugwise
       run: |
@@ -119,6 +118,7 @@ jobs:
         . venv/bin/activate
         mkdir ~/tmp
         egrep -i "pyroute2|sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ~/tmp/requirements_test_extra.txt
+        pip install -q -r requirements_test.txt
         pip install -q -r ~/tmp/requirements_test_extra.txt
         pip install -q $(grep require ~/work/plugwise-beta/plugwise-beta/custom_components/plugwise/manifest.json | cut -f 4 -d '"')
     - name: Run tests
@@ -174,11 +174,10 @@ jobs:
     - name: Remove current code and tests
       run: |
         cd ~/ha-core
-        rm -r homeassistant/components/plugwise tests/fixtures/plugwise tests/components/plugwise
+        rm -r homeassistant/components/plugwise tests/components/plugwise
     - name: Copy code and tests
       run: |
         cp -r custom_components/plugwise ~/ha-core/homeassistant/components/
-        cp -r tests/fixtures/plugwise ~/ha-core/tests/fixtures/
         cp -r tests/components/plugwise ~/ha-core/tests/components/
     - name: Prepare requirements (be)for(e) plugwise
       run: |

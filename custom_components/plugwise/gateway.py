@@ -40,6 +40,7 @@ from .const import (
     UNDO_UPDATE_LISTENER,
 )
 from .coordinator import PWDataUpdateCoordinator
+from .models import PlugwiseEntityDescription
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -172,21 +173,32 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
 class SmileGateway(CoordinatorEntity):
     """Represent Smile Gateway."""
 
-    def __init__(self, coordinator, dev_id, name, model, vendor, fw):
+    def __init__(
+        self,
+        coordinator,
+        description: PlugwiseEntityDescription,
+        dev_id,
+        model,
+        name,
+        vendor,
+        fw,
+    ) -> None:
         """Initialise the gateway."""
         super().__init__(coordinator)
 
         entry = coordinator.config_entry
         gw_id = coordinator.data[0]["gateway_id"]
         self._attr_available = super().available
+        self._attr_device_class = description.device_class
         self._attr_device_info = DeviceInfo(
             configuration_url=f"http://{entry.data[CONF_HOST]}",
             identifiers={(DOMAIN, dev_id)},
-            name=f"Smile {coordinator.data[0]['smile_name']}",
             manufacturer=vendor,
             model=model,
+            name=f"Smile {coordinator.data[0]['smile_name']}",
             sw_version=fw,
         )
+        self.entity_description = description
 
         if dev_id != gw_id:
             self._attr_device_info.update(

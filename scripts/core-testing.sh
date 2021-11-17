@@ -66,12 +66,11 @@ fi
 echo ""
 echo "Cleaning existing plugwise from HA core"
 echo ""
-rm -r homeassistant/components/plugwise tests/fixtures/plugwise tests/components/plugwise
+rm -r homeassistant/components/plugwise tests/components/plugwise
 echo ""
 echo "Overwriting with plugwise-beta"
 echo ""
 cp -r ../custom_components/plugwise ./homeassistant/components/
-cp -r ../tests/fixtures/plugwise ./tests/fixtures/
 cp -r ../tests/components/plugwise ./tests/components/
 echo ""
 echo "Activating venv and installing selected test modules (zeroconf,pyserial, etc)"
@@ -93,7 +92,6 @@ echo ""
 echo "Copy back modified files ..."
 echo ""
 cp -r ./homeassistant/components/plugwise ../custom_components/
-cp -r ./tests/fixtures/plugwise ../tests/fixtures/
 cp -r ./tests/components/plugwise ../tests/components/
 deactivate
 

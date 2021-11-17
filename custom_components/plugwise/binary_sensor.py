@@ -5,15 +5,13 @@ import logging
 
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import ATTR_DEVICE_CLASS, ATTR_ID, ATTR_NAME
+from homeassistant.const import ATTR_ID, ATTR_NAME
 from homeassistant.core import callback
 from homeassistant.helpers import entity_platform
 
-from plugwise.entities import GWBinarySensor
 from plugwise.nodes import PlugwiseNode
 
 from .const import (
-    ATTR_ENABLED_DEFAULT,
     ATTR_SCAN_DAYLIGHT_MODE,
     ATTR_SCAN_RESET_TIMER,
     ATTR_SCAN_SENSITIVITY_MODE,
@@ -32,6 +30,7 @@ from .const import (
     SERVICE_USB_SCAN_CONFIG_SCHEMA,
     SERVICE_USB_SED_BATTERY_CONFIG,
     SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
+    SMILE,
     STICK,
     USB,
     USB_MOTION_ID,
@@ -39,6 +38,7 @@ from .const import (
 )
 from .gateway import SmileGateway
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
+from .smile_helpers import GWBinarySensor
 from .usb import PlugwiseUSBEntity
 
 PARALLEL_UPDATES = 0
@@ -110,16 +110,24 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 continue
 
             for data in coordinator.data[1][dev_id]["binary_sensors"]:
-                entities.append(
-                    GwBinarySensor(
-                        coordinator,
-                        dev_id,
-                        coordinator.data[1][dev_id].get(ATTR_NAME),
-                        data,
-                    )
-                )
+                for description in PW_BINARY_SENSOR_TYPES:
+                    if (
+                        description.plugwise_api == SMILE
+                        and description.key == data.get(ATTR_ID)
+                    ):
+                        entities.extend(
+                            [
+                                GwBinarySensor(
+                                    coordinator,
+                                    description,
+                                    dev_id,
+                                    data,
+                                )
+                            ]
+                        )
 
-    async_add_entities(entities, True)
+    if entities:
+        async_add_entities(entities, True)
 
 
 class GwBinarySensor(SmileGateway, BinarySensorEntity):
@@ -128,30 +136,35 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
     def __init__(
         self,
         coordinator,
+        description: PlugwiseBinarySensorEntityDescription,
         dev_id,
-        name,
         bs_data,
     ):
         """Initialise the binary_sensor."""
+        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
+            description,
             dev_id,
-            name,
-            coordinator.data[1][dev_id].get(PW_MODEL),
-            coordinator.data[1][dev_id].get(VENDOR),
-            coordinator.data[1][dev_id].get(FW),
+            _cdata.get(PW_MODEL),
+            _cdata.get(ATTR_NAME),
+            _cdata.get(VENDOR),
+            _cdata.get(FW),
         )
 
         self._gw_b_sensor = GWBinarySensor(
             coordinator.data, dev_id, bs_data.get(ATTR_ID)
         )
-        self._attr_entity_registry_enabled_default = bs_data.get(ATTR_ENABLED_DEFAULT)
+
+        self._attr_entity_registry_enabled_default = (
+            description.entity_registry_enabled_default
+        )
         self._attr_extra_state_attributes = None
         self._attr_icon = None
         self._attr_is_on = False
-        self._attr_name = f"{name} {bs_data.get(ATTR_NAME)}"
-        self._attr_device_class = bs_data.get(ATTR_DEVICE_CLASS)
-        self._attr_unique_id = f"{dev_id}-{bs_data.get(ATTR_ID)}"
+        self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
+        self._attr_should_poll = self.entity_description.should_poll
+        self._attr_unique_id = f"{dev_id}-{description.key}"
 
     @callback
     def _async_process_data(self):

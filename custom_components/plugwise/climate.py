@@ -2,10 +2,9 @@
 
 import logging
 
-from plugwise.entities import GWThermostat
 from plugwise.exceptions import PlugwiseException
 
-from homeassistant.components.climate import ClimateEntity
+from homeassistant.components.climate import ClimateEntity, ClimateEntityDescription
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
@@ -40,6 +39,7 @@ from .const import (
     VENDOR,
 )
 from .gateway import SmileGateway
+from .smile_helpers import GWThermostat
 
 HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO, HVAC_MODE_OFF]
 HVAC_MODES_HEAT_COOL = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO, HVAC_MODE_OFF]
@@ -62,8 +62,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         thermostat = PwThermostat(
             api,
             coordinator,
+            ClimateEntityDescription(
+                key=f"{dev_id}_thermostat",
+                name=coordinator.data[1][dev_id].get(ATTR_NAME),
+            ),
             dev_id,
-            coordinator.data[1][dev_id].get(ATTR_NAME),
             DEFAULT_MAX_TEMP,
             DEFAULT_MIN_TEMP,
         )
@@ -82,38 +85,45 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self,
         api,
         coordinator,
+        description: ClimateEntityDescription,
         dev_id,
-        name,
         max_temp,
         min_temp,
     ):
         """Set up the PwThermostat."""
+        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
+            description,
             dev_id,
-            name,
-            coordinator.data[1][dev_id].get(PW_MODEL),
-            coordinator.data[1][dev_id].get(VENDOR),
-            coordinator.data[1][dev_id].get(FW),
+            _cdata.get(PW_MODEL),
+            description.name,
+            _cdata.get(VENDOR),
+            _cdata.get(FW),
         )
 
+        self._gw_thermostat = GWThermostat(coordinator.data, dev_id)
+
         self._api = api
+        self._attr_current_temperature = None
         self._attr_device_class = None
-        self._attr_name = name
+        self._attr_hvac_mode = None
+        self._attr_max_temp = max_temp
+        self._attr_min_temp = min_temp
+        self._attr_name = description.name
+        self._attr_preset_mode = None
+        self._attr_preset_modes = None
+        self._attr_supported_features = SUPPORT_FLAGS
+        self._attr_target_temperature = None
+        self._attr_temperature_unit = TEMP_CELSIUS
         self._attr_unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
-        self._cdata = coordinator.data
-        self._gw_thermostat = GWThermostat(self._cdata, dev_id)
-        self._hvac_mode = None
-        self._loc_id = self._cdata[1][dev_id].get(PW_LOCATION)
-        self._max_temp = max_temp
-        self._min_temp = min_temp
-        self._preset_mode = None
-        self._setpoint = None
+        self._cor_data = coordinator.data
+        self._loc_id = _cdata.get(PW_LOCATION)
 
     @property
     def hvac_action(self):
         """Return the current action."""
-        if self._cdata[0]["single_master_thermostat"]:
+        if self._cor_data[0]["single_master_thermostat"]:
             if self._gw_thermostat.heating_state:
                 return CURRENT_HVAC_HEAT
             if self._gw_thermostat.cooling_state:
@@ -128,67 +138,22 @@ class PwThermostat(SmileGateway, ClimateEntity):
         return CURRENT_HVAC_IDLE
 
     @property
-    def hvac_mode(self):
-        """Return current active hvac state."""
-        return self._hvac_mode
-
-    @property
     def hvac_modes(self):
         """Return the available hvac modes list."""
         if self._gw_thermostat.compressor_state is not None:
             return HVAC_MODES_HEAT_COOL
         return HVAC_MODES_HEAT_ONLY
 
-    @property
-    def supported_features(self):
-        """Return the list of supported features."""
-        return SUPPORT_FLAGS
-
-    @property
-    def preset_modes(self):
-        """Return the available preset modes list."""
-        return self._gw_thermostat.preset_modes
-
-    @property
-    def target_temperature(self):
-        """Return the target_temperature."""
-        return self._setpoint
-
-    @property
-    def preset_mode(self):
-        """Return the active preset."""
-        return self._preset_mode
-
-    @property
-    def current_temperature(self):
-        """Return the current room temperature."""
-        return self._gw_thermostat.current_temperature
-
-    @property
-    def min_temp(self):
-        """Return the minimal temperature possible to set."""
-        return self._min_temp
-
-    @property
-    def max_temp(self):
-        """Return the maximum temperature possible to set."""
-        return self._max_temp
-
-    @property
-    def temperature_unit(self):
-        """Return the unit of measured temperature."""
-        return TEMP_CELSIUS
-
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if (temperature is not None) and (
-            self._min_temp < temperature < self._max_temp
+            self._attr_min_temp < temperature < self._attr_max_temp
         ):
             _LOGGER.debug("Set temp to %sºC", temperature)
             try:
                 await self._api.set_temperature(self._loc_id, temperature)
-                self._setpoint = temperature
+                self._attr_target_temperature = temperature
                 self.async_write_ha_state()
             except PlugwiseException:
                 _LOGGER.error("Error while communicating to device")
@@ -204,7 +169,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
             try:
                 schedule_temp = self._gw_thermostat.schedule_temperature
                 await self._api.set_temperature(self._loc_id, schedule_temp)
-                self._setpoint = schedule_temp
+                self._attr_target_temperature = schedule_temp
             except PlugwiseException:
                 _LOGGER.error("Error while communicating to device")
 
@@ -217,22 +182,22 @@ class PwThermostat(SmileGateway, ClimateEntity):
             if hvac_mode == HVAC_MODE_OFF:
                 preset_mode = PRESET_AWAY
                 await self._api.set_preset(self._loc_id, preset_mode)
-                self._preset_mode = preset_mode
-                self._setpoint = self._gw_thermostat.presets.get(
+                self._attr_preset_mode = preset_mode
+                self._attr_target_temperature = self._gw_thermostat.presets.get(
                     preset_mode, PRESET_NONE
                 )[0]
             if (
                 hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_HEAT_COOL]
-                and self._preset_mode == PRESET_AWAY
+                and self._attr_preset_mode == PRESET_AWAY
             ):
                 preset_mode = PRESET_HOME
                 await self._api.set_preset(self._loc_id, preset_mode)
-                self._preset_mode = preset_mode
-                self._setpoint = self._gw_thermostat.presets.get(
+                self._attr_preset_mode = preset_mode
+                self._attr_target_temperature = self._gw_thermostat.presets.get(
                     preset_mode, PRESET_NONE
                 )[0]
 
-            self._hvac_mode = hvac_mode
+            self._attr_hvac_mode = hvac_mode
             self.async_write_ha_state()
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
@@ -241,10 +206,10 @@ class PwThermostat(SmileGateway, ClimateEntity):
         """Set the preset mode."""
         try:
             await self._api.set_preset(self._loc_id, preset_mode)
-            self._preset_mode = preset_mode
-            self._setpoint = self._gw_thermostat.presets.get(preset_mode, PRESET_NONE)[
-                0
-            ]
+            self._attr_preset_mode = preset_mode
+            self._attr_target_temperature = self._gw_thermostat.presets.get(
+                preset_mode, PRESET_NONE
+            )[0]
             self.async_write_ha_state()
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
@@ -253,9 +218,12 @@ class PwThermostat(SmileGateway, ClimateEntity):
     def _async_process_data(self):
         """Update the data for this climate device."""
         self._gw_thermostat.update_data()
+
+        self._attr_current_temperature = self._gw_thermostat.current_temperature
         self._attr_extra_state_attributes = self._gw_thermostat.extra_state_attributes
-        self._hvac_mode = self._gw_thermostat.hvac_mode
-        self._preset_mode = self._gw_thermostat.preset_mode
-        self._setpoint = self._gw_thermostat.target_temperature
+        self._attr_hvac_mode = self._gw_thermostat.hvac_mode
+        self._attr_preset_mode = self._gw_thermostat.preset_mode
+        self._attr_preset_modes = self._gw_thermostat.preset_modes
+        self._attr_target_temperature = self._gw_thermostat.target_temperature
 
         self.async_write_ha_state()
