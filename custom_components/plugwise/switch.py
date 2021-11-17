@@ -39,40 +39,8 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile switches from a config entry."""
-    if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
-        return await async_setup_entry_usb(hass, config_entry, async_add_entities)
-    # Considered default and for earlier setups without usb/network config_flow
+    # PLACEHOLDER for async_setup_entry_usb()
     return await async_setup_entry_gateway(hass, config_entry, async_add_entities)
-
-
-async def async_setup_entry_usb(hass, config_entry, async_add_entities):
-    """Set up the USB switches from a config entry."""
-    api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
-
-    async def async_add_switches(mac: str):
-        """Add plugwise switches."""
-        entities = []
-        entities.extend(
-            [
-                USBSwitch(api_stick.devices[mac], description)
-                for description in PW_SWITCH_TYPES
-                if description.plugwise_api == STICK
-                and description.key in api_stick.devices[mac].features
-            ]
-        )
-        if entities:
-            async_add_entities(entities)
-
-    for mac in hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN]:
-        hass.async_create_task(async_add_switches(mac))
-
-    def discoved_device(mac: str):
-        """Add switches for newly discovered device."""
-        hass.async_create_task(async_add_switches(mac))
-
-    # Listen for discovered nodes
-    api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
-
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     """Set up the Smile switches from a config entry."""
@@ -185,24 +153,4 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self.async_write_ha_state()
 
 
-class USBSwitch(PlugwiseUSBEntity, SwitchEntity):
-    """Representation of a Stick Node switch."""
-
-    def __init__(
-        self, node: PlugwiseNode, description: PlugwiseSwitchEntityDescription
-    ) -> None:
-        """Initialize a switch entity."""
-        super().__init__(node, description)
-
-    @property
-    def is_on(self) -> bool:
-        """Return true if the switch is on."""
-        return getattr(self._node, self.entity_description.state_request_method)
-
-    def turn_off(self, **kwargs):
-        """Instruct the switch to turn off."""
-        setattr(self._node, self.entity_description.state_request_method, False)
-
-    def turn_on(self, **kwargs):
-        """Instruct the switch to turn on."""
-        setattr(self._node, self.entity_description.state_request_method, True)
+# PLACEHOLDER for class USBSwitch():
