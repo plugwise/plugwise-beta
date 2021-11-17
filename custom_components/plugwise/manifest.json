@@ -1,10 +1,10 @@
 {
   "domain": "plugwise",
-  "name": "Plugwise Beta",
-  "version": "0.19.5",
-  "documentation": "https://github.com/plugwise/plugwise-beta",
+  "name": "Plugwise",
+  "documentation": "https://www.home-assistant.io/integrations/plugwise",
   "requirements": ["plugwise==0.15.2"],
-  "codeowners": ["@CoMPaTech","@bouwew","@brefra"],
-  "iot_class": "local_polling",
-  "config_flow": true
+  "codeowners": ["@CoMPaTech", "@bouwew", "@brefra"],
+  "zeroconf": ["_plugwise._tcp.local."],
+  "config_flow": true,
+  "iot_class": "local_polling"
 }
