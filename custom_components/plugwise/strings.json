@@ -1,10 +1,6 @@
 {
   "options": {
     "step": {
-      "none": {
-        "title": "No Options available",
-        "description": "This Integration does not provide any Options"
-      },
       "init": {
         "description": "Adjust Smile/Stretch Options",
         "data": {
@@ -28,30 +24,15 @@
         "data": {
           "password": "ID",
           "username" : "Username",
-          "host": "IP-address",
-          "port": "Port number"
+          "host": "[%key:common::config_flow::data::ip%]",
+          "port": "[%key:common::config_flow::data::port%]",
         }
       },
-      "user_usb": {
-        "title": "Connect to Plugwise Stick",
-        "description": "Please enter:",
-        "data": {
-          "usb_path": "[%key:common::config_flow::data::usb_path%]"
-        }
-      },
-      "manual_path": {
-        "data": {
-          "usb_path": "[%key:common::config_flow::data::usb_path%]"
-        }
-      }
     },
     "error": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
-      "invalid_auth": "Invalid authentication, check the 8 characters of your ID",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%], check the 8 characters of your ID",
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "network_down": "Plugwise Zigbee network is down",
-      "network_timeout": "Network communication timeout",
-      "stick_init": "Initialization of Plugwise USB-stick failed",
       "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {
