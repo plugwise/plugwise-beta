@@ -73,22 +73,17 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     try:
         connected = await api.connect()
         if not connected:
-            _LOGGER.error("Unable to connect to the Smile/Stretch")
+            _LOGGER.error("Unable to connect to the Plugwise %s", api.smile_name)
             raise ConfigEntryNotReady
     except InvalidAuthentication:
         _LOGGER.error("Invalid username or Smile ID")
         return False
     except PlugwiseException as err:
-        _LOGGER.error("Error while communicating to the Smile/Stretch")
+        _LOGGER.error("Error while communicating to the Plugwise %s", api.smile_name)
         raise ConfigEntryNotReady from err
     except asyncio.TimeoutError as err:
-        _LOGGER.error("Timeout while connecting to the Smile/Stretch")
+        _LOGGER.error("Timeout while connecting to the Plugwise %s", api.smile_name)
         raise ConfigEntryNotReady from err
-
-    # Migrate to a valid unique_id when needed
-    if entry.unique_id is None:
-        if api.smile_version[0] != "1.8.0":
-            hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     update_interval = timedelta(
         seconds=entry.options.get(
@@ -110,35 +105,16 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 
-    _LOGGER.debug("Gateway is %s", coordinator.data[0]["gateway_id"])
-    _LOGGER.debug("Gateway software version is %s", api.smile_version[0])
-    _LOGGER.debug("Appliances are %s", coordinator.data[1])
     s_m_thermostat = coordinator.data[0]["single_master_thermostat"]
-    _LOGGER.debug("Single master thermostat = %s", s_m_thermostat)
 
     platforms = GATEWAY_PLATFORMS
     if s_m_thermostat is None:
         platforms = SENSOR_PLATFORMS
 
-    async def delete_notification(self):
-        """Service: delete the Plugwise Notification."""
-        _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
-        try:
-            deleted = await api.delete_notification()
-            _LOGGER.debug("PW Notification deleted: %s", deleted)
-        except PlugwiseException:
-            _LOGGER.debug(
-                "Failed to delete the Plugwise Notification for %s", api.smile_name
-            )
-
     for component in platforms:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
-        if component == CLIMATE_DOMAIN:
-            hass.services.async_register(
-                DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
-            )
 
     return True
 
