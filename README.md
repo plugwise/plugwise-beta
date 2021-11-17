@@ -36,7 +36,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 - Various test-related fixes.
 
 ## Nov 2021 [v0.19.0]
-- Support new Core 2021.11 functionalit: implement Visit Device button
+- Support new Core 2021.11 functionality: implement Visit Device button
 - Bug fix: handle changing Smile IP (Core PR #58819)
 
 ## Oct 2021 [v0.18.2]
