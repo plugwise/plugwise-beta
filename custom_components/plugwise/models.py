@@ -4,7 +4,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_MOTION,
     BinarySensorEntityDescription,
 )
 from homeassistant.components.humidifier.const import ATTR_HUMIDITY
@@ -15,7 +14,6 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
 )
 from homeassistant.components.switch import (
-    DEVICE_CLASS_OUTLET,
     DEVICE_CLASS_SWITCH,
     SwitchEntityDescription,
 )
@@ -27,7 +25,6 @@ from homeassistant.const import (
     DEVICE_CLASS_ILLUMINANCE,
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_PRESSURE,
-    DEVICE_CLASS_SIGNAL_STRENGTH,
     DEVICE_CLASS_TEMPERATURE,
     ENERGY_KILO_WATT_HOUR,
     ENERGY_WATT_HOUR,
@@ -37,10 +34,8 @@ from homeassistant.const import (
     PERCENTAGE,
     POWER_WATT,
     PRESSURE_BAR,
-    SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     TEMP_CELSIUS,
     TEMP_KELVIN,
-    TIME_MILLISECONDS,
     VOLUME_CUBIC_METERS,
 )
 from homeassistant.helpers.entity import EntityDescription
@@ -83,12 +78,9 @@ from .const import (
     RETURN_TEMP,
     SLAVE_BOILER_STATE,
     SMILE,
-    STICK,
     TARGET_TEMP,
     TEMP_DIFF,
     UNIT_LUMEN,
-    USB_MOTION_ID,
-    USB_RELAY_ID,
     VALVE_POS,
     WATER_PRESSURE,
     WATER_TEMP,
@@ -139,115 +131,6 @@ class PlugwiseBinarySensorEntityDescription(
 
 
 PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
-    PlugwiseSensorEntityDescription(
-        key="power_1s",
-        plugwise_api=STICK,
-        name="Power usage",
-        device_class=DEVICE_CLASS_POWER,
-        should_poll=False,
-        native_unit_of_measurement=POWER_WATT,
-        state_request_method="current_power_usage",
-    ),
-    PlugwiseSensorEntityDescription(
-        key="energy_consumption_today",
-        plugwise_api=STICK,
-        name="Energy consumption today",
-        device_class=DEVICE_CLASS_ENERGY,
-        should_poll=False,
-        state_class=STATE_CLASS_TOTAL_INCREASING,
-        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-        state_request_method="energy_consumption_today",
-    ),
-    PlugwiseSensorEntityDescription(
-        key="ping",
-        plugwise_api=STICK,
-        name="Ping roundtrip",
-        icon="mdi:speedometer",
-        should_poll=False,
-        native_unit_of_measurement=TIME_MILLISECONDS,
-        state_request_method="ping",
-        entity_registry_enabled_default=False,
-    ),
-    PlugwiseSensorEntityDescription(
-        key="power_8s",
-        plugwise_api=STICK,
-        name="Power usage 8 seconds",
-        device_class=DEVICE_CLASS_POWER,
-        should_poll=False,
-        native_unit_of_measurement=POWER_WATT,
-        state_request_method="current_power_usage_8_sec",
-        entity_registry_enabled_default=False,
-    ),
-    PlugwiseSensorEntityDescription(
-        key="RSSI_in",
-        plugwise_api=STICK,
-        name="Inbound RSSI",
-        device_class=DEVICE_CLASS_SIGNAL_STRENGTH,
-        native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-        should_poll=False,
-        state_request_method="rssi_in",
-        entity_registry_enabled_default=False,
-    ),
-    PlugwiseSensorEntityDescription(
-        key="RSSI_out",
-        plugwise_api=STICK,
-        name="Outbound RSSI",
-        device_class=DEVICE_CLASS_SIGNAL_STRENGTH,
-        native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-        should_poll=False,
-        state_request_method="rssi_out",
-        entity_registry_enabled_default=False,
-    ),
-    PlugwiseSensorEntityDescription(
-        key="power_con_cur_hour",
-        plugwise_api=STICK,
-        name="Power consumption current hour",
-        device_class=DEVICE_CLASS_POWER,
-        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-        should_poll=False,
-        state_request_method="power_consumption_current_hour",
-        entity_registry_enabled_default=False,
-    ),
-    PlugwiseSensorEntityDescription(
-        key="power_prod_cur_hour",
-        plugwise_api=STICK,
-        name="Power production current hour",
-        device_class=DEVICE_CLASS_POWER,
-        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-        should_poll=False,
-        state_request_method="power_production_current_hour",
-        entity_registry_enabled_default=False,
-    ),
-    PlugwiseSensorEntityDescription(
-        key="power_con_today",
-        plugwise_api=STICK,
-        name="Power consumption today",
-        device_class=DEVICE_CLASS_POWER,
-        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-        should_poll=False,
-        state_request_method="power_consumption_today",
-        entity_registry_enabled_default=False,
-    ),
-    PlugwiseSensorEntityDescription(
-        key="power_con_prev_hour",
-        plugwise_api=STICK,
-        name="Power consumption previous hour",
-        device_class=DEVICE_CLASS_POWER,
-        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-        should_poll=False,
-        state_request_method="power_consumption_previous_hour",
-        entity_registry_enabled_default=False,
-    ),
-    PlugwiseSensorEntityDescription(
-        key="power_con_yesterday",
-        plugwise_api=STICK,
-        name="Power consumption yesterday",
-        device_class=DEVICE_CLASS_POWER,
-        native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-        should_poll=False,
-        state_request_method="power_consumption_yesterday",
-        entity_registry_enabled_default=False,
-    ),
     PlugwiseSensorEntityDescription(
         key=BATTERY,
         plugwise_api=SMILE,
@@ -529,14 +412,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
 
 PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
-        key=USB_RELAY_ID,
-        plugwise_api=STICK,
-        device_class=DEVICE_CLASS_OUTLET,
-        name="Relay state",
-        should_poll=False,
-        state_request_method="relay_state",
-    ),
-    PlugwiseSwitchEntityDescription(
         key=DHW_COMF_MODE,
         plugwise_api=SMILE,
         device_class=DEVICE_CLASS_SWITCH,
@@ -561,14 +436,6 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
 )
 
 PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
-    PlugwiseBinarySensorEntityDescription(
-        key=USB_MOTION_ID,
-        plugwise_api=STICK,
-        name="Motion",
-        device_class=DEVICE_CLASS_MOTION,
-        should_poll=False,
-        state_request_method="motion",
-    ),
     PlugwiseBinarySensorEntityDescription(
         key=DHW_STATE,
         plugwise_api=SMILE,
