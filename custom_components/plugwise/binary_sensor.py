@@ -22,8 +22,6 @@ from .smile_helpers import GWBinarySensor
 
 PARALLEL_UPDATES = 0
 
-_LOGGER = logging.getLogger(__name__)
-
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile switches from a config entry."""
