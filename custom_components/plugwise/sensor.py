@@ -1,8 +1,6 @@
 """Plugwise Sensor component for Home Assistant."""
 from __future__ import annotations
 
-import logging
-
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import ATTR_ID, ATTR_NAME, ATTR_STATE
@@ -22,8 +20,6 @@ from .smile_helpers import icon_selector
 
 PARALLEL_UPDATES = 0
 
-_LOGGER = logging.getLogger(__name__)
-
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile switches from a config entry."""
@@ -32,7 +28,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     """Set up the Smile sensors from a config entry."""
-    _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
