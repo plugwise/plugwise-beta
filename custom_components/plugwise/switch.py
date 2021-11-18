@@ -70,7 +70,6 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                 )
                             ]
                         )
-                        _LOGGER.debug("Add %s switch", description.key)
 
     if entities:
         async_add_entities(entities, True)
@@ -122,7 +121,6 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
-        _LOGGER.debug("Turn switch.%s on", self._attr_name)
         try:
             state_on = await self._api.set_switch_state(
                 self._dev_id, self._members, self._switch, STATE_ON
@@ -130,12 +128,12 @@ class GwSwitch(SmileGateway, SwitchEntity):
             if state_on:
                 self._attr_is_on = True
                 self.async_write_ha_state()
+                _LOGGER.debug("Turn Plugwise switch.%s on", self._attr_name)
         except PlugwiseException:
-            _LOGGER.error("Error while communicating to device")
+            _LOGGER.error("Error: failed to turn Plugwise switch.%s on", self._attr_name)
 
     async def async_turn_off(self, **kwargs):
         """Turn the device off."""
-        _LOGGER.debug("Turn switch.%s off", self._attr_name)
         try:
             state_off = await self._api.set_switch_state(
                 self._dev_id, self._members, self._switch, STATE_OFF
@@ -143,8 +141,9 @@ class GwSwitch(SmileGateway, SwitchEntity):
             if state_off:
                 self._attr_is_on = False
                 self.async_write_ha_state()
+                _LOGGER.debug("Turn Plugwise switch.%s on", self._attr_name)
         except PlugwiseException:
-            _LOGGER.error("Error while communicating to device")
+            _LOGGER.error("Error: failed to turn Plugwise switch.%s off", self._attr_name)
 
     @callback
     def _async_process_data(self):
