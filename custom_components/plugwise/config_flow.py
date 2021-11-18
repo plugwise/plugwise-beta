@@ -121,8 +121,6 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.discovery_info[CONF_USERNAME] = STRETCH_USERNAME
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
-        _LOGGER.debug("Discovered: %s", _properties)
-        _LOGGER.debug("Plugwise Smile discovered with %s", _properties)
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
 
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
