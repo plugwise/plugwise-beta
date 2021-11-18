@@ -71,9 +71,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             DEFAULT_MIN_TEMP,
         )
         entities.append(thermostat)
-        _LOGGER.info(
-            "Added climate %s entity", coordinator.data[1][dev_id].get(ATTR_NAME)
-        )
 
     async_add_entities(entities, True)
 
@@ -155,6 +152,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 await self._api.set_temperature(self._loc_id, temperature)
                 self._attr_target_temperature = temperature
                 self.async_write_ha_state()
+                _LOGGER.debug("Set temperature to: %s", temperature)
             except PlugwiseException:
                 _LOGGER.error("Error while communicating to device")
         else:
@@ -162,7 +160,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set the hvac mode, options are 'off', 'heat'/'heat_cool' and 'auto'."""
-        _LOGGER.debug("Set hvac_mode to: %s", hvac_mode)
         state = SCHEDULE_OFF
         if hvac_mode == HVAC_MODE_AUTO:
             state = SCHEDULE_ON
@@ -199,6 +196,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
             self._attr_hvac_mode = hvac_mode
             self.async_write_ha_state()
+            _LOGGER.debug("Set hvac_mode to: %s", hvac_mode)
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
@@ -211,6 +209,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 preset_mode, PRESET_NONE
             )[0]
             self.async_write_ha_state()
+            _LOGGER.debug("Set preset_mode to: %s", preset_mode)
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
