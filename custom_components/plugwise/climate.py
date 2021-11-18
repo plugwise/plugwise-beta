@@ -147,12 +147,11 @@ class PwThermostat(SmileGateway, ClimateEntity):
         if (temperature is not None) and (
             self._attr_min_temp < temperature < self._attr_max_temp
         ):
-            _LOGGER.debug("Set temp to %sºC", temperature)
             try:
                 await self._api.set_temperature(self._loc_id, temperature)
                 self._attr_target_temperature = temperature
                 self.async_write_ha_state()
-                _LOGGER.debug("Set temperature to: %s", temperature)
+                _LOGGER.debug("Set temperature to %s ºC ", temperature)
             except PlugwiseException:
                 _LOGGER.error("Error while communicating to device")
         else:
@@ -196,7 +195,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
             self._attr_hvac_mode = hvac_mode
             self.async_write_ha_state()
-            _LOGGER.debug("Set hvac_mode to: %s", hvac_mode)
+            _LOGGER.debug("Set hvac_mode to %s", hvac_mode)
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
@@ -209,7 +208,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 preset_mode, PRESET_NONE
             )[0]
             self.async_write_ha_state()
-            _LOGGER.debug("Set preset_mode to: %s", preset_mode)
+            _LOGGER.debug("Set preset_mode to %s", preset_mode)
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
