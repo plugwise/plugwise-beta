@@ -145,18 +145,9 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
-    unload_ok = all(
-        await asyncio.gather(
-            *(
-                hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in GATEWAY_PLATFORMS
-            )
-        )
-    )
-
-    hass.data[DOMAIN][entry.entry_id][UNDO_UPDATE_LISTENER]()
-
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, GATEWAY_PLATFORMS)
     if unload_ok:
+        hass.data[DOMAIN][entry.entry_id][UNDO_UPDATE_LISTENER]()
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
@@ -164,10 +155,7 @@ async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
 
 async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
-    coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
-    coordinator.update_interval = timedelta(
-        seconds=entry.options.get(CONF_SCAN_INTERVAL)
-    )
+    await hass.config_entries.async_reload(entry.entry_id)
 
 
 class SmileGateway(CoordinatorEntity):
