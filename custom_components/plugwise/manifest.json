@@ -1,7 +1,7 @@
 {
   "domain": "plugwise",
   "name": "Plugwise Beta",
-  "version": "0.19.5",
+  "version": "0.19.6",
   "documentation": "https://github.com/plugwise/plugwise-beta",
   "requirements": ["plugwise==0.15.3"],
   "codeowners": ["@CoMPaTech","@bouwew","@brefra"],
