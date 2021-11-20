@@ -27,7 +27,7 @@
         "description": "Please enter:",
         "data": {
           "password": "ID",
-          "username" : "Username",
+          "username": "Username",
           "host": "IP-address",
           "port": "Port number"
         }

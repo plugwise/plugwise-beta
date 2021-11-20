@@ -23,7 +23,7 @@
         "description": "Please enter:",
         "data": {
           "password": "ID",
-          "username" : "Username",
+          "username": "Username",
           "host": "[%key:common::config_flow::data::ip%]",
           "port": "[%key:common::config_flow::data::port%]"
         }
