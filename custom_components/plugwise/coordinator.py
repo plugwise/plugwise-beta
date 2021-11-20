@@ -30,7 +30,11 @@ class PWDataUpdateCoordinator(DataUpdateCoordinator):
                 self._data = await self._api.async_update()
                 _LOGGER.debug("Plugwise %s updated", self._api.smile_name)
         except XMLDataMissingError as err:
-            raise UpdateFailed(f"Updating Smile failed, expected XML data for {self._api.smile_name}") from err
+            raise UpdateFailed(
+                f"Updating Smile failed, expected XML data for {self._api.smile_name}"
+            ) from err
         except PlugwiseException as err:
-            raise UpdateFailed(f"Updating failed for Plugwise {self._api.smile_name}") from err
+            raise UpdateFailed(
+                f"Updating failed for Plugwise {self._api.smile_name}"
+            ) from err
         return self._data

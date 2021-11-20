@@ -163,7 +163,9 @@ class GwSwitch(SmileGateway, SwitchEntity):
                 self.async_write_ha_state()
                 _LOGGER.debug("Turn Plugwise %s switch on", self._attr_name)
         except PlugwiseException:
-            _LOGGER.error("Error: failed to turn Plugwise %s switch on", self._attr_name)
+            _LOGGER.error(
+                "Error: failed to turn Plugwise %s switch on", self._attr_name
+            )
 
     async def async_turn_off(self, **kwargs):
         """Turn the switch off."""
@@ -176,7 +178,9 @@ class GwSwitch(SmileGateway, SwitchEntity):
                 self.async_write_ha_state()
                 _LOGGER.debug("Turn Plugwise %s switch off", self._attr_name)
         except PlugwiseException:
-            _LOGGER.error("Error: failed to turn Plugwise %s switch off", self._attr_name)
+            _LOGGER.error(
+                "Error: failed to turn Plugwise %s switch off", self._attr_name
+            )
 
     @callback
     def _async_process_data(self):
