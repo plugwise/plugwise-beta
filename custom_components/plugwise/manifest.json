@@ -1,6 +1,7 @@
 {
   "domain": "plugwise",
   "name": "Plugwise",
+  "version": "1.0",
   "documentation": "https://www.home-assistant.io/integrations/plugwise",
   "requirements": ["plugwise==0.15.2"],
   "codeowners": ["@CoMPaTech", "@bouwew", "@brefra"],
