@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 import serial.tools.list_ports
 from homeassistant import setup
+from homeassistant.components import zeroconf
 from homeassistant.components.plugwise.config_flow import CONF_MANUAL_PATH
 from homeassistant.components.plugwise.const import (
     API,
