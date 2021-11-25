@@ -68,8 +68,8 @@ def mock_smile_adam():
         smile_mock.ConnectionFailedError = ConnectionFailedError
         smile_mock.XMLDataMissingError = XMLDataMissingError
 
-        smile_mock.return_value.gateway_id = "fe799307f1624099878210aa0b9f1475"
-        smile_mock.return_value.active_device_present = False
+        smile_mock.return_value.gw_data["gateway_id"] = "fe799307f1624099878210aa0b9f1475"
+        smile_mock.return_value.gw_data["active_device"] = False
         smile_mock.return_value.smile_version = "3.0.15"
         smile_mock.return_value.smile_type = "thermostat"
         smile_mock.return_value.smile_hostname = "smile98765"
@@ -106,8 +106,8 @@ def mock_smile_anna():
         smile_mock.ConnectionFailedError = ConnectionFailedError
         smile_mock.XMLDataMissingError = XMLDataMissingError
 
-        smile_mock.return_value.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
-        smile_mock.return_value.heater_id = "1cbf783bb11e4a7c8a6843dee3a86927"
+        smile_mock.return_value.gw_data["gateway_id"] = "015ae9ea3f964e668e490fa39da3870b"
+        smile_mock.return_value.gw_data["heater_id"] = "1cbf783bb11e4a7c8a6843dee3a86927"
         smile_mock.return_value.smile_version = "4.0.15"
         smile_mock.return_value.smile_type = "thermostat"
         smile_mock.return_value.smile_hostname = "smile98765"
@@ -144,8 +144,8 @@ def mock_smile_p1():
         smile_mock.ConnectionFailedError = ConnectionFailedError
         smile_mock.XMLDataMissingError = XMLDataMissingError
 
-        smile_mock.return_value.gateway_id = "e950c7d5e1ee407a858e2a8b5016c8b3"
-        smile_mock.return_value.heater_id = None
+        smile_mock.return_value.gw_data["gateway_id"] = "e950c7d5e1ee407a858e2a8b5016c8b3"
+        smile_mock.return_value.gw_data["heater_id"] = None
         smile_mock.return_value.smile_version = "3.3.9"
         smile_mock.return_value.smile_type = "power"
         smile_mock.return_value.smile_hostname = "smile98765"
@@ -173,8 +173,8 @@ def mock_stretch():
         smile_mock.ConnectionFailedError = ConnectionFailedError
         smile_mock.XMLDataMissingError = XMLDataMissingError
 
-        smile_mock.return_value.gateway_id = "259882df3c05415b99c2d962534ce820"
-        smile_mock.return_value.heater_id = None
+        smile_mock.return_value.gw_data["gateway_id"] = "259882df3c05415b99c2d962534ce820"
+        smile_mock.return_value.gw_data["heater_id"] = None
         smile_mock.return_value.smile_version = "3.1.11"
         smile_mock.return_value.smile_type = "stretch"
         smile_mock.return_value.smile_hostname = "stretch98765"
