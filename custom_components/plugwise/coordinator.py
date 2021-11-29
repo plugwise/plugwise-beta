@@ -2,10 +2,8 @@
 import logging
 
 from async_timeout import timeout
-
-from plugwise.exceptions import PlugwiseException, XMLDataMissingError
-
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from plugwise.exceptions import PlugwiseException, XMLDataMissingError
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,14 +22,13 @@ class PWDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Update data via API endpoint."""
-        _LOGGER.debug("Updating %s", self._api.smile_name)
         try:
             with timeout(self._u_interval.seconds):
                 self._data = await self._api.async_update()
                 _LOGGER.debug("Plugwise %s updated", self._api.smile_name)
         except XMLDataMissingError as err:
             raise UpdateFailed(
-                f"Updating Smile failed, expected XML data for {self._api.smile_name}"
+                f"Updating failed, expected XML data for Plugwise {self._api.smile_name}"
             ) from err
         except PlugwiseException as err:
             raise UpdateFailed(
