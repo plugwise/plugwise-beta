@@ -31,7 +31,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 ## NEW NOV 2021 [0.19.6]
 - Smile: 
   - Clean up and improve code
-  - Link to plugwise v0.15.4 - https://github.com/plugwise/python-plugwise/releases/tag/v0.15.4
+  - Bugfix via linking to plugwise v0.15.4 - https://github.com/plugwise/python-plugwise/releases/tag/v0.15.4
   - Fix test-code: don't use protected parameters
 
 ## Nov 2021 [v0.19.5]
