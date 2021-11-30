@@ -56,7 +56,7 @@ class GWBinarySensor:
     @property
     def extra_state_attributes(self):
         """Gateway binary_sensor extra state attributes."""
-        return None if self._attributes == {} else self._attributes
+        return None if not self._attributes else self._attributes
 
     @property
     def is_on(self):
