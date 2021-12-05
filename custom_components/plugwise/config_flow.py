@@ -7,7 +7,7 @@ import logging
 import serial.tools.list_ports
 import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
-from homeassistant.components import usb
+from homeassistant.components import usb, zeroconf
 from homeassistant.const import (
     CONF_BASE,
     CONF_HOST,
@@ -18,6 +18,7 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from homeassistant.core import callback
+from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
 
@@ -146,22 +147,24 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self):
         """Initialize the Plugwise config flow."""
-        self.discovery_info = {}
+        self.discovery_info: zeroconf.ZeroconfServiceInfo | None = None
+        self._username: str = DEFAULT_USERNAME
 
-    async def async_step_zeroconf(self, discovery_info: DiscoveryInfoType):
+    async def async_step_zeroconf(
+        self, discovery_info: zeroconf.ZeroconfServiceInfo
+    ) -> FlowResult:
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
-        self.discovery_info[CONF_USERNAME] = DEFAULT_USERNAME
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
         _properties = self.discovery_info.get("properties")
 
         # unique_id is needed here, to be able to determine whether the discovered device is known, or not.
-        unique_id = self.discovery_info.get("hostname").split(".")[0]
+        unique_id = self.discovery_info.hostname.split(".")[0]
         await self.async_set_unique_id(unique_id)
-        self._abort_if_unique_id_configured({CONF_HOST: self.discovery_info[CONF_HOST]})
+        self._abort_if_unique_id_configured({CONF_HOST: discovery_info.host})
 
         if DEFAULT_USERNAME not in unique_id:
-            self.discovery_info[CONF_USERNAME] = STRETCH_USERNAME
+            self.username = STRETCH_USERNAME
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
         _LOGGER.debug("Discovered: %s", _properties)
@@ -170,10 +173,10 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
         self.context["title_placeholders"] = {
-            CONF_HOST: self.discovery_info[CONF_HOST],
+            CONF_HOST: discovery_info.host,
             CONF_NAME: _name,
-            CONF_PORT: self.discovery_info[CONF_PORT],
-            CONF_USERNAME: self.discovery_info[CONF_USERNAME],
+            CONF_PORT: discovery_info.port,
+            CONF_USERNAME: self._username,
         }
         return await self.async_step_user_gateway()
 
@@ -248,9 +251,9 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             user_input.pop(FLOW_TYPE, None)
 
             if self.discovery_info:
-                user_input[CONF_HOST] = self.discovery_info[CONF_HOST]
-                user_input[CONF_PORT] = self.discovery_info[CONF_PORT]
-                user_input[CONF_USERNAME] = self.discovery_info[CONF_USERNAME]
+                user_input[CONF_HOST] = self.discovery_info.host
+                user_input[CONF_PORT] = self.discovery_info.port
+                user_input[CONF_USERNAME] = self._username
 
             try:
                 api = await validate_gw_input(self.hass, user_input)
