@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW NOV 2021 [0.19.6]
+## NEW DEC 2021 [0.19.7]
+- Update code to Core 2021.12 requirements
+
+## NOV 2021 [0.19.6]
 - Smile: 
   - Clean up and improve code
   - Bugfix via linking to plugwise v0.15.4 - https://github.com/plugwise/python-plugwise/releases/tag/v0.15.4
