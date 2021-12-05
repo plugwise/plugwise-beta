@@ -164,7 +164,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._abort_if_unique_id_configured({CONF_HOST: discovery_info.host})
 
         if DEFAULT_USERNAME not in unique_id:
-            self.username = STRETCH_USERNAME
+            self._username = STRETCH_USERNAME
         _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
         _LOGGER.debug("Discovered: %s", _properties)
