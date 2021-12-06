@@ -155,7 +155,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
         _LOGGER.debug("Discovery info: %s", self.discovery_info)
-        _properties = self.discovery_info.get("properties")
+        _properties = self.discovery_info.properties
 
         # unique_id is needed here, to be able to determine whether the discovered device is known, or not.
         unique_id = self.discovery_info.hostname.split(".")[0]
