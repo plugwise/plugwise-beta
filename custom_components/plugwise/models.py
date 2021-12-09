@@ -9,11 +9,10 @@ from homeassistant.components.binary_sensor import (
 )
 from homeassistant.components.humidifier.const import ATTR_HUMIDITY
 from homeassistant.components.sensor import (
-    STATE_CLASS_MEASUREMENT,
-    STATE_CLASS_TOTAL,
-    STATE_CLASS_TOTAL_INCREASING,
     SensorDeviceClass,
     SensorEntityDescription,
+    SensorStateClass,
+    
 )
 from homeassistant.components.switch import (
     DEVICE_CLASS_OUTLET,
@@ -104,7 +103,7 @@ class PlugwiseSensorEntityDescription(
     """Describes Plugwise sensor entity."""
 
     should_poll: bool = True
-    state_class: str | None = STATE_CLASS_MEASUREMENT
+    state_class: str | None = SensorStateClass.MEASUREMENT
     state_request_method: str | None = None
 
 
@@ -144,7 +143,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Energy consumption today",
         device_class=SensorDeviceClass.ENERGY,
         should_poll=False,
-        state_class=STATE_CLASS_TOTAL_INCREASING,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         state_request_method="energy_consumption_today",
     ),
@@ -271,7 +270,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity Consumed Interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL,
+        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
@@ -279,7 +278,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity Consumed Off Peak Cumulative",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL_INCREASING,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
@@ -287,7 +286,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity Consumed Off Peak Interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL,
+        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
@@ -302,7 +301,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity Consumed Peak Cumulative",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL_INCREASING,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
@@ -310,7 +309,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity Consumed Peak Interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL,
+        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
@@ -340,7 +339,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity Produced Interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL,
+        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
         entity_registry_enabled_default=False,
     ),
@@ -349,7 +348,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity Produced Off Peak Cumulative",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL_INCREASING,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
@@ -357,7 +356,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity Produced Off Peak Interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL,
+        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
@@ -372,7 +371,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity Produced Peak Cumulative",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL_INCREASING,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
@@ -380,7 +379,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity Produced Peak Interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL,
+        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
@@ -402,7 +401,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Gas Consumed Cumulative",
         device_class=SensorDeviceClass.GAS,
-        state_class=STATE_CLASS_TOTAL_INCREASING,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=VOLUME_CUBIC_METERS,
     ),
     PlugwiseSensorEntityDescription(
@@ -410,7 +409,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Gas Consumed Interval",
         device_class=SensorDeviceClass.GAS,
-        state_class=STATE_CLASS_TOTAL,
+        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=VOLUME_CUBIC_METERS,
     ),
     PlugwiseSensorEntityDescription(
@@ -448,7 +447,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Net Electricity Cumulative",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=STATE_CLASS_TOTAL,
+        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
