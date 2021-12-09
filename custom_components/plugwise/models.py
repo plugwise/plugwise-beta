@@ -12,7 +12,6 @@ from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntityDescription,
     SensorStateClass,
-    
 )
 from homeassistant.components.switch import (
     DEVICE_CLASS_OUTLET,
