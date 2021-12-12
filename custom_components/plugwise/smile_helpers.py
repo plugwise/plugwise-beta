@@ -207,9 +207,8 @@ class GWThermostat:
         if self._active_device:
             hc_data = self._data[1][self._heater_id]
             self._compressor_state = hc_data.get("compressor_state")
-            if self._sm_thermostat:
-                self._cooling_state = hc_data.get("cooling_state")
-                self._heating_state = hc_data.get("heating_state")
+            self._cooling_state = hc_data.get("cooling_state")
+            self._heating_state = hc_data.get("heating_state")
 
         # hvac mode
         self._hvac_mode = HVAC_MODE_AUTO
