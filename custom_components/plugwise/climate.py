@@ -130,9 +130,17 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 return CURRENT_HVAC_COOL
             return CURRENT_HVAC_IDLE
 
-        if self._gw_thermostat.heating_state and self._gw_thermostat.target_temperature > self._gw_thermostat.current_temperature:
+        if (
+            self._gw_thermostat.heating_state
+            and self._gw_thermostat.target_temperature
+            > self._gw_thermostat.current_temperature
+        ):
             return CURRENT_HVAC_HEAT
-        if self._gw_thermostat.cooling_state and self._gw_thermostat.target_temperature < self._gw_thermostat.current_temperature:
+        if (
+            self._gw_thermostat.cooling_state
+            and self._gw_thermostat.target_temperature
+            < self._gw_thermostat.current_temperature
+        ):
             return CURRENT_HVAC_COOL
 
         return CURRENT_HVAC_IDLE
