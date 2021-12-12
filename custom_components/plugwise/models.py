@@ -14,8 +14,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.components.switch import (
-    DEVICE_CLASS_OUTLET,
-    DEVICE_CLASS_SWITCH,
+    SwitchDeviceClass,
     SwitchEntityDescription,
 )
 from homeassistant.const import (
@@ -519,7 +518,7 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
         key=USB_RELAY_ID,
         plugwise_api=STICK,
-        device_class=DEVICE_CLASS_OUTLET,
+        device_class=SwitchDeviceClass.OUTLET,
         name="Relay state",
         should_poll=False,
         state_request_method="relay_state",
@@ -527,14 +526,14 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
         key=DHW_COMF_MODE,
         plugwise_api=SMILE,
-        device_class=DEVICE_CLASS_SWITCH,
+        device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
         name="DHW Comfort Mode",
     ),
     PlugwiseSwitchEntityDescription(
         key=LOCK,
         plugwise_api=SMILE,
-        device_class=DEVICE_CLASS_SWITCH,
+        device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
         icon="mdi:lock",
         name="Lock",
@@ -543,7 +542,7 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
         key=RELAY,
         plugwise_api=SMILE,
-        device_class=DEVICE_CLASS_SWITCH,
+        device_class=SwitchDeviceClass.SWITCH,
         name="Relay",
     ),
 )
