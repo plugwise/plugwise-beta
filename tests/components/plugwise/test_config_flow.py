@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 import serial.tools.list_ports
 from homeassistant import setup
+from homeassistant.components import zeroconf
 from homeassistant.components.plugwise.config_flow import CONF_MANUAL_PATH
 from homeassistant.components.plugwise.const import (
     API,
@@ -50,28 +51,30 @@ TEST_USBPORT2 = "/dev/ttyUSB2"
 TEST_USERNAME = "smile"
 TEST_USERNAME2 = "stretch"
 
-TEST_DISCOVERY = {
-    "host": TEST_HOST,
-    "port": DEFAULT_PORT,
-    "hostname": f"{TEST_HOSTNAME}.local.",
-    "server": f"{TEST_HOSTNAME}.local.",
-    "properties": {
+TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
+    host=TEST_HOST,
+    hostname=f"{TEST_HOSTNAME}.local.",
+    name="mock_name",
+    port=DEFAULT_PORT,
+    properties={
         "product": "smile",
         "version": "1.2.3",
         "hostname": f"{TEST_HOSTNAME}.local.",
     },
-}
-TEST_DISCOVERY2 = {
-    "host": TEST_HOST,
-    "port": DEFAULT_PORT,
-    "hostname": f"{TEST_HOSTNAME2}.local.",
-    "server": f"{TEST_HOSTNAME2}.local.",
-    "properties": {
+    type="mock_type",
+)
+TEST_DISCOVERY2 = zeroconf.ZeroconfServiceInfo(
+    host=TEST_HOST,
+    hostname=f"{TEST_HOSTNAME2}.local.",
+    name="mock_name",
+    port=DEFAULT_PORT,
+    properties={
         "product": "stretch",
         "version": "1.2.3",
         "hostname": f"{TEST_HOSTNAME2}.local.",
     },
-}
+    type="mock_type",
+)
 
 
 @pytest.fixture(name="mock_smile")
