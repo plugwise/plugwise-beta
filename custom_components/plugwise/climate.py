@@ -123,24 +123,15 @@ class PwThermostat(SmileGateway, ClimateEntity):
     @property
     def hvac_action(self):
         """Return the current action."""
-        if self._cor_data[0]["single_master_thermostat"]:
-            if self._gw_thermostat.heating_state:
-                return CURRENT_HVAC_HEAT
-            if self._gw_thermostat.cooling_state:
-                return CURRENT_HVAC_COOL
-            return CURRENT_HVAC_IDLE
-
-        if (
-            self._gw_thermostat.heating_state
-            and self._gw_thermostat.target_temperature
-            > self._gw_thermostat.current_temperature
-        ):
+        #if self._cor_data[0]["single_master_thermostat"]:
+        #    if self._gw_thermostat.heating_state:
+        #        return CURRENT_HVAC_HEAT
+        #    if self._gw_thermostat.cooling_state:
+        #        return CURRENT_HVAC_COOL
+        #    return CURRENT_HVAC_IDLE
+        if self._gw_thermostat.heating_state:
             return CURRENT_HVAC_HEAT
-        if (
-            self._gw_thermostat.cooling_state
-            and self._gw_thermostat.target_temperature
-            < self._gw_thermostat.current_temperature
-        ):
+        if self._gw_thermostat.cooling_state:
             return CURRENT_HVAC_COOL
 
         return CURRENT_HVAC_IDLE
@@ -148,7 +139,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
     @property
     def hvac_modes(self):
         """Return the available hvac modes list."""
-        if self._gw_thermostat.compressor_state is not None:
+        if self._gw_thermostat.cooling_present:
             return HVAC_MODES_HEAT_COOL
         return HVAC_MODES_HEAT_ONLY
 
