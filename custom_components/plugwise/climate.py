@@ -123,12 +123,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
     @property
     def hvac_action(self):
         """Return the current action."""
-        #if self._cor_data[0]["single_master_thermostat"]:
-        #    if self._gw_thermostat.heating_state:
-        #        return CURRENT_HVAC_HEAT
-        #    if self._gw_thermostat.cooling_state:
-        #        return CURRENT_HVAC_COOL
-        #    return CURRENT_HVAC_IDLE
         if self._gw_thermostat.heating_state:
             return CURRENT_HVAC_HEAT
         if self._gw_thermostat.cooling_state:
