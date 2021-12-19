@@ -205,7 +205,6 @@ class GWThermostat:
         self._schedule_temp = data.get("schedule_temperature")
         if self._active_device_present:
             hc_data = self._data[1][self._heater_id]
-            self._cooling_present = hc_data.get("cooling_present")
             self._cooling_state = hc_data.get("cooling_state")
             self._heating_state = hc_data.get("heating_state")
         # When control_state is present, prefer this data
