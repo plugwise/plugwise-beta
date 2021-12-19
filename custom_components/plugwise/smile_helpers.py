@@ -129,6 +129,7 @@ class GWThermostat:
         self._temperature = None
 
         self._active_device_present = self._data[0]["active_device"]
+        self._cooling_present = self._data[0]["cooling_present"]
         self._heater_id = self._data[0]["heater_id"]
 
     @property
