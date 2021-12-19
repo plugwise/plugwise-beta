@@ -128,9 +128,8 @@ class GWThermostat:
         self._smile_class = None
         self._temperature = None
 
-        self._active_device = self._data[0]["active_device"]
+        self._active_device_present = self._data[0]["active_device"]
         self._heater_id = self._data[0]["heater_id"]
-        self._sm_thermostat = self._data[0]["single_master_thermostat"]
 
     @property
     def cooling_present(self):
@@ -204,7 +203,7 @@ class GWThermostat:
             if item[ATTR_ID] == "setpoint":
                 self._setpoint = s_list[idx][ATTR_STATE]
         self._schedule_temp = data.get("schedule_temperature")
-        if self._active_device:
+        if self._active_device_present:
             hc_data = self._data[1][self._heater_id]
             self._cooling_present = hc_data.get("cooling_present")
             self._cooling_state = hc_data.get("cooling_state")
