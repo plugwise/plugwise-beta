@@ -105,10 +105,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
     entities = []
     for dev_id in coordinator.data[1]:
-        for key in coordinator.data[1][dev_id]:
-            if key != "binary_sensors":
-                continue
-
+        if "binary_sensors" in coordinator.data[1][dev_id]:
             for data in coordinator.data[1][dev_id]["binary_sensors"]:
                 for description in PW_BINARY_SENSOR_TYPES:
                     if (
