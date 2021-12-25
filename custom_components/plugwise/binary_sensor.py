@@ -3,9 +3,8 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME
+from homeassistant.const import ATTR_ID, ATTR_NAME, Platform
 from homeassistant.core import callback
 from homeassistant.helpers import entity_platform
 
@@ -88,7 +87,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
                 "_service_sed_battery_config",
             )
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.BINARY]:
         hass.async_create_task(async_add_binary_sensors(mac))
 
     def discoved_device(mac: str):
@@ -106,11 +105,11 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     entities = []
     for dev_id in coordinator.data[1]:
         if "binary_sensors" in coordinator.data[1][dev_id]:
-            for data in coordinator.data[1][dev_id]["binary_sensors"]:
+            for b_sensor in coordinator.data[1][dev_id]["binary_sensors"]:
                 for description in PW_BINARY_SENSOR_TYPES:
                     if (
                         description.plugwise_api == SMILE
-                        and description.key == data.get(ATTR_ID)
+                        and description.key == b_sensor
                     ):
                         entities.extend(
                             [
@@ -118,10 +117,11 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                     coordinator,
                                     description,
                                     dev_id,
-                                    data,
+                                    b_sensor
                                 )
                             ]
                         )
+                        _LOGGER.debug("Add %s binary sensor", description.key)
 
     if entities:
         async_add_entities(entities, True)
@@ -135,7 +135,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         coordinator,
         description: PlugwiseBinarySensorEntityDescription,
         dev_id,
-        bs_data,
+        b_sensor,
     ):
         """Initialise the binary_sensor."""
         _cdata = coordinator.data[1][dev_id]
@@ -150,7 +150,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         )
 
         self._gw_b_sensor = GWBinarySensor(
-            coordinator.data, dev_id, bs_data.get(ATTR_ID)
+            coordinator.data, dev_id, b_sensor
         )
 
         self._attr_entity_registry_enabled_default = (
@@ -163,21 +163,26 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._attr_should_poll = self.entity_description.should_poll
         self._attr_unique_id = f"{dev_id}-{description.key}"
 
-    @callback
-    def _async_process_data(self):
-        """Update the entity."""
-        self._gw_b_sensor.update_data()
-        self._attr_extra_state_attributes = self._gw_b_sensor.extra_state_attributes
-        self._attr_icon = self._gw_b_sensor.icon
-        self._attr_is_on = self._gw_b_sensor.is_on
+    @property
+    def extra_state_attributes(self):
+        """Return state attributes."""
+        return self._gw_b_sensor.extra_state_attributes
 
+    @property
+    def is_on(self):
+        """Update the state of the Binary Sensor."""
         if self._gw_b_sensor.notification:
             for notify_id, message in self._gw_b_sensor.notification.items():
                 self.hass.components.persistent_notification.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        self.async_write_ha_state()
+        return self._gw_b_sensor.is_on
+
+    @property
+    def icon(self):
+        """Return an icon, when needed."""
+        return self._gw_b_sensor.icon
 
 
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):

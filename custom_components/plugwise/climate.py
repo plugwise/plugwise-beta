@@ -19,12 +19,11 @@ from homeassistant.components.climate.const import (
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
 )
-from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, TEMP_CELSIUS
+from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, Platform, TEMP_CELSIUS
 from homeassistant.core import callback
 
 from .const import (
     API,
-    CLIMATE_DOMAIN,
     COORDINATOR,
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
@@ -72,7 +71,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         )
         entities.append(thermostat)
         _LOGGER.info(
-            "Added climate %s entity", coordinator.data[1][dev_id].get(ATTR_NAME)
+            "Added %s climate entity", coordinator.data[1][dev_id].get(ATTR_NAME)
         )
 
     async_add_entities(entities, True)
@@ -104,20 +103,22 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
         self._gw_thermostat = GWThermostat(coordinator.data, dev_id)
 
-        self._api = api
-        self._attr_current_temperature = None
         self._attr_device_class = None
-        self._attr_hvac_mode = None
         self._attr_max_temp = max_temp
         self._attr_min_temp = min_temp
         self._attr_name = description.name
-        self._attr_preset_mode = None
-        self._attr_preset_modes = None
         self._attr_supported_features = SUPPORT_FLAGS
-        self._attr_target_temperature = None
         self._attr_temperature_unit = TEMP_CELSIUS
-        self._attr_unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
-        self._cor_data = coordinator.data
+        self._attr_unique_id = f"{dev_id}-{Platform.CLIMATE}"
+
+        self._attr_current_temperature = self._gw_thermostat.current_temperature
+        self._attr_extra_state_attributes = self._gw_thermostat.extra_state_attributes
+        self._attr_hvac_mode = self._gw_thermostat.hvac_mode
+        self._attr_preset_mode = self._gw_thermostat.preset_mode
+        self._attr_preset_modes = self._gw_thermostat.preset_modes
+        self._attr_target_temperature = self._gw_thermostat.target_temperature
+
+        self._api = api
         self._loc_id = _cdata.get(PW_LOCATION)
 
     @property
@@ -208,16 +209,3 @@ class PwThermostat(SmileGateway, ClimateEntity):
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
-    @callback
-    def _async_process_data(self):
-        """Update the data for this climate device."""
-        self._gw_thermostat.update_data()
-
-        self._attr_current_temperature = self._gw_thermostat.current_temperature
-        self._attr_extra_state_attributes = self._gw_thermostat.extra_state_attributes
-        self._attr_hvac_mode = self._gw_thermostat.hvac_mode
-        self._attr_preset_mode = self._gw_thermostat.preset_mode
-        self._attr_preset_modes = self._gw_thermostat.preset_modes
-        self._attr_target_temperature = self._gw_thermostat.target_temperature
-
-        self.async_write_ha_state()
