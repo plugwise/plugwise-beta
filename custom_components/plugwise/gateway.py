@@ -196,14 +196,3 @@ class SmileGateway(CoordinatorEntity):
                 via_device=(DOMAIN, gw_id),
             )
 
-    #async def async_added_to_hass(self):
-    #    """Subscribe to updates."""
-    #    self._async_process_data()
-    #    self.async_on_remove(
-    #        self.coordinator.async_add_listener(self._async_process_data)
-    #    )
-
-    @callback
-    def _async_process_data(self):
-        """Interpret and process API data."""
-        raise NotImplementedError
