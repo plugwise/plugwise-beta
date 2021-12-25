@@ -48,34 +48,13 @@ class GWBinarySensor:
         self._binary_sensor = binary_sensor
         self._data = data
         self._dev_id = dev_id
-        self._attributes = {}
-        self._icon = None
-        self._is_on = False
         self._notification = {}
 
     @property
     def extra_state_attributes(self):
         """Gateway binary_sensor extra state attributes."""
-        return None if not self._attributes else self._attributes
-
-    @property
-    def is_on(self):
-        """Gateway binary_sensor state."""
-        return self._is_on
-
-    @property
-    def icon(self):
-        """Gateway binary_sensor icon."""
-        return self._icon
-
-    @property
-    def notification(self):
-        """Plugwise Notification message."""
-        return self._notification
-
-    def _update_notify(self):
-        """Notification update helper."""
         notify = self._data[0]["notifications"]
+        self._attributes = {}
         self._notification = {}
         for severity in SEVERITIES:
             self._attributes[f"{severity.upper()}_msg"] = []
@@ -88,19 +67,22 @@ class GWBinarySensor:
                     self._attributes[f"{msg_type.upper()}_msg"].append(msg)
                     self._notification[notify_id] = f"{msg_type.title()}: {msg}"
 
-    def update_data(self):
-        """Handle update callbacks."""
-        data = self._data[1][self._dev_id]["binary_sensors"]
+        return None if not self._attributes else self._attributes
 
-        for _, item in enumerate(data):
-            if item[ATTR_ID] != self._binary_sensor:
-                continue
+    @property
+    def is_on(self):
+        """Gateway binary_sensor state."""
+        return self._data[1][self._dev_id]["binary_sensors"][self._binary_sensor]
 
-            self._is_on = item[ATTR_STATE]
-            self._icon = icon_selector(self._binary_sensor, self._is_on)
+    @property
+    def icon(self):
+        """Gateway binary_sensor icon."""
+        return icon_selector(self._binary_sensor, self.is_on)
 
-            if self._binary_sensor == "plugwise_notification":
-                self._update_notify()
+    @property
+    def notification(self):
+        """Plugwise Notification message."""
+        return self._notification
 
 
 class GWThermostat:
@@ -131,6 +113,57 @@ class GWThermostat:
         self._active_device_present = self._data[0]["active_device"]
         self._cooling_present = self._data[0]["cooling_present"]
         self._heater_id = self._data[0]["heater_id"]
+
+        data = self._data[1][self._dev_id]
+
+        # current & target_temps, heater_central data when required
+        self._temperature = data["sensors"]["temperature"]
+        self._setpoint = data["sensors"]["setpoint"]
+        self._schedule_temp = data["schedule_temperature"]
+        if self._active_device_present:
+            hc_data = self._data[1][self._heater_id]
+            self._cooling_state = hc_data["cooling_state"]
+            self._heating_state = hc_data["heating_state"]
+        # When control_state is present, prefer this data
+        if "control_state" in data:
+            self._cooling_state = data["control_state"] == "cooling"
+            self._heating_state = data["control_state"] == "heating"
+ 
+        # hvac mode
+        self._hvac_mode = HVAC_MODE_AUTO
+        if "selected_schedule" in data:
+            self._selected_schema = data["selected_schedule"]
+            self._schema_status = False
+            if self._selected_schema is not None:
+                self._schema_status = True
+
+        self._last_active_schema = data["last_used"]
+
+        if not self._schema_status:
+            if self._preset_mode == PRESET_AWAY:
+                self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
+            else:
+                self._hvac_mode = HVAC_MODE_HEAT
+                if self._cooling_present:
+                    self._hvac_mode = HVAC_MODE_HEAT_COOL
+
+        # preset modes
+        self._get_presets = data["presets"]
+        if self._get_presets:
+            self._preset_modes = list(self._get_presets)
+
+        # preset mode
+        self._preset_mode = data["active_preset"]
+
+        # extra state attributes
+        attributes = {}
+        self._schema_names = data["available_schedules"]
+        self._selected_schema = data["selected_schedule"]
+        if self._schema_names:
+            attributes["available_schemas"] = self._schema_names
+        if self._selected_schema:
+            attributes["selected_schema"] = self._selected_schema
+        self._extra_state_attributes = attributes
 
     @property
     def cooling_present(self):
@@ -191,61 +224,3 @@ class GWThermostat:
     def extra_state_attributes(self):
         """Climate extra state attributes."""
         return self._extra_state_attributes
-
-    def update_data(self):
-        """Handle update callbacks."""
-        data = self._data[1][self._dev_id]
-
-        # current & target_temps, heater_central data when required
-        s_list = data["sensors"]
-        for idx, item in enumerate(s_list):
-            if item[ATTR_ID] == "temperature":
-                self._temperature = s_list[idx][ATTR_STATE]
-            if item[ATTR_ID] == "setpoint":
-                self._setpoint = s_list[idx][ATTR_STATE]
-        self._schedule_temp = data.get("schedule_temperature")
-        if self._active_device_present:
-            hc_data = self._data[1][self._heater_id]
-            self._cooling_active = hc_data.get("cooling_active")
-            self._cooling_state = hc_data.get("cooling_state")
-            self._heating_state = hc_data.get("heating_state")
-        # When control_state is present, prefer this data
-        if "control_state" in data:
-            self._cooling_state = data.get("control_state") == "cooling"
-            self._heating_state = data.get("control_state") == "heating"
-
-        # hvac mode
-        self._hvac_mode = HVAC_MODE_AUTO
-        if "selected_schedule" in data:
-            self._selected_schema = data.get("selected_schedule")
-            self._schema_status = False
-            if self._selected_schema is not None:
-                self._schema_status = True
-
-        self._last_active_schema = data.get("last_used")
-
-        if not self._schema_status:
-            if self._preset_mode == PRESET_AWAY:
-                self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
-            else:
-                self._hvac_mode = HVAC_MODE_HEAT
-                if self._cooling_active:
-                    self._hvac_mode = HVAC_MODE_COOL
-
-        # preset modes
-        self._get_presets = data.get("presets")
-        if self._get_presets:
-            self._preset_modes = list(self._get_presets)
-
-        # preset mode
-        self._preset_mode = data.get("active_preset")
-
-        # extra state attributes
-        attributes = {}
-        self._schema_names = data.get("available_schedules")
-        self._selected_schema = data.get("selected_schedule")
-        if self._schema_names:
-            attributes["available_schemas"] = self._schema_names
-        if self._selected_schema:
-            attributes["selected_schema"] = self._selected_schema
-        self._extra_state_attributes = attributes
