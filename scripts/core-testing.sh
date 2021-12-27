@@ -50,7 +50,7 @@ if [ ! -f ha-core/requirements_test_all.txt ]; then
 	echo " ** Running setup scrvipt from HA core **"
 	echo ""
         python3.9 -m venv venv
-	script/setup
+		script/setup
         . venv/bin/activate
 	echo ""
 	echo " ** Installing test requirements **"
