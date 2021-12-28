@@ -133,7 +133,6 @@ class GwSwitch(SmileGateway, SwitchEntity):
             description.entity_registry_enabled_default
         )
         self._attr_icon = description.icon
-        self._attr_is_on = False
         self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
         self._attr_should_poll = self.entity_description.should_poll
         self._dev_id = dev_id
@@ -147,6 +146,8 @@ class GwSwitch(SmileGateway, SwitchEntity):
         if self._switch == "relay":
             self._attr_unique_id = f"{dev_id}-plug"
             self._attr_name = _cdata.get(ATTR_NAME)
+
+        self.is_on = False
 
     @property
     def is_on(self):
