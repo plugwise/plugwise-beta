@@ -158,10 +158,10 @@ class GwSwitch(SmileGateway, SwitchEntity):
             state_on = await self._api.set_switch_state(
                 self._dev_id, self._members, self._switch, STATE_ON
             )
-            #if state_on:
-            #    self._is_on = True
-            #    self.async_write_ha_state()
-            _LOGGER.debug("Turn Plugwise %s switch on", self._attr_name)
+            if state_on:
+                self.coordinator.data[1][self._dev_id]["switches"][self._switch] = True
+                self.async_write_ha_state()
+                _LOGGER.debug("Turn Plugwise %s switch on", self._attr_name)
         except PlugwiseException:
             _LOGGER.error(
                 "Error: failed to turn Plugwise %s switch on", self._attr_name
@@ -173,10 +173,10 @@ class GwSwitch(SmileGateway, SwitchEntity):
             state_off = await self._api.set_switch_state(
                 self._dev_id, self._members, self._switch, STATE_OFF
             )
-            #if state_off:
-            #    self._is_on = False
-            #    self.async_write_ha_state()
-            _LOGGER.debug("Turn Plugwise %s switch off", self._attr_name)
+            if state_off:
+                self.coordinator.data[1][self._dev_id]["switches"][self._switch] = False
+                self.async_write_ha_state()
+                _LOGGER.debug("Turn Plugwise %s switch off", self._attr_name)
         except PlugwiseException:
             _LOGGER.error(
                 "Error: failed to turn Plugwise %s switch off", self._attr_name
