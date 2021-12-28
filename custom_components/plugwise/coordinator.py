@@ -1,7 +1,6 @@
 """Provides the Plugwise DataUpdateCoordinator."""
 import logging
 
-from async_timeout import timeout
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from .const import DOMAIN
 from plugwise.exceptions import PlugwiseException, XMLDataMissingError
