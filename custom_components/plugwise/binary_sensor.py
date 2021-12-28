@@ -86,7 +86,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
                 "_service_sed_battery_config",
             )
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.BINARY]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.BINARY_SENSOR]:
         hass.async_create_task(async_add_binary_sensors(mac))
 
     def discoved_device(mac: str):
