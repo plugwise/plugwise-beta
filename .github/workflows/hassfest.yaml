@@ -14,7 +14,7 @@ jobs:
       - name: Verify Hassfest type
         id: hassfest-verify
         run: |
-          echo "::set-output name=hassfest::$(grep -E "require.*http.*test-files.pythonhosted.*#" custom_components/plugwise/manifest.json && echo lite || echo full)"
+          echo "::set-output name=hassfest::$(grep -q -E "require.*http.*test-files.pythonhosted.*#" custom_components/plugwise/manifest.json && echo lite || echo full)"
       - name: debug
         run: |
           echo output
