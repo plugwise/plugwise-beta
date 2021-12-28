@@ -202,3 +202,20 @@ jobs:
         pylint homeassistant/components/plugwise/*py
         # disable for further figuring out, apparently HA doesn't pylint against test
         #pylint tests/components/plugwise/*py
+    - name: hassfest-lite
+      run: |
+        echo ""
+        echo "Hassfest-lite (i.e. core-compatible and ignoring test-pypi and github URIs)"
+        echo ""
+        cd ~/ha-core
+        . venv/bin/activate
+        echo "Removing 'version' from manifest for hassfest-ing (no version in core components)"
+        echo ""
+        sed -i '' "/version.:/d" ./homeassistant/components/plugwise/manifest.json
+        grep -E "require.*http.*test-files.pythonhosted.*#" ./homeassistant/components/plugwise/manifest.json && (
+          echo "Changing requirement for hassfest pass .... :("
+          sed -i '' "s/http.*test-files.pythonhosted.*#//g" ./homeassistant/components/plugwise/manifest.json
+        )
+        echo "Running hassfest (plugwise-only)"
+        echo ""
+        python3 -m script.hassfest --integration-path homeassistant/components/plugwise

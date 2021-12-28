@@ -93,6 +93,16 @@ echo "Copy back modified files ..."
 echo ""
 cp -r ./homeassistant/components/plugwise ../custom_components/
 cp -r ./tests/components/plugwise ../tests/components/
+echo "Removing 'version' from manifest for hassfest-ing (no version in core components)"
+echo ""
+sed -i '' "/version.:/d" ./homeassistant/components/plugwise/manifest.json
+grep -E "require.*http.*test-files.pythonhosted.*#" ./homeassistant/components/plugwise/manifest.json && (
+  echo "Changing requirement for hassfest pass .... :("
+  sed -i '' "s/http.*test-files.pythonhosted.*#//g" ./homeassistant/components/plugwise/manifest.json
+)
+echo "Running hassfest for plugwise"
+echo ""
+python3 -m script.hassfest --integration-path homeassistant/components/plugwise
 deactivate
 
 #        # disable for further figuring out, apparently HA doesn't pylint against test
