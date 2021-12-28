@@ -19,9 +19,9 @@ jobs:
         run: |
           echo "Result for hasstest-verify = >${{ steps.hassfest-verify.outputs.hassfest }}<"
       - name: Hassfest results in test output
-        if: ${{ steps.hassfest-verify.outputs.hassfest }} == 'lite'
+        if: ${{ steps.hassfest-verify.outputs.hassfest == 'lite' }}
         run: |
           echo "Unable to run home-assistant/actions/hassfest@master due to test package usage"
       - uses: home-assistant/actions/hassfest@master
-        if: ${{ steps.hassfest-verify.outputs.hassfest }} == 'full'
+        if: ${{ steps.hassfest-verify.outputs.hassfest == 'full' }}
 
