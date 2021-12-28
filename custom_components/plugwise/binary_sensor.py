@@ -111,14 +111,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                         and description.key == b_sensor
                     ):
                         entities.extend(
-                            [
-                                GwBinarySensor(
-                                    coordinator,
-                                    description,
-                                    dev_id,
-                                    b_sensor
-                                )
-                            ]
+                            [GwBinarySensor(coordinator, description, dev_id, b_sensor)]
                         )
                         _LOGGER.debug("Add %s binary sensor", description.key)
 
@@ -148,9 +141,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
             _cdata.get(FW),
         )
 
-        self._gw_b_sensor = GWBinarySensor(
-            coordinator.data, dev_id, b_sensor
-        )
+        self._gw_b_sensor = GWBinarySensor(coordinator.data, dev_id, b_sensor)
 
         self._attr_entity_registry_enabled_default = (
             description.entity_registry_enabled_default

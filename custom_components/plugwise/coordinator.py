@@ -13,9 +13,7 @@ class PWDataUpdateCoordinator(DataUpdateCoordinator):
 
     def __init__(self, hass, api, interval):
         """Initialize the coordinator."""
-        super().__init__(
-            hass, _LOGGER, name=DOMAIN, update_interval=interval
-        )
+        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=interval)
         self._api = api
 
     async def _async_update_data(self):

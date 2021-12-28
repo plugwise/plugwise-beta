@@ -59,7 +59,9 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             # Skip unsupported devices
             if pw_device is not None:
                 if USB_RELAY_ID in pw_device.features:
-                    hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH].append(mac)
+                    hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH].append(
+                        mac
+                    )
                 if USB_MOTION_ID in pw_device.features:
                     hass.data[DOMAIN][config_entry.entry_id][
                         Platform.BINARY_SENSOR
