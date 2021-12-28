@@ -4,8 +4,7 @@ from __future__ import annotations
 import logging
 
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME, ATTR_STATE, Platform
-from homeassistant.core import callback
+from homeassistant.const import ATTR_NAME, Platform
 
 from plugwise.nodes import PlugwiseNode
 

@@ -4,8 +4,7 @@ from __future__ import annotations
 import logging
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME, Platform
-from homeassistant.core import callback
+from homeassistant.const import ATTR_NAME, Platform
 from homeassistant.helpers import entity_platform
 
 from plugwise.nodes import PlugwiseNode

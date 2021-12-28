@@ -20,7 +20,6 @@ from homeassistant.components.climate.const import (
     SUPPORT_TARGET_TEMPERATURE,
 )
 from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, Platform, TEMP_CELSIUS
-from homeassistant.core import callback
 
 from .const import (
     API,
@@ -208,4 +207,3 @@ class PwThermostat(SmileGateway, ClimateEntity):
             _LOGGER.debug("Set preset_mode to %s", preset_mode)
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
-

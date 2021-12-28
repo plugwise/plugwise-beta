@@ -6,7 +6,6 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_OFF,
     PRESET_AWAY,
 )
-from homeassistant.const import ATTR_ID, ATTR_STATE
 
 from .const import (
     COOLING_ICON,
@@ -128,8 +127,8 @@ class GWThermostat:
         if "control_state" in data:
             self._cooling_state = data["control_state"] == "cooling"
             self._heating_state = data["control_state"] == "heating"
- 
-        # hvac mode
+
+        # hvac_mode
         self._hvac_mode = HVAC_MODE_AUTO
         if "selected_schedule" in data:
             self._selected_schema = data["selected_schedule"]
