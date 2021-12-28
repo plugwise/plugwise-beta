@@ -136,6 +136,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
         self._attr_should_poll = self.entity_description.should_poll
         self._dev_id = dev_id
+        self._is_on = False
         self._members = None
         if "members" in coordinator.data[1][dev_id]:
             self._members = coordinator.data[1][dev_id].get("members")
@@ -147,13 +148,11 @@ class GwSwitch(SmileGateway, SwitchEntity):
             self._attr_unique_id = f"{dev_id}-plug"
             self._attr_name = _cdata.get(ATTR_NAME)
 
-        self.is_on = False
-
     @property
     def is_on(self):
         """Update the state of the Switch."""
-        self.is_on = self.coordinator.data[1][self._dev_id]["switches"][self._switch]
-        return self.is_on
+        self._is_on = self.coordinator.data[1][self._dev_id]["switches"][self._switch]
+        return self._is_on
 
     async def async_turn_on(self, **kwargs):
         """Turn the switch on."""
@@ -162,7 +161,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
                 self._dev_id, self._members, self._switch, STATE_ON
             )
             if state_on:
-                self.is_on = True
+                self._is_on = True
                 self.async_write_ha_state()
                 _LOGGER.debug("Turn Plugwise %s switch on", self._attr_name)
         except PlugwiseException:
@@ -177,7 +176,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
                 self._dev_id, self._members, self._switch, STATE_OFF
             )
             if state_off:
-                self.is_on = False
+                self._is_on = False
                 self.async_write_ha_state()
                 _LOGGER.debug("Turn Plugwise %s switch off", self._attr_name)
         except PlugwiseException:
