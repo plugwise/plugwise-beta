@@ -14,11 +14,11 @@ jobs:
       - name: Verify Hassfest type
         id: hassfest-verify
         run: |
-          grep -E "require.*http.*test-files.pythonhosted.*#" custom_components/plugwise/manifest.json && echo hassfest-lite || echo hassfest
+          echo "::set-output name=hassfest::$(grep -E "require.*http.*test-files.pythonhosted.*#" custom_components/plugwise/manifest.json && echo lite || echo full)"
       - name: debug
         run: |
           echo output
-          echo ${{ steps.hassfest-verify.outputs.stdout }} 
+          echo ${{ steps.hassfest-verify.outputs.hassfest }} 
       - uses: home-assistant/actions/hassfest@master
-        if: ${{ steps.hassfest-verify.outputs.stdout }} == 'hassfest'
+        if: ${{ steps.hassfest-verify.outputs.hassfest }} == 'full'
 
