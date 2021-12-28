@@ -44,6 +44,7 @@ class GWBinarySensor:
 
     def __init__(self, data, dev_id, binary_sensor):
         """Initialize the Gateway."""
+        self._attributes = {}
         self._binary_sensor = binary_sensor
         self._data = data
         self._dev_id = dev_id
@@ -53,7 +54,6 @@ class GWBinarySensor:
     def extra_state_attributes(self):
         """Gateway binary_sensor extra state attributes."""
         notify = self._data[0]["notifications"]
-        self._attributes = {}
         self._notification = {}
         for severity in SEVERITIES:
             self._attributes[f"{severity.upper()}_msg"] = []
