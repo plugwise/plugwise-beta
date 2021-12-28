@@ -16,5 +16,5 @@ jobs:
         run: |
           grep -E "require.*http.*test-files.pythonhosted.*#" custom_components/plugwise/manifest.json && echo hassfest-lite || echo hassfest
       - uses: home-assistant/actions/hassfest@master
-        if: steps.hassfest-verify.outputs.stdout == "hassfest"
+        if: ${{ steps.hassfest-verify.outputs.stdout }} == 'hassfest'
 
