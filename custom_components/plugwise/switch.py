@@ -152,8 +152,8 @@ class GwSwitch(SmileGateway, SwitchEntity):
     @property
     def is_on(self):
         """Update the state of the Switch."""
-        return self.coordinator.data[1][self._dev_id]["switches"][self._switch]
-
+        self.is_on = self.coordinator.data[1][self._dev_id]["switches"][self._switch]
+        return self.is_on
 
     async def async_turn_on(self, **kwargs):
         """Turn the switch on."""
