@@ -161,7 +161,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
                 self._dev_id, self._members, self._switch, STATE_ON
             )
             if state_on:
-                self._attr_is_on = True
+                self.is_on = True
                 self.async_write_ha_state()
                 _LOGGER.debug("Turn Plugwise %s switch on", self._attr_name)
         except PlugwiseException:
@@ -176,7 +176,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
                 self._dev_id, self._members, self._switch, STATE_OFF
             )
             if state_off:
-                self._attr_is_on = False
+                self.is_on = False
                 self.async_write_ha_state()
                 _LOGGER.debug("Turn Plugwise %s switch off", self._attr_name)
         except PlugwiseException:
