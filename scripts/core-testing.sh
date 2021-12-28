@@ -96,7 +96,7 @@ cp -r ./tests/components/plugwise ../tests/components/
 echo "Removing 'version' from manifest for hassfest-ing (no version in core components)"
 echo ""
 sed -i '' "/version.:/d" ./homeassistant/components/plugwise/manifest.json
-grep -E "require.*http.*test-files.pythonhosted.*#" ./homeassistant/components/plugwise/manifest.json && (
+grep -q -E "require.*http.*test-files.pythonhosted.*#" ./homeassistant/components/plugwise/manifest.json && (
   echo "Changing requirement for hassfest pass .... :("
   sed -i '' "s/http.*test-files.pythonhosted.*#//g" ./homeassistant/components/plugwise/manifest.json
 )

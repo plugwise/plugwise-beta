@@ -211,10 +211,10 @@ jobs:
         . venv/bin/activate
         echo "Removing version from manifest for hassfest-ing (no version in core components)"
         echo ""
-        sed -i "/version.:/d" custom_components/plugwise/manifest.json
-        grep -E "require.*http.*test-files.pythonhosted.*#" custom_components/plugwise/manifest.json && (
+        sed -i "/version.:/d" ./homeassistant/components/plugwise/manifest.json
+        grep -q -E "require.*http.*test-files.pythonhosted.*#" ./homeassistant/components/plugwise/manifest.json && (
           echo "Changing requirement for hassfest pass .... :("
-          sed -i '' "s/http.*test-files.pythonhosted.*#//g" custom_components/plugwise/manifest.json
+          sed -i '' "s/http.*test-files.pythonhosted.*#//g" ./homeassistant/components/plugwise/manifest.json
         )
         echo "Running hassfest (plugwise-only)"
         echo ""
