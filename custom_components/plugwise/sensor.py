@@ -77,10 +77,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
         if "sensors" in coordinator.data[1][dev_id]:
             for sensor in coordinator.data[1][dev_id]["sensors"]:
                 for description in PW_SENSOR_TYPES:
-                    if (
-                        description.plugwise_api == SMILE
-                        and description.key == sensor
-                    ):
+                    if description.plugwise_api == SMILE and description.key == sensor:
                         entities.extend(
                             [
                                 GwSensor(

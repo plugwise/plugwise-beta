@@ -22,7 +22,7 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
-    Platform
+    Platform,
 )
 
 from .const import (
