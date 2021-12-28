@@ -15,10 +15,7 @@ jobs:
         id: hassfest-verify
         run: |
           echo "::set-output name=hassfest::$(grep -q -E "require.*http.*test-files.pythonhosted.*#" custom_components/plugwise/manifest.json && echo lite || echo full)"
-      - name: Hassfest results in test output
-        run: |
-          echo "Result for hasstest-verify = >${{ steps.hassfest-verify.outputs.hassfest }}<"
-      - name: Hassfest results in test output
+      - name: Not running hassfest!
         if: ${{ steps.hassfest-verify.outputs.hassfest == 'lite' }}
         run: |
           echo "Unable to run home-assistant/actions/hassfest@master due to test package usage"
