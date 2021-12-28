@@ -13,7 +13,7 @@ jobs:
       - uses: "actions/checkout@v2"
       - name: hassfest-verify
         run: |
-          grep -E "require.*http.*test-files.pythonhosted.*#" ./custom-components/plugwise/manifest.json
+          grep -E "require.*http.*test-files.pythonhosted.*#" custom_components/plugwise/manifest.json
       - uses: home-assistant/actions/hassfest@master
         if: success()
 
