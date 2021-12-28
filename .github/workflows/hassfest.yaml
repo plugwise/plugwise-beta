@@ -14,6 +14,7 @@ jobs:
       - name: hassfest-verify
         run: |
           grep -E "require.*http.*test-files.pythonhosted.*#" custom_components/plugwise/manifest.json
+        continue-on-error: true
       - uses: home-assistant/actions/hassfest@master
-        if: success()
+        if: (${{ success() }} )
 
