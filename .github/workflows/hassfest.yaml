@@ -9,7 +9,6 @@ on:
 jobs:
   check_requirements:
     runs-on: "ubuntu-latest"
-    needs: ha-check-requirements
     steps:
       - uses: "actions/checkout@v2"
       - name: hassfest-verify
