@@ -214,7 +214,7 @@ jobs:
         sed -i "/version.:/d" ./homeassistant/components/plugwise/manifest.json
         grep -q -E "require.*http.*test-files.pythonhosted.*#" ./homeassistant/components/plugwise/manifest.json && (
           echo "Changing requirement for hassfest pass .... :("
-          sed -i '' "s/http.*test-files.pythonhosted.*#//g" ./homeassistant/components/plugwise/manifest.json
+          sed -i "s/http.*test-files.pythonhosted.*#//g" ./homeassistant/components/plugwise/manifest.json
         )
         echo "Running hassfest (plugwise-only)"
         echo ""
