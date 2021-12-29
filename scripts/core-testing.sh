@@ -10,6 +10,10 @@
 which python3.9 || ( echo "You should have python3.9 installed, or change the script yourself, exiting"; exit 1)
 which git || ( echo "You should have git installed, exiting"; exit 1)
 
+# Handle sed on macos
+sedmac=""
+if [ $(uname -s) == "Darwin" ]; then sedmac="''"; fi
+
 if [ ! -d ha-core ]; then
 	echo ""
 	echo "This script expects to be executed from the 'root' of the cloned plugwise-beta directory"
@@ -95,10 +99,10 @@ cp -r ./homeassistant/components/plugwise ../custom_components/
 cp -r ./tests/components/plugwise ../tests/components/
 echo "Removing 'version' from manifest for hassfest-ing (no version in core components)"
 echo ""
-sed -i '' "/version.:/d" ./homeassistant/components/plugwise/manifest.json
+sed -i ${sedmac} "/version.:/d" ./homeassistant/components/plugwise/manifest.json
 grep -q -E "require.*http.*test-files.pythonhosted.*#" ./homeassistant/components/plugwise/manifest.json && (
   echo "Changing requirement for hassfest pass .... :("
-  sed -i '' "s/http.*test-files.pythonhosted.*#//g" ./homeassistant/components/plugwise/manifest.json
+  sed -i ${sedmac} "s/http.*test-files.pythonhosted.*#//g" ./homeassistant/components/plugwise/manifest.json
 )
 echo "Running hassfest for plugwise"
 echo ""
