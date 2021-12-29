@@ -29,7 +29,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 # Changelog
 
 ## NEW DEC 2021 [0.19.8]
-- Smile Adam: show hvac_action correctly for both heating and cooling modes (fixes #171)
+- Smile Adam: show hvac_action correctly for both heating and cooling modes (partly fixes #171)
 
 ## DEC 2021 [0.19.7]
 - Update code to Core 2021.12 requirements
