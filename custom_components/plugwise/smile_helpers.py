@@ -212,7 +212,7 @@ class GWThermostat:
         if "control_state" in data:
             self._cooling_state = data.get("control_state") == "cooling"
             self._heating_state = data.get("control_state") == "heating"
- 
+
         # hvac mode
         self._hvac_mode = HVAC_MODE_AUTO
         if "selected_schedule" in data:
