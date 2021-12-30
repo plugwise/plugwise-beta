@@ -109,6 +109,7 @@ class GWThermostat:
     def __init__(self, data, dev_id):
         """Initialize the Thermostat."""
 
+        self._cooling_active = None
         self._cooling_state = None
         self._data = data
         self._dev_id = dev_id
@@ -128,13 +129,12 @@ class GWThermostat:
         self._temperature = None
 
         self._active_device_present = self._data[0]["active_device"]
-        self._cooling_present = self._data[0]["cooling_present"]
         self._heater_id = self._data[0]["heater_id"]
 
     @property
     def cooling_present(self):
-        """Cooling function present indicator."""
-        return self._cooling_present
+        """Cooling function presence."""
+        return self._data[0]["cooling_present"]
 
     @property
     def cooling_state(self):
@@ -205,13 +205,14 @@ class GWThermostat:
         self._schedule_temp = data.get("schedule_temperature")
         if self._active_device_present:
             hc_data = self._data[1][self._heater_id]
+            self._cooling_active = hc_data.get("cooling_active")
             self._cooling_state = hc_data.get("cooling_state")
             self._heating_state = hc_data.get("heating_state")
         # When control_state is present, prefer this data
         if "control_state" in data:
             self._cooling_state = data.get("control_state") == "cooling"
             self._heating_state = data.get("control_state") == "heating"
-
+ 
         # hvac mode
         self._hvac_mode = HVAC_MODE_AUTO
         if "selected_schedule" in data:
@@ -227,8 +228,8 @@ class GWThermostat:
                 self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
             else:
                 self._hvac_mode = HVAC_MODE_HEAT
-                if self._cooling_present:
-                    self._hvac_mode = HVAC_MODE_HEAT_COOL
+                if self._cooling_active:
+                    self._hvac_mode = HVAC_MODE_COOL
 
         # preset modes
         self._get_presets = data.get("presets")
