@@ -87,7 +87,7 @@ pip install -q flake8
 echo ""
 echo "Checking manifest for current python-plugwise to install"
 echo ""
-pip install --disable-pip-version-check $(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+pip install -q --disable-pip-version-check $(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
 echo "plugwise version installed:"
 echo "$(pip show plugwise | awk 'FNR <=2')"
 echo ""
