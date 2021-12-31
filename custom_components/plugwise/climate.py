@@ -11,7 +11,7 @@ from homeassistant.components.climate.const import (
     CURRENT_HVAC_IDLE,
     HVAC_MODE_AUTO,
     HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
+    HVAC_MODE_COOL,
     HVAC_MODE_OFF,
     PRESET_AWAY,
     PRESET_HOME,
@@ -42,7 +42,7 @@ from .gateway import SmileGateway
 from .smile_helpers import GWThermostat
 
 HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO, HVAC_MODE_OFF]
-HVAC_MODES_HEAT_COOL = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO, HVAC_MODE_OFF]
+HVAC_MODES_HEAT_COOL = [HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_AUTO, HVAC_MODE_OFF]
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
@@ -123,24 +123,17 @@ class PwThermostat(SmileGateway, ClimateEntity):
     @property
     def hvac_action(self):
         """Return the current action."""
-        if self._cor_data[0]["single_master_thermostat"]:
-            if self._gw_thermostat.heating_state:
-                return CURRENT_HVAC_HEAT
-            if self._gw_thermostat.cooling_state:
-                return CURRENT_HVAC_COOL
-            return CURRENT_HVAC_IDLE
-
-        if (
-            self._gw_thermostat.target_temperature
-            > self._gw_thermostat.current_temperature
-        ):
+        if self._gw_thermostat.heating_state:
             return CURRENT_HVAC_HEAT
+        if self._gw_thermostat.cooling_state:
+            return CURRENT_HVAC_COOL
+
         return CURRENT_HVAC_IDLE
 
     @property
     def hvac_modes(self):
         """Return the available hvac modes list."""
-        if self._gw_thermostat.compressor_state is not None:
+        if self._gw_thermostat.cooling_present:
             return HVAC_MODES_HEAT_COOL
         return HVAC_MODES_HEAT_ONLY
 
@@ -161,7 +154,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
             _LOGGER.error("Invalid temperature requested")
 
     async def async_set_hvac_mode(self, hvac_mode):
-        """Set the hvac mode, options are 'off', 'heat'/'heat_cool' and 'auto'."""
+        """Set the hvac mode, options are 'off', 'heat', 'cool' and 'auto'."""
         state = SCHEDULE_OFF
         if hvac_mode == HVAC_MODE_AUTO:
             state = SCHEDULE_ON
@@ -186,7 +179,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
                     preset_mode, PRESET_NONE
                 )[0]
             if (
-                hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_HEAT_COOL]
+                hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
                 and self._attr_preset_mode == PRESET_AWAY
             ):
                 preset_mode = PRESET_HOME

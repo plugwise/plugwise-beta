@@ -28,7 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW DEC 2021 [0.19.7]
+## NEW DEC 2021 [0.19.8]
+- Smile Adam & Anna: add cooling-mode detection, presence and operation (fixes #171)
+- Link to plugwise v0.15.7 - https://github.com/plugwise/python-plugwise/releases/tag/v0.15.7
+
+## DEC 2021 [0.19.7]
 - Update code to Core 2021.12 requirements
 
 ## NOV 2021 [0.19.6]

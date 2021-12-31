@@ -2,7 +2,7 @@
 from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
     HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
+    HVAC_MODE_COOL,
     HVAC_MODE_OFF,
     PRESET_AWAY,
 )
@@ -109,7 +109,7 @@ class GWThermostat:
     def __init__(self, data, dev_id):
         """Initialize the Thermostat."""
 
-        self._compressor_state = None
+        self._cooling_active = None
         self._cooling_state = None
         self._data = data
         self._dev_id = dev_id
@@ -128,14 +128,13 @@ class GWThermostat:
         self._smile_class = None
         self._temperature = None
 
-        self._active_device = self._data[0]["active_device"]
+        self._active_device_present = self._data[0]["active_device"]
         self._heater_id = self._data[0]["heater_id"]
-        self._sm_thermostat = self._data[0]["single_master_thermostat"]
 
     @property
-    def compressor_state(self):
-        """Compressor state."""
-        return self._compressor_state
+    def cooling_present(self):
+        """Cooling function presence."""
+        return self._data[0]["cooling_present"]
 
     @property
     def cooling_state(self):
@@ -204,12 +203,15 @@ class GWThermostat:
             if item[ATTR_ID] == "setpoint":
                 self._setpoint = s_list[idx][ATTR_STATE]
         self._schedule_temp = data.get("schedule_temperature")
-        if self._active_device:
+        if self._active_device_present:
             hc_data = self._data[1][self._heater_id]
-            self._compressor_state = hc_data.get("compressor_state")
-            if self._sm_thermostat:
-                self._cooling_state = hc_data.get("cooling_state")
-                self._heating_state = hc_data.get("heating_state")
+            self._cooling_active = hc_data.get("cooling_active")
+            self._cooling_state = hc_data.get("cooling_state")
+            self._heating_state = hc_data.get("heating_state")
+        # When control_state is present, prefer this data
+        if "control_state" in data:
+            self._cooling_state = data.get("control_state") == "cooling"
+            self._heating_state = data.get("control_state") == "heating"
 
         # hvac mode
         self._hvac_mode = HVAC_MODE_AUTO
@@ -226,8 +228,8 @@ class GWThermostat:
                 self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
             else:
                 self._hvac_mode = HVAC_MODE_HEAT
-                if self._compressor_state is not None:
-                    self._hvac_mode = HVAC_MODE_HEAT_COOL
+                if self._cooling_active:
+                    self._hvac_mode = HVAC_MODE_COOL
 
         # preset modes
         self._get_presets = data.get("presets")

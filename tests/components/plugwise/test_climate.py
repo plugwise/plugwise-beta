@@ -148,7 +148,7 @@ async def test_anna_climate_entity_attributes(hass, mock_smile_anna):
     attrs = state.attributes
 
     assert "hvac_modes" in attrs
-    assert "heat_cool" in attrs["hvac_modes"]
+    assert "heat" in attrs["hvac_modes"]
 
     assert "preset_modes" in attrs
     assert "no_frost" in attrs["preset_modes"]
@@ -158,7 +158,7 @@ async def test_anna_climate_entity_attributes(hass, mock_smile_anna):
     assert attrs["temperature"] == 21.0
 
     assert state.state == HVAC_MODE_AUTO
-    assert attrs["hvac_action"] == "idle"
+    assert attrs["hvac_action"] == "heating"
     assert attrs["preset_mode"] == "home"
 
     assert attrs["supported_features"] == 17
