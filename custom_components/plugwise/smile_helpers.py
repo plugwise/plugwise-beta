@@ -144,7 +144,7 @@ class GWThermostat:
             else:
                 self._hvac_mode = HVAC_MODE_HEAT
                 if self._cooling_present:
-                    self._hvac_mode = HVAC_MODE_HEAT_COOL
+                    self._hvac_mode = HVAC_MODE_COOL
 
         # preset modes
         self._get_presets = data["presets"]
