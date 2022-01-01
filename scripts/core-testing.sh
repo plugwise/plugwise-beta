@@ -18,7 +18,7 @@ which git || ( echo "You should have git installed, exiting"; exit 1)
 # ha-core testing later on
 
 
-pyversions=(3.9 dummy) # HA-Core is pinned to 3.8
+pyversions=(3.9 dummy) # HA-Core is pinned to 3.9
 my_path=$(git rev-parse --show-toplevel)
 my_venv=${my_path}/venv
 
