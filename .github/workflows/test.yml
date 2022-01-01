@@ -219,3 +219,11 @@ jobs:
         echo "Running hassfest (plugwise-only)"
         echo ""
         python3 -m script.hassfest --integration-path homeassistant/components/plugwise
+
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run ShellCheck
+      uses: ludeeus/action-shellcheck@master
