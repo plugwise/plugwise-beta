@@ -90,23 +90,22 @@ class GWThermostat:
     def __init__(self, data, dev_id):
         """Initialize the Thermostat."""
 
-        self._cooling_active = None
-        self._cooling_state = None
+        self._cooling_active = False
+        self._cooling_state = False
         self._data = data
         self._dev_id = dev_id
         self._extra_state_attributes = None
         self._get_presets = None
-        self._heating_state = None
-        self._hvac_mode = None
+        self._heating_state = False
+        self._hvac_mode = HVAC_MODE_AUTO
         self._last_active_schema = None
         self._preset_mode = None
         self._preset_modes = None
         self._schedule_temp = None
-        self._schema_names = None
-        self._schema_status = None
-        self._selected_schema = None
+        self._schedules = []
+        self._schedule_status = False
+        self._selected_schedule = None
         self._setpoint = None
-        self._smile_class = None
         self._temperature = None
 
         self._active_device_present = self._data[0]["active_device"]
@@ -142,12 +141,12 @@ class GWThermostat:
         """Climate active HVAC mode."""
         self._hvac_mode = HVAC_MODE_AUTO
         if "selected_schedule" in self._data[1][self._dev_id]:
-            self._selected_schema = self._data[1][self._dev_id]["selected_schedule"]
-            self._schema_status = False
-            if self._selected_schema is not None:
-                self._schema_status = True
+            self._selected_schedule = self._data[1][self._dev_id]["selected_schedule"]
+            self._schedule_status = False
+            if self._selected_schedule is not None:
+                self._schedule_status = True
 
-        if not self._schema_status:
+        if not self._schedule_status:
             if self._preset_mode == PRESET_AWAY:
                 self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
             else:
@@ -200,11 +199,11 @@ class GWThermostat:
     def extra_state_attributes(self):
         """Climate extra state attributes."""
         attributes = {}
-        self._schema_names = self._data[1][self._dev_id].get("available_schedules")
-        self._selected_schema = self._data[1][self._dev_id].get("selected_schedule")
-        if self._schema_names:
-            attributes["available_schemas"] = self._schema_names
-        if self._selected_schema:
-            attributes["selected_schema"] = self._selected_schema
+        self._schedules = self._data[1][self._dev_id].get("available_schedules")
+        self._selected_schedule = self._data[1][self._dev_id].get("selected_schedule")
+        if self._schedules:
+            attributes["available_schemas"] = self._schedules
+        if self._selected_schedule:
+            attributes["selected_schema"] = self._selected_schedule
 
         return attributes
