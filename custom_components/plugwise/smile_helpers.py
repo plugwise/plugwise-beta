@@ -113,30 +113,39 @@ class GWThermostat:
         self._cooling_present = self._data[0]["cooling_present"]
         self._heater_id = self._data[0]["heater_id"]
 
-        data = self._data[1][self._dev_id]
+    @property
+    def cooling_present(self):
+        """Cooling function presence."""
+        self._cooling_present = self._data[0]["cooling_present"]
+        return self._cooling_present
 
-        # current & target_temps, heater_central data when required
-        self._temperature = data["sensors"]["temperature"]
-        self._setpoint = data["sensors"]["setpoint"]
-        self._schedule_temp = data["schedule_temperature"]
+    @property
+    def cooling_state(self):
+        """Cooling state."""
         if self._active_device_present:
-            hc_data = self._data[1][self._heater_id]
-            self._cooling_state = hc_data["cooling_state"]
-            self._heating_state = hc_data["heating_state"]
+            return self._data[1][self._heater_id]["cooling_state"]
         # When control_state is present, prefer this data
-        if "control_state" in data:
-            self._cooling_state = data["control_state"] == "cooling"
-            self._heating_state = data["control_state"] == "heating"
+        if "control_state" in self._data[1][self._dev_id]:
+            return self._data[1][self._dev_id]["control_state"] == "cooling"
 
-        # hvac_mode
+    @property
+    def heating_state(self):
+        """Heating state."""
+        if self._active_device_present:
+            return self._data[1][self._heater_id]["heating_state"]
+        # When control_state is present, prefer this data
+        if "control_state" in self._data[1][self._dev_id]:
+            return self._data[1][self._dev_id]["control_state"] == "heating"
+
+    @property
+    def hvac_mode(self):
+        """Climate active HVAC mode."""
         self._hvac_mode = HVAC_MODE_AUTO
-        if "selected_schedule" in data:
-            self._selected_schema = data["selected_schedule"]
+        if "selected_schedule" in self._data[1][self._dev_id]:
+            self._selected_schema = self._data[1][self._dev_id]["selected_schedule"]
             self._schema_status = False
             if self._selected_schema is not None:
                 self._schema_status = True
-
-        self._last_active_schema = data["last_used"]
 
         if not self._schema_status:
             if self._preset_mode == PRESET_AWAY:
@@ -146,80 +155,56 @@ class GWThermostat:
                 if self._cooling_present:
                     self._hvac_mode = HVAC_MODE_COOL
 
-        # preset modes
-        self._get_presets = data["presets"]
-        if self._get_presets:
-            self._preset_modes = list(self._get_presets)
-
-        # preset mode
-        self._preset_mode = data["active_preset"]
-
-        # extra state attributes
-        attributes = {}
-        self._schema_names = data["available_schedules"]
-        self._selected_schema = data["selected_schedule"]
-        if self._schema_names:
-            attributes["available_schemas"] = self._schema_names
-        if self._selected_schema:
-            attributes["selected_schema"] = self._selected_schema
-        self._extra_state_attributes = attributes
-
-    @property
-    def cooling_present(self):
-        """Cooling function presence."""
-        return self._data[0]["cooling_present"]
-
-    @property
-    def cooling_state(self):
-        """Cooling state."""
-        return self._cooling_state
-
-    @property
-    def heating_state(self):
-        """Heating state."""
-        return self._heating_state
-
-    @property
-    def hvac_mode(self):
-        """Climate active HVAC mode."""
         return self._hvac_mode
 
     @property
     def presets(self):
         """Climate list of presets."""
-        return self._get_presets
+        return self._data[1][self._dev_id]["presets"]
 
     @property
     def preset_mode(self):
         """Climate active preset mode."""
+        self._preset_mode = self._data[1][self._dev_id]["active_preset"]
         return self._preset_mode
 
     @property
     def preset_modes(self):
         """Climate preset modes."""
+        self._get_presets = self._data[1][self._dev_id]["presets"]
+        if self._get_presets:
+            self._preset_modes = list(self._get_presets)
         return self._preset_modes
 
     @property
     def last_active_schema(self):
         """Climate last active schema."""
-        return self._last_active_schema
+        return self._data[1][self._dev_id]["last_used"]
 
     @property
     def current_temperature(self):
         """Climate current measured temperature."""
-        return self._temperature
+        return self._data[1][self._dev_id]["sensors"]["temperature"]
 
     @property
     def target_temperature(self):
         """Climate target temperature."""
-        return self._setpoint
+        return self._data[1][self._dev_id]["sensors"]["setpoint"]
 
     @property
     def schedule_temperature(self):
         """Climate target temperature."""
-        return self._schedule_temp
+        return self._data[1][self._dev_id]["schedule_temperature"]
 
     @property
     def extra_state_attributes(self):
         """Climate extra state attributes."""
-        return self._extra_state_attributes
+        attributes = {}
+        self._schema_names = self._data[1][self._dev_id].get("available_schedules")
+        self._selected_schema = self._data[1][self._dev_id].get("selected_schedule")
+        if self._schema_names:
+            attributes["available_schemas"] = self._schema_names
+        if self._selected_schema:
+            attributes["selected_schema"] = self._selected_schema
+
+        return attributes
