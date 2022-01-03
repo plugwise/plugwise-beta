@@ -109,16 +109,19 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._attr_supported_features = SUPPORT_FLAGS
         self._attr_temperature_unit = TEMP_CELSIUS
         self._attr_unique_id = f"{dev_id}-{Platform.CLIMATE}"
-
-        self._attr_current_temperature = self._gw_thermostat.current_temperature
-        self._attr_extra_state_attributes = self._gw_thermostat.extra_state_attributes
-        self._attr_hvac_mode = self._gw_thermostat.hvac_mode
-        self._attr_preset_mode = self._gw_thermostat.preset_mode
         self._attr_preset_modes = self._gw_thermostat.preset_modes
-        self._attr_target_temperature = self._gw_thermostat.target_temperature
 
         self._api = api
+        self._data = coordinator.data
+        self._dev_id = dev_id
         self._loc_id = _cdata.get(PW_LOCATION)
+
+        self._cooling_present = self._data[0]["cooling_present"]
+
+    @property
+    def current_temperature(self):
+        """Climate current measured temperature."""
+        return self._data[1][self._dev_id]["sensors"]["temperature"]
 
     @property
     def hvac_action(self):
@@ -131,11 +134,60 @@ class PwThermostat(SmileGateway, ClimateEntity):
         return CURRENT_HVAC_IDLE
 
     @property
+    def hvac_mode(self):
+        """Climate active HVAC mode."""
+        self._hvac_mode = HVAC_MODE_AUTO
+        if "selected_schedule" in self._data[1][self._dev_id]:
+            self._selected_schema = self._data[1][self._dev_id]["selected_schedule"]
+            self._schema_selected = False
+            if self._selected_schema is not None:
+                self._schema_selected = True
+
+        if not self._schema_selected:
+            if self._preset_mode == PRESET_AWAY:
+                self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
+            else:
+                self._hvac_mode = HVAC_MODE_HEAT
+                if self._gw_thermostat.cooling_active:
+                    self._hvac_mode = HVAC_MODE_COOL
+
+        return self._hvac_mode
+
+    @property
     def hvac_modes(self):
         """Return the available hvac modes list."""
-        if self._gw_thermostat.cooling_present:
+        if self._cooling_present:
             return HVAC_MODES_HEAT_COOL
         return HVAC_MODES_HEAT_ONLY
+
+    @property
+    def preset_mode(self):
+        """Climate active preset mode."""
+        self._preset_mode = self._data[1][self._dev_id]["active_preset"]
+        return self._preset_mode
+
+    @property
+    def presets(self):
+        """Climate list of presets."""
+        return self._data[1][self._dev_id]["presets"]
+
+    @property
+    def target_temperature(self):
+        """Climate target temperature."""
+        return self._data[1][self._dev_id]["sensors"]["setpoint"]
+
+    @property
+    def extra_state_attributes(self):
+        """Climate extra state attributes."""
+        attributes = {}
+        self._schema_names = self._data[1][self._dev_id].get("available_schedules")
+        self._selected_schema = self._data[1][self._dev_id].get("selected_schedule")
+        if self._schema_names:
+            attributes["available_schemas"] = self._schema_names
+        if self._selected_schema:
+            attributes["selected_schema"] = self._selected_schema
+
+        return attributes
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
@@ -159,7 +211,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         if hvac_mode == HVAC_MODE_AUTO:
             state = SCHEDULE_ON
             try:
-                schedule_temp = self._gw_thermostat.schedule_temperature
+                schedule_temp = self._data[1][self._dev_id]["schedule_temperature"]
                 await self._api.set_temperature(self._loc_id, schedule_temp)
                 self._attr_target_temperature = schedule_temp
             except PlugwiseException:
@@ -167,7 +219,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
         try:
             await self._api.set_schedule_state(
-                self._loc_id, self._gw_thermostat.last_active_schema, state
+                self._loc_id, self._data[1][self._dev_id]["last_used"], state
             )
 
             # Feature request - mimic HomeKit behavior
