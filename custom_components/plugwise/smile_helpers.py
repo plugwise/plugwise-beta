@@ -113,7 +113,7 @@ class GWThermostat:
             # When control_state is present, prefer this data
             if "control_state" in self._data[1][self._dev_id]:
                 cooling_state = self._data[1][self._dev_id]["control_state"] == "cooling"
-        
+
         return cooling_state
 
     @property
@@ -161,4 +161,3 @@ class GWThermostat:
             return preset_modes
 
         return None
-
