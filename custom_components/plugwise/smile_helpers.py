@@ -92,6 +92,7 @@ class GWThermostat:
 
         self._data = data
         self._dev_id = dev_id
+        self._gateway_id = self._data[0]["gateway_id"]
         self._heater_id = self._data[0]["heater_id"]
 
     @property
@@ -113,11 +114,15 @@ class GWThermostat:
     @property
     def heating_state(self):
         """Heating state."""
+        heating_state = None
         if self._data[0]["active_device"]:
             heating_state = self._data[1][self._heater_id]["heating_state"]
             # When control_state is present, prefer this data
             if "control_state" in self._data[1][self._dev_id]:
                 heating_state = self._data[1][self._dev_id]["control_state"] == "heating"
+
+        if "heating_state" in self._data[1][self._gateway_id]:
+            heating_state = self._data[1][self._gateway_id]["heating_state"]
 
         return heating_state
 
