@@ -232,7 +232,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 )[0]
             if (
                 hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
-                and self._attr_preset_mode == PRESET_AWAY
+                and self._data[1][self._dev_id]["active_preset"] == PRESET_AWAY
             ):
                 preset_mode = PRESET_HOME
                 await self._api.set_preset(self._loc_id, preset_mode)
