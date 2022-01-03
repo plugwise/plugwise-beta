@@ -129,8 +129,7 @@ class GWThermostat:
                 heating_state = (
                     self._data[1][self._dev_id]["control_state"] == "heating"
                 )
-
-        if "heating_state" in self._data[1][self._gateway_id]:
+        elif "heating_state" in self._data[1][self._gateway_id]:
             heating_state = self._data[1][self._gateway_id]["heating_state"]
 
         return heating_state
