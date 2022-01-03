@@ -102,20 +102,22 @@ class GWThermostat:
     @property
     def cooling_state(self):
         """Cooling state."""
-        cooling_state = self._data[1][self._heater_id]["cooling_state"]
-        # When control_state is present, prefer this data
-        if "control_state" in self._data[1][self._dev_id]:
-            cooling_state = self._data[1][self._dev_id]["control_state"] == "cooling"
+        if self._data[0]["active_device"]:
+            cooling_state = self._data[1][self._heater_id]["cooling_state"]
+            # When control_state is present, prefer this data
+            if "control_state" in self._data[1][self._dev_id]:
+                cooling_state = self._data[1][self._dev_id]["control_state"] == "cooling"
         
         return cooling_state
 
     @property
     def heating_state(self):
         """Heating state."""
-        heating_state = self._data[1][self._heater_id]["heating_state"]
-        # When control_state is present, prefer this data
-        if "control_state" in self._data[1][self._dev_id]:
-            heating_state = self._data[1][self._dev_id]["control_state"] == "heating"
+        if self._data[0]["active_device"]:
+            heating_state = self._data[1][self._heater_id]["heating_state"]
+            # When control_state is present, prefer this data
+            if "control_state" in self._data[1][self._dev_id]:
+                heating_state = self._data[1][self._dev_id]["control_state"] == "heating"
 
         return heating_state
 
