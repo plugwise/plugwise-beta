@@ -92,6 +92,7 @@ class GWThermostat:
 
         self._data = data
         self._dev_id = dev_id
+        self._hvac_mode = None
         self._gateway_id = self._data[0]["gateway_id"]
         self._heater_id = self._data[0]["heater_id"]
 
@@ -129,6 +130,26 @@ class GWThermostat:
             heating_state = self._data[1][self._gateway_id]["heating_state"]
 
         return heating_state
+
+    @property
+    def hvac_mode(self):
+        """Climate active HVAC mode."""
+        self._hvac_mode = HVAC_MODE_AUTO
+        if "selected_schedule" in self._data[1][self._dev_id]:
+            self._selected_schedule = self._data[1][self._dev_id]["selected_schedule"]
+            self._schedule_status = False
+            if self._selected_schedule is not None:
+                self._schedule_status = True
+
+        if not self._schedule_status:
+            if self._preset_mode == PRESET_AWAY:
+                self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
+            else:
+                self._hvac_mode = HVAC_MODE_HEAT
+                if self._cooling_present:
+                    self._hvac_mode = HVAC_MODE_COOL
+
+        return self._hvac_mode
 
     @property
     def preset_modes(self):

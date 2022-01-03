@@ -103,6 +103,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._gw_thermostat = GWThermostat(coordinator.data, dev_id)
 
         self._attr_device_class = None
+        self._attr_hvac_mode = self._gw_thermostat.hvac_mode
         self._attr_max_temp = max_temp
         self._attr_min_temp = min_temp
         self._attr_name = description.name
@@ -133,26 +134,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
             return CURRENT_HVAC_COOL
 
         return CURRENT_HVAC_IDLE
-
-    @property
-    def hvac_mode(self):
-        """Climate active HVAC mode."""
-        self._hvac_mode = HVAC_MODE_AUTO
-        if "selected_schedule" in self._data[1][self._dev_id]:
-            self._selected_schema = self._data[1][self._dev_id]["selected_schedule"]
-            self._schema_selected = False
-            if self._selected_schema is not None:
-                self._schema_selected = True
-
-        if not self._schema_selected:
-            if self._preset_mode == PRESET_AWAY:
-                self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
-            else:
-                self._hvac_mode = HVAC_MODE_HEAT
-                if self._gw_thermostat.cooling_active:
-                    self._hvac_mode = HVAC_MODE_COOL
-
-        return self._hvac_mode
 
     @property
     def hvac_modes(self):
@@ -241,7 +222,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
                     preset_mode, PRESET_NONE
                 )[0]
 
-            self._hvac_mode = hvac_mode
+            self._attr_hvac_mode = hvac_mode
             self.async_write_ha_state()
             _LOGGER.debug("Set hvac_mode to %s", hvac_mode)
         except PlugwiseException:
