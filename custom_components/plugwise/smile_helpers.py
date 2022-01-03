@@ -98,7 +98,10 @@ class GWThermostat:
     @property
     def cooling_active(self):
         """Cooling state."""
-        return self._data[1][self._heater_id]["cooling_active"]
+        if self._heater_id is not None:
+            return self._data[1][self._heater_id]["cooling_active"]
+
+        return None
 
     @property
     def cooling_state(self):
