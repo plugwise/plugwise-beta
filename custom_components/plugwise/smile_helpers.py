@@ -146,7 +146,7 @@ class GWThermostat:
                 self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
             else:
                 self._hvac_mode = HVAC_MODE_HEAT
-                if self._cooling_present:
+                if self._data[1][self._heater_id]["cooling_active"]:
                     self._hvac_mode = HVAC_MODE_COOL
 
         return self._hvac_mode
