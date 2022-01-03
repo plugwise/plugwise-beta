@@ -103,6 +103,7 @@ class GWThermostat:
     @property
     def cooling_state(self):
         """Cooling state."""
+        cooling_state = None
         if self._data[0]["active_device"]:
             cooling_state = self._data[1][self._heater_id]["cooling_state"]
             # When control_state is present, prefer this data
