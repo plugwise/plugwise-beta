@@ -115,6 +115,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._data = coordinator.data
         self._dev_id = dev_id
         self._loc_id = _cdata.get(PW_LOCATION)
+        self._preset_mode = None
 
         self._cooling_present = self._data[0]["cooling_present"]
 
