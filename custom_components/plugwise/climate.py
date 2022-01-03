@@ -161,12 +161,12 @@ class PwThermostat(SmileGateway, ClimateEntity):
     def extra_state_attributes(self):
         """Climate extra state attributes."""
         attributes = {}
-        self._schema_names = self._data[1][self._dev_id].get("available_schedules")
-        self._selected_schema = self._data[1][self._dev_id].get("selected_schedule")
-        if self._schema_names:
-            attributes["available_schemas"] = self._schema_names
-        if self._selected_schema:
-            attributes["selected_schema"] = self._selected_schema
+        schema_names = self._data[1][self._dev_id].get("available_schedules")
+        selected_schema = self._data[1][self._dev_id].get("selected_schedule")
+        if schema_names:
+            attributes["available_schemas"] = schema_names
+        if selected_schema:
+            attributes["selected_schema"] = selected_schema
 
         return attributes
 

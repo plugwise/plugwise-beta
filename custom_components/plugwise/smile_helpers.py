@@ -136,12 +136,11 @@ class GWThermostat:
         """Climate active HVAC mode."""
         self._hvac_mode = HVAC_MODE_AUTO
         if "selected_schedule" in self._data[1][self._dev_id]:
-            self._selected_schedule = self._data[1][self._dev_id]["selected_schedule"]
-            self._schedule_status = False
-            if self._selected_schedule is not None:
-                self._schedule_status = True
+            schedule_status = False
+            if self._data[1][self._dev_id]["selected_schedule"] is not None:
+                schedule_status = True
 
-        if not self._schedule_status:
+        if not schedule_status:
             if self._data[1][self._dev_id]["active_preset"] == PRESET_AWAY:
                 self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
             else:
