@@ -142,7 +142,7 @@ class GWThermostat:
                 self._schedule_status = True
 
         if not self._schedule_status:
-            if self._preset_mode == PRESET_AWAY:
+            if self._data[1][self._dev_id]["active_preset"] == PRESET_AWAY:
                 self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
             else:
                 self._hvac_mode = HVAC_MODE_HEAT
