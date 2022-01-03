@@ -112,7 +112,9 @@ class GWThermostat:
             cooling_state = self._data[1][self._heater_id]["cooling_state"]
             # When control_state is present, prefer this data
             if "control_state" in self._data[1][self._dev_id]:
-                cooling_state = self._data[1][self._dev_id]["control_state"] == "cooling"
+                cooling_state = (
+                    self._data[1][self._dev_id]["control_state"] == "cooling"
+                )
 
         return cooling_state
 
@@ -124,7 +126,9 @@ class GWThermostat:
             heating_state = self._data[1][self._heater_id]["heating_state"]
             # When control_state is present, prefer this data
             if "control_state" in self._data[1][self._dev_id]:
-                heating_state = self._data[1][self._dev_id]["control_state"] == "heating"
+                heating_state = (
+                    self._data[1][self._dev_id]["control_state"] == "heating"
+                )
 
         if "heating_state" in self._data[1][self._gateway_id]:
             heating_state = self._data[1][self._gateway_id]["heating_state"]

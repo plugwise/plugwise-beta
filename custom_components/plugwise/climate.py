@@ -208,9 +208,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 preset_mode = PRESET_AWAY
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._data[1][self._dev_id]["active_preset"] = preset_mode
-                self._data[1][self._dev_id]["sensors"]["setpoint"] = self._data[1][self._dev_id]["presets"].get(
-                    preset_mode, PRESET_NONE
-                )[0]
+                self._data[1][self._dev_id]["sensors"]["setpoint"] = self._data[1][
+                    self._dev_id
+                ]["presets"].get(preset_mode, PRESET_NONE)[0]
             if (
                 hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
                 and self._data[1][self._dev_id]["active_preset"] == PRESET_AWAY
@@ -218,9 +218,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 preset_mode = PRESET_HOME
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._data[1][self._dev_id]["active_preset"] = preset_mode
-                self._data[1][self._dev_id]["sensors"]["setpoint"] = self._data[1][self._dev_id]["presets"].get(
-                    preset_mode, PRESET_NONE
-                )[0]
+                self._data[1][self._dev_id]["sensors"]["setpoint"] = self._data[1][
+                    self._dev_id
+                ]["presets"].get(preset_mode, PRESET_NONE)[0]
 
             self._attr_hvac_mode = hvac_mode
             self.async_write_ha_state()
@@ -233,9 +233,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
         try:
             await self._api.set_preset(self._loc_id, preset_mode)
             self._data[1][self._dev_id]["active_preset"] = preset_mode
-            self._data[1][self._dev_id]["sensors"]["setpoint"] = self._data[1][self._dev_id]["presets"].get(
-                preset_mode, PRESET_NONE
-            )[0]
+            self._data[1][self._dev_id]["sensors"]["setpoint"] = self._data[1][
+                self._dev_id
+            ]["presets"].get(preset_mode, PRESET_NONE)[0]
             self.async_write_ha_state()
             _LOGGER.debug("Set preset_mode to %s", preset_mode)
         except PlugwiseException:
