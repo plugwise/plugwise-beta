@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import (
     ATTR_ID,
@@ -11,6 +10,7 @@ from homeassistant.const import (
     ATTR_STATE,
     STATE_OFF,
     STATE_ON,
+    Platform,
 )
 from homeassistant.core import callback
 
@@ -63,7 +63,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         if entities:
             async_add_entities(entities)
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH]:
         hass.async_create_task(async_add_switches(mac))
 
     def discoved_device(mac: str):

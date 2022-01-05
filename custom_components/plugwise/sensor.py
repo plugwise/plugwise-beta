@@ -3,10 +3,9 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME, ATTR_STATE
 from homeassistant.core import callback
+from homeassistant.const import ATTR_ID, ATTR_NAME, ATTR_STATE, Platform
 
 from plugwise.nodes import PlugwiseNode
 
@@ -58,7 +57,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         if entities:
             async_add_entities(entities)
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.SENSOR]:
         hass.async_create_task(async_add_sensors(mac))
 
     def discoved_device(mac: str):

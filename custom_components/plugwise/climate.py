@@ -19,12 +19,11 @@ from homeassistant.components.climate.const import (
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
 )
-from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, TEMP_CELSIUS
+from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, TEMP_CELSIUS, Platform
 from homeassistant.core import callback
 
 from .const import (
     API,
-    CLIMATE_DOMAIN,
     COORDINATOR,
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
@@ -116,7 +115,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._attr_supported_features = SUPPORT_FLAGS
         self._attr_target_temperature = None
         self._attr_temperature_unit = TEMP_CELSIUS
-        self._attr_unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
+        self._attr_unique_id = f"{dev_id}-{Platform.CLIMATE}"
         self._cor_data = coordinator.data
         self._loc_id = _cdata.get(PW_LOCATION)
 

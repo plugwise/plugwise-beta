@@ -1,11 +1,8 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
 import logging
 
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
@@ -62,12 +59,14 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
             # Skip unsupported devices
             if pw_device is not None:
                 if USB_RELAY_ID in pw_device.features:
-                    hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN].append(mac)
+                    hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH].append(
+                        mac
+                    )
                 if USB_MOTION_ID in pw_device.features:
                     hass.data[DOMAIN][config_entry.entry_id][
-                        BINARY_SENSOR_DOMAIN
+                        Platform.BINARY_SENSOR
                     ].append(mac)
-                hass.data[DOMAIN][config_entry.entry_id][SENSOR_DOMAIN].append(mac)
+                hass.data[DOMAIN][config_entry.entry_id][Platform.SENSOR].append(mac)
 
         hass.config_entries.async_setup_platforms(config_entry, PLATFORMS_USB)
 

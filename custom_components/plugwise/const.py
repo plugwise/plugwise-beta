@@ -1,10 +1,7 @@
 """Constants for Plugwise beta component."""
 
 import voluptuous as vol
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
-from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
 
 API = "api"
@@ -49,8 +46,13 @@ DEFAULT_TIMEOUT = 10
 DEFAULT_USERNAME = "smile"
 
 # --- Const for Plugwise Smile and Stretch
-GATEWAY_PLATFORMS = [BINARY_SENSOR_DOMAIN, CLIMATE_DOMAIN, SENSOR_DOMAIN, SWITCH_DOMAIN]
-SENSOR_PLATFORMS = [SENSOR_DOMAIN, SWITCH_DOMAIN]
+GATEWAY_PLATFORMS = [
+    Platform.BINARY_SENSOR,
+    Platform.CLIMATE,
+    Platform.SENSOR,
+    Platform.SWITCH,
+]
+SENSOR_PLATFORMS = [Platform.SENSOR, Platform.SWITCH]
 SERVICE_DELETE = "delete_notification"
 SEVERITIES = ["other", "info", "warning", "error"]
 
@@ -132,7 +134,11 @@ RELAY = "relay"
 
 # --- Const for Plugwise USB-stick.
 
-PLATFORMS_USB = [BINARY_SENSOR_DOMAIN, SENSOR_DOMAIN, SWITCH_DOMAIN]
+PLATFORMS_USB = [
+    Platform.BINARY_SENSOR,
+    Platform.SENSOR,
+    Platform.SWITCH,
+]
 CONF_USB_PATH = "usb_path"
 
 # Callback types

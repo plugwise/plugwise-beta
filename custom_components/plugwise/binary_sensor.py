@@ -3,9 +3,8 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME
+from homeassistant.const import ATTR_ID, ATTR_NAME, Platform
 from homeassistant.core import callback
 from homeassistant.helpers import entity_platform
 
@@ -88,7 +87,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
                 "_service_sed_battery_config",
             )
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.BINARY_SENSOR]:
         hass.async_create_task(async_add_binary_sensors(mac))
 
     def discoved_device(mac: str):
