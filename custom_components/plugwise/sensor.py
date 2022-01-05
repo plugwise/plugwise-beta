@@ -4,8 +4,11 @@ from __future__ import annotations
 import logging
 
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.core import callback
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, ATTR_NAME, ATTR_STATE, Platform
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity_registry import async_get_registry
 
 from plugwise.nodes import PlugwiseNode
 
@@ -31,7 +34,12 @@ PARALLEL_UPDATES = 0
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile switches from a config entry."""
     if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
         return await async_setup_entry_usb(hass, config_entry, async_add_entities)
@@ -39,7 +47,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     return await async_setup_entry_gateway(hass, config_entry, async_add_entities)
 
 
-async def async_setup_entry_usb(hass, config_entry, async_add_entities):
+async def async_setup_entry_usb(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up Plugwise sensor based on config_entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
@@ -68,7 +80,11 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
+async def async_setup_entry_gateway(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile sensors from a config entry."""
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]

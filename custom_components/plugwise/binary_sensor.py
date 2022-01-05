@@ -4,9 +4,11 @@ from __future__ import annotations
 import logging
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, ATTR_NAME, Platform
-from homeassistant.core import callback
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import entity_platform
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from plugwise.nodes import PlugwiseNode
 
@@ -45,7 +47,11 @@ PARALLEL_UPDATES = 0
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile switches from a config entry."""
     if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
         return await async_setup_entry_usb(hass, config_entry, async_add_entities)
@@ -53,7 +59,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     return await async_setup_entry_gateway(hass, config_entry, async_add_entities)
 
 
-async def async_setup_entry_usb(hass, config_entry, async_add_entities):
+async def async_setup_entry_usb(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up Plugwise binary sensor based on config_entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
     platform = entity_platform.current_platform.get()
@@ -98,7 +108,11 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
+async def async_setup_entry_gateway(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile binary_sensors from a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 

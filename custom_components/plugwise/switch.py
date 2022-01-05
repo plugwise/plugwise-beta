@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_ID,
     ATTR_NAME,
@@ -12,7 +13,8 @@ from homeassistant.const import (
     STATE_ON,
     Platform,
 )
-from homeassistant.core import callback
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from plugwise.exceptions import PlugwiseException
 from plugwise.nodes import PlugwiseNode
@@ -37,7 +39,11 @@ from .usb import PlugwiseUSBEntity
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile switches from a config entry."""
     if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
         return await async_setup_entry_usb(hass, config_entry, async_add_entities)
@@ -45,7 +51,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     return await async_setup_entry_gateway(hass, config_entry, async_add_entities)
 
 
-async def async_setup_entry_usb(hass, config_entry, async_add_entities):
+async def async_setup_entry_usb(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the USB switches from a config entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
@@ -74,7 +84,11 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
+async def async_setup_entry_gateway(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile switches from a config entry."""
     api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]

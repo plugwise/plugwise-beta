@@ -40,7 +40,7 @@ from .models import PlugwiseEntityDescription
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
     """Establish connection with plugwise USB-stick."""
     hass.data.setdefault(DOMAIN, {})
     device_registry = await dr.async_get_registry(hass)
