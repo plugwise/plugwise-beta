@@ -30,7 +30,7 @@ from homeassistant.const import (
     TIME_MILLISECONDS,
     VOLUME_CUBIC_METERS,
 )
-from homeassistant.helpers.entity import EntityDescription, EntityCategory
+from homeassistant.helpers.entity import EntityCategory, EntityDescription
 
 from .const import (
     BATTERY,
