@@ -38,6 +38,12 @@ def icon_selector(arg, state):
     }
     return selector.get(arg)
 
+def get_preset_temp(preset, cooling_active, data):
+    """Obtain the matching preset setpoint temperature ."""
+    if cooling_active:
+        return data["presets"].get(preset)[1]
+    return data["presets"].get(preset)[0]
+
 
 class GWBinarySensor:
     """Represent the Plugwise Smile/Stretch binary_sensor."""
@@ -92,7 +98,6 @@ class GWThermostat:
 
         self._data = data
         self._dev_id = dev_id
-        self._hvac_mode = None
         self._gateway_id = self._data[0]["gateway_id"]
         self._heater_id = self._data[0]["heater_id"]
 
@@ -134,32 +139,3 @@ class GWThermostat:
 
         return heating_state
 
-    @property
-    def hvac_mode(self):
-        """Climate active HVAC mode."""
-        self._hvac_mode = HVAC_MODE_AUTO
-        if "selected_schedule" in self._data[1][self._dev_id]:
-            schedule_status = False
-            if self._data[1][self._dev_id]["selected_schedule"] is not None:
-                schedule_status = True
-
-        if not schedule_status:
-            if self._data[1][self._dev_id]["active_preset"] == PRESET_AWAY:
-                self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
-            else:
-                self._hvac_mode = HVAC_MODE_HEAT
-                if self._heater_id is not None:
-                    if self._data[1][self._heater_id]["cooling_active"]:
-                        self._hvac_mode = HVAC_MODE_COOL
-
-        return self._hvac_mode
-
-    @property
-    def preset_modes(self):
-        """Climate preset modes."""
-        get_presets = self._data[1][self._dev_id]["presets"]
-        if get_presets:
-            preset_modes = list(get_presets)
-            return preset_modes
-
-        return None
