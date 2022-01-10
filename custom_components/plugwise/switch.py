@@ -59,8 +59,9 @@ async def async_setup_entry_usb(
     """Set up the USB switches from a config entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
-    async def async_add_switches(mac: str):
-        """Add plugwise switches."""
+    @callback
+    async def async_add_switches(mac: str) -> None:
+        """Add plugwise switch."""
         entities = []
         entities.extend(
             [
@@ -212,12 +213,12 @@ class USBSwitch(PlugwiseUSBEntity, SwitchEntity):
     @property
     def is_on(self) -> bool:
         """Return true if the switch is on."""
-        return getattr(self._node, self.entity_description.state_request_method)
+        return getattr(self._node, self.entity_description.key)
 
-    def turn_off(self, **kwargs):
+    def turn_off(self, **kwargs) -> None:
         """Instruct the switch to turn off."""
-        setattr(self._node, self.entity_description.state_request_method, False)
+        setattr(self._node, self.entity_description.key, False)
 
-    def turn_on(self, **kwargs):
+    def turn_on(self, **kwargs) -> None:
         """Instruct the switch to turn on."""
-        setattr(self._node, self.entity_description.state_request_method, True)
+        setattr(self._node, self.entity_description.key, True)

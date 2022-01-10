@@ -8,6 +8,7 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity import Entity
 
+from plugwise.constants import USB as USB_ID
 from plugwise.exceptions import (
     CirclePlusError,
     NetworkDown,
@@ -31,9 +32,6 @@ from .const import (
     STICK,
     UNDO_UPDATE_LISTENER,
     USB,
-    USB_AVAILABLE_ID,
-    USB_MOTION_ID,
-    USB_RELAY_ID,
 )
 from .models import PlugwiseEntityDescription
 
@@ -58,14 +56,22 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry) 
         for mac, pw_device in api_stick.devices.items():
             # Skip unsupported devices
             if pw_device is not None:
-                if USB_RELAY_ID in pw_device.features:
+                if USB_ID.relay in pw_device.features:
                     hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH].append(
                         mac
                     )
-                if USB_MOTION_ID in pw_device.features:
+                if USB_ID.motion in pw_device.features:
                     hass.data[DOMAIN][config_entry.entry_id][
                         Platform.BINARY_SENSOR
                     ].append(mac)
+                if (
+                    USB_ID.interval_cons in pw_device.features
+                    or USB_ID.interval_prod in pw_device.features
+                ):
+                    hass.data[DOMAIN][config_entry.entry_id][Platform.NUMBER].append(
+                        mac
+                    )
+
                 hass.data[DOMAIN][config_entry.entry_id][Platform.SENSOR].append(mac)
 
         hass.config_entries.async_setup_platforms(config_entry, PLATFORMS_USB)
@@ -203,7 +209,7 @@ class PlugwiseUSBEntity(Entity):
         self._attr_unique_id = f"{node.mac}-{entity_description.key}"
         self._node = node
         self.entity_description = entity_description
-        self.node_callbacks = (USB_AVAILABLE_ID, entity_description.key)
+        self.node_callbacks = (USB_ID.available, entity_description.key)
 
     async def async_added_to_hass(self):
         """Subscribe for updates."""

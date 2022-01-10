@@ -138,6 +138,7 @@ PLATFORMS_USB = [
     Platform.BINARY_SENSOR,
     Platform.SENSOR,
     Platform.SWITCH,
+    Platform.NUMBER,
 ]
 CONF_USB_PATH = "usb_path"
 
@@ -145,20 +146,12 @@ CONF_USB_PATH = "usb_path"
 CB_NEW_NODE = "NEW_NODE"
 CB_JOIN_REQUEST = "JOIN_REQUEST"
 
-
 # USB generic device constants
-USB_AVAILABLE_ID = "available"
-
 ATTR_MAC_ADDRESS = "mac"
 
 SERVICE_USB_DEVICE_ADD = "device_add"
 SERVICE_USB_DEVICE_REMOVE = "device_remove"
 SERVICE_USB_DEVICE_SCHEMA = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
-
-
-# USB Relay device constants
-USB_RELAY_ID = "relay"
-
 
 # USB SED (battery powered) device constants
 ATTR_SED_STAY_ACTIVE = "stay_active"
@@ -186,8 +179,6 @@ SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA = {
 
 
 # USB Scan device constants
-USB_MOTION_ID = "motion"
-
 ATTR_SCAN_DAYLIGHT_MODE = "day_light"
 ATTR_SCAN_SENSITIVITY_MODE = "sensitivity_mode"
 ATTR_SCAN_RESET_TIMER = "reset_timer"

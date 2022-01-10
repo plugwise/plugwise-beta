@@ -10,6 +10,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from plugwise.constants import USB as USB_ID
 from plugwise.nodes import PlugwiseNode
 
 from .const import (
@@ -34,7 +35,6 @@ from .const import (
     SMILE,
     STICK,
     USB,
-    USB_MOTION_ID,
     VENDOR,
 )
 from .gateway import SmileGateway
@@ -82,8 +82,8 @@ async def async_setup_entry_usb(
         if entities:
             async_add_entities(entities)
 
-        if USB_MOTION_ID in api_stick.devices[mac].features:
-            _LOGGER.debug("Add binary_sensors for %s", mac)
+        if USB_ID.motion in api_stick.devices[mac].features:
+            _LOGGER.info("Add binary_sensor %s", mac)
 
             # Register services
             platform.async_register_entity_service(
@@ -205,7 +205,7 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool:
         """Return true if the binary_sensor is on."""
-        return getattr(self._node, self.entity_description.state_request_method)
+        return getattr(self._node, self.entity_description.key)
 
     def _service_scan_config(self, **kwargs):
         """Service call to configure motion sensor of Scan device."""

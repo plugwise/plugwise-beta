@@ -10,6 +10,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.entity_registry import async_get_registry
 
+from plugwise.constants import USB as USB_ID
 from plugwise.nodes import PlugwiseNode
 
 from .const import (
@@ -33,6 +34,12 @@ PARALLEL_UPDATES = 0
 
 _LOGGER = logging.getLogger(__name__)
 
+# Migration list format {new:old}
+MIGRATION_LIST = {
+    "energy_consumption_day": "energy_consumption_today",
+    "energy_consumption_hour": "power_con_cur_hour",
+    "energy_production_hour": "power_prod_cur_hour",
+}
 
 
 async def async_setup_entry(
@@ -67,7 +74,31 @@ async def async_setup_entry_usb(
             ]
         )
         if entities:
-            async_add_entities(entities)
+            # migrate old "power" entities to new "energy" entities
+            # as defined in migration list
+            registry = await async_get_registry(hass)
+            for entity in entities:
+                if MIGRATION_LIST.get(entity.entity_description.key) is not None:
+                    _old_unique_id = f"{entity._node.mac}-{MIGRATION_LIST[entity.entity_description.key]}"
+
+                    old_entity_id = registry.async_get_entity_id(
+                        Platform.SENSOR, DOMAIN, _old_unique_id
+                    )
+                    if old_entity_id is not None:
+                        _LOGGER.info(
+                            "Migrate entity ID from [%s] to [%s]",
+                            _old_unique_id,
+                            entity.unique_id,
+                        )
+                        if registry.async_get_entity_id(
+                            Platform.SENSOR, DOMAIN, entity.unique_id
+                        ):
+                            registry.async_remove(old_entity_id)
+                        else:
+                            registry.async_update_entity(
+                                old_entity_id, new_unique_id=entity.unique_id
+                            )
+            async_add_entities(entities, update_before_add=True)
 
     for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.SENSOR]:
         hass.async_create_task(async_add_sensors(mac))
@@ -108,7 +139,6 @@ async def async_setup_entry_gateway(
                                 )
                             ]
                         )
-
     if entities:
         async_add_entities(entities, True)
 
@@ -135,7 +165,7 @@ class GwSensor(SmileGateway, SensorEntity):
             _cdata.get(FW),
         )
 
-        self._attr_name = f"{ _cdata.get(ATTR_NAME)} {description.name}"
+        self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
         self._attr_native_unit_of_measurement = description.native_unit_of_measurement
         self._attr_native_value = None
         self._attr_should_poll = description.should_poll
@@ -149,7 +179,6 @@ class GwSensor(SmileGateway, SensorEntity):
         self._attr_native_value = self._sr_data.get(ATTR_STATE)
         if self._sr_data.get(ATTR_ID) == "device_state":
             self._attr_icon = icon_selector(self._attr_native_value, None)
-
         self.async_write_ha_state()
 
 
@@ -165,7 +194,7 @@ class USBSensor(PlugwiseUSBEntity, SensorEntity):
     @property
     def native_value(self) -> float | None:
         """Return the native value of the sensor."""
-        state_value = getattr(self._node, self.entity_description.state_request_method)
+        state_value = getattr(self._node, self.entity_description.key)
         if state_value is not None:
             return float(round(state_value, 3))
         return None
