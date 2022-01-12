@@ -9,12 +9,12 @@ from tests.components.plugwise.common import async_init_integration_gw
 
 async def test_anna_climate_binary_sensor_entities(hass, mock_smile_anna):
     """Test creation of climate related binary_sensor entities."""
-    a_sensor = "binary_sensor.auxiliary_slave_boiler_state"
+    a_sensor = "binary_sensor.opentherm_slave_boiler_state"
 
     entry = await async_init_integration_gw(hass, mock_smile_anna)
     assert entry.state == ConfigEntryState.LOADED
 
-    # Enable the auxiliary sensor
+    # Enable the opentherm sensor
     registry = await async_get_registry(hass)
     updated_entry = registry.async_update_entity(a_sensor, disabled_by=None)
 
@@ -26,10 +26,10 @@ async def test_anna_climate_binary_sensor_entities(hass, mock_smile_anna):
     await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
 
-    state = hass.states.get("binary_sensor.auxiliary_slave_boiler_state")
+    state = hass.states.get("binary_sensor.opentherm_slave_boiler_state")
     assert str(state.state) == STATE_OFF
 
-    state = hass.states.get("binary_sensor.auxiliary_dhw_state")
+    state = hass.states.get("binary_sensor.opentherm_dhw_state")
     assert str(state.state) == STATE_OFF
 
 
@@ -38,17 +38,17 @@ async def test_anna_climate_binary_sensor_change(hass, mock_smile_anna):
     entry = await async_init_integration_gw(hass, mock_smile_anna)
     assert entry.state == ConfigEntryState.LOADED
 
-    hass.states.async_set("binary_sensor.auxiliary_dhw_state", STATE_ON, {})
+    hass.states.async_set("binary_sensor.opentherm_dhw_state", STATE_ON, {})
     await hass.async_block_till_done()
 
-    state = hass.states.get("binary_sensor.auxiliary_dhw_state")
+    state = hass.states.get("binary_sensor.opentherm_dhw_state")
     assert str(state.state) == STATE_ON
 
     await hass.helpers.entity_component.async_update_entity(
-        "binary_sensor.auxiliary_dhw_state"
+        "binary_sensor.opentherm_dhw_state"
     )
 
-    state = hass.states.get("binary_sensor.auxiliary_dhw_state")
+    state = hass.states.get("binary_sensor.opentherm_dhw_state")
     assert str(state.state) == STATE_OFF
 
 
