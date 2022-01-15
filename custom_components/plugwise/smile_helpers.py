@@ -214,22 +214,9 @@ class GWThermostat:
             self._heating_state = data.get("control_state") == "heating"
 
         # hvac mode
-        self._hvac_mode = HVAC_MODE_AUTO
-        if "selected_schedule" in data:
-            self._selected_schema = data.get("selected_schedule")
-            self._schema_status = False
-            if self._selected_schema is not None:
-                self._schema_status = True
+        self._hvac_mode = data.get("mode")
 
         self._last_active_schema = data.get("last_used")
-
-        if not self._schema_status:
-            if self._preset_mode == PRESET_AWAY:
-                self._hvac_mode = HVAC_MODE_OFF  # pragma: no cover
-            else:
-                self._hvac_mode = HVAC_MODE_HEAT
-                if self._cooling_active:
-                    self._hvac_mode = HVAC_MODE_COOL
 
         # preset modes
         self._get_presets = data.get("presets")
