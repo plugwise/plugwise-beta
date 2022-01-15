@@ -5,13 +5,7 @@ import logging
 
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.const import (
-    ATTR_ID,
-    ATTR_NAME,
-    ATTR_STATE,
-    STATE_OFF,
-    STATE_ON,
-)
+from homeassistant.const import ATTR_NAME, STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from plugwise.exceptions import PlugwiseException
