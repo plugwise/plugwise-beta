@@ -211,7 +211,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
                 await self._api.set_preset(self._loc_id, preset_mode)
                 self._data[1][self._dev_id]["active_preset"] = preset_mode
                 self._data[1][self._dev_id]["sensors"]["setpoint"] = get_preset_temp(
-                    preset_mode, self._gw_thermostat.cooling_active, self._data[1][self._dev_id]
+                    preset_mode,
+                    self._gw_thermostat.cooling_active,
+                    self._data[1][self._dev_id],
                 )
             if (
                 hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
@@ -236,7 +238,9 @@ class PwThermostat(SmileGateway, ClimateEntity):
             await self._api.set_preset(self._loc_id, preset_mode)
             self._data[1][self._dev_id]["active_preset"] = preset_mode
             self._data[1][self._dev_id]["sensors"]["setpoint"] = get_preset_temp(
-                preset_mode, self._gw_thermostat.cooling_active, self._data[1][self._dev_id]
+                preset_mode,
+                self._gw_thermostat.cooling_active,
+                self._data[1][self._dev_id],
             )
             self.async_write_ha_state()
             _LOGGER.debug("Set preset_mode to %s", preset_mode)
