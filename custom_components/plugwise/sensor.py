@@ -77,11 +77,11 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     entities = []
     for dev_id in coordinator.data[1]:
         if "sensors" in coordinator.data[1][dev_id]:
-            for data in coordinator.data[1][dev_id]["sensors"]:
+            for sensor in coordinator.data[1][dev_id]["sensors"]:
                 for description in PW_SENSOR_TYPES:
                     if (
                         description.plugwise_api == SMILE
-                        and description.key == data.get(ATTR_ID)
+                        and description.key == sensor
                     ):
                         entities.extend(
                             [
@@ -89,7 +89,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                     coordinator,
                                     description,
                                     dev_id,
-                                    data,
+                                    sensor,
                                 )
                             ]
                         )
@@ -106,7 +106,7 @@ class GwSensor(SmileGateway, SensorEntity):
         coordinator,
         description: PlugwiseSensorEntityDescription,
         dev_id,
-        sr_data,
+        sensor,
     ):
         """Initialise the sensor."""
         _cdata = coordinator.data[1][dev_id]
@@ -126,12 +126,12 @@ class GwSensor(SmileGateway, SensorEntity):
         self._attr_should_poll = description.should_poll
         self._attr_unique_id = f"{dev_id}-{description.key}"
         self._attr_state_class = description.state_class
-        self._sr_data = sr_data
+        self._sr_data = sensor
 
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        self._attr_native_value = self._sr_data.get(ATTR_STATE)
+        self._attr_native_value = self._sr_data.get(sensor)
         if self._sr_data.get(ATTR_ID) == "device_state":
             self._attr_icon = icon_selector(self._attr_native_value, None)
 

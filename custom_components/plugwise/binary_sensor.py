@@ -106,11 +106,11 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     entities = []
     for dev_id in coordinator.data[1]:
         if "binary_sensors" in coordinator.data[1][dev_id]:
-            for data in coordinator.data[1][dev_id]["binary_sensors"]:
+            for b_sensor in coordinator.data[1][dev_id]["binary_sensors"]:
                 for description in PW_BINARY_SENSOR_TYPES:
                     if (
                         description.plugwise_api == SMILE
-                        and description.key == data.get(ATTR_ID)
+                        and description.key == b_sensor
                     ):
                         entities.extend(
                             [
@@ -118,7 +118,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                     coordinator,
                                     description,
                                     dev_id,
-                                    data,
+                                    b_sensor,
                                 )
                             ]
                         )
@@ -135,7 +135,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         coordinator,
         description: PlugwiseBinarySensorEntityDescription,
         dev_id,
-        bs_data,
+        b_sensor,
     ):
         """Initialise the binary_sensor."""
         _cdata = coordinator.data[1][dev_id]
@@ -150,7 +150,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         )
 
         self._gw_b_sensor = GWBinarySensor(
-            coordinator.data, dev_id, bs_data.get(ATTR_ID)
+            coordinator.data, dev_id, b_sensor
         )
 
         self._attr_entity_registry_enabled_default = (

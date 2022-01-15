@@ -82,11 +82,11 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     entities = []
     for dev_id in coordinator.data[1]:
         if "switches" in coordinator.data[1][dev_id]:
-            for data in coordinator.data[1][dev_id]["switches"]:
+            for switch in coordinator.data[1][dev_id]["switches"]:
                 for description in PW_SWITCH_TYPES:
                     if (
                         description.plugwise_api == SMILE
-                        and description.key == data.get(ATTR_ID)
+                        and description.key == switch
                     ):
                         entities.extend(
                             [
@@ -95,7 +95,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                     coordinator,
                                     description,
                                     dev_id,
-                                    data,
+                                    switch,
                                 )
                             ]
                         )
@@ -114,7 +114,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         coordinator,
         description: PlugwiseSwitchEntityDescription,
         dev_id,
-        sw_data,
+        switch,
     ):
         """Initialise the sensor."""
         _cdata = coordinator.data[1][dev_id]
@@ -141,7 +141,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         if "members" in coordinator.data[1][dev_id]:
             self._members = coordinator.data[1][dev_id].get("members")
         self._switch = description.key
-        self._sw_data = sw_data
+        self._sw_data = switch
 
         self._attr_unique_id = f"{dev_id}-{description.key}"
         # For backwards compatibility:
