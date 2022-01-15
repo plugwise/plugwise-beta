@@ -92,7 +92,7 @@ class GWBinarySensor:
         """Handle update callbacks."""
         data = self._data[1][self._dev_id]["binary_sensors"]
 
-        for item, value in data:
+        for item, value in data.items():
             if item != self._binary_sensor:
                 continue
 
