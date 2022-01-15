@@ -33,10 +33,10 @@ async def test_anna_as_smt_climate_sensor_entities(hass, mock_smile_anna):
     entry = await async_init_integration_gw(hass, mock_smile_anna)
     assert entry.state == ConfigEntryState.LOADED
 
-    state = hass.states.get("sensor.openterm_outdoor_temperature")
-    assert float(state.state) == 18.0
+    state = hass.states.get("sensor.opentherm_outdoor_temperature")
+    assert float(state.state) == 3.0
 
-    state = hass.states.get("sensor.openterm_water_temperature")
+    state = hass.states.get("sensor.opentherm_water_temperature")
     assert float(state.state) == 29.1
 
     state = hass.states.get("sensor.anna_illuminance")
@@ -49,8 +49,8 @@ async def test_anna_climate_sensor_entities(hass, mock_smile_anna):
     entry = await async_init_integration_gw(hass, mock_smile_anna)
     assert entry.state == ConfigEntryState.LOADED
 
-    state = hass.states.get("sensor.operterm_outdoor_temperature")
-    assert float(state.state) == 18.0
+    state = hass.states.get("sensor.opentherm_outdoor_temperature")
+    assert float(state.state) == 3.0
 
 
 async def test_p1_dsmr_sensor_entities(hass, mock_smile_p1):
