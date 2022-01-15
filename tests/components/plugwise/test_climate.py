@@ -154,7 +154,7 @@ async def test_anna_climate_entity_attributes(hass, mock_smile_anna):
     assert "no_frost" in attrs["preset_modes"]
     assert "home" in attrs["preset_modes"]
 
-    assert attrs["current_temperature"] == 3.0
+    assert attrs["current_temperature"] == 19.3
     assert attrs["temperature"] == 21.0
 
     assert state.state == HVAC_MODE_AUTO
