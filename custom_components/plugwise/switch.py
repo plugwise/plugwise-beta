@@ -182,7 +182,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
     @callback
     def _async_process_data(self):
         """Update the data from the Plugs."""
-        self._attr_is_on = self._sw_data.get(ATTR_STATE)
+        self._attr_is_on = self.coordinator.data[1]["switches"].get(description.key)
         self.async_write_ha_state()
 
 
