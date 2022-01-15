@@ -149,9 +149,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
             _cdata.get(FW),
         )
 
-        self._gw_b_sensor = GWBinarySensor(
-            coordinator.data, dev_id, b_sensor
-        )
+        self._gw_b_sensor = GWBinarySensor(coordinator.data, dev_id, b_sensor)
 
         self._attr_entity_registry_enabled_default = (
             description.entity_registry_enabled_default

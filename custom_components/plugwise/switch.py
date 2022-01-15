@@ -78,10 +78,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
         if "switches" in coordinator.data[1][dev_id]:
             for switch in coordinator.data[1][dev_id]["switches"]:
                 for description in PW_SWITCH_TYPES:
-                    if (
-                        description.plugwise_api == SMILE
-                        and description.key == switch
-                    ):
+                    if description.plugwise_api == SMILE and description.key == switch:
                         entities.extend(
                             [
                                 GwSwitch(
