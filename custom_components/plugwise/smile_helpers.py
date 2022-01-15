@@ -197,7 +197,7 @@ class GWThermostat:
 
         # current & target_temps, heater_central data when required
         sensors = data["sensors"]
-        for item, value in sensors:
+        for item, value in sensors.items():
             if item == "temperature":
                 self._temperature = value
             if item == "setpoint":
