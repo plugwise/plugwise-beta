@@ -1,12 +1,4 @@
 """Plugwise Smile Helper Classes."""
-from homeassistant.components.climate.const import (
-    HVAC_MODE_AUTO,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_COOL,
-    HVAC_MODE_OFF,
-    PRESET_AWAY,
-)
-
 from .const import (
     COOLING_ICON,
     FLAME_ICON,
@@ -37,6 +29,7 @@ def icon_selector(arg, state):
         "plugwise_notification": NOTIFICATION_ICON if state else NO_NOTIFICATION_ICON,
     }
     return selector.get(arg)
+
 
 def get_preset_temp(preset, cooling_active, data):
     """Obtain the matching preset setpoint temperature ."""
@@ -138,4 +131,3 @@ class GWThermostat:
             heating_state = self._data[1][self._gateway_id]["heating_state"]
 
         return heating_state
-
