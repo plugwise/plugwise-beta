@@ -137,6 +137,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
         self._attr_should_poll = self.entity_description.should_poll
         self._data = _cdata
+        self._description = description
         self._dev_id = dev_id
         self._members = None
         if "members" in coordinator.data[1][dev_id]:
@@ -183,7 +184,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
     @callback
     def _async_process_data(self):
         """Update the data from the Plugs."""
-        self._attr_is_on = self._data["switches"].get(description.key)
+        self._attr_is_on = self._data["switches"].get(self._description.key)
         self.async_write_ha_state()
 
 

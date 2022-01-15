@@ -127,12 +127,13 @@ class GwSensor(SmileGateway, SensorEntity):
         self._attr_unique_id = f"{dev_id}-{description.key}"
         self._attr_state_class = description.state_class
         self._data = _cdata
+        self._description = description
         self._sr_data = sensor
 
     @callback
     def _async_process_data(self):
         """Update the entity."""
-        self._attr_native_value = self._data["sensors"].get(description.key)
+        self._attr_native_value = self._data["sensors"].get(self._description.key)
         if "device_state" in self._sr_data:
             self._attr_icon = icon_selector(self._attr_native_value, None)
 
