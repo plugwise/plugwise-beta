@@ -1,13 +1,4 @@
 """Plugwise Smile Helper Classes."""
-from homeassistant.components.climate.const import (
-    HVAC_MODE_AUTO,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_COOL,
-    HVAC_MODE_OFF,
-    PRESET_AWAY,
-)
-from homeassistant.const import ATTR_ID, ATTR_STATE
-
 from .const import (
     COOLING_ICON,
     FLAME_ICON,

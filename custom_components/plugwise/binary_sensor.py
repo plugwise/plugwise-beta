@@ -5,7 +5,7 @@ import logging
 
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME
+from homeassistant.const import ATTR_NAME
 from homeassistant.core import callback
 from homeassistant.helpers import entity_platform
 
