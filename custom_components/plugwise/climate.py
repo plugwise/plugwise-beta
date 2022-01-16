@@ -96,10 +96,10 @@ class PwThermostat(SmileGateway, ClimateEntity):
             coordinator,
             description,
             dev_id,
-            _cdata.get(PW_MODEL),
+            coordinator.data[1][dev_id].get(PW_MODEL),
             description.name,
-            _cdata.get(VENDOR),
-            _cdata.get(FW),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
         self._gw_thermostat = GWThermostat(coordinator.data, dev_id)
@@ -117,7 +117,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._attr_target_temperature = None
         self._attr_temperature_unit = TEMP_CELSIUS
         self._attr_unique_id = f"{dev_id}-{CLIMATE_DOMAIN}"
-        self._cor_data = coordinator.data
         self._loc_id = _cdata.get(PW_LOCATION)
 
     @property

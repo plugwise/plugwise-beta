@@ -76,9 +76,9 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     entities = []
     for dev_id in coordinator.data[1]:
         if "switches" in coordinator.data[1][dev_id]:
-            for switch in coordinator.data[1][dev_id]["switches"]:
+            for sw_dict in coordinator.data[1][dev_id]["switches"]:
                 for description in PW_SWITCH_TYPES:
-                    if description.plugwise_api == SMILE and description.key == switch:
+                    if description.plugwise_api == SMILE and description.key in sw_dict:
                         entities.extend(
                             [
                                 GwSwitch(
@@ -86,7 +86,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                     coordinator,
                                     description,
                                     dev_id,
-                                    switch,
+                                    sw_dict,
                                 )
                             ]
                         )
@@ -105,18 +105,17 @@ class GwSwitch(SmileGateway, SwitchEntity):
         coordinator,
         description: PlugwiseSwitchEntityDescription,
         dev_id,
-        switch,
+        sw_dict,
     ):
         """Initialise the sensor."""
-        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             description,
             dev_id,
-            _cdata.get(PW_MODEL),
-            _cdata.get(ATTR_NAME),
-            _cdata.get(VENDOR),
-            _cdata.get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(ATTR_NAME),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
         self._api = api
@@ -125,22 +124,21 @@ class GwSwitch(SmileGateway, SwitchEntity):
         )
         self._attr_icon = description.icon
         self._attr_is_on = False
-        self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
+        self._attr_name = f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
         self._attr_should_poll = self.entity_description.should_poll
-        self._data = _cdata
+        self._data = coordinator.data[1][dev_id]
         self._description = description
         self._dev_id = dev_id
         self._members = None
         if "members" in coordinator.data[1][dev_id]:
-            self._members = _cdata.get("members")
+            self._members = coordinator.data[1][dev_id].get("members")
         self._switch = description.key
-        self._sw_data = switch
 
         self._attr_unique_id = f"{dev_id}-{description.key}"
         # For backwards compatibility:
         if self._switch == "relay":
             self._attr_unique_id = f"{dev_id}-plug"
-            self._attr_name = _cdata.get(ATTR_NAME)
+            self._attr_name = coordinator.data[1][dev_id].get(ATTR_NAME)
 
     async def async_turn_on(self, **kwargs):
         """Turn the switch on."""

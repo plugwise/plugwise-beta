@@ -77,16 +77,16 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     entities = []
     for dev_id in coordinator.data[1]:
         if "sensors" in coordinator.data[1][dev_id]:
-            for sensor in coordinator.data[1][dev_id]["sensors"]:
+            for sr_dict in coordinator.data[1][dev_id]["sensors"]:
                 for description in PW_SENSOR_TYPES:
-                    if description.plugwise_api == SMILE and description.key == sensor:
+                    if description.plugwise_api == SMILE and description.key in sr_dict:
                         entities.extend(
                             [
                                 GwSensor(
                                     coordinator,
                                     description,
                                     dev_id,
-                                    sensor,
+                                    sr_dict,
                                 )
                             ]
                         )
@@ -103,18 +103,17 @@ class GwSensor(SmileGateway, SensorEntity):
         coordinator,
         description: PlugwiseSensorEntityDescription,
         dev_id,
-        sensor,
+        sr_dict,
     ):
         """Initialise the sensor."""
-        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             description,
             dev_id,
-            _cdata.get(PW_MODEL),
-            _cdata.get(ATTR_NAME),
-            _cdata.get(VENDOR),
-            _cdata.get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(ATTR_NAME),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
         self._attr_name = f"{ _cdata.get(ATTR_NAME)} {description.name}"
@@ -123,15 +122,14 @@ class GwSensor(SmileGateway, SensorEntity):
         self._attr_should_poll = description.should_poll
         self._attr_unique_id = f"{dev_id}-{description.key}"
         self._attr_state_class = description.state_class
-        self._data = _cdata
+        self._data = coordinator.data[1][dev_id]
         self._description = description
-        self._sr_data = sensor
 
     @callback
     def _async_process_data(self):
         """Update the entity."""
         self._attr_native_value = self._data["sensors"].get(self._description.key)
-        if "device_state" in self._sr_data:
+        if "device_state" in self.sr_dict:
             self._attr_icon = icon_selector(self._attr_native_value, None)
 
         self.async_write_ha_state()
