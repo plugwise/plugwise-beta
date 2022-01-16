@@ -148,7 +148,9 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._attr_extra_state_attributes = None
         self._attr_icon = None
         self._attr_is_on = False
-        self._attr_name = f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
+        self._attr_name = (
+            f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
+        )
         self._attr_should_poll = self.entity_description.should_poll
         self._attr_unique_id = f"{dev_id}-{description.key}"
 
