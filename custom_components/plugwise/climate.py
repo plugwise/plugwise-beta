@@ -115,7 +115,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._dev_id = dev_id
         self._loc_id = coordinator.data[1][dev_id].get(PW_LOCATION)
 
-      @property
+    @property
     def current_temperature(self):
         """Climate current measured temperature."""
         return self._data["sensors"].get("temperature")
