@@ -116,7 +116,7 @@ class GwSensor(SmileGateway, SensorEntity):
             coordinator.data[1][dev_id].get(FW),
         )
 
-        self._attr_name = f"{ _cdata.get(ATTR_NAME)} {description.name}"
+        self._attr_name = f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
         self._attr_native_unit_of_measurement = description.native_unit_of_measurement
         self._attr_native_value = None
         self._attr_should_poll = description.should_poll
