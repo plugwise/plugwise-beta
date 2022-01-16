@@ -130,15 +130,14 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         b_sensor,
     ):
         """Initialise the binary_sensor."""
-        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             description,
             dev_id,
-            _cdata.get(PW_MODEL),
-            _cdata.get(ATTR_NAME),
-            _cdata.get(VENDOR),
-            _cdata.get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(ATTR_NAME),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
         self._gw_b_sensor = GWBinarySensor(coordinator.data, dev_id, b_sensor)
@@ -149,7 +148,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._attr_extra_state_attributes = None
         self._attr_icon = None
         self._attr_is_on = False
-        self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
+        self._attr_name = f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
         self._attr_should_poll = self.entity_description.should_poll
         self._attr_unique_id = f"{dev_id}-{description.key}"
 

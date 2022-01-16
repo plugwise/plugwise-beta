@@ -52,7 +52,7 @@ class GWBinarySensor:
     @property
     def extra_state_attributes(self):
         """Gateway binary_sensor extra state attributes."""
-        notify = self._data[0]["notifications"]
+        notify = self._data[0].get("notifications")
         self._notification = {}
         for severity in SEVERITIES:
             self._attributes[f"{severity.upper()}_msg"] = []
@@ -70,7 +70,7 @@ class GWBinarySensor:
     @property
     def is_on(self):
         """Gateway binary_sensor state."""
-        return self._data[1][self._dev_id]["binary_sensors"][self._binary_sensor]
+        return self._data[1][self._dev_id]["binary_sensors"].get(self._binary_sensor)
 
     @property
     def icon(self):

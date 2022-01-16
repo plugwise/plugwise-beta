@@ -111,15 +111,14 @@ class GwSwitch(SmileGateway, SwitchEntity):
         switch,
     ):
         """Initialise the sensor."""
-        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             description,
             dev_id,
-            _cdata.get(PW_MODEL),
-            _cdata.get(ATTR_NAME),
-            _cdata.get(VENDOR),
-            _cdata.get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(ATTR_NAME),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
         self._api = api
@@ -127,7 +126,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
             description.entity_registry_enabled_default
         )
         self._attr_icon = description.icon
-        self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
+        self._attr_name = f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
         self._attr_should_poll = self.entity_description.should_poll
         self._dev_id = dev_id
         self._members = None
@@ -139,7 +138,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
         # For backwards compatibility:
         if self._switch == "relay":
             self._attr_unique_id = f"{dev_id}-plug"
-            self._attr_name = _cdata.get(ATTR_NAME)
+            self._attr_name = coordinator.data[1][dev_id].get(ATTR_NAME)
 
     @property
     def is_on(self):

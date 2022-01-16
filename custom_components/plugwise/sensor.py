@@ -105,18 +105,17 @@ class GwSensor(SmileGateway, SensorEntity):
         sensor,
     ):
         """Initialise the sensor."""
-        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             description,
             dev_id,
-            _cdata.get(PW_MODEL),
-            _cdata.get(ATTR_NAME),
-            _cdata.get(VENDOR),
-            _cdata.get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(ATTR_NAME),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
-        self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
+        self._attr_name = f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
         self._attr_native_unit_of_measurement = description.native_unit_of_measurement
         self._attr_should_poll = description.should_poll
         self._attr_unique_id = f"{dev_id}-{description.key}"
