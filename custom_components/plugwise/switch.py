@@ -124,7 +124,9 @@ class GwSwitch(SmileGateway, SwitchEntity):
         )
         self._attr_icon = description.icon
         self._attr_is_on = False
-        self._attr_name = f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
+        self._attr_name = (
+            f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
+        )
         self._attr_should_poll = self.entity_description.should_poll
         self._data = coordinator.data[1][dev_id]
         self._description = description
