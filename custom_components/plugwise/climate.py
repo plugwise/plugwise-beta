@@ -89,15 +89,14 @@ class PwThermostat(SmileGateway, ClimateEntity):
         min_temp,
     ):
         """Set up the PwThermostat."""
-        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             description,
             dev_id,
-            _cdata.get(PW_MODEL),
+            coordinator.data[1][dev_id].get(PW_MODEL),
             description.name,
-            _cdata.get(VENDOR),
-            _cdata.get(FW),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
         self._gw_thermostat = GWThermostat(coordinator.data, dev_id)
@@ -111,16 +110,15 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._attr_unique_id = f"{dev_id}-{Platform.CLIMATE}"
 
         self._api = api
-        self._data = coordinator.data
+        self._cooling_present = coordinator.data[0].get("cooling_present")
+        self._data = coordinator.data[1].get(dev_id)
         self._dev_id = dev_id
-        self._loc_id = _cdata.get(PW_LOCATION)
+        self._loc_id = coordinator.data[1][dev_id].get(PW_LOCATION)
 
-        self._cooling_present = self._data[0]["cooling_present"]
-
-    @property
+      @property
     def current_temperature(self):
         """Climate current measured temperature."""
-        return self._data[1][self._dev_id]["sensors"]["temperature"]
+        return self._data["sensors"].get("temperature")
 
     @property
     def hvac_action(self):
@@ -142,29 +140,29 @@ class PwThermostat(SmileGateway, ClimateEntity):
     @property
     def hvac_mode(self):
         """Return the active hvac mode."""
-        return self._data[1][self._dev_id]["mode"]
+        return self._data.get("mode")
 
     @property
     def preset_mode(self):
         """Climate active preset mode."""
-        return self._data[1][self._dev_id]["active_preset"]
+        return self._data.get("active_preset")
 
     @property
     def preset_modes(self):
         """Climate list of presets."""
-        return self._data[1][self._dev_id]["preset_modes"]
+        return self._data.get("preset_modes")
 
     @property
     def target_temperature(self):
         """Climate target temperature."""
-        return self._data[1][self._dev_id]["sensors"]["setpoint"]
+        return self._data["sensors"].get("setpoint")
 
     @property
     def extra_state_attributes(self):
         """Climate extra state attributes."""
         attributes = {}
-        schema_names = self._data[1][self._dev_id].get("available_schedules")
-        selected_schema = self._data[1][self._dev_id].get("selected_schedule")
+        schema_names = self._data.get("available_schedules")
+        selected_schema = self._data.get("selected_schedule")
         if schema_names:
             attributes["available_schemas"] = schema_names
         if selected_schema:
@@ -180,7 +178,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         ):
             try:
                 await self._api.set_temperature(self._loc_id, temperature)
-                self._data[1][self._dev_id]["sensors"]["setpoint"] = temperature
+                self._data["sensors"]["setpoint"] = temperature
                 self.async_write_ha_state()
                 _LOGGER.debug("Set temperature to %s ºC", temperature)
             except PlugwiseException:
@@ -193,40 +191,28 @@ class PwThermostat(SmileGateway, ClimateEntity):
         state = SCHEDULE_OFF
         if hvac_mode == HVAC_MODE_AUTO:
             state = SCHEDULE_ON
-            try:
-                schedule_temp = self._data[1][self._dev_id]["schedule_temperature"]
-                await self._api.set_temperature(self._loc_id, schedule_temp)
-                self._data[1][self._dev_id]["sensors"]["setpoint"] = schedule_temp
-            except PlugwiseException:
-                _LOGGER.error("Error while communicating to device")
-
+            schedule_temp = self._data.get("schedule_temperature")
+            self._data["sensors"]["setpoint"] = schedule_temp
         try:
             await self._api.set_schedule_state(
-                self._loc_id, self._data[1][self._dev_id]["last_used"], state
+                self._loc_id, self._data["last_used"], state
             )
-
             # Feature request - mimic HomeKit behavior
             if hvac_mode == HVAC_MODE_OFF:
                 preset_mode = PRESET_AWAY
                 await self._api.set_preset(self._loc_id, preset_mode)
-                self._data[1][self._dev_id]["active_preset"] = preset_mode
-                self._data[1][self._dev_id]["sensors"]["setpoint"] = get_preset_temp(
-                    preset_mode,
-                    self._gw_thermostat.cooling_active,
-                    self._data[1][self._dev_id],
-                )
+                self._data["active_preset"] = preset_mode
+                self._data["sensors"]["setpoint"] = get_preset_temp(preset_mode, self._gw_thermostat.cooling_active, self._data)
             if (
                 hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
-                and self._data[1][self._dev_id]["active_preset"] == PRESET_AWAY
+                and self._data["active_preset"] == PRESET_AWAY
             ):
                 preset_mode = PRESET_HOME
                 await self._api.set_preset(self._loc_id, preset_mode)
-                self._data[1][self._dev_id]["active_preset"] = preset_mode
-                self._data[1][self._dev_id]["sensors"]["setpoint"] = self._data[1][
-                    self._dev_id
-                ]["presets"].get(preset_mode, PRESET_NONE)[0]
+                self._data["active_preset"] = preset_mode
+                self._data["sensors"]["setpoint"] = self._data["presets"].get(preset_mode, PRESET_NONE)[0]
 
-            self._data[1][self._dev_id]["mode"] = hvac_mode
+            self._data["mode"] = hvac_mode
             self.async_write_ha_state()
             _LOGGER.debug("Set hvac_mode to %s", hvac_mode)
         except PlugwiseException:
@@ -236,12 +222,8 @@ class PwThermostat(SmileGateway, ClimateEntity):
         """Set the preset mode."""
         try:
             await self._api.set_preset(self._loc_id, preset_mode)
-            self._data[1][self._dev_id]["active_preset"] = preset_mode
-            self._data[1][self._dev_id]["sensors"]["setpoint"] = get_preset_temp(
-                preset_mode,
-                self._gw_thermostat.cooling_active,
-                self._data[1][self._dev_id],
-            )
+            self._data["active_preset"] = preset_mode
+            self._data["sensors"]["setpoint"] = get_preset_temp(preset_mode, self._gw_thermostat.cooling_active, self._data)
             self.async_write_ha_state()
             _LOGGER.debug("Set preset_mode to %s", preset_mode)
         except PlugwiseException:
