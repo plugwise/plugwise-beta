@@ -197,30 +197,21 @@ class PwThermostat(SmileGateway, ClimateEntity):
             await self._api.set_schedule_state(
                 self._loc_id, self._data["last_used"], state
             )
-            # Feature request - mimic HomeKit behavior
-            if hvac_mode == HVAC_MODE_OFF:
-                preset_mode = PRESET_AWAY
-                await self._api.set_preset(self._loc_id, preset_mode)
-                self._data["active_preset"] = preset_mode
-                self._data["sensors"]["setpoint"] = get_preset_temp(
-                    preset_mode, self._gw_thermostat.cooling_active, self._data
-                )
-            if (
-                hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
-                and self._data["active_preset"] == PRESET_AWAY
-            ):
-                preset_mode = PRESET_HOME
-                await self._api.set_preset(self._loc_id, preset_mode)
-                self._data["active_preset"] = preset_mode
-                self._data["sensors"]["setpoint"] = self._data["presets"].get(
-                    preset_mode, PRESET_NONE
-                )[0]
-
-            self._data["mode"] = hvac_mode
-            self.async_write_ha_state()
-            _LOGGER.debug("Set hvac_mode to %s", hvac_mode)
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
+
+        # Feature request - mimic HomeKit behavior
+        if hvac_mode == HVAC_MODE_OFF:
+            await self.async_set_preset_mode(PRESET_AWAY)
+        if (
+            hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
+            and self._data["active_preset"] == PRESET_AWAY
+        ):
+            await self.async_set_preset_mode(PRESET_HOME)
+
+        self._data["mode"] = hvac_mode
+        self.async_write_ha_state()
+        _LOGGER.debug("Set hvac_mode to %s", hvac_mode)
 
     async def async_set_preset_mode(self, preset_mode):
         """Set the preset mode."""
