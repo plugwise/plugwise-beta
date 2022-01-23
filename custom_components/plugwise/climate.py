@@ -193,10 +193,14 @@ class PwThermostat(SmileGateway, ClimateEntity):
             state = SCHEDULE_ON
             schedule_temp = self._data.get("schedule_temperature")
             self._data["sensors"]["setpoint"] = schedule_temp
+
         try:
             await self._api.set_schedule_state(
                 self._loc_id, self._data["last_used"], state
             )
+            self._data["mode"] = hvac_mode
+            self.async_write_ha_state()
+        _LOGGER.debug("Set hvac_mode to %s", hvac_mode)
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
@@ -208,10 +212,6 @@ class PwThermostat(SmileGateway, ClimateEntity):
             and self._data["active_preset"] == PRESET_AWAY
         ):
             await self.async_set_preset_mode(PRESET_HOME)
-
-        self._data["mode"] = hvac_mode
-        self.async_write_ha_state()
-        _LOGGER.debug("Set hvac_mode to %s", hvac_mode)
 
     async def async_set_preset_mode(self, preset_mode):
         """Set the preset mode."""
