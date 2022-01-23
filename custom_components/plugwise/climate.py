@@ -200,7 +200,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
             )
             self._data["mode"] = hvac_mode
             self.async_write_ha_state()
-        _LOGGER.debug("Set hvac_mode to %s", hvac_mode)
+            _LOGGER.debug("Set hvac_mode to %s", hvac_mode)
         except PlugwiseException:
             _LOGGER.error("Error while communicating to device")
 
