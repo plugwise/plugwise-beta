@@ -11,7 +11,7 @@ from plugwise.exceptions import InvalidAuthentication, PlugwiseException
 from plugwise.smile import Smile
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import DeviceInfo
@@ -22,11 +22,11 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
+    Platform,
 )
 
 from .const import (
     API,
-    CLIMATE_DOMAIN,
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
@@ -95,7 +95,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL[api.smile_type]
         )
     )
-
+    _LOGGER.debug("DUC update iterval: %s", update_interval)
     coordinator = PWDataUpdateCoordinator(hass, api, update_interval)
 
     api.get_all_devices()
@@ -135,7 +135,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
-        if component == CLIMATE_DOMAIN:
+        if component == Platform.CLIMATE:
             hass.services.async_register(
                 DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
             )
@@ -195,15 +195,3 @@ class SmileGateway(CoordinatorEntity):
                 name=name,
                 via_device=(DOMAIN, gw_id),
             )
-
-    async def async_added_to_hass(self):
-        """Subscribe to updates."""
-        self._async_process_data()
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self._async_process_data)
-        )
-
-    @callback
-    def _async_process_data(self):
-        """Interpret and process API data."""
-        raise NotImplementedError

@@ -154,10 +154,10 @@ async def test_anna_climate_entity_attributes(hass, mock_smile_anna):
     assert "no_frost" in attrs["preset_modes"]
     assert "home" in attrs["preset_modes"]
 
-    assert attrs["current_temperature"] == 23.3
+    assert attrs["current_temperature"] == 19.3
     assert attrs["temperature"] == 21.0
 
-    assert state.state == HVAC_MODE_AUTO
+    assert state.state == HVAC_MODE_HEAT
     assert attrs["hvac_action"] == "heating"
     assert attrs["preset_mode"] == "home"
 
@@ -196,11 +196,11 @@ async def test_anna_climate_entity_climate_changes(hass, mock_smile_anna):
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
-        {"entity_id": "climate.anna", "hvac_mode": "heat_cool"},
+        {"entity_id": "climate.anna", "hvac_mode": "heat"},
         blocking=True,
     )
 
     state = hass.states.get("climate.anna")
     attrs = state.attributes
 
-    assert state.state == "heat_cool"
+    assert state.state == "heat"

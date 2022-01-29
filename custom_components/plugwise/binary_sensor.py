@@ -3,10 +3,8 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import ATTR_ID, ATTR_NAME
-from homeassistant.core import callback
+from homeassistant.const import ATTR_NAME, Platform
 from homeassistant.helpers import entity_platform
 
 from plugwise.nodes import PlugwiseNode
@@ -38,7 +36,7 @@ from .const import (
 )
 from .gateway import SmileGateway
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
-from .smile_helpers import GWBinarySensor
+from .smile_helpers import GWBinarySensor, icon_selector
 from .usb import PlugwiseUSBEntity
 
 PARALLEL_UPDATES = 0
@@ -88,7 +86,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
                 "_service_sed_battery_config",
             )
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id][BINARY_SENSOR_DOMAIN]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.BINARY_SENSOR]:
         hass.async_create_task(async_add_binary_sensors(mac))
 
     def discoved_device(mac: str):
@@ -106,22 +104,16 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     entities = []
     for dev_id in coordinator.data[1]:
         if "binary_sensors" in coordinator.data[1][dev_id]:
-            for data in coordinator.data[1][dev_id]["binary_sensors"]:
+            for b_sensor in coordinator.data[1][dev_id]["binary_sensors"]:
                 for description in PW_BINARY_SENSOR_TYPES:
                     if (
                         description.plugwise_api == SMILE
-                        and description.key == data.get(ATTR_ID)
+                        and description.key == b_sensor
                     ):
                         entities.extend(
-                            [
-                                GwBinarySensor(
-                                    coordinator,
-                                    description,
-                                    dev_id,
-                                    data,
-                                )
-                            ]
+                            [GwBinarySensor(coordinator, description, dev_id, b_sensor)]
                         )
+                        _LOGGER.debug("Add %s binary sensor", description.key)
 
     if entities:
         async_add_entities(entities, True)
@@ -135,23 +127,20 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         coordinator,
         description: PlugwiseBinarySensorEntityDescription,
         dev_id,
-        bs_data,
+        b_sensor,
     ):
         """Initialise the binary_sensor."""
-        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             description,
             dev_id,
-            _cdata.get(PW_MODEL),
-            _cdata.get(ATTR_NAME),
-            _cdata.get(VENDOR),
-            _cdata.get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(ATTR_NAME),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
-        self._gw_b_sensor = GWBinarySensor(
-            coordinator.data, dev_id, bs_data.get(ATTR_ID)
-        )
+        self._gw_b_sensor = GWBinarySensor(coordinator.data)
 
         self._attr_entity_registry_enabled_default = (
             description.entity_registry_enabled_default
@@ -159,25 +148,34 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._attr_extra_state_attributes = None
         self._attr_icon = None
         self._attr_is_on = False
-        self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
+        self._attr_name = (
+            f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
+        )
         self._attr_should_poll = self.entity_description.should_poll
         self._attr_unique_id = f"{dev_id}-{description.key}"
+        self._b_sensor = b_sensor
+        self._dev_id = dev_id
 
-    @callback
-    def _async_process_data(self):
-        """Update the entity."""
-        self._gw_b_sensor.update_data()
-        self._attr_extra_state_attributes = self._gw_b_sensor.extra_state_attributes
-        self._attr_icon = self._gw_b_sensor.icon
-        self._attr_is_on = self._gw_b_sensor.is_on
+    @property
+    def extra_state_attributes(self):
+        """Return state attributes."""
+        return self._gw_b_sensor.extra_state_attributes
 
+    @property
+    def is_on(self):
+        """Update the state of the Binary Sensor."""
         if self._gw_b_sensor.notification:
             for notify_id, message in self._gw_b_sensor.notification.items():
                 self.hass.components.persistent_notification.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        self.async_write_ha_state()
+        return self.coordinator.data[1][self._dev_id]["binary_sensors"][self._b_sensor]
+
+    @property
+    def icon(self):
+        """Gateway binary_sensor icon."""
+        return icon_selector(self._b_sensor, self.is_on)
 
 
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):

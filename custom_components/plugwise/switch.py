@@ -3,16 +3,13 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import (
-    ATTR_ID,
     ATTR_NAME,
-    ATTR_STATE,
+    Platform,
     STATE_OFF,
     STATE_ON,
 )
-from homeassistant.core import callback
 
 from plugwise.exceptions import PlugwiseException
 from plugwise.nodes import PlugwiseNode
@@ -63,7 +60,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
         if entities:
             async_add_entities(entities)
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id][SWITCH_DOMAIN]:
+    for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH]:
         hass.async_create_task(async_add_switches(mac))
 
     def discoved_device(mac: str):
@@ -82,12 +79,9 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     entities = []
     for dev_id in coordinator.data[1]:
         if "switches" in coordinator.data[1][dev_id]:
-            for data in coordinator.data[1][dev_id]["switches"]:
+            for switch in coordinator.data[1][dev_id]["switches"]:
                 for description in PW_SWITCH_TYPES:
-                    if (
-                        description.plugwise_api == SMILE
-                        and description.key == data.get(ATTR_ID)
-                    ):
+                    if description.plugwise_api == SMILE and description.key == switch:
                         entities.extend(
                             [
                                 GwSwitch(
@@ -95,7 +89,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                                     coordinator,
                                     description,
                                     dev_id,
-                                    data,
+                                    switch,
                                 )
                             ]
                         )
@@ -114,18 +108,17 @@ class GwSwitch(SmileGateway, SwitchEntity):
         coordinator,
         description: PlugwiseSwitchEntityDescription,
         dev_id,
-        sw_data,
+        switch,
     ):
         """Initialise the sensor."""
-        _cdata = coordinator.data[1][dev_id]
         super().__init__(
             coordinator,
             description,
             dev_id,
-            _cdata.get(PW_MODEL),
-            _cdata.get(ATTR_NAME),
-            _cdata.get(VENDOR),
-            _cdata.get(FW),
+            coordinator.data[1][dev_id].get(PW_MODEL),
+            coordinator.data[1][dev_id].get(ATTR_NAME),
+            coordinator.data[1][dev_id].get(VENDOR),
+            coordinator.data[1][dev_id].get(FW),
         )
 
         self._api = api
@@ -133,21 +126,26 @@ class GwSwitch(SmileGateway, SwitchEntity):
             description.entity_registry_enabled_default
         )
         self._attr_icon = description.icon
-        self._attr_is_on = False
-        self._attr_name = f"{_cdata.get(ATTR_NAME)} {description.name}"
+        self._attr_name = (
+            f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
+        )
         self._attr_should_poll = self.entity_description.should_poll
         self._dev_id = dev_id
         self._members = None
         if "members" in coordinator.data[1][dev_id]:
             self._members = coordinator.data[1][dev_id].get("members")
-        self._switch = description.key
-        self._sw_data = sw_data
+        self._switch = switch
 
         self._attr_unique_id = f"{dev_id}-{description.key}"
         # For backwards compatibility:
         if self._switch == "relay":
             self._attr_unique_id = f"{dev_id}-plug"
-            self._attr_name = _cdata.get(ATTR_NAME)
+            self._attr_name = coordinator.data[1][dev_id].get(ATTR_NAME)
+
+    @property
+    def is_on(self):
+        """Update the state of the Switch."""
+        return self.coordinator.data[1][self._dev_id]["switches"][self._switch]
 
     async def async_turn_on(self, **kwargs):
         """Turn the switch on."""
@@ -156,7 +154,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
                 self._dev_id, self._members, self._switch, STATE_ON
             )
             if state_on:
-                self._attr_is_on = True
+                self.coordinator.data[1][self._dev_id]["switches"][self._switch] = True
                 self.async_write_ha_state()
                 _LOGGER.debug("Turn Plugwise %s switch on", self._attr_name)
         except PlugwiseException:
@@ -171,19 +169,13 @@ class GwSwitch(SmileGateway, SwitchEntity):
                 self._dev_id, self._members, self._switch, STATE_OFF
             )
             if state_off:
-                self._attr_is_on = False
+                self.coordinator.data[1][self._dev_id]["switches"][self._switch] = False
                 self.async_write_ha_state()
                 _LOGGER.debug("Turn Plugwise %s switch off", self._attr_name)
         except PlugwiseException:
             _LOGGER.error(
                 "Error: failed to turn Plugwise %s switch off", self._attr_name
             )
-
-    @callback
-    def _async_process_data(self):
-        """Update the data from the Plugs."""
-        self._attr_is_on = self._sw_data.get(ATTR_STATE)
-        self.async_write_ha_state()
 
 
 class USBSwitch(PlugwiseUSBEntity, SwitchEntity):
