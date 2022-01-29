@@ -2,7 +2,6 @@
 import logging
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from .const import DOMAIN
 from plugwise.exceptions import PlugwiseException, XMLDataMissingError
 
 _LOGGER = logging.getLogger(__name__)
