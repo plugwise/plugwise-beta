@@ -174,7 +174,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
     @property
     def icon(self):
         """Gateway binary_sensor icon."""
-        return icon_selector(self._binary_sensor, self.is_on)
+        return icon_selector(self._b_sensor, self.is_on)
 
 
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
