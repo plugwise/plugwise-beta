@@ -34,6 +34,7 @@ BREAKING: The Auxiliary device has been renamed to OpenTherm device, also there 
 - Fixes and improvements - via plugwise v0.16.1 (and v0.16.0)
 - Smile Anna & Adam: 
   - Change to OpenTherm device, add an OnOff device when the Adam/Anna controls the connected device via on-off-control.
+  - Add support for the latest Adam and Anna (beta) firmware
 - Smiles: 
   - Provide gateway-devices for Legacy Anna and Stretch
   - Implement full use of HA Core DataUpdateCoordinator functionality
