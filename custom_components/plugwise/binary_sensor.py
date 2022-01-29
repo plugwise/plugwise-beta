@@ -154,6 +154,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._attr_should_poll = self.entity_description.should_poll
         self._attr_unique_id = f"{dev_id}-{description.key}"
         self._b_sensor = b_sensor
+        self._dev_id = dev_id
 
     @property
     def extra_state_attributes(self):
@@ -169,7 +170,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self.coordinator.data[1][dev_id]["binary_sensors"][self._b_sensor]
+        return self.coordinator.data[1][self._dev_id]["binary_sensors"][self._b_sensor]
 
     @property
     def icon(self):
