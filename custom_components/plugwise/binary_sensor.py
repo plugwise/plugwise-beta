@@ -36,7 +36,7 @@ from .const import (
 )
 from .gateway import SmileGateway
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
-from .smile_helpers import GWBinarySensor
+from .smile_helpers import GWBinarySensor, icon_selector
 from .usb import PlugwiseUSBEntity
 
 PARALLEL_UPDATES = 0
@@ -140,7 +140,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
             coordinator.data[1][dev_id].get(FW),
         )
 
-        self._gw_b_sensor = GWBinarySensor(coordinator.data, dev_id, b_sensor)
+        self._gw_b_sensor = GWBinarySensor(coordinator.data)
 
         self._attr_entity_registry_enabled_default = (
             description.entity_registry_enabled_default
@@ -153,6 +153,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         )
         self._attr_should_poll = self.entity_description.should_poll
         self._attr_unique_id = f"{dev_id}-{description.key}"
+        self._b_sensor = b_sensor
 
     @property
     def extra_state_attributes(self):
@@ -168,12 +169,12 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self._data[1][self._dev_id]["binary_sensors"].get(self._binary_sensor)
+        return self._data[1][self._dev_id]["binary_sensors"].get(self._b_sensor)
 
     @property
     def icon(self):
-        """Return an icon, when needed."""
-        return self._gw_b_sensor.icon
+        """Gateway binary_sensor icon."""
+        return icon_selector(self._binary_sensor, self.is_on)
 
 
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):

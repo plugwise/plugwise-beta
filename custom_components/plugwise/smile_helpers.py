@@ -41,12 +41,10 @@ def get_preset_temp(preset, cooling_active, data):
 class GWBinarySensor:
     """Represent the Plugwise Smile/Stretch binary_sensor."""
 
-    def __init__(self, data, dev_id, binary_sensor):
+    def __init__(self, data):
         """Initialize the Gateway."""
         self._attributes = {}
-        self._binary_sensor = binary_sensor
         self._data = data
-        self._dev_id = dev_id
         self._notification = {}
 
     @property
@@ -56,21 +54,17 @@ class GWBinarySensor:
         self._notification = {}
         for severity in SEVERITIES:
             self._attributes[f"{severity.upper()}_msg"] = []
-        if notify != {}:
+
+        if notify:
             for notify_id, details in notify.items():
                 for msg_type, msg in details.items():
                     if msg_type not in SEVERITIES:
                         msg_type = "other"  # pragma: no cover
-
                     self._attributes[f"{msg_type.upper()}_msg"].append(msg)
                     self._notification[notify_id] = f"{msg_type.title()}: {msg}"
+            return self._attributes
 
-        return None if not self._attributes else self._attributes
-
-    @property
-    def icon(self):
-        """Gateway binary_sensor icon."""
-        return icon_selector(self._binary_sensor, self.is_on)
+        return None
 
     @property
     def notification(self):
