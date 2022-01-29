@@ -28,7 +28,12 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW DEC 2021 [0.19.8]
+## NEW JAN 2022 [0.20.0-beta0]
+- Link to plugwise v0.16.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.1
+- Smiles: fixes and improvements - via plugwise
+- Smiles: make full use of HA Core DataUpdateCoordinator functionality
+
+## DEC 2021 [0.19.8]
 - Smile Adam & Anna: add cooling-mode detection, presence and operation (fixes #171)
 - Link to plugwise v0.15.7 - https://github.com/plugwise/python-plugwise/releases/tag/v0.15.7
 
