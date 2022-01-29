@@ -68,11 +68,6 @@ class GWBinarySensor:
         return None if not self._attributes else self._attributes
 
     @property
-    def is_on(self):
-        """Gateway binary_sensor state."""
-        return self._data[1][self._dev_id]["binary_sensors"].get(self._binary_sensor)
-
-    @property
     def icon(self):
         """Gateway binary_sensor icon."""
         return icon_selector(self._binary_sensor, self.is_on)

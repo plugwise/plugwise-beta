@@ -168,7 +168,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self._gw_b_sensor.is_on
+        return self._data[1][self._dev_id]["binary_sensors"].get(self._binary_sensor)
 
     @property
     def icon(self):
