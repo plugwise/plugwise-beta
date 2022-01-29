@@ -29,9 +29,14 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 # Changelog
 
 ## NEW JAN 2022 [0.20.0-beta0]
+BREAKING: The Auxiliary device has been renamed to OpenTherm device, also there can be an OnOff device when there is an on-off type of heating-/cooling device connected to the Anna/Adam.
 - Link to plugwise v0.16.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.1
-- Smiles: fixes and improvements - via plugwise
-- Smiles: make full use of HA Core DataUpdateCoordinator functionality
+- Smile Anna & Adam: 
+  - Change to OpenTherm device, add an OnOff device when the Adam/Anna controls the connected device via on-off-control.
+  - Fixes and improvements - via plugwise v0.16.1 (and v0.16.0)
+- Smiles: 
+  - Provide gateway-devices for Legacy Anna and Stretch
+  - Implement full use of HA Core DataUpdateCoordinator functionality
 
 ## DEC 2021 [0.19.8]
 - Smile Adam & Anna: add cooling-mode detection, presence and operation (fixes #171)
