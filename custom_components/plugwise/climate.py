@@ -94,7 +94,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
         dev_id: str,
         max_temp: str,
         min_temp: str,
-    ):
+    ) -> None:
         """Set up the PwThermostat."""
         super().__init__(
             coordinator,
