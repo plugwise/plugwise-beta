@@ -4,15 +4,19 @@ from __future__ import annotations
 import logging
 
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_NAME,
     Platform,
     STATE_OFF,
     STATE_ON,
 )
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from plugwise.exceptions import PlugwiseException
 from plugwise.nodes import PlugwiseNode
+from plugwise.smile import Smile
 
 from .const import (
     API,
@@ -27,6 +31,7 @@ from .const import (
     USB,
     VENDOR,
 )
+from .coordinator import PWDataUpdateCoordinator
 from .gateway import SmileGateway
 from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
 from .usb import PlugwiseUSBEntity
@@ -34,7 +39,11 @@ from .usb import PlugwiseUSBEntity
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile switches from a config entry."""
     if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
         return await async_setup_entry_usb(hass, config_entry, async_add_entities)
@@ -104,12 +113,12 @@ class GwSwitch(SmileGateway, SwitchEntity):
 
     def __init__(
         self,
-        api,
-        coordinator,
+        api: Smile,
+        coordinator: PWDataUpdateCoordinator,
         description: PlugwiseSwitchEntityDescription,
-        dev_id,
-        switch,
-    ):
+        dev_id: str,
+        switch: str,
+    ) -> None:
         """Initialise the sensor."""
         super().__init__(
             coordinator,
@@ -143,7 +152,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
             self._attr_name = coordinator.data[1][dev_id].get(ATTR_NAME)
 
     @property
-    def is_on(self):
+    def is_on(self) -> bool:
         """Update the state of the Switch."""
         return self.coordinator.data[1][self._dev_id]["switches"][self._switch]
 
