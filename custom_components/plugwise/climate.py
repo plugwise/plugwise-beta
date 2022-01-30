@@ -21,7 +21,7 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, Platform, TEMP_CELSIUS
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
     API,
@@ -54,7 +54,7 @@ async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
-    ) -> None:
+) -> None:
     """Set up the Smile Thermostats from a config entry."""
     api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
