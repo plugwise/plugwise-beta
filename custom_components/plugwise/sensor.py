@@ -37,7 +37,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback, 
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile switches from a config entry."""
     if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
