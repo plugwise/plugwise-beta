@@ -51,7 +51,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities = []
+    entities: list[PwThermostat] = []
     for dev_id in coordinator.data[1]:
         if coordinator.data[1][dev_id][PW_CLASS] not in MASTER_THERMOSTATS:
             continue

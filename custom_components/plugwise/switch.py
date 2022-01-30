@@ -48,7 +48,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
     async def async_add_switches(mac: str):
         """Add plugwise switches."""
-        entities = []
+        entities: list[USBSwitch] = []
         entities.extend(
             [
                 USBSwitch(api_stick.devices[mac], description)
@@ -76,7 +76,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities = []
+    entities: list[GwSwitch] = []
     for dev_id in coordinator.data[1]:
         if "switches" in coordinator.data[1][dev_id]:
             for switch in coordinator.data[1][dev_id]["switches"]:

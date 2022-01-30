@@ -59,7 +59,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
     async def async_add_binary_sensors(mac: str):
         """Add plugwise binary sensors for device."""
-        entities = []
+        entities: list[USBBinarySensor] = []
         entities.extend(
             [
                 USBBinarySensor(api_stick.devices[mac], description)
@@ -101,7 +101,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     """Set up the Smile binary_sensors from a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities = []
+    entities: list[GwBinarySensor] = []
     for dev_id in coordinator.data[1]:
         if "binary_sensors" in coordinator.data[1][dev_id]:
             for b_sensor in coordinator.data[1][dev_id]["binary_sensors"]:

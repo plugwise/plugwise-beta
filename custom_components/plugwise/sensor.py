@@ -44,7 +44,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
     async def async_add_sensors(mac: str):
         """Add plugwise sensors for device."""
-        entities = []
+        entities: list[USBSensor] = []
         entities.extend(
             [
                 USBSensor(api_stick.devices[mac], description)
@@ -72,7 +72,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities = []
+    entities: list[GwSensor] = []
     for dev_id in coordinator.data[1]:
         if "sensors" in coordinator.data[1][dev_id]:
             for sensor in coordinator.data[1][dev_id]["sensors"]:
