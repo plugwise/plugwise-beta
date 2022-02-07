@@ -40,7 +40,7 @@ from .const import (
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
-from .coordinator import PlugwiseUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator
 from .models import PlugwiseEntityDescription
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
@@ -164,7 +164,7 @@ class SmileGateway(CoordinatorEntity):
 
     def __init__(
         self,
-        coordinator: PlugwiseUpdateCoordinator,
+        coordinator: PlugwiseDataUpdateCoordinator,
         description: PlugwiseEntityDescription,
         dev_id: str,
         model: str,
