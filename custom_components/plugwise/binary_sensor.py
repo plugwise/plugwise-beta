@@ -37,7 +37,7 @@ from .const import (
     USB_MOTION_ID,
     VENDOR,
 )
-from .coordinator import PWDataUpdateCoordinator
+from .coordinator import PlugwiseUpdateCoordinator
 from .gateway import SmileGateway
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
 from .smile_helpers import GWBinarySensor, icon_selector
@@ -139,7 +139,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
 
     def __init__(
         self,
-        coordinator: PWDataUpdateCoordinator,
+        coordinator: PlugwiseUpdateCoordinator,
         description: PlugwiseBinarySensorEntityDescription,
         device_id: str,
         binary_sensor: str,
