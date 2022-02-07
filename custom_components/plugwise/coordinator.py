@@ -27,7 +27,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self,
         hass: HomeAssistant,
         api: Smile,
-        interval: datetime.timedelta
+        interval: timedelta
     ) -> None:
         """Initialize the coordinator."""
         super().__init__(
