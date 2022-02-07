@@ -34,7 +34,7 @@ from .const import (
     DOMAIN,
     GATEWAY,
     GATEWAY_PLATFORMS,
-    LOGGER
+    LOGGER,
     PW_TYPE,
     SENSOR_PLATFORMS,
     SERVICE_DELETE,
