@@ -39,7 +39,7 @@ from .const import (
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
-from .coordinator import PWDataUpdateCoordinator
+from .coordinator import PlugwiseUpdateCoordinator
 from .models import PlugwiseEntityDescription
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
@@ -110,10 +110,10 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 
-    _LOGGER.debug("Gateway is %s", coordinator.data[0]["gateway_id"])
+    _LOGGER.debug("Gateway is %s", coordinator.data.gateway["gateway_id"])
     _LOGGER.debug("Gateway software version is %s", api.smile_version[0])
-    _LOGGER.debug("Appliances are %s", coordinator.data[1])
-    s_m_thermostat = coordinator.data[0]["single_master_thermostat"]
+    _LOGGER.debug("Appliances are %s", coordinator.data.devices])
+    s_m_thermostat = coordinator.data.gateway["single_master_thermostat"]
     _LOGGER.debug("Single master thermostat = %s", s_m_thermostat)
 
     platforms = GATEWAY_PLATFORMS
@@ -165,7 +165,7 @@ class SmileGateway(CoordinatorEntity):
 
     def __init__(
         self,
-        coordinator: PWDataUpdateCoordinator,
+        coordinator: PlugwiseUpdateCoordinator,
         description: PlugwiseEntityDescription,
         dev_id: str,
         model: str,
@@ -177,7 +177,7 @@ class SmileGateway(CoordinatorEntity):
         super().__init__(coordinator)
 
         entry = coordinator.config_entry
-        gw_id = coordinator.data[0]["gateway_id"]
+        gw_id = coordinator.data.gateway["gateway_id"]
         self._attr_available = super().available
         self._attr_device_class = description.device_class
         self._attr_device_info = DeviceInfo(
@@ -185,7 +185,7 @@ class SmileGateway(CoordinatorEntity):
             identifiers={(DOMAIN, dev_id)},
             manufacturer=vendor,
             model=model,
-            name=f"Smile {coordinator.data[0]['smile_name']}",
+            name=f"Smile {coordinator.data.gateway['smile_name']}",
             sw_version=fw,
         )
         self.entity_description = description
