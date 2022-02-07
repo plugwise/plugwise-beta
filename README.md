@@ -28,7 +28,13 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW JAN 2022 [0.20.0]
+## NEW FEB 2022 [0.20.1]
+- Smiles:
+  - Link to plugwise v0.16.2 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.2
+  - Add support for Stretch with fw 2.7.18, via plugwise v0.16.2
+  - Improve code: add basic typing
+
+## JAN 2022 [0.20.0]
 BREAKING: The Auxiliary device has been renamed to OpenTherm device, also there can be an OnOff device when there is an on-off type of heating-/cooling device connected to the Anna/Adam.
 - Link to plugwise v0.16.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.1
 - Fixes and improvements - via plugwise v0.16.1 (and v0.16.0)

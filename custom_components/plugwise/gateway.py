@@ -165,13 +165,13 @@ class SmileGateway(CoordinatorEntity):
 
     def __init__(
         self,
-        coordinator,
+        coordinator: PWDataUpdateCoordinator,
         description: PlugwiseEntityDescription,
-        dev_id,
-        model,
-        name,
-        vendor,
-        fw,
+        dev_id: str,
+        model: str,
+        name: str,
+        vendor: str,
+        fw: str,
     ) -> None:
         """Initialise the gateway."""
         super().__init__(coordinator)

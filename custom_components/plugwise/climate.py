@@ -3,6 +3,7 @@
 import logging
 
 from plugwise.exceptions import PlugwiseException
+from plugwise.smile import Smile
 
 from homeassistant.components.climate import ClimateEntity, ClimateEntityDescription
 from homeassistant.components.climate.const import (
@@ -18,8 +19,10 @@ from homeassistant.components.climate.const import (
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
 )
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, Platform, TEMP_CELSIUS
-
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
     API,
     COORDINATOR,
@@ -35,6 +38,7 @@ from .const import (
     SCHEDULE_ON,
     VENDOR,
 )
+from .coordinator import PWDataUpdateCoordinator
 from .gateway import SmileGateway
 from .smile_helpers import GWThermostat, get_preset_temp
 
@@ -46,12 +50,16 @@ SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile Thermostats from a config entry."""
     api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities = []
+    entities: list[PwThermostat] = []
     for dev_id in coordinator.data[1]:
         if coordinator.data[1][dev_id][PW_CLASS] not in MASTER_THERMOSTATS:
             continue
@@ -80,13 +88,13 @@ class PwThermostat(SmileGateway, ClimateEntity):
 
     def __init__(
         self,
-        api,
-        coordinator,
+        api: Smile,
+        coordinator: PWDataUpdateCoordinator,
         description: ClimateEntityDescription,
-        dev_id,
-        max_temp,
-        min_temp,
-    ):
+        dev_id: str,
+        max_temp: str,
+        min_temp: str,
+    ) -> None:
         """Set up the PwThermostat."""
         super().__init__(
             coordinator,

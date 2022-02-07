@@ -4,7 +4,10 @@ from __future__ import annotations
 import logging
 
 from homeassistant.components.sensor import SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, Platform
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from plugwise.nodes import PlugwiseNode
 
@@ -20,6 +23,7 @@ from .const import (
     USB,
     VENDOR,
 )
+from .coordinator import PWDataUpdateCoordinator
 from .gateway import SmileGateway
 from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
 from .smile_helpers import icon_selector
@@ -30,7 +34,11 @@ PARALLEL_UPDATES = 0
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile switches from a config entry."""
     if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
         return await async_setup_entry_usb(hass, config_entry, async_add_entities)
@@ -44,7 +52,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
     async def async_add_sensors(mac: str):
         """Add plugwise sensors for device."""
-        entities = []
+        entities: list[USBSensor] = []
         entities.extend(
             [
                 USBSensor(api_stick.devices[mac], description)
@@ -72,7 +80,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities = []
+    entities: list[GwSensor] = []
     for dev_id in coordinator.data[1]:
         if "sensors" in coordinator.data[1][dev_id]:
             for sensor in coordinator.data[1][dev_id]["sensors"]:
@@ -99,11 +107,11 @@ class GwSensor(SmileGateway, SensorEntity):
 
     def __init__(
         self,
-        coordinator,
+        coordinator: PWDataUpdateCoordinator,
         description: PlugwiseSensorEntityDescription,
-        dev_id,
-        sensor,
-    ):
+        dev_id: str,
+        sensor: str,
+    ) -> None:
         """Initialise the sensor."""
         super().__init__(
             coordinator,
@@ -127,7 +135,7 @@ class GwSensor(SmileGateway, SensorEntity):
         self._sensor = sensor
 
     @property
-    def native_value(self):
+    def native_value(self) -> float | None:
         """Return the native value of the sensor."""
         return self.coordinator.data[1][self._dev_id]["sensors"][self._sensor]
 
