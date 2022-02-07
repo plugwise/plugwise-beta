@@ -110,18 +110,25 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities: list[GwBinarySensor] = []
-    for dev_id in coordinator.data[1]:
-        if "binary_sensors" in coordinator.data[1][dev_id]:
-            for b_sensor in coordinator.data[1][dev_id]["binary_sensors"]:
-                for description in PW_BINARY_SENSOR_TYPES:
-                    if (
-                        description.plugwise_api == SMILE
-                        and description.key == b_sensor
-                    ):
-                        entities.extend(
-                            [GwBinarySensor(coordinator, description, dev_id, b_sensor)]
+    for device_id, device_properties in coordinator.data.devices.items():
+        if "binary_sensors" not in device_properties:
+            continue:
+
+        for binary_sensor in device_properties["binary_sensors"]:
+            for description in PW_BINARY_SENSOR_TYPES:
+                if (
+                    description.plugwise_api == SMILE
+                    and description.key == binary_sensor
+                ):
+                    entities.append(
+                        GwBinarySensor(
+                            coordinator,
+                            description,
+                            device_id,
+                            binary_sensor
                         )
-                        _LOGGER.debug("Add %s binary sensor", description.key)
+                    )
+                    _LOGGER.debug("Add %s binary sensor", description.key)
 
     if entities:
         async_add_entities(entities, True)
@@ -134,18 +141,18 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self,
         coordinator: PWDataUpdateCoordinator,
         description: PlugwiseBinarySensorEntityDescription,
-        dev_id: str,
-        b_sensor: str,
+        device_id: str,
+        binary_sensor: str,
     ) -> None:
         """Initialise the binary_sensor."""
         super().__init__(
             coordinator,
             description,
-            dev_id,
-            coordinator.data[1][dev_id].get(PW_MODEL),
-            coordinator.data[1][dev_id].get(ATTR_NAME),
-            coordinator.data[1][dev_id].get(VENDOR),
-            coordinator.data[1][dev_id].get(FW),
+            device_id,
+            coordinator.data.devices[device_id].get(PW_MODEL),
+            coordinator.data.devices[device_id].get(ATTR_NAME),
+            coordinator.data.devices[device_id].get(VENDOR),
+            coordinator.data.devices[device_id].get(FW),
         )
 
         self._gw_b_sensor = GWBinarySensor(coordinator.data)
@@ -157,12 +164,12 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         self._attr_icon = None
         self._attr_is_on = False
         self._attr_name = (
-            f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
+            f"{coordinator.data.devices[device_id].get(ATTR_NAME)} {description.name}"
         )
         self._attr_should_poll = self.entity_description.should_poll
-        self._attr_unique_id = f"{dev_id}-{description.key}"
-        self._b_sensor = b_sensor
-        self._dev_id = dev_id
+        self._attr_unique_id = f"{device_id}-{description.key}"
+        self.binary_sensor = binary_sensor
+        self.device_id = device_id
 
     @property
     def extra_state_attributes(self):
@@ -178,12 +185,12 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self.coordinator.data[1][self._dev_id]["binary_sensors"][self._b_sensor]
+        return self.coordinator.data.devices[self.device_id]["binary_sensors"][self.binary_sensor]
 
     @property
     def icon(self):
         """Gateway binary_sensor icon."""
-        return icon_selector(self._b_sensor, self.is_on)
+        return icon_selector(self.binary_sensor, self.is_on)
 
 
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
