@@ -1,5 +1,5 @@
 """Constants for Plugwise beta component."""
-
+import logging
 import voluptuous as vol
 from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
@@ -32,6 +32,8 @@ FLOW_TYPE = "flow_type"
 FLOW_USB = "USB: Stick"
 
 UNDO_UPDATE_LISTENER = "undo_update_listener"
+
+LOGGER = logging.getLogger(__name__)
 
 # Default directives
 DEFAULT_MAX_TEMP = 30

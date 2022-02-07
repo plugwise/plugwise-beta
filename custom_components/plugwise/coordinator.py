@@ -42,8 +42,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         """Fetch data from Plugwise."""
         try:
             data = await self.api.async_update()
-            _LOGGER.debug("Plugwise %s updated", self.api.smile_name)
-            _LOGGER.debug("with data: %s", data)
+            LOGGER.debug("Plugwise %s updated", self.api.smile_name)
+            LOGGER.debug("with data: %s", data)
         except XMLDataMissingError as err:
             raise UpdateFailed(
                 f"No XML data received for: {self.api.smile_name}"
