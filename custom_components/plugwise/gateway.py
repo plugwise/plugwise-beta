@@ -34,6 +34,7 @@ from .const import (
     DOMAIN,
     GATEWAY,
     GATEWAY_PLATFORMS,
+    LOGGER
     PW_TYPE,
     SENSOR_PLATFORMS,
     SERVICE_DELETE,
@@ -43,8 +44,6 @@ from .coordinator import PlugwiseUpdateCoordinator
 from .models import PlugwiseEntityDescription
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -73,16 +72,16 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     try:
         connected = await api.connect()
         if not connected:
-            _LOGGER.error("Unable to connect to the Smile/Stretch")
+            LOGGER.error("Unable to connect to the Smile/Stretch")
             raise ConfigEntryNotReady
     except InvalidAuthentication:
-        _LOGGER.error("Invalid username or Smile ID")
+        LOGGER.error("Invalid username or Smile ID")
         return False
     except PlugwiseException as err:
-        _LOGGER.error("Error while communicating to the Smile/Stretch")
+        LOGGER.error("Error while communicating to the Smile/Stretch")
         raise ConfigEntryNotReady from err
     except asyncio.TimeoutError as err:
-        _LOGGER.error("Timeout while connecting to the Smile/Stretch")
+        LOGGER.error("Timeout while connecting to the Smile/Stretch")
         raise ConfigEntryNotReady from err
 
     # Migrate to a valid unique_id when needed
@@ -95,7 +94,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL[api.smile_type]
         )
     )
-    _LOGGER.debug("DUC update iterval: %s", update_interval)
+    LOGGER.debug("DUC update iterval: %s", update_interval)
     coordinator = PWDataUpdateCoordinator(hass, api, update_interval)
 
     api.get_all_devices()
@@ -110,11 +109,11 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         UNDO_UPDATE_LISTENER: undo_listener,
     }
 
-    _LOGGER.debug("Gateway is %s", coordinator.data.gateway["gateway_id"])
-    _LOGGER.debug("Gateway software version is %s", api.smile_version[0])
-    _LOGGER.debug("Appliances are %s", coordinator.data.devices])
+    LOGGER.debug("Gateway is %s", coordinator.data.gateway["gateway_id"])
+    LOGGER.debug("Gateway software version is %s", api.smile_version[0])
+    LOGGER.debug("Appliances are %s", coordinator.data.devices)
     s_m_thermostat = coordinator.data.gateway["single_master_thermostat"]
-    _LOGGER.debug("Single master thermostat = %s", s_m_thermostat)
+    LOGGER.debug("Single master thermostat = %s", s_m_thermostat)
 
     platforms = GATEWAY_PLATFORMS
     if s_m_thermostat is None:
@@ -122,12 +121,12 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     async def delete_notification(self):
         """Service: delete the Plugwise Notification."""
-        _LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
+        LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
         try:
             deleted = await api.delete_notification()
-            _LOGGER.debug("PW Notification deleted: %s", deleted)
+            LOGGER.debug("PW Notification deleted: %s", deleted)
         except PlugwiseException:
-            _LOGGER.debug(
+            LOGGER.debug(
                 "Failed to delete the Plugwise Notification for %s", api.smile_name
             )
 
