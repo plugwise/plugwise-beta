@@ -35,7 +35,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             LOGGER,
             name=api.smile_name or DOMAIN,
             update_interval=interval
-            ),
         )
         self.api = api
 
