@@ -85,7 +85,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities: list[GwSwitch] = []
+    entities: list[PlugwiseGatewaySwitchEntity] = []
     for dev_id in coordinator.data[1]:
         if "switches" in coordinator.data[1][dev_id]:
             for switch in coordinator.data[1][dev_id]["switches"]:
@@ -93,7 +93,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     if description.plugwise_api == SMILE and description.key == switch:
                         entities.extend(
                             [
-                                GwSwitch(
+                                PlugwiseGatewaySwitchEntity(
                                     api,
                                     coordinator,
                                     description,

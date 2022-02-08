@@ -80,7 +80,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities: list[GwSensor] = []
+    entities: list[PlugwiseGatewaySensorEntity] = []
     for dev_id in coordinator.data[1]:
         if "sensors" in coordinator.data[1][dev_id]:
             for sensor in coordinator.data[1][dev_id]["sensors"]:
@@ -88,7 +88,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     if description.plugwise_api == SMILE and description.key == sensor:
                         entities.extend(
                             [
-                                GwSensor(
+                                PlugwiseGatewaySensorEntity(
                                     coordinator,
                                     description,
                                     dev_id,

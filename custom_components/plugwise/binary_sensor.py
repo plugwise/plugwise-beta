@@ -108,7 +108,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     """Set up the Smile binary_sensors from a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities: list[GwBinarySensor] = []
+    entities: list[GatewayBinarySensorEntity] = []
     for device_id, device_properties in coordinator.data.devices.items():
         for description in PW_BINARY_SENSOR_TYPES:
             if (

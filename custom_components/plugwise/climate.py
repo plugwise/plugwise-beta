@@ -59,12 +59,12 @@ async def async_setup_entry(
     api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities: list[PwThermostat] = []
+    entities: list[PlugwiseClimateEntity] = []
     for dev_id in coordinator.data[1]:
         if coordinator.data[1][dev_id][PW_CLASS] not in MASTER_THERMOSTATS:
             continue
 
-        thermostat = PwThermostat(
+        thermostat = PlugwiseClimateEntity(
             api,
             coordinator,
             ClimateEntityDescription(
