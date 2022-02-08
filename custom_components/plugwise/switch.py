@@ -31,7 +31,7 @@ from .const import (
     USB,
     VENDOR,
 )
-from .coordinator import PWDataUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator
 from .gateway import SmileGateway
 from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
 from .usb import PlugwiseUSBEntity
@@ -114,7 +114,7 @@ class GwSwitch(SmileGateway, SwitchEntity):
     def __init__(
         self,
         api: Smile,
-        coordinator: PWDataUpdateCoordinator,
+        coordinator: PlugwiseDataUpdateCoordinator,
         description: PlugwiseSwitchEntityDescription,
         dev_id: str,
         switch: str,

@@ -38,7 +38,7 @@ from .const import (
     SCHEDULE_ON,
     VENDOR,
 )
-from .coordinator import PWDataUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator
 from .gateway import SmileGateway
 from .smile_helpers import GWThermostat, get_preset_temp
 
@@ -89,7 +89,7 @@ class PwThermostat(SmileGateway, ClimateEntity):
     def __init__(
         self,
         api: Smile,
-        coordinator: PWDataUpdateCoordinator,
+        coordinator: PlugwiseDataUpdateCoordinator,
         description: ClimateEntityDescription,
         dev_id: str,
         max_temp: str,

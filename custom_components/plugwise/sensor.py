@@ -23,7 +23,7 @@ from .const import (
     USB,
     VENDOR,
 )
-from .coordinator import PWDataUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator
 from .gateway import SmileGateway
 from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
 from .smile_helpers import icon_selector
@@ -107,7 +107,7 @@ class GwSensor(SmileGateway, SensorEntity):
 
     def __init__(
         self,
-        coordinator: PWDataUpdateCoordinator,
+        coordinator: PlugwiseDataUpdateCoordinator,
         description: PlugwiseSensorEntityDescription,
         dev_id: str,
         sensor: str,
