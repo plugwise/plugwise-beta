@@ -25,7 +25,6 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseGatewayEntity
-from .gateway import SmileGateway
 from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
 from .smile_helpers import icon_selector
 from .usb import PlugwiseUSBEntity

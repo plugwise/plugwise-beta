@@ -33,7 +33,6 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseGatewayEntity
-from .gateway import SmileGateway
 from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
 from .usb import PlugwiseUSBEntity
 

@@ -40,7 +40,6 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseGatewayEntity
-from .gateway import SmileGateway
 from .smile_helpers import GWThermostat, get_preset_temp
 
 HVAC_MODES_HEAT_ONLY = [HVAC_MODE_HEAT, HVAC_MODE_AUTO, HVAC_MODE_OFF]

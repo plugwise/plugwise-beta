@@ -38,7 +38,6 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseGatewayEntity
-from .gateway import SmileGateway
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
 from .smile_helpers import GWBinarySensor, icon_selector
 from .usb import PlugwiseUSBEntity
