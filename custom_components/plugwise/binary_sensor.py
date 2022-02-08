@@ -111,24 +111,21 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
     entities: list[GwBinarySensor] = []
     for device_id, device_properties in coordinator.data.devices.items():
-        if "binary_sensors" not in device_properties:
-            continue:
+        for description in PW_BINARY_SENSOR_TYPES:
+            if (
+                "binary_sensors" not in device_properties
+                or description.key not in device_properties["binary_sensors"]
+            ):
+                continue:
 
-        for binary_sensor in device_properties["binary_sensors"]:
-            for description in PW_BINARY_SENSOR_TYPES:
-                if (
-                    description.plugwise_api == SMILE
-                    and description.key == binary_sensor
-                ):
-                    entities.append(
-                        GwBinarySensor(
-                            coordinator,
-                            description,
-                            device_id,
-                            binary_sensor
-                        )
-                    )
-                    _LOGGER.debug("Add %s binary sensor", description.key)
+            entities.append(
+                GwBinarySensor(
+                    coordinator,
+                    description,
+                    device_id,
+                )
+            )
+            _LOGGER.debug("Add %s binary sensor", description.key)
 
     if entities:
         async_add_entities(entities, True)
@@ -142,7 +139,6 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         coordinator: PlugwiseUpdateCoordinator,
         description: PlugwiseBinarySensorEntityDescription,
         device_id: str,
-        binary_sensor: str,
     ) -> None:
         """Initialise the binary_sensor."""
         super().__init__(
@@ -155,7 +151,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
             coordinator.data.devices[device_id].get(FW),
         )
 
-        self._gw_b_sensor = GWBinarySensor(coordinator.data)
+        self.gw_b_sensor = GWBinarySensor(coordinator.data)
 
         self._attr_entity_registry_enabled_default = (
             description.entity_registry_enabled_default
@@ -168,19 +164,19 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
         )
         self._attr_should_poll = self.entity_description.should_poll
         self._attr_unique_id = f"{device_id}-{description.key}"
-        self.binary_sensor = binary_sensor
+        self.binary_sensor = description.key
         self.device_id = device_id
 
     @property
     def extra_state_attributes(self):
         """Return state attributes."""
-        return self._gw_b_sensor.extra_state_attributes
+        return self.gw_b_sensor.extra_state_attributes
 
     @property
     def is_on(self) -> bool:
         """Update the state of the Binary Sensor."""
-        if self._gw_b_sensor.notification:
-            for notify_id, message in self._gw_b_sensor.notification.items():
+        if self.gw_b_sensor.notification:
+            for notify_id, message in self.gw_b_sensor.notification.items():
                 self.hass.components.persistent_notification.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
