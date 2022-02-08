@@ -32,6 +32,7 @@ from .const import (
     VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .entity import PlugwiseGatewayEntity
 from .gateway import SmileGateway
 from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
 from .usb import PlugwiseUSBEntity
@@ -108,7 +109,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
         async_add_entities(entities, True)
 
 
-class GwSwitch(SmileGateway, SwitchEntity):
+class PlugwiseGatewaySwitchEntity(PlugwiseGatewayEntity, SwitchEntity):
     """Representation of a Smile Gateway switch."""
 
     def __init__(

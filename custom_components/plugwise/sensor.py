@@ -24,6 +24,7 @@ from .const import (
     VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .entity import PlugwiseGatewayEntity
 from .gateway import SmileGateway
 from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
 from .smile_helpers import icon_selector
@@ -102,7 +103,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
         async_add_entities(entities, True)
 
 
-class GwSensor(SmileGateway, SensorEntity):
+class PlugwiseGatewaySensorEntity(PlugwiseGatewayEntity, SensorEntity):
     """Representation of a Smile Gateway sensor."""
 
     def __init__(

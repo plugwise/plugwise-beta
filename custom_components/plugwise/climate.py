@@ -39,6 +39,7 @@ from .const import (
     VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .entity import PlugwiseGatewayEntity
 from .gateway import SmileGateway
 from .smile_helpers import GWThermostat, get_preset_temp
 
@@ -83,7 +84,7 @@ async def async_setup_entry(
     async_add_entities(entities, True)
 
 
-class PwThermostat(SmileGateway, ClimateEntity):
+class PlugwiseClimateEntity(PlugwiseGatewayEntity, ClimateEntity):
     """Representation of a Plugwise (zone) thermostat."""
 
     def __init__(
