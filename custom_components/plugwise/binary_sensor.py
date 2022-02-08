@@ -37,6 +37,7 @@ from .const import (
     VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .entity import PlugwiseGatewayEntity
 from .gateway import SmileGateway
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
 from .smile_helpers import GWBinarySensor, icon_selector
@@ -118,7 +119,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 continue
 
             entities.append(
-                GwBinarySensor(
+                GatewayBinarySensorEntity(
                     coordinator,
                     description,
                     device_id,
@@ -130,8 +131,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
         async_add_entities(entities, True)
 
 
-class GwBinarySensor(SmileGateway, BinarySensorEntity):
-    """Representation of a Gateway binary_sensor."""
+class GatewayBinarySensorEntity(PlugwiseGatewayEntity, BinarySensorEntity):
+    """Represent Smile Binary Sensors."""
 
     def __init__(
         self,

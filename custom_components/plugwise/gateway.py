@@ -157,39 +157,3 @@ async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
 
-
-class SmileGateway(CoordinatorEntity):
-    """Represent Smile Gateway."""
-
-    def __init__(
-        self,
-        coordinator: PlugwiseDataUpdateCoordinator,
-        description: PlugwiseEntityDescription,
-        dev_id: str,
-        model: str,
-        name: str,
-        vendor: str,
-        fw: str,
-    ) -> None:
-        """Initialise the gateway."""
-        super().__init__(coordinator)
-
-        entry = coordinator.config_entry
-        gw_id = coordinator.data.gateway["gateway_id"]
-        self._attr_available = super().available
-        self._attr_device_class = description.device_class
-        self._attr_device_info = DeviceInfo(
-            configuration_url=f"http://{entry.data[CONF_HOST]}",
-            identifiers={(DOMAIN, dev_id)},
-            manufacturer=vendor,
-            model=model,
-            name=f"Smile {coordinator.data.gateway['smile_name']}",
-            sw_version=fw,
-        )
-        self.entity_description = description
-
-        if dev_id != gw_id:
-            self._attr_device_info.update(
-                name=name,
-                via_device=(DOMAIN, gw_id),
-            )
