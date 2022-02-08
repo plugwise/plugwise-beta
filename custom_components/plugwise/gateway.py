@@ -13,8 +13,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,
@@ -40,7 +38,6 @@ from .const import (
     UNDO_UPDATE_LISTENER,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .models import PlugwiseEntityDescription
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -156,4 +153,3 @@ async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
 async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
-

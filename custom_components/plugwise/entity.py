@@ -7,6 +7,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import PlugwiseData, PlugwiseDataUpdateCoordinator
+from .models import PlugwiseEntityDescription
 
 
 class PlugwiseGatewayEntity(CoordinatorEntity[PlugwiseData]):
