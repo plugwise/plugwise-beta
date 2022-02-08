@@ -34,7 +34,7 @@ class PlugwiseGatewayEntity(CoordinatorEntity[PlugwiseData]):
             manufacturer=data.get("vendor"),
             model=data.get("model"),
             name=f"Smile {coordinator.data.gateway['smile_name']}",
-            sw_version=fw,
+            sw_version=data.get("fw"),
         )
         self.entity_description = description
 
