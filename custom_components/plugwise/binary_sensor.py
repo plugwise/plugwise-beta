@@ -116,7 +116,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                 "binary_sensors" not in device_properties
                 or description.key not in device_properties["binary_sensors"]
             ):
-                continue:
+                continue
 
             entities.append(
                 GwBinarySensor(
