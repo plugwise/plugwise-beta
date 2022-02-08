@@ -37,7 +37,7 @@ from .const import (
     USB_MOTION_ID,
     VENDOR,
 )
-from .coordinator import PlugwiseUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator
 from .gateway import SmileGateway
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
 from .smile_helpers import GWBinarySensor, icon_selector
