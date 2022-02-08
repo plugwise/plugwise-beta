@@ -31,7 +31,6 @@ from .const import (
     SERVICE_USB_SCAN_CONFIG_SCHEMA,
     SERVICE_USB_SED_BATTERY_CONFIG,
     SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
-    SMILE,
     STICK,
     USB,
     USB_MOTION_ID,
@@ -136,7 +135,7 @@ class GwBinarySensor(SmileGateway, BinarySensorEntity):
 
     def __init__(
         self,
-        coordinator: PlugwiseUpdateCoordinator,
+        coordinator: PlugwiseDataUpdateCoordinator,
         description: PlugwiseBinarySensorEntityDescription,
         device_id: str,
     ) -> None:
