@@ -23,10 +23,10 @@ class PlugwiseGatewayEntity(CoordinatorEntity[PlugwiseData]):
         super().__init__(coordinator)
 
         configuration_url: str | None = None
-        if entry := self.coordinator.config_entry:
+        if entry := coordinator.config_entry:
             configuration_url = f"http://{entry.data[CONF_HOST]}"
 
-        data = self.coordinator.data.devices[device_id]
+        data = coordinator.data.devices[device_id]
         self._attr_available = super().available
         self._attr_device_class = description.device_class
         self._attr_device_info = DeviceInfo(
