@@ -3,7 +3,7 @@
 import re
 from unittest.mock import AsyncMock, Mock, patch
 
-import jsonpickle
+import json
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -19,7 +19,7 @@ from tests.test_util.aiohttp import AiohttpClientMocker
 def _read_json(environment, call):
     """Undecode the json data."""
     fixture = load_fixture(f"plugwise/{environment}/{call}.json")
-    return jsonpickle.decode(fixture)
+    return json.loads(fixture)
 
 
 @pytest.fixture(name="mock_smile")
