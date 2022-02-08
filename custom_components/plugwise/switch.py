@@ -23,13 +23,10 @@ from .const import (
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
-    FW,
-    PW_MODEL,
     PW_TYPE,
     SMILE,
     STICK,
     USB,
-    VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseGatewayEntity
@@ -124,10 +121,6 @@ class PlugwiseGatewaySwitchEntity(PlugwiseGatewayEntity, SwitchEntity):
             coordinator,
             description,
             dev_id,
-            coordinator.data[1][dev_id].get(PW_MODEL),
-            coordinator.data[1][dev_id].get(ATTR_NAME),
-            coordinator.data[1][dev_id].get(VENDOR),
-            coordinator.data[1][dev_id].get(FW),
         )
 
         self._api = api

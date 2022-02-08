@@ -24,8 +24,6 @@ from .const import (
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
-    FW,
-    PW_MODEL,
     PW_TYPE,
     SERVICE_USB_SCAN_CONFIG,
     SERVICE_USB_SCAN_CONFIG_SCHEMA,
@@ -34,7 +32,6 @@ from .const import (
     STICK,
     USB,
     USB_MOTION_ID,
-    VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseGatewayEntity
@@ -144,10 +141,6 @@ class GatewayBinarySensorEntity(PlugwiseGatewayEntity, BinarySensorEntity):
             coordinator,
             description,
             device_id,
-            coordinator.data.devices[device_id].get(PW_MODEL),
-            coordinator.data.devices[device_id].get(ATTR_NAME),
-            coordinator.data.devices[device_id].get(VENDOR),
-            coordinator.data.devices[device_id].get(FW),
         )
 
         self.gw_b_sensor = GWBinarySensor(coordinator.data)

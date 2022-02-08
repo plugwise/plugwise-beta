@@ -29,14 +29,11 @@ from .const import (
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
     DOMAIN,
-    FW,
     MASTER_THERMOSTATS,
     PW_CLASS,
     PW_LOCATION,
-    PW_MODEL,
     SCHEDULE_OFF,
     SCHEDULE_ON,
-    VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseGatewayEntity
@@ -100,10 +97,6 @@ class PlugwiseClimateEntity(PlugwiseGatewayEntity, ClimateEntity):
             coordinator,
             description,
             dev_id,
-            coordinator.data[1][dev_id].get(PW_MODEL),
-            description.name,
-            coordinator.data[1][dev_id].get(VENDOR),
-            coordinator.data[1][dev_id].get(FW),
         )
 
         self._gw_thermostat = GWThermostat(coordinator.data, dev_id)
