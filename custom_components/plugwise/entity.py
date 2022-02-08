@@ -17,10 +17,6 @@ class PlugwiseGatewayEntity(CoordinatorEntity[PlugwiseData]):
         coordinator: PlugwiseDataUpdateCoordinator,
         description: PlugwiseEntityDescription,
         device_id: str,
-        model: str,
-        name: str,
-        vendor: str,
-        fw: str,
     ) -> None:
         """Initialise the gateway."""
         super().__init__(coordinator)
