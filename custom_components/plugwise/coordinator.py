@@ -21,18 +21,10 @@ class PlugwiseData(NamedTuple):
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     """Class to manage fetching Plugwise data from single endpoint."""
 
-    def __init__(
-        self,
-        hass: HomeAssistant,
-        api: Smile,
-        interval: timedelta
-    ) -> None:
+    def __init__(self, hass: HomeAssistant, api: Smile, interval: timedelta) -> None:
         """Initialize the coordinator."""
         super().__init__(
-            hass,
-            LOGGER,
-            name=api.smile_name or DOMAIN,
-            update_interval=interval
+            hass, LOGGER, name=api.smile_name or DOMAIN, update_interval=interval
         )
         self.api = api
 
