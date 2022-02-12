@@ -28,10 +28,14 @@ from .const import (
     COORDINATOR,
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
+    DEFAULT_STEP,
     DOMAIN,
     MASTER_THERMOSTATS,
     PW_CLASS,
     PW_LOCATION,
+    PW_MAX_TEMP,
+    PW_MIN_TEMP,
+    PW_STEP,
     SCHEDULE_OFF,
     SCHEDULE_ON,
 )
@@ -69,8 +73,9 @@ async def async_setup_entry(
                 name=coordinator.data[1][dev_id].get(ATTR_NAME),
             ),
             dev_id,
-            DEFAULT_MAX_TEMP,
-            DEFAULT_MIN_TEMP,
+            coordinator.data[1][dev_id].get(PW_MAX_TEMP),
+            coordinator.data[1][dev_id].get(PW_MIN_TEMP),
+            coordinator.data[1][dev_id].get(PW_STEP),
         )
         entities.append(thermostat)
         _LOGGER.info(
@@ -89,8 +94,9 @@ class PlugwiseClimateEntity(PlugwiseGatewayEntity, ClimateEntity):
         coordinator: PlugwiseDataUpdateCoordinator,
         description: ClimateEntityDescription,
         dev_id: str,
-        max_temp: str,
-        min_temp: str,
+        max_temp: str = DEFAULT_MAX_TEMP,
+        min_temp: str = DEFAULT_MIN_TEMP,
+        stp: str = DEFAULT_STEP,
     ) -> None:
         """Set up the PwThermostat."""
         super().__init__(
@@ -104,6 +110,7 @@ class PlugwiseClimateEntity(PlugwiseGatewayEntity, ClimateEntity):
         self._attr_device_class = None
         self._attr_max_temp = max_temp
         self._attr_min_temp = min_temp
+        self._attr_step = step
         self._attr_name = description.name
         self._attr_supported_features = SUPPORT_FLAGS
         self._attr_temperature_unit = TEMP_CELSIUS

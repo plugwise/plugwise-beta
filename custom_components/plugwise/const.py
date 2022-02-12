@@ -44,8 +44,13 @@ DEFAULT_SCAN_INTERVAL = {
     "stretch": 60,
     "thermostat": 60,
 }
+DEFAULT_STEP = 1
 DEFAULT_TIMEOUT = 10
 DEFAULT_USERNAME = "smile"
+
+PW_MAX_TEMP = "upper_bound"
+PW_MIN_TEMP = "lower_bound"
+PW_STEP = "resolution"
 
 # --- Const for Plugwise Smile and Stretch
 GATEWAY_PLATFORMS = [
