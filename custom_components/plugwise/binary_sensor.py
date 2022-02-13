@@ -154,7 +154,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
-        if notification := self.coordinator.data.gateway["notification"]:
+        if notification := self.coordinator.data.gateway.get("notifications"):
             for notify_id, message in notification.items():
                 self.hass.components.persistent_notification.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
