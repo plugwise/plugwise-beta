@@ -41,4 +41,5 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             ) from err
         except PlugwiseException as err:
             raise UpdateFailed(f"Updated failed for: {self.api.smile_name}") from err
+        LOGGER.debug("Data: %s", PlugwiseData(*data))
         return PlugwiseData(*data)
