@@ -56,10 +56,7 @@ async def async_setup_entry(
     async_add_entities(
         PlugwiseClimateEntity(coordinator, device_id)
         for device_id, device in coordinator.data.devices.items()
-        if device["class"] in THERMOSTAT_CLASSES
-        LOGGER.info(
-            "Added %s climate entity", self.device.get(ATTR_NAME)
-        )
+        if device["class"] in MASTER_THERMOSTATS
     )
 
 
