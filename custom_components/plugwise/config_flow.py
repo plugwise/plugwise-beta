@@ -263,7 +263,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
         return self.async_show_form(
-            step_id="user",
+            step_id="user_gateway",
             data_schema=_base_gw_schema(self.discovery_info),
             errors=errors,
         )
