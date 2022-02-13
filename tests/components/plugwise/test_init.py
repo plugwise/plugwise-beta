@@ -60,4 +60,3 @@ async def test_config_entry_not_ready(
 
     assert len(mock_smile_anna.connect.mock_calls) == 1
     assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
-    

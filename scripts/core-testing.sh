@@ -111,7 +111,6 @@ else
         git pull
 fi
 
-
 echo ""
 echo "Cleaning existing plugwise from HA core"
 echo ""
@@ -126,12 +125,24 @@ echo "Activating venv and installing selected test modules (zeroconf,pyserial, e
 echo ""
 # shellcheck source=/dev/null
 . venv/bin/activate
+echo ""
+echo "Upgrading pip"
+echo ""
+python3 -m pip install --upgrade pip
 mkdir -p ./tmp
-grep -hEi "aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket" requirements_test_all.txt requirements_test.txt > ./tmp/requirements_test_extra.txt
+echo ""
+echo "Installing pip modules"
+echo ""
+echo " - HA requirements"
+pip install -q --disable-pip-version-check -r requirements.txt
+grep -hEi "voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket" requirements_test_all.txt requirements_test.txt> ./tmp/requirements_test_extra.txt
+echo " - extra's required for plugwise"
 pip install -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
+echo " - flake8"
 pip install -q flake8
 echo ""
-echo "Checking manifest for current python-plugwise to install"
+echo "Checking manifest for current python-plugwise to install:"
+echo "$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')"
 echo ""
 pip install -q --disable-pip-version-check "$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')"
 echo ""
