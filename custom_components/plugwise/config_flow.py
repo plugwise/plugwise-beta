@@ -3,7 +3,14 @@ from __future__ import annotations
 
 from typing import Any
 
-from plugwise.exceptions import InvalidAuthentication, PlugwiseException
+from plugwise.exceptions import (
+    InvalidAuthentication,
+    NetworkDown,
+    PlugwiseException,
+    PortError,
+    StickInitError,
+    TimeoutException,
+)
 from plugwise.smile import Smile
 from plugwise.stick import Stick
 import serial.tools.list_ports

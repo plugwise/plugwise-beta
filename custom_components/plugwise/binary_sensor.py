@@ -30,6 +30,7 @@ from .const import (
     LOGGER,
     PW_MODEL,
     PW_TYPE,
+    SEVERITIES,
     SERVICE_USB_SCAN_CONFIG,
     SERVICE_USB_SCAN_CONFIG_SCHEMA,
     SERVICE_USB_SED_BATTERY_CONFIG,
@@ -80,7 +81,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
             async_add_entities(entities)
 
         if USB_MOTION_ID in api_stick.devices[mac].features:
-            _LOGGER.debug("Add binary_sensors for %s", mac)
+            LOGGER.debug("Add binary_sensors for %s", mac)
 
             # Register services
             platform.async_register_entity_service(
@@ -113,7 +114,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
     entities: list[PlugwiseBinarySensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
-        for description in BINARY_SENSORS:
+        for description in PW_BINARY_SENSOR_TYPES:
             if description.key not in device and (
                 "binary_sensors" not in device
                 or description.key not in device["binary_sensors"]
@@ -126,8 +127,8 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
                     device_id,
                     description,
                 )
-            LOGGER.debug("Add %s binary sensor", description.key)
             )
+            LOGGER.debug("Add %s binary sensor", description.key)
     async_add_entities(entities)
 
 
@@ -208,7 +209,7 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
         sensitivity_mode = kwargs.get(ATTR_SCAN_SENSITIVITY_MODE)
         reset_timer = kwargs.get(ATTR_SCAN_RESET_TIMER)
         daylight_mode = kwargs.get(ATTR_SCAN_DAYLIGHT_MODE)
-        _LOGGER.debug(
+        LOGGER.debug(
             "Configure Scan device '%s': sensitivity='%s', reset timer='%s', daylight mode='%s'",
             self.name,
             sensitivity_mode,
@@ -224,7 +225,7 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
         maintenance_interval = kwargs.get(ATTR_SED_MAINTENANCE_INTERVAL)
         clock_sync = kwargs.get(ATTR_SED_CLOCK_SYNC)
         clock_interval = kwargs.get(ATTR_SED_CLOCK_INTERVAL)
-        _LOGGER.debug(
+        LOGGER.debug(
             "Configure SED device '%s': stay active='%s', sleep for='%s', maintenance interval='%s', clock sync='%s', clock interval='%s'",
             self.name,
             str(stay_active),

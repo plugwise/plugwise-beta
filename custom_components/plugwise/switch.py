@@ -91,7 +91,7 @@ async def async_setup_entry_gateway(
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
     entities: list[PlugwiseSwitchEntity] = []
     for device_id, device in coordinator.data.devices.items():
-        for description in SWITCHES:
+        for description in PW_SWITCH_TYPES:
             if "switches" not in device or description.key not in device["switches"]:
                 continue
             entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
@@ -106,7 +106,7 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
-        description: SwitchEntityDescription,
+        description: PlugwiseSwitchEntityDescription,
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)

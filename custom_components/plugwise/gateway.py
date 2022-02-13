@@ -4,13 +4,21 @@ from __future__ import annotations
 import asyncio
 from datetime import timedelta
 from typing import Any
+import voluptuous as vol
 
 from plugwise.exceptions import InvalidAuthentication, PlugwiseException
 from plugwise.smile import Smile
 
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_USERNAME, CONF_SCAN_INTERVAL
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_PASSWORD,
+    CONF_PORT,
+    CONF_USERNAME,
+    CONF_SCAN_INTERVAL,
+    Platform,
+)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
@@ -18,12 +26,18 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity_registry import RegistryEntry, async_migrate_entries
 
 from .const import (
+    COORDINATOR,
     DEFAULT_PORT,
+    DEFAULT_SCAN_INTERVAL,
     DEFAULT_USERNAME,
     DOMAIN,
+    GATEWAY,
     LOGGER,
     PLATFORMS_GATEWAY,
+    PW_TYPE,
     SENSOR_PLATFORMS,
+    SERVICE_DELETE,
+    UNDO_UPDATE_LISTENER,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 

@@ -81,7 +81,7 @@ async def async_setup_entry_gateway(
 
     entities: list[PlugwiseSensorEnity] = []
     for device_id, device in coordinator.data.devices.items():
-        for description in SENSORS:
+        for description in PW_SENSOR_TYPES:
             if (
                 "sensors" not in device
                 or device["sensors"].get(description.key) is None
@@ -107,7 +107,7 @@ class PlugwiseSensorEnity(PlugwiseEntity, SensorEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
-        description: SensorEntityDescription,
+        description: PlugwiseSensorEntityDescription,
     ) -> None:
         """Initialise the sensor."""
         super().__init__(coordinator, device_id)
