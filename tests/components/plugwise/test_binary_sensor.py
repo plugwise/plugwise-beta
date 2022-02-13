@@ -1,79 +1,63 @@
 """Tests for the Plugwise binary_sensor integration."""
 
-from homeassistant.config_entries import ConfigEntryState
+from unittest.mock import MagicMock
+
 from homeassistant.const import STATE_OFF, STATE_ON
-from homeassistant.helpers.entity_registry import async_get_registry
+from homeassistant.core import HomeAssistant
 
-from tests.components.plugwise.common import async_init_integration_gw
+from tests.common import MockConfigEntry
 
 
-async def test_anna_climate_binary_sensor_entities(hass, mock_smile_anna):
+async def test_anna_climate_binary_sensor_entities(
+    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
+) -> None:
     """Test creation of climate related binary_sensor entities."""
-    a_sensor = "binary_sensor.opentherm_slave_boiler_state"
 
-    entry = await async_init_integration_gw(hass, mock_smile_anna)
-    assert entry.state == ConfigEntryState.LOADED
-
-    # Enable the opentherm sensor
-    registry = await async_get_registry(hass)
-    updated_entry = registry.async_update_entity(a_sensor, disabled_by=None)
-
-    assert updated_entry != entry
-    assert updated_entry.disabled is False
-
-    await hass.async_block_till_done()
-
-    await hass.config_entries.async_reload(entry.entry_id)
-    await hass.async_block_till_done()
-
-    state = hass.states.get("binary_sensor.opentherm_slave_boiler_state")
-    assert str(state.state) == STATE_OFF
+    state = hass.states.get("binary_sensor.opentherm_secondary_boiler_state")
+    assert state
+    assert state.state == STATE_OFF
 
     state = hass.states.get("binary_sensor.opentherm_dhw_state")
-    assert str(state.state) == STATE_OFF
+    assert state
+    assert state.state == STATE_OFF
+
+    state = hass.states.get("binary_sensor.opentherm_heating")
+    assert state
+    assert state.state == STATE_ON
+
+    state = hass.states.get("binary_sensor.opentherm_cooling")
+    assert state
+    assert state.state == STATE_OFF
 
 
-async def test_anna_climate_binary_sensor_change(hass, mock_smile_anna):
+async def test_anna_climate_binary_sensor_change(
+    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
+) -> None:
     """Test change of climate related binary_sensor entities."""
-    entry = await async_init_integration_gw(hass, mock_smile_anna)
-    assert entry.state == ConfigEntryState.LOADED
-
     hass.states.async_set("binary_sensor.opentherm_dhw_state", STATE_ON, {})
     await hass.async_block_till_done()
 
     state = hass.states.get("binary_sensor.opentherm_dhw_state")
-    assert str(state.state) == STATE_ON
+    assert state
+    assert state.state == STATE_ON
 
     await hass.helpers.entity_component.async_update_entity(
         "binary_sensor.opentherm_dhw_state"
     )
 
     state = hass.states.get("binary_sensor.opentherm_dhw_state")
-    assert str(state.state) == STATE_OFF
+    assert state
+    assert state.state == STATE_OFF
 
 
-async def test_adam_climate_binary_sensor_change(hass, mock_smile_adam):
+async def test_adam_climate_binary_sensor_change(
+    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
+) -> None:
     """Test change of climate related binary_sensor entities."""
-
-    n_sensor = "binary_sensor.adam_plugwise_notification"
-
-    entry = await async_init_integration_gw(hass, mock_smile_adam)
-    assert entry.state == ConfigEntryState.LOADED
-
-    # Enable the notification sensor
-    registry = await async_get_registry(hass)
-    updated_entry = registry.async_update_entity(n_sensor, disabled_by=None)
-
-    assert updated_entry != entry
-    assert updated_entry.disabled is False
-
-    await hass.async_block_till_done()
-
-    await hass.config_entries.async_reload(entry.entry_id)
-    await hass.async_block_till_done()
-
-    state = hass.states.get(n_sensor)
-    assert str(state.state) == STATE_ON
-    assert "unreachable" in state.attributes.get("WARNING_msg")[0]
+    state = hass.states.get("binary_sensor.adam_plugwise_notification")
+    assert state
+    assert state.state == STATE_ON
+    assert "warning_msg" in state.attributes
+    assert "unreachable" in state.attributes["warning_msg"][0]
     assert not state.attributes.get("error_msg")
     assert not state.attributes.get("other_msg")
