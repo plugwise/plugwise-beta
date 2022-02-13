@@ -121,6 +121,7 @@ class PlugwiseBinarySensorEntityDescription(
 ):
     """Describes Plugwise binary sensor entity."""
 
+    icon_off: str | None = None
     should_poll: bool = False
     state_request_method: str | None = None
 
@@ -545,26 +546,45 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     ),
     PlugwiseBinarySensorEntityDescription(
         key=DHW_STATE,
-        plugwise_api=SMILE,
         name="DHW State",
+        icon="mdi:water-pump",
+        icon_off="mdi:water-pump-off",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=FLAME_STATE,
-        plugwise_api=SMILE,
         name="Flame State",
+        icon="mdi:fire",
+        icon_off="mdi:fire-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="heating_state",
+        name="Heating",
+        icon="mdi:radiator",
+        icon_off="mdi:radiator-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="cooling_state",
+        name="Cooling",
+        icon="mdi:snowflake",
+        icon_off="mdi:snowflake-off",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=PW_NOTIFICATION,
-        plugwise_api=SMILE,
+        icon="mdi:mailbox-up-outline",
+        icon_off="mdi:mailbox-outline",
         name="Plugwise Notification",
+        entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=SLAVE_BOILER_STATE,
-        plugwise_api=SMILE,
-        name="Slave Boiler State",
+        name="Secondary Boiler State",
+        icon="mdi:fire",
+        icon_off="mdi:circle-off-outline",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
     ),
