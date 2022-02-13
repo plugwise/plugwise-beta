@@ -89,12 +89,14 @@ if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
 	git config pull.rebase true
 	git checkout dev
 	echo ""
-	echo " ** Running setup scrvipt from HA core **"
+	echo " ** Running setup script from HA core **"
 	echo ""
 	# shellcheck source=/dev/null
         . "${my_path}/venv/bin/activate"
         python3 -m venv venv
-	script/setup
+	python3 -m pip install --upgrade pip 
+        # Not a typo, core setup script resets back to pip 20.3
+	script/setup || python3 -m pip install --upgrade pip 
 	# shellcheck source=/dev/null
         . venv/bin/activate
 	echo ""
@@ -104,7 +106,7 @@ if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
 else
         cd "${coredir}" || exit
 	echo ""
-	echo " ** Restting/rebasing core **"
+	echo " ** Resetting/rebasing core **"
 	echo ""
         git config pull.rebase true
         git reset --hard
@@ -126,25 +128,23 @@ echo ""
 # shellcheck source=/dev/null
 . venv/bin/activate
 echo ""
-echo "Upgrading pip"
-echo ""
-python3 -m pip install --upgrade pip
+python3 -m pip install -q --upgrade pip
 mkdir -p ./tmp
 echo ""
 echo "Installing pip modules"
 echo ""
-echo " - HA requirements"
-pip install -q --disable-pip-version-check -r requirements.txt
-grep -hEi "voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket" requirements_test_all.txt requirements_test.txt> ./tmp/requirements_test_extra.txt
+echo " - HA requirements (core and test)"
+pip install -q --disable-pip-version-check -r requirements.txt -r requirements_test.txt
+grep -hEi "voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 echo " - extra's required for plugwise"
 pip install -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
 echo " - flake8"
 pip install -q flake8
 echo ""
-echo "Checking manifest for current python-plugwise to install:"
-echo "$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')"
+module=$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+echo "Checking manifest for current python-plugwise to install: ${module}"
 echo ""
-pip install -q --disable-pip-version-check "$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')"
+pip install -q --disable-pip-version-check "${module}"
 echo ""
 echo "Test commencing ..."
 echo ""
@@ -152,11 +152,11 @@ echo ""
 pytest ${subject} --cov=homeassistant/components/plugwise/ --cov-report term-missing -- "tests/components/plugwise/${basedir}" || exit
 echo ""
 echo "... flake8-ing component..."
-flake8 homeassistant/components/plugwise/*py|| exit
+flake8 homeassistant/components/plugwise/*py || exit
 echo "... flak8-ing tests..."
 flake8 tests/components/plugwise/*py || exit
-echo "... pylint-ing component ..."
-pylint homeassistant/components/plugwise/*py || exit
+#echo "... pylint-ing component ..."
+#pylint homeassistant/components/plugwise/*py tests/components/plugwise/*py|| exit
 echo "... black-ing ..."
 black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
 echo ""
