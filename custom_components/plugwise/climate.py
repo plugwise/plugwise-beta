@@ -52,7 +52,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile Thermostats from a config entry."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
     async_add_entities(
         PlugwiseClimateEntity(coordinator, device_id)
         for device_id, device in coordinator.data.devices.items()

@@ -77,7 +77,7 @@ async def async_setup_entry_gateway(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile sensors from a config entry."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities: list[PlugwiseSensorEnity] = []
     for device_id, device in coordinator.data.devices.items():
