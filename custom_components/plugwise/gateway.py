@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import timedelta
 from typing import Any
 
 from plugwise.exceptions import InvalidAuthentication, PlugwiseException
