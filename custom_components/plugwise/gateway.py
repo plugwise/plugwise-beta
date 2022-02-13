@@ -84,7 +84,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     LOGGER.debug("DUC update iterval: %s", update_interval)
 
-    coordinator = PlugwiseDataUpdateCoordinator(hass, api)
+    coordinator = PlugwiseDataUpdateCoordinator(hass, api, update_interval)
     await coordinator.async_config_entry_first_refresh()
 
     undo_listener = entry.add_update_listener(_update_listener)
