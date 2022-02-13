@@ -1,8 +1,6 @@
 """Plugwise Sensor component for Home Assistant."""
 from __future__ import annotations
 
-import logging
-
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, Platform
@@ -16,6 +14,7 @@ from .const import (
     COORDINATOR,
     DOMAIN,
     FW,
+    LOGGER,
     PW_MODEL,
     PW_TYPE,
     SMILE,
@@ -23,15 +22,12 @@ from .const import (
     USB,
     VENDOR,
 )
-from .coordinator import PWDataUpdateCoordinator
-from .gateway import SmileGateway
+from .coordinator import PlugwiseDataUpdateCoordinator
+from .entity import PlugwiseEntity
 from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
-from .smile_helpers import icon_selector
 from .usb import PlugwiseUSBEntity
 
 PARALLEL_UPDATES = 0
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -75,75 +71,54 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
+async def async_setup_entry_gateway(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile sensors from a config entry."""
-    _LOGGER.debug("Plugwise hass data %s", hass.data[DOMAIN])
-    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]
 
-    entities: list[GwSensor] = []
-    for dev_id in coordinator.data[1]:
-        if "sensors" in coordinator.data[1][dev_id]:
-            for sensor in coordinator.data[1][dev_id]["sensors"]:
-                for description in PW_SENSOR_TYPES:
-                    if description.plugwise_api == SMILE and description.key == sensor:
-                        entities.extend(
-                            [
-                                GwSensor(
-                                    coordinator,
-                                    description,
-                                    dev_id,
-                                    sensor,
-                                )
-                            ]
-                        )
-                        _LOGGER.debug("Add %s sensor", description.key)
+    entities: list[PlugwiseSensorEnity] = []
+    for device_id, device in coordinator.data.devices.items():
+        for description in SENSORS:
+            if (
+                "sensors" not in device
+                or device["sensors"].get(description.key) is None
+            ):
+                continue
 
-    if entities:
-        async_add_entities(entities, True)
+            entities.append(
+                PlugwiseSensorEnity(
+                    coordinator,
+                    device_id,
+                    description,
+                )
+            )
+            LOGGER.debug("Add %s sensor", description.key)
+
+    async_add_entities(entities)
 
 
-class GwSensor(SmileGateway, SensorEntity):
-    """Representation of a Smile Gateway sensor."""
+class PlugwiseSensorEnity(PlugwiseEntity, SensorEntity):
+    """Represent Plugwise Sensors."""
 
     def __init__(
         self,
-        coordinator: PWDataUpdateCoordinator,
-        description: PlugwiseSensorEntityDescription,
-        dev_id: str,
-        sensor: str,
+        coordinator: PlugwiseDataUpdateCoordinator,
+        device_id: str,
+        description: SensorEntityDescription,
     ) -> None:
         """Initialise the sensor."""
-        super().__init__(
-            coordinator,
-            description,
-            dev_id,
-            coordinator.data[1][dev_id].get(PW_MODEL),
-            coordinator.data[1][dev_id].get(ATTR_NAME),
-            coordinator.data[1][dev_id].get(VENDOR),
-            coordinator.data[1][dev_id].get(FW),
-        )
-
-        self._attr_name = (
-            f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
-        )
-        self._attr_native_unit_of_measurement = description.native_unit_of_measurement
-        self._attr_should_poll = description.should_poll
-        self._attr_unique_id = f"{dev_id}-{description.key}"
-        self._attr_state_class = description.state_class
-
-        self._dev_id = dev_id
-        self._sensor = sensor
+        super().__init__(coordinator, device_id)
+        self.entity_description = description
+        self._attr_unique_id = f"{device_id}-{description.key}"
+        self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
 
     @property
-    def native_value(self) -> float | None:
-        """Return the native value of the sensor."""
-        return self.coordinator.data[1][self._dev_id]["sensors"][self._sensor]
-
-    @property
-    def icon(self):
-        """Return an icon, when needed."""
-        if self._sensor == "device_state":
-            return icon_selector(self.native_value, None)
+    def native_value(self) -> int | float | None:
+        """Return the value reported by the sensor."""
+        return self.device["sensors"].get(self.entity_description.key)
 
 
 class USBSensor(PlugwiseUSBEntity, SensorEntity):
