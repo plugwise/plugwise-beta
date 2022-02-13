@@ -64,4 +64,3 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseData]):
         """Subscribe to updates."""
         self._handle_coordinator_update()
         await super().async_added_to_hass()
-        

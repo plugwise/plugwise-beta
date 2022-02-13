@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME, Platform
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -13,14 +13,10 @@ from .const import (
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
-    FW,
     LOGGER,
-    PW_MODEL,
     PW_TYPE,
-    SMILE,
     STICK,
     USB,
-    VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity

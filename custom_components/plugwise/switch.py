@@ -6,33 +6,23 @@ from typing import Any
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from homeassistant.const import (
-    ATTR_NAME,
     Platform,
-    STATE_OFF,
-    STATE_ON,
 )
 
-from plugwise.exceptions import PlugwiseException
 from plugwise.nodes import PlugwiseNode
-from plugwise.smile import Smile
 
 from .const import (
-    API,
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
-    FW,
     LOGGER,
-    PW_MODEL,
     PW_TYPE,
     SMILE,
     STICK,
     USB,
-    VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -92,7 +82,11 @@ async def async_setup_entry_gateway(
     entities: list[PlugwiseSwitchEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in PW_SWITCH_TYPES:
-            if "switches" not in device or description.key not in device["switches"] or description.plugwise_api != SMILE:
+            if (
+                "switches" not in device
+                or description.key not in device["switches"]
+                or description.plugwise_api != SMILE
+            ):
                 continue
             entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
             LOGGER.debug("Add %s switch", description.key)

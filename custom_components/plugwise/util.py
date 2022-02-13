@@ -34,4 +34,3 @@ def plugwise_command(
             await self.coordinator.async_request_refresh()
 
     return handler
-    

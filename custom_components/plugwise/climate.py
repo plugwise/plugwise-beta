@@ -4,10 +4,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
-from plugwise.exceptions import PlugwiseException
-from plugwise.smile import Smile
-
-from homeassistant.components.climate import ClimateEntity, ClimateEntityDescription
+from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
@@ -16,30 +13,19 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_HEAT,
     HVAC_MODE_COOL,
     HVAC_MODE_OFF,
-    PRESET_AWAY,
-    PRESET_HOME,
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, Platform, TEMP_CELSIUS
+from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
-    API,
     COORDINATOR,
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
     DOMAIN,
-    FW,
-    LOGGER,
     MASTER_THERMOSTATS,
-    PW_CLASS,
-    PW_LOCATION,
-    PW_MODEL,
-    SCHEDULE_OFF,
-    SCHEDULE_ON,
-    VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity

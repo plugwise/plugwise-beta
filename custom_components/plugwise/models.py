@@ -35,7 +35,6 @@ from homeassistant.helpers.entity import EntityDescription, EntityCategory
 from .const import (
     BATTERY,
     CURRENT_TEMP,
-    DEVICE_STATE,
     DHW_COMF_MODE,
     DHW_STATE,
     EL_CONSUMED,
@@ -529,7 +528,6 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Relay",
         device_class=SwitchDeviceClass.SWITCH,
-
     ),
 )
 

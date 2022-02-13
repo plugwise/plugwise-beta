@@ -2,12 +2,11 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
 from typing import Any
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME, Platform
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -26,20 +25,16 @@ from .const import (
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
-    FW,
     LOGGER,
-    PW_MODEL,
     PW_TYPE,
     SEVERITIES,
     SERVICE_USB_SCAN_CONFIG,
     SERVICE_USB_SCAN_CONFIG_SCHEMA,
     SERVICE_USB_SED_BATTERY_CONFIG,
     SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
-    SMILE,
     STICK,
     USB,
     USB_MOTION_ID,
-    VENDOR,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -155,11 +150,11 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
-        #if notification := self.coordinator.data.gateway.get("notifications"):
-        #    for notify_id, message in notification.items():
-        #        self.hass.components.persistent_notification.async_create(
-        #            message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
-        #        )
+        # if notification := self.coordinator.data.gateway.get("notifications"):
+        #     for notify_id, message in notification.items():
+        #         self.hass.components.persistent_notification.async_create(
+        #             message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
+        #         )
 
         if self.entity_description.key in self.device:
             return self.device[self.entity_description.key]

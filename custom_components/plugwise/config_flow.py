@@ -16,7 +16,7 @@ from plugwise.stick import Stick
 import serial.tools.list_ports
 import voluptuous as vol
 
-from homeassistant import config_entries, core, exceptions
+from homeassistant import config_entries
 from homeassistant.components import usb
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
 from homeassistant.config_entries import ConfigFlow

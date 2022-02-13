@@ -1,5 +1,4 @@
 """DataUpdateCoordinator for Plugwise."""
-from datetime import timedelta
 from typing import Any, NamedTuple
 
 from plugwise import Smile
@@ -8,7 +7,7 @@ from plugwise.exceptions import PlugwiseException, XMLDataMissingError
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, LOGGER
+from .const import DOMAIN, LOGGER
 
 
 class PlugwiseData(NamedTuple):
