@@ -92,7 +92,7 @@ async def async_setup_entry_gateway(
     entities: list[PlugwiseSwitchEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in PW_SWITCH_TYPES:
-            if "switches" not in device or description.key not in device["switches"]:
+            if "switches" not in device or description.key not in device["switches"] or description.plugwise_api != SMILE:
                 continue
             entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
             LOGGER.debug("Add %s switch", description.key)
