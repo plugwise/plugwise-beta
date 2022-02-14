@@ -35,6 +35,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     API,
+    COORDINATOR,
     CONF_USB_PATH,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
@@ -314,8 +315,8 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        api = self.hass.data[DOMAIN][self.config_entry.entry_id][API]
-        interval = DEFAULT_SCAN_INTERVAL[api.smile_type]
+        coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][COORDINATOR]
+        interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]
 
         data = {
             vol.Optional(
