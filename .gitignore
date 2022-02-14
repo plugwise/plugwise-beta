@@ -2,3 +2,4 @@ __pycache__
 .vscode
 ha-core
 venv
+*.sedbck

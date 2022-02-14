@@ -59,11 +59,6 @@ if [ $# -gt 0 ]; then
 	basedir=$1
 fi
 
-# Handle sed on macos
-sedmac=""
-# shellcheck disable=SC2089
-if [ "$(uname -s)" = "Darwin" ]; then sedmac="''"; fi
-
 # Ensure ha-core exists
 coredir="${my_path}/ha-core/"
 mkdir -p "${coredir}"
@@ -167,11 +162,11 @@ cp -r ./tests/components/plugwise ../tests/components/
 echo "Removing 'version' from manifest for hassfest-ing, version not allowed in core components"
 echo ""
 # shellcheck disable=SC2090
-sed -i ${sedmac} '/version.:/d' ./homeassistant/components/plugwise/manifest.json
+sed -i".sedbck" '/version.:/d' ./homeassistant/components/plugwise/manifest.json
 grep -q -E 'require.*http.*test-files.pythonhosted.*#' ./homeassistant/components/plugwise/manifest.json && (
   echo "Changing requirement for hassfest pass ...."
   # shellcheck disable=SC2090
-  sed -i ${sedmac} 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise/manifest.json
+  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise/manifest.json
 )
 echo "Running hassfest for plugwise"
 python3 -m script.hassfest --integration-path homeassistant/components/plugwise
