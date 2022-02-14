@@ -5,6 +5,7 @@ from plugwise import Smile
 from plugwise.exceptions import PlugwiseException, XMLDataMissingError
 
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN, LOGGER
@@ -27,6 +28,14 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             LOGGER,
             name=api.smile_name or DOMAIN,
             update_interval=interval,
+            # Don't refresh immediately, give the device time to process
+            # the change in state before we query it.
+            request_refresh_debouncer=Debouncer(
+                hass,
+                LOGGER,
+                cooldown=1.5,
+                immediate=False,
+            ),
         )
         self.api = api
 
