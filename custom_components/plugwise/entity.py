@@ -34,7 +34,6 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseData]):
             configuration_url = f"http://{entry.data[CONF_HOST]}"
 
         data = coordinator.data.devices[device_id]
-                data = coordinator.data.devices[device_id]
         connections = set()
         if mac := data.get("mac_address"):
             connections.add((CONNECTION_NETWORK_MAC, mac))
