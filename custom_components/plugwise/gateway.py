@@ -105,10 +105,6 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         sw_version=api.smile_version[0],
     )
 
-    platforms = PLATFORMS_GATEWAY
-    if coordinator.data.gateway["single_master_thermostat"] is None:
-        platforms = SENSOR_PLATFORMS
-
     async def delete_notification(self):
         """Service: delete the Plugwise Notification."""
         LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
@@ -120,9 +116,9 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 "Failed to delete the Plugwise Notification for %s", api.smile_name
             )
 
-    hass.config_entries.async_setup_platforms(entry, platforms)
+    hass.config_entries.async_setup_platforms(entry, PLATFORMS_GATEWAY)
 
-    for component in platforms:
+    for component in PLATFORMS_GATEWAY:
         if component == Platform.CLIMATE:
             hass.services.async_register(
                 DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
