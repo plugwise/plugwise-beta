@@ -112,9 +112,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             heater_central_data = self.coordinator.data.devices[
                 self.coordinator.data.gateway["heater_id"]
             ]
-            if heater_central_data.get("heating_state"):
+            if heater_central_data["binary_sensors"].get("heating_state"):
                 return CURRENT_HVAC_HEAT
-            if heater_central_data.get("cooling_state"):
+            if heater_central_data["binary_sensors"].get("cooling_state"):
                 return CURRENT_HVAC_COOL
         return CURRENT_HVAC_IDLE
 
