@@ -1,11 +1,12 @@
 """Plugwise Binary Sensor component for Home Assistant."""
 from __future__ import annotations
 
-import logging
+from collections.abc import Mapping
+from typing import Any
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME, Platform
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -24,28 +25,23 @@ from .const import (
     CB_NEW_NODE,
     COORDINATOR,
     DOMAIN,
-    FW,
-    PW_MODEL,
+    LOGGER,
     PW_TYPE,
+    SEVERITIES,
     SERVICE_USB_SCAN_CONFIG,
     SERVICE_USB_SCAN_CONFIG_SCHEMA,
     SERVICE_USB_SED_BATTERY_CONFIG,
     SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
-    SMILE,
     STICK,
     USB,
     USB_MOTION_ID,
-    VENDOR,
 )
-from .coordinator import PWDataUpdateCoordinator
-from .gateway import SmileGateway
+from .coordinator import PlugwiseDataUpdateCoordinator
+from .entity import PlugwiseEntity
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
-from .smile_helpers import GWBinarySensor, icon_selector
 from .usb import PlugwiseUSBEntity
 
 PARALLEL_UPDATES = 0
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -80,7 +76,7 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
             async_add_entities(entities)
 
         if USB_MOTION_ID in api_stick.devices[mac].features:
-            _LOGGER.debug("Add binary_sensors for %s", mac)
+            LOGGER.debug("Add binary_sensors for %s", mac)
 
             # Register services
             platform.async_register_entity_service(
@@ -107,83 +103,84 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
 
 async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     """Set up the Smile binary_sensors from a config entry."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
+        config_entry.entry_id
+    ][COORDINATOR]
 
-    entities: list[GwBinarySensor] = []
-    for dev_id in coordinator.data[1]:
-        if "binary_sensors" in coordinator.data[1][dev_id]:
-            for b_sensor in coordinator.data[1][dev_id]["binary_sensors"]:
-                for description in PW_BINARY_SENSOR_TYPES:
-                    if (
-                        description.plugwise_api == SMILE
-                        and description.key == b_sensor
-                    ):
-                        entities.extend(
-                            [GwBinarySensor(coordinator, description, dev_id, b_sensor)]
-                        )
-                        _LOGGER.debug("Add %s binary sensor", description.key)
+    entities: list[PlugwiseBinarySensorEntity] = []
+    for device_id, device in coordinator.data.devices.items():
+        for description in PW_BINARY_SENSOR_TYPES:
+            if (
+                "binary_sensors" not in device
+                or description.key not in device["binary_sensors"]
+            ):
+                continue
 
-    if entities:
-        async_add_entities(entities, True)
+            entities.append(
+                PlugwiseBinarySensorEntity(
+                    coordinator,
+                    device_id,
+                    description,
+                )
+            )
+            LOGGER.debug("Add %s binary sensor", description.key)
+    async_add_entities(entities)
 
 
-class GwBinarySensor(SmileGateway, BinarySensorEntity):
-    """Representation of a Gateway binary_sensor."""
+class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
+    """Represent Smile Binary Sensors."""
+
+    entity_description: PlugwiseBinarySensorEntityDescription
 
     def __init__(
         self,
-        coordinator: PWDataUpdateCoordinator,
+        coordinator: PlugwiseDataUpdateCoordinator,
+        device_id: str,
         description: PlugwiseBinarySensorEntityDescription,
-        dev_id: str,
-        b_sensor: str,
     ) -> None:
         """Initialise the binary_sensor."""
-        super().__init__(
-            coordinator,
-            description,
-            dev_id,
-            coordinator.data[1][dev_id].get(PW_MODEL),
-            coordinator.data[1][dev_id].get(ATTR_NAME),
-            coordinator.data[1][dev_id].get(VENDOR),
-            coordinator.data[1][dev_id].get(FW),
-        )
-
-        self._gw_b_sensor = GWBinarySensor(coordinator.data)
-
+        super().__init__(coordinator, device_id)
+        self.entity_description = description
         self._attr_entity_registry_enabled_default = (
             description.entity_registry_enabled_default
         )
-        self._attr_extra_state_attributes = None
-        self._attr_icon = None
-        self._attr_is_on = False
-        self._attr_name = (
-            f"{coordinator.data[1][dev_id].get(ATTR_NAME)} {description.name}"
-        )
-        self._attr_should_poll = self.entity_description.should_poll
-        self._attr_unique_id = f"{dev_id}-{description.key}"
-        self._b_sensor = b_sensor
-        self._dev_id = dev_id
+        self._attr_unique_id = f"{device_id}-{description.key}"
+        self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
 
     @property
-    def extra_state_attributes(self):
-        """Return state attributes."""
-        return self._gw_b_sensor.extra_state_attributes
-
-    @property
-    def is_on(self) -> bool:
-        """Update the state of the Binary Sensor."""
-        if self._gw_b_sensor.notification:
-            for notify_id, message in self._gw_b_sensor.notification.items():
+    def is_on(self) -> bool | None:
+        """Return true if the binary sensor is on."""
+        if notify := self.coordinator.data.gateway.get("notifications"):
+            for notify_id, message in notify.items():
                 self.hass.components.persistent_notification.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self.coordinator.data[1][self._dev_id]["binary_sensors"][self._b_sensor]
+        return self.device["binary_sensors"].get(self.entity_description.key)
 
     @property
-    def icon(self):
-        """Gateway binary_sensor icon."""
-        return icon_selector(self._b_sensor, self.is_on)
+    def icon(self) -> str | None:
+        """Return the icon to use in the frontend, if any."""
+        if (icon_off := self.entity_description.icon_off) and self.is_on is False:
+            return icon_off
+        return self.entity_description.icon
+
+    @property
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
+        """Return entity specific state attributes."""
+        if self.entity_description.key != "plugwise_notification":
+            return None
+
+        attrs: dict[str, list[str]] = {f"{severity}_msg": [] for severity in SEVERITIES}
+        if notify := self.coordinator.data.gateway.get("notifications"):
+            for details in notify.values():
+                for msg_type, msg in details.items():
+                    msg_type = msg_type.lower()
+                    if msg_type not in SEVERITIES:
+                        msg_type = "other"
+                    attrs[f"{msg_type}_msg"].append(msg)
+
+        return attrs
 
 
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
@@ -205,7 +202,7 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
         sensitivity_mode = kwargs.get(ATTR_SCAN_SENSITIVITY_MODE)
         reset_timer = kwargs.get(ATTR_SCAN_RESET_TIMER)
         daylight_mode = kwargs.get(ATTR_SCAN_DAYLIGHT_MODE)
-        _LOGGER.debug(
+        LOGGER.debug(
             "Configure Scan device '%s': sensitivity='%s', reset timer='%s', daylight mode='%s'",
             self.name,
             sensitivity_mode,
@@ -221,7 +218,7 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
         maintenance_interval = kwargs.get(ATTR_SED_MAINTENANCE_INTERVAL)
         clock_sync = kwargs.get(ATTR_SED_CLOCK_SYNC)
         clock_interval = kwargs.get(ATTR_SED_CLOCK_INTERVAL)
-        _LOGGER.debug(
+        LOGGER.debug(
             "Configure SED device '%s': stay active='%s', sleep for='%s', maintenance interval='%s', clock sync='%s', clock interval='%s'",
             self.name,
             str(stay_active),

@@ -4,7 +4,7 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 5
+  CACHE_VERSION: 7
   DEFAULT_PYTHON: 3.9
 
 on:
@@ -117,10 +117,11 @@ jobs:
         cd ~/ha-core
         . venv/bin/activate
         mkdir ~/tmp
-        egrep -i "pyroute2|sqlalchemy|zeroconf|pyserial" requirements_test_all.txt > ~/tmp/requirements_test_extra.txt
-        pip install -q -r requirements_test.txt
+        pip install -q -r requirements_test.txt -r requirements.txt
+        egrep -i "voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket" requirements_test_all.txt > ~/tmp/requirements_test_extra.txt
         pip install -q -r ~/tmp/requirements_test_extra.txt
         pip install -q $(grep require ~/work/plugwise-beta/plugwise-beta/custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+        pip list | grep plugwise
     - name: Run tests
       run: |
         cd ~/ha-core

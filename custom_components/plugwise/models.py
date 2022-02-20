@@ -35,7 +35,6 @@ from homeassistant.helpers.entity import EntityDescription, EntityCategory
 from .const import (
     BATTERY,
     CURRENT_TEMP,
-    DEVICE_STATE,
     DHW_COMF_MODE,
     DHW_STATE,
     EL_CONSUMED,
@@ -121,6 +120,7 @@ class PlugwiseBinarySensorEntityDescription(
 ):
     """Describes Plugwise binary sensor entity."""
 
+    icon_off: str | None = None
     should_poll: bool = False
     state_request_method: str | None = None
 
@@ -217,7 +217,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
     ),
     PlugwiseSensorEntityDescription(
         key="power_con_yesterday",
-        plugwise_api=STICK,
+        plugwise_api=SMILE,
         name="Power consumption yesterday",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
@@ -239,11 +239,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
-    ),
-    PlugwiseSensorEntityDescription(
-        key=DEVICE_STATE,
-        plugwise_api=SMILE,
-        name="Device State",
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED,
@@ -481,9 +476,9 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         key=VALVE_POS,
         plugwise_api=SMILE,
         name="Valve Position",
+        icon="mdi:valve",
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:valve",
     ),
     PlugwiseSensorEntityDescription(
         key=WATER_PRESSURE,
@@ -514,24 +509,25 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
         key=DHW_COMF_MODE,
         plugwise_api=SMILE,
+        name="DHW Comfort Mode",
+        icon="mdi:water-plus",
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
-        name="DHW Comfort Mode",
     ),
     PlugwiseSwitchEntityDescription(
         key=LOCK,
         plugwise_api=SMILE,
+        name="Lock",
+        icon="mdi:lock",
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
-        icon="mdi:lock",
-        name="Lock",
         entity_registry_enabled_default=False,
     ),
     PlugwiseSwitchEntityDescription(
         key=RELAY,
         plugwise_api=SMILE,
-        device_class=SwitchDeviceClass.SWITCH,
         name="Relay",
+        device_class=SwitchDeviceClass.SWITCH,
     ),
 )
 
@@ -547,24 +543,49 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         key=DHW_STATE,
         plugwise_api=SMILE,
         name="DHW State",
+        icon="mdi:water-pump",
+        icon_off="mdi:water-pump-off",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=FLAME_STATE,
         plugwise_api=SMILE,
         name="Flame State",
+        icon="mdi:fire",
+        icon_off="mdi:fire-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="heating_state",
+        plugwise_api=SMILE,
+        name="Heating",
+        icon="mdi:radiator",
+        icon_off="mdi:radiator-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="cooling_state",
+        plugwise_api=SMILE,
+        name="Cooling",
+        icon="mdi:snowflake",
+        icon_off="mdi:snowflake-off",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=PW_NOTIFICATION,
         plugwise_api=SMILE,
+        icon="mdi:mailbox-up-outline",
+        icon_off="mdi:mailbox-outline",
         name="Plugwise Notification",
+        entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=SLAVE_BOILER_STATE,
         plugwise_api=SMILE,
-        name="Slave Boiler State",
+        name="Secondary Boiler State",
+        icon="mdi:fire",
+        icon_off="mdi:circle-off-outline",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
     ),

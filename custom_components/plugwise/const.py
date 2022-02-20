@@ -1,12 +1,16 @@
 """Constants for Plugwise beta component."""
 
+import logging
 import voluptuous as vol
 from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
 
+DOMAIN = "plugwise"
+
+LOGGER = logging.getLogger(__package__)
+
 API = "api"
 ATTR_ENABLED_DEFAULT = "enabled_default"
-DOMAIN = "plugwise"
 COORDINATOR = "coordinator"
 FW = "fw"
 GATEWAY = "gateway"
@@ -46,7 +50,7 @@ DEFAULT_TIMEOUT = 10
 DEFAULT_USERNAME = "smile"
 
 # --- Const for Plugwise Smile and Stretch
-GATEWAY_PLATFORMS = [
+PLATFORMS_GATEWAY = [
     Platform.BINARY_SENSOR,
     Platform.CLIMATE,
     Platform.SENSOR,

@@ -28,7 +28,16 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW FEB 2022 [0.20.1]
+## NEW FEB 2022 [0.21.0]
+- Smiles:
+  - Link to plugwise v0.16.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.6
+  - Refactor code following the work done on the HA Core plugwise code, a big thank you to @Frenck!!
+  - REMOVED: device_state sensor
+  - ADDED: binary_sensors showing the heating and cooling (when cooling is present) states
+  - Support Stretch with fw 2.7.18
+  - Improve test scripting
+
+## FEB 2022 [0.20.1]
 - Smiles:
   - Link to plugwise v0.16.2 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.2
   - Add support for Stretch with fw 2.7.18, via plugwise v0.16.2

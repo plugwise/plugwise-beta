@@ -1,34 +1,54 @@
-"""Provides the Plugwise DataUpdateCoordinator."""
-import logging
+"""DataUpdateCoordinator for Plugwise."""
+from typing import Any, NamedTuple
 
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from plugwise import Smile
 from plugwise.exceptions import PlugwiseException, XMLDataMissingError
 
-_LOGGER = logging.getLogger(__name__)
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.debounce import Debouncer
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+
+from .const import DOMAIN, LOGGER
 
 
-class PWDataUpdateCoordinator(DataUpdateCoordinator):
-    """Class to manage fetching Plugwise API data from a single endpoint."""
+class PlugwiseData(NamedTuple):
+    """Plugwise data stored in the DataUpdateCoordinator."""
 
-    def __init__(self, hass, api, interval):
+    gateway: dict[str, Any]
+    devices: dict[str, dict[str, Any]]
+
+
+class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
+    """Class to manage fetching Plugwise data from single endpoint."""
+
+    def __init__(self, hass: HomeAssistant, api: Smile, interval: float) -> None:
         """Initialize the coordinator."""
         super().__init__(
-            hass, _LOGGER, name=f"{api.smile_name}", update_interval=interval
+            hass,
+            LOGGER,
+            name=api.smile_name or DOMAIN,
+            update_interval=interval,
+            # Don't refresh immediately, give the device time to process
+            # the change in state before we query it.
+            request_refresh_debouncer=Debouncer(
+                hass,
+                LOGGER,
+                cooldown=1.5,
+                immediate=False,
+            ),
         )
-        self._api = api
+        self.api = api
 
-    async def _async_update_data(self):
-        """Update data via API endpoint."""
+    async def _async_update_data(self) -> PlugwiseData:
+        """Fetch data from Plugwise."""
         try:
-            data = await self._api.async_update()
-            _LOGGER.debug("Plugwise %s updated", self._api.smile_name)
-            _LOGGER.debug("with data: %s", data)
+            data = await self.api.async_update()
+            LOGGER.debug("Plugwise %s updated", self.api.smile_name)
         except XMLDataMissingError as err:
             raise UpdateFailed(
-                f"Updating failed, expected XML data for Plugwise {self._api.smile_name}"
+                f"No XML data received for: {self.api.smile_name}"
             ) from err
         except PlugwiseException as err:
-            raise UpdateFailed(
-                f"Updating failed for Plugwise {self._api.smile_name}"
-            ) from err
-        return data
+            raise UpdateFailed(f"Updated failed for: {self.api.smile_name}") from err
+        LOGGER.debug("Data: %s", PlugwiseData(*data))
+        return PlugwiseData(*data)
