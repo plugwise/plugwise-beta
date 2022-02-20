@@ -110,7 +110,7 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
     entities: list[PlugwiseBinarySensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in PW_BINARY_SENSOR_TYPES:
-            if description.key not in device and (
+            if (
                 "binary_sensors" not in device
                 or description.key not in device["binary_sensors"]
             ):
@@ -150,14 +150,12 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
-        # if notification := self.coordinator.data.gateway.get("notifications"):
-        #     for notify_id, message in notification.items():
-        #         self.hass.components.persistent_notification.async_create(
-        #             message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
-        #         )
+        if notify := self.coordinator.data.gateway.get("notifications"):
+            for notify_id, message in notify.items():
+                self.hass.components.persistent_notification.async_create(
+                    message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
+                )
 
-        if self.entity_description.key in self.device:
-            return self.device[self.entity_description.key]
         return self.device["binary_sensors"].get(self.entity_description.key)
 
     @property
@@ -174,13 +172,16 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
             return None
 
         attrs: dict[str, list[str]] = {f"{severity}_msg": [] for severity in SEVERITIES}
-        if notify := self.coordinator.data.gateway["notifications"]:
+        if notify := self.coordinator.data.gateway.get("notifications"):
             for details in notify.values():
                 for msg_type, msg in details.items():
                     msg_type = msg_type.lower()
                     if msg_type not in SEVERITIES:
                         msg_type = "other"
                     attrs[f"{msg_type}_msg"].append(msg)
+                self.hass.components.persistent_notification.async_create(
+                    message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
+                )
 
         return attrs
 
