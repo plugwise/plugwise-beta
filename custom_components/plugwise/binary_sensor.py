@@ -179,9 +179,6 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                     if msg_type not in SEVERITIES:
                         msg_type = "other"
                     attrs[f"{msg_type}_msg"].append(msg)
-                self.hass.components.persistent_notification.async_create(
-                    message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
-                )
 
         return attrs
 
