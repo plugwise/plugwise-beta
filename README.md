@@ -35,6 +35,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
   - REMOVED: device_state sensor
   - ADDED: binary_sensors showing the heating and cooling (when cooling is present) states
   - Support Stretch with fw 2.7.18
+  - Improve test scripting
 
 ## FEB 2022 [0.20.1]
 - Smiles:
