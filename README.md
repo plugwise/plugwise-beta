@@ -29,7 +29,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 # Changelog
 
 ## NEW FEB 2022 [0.21.0]
-- Smiles:
+- Smile: refactor code following the coming HA Core update
   - Link to plugwise v0.16.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.6
   - Refactor code following the work done on the HA Core plugwise code, a big thank you to @Frenck!!
   - REMOVED: device_state sensor
