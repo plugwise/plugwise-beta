@@ -35,7 +35,6 @@ from .const import (
     LOGGER,
     PLATFORMS_GATEWAY,
     PW_TYPE,
-    SENSOR_PLATFORMS,
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
