@@ -60,6 +60,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
+        self._mode = None
         self._attr_extra_state_attributes = {}
         self._attr_unique_id = f"{device_id}-climate"
         self._attr_name = self.device.get("name")
@@ -96,7 +97,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def hvac_mode(self) -> str:
         """Return HVAC operation ie. heat, cool mode."""
-        if (mode := self.device.get("mode")) is None or mode not in self.hvac_modes:
+        if (mode := self.device.get("mode")) is None or mode not in self.hvac_modes or self._mode == HVAC_MODE_OFF:
             return HVAC_MODE_OFF
         return mode
 
@@ -145,6 +146,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: str) -> None:
         """Set the hvac mode."""
+        self._mode = hvac_mode
         if hvac_mode == HVAC_MODE_AUTO and not self.device.get("schedule_temperature"):
             raise ValueError("Cannot set HVAC mode to Auto: No schedule available")
 
@@ -156,6 +158,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Feature request - mimic HomeKit behavior
         if hvac_mode == HVAC_MODE_OFF:
+            self._mode = hvac_mode
             await self.async_set_preset_mode(PRESET_AWAY)
         if (
             hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
