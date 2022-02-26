@@ -13,6 +13,8 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_HEAT,
     HVAC_MODE_COOL,
     HVAC_MODE_OFF,
+    PRESET_AWAY,
+    PRESET_HOME,
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
 )
@@ -151,6 +153,15 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self.device.get("last_used"),
             "on" if hvac_mode == HVAC_MODE_AUTO else "off",
         )
+
+        # Feature request - mimic HomeKit behavior
+        if hvac_mode == HVAC_MODE_OFF:
+            await self.async_set_preset_mode(PRESET_AWAY)
+        if (
+            hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
+            and self._data["active_preset"] == PRESET_AWAY
+        ):
+            await self.async_set_preset_mode(PRESET_HOME)
 
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
