@@ -148,10 +148,29 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
 
     @property
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
+        """Return entity specific state attributes."""
+        if self.entity_description.key != "plugwise_notification":
+            return None
+
+        self._notification = {}
+        attrs: dict[str, list[str]] = {f"{severity}_msg": [] for severity in SEVERITIES}
+        if notify := self.coordinator.data.gateway.get("notifications"):
+            for notify_id, details in notify.items():
+                for msg_type, msg in details.items():
+                    msg_type = msg_type.lower()
+                    if msg_type not in SEVERITIES:
+                        msg_type = "other"
+                    attrs[f"{msg_type}_msg"].append(msg)
+                    self._notification[notify_id] = f"{msg_type.title()}: {msg}"
+
+        return attrs
+
+    @property
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
-        if notify := self.coordinator.data.gateway.get("notifications"):
-            for notify_id, message in notify.items():
+        if self._notification:
+            for notify_id, message in self._notification.items():
                 self.hass.components.persistent_notification.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
@@ -164,23 +183,6 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         if (icon_off := self.entity_description.icon_off) and self.is_on is False:
             return icon_off
         return self.entity_description.icon
-
-    @property
-    def extra_state_attributes(self) -> Mapping[str, Any] | None:
-        """Return entity specific state attributes."""
-        if self.entity_description.key != "plugwise_notification":
-            return None
-
-        attrs: dict[str, list[str]] = {f"{severity}_msg": [] for severity in SEVERITIES}
-        if notify := self.coordinator.data.gateway.get("notifications"):
-            for details in notify.values():
-                for msg_type, msg in details.items():
-                    msg_type = msg_type.lower()
-                    if msg_type not in SEVERITIES:
-                        msg_type = "other"
-                    attrs[f"{msg_type}_msg"].append(msg)
-
-        return attrs
 
 
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
