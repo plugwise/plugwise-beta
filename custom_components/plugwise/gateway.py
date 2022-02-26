@@ -92,8 +92,8 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         COORDINATOR: coordinator,  # pw-beta
-        PW_TYPE: GATEWAY,  #pw-beta
-        UNDO_UPDATE_LISTENER: undo_listener,  #pw-beta
+        PW_TYPE: GATEWAY,  # pw-beta
+        UNDO_UPDATE_LISTENER: undo_listener,  # pw-beta
     }
 
     device_registry = dr.async_get(hass)
@@ -124,7 +124,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if component == Platform.CLIMATE:
             hass.services.async_register(
                 DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
-            ) # pw-beta
+            )  # pw-beta
 
     return True
 
