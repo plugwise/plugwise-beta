@@ -84,6 +84,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     LOGGER.debug("DUC update iterval: %s", update_interval)
 
+    # pw-beta - update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, api, update_interval)
     await coordinator.async_config_entry_first_refresh()
 
@@ -120,11 +121,12 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.config_entries.async_setup_platforms(entry, PLATFORMS_GATEWAY)
 
+    # pw-beta
     for component in PLATFORMS_GATEWAY:
         if component == Platform.CLIMATE:
             hass.services.async_register(
                 DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
-            )  # pw-beta
+            )
 
     return True
 
