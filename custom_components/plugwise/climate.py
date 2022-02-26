@@ -159,7 +159,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             await self.async_set_preset_mode(PRESET_AWAY)
         if (
             hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
-            and self._data["active_preset"] == PRESET_AWAY
+            and self.device["active_preset"] == PRESET_AWAY
         ):
             await self.async_set_preset_mode(PRESET_HOME)
 
