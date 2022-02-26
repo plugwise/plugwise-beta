@@ -141,6 +141,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         """Initialise the binary_sensor."""
         super().__init__(coordinator, device_id)
         self.entity_description = description
+        self._notification = {}
         self._attr_entity_registry_enabled_default = (
             description.entity_registry_enabled_default
         )
@@ -153,7 +154,6 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         if self.entity_description.key != "plugwise_notification":
             return None
 
-        self._notification = {}
         attrs: dict[str, list[str]] = {f"{severity}_msg": [] for severity in SEVERITIES}
         if notify := self.coordinator.data.gateway.get("notifications"):
             for notify_id, details in notify.items():
