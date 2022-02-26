@@ -162,7 +162,9 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                     if msg_type not in SEVERITIES:
                         msg_type = "other"
                     attrs[f"{msg_type}_msg"].append(msg)
-                    self._notification[notify_id] = f"{msg_type.title()}: {msg}"  # pw-beta
+                    self._notification[
+                        notify_id
+                    ] = f"{msg_type.title()}: {msg}"  # pw-beta
 
         return attrs
 
