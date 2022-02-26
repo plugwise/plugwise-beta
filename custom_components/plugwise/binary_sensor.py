@@ -141,7 +141,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         """Initialise the binary_sensor."""
         super().__init__(coordinator, device_id)
         self.entity_description = description
-        self._notification = {} # pw-beta
+        self._notification = {}  # pw-beta
         self._attr_entity_registry_enabled_default = (
             description.entity_registry_enabled_default
         )
@@ -162,7 +162,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                     if msg_type not in SEVERITIES:
                         msg_type = "other"
                     attrs[f"{msg_type}_msg"].append(msg)
-                    self._notification[notify_id] = f"{msg_type.title()}: {msg}" # pw-beta
+                    self._notification[notify_id] = f"{msg_type.title()}: {msg}"  # pw-beta
 
         return attrs
 
