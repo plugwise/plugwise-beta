@@ -141,7 +141,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         """Initialise the binary_sensor."""
         super().__init__(coordinator, device_id)
         self.entity_description = description
-        self._notification = {}  # pw-beta
+        self._notification: dict[str, str] = {}  # pw-beta
         self._attr_entity_registry_enabled_default = (
             description.entity_registry_enabled_default
         )
