@@ -187,6 +187,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
 
         return attrs
 
+
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
     """Representation of a Plugwise USB Binary Sensor."""
 
