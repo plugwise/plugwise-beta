@@ -28,7 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW FEB 2022 [0.21.0]
+## NEW FEB 2022 [0.21.1]
+- Smile: fix issue #238
+  - Restore Homekit-functionality present in v0.20.1 and earlier versions
+
+## FEB 2022 [0.21.0]
 - Smile: refactor code following the coming HA Core update
   - Link to plugwise v0.16.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.6
   - Refactor code following the work done on the HA Core plugwise code, a big thank you to @Frenck!!
