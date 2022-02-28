@@ -285,6 +285,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
+    # pw-beta
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
@@ -292,6 +293,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         return PlugwiseOptionsFlowHandler(config_entry)
 
 
+# pw-beta - change the refresh-interval via CONFIGURATION
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
 

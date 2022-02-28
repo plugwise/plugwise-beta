@@ -146,12 +146,14 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         )
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
+        self._notification: dict[str, str] = {}  # pw-beta
 
     @property
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
-        if notify := self.coordinator.data.gateway.get("notifications"):
-            for notify_id, message in notify.items():
+        # pw-beta: show Plugwise notifications as HA persistent notifications
+        if self._notification:
+            for notify_id, message in self._notification.items():
                 self.hass.components.persistent_notification.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
@@ -173,12 +175,15 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
 
         attrs: dict[str, list[str]] = {f"{severity}_msg": [] for severity in SEVERITIES}
         if notify := self.coordinator.data.gateway.get("notifications"):
-            for details in notify.values():
+            for notify_id, details in notify.items():
                 for msg_type, msg in details.items():
                     msg_type = msg_type.lower()
                     if msg_type not in SEVERITIES:
                         msg_type = "other"
                     attrs[f"{msg_type}_msg"].append(msg)
+                    self._notification[
+                        notify_id
+                    ] = f"{msg_type.title()}: {msg}"  # pw-beta
 
         return attrs
 

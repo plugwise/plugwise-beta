@@ -76,6 +76,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if entry.unique_id is None and api.smile_version[0] != "1.8.0":
         hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
+    # pw-beta
     update_interval = timedelta(
         seconds=entry.options.get(
             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL[api.smile_type]
@@ -83,15 +84,17 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     LOGGER.debug("DUC update iterval: %s", update_interval)
 
+    # pw-beta - update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, api, update_interval)
     await coordinator.async_config_entry_first_refresh()
 
+    # pw-beta
     undo_listener = entry.add_update_listener(_update_listener)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
-        COORDINATOR: coordinator,
-        PW_TYPE: GATEWAY,
-        UNDO_UPDATE_LISTENER: undo_listener,
+        COORDINATOR: coordinator,  # pw-beta
+        PW_TYPE: GATEWAY,  # pw-beta
+        UNDO_UPDATE_LISTENER: undo_listener,  # pw-beta
     }
 
     device_registry = dr.async_get(hass)
@@ -104,6 +107,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         sw_version=api.smile_version[0],
     )
 
+    # pw-beta: HA service - delete_notification
     async def delete_notification(self):
         """Service: delete the Plugwise Notification."""
         LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
@@ -117,6 +121,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.config_entries.async_setup_platforms(entry, PLATFORMS_GATEWAY)
 
+    # pw-beta
     for component in PLATFORMS_GATEWAY:
         if component == Platform.CLIMATE:
             hass.services.async_register(
@@ -126,6 +131,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
+# pw-beta
 async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
