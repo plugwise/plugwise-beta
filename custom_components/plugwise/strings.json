@@ -37,26 +37,26 @@
         "title": "Connect to Plugwise Stick",
         "description": "Please enter:",
         "data": {
-          "usb_path": "USB Path"
+          "usb_path": "[%key:common::config_flow::data::usb_path%]"
         }
       },
       "manual_path": {
         "data": {
-          "usb_path": "USB Path"
+          "usb_path": "[%key:common::config_flow::data::usb_path%]"
         }
       }
     },
     "error": {
-      "already_configured": "This device is already configured",
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
       "invalid_auth": "Invalid authentication, check the 8 characters of your ID",
-      "cannot_connect": "Cannot connect",
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "stick_init": "Initialization of Plugwise USB-stick failed",
-      "unknown": "Unknown error!"
+      "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {
-      "already_configured": "This device is already configured"
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
     }
   }
 }
