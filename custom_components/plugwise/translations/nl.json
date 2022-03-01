@@ -8,7 +8,8 @@
       "init": {
         "description": "Smile/Stretch Opties aanpassen",
         "data": {
-          "scan_interval": "Scan Interval (seconden)"
+          "scan_interval": "Scan Interval (seconden) *) optie alleen in beta",
+          "homekit_emulation": "Homekit emulatie (bij weg => hvac_off) *) optie alleen in beta"
         }
       }
     }

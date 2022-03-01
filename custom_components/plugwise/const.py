@@ -59,6 +59,7 @@ PLATFORMS_GATEWAY = [
 SENSOR_PLATFORMS = [Platform.SENSOR, Platform.SWITCH]
 SERVICE_DELETE = "delete_notification"
 SEVERITIES = ["other", "info", "warning", "error"]
+CONF_HOMEKIT_EMULATION = "homekit_emulation"  # pw-beta
 
 # Climate const:
 MASTER_THERMOSTATS = [

@@ -31,11 +31,13 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback, HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     API,
     COORDINATOR,
+    CONF_HOMEKIT_EMULATION,
     CONF_USB_PATH,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
@@ -294,6 +296,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 # pw-beta - change the refresh-interval via CONFIGURATION
+# pw-beta - add homekit compatible 'away' via CONFIGURATION
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
 
@@ -324,7 +327,11 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional(
                 CONF_SCAN_INTERVAL,
                 default=self.config_entry.options.get(CONF_SCAN_INTERVAL, interval),
-            ): int
+            ): int,
+            vol.Optional(
+                CONF_HOMEKIT_EMULATION,
+                default=self.config_entry.options.get(CONF_HOMEKIT_EMULATION, False),
+            ): cv.boolean,
         }
 
         return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
