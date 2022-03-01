@@ -36,6 +36,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 ## FEB 2022 [0.21.1]
 - Smile: 
+  - Fix issue where notifications would cause an error (see issue #238)
   - Restore Homekit-functionality present in v0.20.1 and earlier versions
 
 ## FEB 2022 [0.21.0]
