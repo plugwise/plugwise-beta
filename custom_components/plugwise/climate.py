@@ -13,8 +13,8 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_HEAT,
     HVAC_MODE_COOL,
     HVAC_MODE_OFF,
-    PRESET_AWAY,  # pw-beta
-    PRESET_HOME,  # pw-beta
+    PRESET_AWAY,  # pw-beta homekit emulation
+    PRESET_HOME,  # pw-beta homekit emulation
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
 )
@@ -23,6 +23,7 @@ from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
+    CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     COORDINATOR,
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
@@ -60,7 +61,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
-        self._mode: str | None = None  # pw-beta
+        self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_extra_state_attributes = {}
         self._attr_unique_id = f"{device_id}-climate"
         self._attr_name = self.device.get("name")
@@ -98,10 +99,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def hvac_mode(self) -> str:
         """Return HVAC operation ie. heat, cool mode."""
         if (
-            (mode := self.device.get("mode")) is None
-            or mode not in self.hvac_modes
-            or self._mode == HVAC_MODE_OFF  # pw-beta
-        ):
+            self._homekit_mode == HVAC_MODE_OFF and CONF_HOMEKIT_EMULATION
+        ):  # pw-beta homekit emulation
+            return HVAC_MODE_OFF
+        if (mode := self.device.get("mode")) is None or mode not in self.hvac_modes:
             return HVAC_MODE_OFF
         return mode
 
@@ -150,7 +151,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: str) -> None:
         """Set the hvac mode."""
-        self._mode = hvac_mode  # pw-beta
+        self._homekit_mode = hvac_mode  # pw-beta homekit emulation
         if hvac_mode == HVAC_MODE_AUTO and not self.device.get("schedule_temperature"):
             raise ValueError("Cannot set HVAC mode to Auto: No schedule available")
 
@@ -161,13 +162,14 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         )
 
         # pw-beta: feature request - mimic HomeKit behavior
-        if hvac_mode == HVAC_MODE_OFF:
-            await self.async_set_preset_mode(PRESET_AWAY)
-        if (
-            hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
-            and self.device["active_preset"] == PRESET_AWAY
-        ):
-            await self.async_set_preset_mode(PRESET_HOME)
+        if CONF_HOMEKIT_EMULATION:
+            if hvac_mode == HVAC_MODE_OFF:
+                await self.async_set_preset_mode(PRESET_AWAY)
+            if (
+                hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
+                and self.device["active_preset"] == PRESET_AWAY
+            ):
+                await self.async_set_preset_mode(PRESET_HOME)
 
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:

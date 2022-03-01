@@ -76,7 +76,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if entry.unique_id is None and api.smile_version[0] != "1.8.0":
         hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
-    # pw-beta
+    # pw-beta refresh-interval
     update_interval = timedelta(
         seconds=entry.options.get(
             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL[api.smile_type]
