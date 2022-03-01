@@ -163,10 +163,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # pw-beta: feature request - mimic HomeKit behavior
         if CONF_HOMEKIT_EMULATION:
-            if hvac_mode == HVAC_MODE_OFF:
+            if self._homekit_mode == HVAC_MODE_OFF:
                 await self.async_set_preset_mode(PRESET_AWAY)
             if (
-                hvac_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
+                self._homekit_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
                 and self.device["active_preset"] == PRESET_AWAY
             ):
                 await self.async_set_preset_mode(PRESET_HOME)
