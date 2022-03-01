@@ -327,6 +327,14 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional(
                 CONF_SCAN_INTERVAL,
                 default=self.config_entry.options.get(CONF_SCAN_INTERVAL, interval),
+            ): int
+        if coordinator.api.smile_type != "thermostat":
+            return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
+    
+        data = {
+            vol.Optional(
+                CONF_SCAN_INTERVAL,
+                default=self.config_entry.options.get(CONF_SCAN_INTERVAL, interval),
             ): int,
             vol.Optional(
                 CONF_HOMEKIT_EMULATION,
