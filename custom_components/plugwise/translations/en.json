@@ -8,7 +8,8 @@
       "init": {
         "description": "Adjust Smile/Stretch Options",
         "data": {
-          "scan_interval": "Scan Interval (seconds)"
+          "scan_interval": "Scan Interval (seconds)",
+          "homekit_emulation": "Homekit emulation (i.e. on away => hvac_off)"
         }
       }
     }
