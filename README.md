@@ -28,8 +28,14 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW FEB 2022 [0.21.1]
-- Smile: fix issue #238
+## FEB 2022 [0.21.2]
+- Smile:
+  - Make homekit an option (like scan-interval)
+  - Make explicit that this is (most probably) non-core functionality
+  - Reference for [scan_interval](https://github.com/home-assistant/core/pull/65808) ```If you need to customize the interval, you can do so by disabling automatic updates for the integration and using an automation to trigger homeassistant.update_entity service on your preferred interval.```
+
+## FEB 2022 [0.21.1]
+- Smile: 
   - Restore Homekit-functionality present in v0.20.1 and earlier versions
 
 ## FEB 2022 [0.21.0]
@@ -42,7 +48,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
   - Improve test scripting
 
 ## FEB 2022 [0.20.1]
-- Smiles:
+- Smile:
   - Link to plugwise v0.16.2 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.2
   - Add support for Stretch with fw 2.7.18, via plugwise v0.16.2
   - Improve code: add basic typing
@@ -54,7 +60,7 @@ BREAKING: The Auxiliary device has been renamed to OpenTherm device, also there 
 - Smile Anna & Adam: 
   - Change to OpenTherm device, add an OnOff device when the Adam/Anna controls the connected device via on-off-control.
   - Add support for the latest Adam and Anna (beta) firmware
-- Smiles: 
+- Smile: 
   - Provide gateway-devices for Legacy Anna and Stretch
   - Implement full use of HA Core DataUpdateCoordinator functionality
 
