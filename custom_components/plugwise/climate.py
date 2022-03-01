@@ -29,7 +29,6 @@ from .const import (
     DEFAULT_MIN_TEMP,
     DOMAIN,
     MASTER_THERMOSTATS,
-    LOGGER,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -46,7 +45,6 @@ async def async_setup_entry(
 
     # pw-beta homekit emulation
     homekit_enabled = config_entry.options.get(CONF_HOMEKIT_EMULATION, False)
-    LOGGER.debug("Homekit emulation enabled: %s", homekit_enabled)
     
     async_add_entities(
         PlugwiseClimateEntity(coordinator, device_id, homekit_enabled)
