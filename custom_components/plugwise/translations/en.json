@@ -9,7 +9,7 @@
         "description": "Adjust Smile/Stretch Options",
         "data": {
           "scan_interval": "Scan Interval (seconds) *) beta-only option",
-          "homekit_emulation": "Homekit emulation (i.e. on away => hvac_off) *) beta-only option"
+          "homekit_emulation": "Homekit emulation (i.e. on hvac_off => Away) *) beta-only option"
         }
       }
     }
