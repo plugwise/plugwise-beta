@@ -45,7 +45,7 @@ async def async_setup_entry(
 
     # pw-beta homekit emulation
     homekit_enabled = config_entry.options.get(CONF_HOMEKIT_EMULATION, False)
-    
+
     async_add_entities(
         PlugwiseClimateEntity(coordinator, device_id, homekit_enabled)
         for device_id, device in coordinator.data.devices.items()
@@ -62,7 +62,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
-        enabled: boolean,
+        enabled: bool,
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
