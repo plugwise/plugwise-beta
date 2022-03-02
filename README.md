@@ -30,7 +30,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 ## FEB 2022 [0.21.2]
 - Smile:
-  - Make homekit an option (like scan-interval)
+  - Make homekit emulation an option (like scan-interval)
   - Make explicit that this is (most probably) non-core functionality
   - Reference for [scan_interval](https://github.com/home-assistant/core/pull/65808) ```If you need to customize the interval, you can do so by disabling automatic updates for the integration and using an automation to trigger homeassistant.update_entity service on your preferred interval.```
 

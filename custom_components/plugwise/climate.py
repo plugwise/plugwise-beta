@@ -42,8 +42,12 @@ async def async_setup_entry(
 ) -> None:
     """Set up the Smile Thermostats from a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+
+    # pw-beta homekit emulation
+    homekit_enabled = config_entry.options.get(CONF_HOMEKIT_EMULATION, False)
+
     async_add_entities(
-        PlugwiseClimateEntity(coordinator, device_id)
+        PlugwiseClimateEntity(coordinator, device_id, homekit_enabled)
         for device_id, device in coordinator.data.devices.items()
         if device["class"] in MASTER_THERMOSTATS
     )
@@ -58,9 +62,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
+        enabled: bool,  # pw-beta homekit emulation
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
+        self._homekit_enabled = enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_extra_state_attributes = {}
         self._attr_unique_id = f"{device_id}-climate"
@@ -162,7 +168,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         )
 
         # pw-beta: feature request - mimic HomeKit behavior
-        if CONF_HOMEKIT_EMULATION:
+        if self._homekit_enabled:
             if self._homekit_mode == HVAC_MODE_OFF:
                 await self.async_set_preset_mode(PRESET_AWAY)
             if (

@@ -37,10 +37,10 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .const import (
     API,
     COORDINATOR,
-    CONF_HOMEKIT_EMULATION,
+    CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_USB_PATH,
     DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,
+    DEFAULT_SCAN_INTERVAL,  # pw-beta option
     DEFAULT_USERNAME,
     DOMAIN,
     FLOW_NET,
@@ -296,7 +296,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 # pw-beta - change the refresh-interval via CONFIGURATION
-# pw-beta - add homekit compatible 'away' via CONFIGURATION
+# pw-beta - add homekit emulation via CONFIGURATION
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
 
@@ -322,6 +322,16 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
 
         coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][COORDINATOR]
         interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]
+
+        data = {
+            vol.Optional(
+                CONF_SCAN_INTERVAL,
+                default=self.config_entry.options.get(CONF_SCAN_INTERVAL, interval),
+            ): int,
+        }
+
+        if coordinator.api.smile_type != "thermostat":
+            return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
 
         data = {
             vol.Optional(
