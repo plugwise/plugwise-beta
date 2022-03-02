@@ -21,7 +21,7 @@ jobs:
     name: Setup for HA-core
     steps:
     - name: Check out committed code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Set up Python ${{ env.DEFAULT_PYTHON }}
       id: python
       uses: actions/setup-python@v3
@@ -72,7 +72,7 @@ jobs:
     needs: ha-core-prepare
     steps:
     - name: Check out committed code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Set up Python ${{ env.DEFAULT_PYTHON }}
       id: python
       uses: actions/setup-python@v3
@@ -140,7 +140,7 @@ jobs:
     needs: ha-core-test
     steps:
     - name: Check out committed code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Set up Python ${{ env.DEFAULT_PYTHON }}
       id: python
       uses: actions/setup-python@v3
@@ -225,6 +225,6 @@ jobs:
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Run ShellCheck
       uses: ludeeus/action-shellcheck@master
