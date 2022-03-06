@@ -81,11 +81,11 @@ body:
       description: >
         Select the best possible option (i.e. for issues with a Lisa or Tom, select Adam - for issues with a Circle, select Stretch or USB).
       options:
-        - Smile: Adam (including Lisa, Tom, Floor)
-        - Smile: Anna
-        - Smile: P1
-        - Smile: Stretch
-        - USB: Stick
+        - "Smile: Adam (including Lisa, Tom, Floor)"
+        - "Smile: Anna"
+        - "Smile: P1"
+        - "Smile: Stretch"
+        - "USB: Stick"
   - type: input
     attributes:
       label: What firmware version is your Plugwise product at?
@@ -115,10 +115,13 @@ body:
         After adding this, restart HA Core.
 
         After the restart has finished please look in the supervisor **Core** logs (follow the below link and select 'Core' from the dropdown).
-        There should be several lines related to `plugwise-beta`. Please show us the **complete** log-message that starts this:
-        ```[custom_components.plugwise] Data: PlugwiseData(gateway={'smile_name': ...```
 
         [![Open your Home Assistant instance and show the supervisor logs.](https://my.home-assistant.io/badges/supervisor_logs.svg)](https://my.home-assistant.io/redirect/supervisor_logs/)
+
+        There should be several lines related to `plugwise-beta`. Please show us the **complete** log-message that starts this:
+
+        ```[custom_components.plugwise] Data: PlugwiseData(gateway={'smile_name': ...```
+
   - type: textarea
     attributes:
       label: Diagnostics information
