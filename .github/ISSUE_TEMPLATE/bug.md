@@ -3,8 +3,6 @@ description: Report an issue with Plugwise Beta.
 about: Create a report to help us improve your experience.
 title: "[BUG] "
 labels: bug
-assignees: ''
-
 body:
   - type: markdown
     attributes:
@@ -60,7 +58,7 @@ body:
         - Home Assistant OS
         - Home Assistant Container
         - Home Assistant Supervised
-        - Home Assistant Core 
+        - Home Assistant Core
 
   - type: dropdown
     validations:
@@ -73,7 +71,7 @@ body:
 
       options:
         - HACS
-        - Manually installed `custom_component` 
+        - Manually installed `custom_component`
         - Cloned from GitHub
         - Home Assistant Core
 
