@@ -1,7 +1,6 @@
 name: Bug or problem.
 description: Report an issue with Plugwise Beta.
 title: "[BUG]: "
-labels: ["bug"]
 body:
   - type: markdown
     attributes:
