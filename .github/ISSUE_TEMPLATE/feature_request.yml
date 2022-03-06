@@ -13,11 +13,13 @@ body:
 
         In reviewing your feature request, we might be unable or less willing
         to implement in `plugwise-beta` and even more so prepare for Core-
-        integration if your request is not in line with the [Home Assistant ADRs][adr].
+        integration if your request is not in line with the [Development site][ds]
+        information and/or [HA ADRs][adr].
 
         If you have a problem, please use the appropriate [issue template][it].
 
         [it]: https://github.com/plugwise/plugwise-beta/issues/new/choose
+        [ds]: https://developers.home-assistant.io/blog
         [adr]: https://github.com/home-assistant/architecture/tree/master/adr
   - type: textarea
     validations:
