@@ -1,0 +1,112 @@
+name: Feature request
+about: Suggest an idea for this project.
+title: "[FEATURE]: "
+labels: ["enhancement"]
+body:
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue form is for requesting features. Please note that we are
+        not affiliated to Plugwise nor Nabu Casa and just humble developers
+        supporting Plugwise hardware to work with Home Assistant.
+
+        In reviewing your feature request, we might be unable or less willing
+        to implement in `plugwise-beta` and even more so prepare for Core-
+        integration if your request is not in line with the [Home Assistant ADRs][adr].
+
+        If you have a problem, please use the appropriate [issue template][it].
+
+        [it]: https://github.com/plugwise/plugwise-beta/issues/new/choose
+        [adr]: https://github.com/home-assistant/architecture/tree/master/adr
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Describe the solution you are looking for
+      description: >-
+        A clear and concise description of any alternative solutions or features you've considered.
+  - type: textarea
+    validations:
+      required: false
+    attributes:
+      label: Is your feature request related to a problem? (optional)
+      description: >-
+        A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+  - type: markdown
+    attributes:
+      value: |
+        # Your setup
+  - type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: What type of installation are you running?
+      description: >
+        Can be found in: [Configuration panel -> Info](https://my.home-assistant.io/redirect/info/).
+
+        When selecting `Core`: remember to specify your way of running in the `additional information` textarea at the bottom, including your python version!
+
+        [![Open your Home Assistant instance and show your Home Assistant version information.](https://my.home-assistant.io/badges/info.svg)](https://my.home-assistant.io/redirect/info/)
+      options:
+        - Home Assistant OS
+        - Home Assistant Container
+        - Home Assistant Supervised
+        - Home Assistant Core
+  - type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: How did you install plugwise-beta?
+      description: >
+        You could be using the core-integration and just asked to leave feedback/improvements here, but more likely you installed either through HACS or manually as a `custom_component`.
+        Feel free to select Core even if you are actually **not** using plugwise-beta, no problem, we gladly look into it to see if we can upstream it to Core eventually!
+
+      options:
+        - HACS
+        - Manually installed `custom_component`
+        - Cloned from GitHub
+        - Home Assistant Core
+  - type: markdown
+    attributes:
+      value: |
+        # Plugwise Information
+  - type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: What kind of Plugwise device is having issues?
+      description: >
+        Select the best possible option (i.e. for issues with a Lisa or Tom, select Adam - for issues with a Circle, select Stretch or USB).
+      options:
+        - "Smile: Adam (including Lisa, Tom, Floor)"
+        - "Smile: Anna"
+        - "Smile: P1"
+        - "Smile: Stretch"
+        - "USB: Stick"
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: What firmware version is your Plugwise product at?
+      placeholder: core-
+      description: >
+        Check within Home Assistant by following the below link to your integrations page. You can find your firmware version on the device page. Otherwise check the Plugwise mobile app.
+
+        [![Open your Home Assistant instance and show the integration page.](https://my.home-assistant.io/badges/integrations.svg)](https://my.home-assistant.io/redirect/integrations/)
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Your setup
+      description: >
+        What additional components do you have such as Anna, Lisa, Koen, Floor, Tom, etc. - what kind of auxiliary devices as boilers/heaters/heat-exchangers
+  - type: markdown
+    attributes:
+      value: |
+        # Additional information
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: >
+        Add any other context or screenshots about the feature request here.

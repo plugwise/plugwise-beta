@@ -87,9 +87,11 @@ body:
         - "Smile: Stretch"
         - "USB: Stick"
   - type: input
+    validations:
+      required: true
     attributes:
       label: What firmware version is your Plugwise product at?
-      placeholder: core-
+      placeholder: "x.y.z"
       description: >
         Check within Home Assistant by following the below link to your integrations page. You can find your firmware version on the device page. Otherwise check the Plugwise mobile app.
 
