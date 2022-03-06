@@ -104,7 +104,7 @@ body:
     attributes:
       label: Logging
       description: >-
-        Very important to understand the problem, enable logging for `plugwise-beta:` in `configuration.yaml` by adding:
+        Very important to understand the problem, enable logging for `plugwise` in `configuration.yaml` by adding:
 
         ```
         logger:
