@@ -1,5 +1,5 @@
-name: Bug or problem.
-description: Report an issue with Plugwise Beta.
+name: Bug or problem
+description: Report an issue with Plugwise Beta
 body:
   - type: markdown
     attributes:
