@@ -19,12 +19,10 @@ body:
       label: Describe the bug.
       description: >-
         Tell us what you were trying to do and what happened. Provide a clear and concise description of what the problem is.
-
   - type: markdown
     attributes:
       value: |
         ## Environment
-
   - type: input
     id: version
     validations:
@@ -42,7 +40,6 @@ body:
       placeholder: core-
       description: >
         If known, otherwise leave blank.
-
   - type: dropdown
     validations:
       required: true
@@ -59,7 +56,6 @@ body:
         - Home Assistant Container
         - Home Assistant Supervised
         - Home Assistant Core
-
   - type: dropdown
     validations:
       required: true
@@ -74,12 +70,10 @@ body:
         - Manually installed `custom_component`
         - Cloned from GitHub
         - Home Assistant Core
-
   - type: markdown
     attributes:
       value: |
         # Plugwise Information
-
   - type: dropdown
     validations:
       required: true
@@ -87,14 +81,12 @@ body:
       label: What kind of Plugwise device is having issues?
       description: >
         Select the best possible option (i.e. for issues with a Lisa or Tom, select Adam - for issues with a Circle, select Stretch or USB).
-
       options:
         - Smile: Adam (including Lisa, Tom, Floor)
         - Smile: Anna
         - Smile: P1
         - Smile: Stretch
         - USB: Stick
-
   - type: input
     attributes:
       label: What firmware version is your Plugwise product at?
@@ -103,12 +95,10 @@ body:
         Check within Home Assistant by following the below link to your integrations page. You can find your firmware version on the device page. Otherwise check the Plugwise mobile app.
 
         [![Open your Home Assistant instance and show the integration page.](https://my.home-assistant.io/badges/integrations.svg)](https://my.home-assistant.io/redirect/integrations/)
-
   - type: markdown
     attributes:
       value: |
         # Details
-
   - type: textarea
     attributes:
       label: Logging
@@ -125,11 +115,11 @@ body:
 
         After adding this, restart HA Core.
 
-        After the restart has finished please look in the supervisor **Core** logs (follow the below link and select 'Core' from the dropdown). There should be several lines related to `plugwise-beta`. Please show us the **complete** log-message that starts this:
+        After the restart has finished please look in the supervisor **Core** logs (follow the below link and select 'Core' from the dropdown). 
+        There should be several lines related to `plugwise-beta`. Please show us the **complete** log-message that starts this:
         ```[custom_components.plugwise] Data: PlugwiseData(gateway={'smile_name': ...```
 
         [![Open your Home Assistant instance and show the supervisor logs.](https://my.home-assistant.io/badges/supervisor_logs.svg)](https://my.home-assistant.io/redirect/supervisor_logs/)
-
   - type: textarea
     attributes:
       label: Diagnostics information
@@ -143,7 +133,6 @@ body:
         It generally allows pinpointing defects and thus resolving issues faster.
 
         [![Open your Home Assistant instance and show the integration page.](https://my.home-assistant.io/badges/integrations.svg)](https://my.home-assistant.io/redirect/integrations/)
-
   - type: textarea
     attributes:
       label: Additional information
