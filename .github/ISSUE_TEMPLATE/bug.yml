@@ -1,0 +1,139 @@
+name: Bug or problem.
+description: Report an issue with Plugwise Beta.
+title: "[BUG]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue form is for reporting bugs only!
+
+        If you have a feature or enhancement request, please use the appropriate [issue template][it].
+
+        [it]: https://github.com/plugwise/plugwise-beta/issues/new/choose
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Describe the bug.
+      description: >-
+        Tell us what you were trying to do and what happened. Provide a clear and concise description of what the problem is.
+  - type: markdown
+    attributes:
+      value: |
+        ## Environment
+  - type: input
+    id: version
+    validations:
+      required: true
+    attributes:
+      label: What version of Home Assistant Core has the issue?
+      placeholder: core-
+      description: >
+        Can be found in: [Configuration panel -> Info](https://my.home-assistant.io/redirect/info/).
+
+        [![Open your Home Assistant instance and show your Home Assistant version information.](https://my.home-assistant.io/badges/info.svg)](https://my.home-assistant.io/redirect/info/)
+  - type: input
+    attributes:
+      label: What was the last working version of Home Assistant Core?
+      placeholder: core-
+      description: >
+        If known, otherwise leave blank.
+  - type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: What type of installation are you running?
+      description: >
+        Can be found in: [Configuration panel -> Info](https://my.home-assistant.io/redirect/info/).
+
+        When selecting `Core`: remember to specify your way of running in the `additional information` textarea at the bottom, including your python version!
+
+        [![Open your Home Assistant instance and show your Home Assistant version information.](https://my.home-assistant.io/badges/info.svg)](https://my.home-assistant.io/redirect/info/)
+      options:
+        - Home Assistant OS
+        - Home Assistant Container
+        - Home Assistant Supervised
+        - Home Assistant Core
+  - type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: How did you install plugwise-beta?
+      description: >
+        You could be using the core-integration and just asked to leave feedback/improvements here, but more likely you installed either through HACS or manually as a `custom_component`.
+        Feel free to select Core even if you are actually **not** using plugwise-beta, no problem, we gladly look into it to see if we can upstream it to Core eventually!
+
+      options:
+        - HACS
+        - Manually installed `custom_component`
+        - Cloned from GitHub
+        - Home Assistant Core
+  - type: markdown
+    attributes:
+      value: |
+        # Plugwise Information
+  - type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: What kind of Plugwise device is having issues?
+      description: >
+        Select the best possible option (i.e. for issues with a Lisa or Tom, select Adam - for issues with a Circle, select Stretch or USB).
+      options:
+        - Smile: Adam (including Lisa, Tom, Floor)
+        - Smile: Anna
+        - Smile: P1
+        - Smile: Stretch
+        - USB: Stick
+  - type: input
+    attributes:
+      label: What firmware version is your Plugwise product at?
+      placeholder: core-
+      description: >
+        Check within Home Assistant by following the below link to your integrations page. You can find your firmware version on the device page. Otherwise check the Plugwise mobile app.
+
+        [![Open your Home Assistant instance and show the integration page.](https://my.home-assistant.io/badges/integrations.svg)](https://my.home-assistant.io/redirect/integrations/)
+  - type: markdown
+    attributes:
+      value: |
+        # Details
+  - type: textarea
+    attributes:
+      label: Logging
+      description: >-
+        Very important to understand the problem, enable logging for `plugwise-beta:` in `configuration.yaml` by adding:
+
+        ```
+        logger:
+          default: warn
+          logs:
+            custom_components.plugwise: debug
+            plugwise.smile: debug
+        ```
+
+        After adding this, restart HA Core.
+
+        After the restart has finished please look in the supervisor **Core** logs (follow the below link and select 'Core' from the dropdown).
+        There should be several lines related to `plugwise-beta`. Please show us the **complete** log-message that starts this:
+        ```[custom_components.plugwise] Data: PlugwiseData(gateway={'smile_name': ...```
+
+        [![Open your Home Assistant instance and show the supervisor logs.](https://my.home-assistant.io/badges/supervisor_logs.svg)](https://my.home-assistant.io/redirect/supervisor_logs/)
+  - type: textarea
+    attributes:
+      label: Diagnostics information
+      description: >-
+        The Plugwise integration provides the ability to download diagnostic data
+        on the device page (and on the integration dashboard).
+
+        **It would really help if you could download the diagnostics data for the device you are having issues with,
+        and drag-and-drop that file into the textbox below.**
+
+        It generally allows pinpointing defects and thus resolving issues faster.
+
+        [![Open your Home Assistant instance and show the integration page.](https://my.home-assistant.io/badges/integrations.svg)](https://my.home-assistant.io/redirect/integrations/)
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: >
+        If you have any additional information for us, use the field below. Especially if only using Home Assistant Core, provide us with additional details including your python version.
