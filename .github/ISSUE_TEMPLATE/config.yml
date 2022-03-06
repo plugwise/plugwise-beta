@@ -3,10 +3,12 @@ contact_links:
   - name: Plugwise module for Python
     url: https://github.com/plugwise/python-plugwise/
     about: For more information on the module.
+  - name: Plugwise Support
+    url: https://www.plugwise.com/support/
+    about: For product support from Plugwise.
   - name: Home Assistant Community forum
     url: https://community.home-assistant.io/t/plugwise-core-and-custom-component/236250
     about: Please ask and answer questions here.
   - name: Home Assistant Core integration
     url: https://www.home-assistant.io/integrations/plugwise/
     about: For more details on the Core integration
-
