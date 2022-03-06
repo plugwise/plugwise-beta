@@ -1,6 +1,5 @@
 name: Report an issue with Plugwise Beta.
 description: Report an issue with Plugwise Beta.
-about: Create a report to help us improve your experience.
 title: "[BUG] "
 labels: ["bug"]
 body:
