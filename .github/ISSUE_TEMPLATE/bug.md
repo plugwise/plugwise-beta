@@ -8,6 +8,4 @@ body:
       value: |
         This issue form is for reporting bugs only!
 
-        If you have a feature or enhancement request, please use the appropriate [issue template][it].
-
-        [it]: https://github.com/plugwise/plugwise-beta/issues/new/choose
+        If you have a feature or enhancement request, please use the appropriate issue template at https://github.com/plugwise/plugwise-beta/issues/new/choose
