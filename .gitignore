@@ -3,3 +3,4 @@ __pycache__
 ha-core
 venv
 *.sedbck
+*.swp
