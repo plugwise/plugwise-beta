@@ -3,7 +3,6 @@ about: Suggest an idea for this project.
 title: "[FEATURE]: "
 labels: ["enhancement"]
 body:
-body:
   - type: markdown
     attributes:
       value: |
