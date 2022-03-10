@@ -75,7 +75,7 @@ async def async_setup_entry_gateway(
     """Set up the Smile sensors from a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    entities: list[PlugwiseSensorEnity] = []
+    entities: list[PlugwiseSensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in PW_SENSOR_TYPES:
             if (
@@ -85,7 +85,7 @@ async def async_setup_entry_gateway(
                 continue
 
             entities.append(
-                PlugwiseSensorEnity(
+                PlugwiseSensorEntity(
                     coordinator,
                     device_id,
                     description,
@@ -96,7 +96,7 @@ async def async_setup_entry_gateway(
     async_add_entities(entities)
 
 
-class PlugwiseSensorEnity(PlugwiseEntity, SensorEntity):
+class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
     """Represent Plugwise Sensors."""
 
     def __init__(
