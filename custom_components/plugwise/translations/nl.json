@@ -53,6 +53,7 @@
       "network_down": "Plugwise Zigbee netwerk is down",
       "network_timeout": "Network communicatie timeout",
       "stick_init": "Initaliseren van USB-stick mislukt",
+      "invalid_setup": "Voeg je Adam toe in plaats van je Anna, zie de documentatie",
       "unknown": "Onbekende fout!"
     },
     "abort": {

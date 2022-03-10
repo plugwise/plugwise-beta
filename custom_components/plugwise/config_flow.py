@@ -89,6 +89,8 @@ async def validate_usb_connection(self, device_path=None) -> dict[str, str]:
         await self.async_add_executor_job(api_stick.connect)
         await self.async_add_executor_job(api_stick.initialize_stick)
         await self.async_add_executor_job(api_stick.disconnect)
+    except InvalidSetupError:
+        errors[CONF_BASE] = "invalid_setup"
     except PortError:
         errors[CONF_BASE] = "cannot_connect"
     except StickInitError:
