@@ -16,9 +16,7 @@ async def test_diagnostics(
     init_integration: MockConfigEntry,
 ) -> None:
     """Test diagnostics."""
-    assert await get_diagnostics_for_config_entry(
-        hass, hass_client, init_integration
-    ) == {
+    assert await get_diagnostics_for_config_entry(hass, hass_client, init_integration) == {
         "gateway": {
             "smile_name": "Adam",
             "gateway_id": "fe799307f1624099878210aa0b9f1475",
@@ -61,9 +59,9 @@ async def test_diagnostics(
                 ],
                 "selected_schedule": "None",
                 "last_used": "Badkamer Schema",
-                "schedule_temperature": 15.0,
+                "schedule_temperature": 20.0,
                 "mode": "heat",
-                "sensors": {"temperature": 16.5, "setpoint": 13, "battery": 67},
+                "sensors": {"temperature": 16.5, "setpoint": 13.0, "battery": 67},
             },
             "b310b72a0e354bfab43089919b9a88bf": {
                 "class": "thermo_sensor",
@@ -98,7 +96,7 @@ async def test_diagnostics(
                 "resolution": 0.01,
                 "sensors": {
                     "temperature": 17.2,
-                    "setpoint": 13,
+                    "setpoint": 13.0,
                     "battery": 62,
                     "temperature_difference": -0.2,
                     "valve_position": 0.0,
@@ -165,7 +163,7 @@ async def test_diagnostics(
                 "resolution": 0.01,
                 "sensors": {
                     "temperature": 17.1,
-                    "setpoint": 15,
+                    "setpoint": 15.0,
                     "battery": 62,
                     "temperature_difference": 0.1,
                     "valve_position": 0.0,
@@ -216,9 +214,6 @@ async def test_diagnostics(
                 "model": "Unknown",
                 "name": "OnOff",
                 "vendor": None,
-                "lower_bound": 10,
-                "upper_bound": 90,
-                "resolution": 1,
                 "binary_sensors": {"heating_state": True},
                 "sensors": {
                     "water_temperature": 70.0,
@@ -330,7 +325,7 @@ async def test_diagnostics(
                 "last_used": "CV Jessie",
                 "schedule_temperature": 15.0,
                 "mode": "auto",
-                "sensors": {"temperature": 17.2, "setpoint": 15, "battery": 37},
+                "sensors": {"temperature": 17.2, "setpoint": 15.0, "battery": 37},
             },
             "680423ff840043738f42cc7f1ff97a36": {
                 "class": "thermo_sensor",
@@ -346,7 +341,7 @@ async def test_diagnostics(
                 "resolution": 0.01,
                 "sensors": {
                     "temperature": 19.1,
-                    "setpoint": 14,
+                    "setpoint": 14.0,
                     "battery": 51,
                     "temperature_difference": -0.4,
                     "valve_position": 0.0,
@@ -382,9 +377,9 @@ async def test_diagnostics(
                 ],
                 "selected_schedule": "Badkamer Schema",
                 "last_used": "Badkamer Schema",
-                "schedule_temperature": 15.0,
+                "schedule_temperature": 20.0,
                 "mode": "auto",
-                "sensors": {"temperature": 18.9, "setpoint": 14, "battery": 92},
+                "sensors": {"temperature": 18.9, "setpoint": 14.0, "battery": 92},
             },
             "675416a629f343c495449970e2ca37b5": {
                 "class": "router",
@@ -434,7 +429,7 @@ async def test_diagnostics(
                 ],
                 "selected_schedule": "None",
                 "last_used": "Badkamer Schema",
-                "schedule_temperature": 15.0,
+                "schedule_temperature": 20.0,
                 "mode": "heat",
                 "sensors": {
                     "temperature": 15.6,
