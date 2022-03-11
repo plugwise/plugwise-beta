@@ -28,6 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
+## MAR 2022 [0.21.3]
+- Smile:
+  - Introduce (not so) subtle hint that Anna shouldn't be installed when connected to an Adam #231
+  - Fix python-plugwise #158 for systems with an Anna and Elga (w.r.t. temperature sensors)
+
 ## FEB 2022 [0.21.2]
 - Smile:
   - Make homekit emulation an option (like scan-interval)

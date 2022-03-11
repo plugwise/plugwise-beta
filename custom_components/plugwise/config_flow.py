@@ -5,6 +5,7 @@ from typing import Any
 
 from plugwise.exceptions import (
     InvalidAuthentication,
+    InvalidSetupError,
     NetworkDown,
     PlugwiseException,
     PortError,
@@ -249,6 +250,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
             try:
                 api = await validate_gw_input(self.hass, user_input)
+            except InvalidSetupError:
+                errors[CONF_BASE] = "invalid_setup"
             except InvalidAuthentication:
                 errors[CONF_BASE] = "invalid_auth"
             except PlugwiseException:

@@ -53,6 +53,7 @@
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "stick_init": "Initialization of Plugwise USB-stick failed",
+      "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "unknown": "Unknown error!"
     },
     "abort": {
