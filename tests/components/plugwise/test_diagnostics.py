@@ -16,7 +16,9 @@ async def test_diagnostics(
     init_integration: MockConfigEntry,
 ) -> None:
     """Test diagnostics."""
-    assert await get_diagnostics_for_config_entry(hass, hass_client, init_integration) == {
+    assert await get_diagnostics_for_config_entry(
+        hass, hass_client, init_integration
+    ) == {
         "gateway": {
             "smile_name": "Adam",
             "gateway_id": "fe799307f1624099878210aa0b9f1475",
