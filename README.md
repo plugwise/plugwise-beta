@@ -28,11 +28,18 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
+## NEW MAR 2022 [0.21.4]
+- Smile:
+  - Link to plugwise v0.16.8 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.8
+  - Bugfixes via updating plugwise: 
+    - Fix error when discovery IP resolving to IPv6 https://github.com/home-assistant/core/issues/68003
+    - Refixing python-plugwise #158 
+
 ## MAR 2022 [0.21.3]
 - Smile:
   - Link to plugwise v0.16.7 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.7
   - Introduce (not so) subtle hint that Anna shouldn't be installed when connected to an Adam #231
-  - Fix python-plugwise #158 for systems with an Anna and Elga (w.r.t. temperature sensors)
+  - Fix python-plugwise #158 for systems with an Anna and Elga (w.r.t. outdoor temperature sensor)
 
 ## FEB 2022 [0.21.2]
 - Smile:
