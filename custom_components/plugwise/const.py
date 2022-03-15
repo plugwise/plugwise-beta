@@ -62,8 +62,10 @@ SENSOR_PLATFORMS = [Platform.SENSOR, Platform.SWITCH]
 SERVICE_DELETE = "delete_notification"
 SEVERITIES = ["other", "info", "warning", "error"]
 CONF_HOMEKIT_EMULATION = "homekit_emulation"  # pw-beta
+
+ATTR_SCHEMA_NAME = "name"
 SERVICE_SELECT = "select_schema"
-SERVICE_SELECT_SCHEMA = vol.Schema({vol.Required(ATTR_SCHEMA_NAME): cv.string})
+SERVICE_SELECT_SCHEMA = ({vol.Schema({vol.Required(ATTR_SCHEMA_NAME): cv.string}))}
 
 # Climate const:
 MASTER_THERMOSTATS = [
@@ -156,7 +158,6 @@ CB_JOIN_REQUEST = "JOIN_REQUEST"
 USB_AVAILABLE_ID = "available"
 
 ATTR_MAC_ADDRESS = "mac"
-ATTR_SCHEMA_NAME = "name"
 
 SERVICE_USB_DEVICE_ADD = "device_add"
 SERVICE_USB_DEVICE_REMOVE = "device_remove"
