@@ -63,9 +63,9 @@ SERVICE_DELETE = "delete_notification"
 SEVERITIES = ["other", "info", "warning", "error"]
 CONF_HOMEKIT_EMULATION = "homekit_emulation"  # pw-beta
 
-ATTR_SCHEMA_NAME = "name"
+ATTR_SCHEMA_NAME = "schema"
 SERVICE_SELECT = "select_schema"
-SERVICE_SELECT_SCHEMA = ({vol.Schema({vol.Required(ATTR_SCHEMA_NAME): cv.string}))}
+SERVICE_SELECT_SCHEMA = vol.Schema({vol.Required(ATTR_SCHEMA_NAME): cv.string})
 
 # Climate const:
 MASTER_THERMOSTATS = [
