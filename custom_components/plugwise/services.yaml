@@ -1,5 +1,12 @@
 delete_notification:
   description: Delete the Plugwise Notification(s).
+select_schema:
+  description: Change the active schema
+  fields:
+    name:
+      description: The name of an existing schema
+      example: Normal
+device_remove:
 device_add:
   description: Manually add a new plugwise device.
   fields:
