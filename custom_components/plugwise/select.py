@@ -10,7 +10,6 @@ from .const import (
     COORDINATOR,
     DOMAIN,
     MASTER_THERMOSTATS,
-    PW_TYPE,
     SCHEDULE_ON,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
