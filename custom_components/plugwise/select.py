@@ -12,7 +12,6 @@ from .const import (
     MASTER_THERMOSTATS,
     PW_TYPE,
     SCHEDULE_ON,
-    USB,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -25,15 +24,7 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Smile switches from a config entry."""
-    if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
-        return
-    # Considered default and for earlier setups without usb/network config_flow
-    return await async_setup_entry_gateway(hass, config_entry, async_add_entities)
-
-
-async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
-    """Set up the Smile binary_sensors from a config entry."""
+    """Set up the Smile selector from a config entry."""
     coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ][COORDINATOR]
@@ -46,19 +37,15 @@ async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
 
 
 class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
-    """Represent Smile Binary Sensors."""
+    """Represent Smile selector."""
 
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
     ) -> None:
-        """Initialise the binary_sensor."""
+        """Initialise the selector."""
         super().__init__(coordinator, device_id)
-        #  TODO: add descriptions for select
-        #  self._attr_entity_registry_enabled_default = (
-        #    description.entity_registry_enabled_default
-        #  )
         self._attr_unique_id = f"{device_id}-select_schema"
         self._attr_name = (f"{self.device.get('name', '')} Select Schema").lstrip()
         self._attr_current_option = self.device.get("selected_schedule")
