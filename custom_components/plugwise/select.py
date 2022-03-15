@@ -68,7 +68,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         #)
         self._attr_unique_id = f"{device_id}-select_schema"
         self._attr_name = (f"{self.device.get('name', '')} Select Schema").lstrip()
-        self._attr_current_option = self.device.get("selected_schema")
+        self._attr_current_option = self.device.get("selected_schedule")
 
     @property
     def options(self) -> list[str]:
@@ -82,4 +82,3 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
             option,
             SCHEDULE_ON,
         )
-        self.set_schedule_state
