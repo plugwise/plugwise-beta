@@ -12,6 +12,7 @@ from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
+    ATTR_SCHEMA_NAME,
     COORDINATOR,
     DOMAIN,
     LOGGER,
