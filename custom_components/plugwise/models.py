@@ -449,6 +449,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Outdoor Air Temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
+        entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
     ),
     PlugwiseSensorEntityDescription(
