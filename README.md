@@ -28,6 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
+## NEW MAR 2022 [0.21.5] (in development)
+ - Smile:
+  - **BREAKING** improved naming of the locally present outdoor temp sensor connected to the OpenTherm device: `outdoor_air_temperature`. The former `sensor.opentherm_outdoor_temperature` is now visible as `sensor.opentherm_outdoor_air_temperature`. Use of the zipcode based `outdoor_temperature` has not changed.
+  - Link to plugwise v0.16.9 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.9
+
 ## NEW MAR 2022 [0.21.4]
 - Smile:
   - Link to plugwise v0.16.8 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.8

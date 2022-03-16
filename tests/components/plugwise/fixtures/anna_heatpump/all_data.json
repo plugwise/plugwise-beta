@@ -25,12 +25,12 @@
         "flame_state": false
       },
       "sensors": {
-        "outdoor_temperature": 3.0,
         "water_temperature": 29.1,
         "intended_boiler_temperature": 0.0,
         "modulation_level": 52,
         "return_temperature": 25.1,
-        "water_pressure": 1.57
+        "water_pressure": 1.57,
+        "outdoor_air_temperature": 3.0
       },
       "switches": {
         "dhw_cm_switch": false
@@ -61,8 +61,8 @@
       "model": "Anna",
       "name": "Anna",
       "vendor": "Plugwise",
-      "lower_bound": 4,
-      "upper_bound": 30,
+      "lower_bound": 4.0,
+      "upper_bound": 30.0,
       "resolution": 0.1,
       "preset_modes": [
         "no_frost",
@@ -106,7 +106,7 @@
         "setpoint": 21.0,
         "illuminance": 86.0,
         "cooling_activation_outdoor_temperature": 21.0,
-        "cooling_deactivation_threshold": 4
+        "cooling_deactivation_threshold": 4.0
       }
     }
   }

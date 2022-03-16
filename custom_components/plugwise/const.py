@@ -1,6 +1,7 @@
 """Constants for Plugwise beta component."""
 
 import logging
+
 import voluptuous as vol
 from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
@@ -123,6 +124,7 @@ INTENDED_BOILER_TEMP = "intended_boiler_temperature"
 MOD_LEVEL = "modulation_level"
 NET_EL_CUMULATIVE = "net_electricity_cumulative"
 NET_EL_POINT = "net_electricity_point"
+OUTDOOR_AIR_TEMP = "outdoor_air_temperature"
 OUTDOOR_TEMP = "outdoor_temperature"
 RETURN_TEMP = "return_temperature"
 TARGET_TEMP = "setpoint"

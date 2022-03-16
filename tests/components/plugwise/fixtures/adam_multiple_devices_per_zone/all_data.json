@@ -20,7 +20,7 @@
       "model": "Lisa",
       "name": "Zone Lisa Bios",
       "vendor": "Plugwise",
-      "lower_bound": 0,
+      "lower_bound": 0.0,
       "upper_bound": 99.9,
       "resolution": 0.01,
       "preset_modes": [
@@ -62,7 +62,7 @@
       ],
       "selected_schedule": "None",
       "last_used": "Badkamer Schema",
-      "schedule_temperature": 20.0,
+      "schedule_temperature": 15.0,
       "mode": "heat",
       "sensors": {
         "temperature": 16.5,
@@ -79,7 +79,7 @@
       "model": "Tom/Floor",
       "name": "Floor kraan",
       "vendor": "Plugwise",
-      "lower_bound": 0,
+      "lower_bound": 0.0,
       "upper_bound": 100.0,
       "resolution": 0.01,
       "sensors": {
@@ -98,7 +98,7 @@
       "model": "Tom/Floor",
       "name": "Bios Cv Thermostatic Radiator ",
       "vendor": "Plugwise",
-      "lower_bound": 0,
+      "lower_bound": 0.0,
       "upper_bound": 100.0,
       "resolution": 0.01,
       "sensors": {
@@ -118,7 +118,7 @@
       "model": "Lisa",
       "name": "Zone Lisa WK",
       "vendor": "Plugwise",
-      "lower_bound": 0,
+      "lower_bound": 0.0,
       "upper_bound": 99.9,
       "resolution": 0.01,
       "preset_modes": [
@@ -194,7 +194,7 @@
       "model": "Tom/Floor",
       "name": "Thermostatic Radiator Jessie",
       "vendor": "Plugwise",
-      "lower_bound": 0,
+      "lower_bound": 0.0,
       "upper_bound": 100.0,
       "resolution": 0.01,
       "sensors": {
@@ -357,7 +357,7 @@
       "model": "Lisa",
       "name": "Zone Thermostat Jessie",
       "vendor": "Plugwise",
-      "lower_bound": 0,
+      "lower_bound": 0.0,
       "upper_bound": 99.9,
       "resolution": 0.01,
       "preset_modes": [
@@ -416,7 +416,7 @@
       "model": "Tom/Floor",
       "name": "Thermostatic Radiator Badkamer",
       "vendor": "Plugwise",
-      "lower_bound": 0,
+      "lower_bound": 0.0,
       "upper_bound": 100.0,
       "resolution": 0.01,
       "sensors": {
@@ -436,7 +436,7 @@
       "model": "Lisa",
       "name": "Zone Thermostat Badkamer",
       "vendor": "Plugwise",
-      "lower_bound": 0,
+      "lower_bound": 0.0,
       "upper_bound": 99.9,
       "resolution": 0.01,
       "preset_modes": [
@@ -478,7 +478,7 @@
       ],
       "selected_schedule": "Badkamer Schema",
       "last_used": "Badkamer Schema",
-      "schedule_temperature": 20.0,
+      "schedule_temperature": 15.0,
       "mode": "auto",
       "sensors": {
         "temperature": 18.9,
@@ -516,7 +516,7 @@
       "model": "Tom/Floor",
       "name": "CV Kraan Garage",
       "vendor": "Plugwise",
-      "lower_bound": 0,
+      "lower_bound": 0.0,
       "upper_bound": 100.0,
       "resolution": 0.01,
       "preset_modes": [
@@ -558,7 +558,7 @@
       ],
       "selected_schedule": "None",
       "last_used": "Badkamer Schema",
-      "schedule_temperature": 20.0,
+      "schedule_temperature": 15.0,
       "mode": "heat",
       "sensors": {
         "temperature": 15.6,

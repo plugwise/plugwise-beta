@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import aiohttp
 from datetime import timedelta
 from typing import Any
 import voluptuous as vol
@@ -56,21 +57,21 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     try:
-        connected = await api.connect()
+        await api.connect()
     except InvalidAuthentication:
         LOGGER.error("Invalid username or Smile ID")
         return False
     except PlugwiseException as err:
         raise ConfigEntryNotReady(
-            f"Error while communicating to device {api.smile_name}"
+            "Error while communicating to the Plugwise Smile"
         ) from err
+    except aiohttp.ClientError as err:
+        raise ConfigEntryNotReady("Failed connecting to the Plugwise Smile") from err
     except asyncio.TimeoutError as err:
         raise ConfigEntryNotReady(
-            f"Timeout while connecting to Smile {api.smile_name}"
+            "Timeout while connecting to the Plugwise Smile"
         ) from err
 
-    if not connected:
-        raise ConfigEntryNotReady("Unable to connect to Smile")
     api.get_all_devices()
 
     if entry.unique_id is None and api.smile_version[0] != "1.8.0":
