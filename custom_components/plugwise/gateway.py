@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import aiohttp
 from datetime import timedelta
 from typing import Any
 import voluptuous as vol
@@ -64,6 +65,8 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         raise ConfigEntryNotReady(
             f"Error while communicating to device {api.smile_name}"
         ) from err
+    except aiohttp.ClientError as err:
+        raise ConfigEntryNotReady("Failed connecting to the Plugiwse Smile") from err
     except asyncio.TimeoutError as err:
         raise ConfigEntryNotReady(
             f"Timeout while connecting to Smile {api.smile_name}"
