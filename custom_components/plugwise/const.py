@@ -55,6 +55,7 @@ PLATFORMS_GATEWAY = [
     Platform.BINARY_SENSOR,
     Platform.CLIMATE,
     Platform.SENSOR,
+    Platform.SELECT,
     Platform.SWITCH,
 ]
 SENSOR_PLATFORMS = [Platform.SENSOR, Platform.SWITCH]

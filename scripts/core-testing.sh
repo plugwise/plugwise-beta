@@ -118,6 +118,10 @@ echo ""
 cp -r ../custom_components/plugwise ./homeassistant/components/
 cp -r ../tests/components/plugwise ./tests/components/
 echo ""
+echo "Adding select to coveragerc as we don't mock this yet"
+echo ""
+sed -i".sedbck" 's#homeassistant/scripts/..py#homeassistant/components/plugwise/select.py#' .coveragerc
+echo ""
 echo "Activating venv and installing selected test modules (zeroconf,pyserial, etc)"
 echo ""
 # shellcheck source=/dev/null

@@ -28,10 +28,12 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW MAR 2022 [0.21.5] (in development)
+## NEW MAR 2022 [0.21.5]
  - Smile:
   - **BREAKING** improved naming of the locally present outdoor temp sensor connected to the OpenTherm device: `outdoor_air_temperature`. The former `sensor.opentherm_outdoor_temperature` is now visible as `sensor.opentherm_outdoor_air_temperature`. Use of the zipcode based `outdoor_temperature` has not changed.
+  - **POTENTIALLY BREAKING** for consistency renamed schema to schedule, i.e. the attributes will now be `available_schedules` and `selected_schedule`
   - Link to plugwise v0.16.9 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.9
+  - Added schedule selector per thermostat using the new `select` platform
 
 ## NEW MAR 2022 [0.21.4]
 - Smile:
