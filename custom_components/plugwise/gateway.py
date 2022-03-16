@@ -63,17 +63,15 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return False
     except PlugwiseException as err:
         raise ConfigEntryNotReady(
-            f"Error while communicating to device {api.smile_name}"
+            "Error while communicating to device Plugwise Smile"
         ) from err
     except aiohttp.ClientError as err:
-        raise ConfigEntryNotReady("Failed connecting to the Plugiwse Smile") from err
+        raise ConfigEntryNotReady("Failed connecting to the Plugwise Smile") from err
     except asyncio.TimeoutError as err:
-        raise ConfigEntryNotReady(
-            f"Timeout while connecting to Smile {api.smile_name}"
-        ) from err
+        raise ConfigEntryNotReady("Timeout while connecting to Plugwise Smile") from err
 
     if not connected:
-        raise ConfigEntryNotReady("Unable to connect to Smile")
+        raise ConfigEntryNotReady("Unable to connect to Plugwise Smile")
     api.get_all_devices()
 
     if entry.unique_id is None and api.smile_version[0] != "1.8.0":
