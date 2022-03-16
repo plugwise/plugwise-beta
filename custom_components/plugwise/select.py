@@ -45,8 +45,8 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     ) -> None:
         """Initialise the selector."""
         super().__init__(coordinator, device_id)
-        self._attr_unique_id = f"{device_id}-select_schema"
-        self._attr_name = (f"{self.device.get('name', '')} Select Schema").lstrip()
+        self._attr_unique_id = f"{device_id}-select_schedule"
+        self._attr_name = (f"{self.device.get('name', '')} Select Schedule").lstrip()
         self._attr_current_option = self.device.get("selected_schedule")
 
     @property
