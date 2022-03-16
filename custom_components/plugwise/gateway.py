@@ -63,7 +63,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return False
     except PlugwiseException as err:
         raise ConfigEntryNotReady(
-            "Error while communicating to device Plugwise Smile"
+            "Error while communicating to Plugwise Smile"
         ) from err
     except aiohttp.ClientError as err:
         raise ConfigEntryNotReady("Failed connecting to the Plugwise Smile") from err
