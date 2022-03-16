@@ -13,10 +13,7 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.components.switch import (
-    SwitchDeviceClass,
-    SwitchEntityDescription,
-)
+from homeassistant.components.switch import SwitchDeviceClass, SwitchEntityDescription
 from homeassistant.const import (
     ENERGY_KILO_WATT_HOUR,
     ENERGY_WATT_HOUR,
@@ -30,7 +27,7 @@ from homeassistant.const import (
     TIME_MILLISECONDS,
     VOLUME_CUBIC_METERS,
 )
-from homeassistant.helpers.entity import EntityDescription, EntityCategory
+from homeassistant.helpers.entity import EntityCategory, EntityDescription
 
 from .const import (
     BATTERY,
@@ -63,6 +60,7 @@ from .const import (
     MOD_LEVEL,
     NET_EL_CUMULATIVE,
     NET_EL_POINT,
+    OUTDOOR_AIR_TEMP,
     OUTDOOR_TEMP,
     PW_NOTIFICATION,
     RELAY,
@@ -443,6 +441,13 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         key=OUTDOOR_TEMP,
         plugwise_api=SMILE,
         name="Outdoor Temperature",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit_of_measurement=TEMP_CELSIUS,
+    ),
+    PlugwiseSensorEntityDescription(
+        key=OUTDOOR_AIR_TEMP,
+        plugwise_api=SMILE,
+        name="Outdoor Air Temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=TEMP_CELSIUS,
     ),

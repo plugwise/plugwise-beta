@@ -30,6 +30,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 ## NEW MAR 2022 [0.21.5] (in development)
  - Smile:
+  - **BREAKING** introduction of improved naming of `outdoor_air_temperature` as part of the entity name indicating locally present sensor
   - Link to plugwise v0.16.9 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.9
 
 ## NEW MAR 2022 [0.21.4]
