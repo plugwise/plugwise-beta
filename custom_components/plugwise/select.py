@@ -29,14 +29,18 @@ async def async_setup_entry(
     ][COORDINATOR]
 
     async_add_entities(
-        PlugwiseSelectEntity(coordinator, device_id)
+        ScheduleSelectEntity(coordinator, device_id)
         for device_id, device in coordinator.data.devices.items()
         if device["class"] in MASTER_THERMOSTATS
-        and len(device.get("available_schedules")) > 1
+        and len(device.get("available_schedules")) > 1,
+        RegulationSelectEntity(coordinator, device_id)
+        for device_id, device in coordinator.data.devices.items()
+        if device["class"] == "gateway'"
+        and len(device.get("regulation_modes")) > 1,
     )
 
 
-class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
+class ScheduleSelectEntity(PlugwiseEntity, SelectEntity):
     """Represent Smile selector."""
 
     def __init__(
@@ -58,3 +62,22 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
             option,
             SCHEDULE_ON,
         )
+
+class RegulationSelectEntity(PlugwiseEntity, SelectEntity):
+    """Represent Smile selector."""
+
+    def __init__(
+        self,
+        coordinator: PlugwiseDataUpdateCoordinator,
+        device_id: str,
+    ) -> None:
+        """Initialise the selector."""
+        super().__init__(coordinator, device_id)
+        self._attr_unique_id = f"{device_id}-select_regulation_mode"
+        self._attr_name = (f"{self.device.get('name', '')} Select Regulation Mode").lstrip()
+        self._attr_current_option = self.device.get("regulation_mode")
+        self._attr_options = self.device.get("regulation_modes", [])
+
+    async def async_select_option(self, option: str) -> None:
+        """Change the selected option."""
+        await self.coordinator.api.set_regulation_mode(option)
