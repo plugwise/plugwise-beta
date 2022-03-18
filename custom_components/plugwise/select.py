@@ -29,14 +29,14 @@ async def async_setup_entry(
     ][COORDINATOR]
 
     async_add_entities(
-        ScheduleSelectEntity(coordinator, device_id)
+        (ScheduleSelectEntity(coordinator, device_id)
         for device_id, device in coordinator.data.devices.items()
         if device["class"] in MASTER_THERMOSTATS
-        and len(device.get("available_schedules")) > 1,
-        RegulationSelectEntity(coordinator, device_id)
+        and len(device.get("available_schedules")) > 1),
+        (RegulationSelectEntity(coordinator, device_id)
         for device_id, device in coordinator.data.devices.items()
         if device["class"] == "gateway'"
-        and len(device.get("regulation_modes")) > 1,
+        and len(device.get("regulation_modes")) > 1),
     )
 
 
