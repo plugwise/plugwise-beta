@@ -81,7 +81,7 @@ class RegulationSelectEntity(PlugwiseEntity, SelectEntity):
         self._attr_name = (
             f"{self.device.get('name', '')} Select Regulation Mode"
         ).lstrip()
-        self._attr_current_option = self.device.get("regulation_mode")
+        self._attr_current_option = self.device["sensors"].get("regulation_mode")
         self._attr_options = self.device.get("regulation_modes", [])
 
     async def async_select_option(self, option: str) -> None:
