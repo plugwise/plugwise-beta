@@ -54,8 +54,16 @@ class ScheduleSelectEntity(PlugwiseEntity, SelectEntity):
         super().__init__(coordinator, device_id)
         self._attr_unique_id = f"{device_id}-select_schedule"
         self._attr_name = (f"{self.device.get('name', '')} Select Schedule").lstrip()
-        self._attr_current_option = self.device.get("selected_schedule")
         self._attr_options = self.device.get("available_schedules", [])
+
+    @property
+    def current_option(self) -> str | None:
+        """Return the selected entity option to represent the entity state."""
+        value = self.device.get("selected_schedule")
+        if value is None or value not in self._attr_options:
+            return None
+
+        return value
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
@@ -81,8 +89,16 @@ class RegulationSelectEntity(PlugwiseEntity, SelectEntity):
         self._attr_name = (
             f"{self.device.get('name', '')} Select Regulation Mode"
         ).lstrip()
-        self._attr_current_option = self.device["sensors"].get("regulation_mode")
         self._attr_options = self.device.get("regulation_modes", [])
+
+    @property
+    def current_option(self) -> str | None:
+        """Return the selected entity option to represent the entity state."""
+        value = self.device["sensors"].get("regulation_mode")
+        if value is None or value not in self._attr_options:
+            return None
+
+        return value
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
