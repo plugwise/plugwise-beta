@@ -10,6 +10,7 @@ from .const import (
     COORDINATOR,
     DOMAIN,
     MASTER_THERMOSTATS,
+    LOGGER.
     SCHEDULE_ON,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
@@ -32,11 +33,11 @@ async def async_setup_entry(
     for device_id, device in coordinator.data.devices.items():
         if device["class"] in MASTER_THERMOSTATS and len(device.get("available_schedules")) > 1:
             entities.extent([ScheduleSelectEntity(coordinator, device_id)])
-            LOGGER.debug("Add %s Schedule selector", self_device.get("name"))
+            LOGGER.debug("Add %s Schedule selector", self.device.get("name"))
 
         if device["class"] == "gateway" and "regulation_modes" in device and len(device.get("regulation_modes")) > 1:
             entities.extend([RegulationSelectEntity(coordinator, device_id)])
-            LOGGER.debug("Add %s Regulation Mode selector", self_device.get("name"))
+            LOGGER.debug("Add %s Regulation Mode selector", self.device.get("name"))
 
     async_add_entities(entities)
 
