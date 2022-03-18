@@ -38,7 +38,7 @@ async def async_setup_entry(
         (
             RegulationSelectEntity(coordinator, device_id)
             for device_id, device in coordinator.data.devices.items()
-            if device["class"] == "gateway'" and len(device.get("regulation_modes")) > 1
+            if device["class"] == "gateway" and len(device.get("regulation_modes")) > 1
         ),
     )
 
