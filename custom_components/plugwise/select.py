@@ -38,8 +38,7 @@ async def async_setup_entry(
         (
             RegulationSelectEntity(coordinator, device_id)
             for device_id, device in coordinator.data.devices.items()
-            if device["class"] == "gateway'"
-            and len(device.get("regulation_modes")) > 1
+            if device["class"] == "gateway'" and len(device.get("regulation_modes")) > 1
         ),
     )
 
@@ -79,7 +78,9 @@ class RegulationSelectEntity(PlugwiseEntity, SelectEntity):
         """Initialise the selector."""
         super().__init__(coordinator, device_id)
         self._attr_unique_id = f"{device_id}-select_regulation_mode"
-        self._attr_name = (f"{self.device.get('name', '')} Select Regulation Mode").lstrip()
+        self._attr_name = (
+            f"{self.device.get('name', '')} Select Regulation Mode"
+        ).lstrip()
         self._attr_current_option = self.device.get("regulation_mode")
         self._attr_options = self.device.get("regulation_modes", [])
 
