@@ -64,6 +64,7 @@ class ScheduleSelectEntity(PlugwiseEntity, SelectEntity):
             option,
             SCHEDULE_ON,
         )
+        await self.coordinator.async_request_refresh()
 
 
 class RegulationSelectEntity(PlugwiseEntity, SelectEntity):
@@ -86,3 +87,4 @@ class RegulationSelectEntity(PlugwiseEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         await self.coordinator.api.set_regulation_mode(option)
+        await self.coordinator.async_request_refresh()
