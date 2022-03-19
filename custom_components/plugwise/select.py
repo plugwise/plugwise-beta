@@ -94,7 +94,7 @@ class RegulationSelectEntity(PlugwiseEntity, SelectEntity):
     @property
     def current_option(self) -> str | None:
         """Return the selected entity option to represent the entity state."""
-        value = self.device["sensors"].get("regulation_mode")
+        value = self.device.get("regulation_mode")
         if value is None or value not in self._attr_options:
             return None
 
