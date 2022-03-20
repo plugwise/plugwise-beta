@@ -98,20 +98,6 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
         self._attr_options = self.device.get(description.options, [])
 
-    async def async_send_api_call(self, option: str, command: str) -> bool:
-        """Send api call."""
-        result = False
-        if command == "set_schedule_state":
-            result = await self.coordinator.api.set_schedule_state(
-                self.device.get("location"),
-                option,
-                SCHEDULE_ON,
-            )
-        if command == "set_regulation_mode":
-            result = await self.coordinator.api.set_regulation_mode(option)
-
-        return result
-
     @property
     def current_option(self) -> str | None:
         """Return the selected entity option to represent the entity state."""
