@@ -245,7 +245,7 @@ async def test_diagnostics(
                 },
                 "switches": {
                     "relay": True,
-                    "lock": false
+                    "lock": False
                 }
                 },
                 "78d1126fc4c743db81b61c20e88342a7": {
