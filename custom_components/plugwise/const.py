@@ -54,6 +54,7 @@ DEFAULT_USERNAME = "smile"
 PLATFORMS_GATEWAY = [
     Platform.BINARY_SENSOR,
     Platform.CLIMATE,
+    Platform.NUMBER,
     Platform.SENSOR,
     Platform.SELECT,
     Platform.SWITCH,
