@@ -36,41 +36,66 @@ async def test_diagnostics(
                 "fw": "2016-10-27T02:00:00+02:00",
                 "hw": "255",
                 "location": "12493538af164a409c6a1c79e38afe1c",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Lisa",
                 "name": "Zone Lisa Bios",
                 "vendor": "Plugwise",
                 "lower_bound": 0.0,
                 "upper_bound": 99.9,
                 "resolution": 0.01,
-                "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
+                "preset_modes": [
+                    "home",
+                    "asleep",
+                    "away",
+                    "vacation",
+                    "no_frost"
+                ],
                 "active_preset": "away",
                 "presets": {
-                    "home": [20.0, 22.0],
-                    "asleep": [17.0, 24.0],
-                    "away": [15.0, 25.0],
-                    "vacation": [15.0, 28.0],
-                    "no_frost": [10.0, 30.0],
+                    "home": [
+                    20.0,
+                    22.0
+                    ],
+                    "asleep": [
+                    17.0,
+                    24.0
+                    ],
+                    "away": [
+                    15.0,
+                    25.0
+                    ],
+                    "vacation": [
+                    15.0,
+                    28.0
+                    ],
+                    "no_frost": [
+                    10.0,
+                    30.0
+                    ]
                 },
                 "available_schedules": [
                     "CV Roan",
                     "Bios Schema met Film Avond",
                     "GF7  Woonkamer",
                     "Badkamer Schema",
-                    "CV Jessie",
+                    "CV Jessie"
                 ],
                 "selected_schedule": "None",
                 "last_used": "Badkamer Schema",
                 "schedule_temperature": 15.0,
                 "mode": "heat",
-                "sensors": {"temperature": 16.5, "setpoint": 13.0, "battery": 67},
-            },
-            "b310b72a0e354bfab43089919b9a88bf": {
+                "sensors": {
+                    "temperature": 16.5,
+                    "setpoint": 13.0,
+                    "battery": 67
+                }
+                },
+                "b310b72a0e354bfab43089919b9a88bf": {
                 "class": "thermo_sensor",
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
                 "location": "c50f167537524366a5af7aa3942feb1e",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Tom/Floor",
                 "name": "Floor kraan",
                 "vendor": "Plugwise",
@@ -81,15 +106,15 @@ async def test_diagnostics(
                     "temperature": 26.0,
                     "setpoint": 21.5,
                     "temperature_difference": 3.5,
-                    "valve_position": 100,
+                    "valve_position": 100
+                }
                 },
-            },
-            "a2c3583e0a6349358998b760cea82d2a": {
+                "a2c3583e0a6349358998b760cea82d2a": {
                 "class": "thermo_sensor",
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
                 "location": "12493538af164a409c6a1c79e38afe1c",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Tom/Floor",
                 "name": "Bios Cv Thermostatic Radiator ",
                 "vendor": "Plugwise",
@@ -101,44 +126,69 @@ async def test_diagnostics(
                     "setpoint": 13.0,
                     "battery": 62,
                     "temperature_difference": -0.2,
-                    "valve_position": 0.0,
+                    "valve_position": 0.0
+                }
                 },
-            },
-            "b59bcebaf94b499ea7d46e4a66fb62d8": {
+                "b59bcebaf94b499ea7d46e4a66fb62d8": {
                 "class": "zone_thermostat",
                 "fw": "2016-08-02T02:00:00+02:00",
                 "hw": "255",
                 "location": "c50f167537524366a5af7aa3942feb1e",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Lisa",
                 "name": "Zone Lisa WK",
                 "vendor": "Plugwise",
                 "lower_bound": 0.0,
                 "upper_bound": 99.9,
                 "resolution": 0.01,
-                "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
+                "preset_modes": [
+                    "home",
+                    "asleep",
+                    "away",
+                    "vacation",
+                    "no_frost"
+                ],
                 "active_preset": "home",
                 "presets": {
-                    "home": [20.0, 22.0],
-                    "asleep": [17.0, 24.0],
-                    "away": [15.0, 25.0],
-                    "vacation": [15.0, 28.0],
-                    "no_frost": [10.0, 30.0],
+                    "home": [
+                    20.0,
+                    22.0
+                    ],
+                    "asleep": [
+                    17.0,
+                    24.0
+                    ],
+                    "away": [
+                    15.0,
+                    25.0
+                    ],
+                    "vacation": [
+                    15.0,
+                    28.0
+                    ],
+                    "no_frost": [
+                    10.0,
+                    30.0
+                    ]
                 },
                 "available_schedules": [
                     "CV Roan",
                     "Bios Schema met Film Avond",
                     "GF7  Woonkamer",
                     "Badkamer Schema",
-                    "CV Jessie",
+                    "CV Jessie"
                 ],
                 "selected_schedule": "GF7  Woonkamer",
                 "last_used": "GF7  Woonkamer",
                 "schedule_temperature": 20.0,
                 "mode": "auto",
-                "sensors": {"temperature": 20.9, "setpoint": 21.5, "battery": 34},
-            },
-            "fe799307f1624099878210aa0b9f1475": {
+                "sensors": {
+                    "temperature": 20.9,
+                    "setpoint": 21.5,
+                    "battery": 34
+                }
+                },
+                "fe799307f1624099878210aa0b9f1475": {
                 "class": "gateway",
                 "fw": "3.0.15",
                 "hw": "AME Smile 2.0 board",
@@ -148,15 +198,21 @@ async def test_diagnostics(
                 "name": "Adam",
                 "vendor": "Plugwise B.V.",
                 "zigbee_mac_address": "ABCD012345670101",
-                "binary_sensors": {"plugwise_notification": True},
-                "sensors": {"outdoor_temperature": 7.81},
-            },
-            "d3da73bde12a47d5a6b8f9dad971f2ec": {
+                "regulation_mode": "heating",
+                "regulation_modes": [],
+                "binary_sensors": {
+                    "plugwise_notification": true
+                },
+                "sensors": {
+                    "outdoor_temperature": 7.81
+                }
+                },
+                "d3da73bde12a47d5a6b8f9dad971f2ec": {
                 "class": "thermo_sensor",
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
                 "location": "82fa13f017d240daa0d0ea1775420f24",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Tom/Floor",
                 "name": "Thermostatic Radiator Jessie",
                 "vendor": "Plugwise",
@@ -168,15 +224,15 @@ async def test_diagnostics(
                     "setpoint": 15.0,
                     "battery": 62,
                     "temperature_difference": 0.1,
-                    "valve_position": 0.0,
+                    "valve_position": 0.0
+                }
                 },
-            },
-            "21f2b542c49845e6bb416884c55778d6": {
+                "21f2b542c49845e6bb416884c55778d6": {
                 "class": "game_console",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": None,
+                "hw": null,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Plug",
                 "name": "Playstation Smart Plug",
                 "vendor": "Plugwise",
@@ -185,16 +241,19 @@ async def test_diagnostics(
                     "electricity_consumed": 82.6,
                     "electricity_consumed_interval": 8.6,
                     "electricity_produced": 0.0,
-                    "electricity_produced_interval": 0.0,
+                    "electricity_produced_interval": 0.0
                 },
-                "switches": {"relay": True, "lock": False},
-            },
-            "78d1126fc4c743db81b61c20e88342a7": {
+                "switches": {
+                    "relay": true,
+                    "lock": false
+                }
+                },
+                "78d1126fc4c743db81b61c20e88342a7": {
                 "class": "central_heating_pump",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": None,
+                "hw": null,
                 "location": "c50f167537524366a5af7aa3942feb1e",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Plug",
                 "name": "CV Pomp",
                 "vendor": "Plugwise",
@@ -203,32 +262,36 @@ async def test_diagnostics(
                     "electricity_consumed": 35.6,
                     "electricity_consumed_interval": 7.37,
                     "electricity_produced": 0.0,
-                    "electricity_produced_interval": 0.0,
+                    "electricity_produced_interval": 0.0
                 },
-                "switches": {"relay": True},
-            },
-            "90986d591dcd426cae3ec3e8111ff730": {
+                "switches": {
+                    "relay": true
+                }
+                },
+                "90986d591dcd426cae3ec3e8111ff730": {
                 "class": "heater_central",
-                "fw": None,
-                "hw": None,
+                "fw": null,
+                "hw": null,
                 "location": "1f9dcf83fd4e4b66b72ff787957bfe5d",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Unknown",
                 "name": "OnOff",
-                "vendor": None,
-                "binary_sensors": {"heating_state": True},
+                "vendor": null,
+                "binary_sensors": {
+                    "heating_state": true
+                },
                 "sensors": {
                     "water_temperature": 70.0,
                     "intended_boiler_temperature": 70.0,
-                    "modulation_level": 1,
+                    "modulation_level": 1
+                }
                 },
-            },
-            "cd0ddb54ef694e11ac18ed1cbce5dbbd": {
+                "cd0ddb54ef694e11ac18ed1cbce5dbbd": {
                 "class": "vcr",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": None,
+                "hw": null,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Plug",
                 "name": "NAS",
                 "vendor": "Plugwise",
@@ -237,16 +300,19 @@ async def test_diagnostics(
                     "electricity_consumed": 16.5,
                     "electricity_consumed_interval": 0.5,
                     "electricity_produced": 0.0,
-                    "electricity_produced_interval": 0.0,
+                    "electricity_produced_interval": 0.0
                 },
-                "switches": {"relay": True, "lock": True},
-            },
-            "4a810418d5394b3f82727340b91ba740": {
+                "switches": {
+                    "relay": true,
+                    "lock": true
+                }
+                },
+                "4a810418d5394b3f82727340b91ba740": {
                 "class": "router",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": None,
+                "hw": null,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Plug",
                 "name": "USG Smart Plug",
                 "vendor": "Plugwise",
@@ -255,16 +321,19 @@ async def test_diagnostics(
                     "electricity_consumed": 8.5,
                     "electricity_consumed_interval": 0.0,
                     "electricity_produced": 0.0,
-                    "electricity_produced_interval": 0.0,
+                    "electricity_produced_interval": 0.0
                 },
-                "switches": {"relay": True, "lock": True},
-            },
-            "02cf28bfec924855854c544690a609ef": {
+                "switches": {
+                    "relay": true,
+                    "lock": true
+                }
+                },
+                "02cf28bfec924855854c544690a609ef": {
                 "class": "vcr",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": None,
+                "hw": null,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Plug",
                 "name": "NVR",
                 "vendor": "Plugwise",
@@ -273,16 +342,19 @@ async def test_diagnostics(
                     "electricity_consumed": 34.0,
                     "electricity_consumed_interval": 9.15,
                     "electricity_produced": 0.0,
-                    "electricity_produced_interval": 0.0,
+                    "electricity_produced_interval": 0.0
                 },
-                "switches": {"relay": True, "lock": True},
-            },
-            "a28f588dc4a049a483fd03a30361ad3a": {
+                "switches": {
+                    "relay": true,
+                    "lock": true
+                }
+                },
+                "a28f588dc4a049a483fd03a30361ad3a": {
                 "class": "settop",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": None,
+                "hw": null,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Plug",
                 "name": "Fibaro HC2",
                 "vendor": "Plugwise",
@@ -291,50 +363,78 @@ async def test_diagnostics(
                     "electricity_consumed": 12.5,
                     "electricity_consumed_interval": 3.8,
                     "electricity_produced": 0.0,
-                    "electricity_produced_interval": 0.0,
+                    "electricity_produced_interval": 0.0
                 },
-                "switches": {"relay": True, "lock": True},
-            },
-            "6a3bf693d05e48e0b460c815a4fdd09d": {
+                "switches": {
+                    "relay": true,
+                    "lock": true
+                }
+                },
+                "6a3bf693d05e48e0b460c815a4fdd09d": {
                 "class": "zone_thermostat",
                 "fw": "2016-10-27T02:00:00+02:00",
                 "hw": "255",
                 "location": "82fa13f017d240daa0d0ea1775420f24",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Lisa",
                 "name": "Zone Thermostat Jessie",
                 "vendor": "Plugwise",
                 "lower_bound": 0.0,
                 "upper_bound": 99.9,
                 "resolution": 0.01,
-                "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
+                "preset_modes": [
+                    "home",
+                    "asleep",
+                    "away",
+                    "vacation",
+                    "no_frost"
+                ],
                 "active_preset": "asleep",
                 "presets": {
-                    "home": [20.0, 22.0],
-                    "asleep": [17.0, 24.0],
-                    "away": [15.0, 25.0],
-                    "vacation": [15.0, 28.0],
-                    "no_frost": [10.0, 30.0],
+                    "home": [
+                    20.0,
+                    22.0
+                    ],
+                    "asleep": [
+                    17.0,
+                    24.0
+                    ],
+                    "away": [
+                    15.0,
+                    25.0
+                    ],
+                    "vacation": [
+                    15.0,
+                    28.0
+                    ],
+                    "no_frost": [
+                    10.0,
+                    30.0
+                    ]
                 },
                 "available_schedules": [
                     "CV Roan",
                     "Bios Schema met Film Avond",
                     "GF7  Woonkamer",
                     "Badkamer Schema",
-                    "CV Jessie",
+                    "CV Jessie"
                 ],
                 "selected_schedule": "CV Jessie",
                 "last_used": "CV Jessie",
                 "schedule_temperature": 15.0,
                 "mode": "auto",
-                "sensors": {"temperature": 17.2, "setpoint": 15.0, "battery": 37},
-            },
-            "680423ff840043738f42cc7f1ff97a36": {
+                "sensors": {
+                    "temperature": 17.2,
+                    "setpoint": 15.0,
+                    "battery": 37
+                }
+                },
+                "680423ff840043738f42cc7f1ff97a36": {
                 "class": "thermo_sensor",
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
                 "location": "08963fec7c53423ca5680aa4cb502c63",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Tom/Floor",
                 "name": "Thermostatic Radiator Badkamer",
                 "vendor": "Plugwise",
@@ -346,49 +446,74 @@ async def test_diagnostics(
                     "setpoint": 14.0,
                     "battery": 51,
                     "temperature_difference": -0.4,
-                    "valve_position": 0.0,
+                    "valve_position": 0.0
+                }
                 },
-            },
-            "f1fee6043d3642a9b0a65297455f008e": {
+                "f1fee6043d3642a9b0a65297455f008e": {
                 "class": "zone_thermostat",
                 "fw": "2016-10-27T02:00:00+02:00",
                 "hw": "255",
                 "location": "08963fec7c53423ca5680aa4cb502c63",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Lisa",
                 "name": "Zone Thermostat Badkamer",
                 "vendor": "Plugwise",
                 "lower_bound": 0.0,
                 "upper_bound": 99.9,
                 "resolution": 0.01,
-                "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
+                "preset_modes": [
+                    "home",
+                    "asleep",
+                    "away",
+                    "vacation",
+                    "no_frost"
+                ],
                 "active_preset": "away",
                 "presets": {
-                    "home": [20.0, 22.0],
-                    "asleep": [17.0, 24.0],
-                    "away": [15.0, 25.0],
-                    "vacation": [15.0, 28.0],
-                    "no_frost": [10.0, 30.0],
+                    "home": [
+                    20.0,
+                    22.0
+                    ],
+                    "asleep": [
+                    17.0,
+                    24.0
+                    ],
+                    "away": [
+                    15.0,
+                    25.0
+                    ],
+                    "vacation": [
+                    15.0,
+                    28.0
+                    ],
+                    "no_frost": [
+                    10.0,
+                    30.0
+                    ]
                 },
                 "available_schedules": [
                     "CV Roan",
                     "Bios Schema met Film Avond",
                     "GF7  Woonkamer",
                     "Badkamer Schema",
-                    "CV Jessie",
+                    "CV Jessie"
                 ],
                 "selected_schedule": "Badkamer Schema",
                 "last_used": "Badkamer Schema",
                 "schedule_temperature": 15.0,
                 "mode": "auto",
-                "sensors": {"temperature": 18.9, "setpoint": 14.0, "battery": 92},
-            },
-            "675416a629f343c495449970e2ca37b5": {
+                "sensors": {
+                    "temperature": 18.9,
+                    "setpoint": 14.0,
+                    "battery": 92
+                }
+                },
+                "675416a629f343c495449970e2ca37b5": {
                 "class": "router",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": None,
+                "hw": null,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Plug",
                 "name": "Ziggo Modem",
                 "vendor": "Plugwise",
@@ -397,37 +522,61 @@ async def test_diagnostics(
                     "electricity_consumed": 12.2,
                     "electricity_consumed_interval": 2.97,
                     "electricity_produced": 0.0,
-                    "electricity_produced_interval": 0.0,
+                    "electricity_produced_interval": 0.0
                 },
-                "switches": {"relay": True, "lock": True},
-            },
-            "e7693eb9582644e5b865dba8d4447cf1": {
+                "switches": {
+                    "relay": true,
+                    "lock": true
+                }
+                },
+                "e7693eb9582644e5b865dba8d4447cf1": {
                 "class": "thermostatic_radiator_valve",
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
                 "location": "446ac08dd04d4eff8ac57489757b7314",
-                "mac_address": None,
+                "mac_address": null,
                 "model": "Tom/Floor",
                 "name": "CV Kraan Garage",
                 "vendor": "Plugwise",
                 "lower_bound": 0.0,
                 "upper_bound": 100.0,
                 "resolution": 0.01,
-                "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
+                "preset_modes": [
+                    "home",
+                    "asleep",
+                    "away",
+                    "vacation",
+                    "no_frost"
+                ],
                 "active_preset": "no_frost",
                 "presets": {
-                    "home": [20.0, 22.0],
-                    "asleep": [17.0, 24.0],
-                    "away": [15.0, 25.0],
-                    "vacation": [15.0, 28.0],
-                    "no_frost": [10.0, 30.0],
+                    "home": [
+                    20.0,
+                    22.0
+                    ],
+                    "asleep": [
+                    17.0,
+                    24.0
+                    ],
+                    "away": [
+                    15.0,
+                    25.0
+                    ],
+                    "vacation": [
+                    15.0,
+                    28.0
+                    ],
+                    "no_frost": [
+                    10.0,
+                    30.0
+                    ]
                 },
                 "available_schedules": [
                     "CV Roan",
                     "Bios Schema met Film Avond",
                     "GF7  Woonkamer",
                     "Badkamer Schema",
-                    "CV Jessie",
+                    "CV Jessie"
                 ],
                 "selected_schedule": "None",
                 "last_used": "Badkamer Schema",
@@ -438,7 +587,7 @@ async def test_diagnostics(
                     "setpoint": 5.5,
                     "battery": 68,
                     "temperature_difference": 0.0,
-                    "valve_position": 0.0,
+                    "valve_position": 0.0
                 },
             },
         },
