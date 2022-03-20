@@ -55,6 +55,7 @@ SELECT_TYPES = (
         command="set_regulation_mode",
         current_option="regulation_mode",
         options="regulation_modes",
+        entity_registry_enabled_default=False,
     ),
 )
 
