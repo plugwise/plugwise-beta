@@ -5,6 +5,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from plugwise.nodes import PlugwiseNode
@@ -74,6 +75,21 @@ async def async_setup_entry_gateway(
 ) -> None:
     """Set up the Smile sensors from a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+
+    # Migrating opentherm_outdoor_temperature to opentherm_outdoor_air_temperature sensor
+    ent_reg = entity_registry.async_get(hass)
+    for device_id, device in coordinator.data.devices.items():
+        if device["class"] == "heater_central":
+            old_unique_id = f"{device_id}-outdoor_temperature"
+            new_unique_id = f"{device_id}-outdoor_air_temperature"
+        if entity_id := ent_reg.async_get_entity_id(Platform.SENSOR, DOMAIN, old_unique_id):
+            _LOGGER.debug(
+                "Migrating entity %s from old unique ID '%s' to new unique ID '%s'",
+                entity_id,
+                old_unique_id,
+                new_unique_id,
+            )
+            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
     entities: list[PlugwiseSensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
