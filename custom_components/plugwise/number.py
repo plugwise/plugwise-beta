@@ -78,14 +78,6 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
 
-    async def async_send_api_call(self, setpoint: str, command: str) -> bool:
-        """Send api call."""
-        result = False
-        if command == "set_max_boiler_temperature":
-            result = await self.coordinator.api.set_max_boiler_temperature(setpoint)
-
-        return result
-
     @property
     def value(self) -> float | None:
         """Return the value from coordinator data."""
