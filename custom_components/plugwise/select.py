@@ -1,9 +1,12 @@
 """Plugwise Select component for Home Assistant."""
 from __future__ import annotations
 
-from homeassistant.components.select import SelectEntity
+from dataclasses import dataclass
+
+from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
@@ -19,6 +22,43 @@ from .entity import PlugwiseEntity
 PARALLEL_UPDATES = 0
 
 
+@dataclass
+class PlugwiseSelectDescriptionMixin:
+    """Mixin values for Sensibo entities."""
+
+    command: str
+    current_option: str
+    options: str
+
+
+@dataclass
+class PlugwiseSelectEntityDescription(
+    SelectEntityDescription, PlugwiseSelectDescriptionMixin
+):
+    """Class describing Sensibo Number entities."""
+
+
+SELECT_TYPES = (
+    PlugwiseSelectEntityDescription(
+        key="select_schedule",
+        name="Select Schedule",
+        icon="mdi:calendar-clock",
+        command="set_schedule_state",
+        current_option="selected_schedule",
+        options="available_schedules",
+    ),
+    PlugwiseSelectEntityDescription(
+        key="select_regulation_mode",
+        name="Select Regulation Mode",
+        icon="mdi:hvac",
+        entity_category=EntityCategory.CONFIG,
+        command="set_regulation_mode",
+        current_option="regulation_mode",
+        options="regulation_modes",
+    ),
+)
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -29,78 +69,60 @@ async def async_setup_entry(
         config_entry.entry_id
     ][COORDINATOR]
 
-    entities: list[ScheduleSelectEntity | RegulationSelectEntity] = []
+    entities: list[PlugwiseSelectEntity] = []
     for device_id, device in coordinator.data.devices.items():
-        if device["class"] in MASTER_THERMOSTATS and len(device.get("available_schedules")) > 1:
-            entities.extend([ScheduleSelectEntity(coordinator, device_id)])
-            LOGGER.debug("Add %s Schedule selector", device.get("name"))
-
-        if device["class"] == "gateway" and "regulation_modes" in device and len(device.get("regulation_modes")) > 1:
-            entities.extend([RegulationSelectEntity(coordinator, device_id)])
-            LOGGER.debug("Add %s Regulation Mode selector", device.get("name"))
+        for description in SELECT_TYPES:
+            if description.options in device and len(device.get(description.options)) > 1:
+                entities.append(
+                    PlugwiseSelectEntity(coordinator, device_id, description)
+                )
+                LOGGER.debug("Add %s %s selector", device.get("name"), description.name)
 
     async_add_entities(entities)
 
 
-class ScheduleSelectEntity(PlugwiseEntity, SelectEntity):
+class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     """Represent Smile selector."""
 
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
+        description: PlugwiseSelectEntityDescription,
     ) -> None:
         """Initialise the selector."""
         super().__init__(coordinator, device_id)
-        self._attr_unique_id = f"{device_id}-select_schedule"
-        self._attr_name = (f"{self.device.get('name', '')} Select Schedule").lstrip()
-        self._attr_options = self.device.get("available_schedules", [])
+        self.entity_description = description
+        self._attr_unique_id = f"{device_id}-{description.key}"
+        self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
+        self._attr_options = self.device.get(description.options, [])
+
+    async def async_send_api_call(self, option: str, command: str) -> bool:
+        """Send api call."""
+        result = False
+        if command == "set_schedule_state":
+            result = await self.coordinator.api.set_schedule_state(
+                self.device.get("location"),
+                option,
+                SCHEDULE_ON,
+            )
+        if command == "set_regulation_mode":
+            result = await self.coordinator.api.set_regulation_mode(option)
+
+        return result
 
     @property
     def current_option(self) -> str | None:
         """Return the selected entity option to represent the entity state."""
-        value = self.device.get("selected_schedule")
-        if value is None or value not in self._attr_options:
-            return None
-
-        return value
+        return self.device.get(self.entity_description.current_option)
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        await self.coordinator.api.set_schedule_state(
-            self.device.get("location"),
-            option,
-            SCHEDULE_ON,
-        )
-        await self.coordinator.async_request_refresh()
-
-
-class RegulationSelectEntity(PlugwiseEntity, SelectEntity):
-    """Represent Smile selector."""
-
-    def __init__(
-        self,
-        coordinator: PlugwiseDataUpdateCoordinator,
-        device_id: str,
-    ) -> None:
-        """Initialise the selector."""
-        super().__init__(coordinator, device_id)
-        self._attr_unique_id = f"{device_id}-select_regulation_mode"
-        self._attr_name = (
-            f"{self.device.get('name', '')} Select Regulation Mode"
-        ).lstrip()
-        self._attr_options = self.device.get("regulation_modes", [])
-
-    @property
-    def current_option(self) -> str | None:
-        """Return the selected entity option to represent the entity state."""
-        value = self.device.get("regulation_mode")
-        if value is None or value not in self._attr_options:
-            return None
-
-        return value
-
-    async def async_select_option(self, option: str) -> None:
-        """Change the selected option."""
-        await self.coordinator.api.set_regulation_mode(option)
-        await self.coordinator.async_request_refresh()
+        result = await self.async_send_api_call(option, self.entity_description.command)
+        if result:
+            LOGGER.debug(
+                "%s to %s was succesful", self.entity_description.name, option
+            )
+            await self.coordinator.async_request_refresh()
+        else:
+            LOGGER.error("Failed to %s", self.entity_description.name)
