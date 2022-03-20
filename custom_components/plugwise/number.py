@@ -44,7 +44,9 @@ NUMBER_TYPES = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Plugwise number platform."""
 
@@ -88,9 +90,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         """Set setpoint value."""
         result = await self.async_send_api_call(value, self.entity_description.command)
         if result:
-            LOGGER.debug(
-                "%s to %s was succesful", self.entity_description.name, value
-            )
+            LOGGER.debug("%s to %s was succesful", self.entity_description.name, value)
             await self.coordinator.async_request_refresh()
         else:
             LOGGER.error("Failed to %s", self.entity_description.name)
