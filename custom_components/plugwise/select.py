@@ -12,9 +12,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
     COORDINATOR,
     DOMAIN,
-    MASTER_THERMOSTATS,
     LOGGER,
-    SCHEDULE_ON,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity

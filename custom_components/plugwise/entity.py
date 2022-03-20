@@ -11,7 +11,7 @@ from homeassistant.helpers.device_registry import (
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, SCHEDULE_ON
 from .coordinator import PlugwiseData, PlugwiseDataUpdateCoordinator
 
 
@@ -61,7 +61,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseData]):
                     ),
                 }
             )
-    
+
     async def async_send_api_call(self, target: str, command: str) -> bool:
         """Send api call."""
         result = False
