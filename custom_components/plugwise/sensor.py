@@ -79,9 +79,11 @@ async def async_setup_entry_gateway(
     # Migrating opentherm_outdoor_temperature to opentherm_outdoor_air_temperature sensor
     ent_reg = entity_registry.async_get(hass)
     for device_id, device in coordinator.data.devices.items():
-        if device["class"] == "heater_central":
-            old_unique_id = f"{device_id}-outdoor_temperature"
-            new_unique_id = f"{device_id}-outdoor_air_temperature"
+        if device["class"] != "heater_central":
+            continue
+
+        old_unique_id = f"{device_id}-outdoor_temperature"
+        new_unique_id = f"{device_id}-outdoor_air_temperature"
         if entity_id := ent_reg.async_get_entity_id(Platform.SENSOR, DOMAIN, old_unique_id):
             _LOGGER.debug(
                 "Migrating entity %s from old unique ID '%s' to new unique ID '%s'",
