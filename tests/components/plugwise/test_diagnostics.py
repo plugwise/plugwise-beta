@@ -74,8 +74,8 @@ async def test_diagnostics(
                     "setpoint": 13.0,
                     "battery": 67
                 }
-                },
-                "b310b72a0e354bfab43089919b9a88bf": {
+            },
+            "b310b72a0e354bfab43089919b9a88bf": {
                 "class": "thermo_sensor",
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
@@ -93,8 +93,8 @@ async def test_diagnostics(
                     "temperature_difference": 3.5,
                     "valve_position": 100
                 }
-                },
-                "a2c3583e0a6349358998b760cea82d2a": {
+            },
+            "a2c3583e0a6349358998b760cea82d2a": {
                 "class": "thermo_sensor",
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
@@ -113,8 +113,8 @@ async def test_diagnostics(
                     "temperature_difference": -0.2,
                     "valve_position": 0.0
                 }
-                },
-                "b59bcebaf94b499ea7d46e4a66fb62d8": {
+            },
+            "b59bcebaf94b499ea7d46e4a66fb62d8": {
                 "class": "zone_thermostat",
                 "fw": "2016-08-02T02:00:00+02:00",
                 "hw": "255",
@@ -157,8 +157,8 @@ async def test_diagnostics(
                     "setpoint": 21.5,
                     "battery": 34
                 }
-                },
-                "fe799307f1624099878210aa0b9f1475": {
+            },
+            "fe799307f1624099878210aa0b9f1475": {
                 "class": "gateway",
                 "fw": "3.0.15",
                 "hw": "AME Smile 2.0 board",
@@ -176,8 +176,8 @@ async def test_diagnostics(
                 "sensors": {
                     "outdoor_temperature": 7.81
                 }
-                },
-                "d3da73bde12a47d5a6b8f9dad971f2ec": {
+            },
+            "d3da73bde12a47d5a6b8f9dad971f2ec": {
                 "class": "thermo_sensor",
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
@@ -196,8 +196,8 @@ async def test_diagnostics(
                     "temperature_difference": 0.1,
                     "valve_position": 0.0
                 }
-                },
-                "21f2b542c49845e6bb416884c55778d6": {
+            },
+            "21f2b542c49845e6bb416884c55778d6": {
                 "class": "game_console",
                 "fw": "2019-06-21T02:00:00+02:00",
                 "hw": None,
@@ -217,8 +217,8 @@ async def test_diagnostics(
                     "relay": True,
                     "lock": False
                 }
-                },
-                "78d1126fc4c743db81b61c20e88342a7": {
+            },
+            "78d1126fc4c743db81b61c20e88342a7": {
                 "class": "central_heating_pump",
                 "fw": "2019-06-21T02:00:00+02:00",
                 "hw": None,
@@ -237,8 +237,8 @@ async def test_diagnostics(
                 "switches": {
                     "relay": True
                 }
-                },
-                "90986d591dcd426cae3ec3e8111ff730": {
+            },
+            "90986d591dcd426cae3ec3e8111ff730": {
                 "class": "heater_central",
                 "fw": None,
                 "hw": None,
@@ -255,8 +255,8 @@ async def test_diagnostics(
                     "intended_boiler_temperature": 70.0,
                     "modulation_level": 1
                 }
-                },
-                "cd0ddb54ef694e11ac18ed1cbce5dbbd": {
+            },
+            "cd0ddb54ef694e11ac18ed1cbce5dbbd": {
                 "class": "vcr",
                 "fw": "2019-06-21T02:00:00+02:00",
                 "hw": None,
@@ -276,8 +276,8 @@ async def test_diagnostics(
                     "relay": True,
                     "lock": True
                 }
-                },
-                "4a810418d5394b3f82727340b91ba740": {
+            },
+            "4a810418d5394b3f82727340b91ba740": {
                 "class": "router",
                 "fw": "2019-06-21T02:00:00+02:00",
                 "hw": None,
@@ -297,8 +297,8 @@ async def test_diagnostics(
                     "relay": True,
                     "lock": True
                 }
-                },
-                "02cf28bfec924855854c544690a609ef": {
+            },
+            "02cf28bfec924855854c544690a609ef": {
                 "class": "vcr",
                 "fw": "2019-06-21T02:00:00+02:00",
                 "hw": None,
@@ -318,8 +318,8 @@ async def test_diagnostics(
                     "relay": True,
                     "lock": True
                 }
-                },
-                "a28f588dc4a049a483fd03a30361ad3a": {
+            },
+            "a28f588dc4a049a483fd03a30361ad3a": {
                 "class": "settop",
                 "fw": "2019-06-21T02:00:00+02:00",
                 "hw": None,
@@ -339,8 +339,8 @@ async def test_diagnostics(
                     "relay": True,
                     "lock": True
                 }
-                },
-                "6a3bf693d05e48e0b460c815a4fdd09d": {
+            },
+            "6a3bf693d05e48e0b460c815a4fdd09d": {
                 "class": "zone_thermostat",
                 "fw": "2016-10-27T02:00:00+02:00",
                 "hw": "255",
@@ -383,8 +383,8 @@ async def test_diagnostics(
                     "setpoint": 15.0,
                     "battery": 37
                 }
-                },
-                "680423ff840043738f42cc7f1ff97a36": {
+            },
+            "680423ff840043738f42cc7f1ff97a36": {
                 "class": "thermo_sensor",
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
@@ -403,8 +403,8 @@ async def test_diagnostics(
                     "temperature_difference": -0.4,
                     "valve_position": 0.0
                 }
-                },
-                "f1fee6043d3642a9b0a65297455f008e": {
+            },
+            "f1fee6043d3642a9b0a65297455f008e": {
                 "class": "zone_thermostat",
                 "fw": "2016-10-27T02:00:00+02:00",
                 "hw": "255",
@@ -447,8 +447,8 @@ async def test_diagnostics(
                     "setpoint": 14.0,
                     "battery": 92
                 }
-                },
-                "675416a629f343c495449970e2ca37b5": {
+            },
+            "675416a629f343c495449970e2ca37b5": {
                 "class": "router",
                 "fw": "2019-06-21T02:00:00+02:00",
                 "hw": None,
@@ -468,8 +468,8 @@ async def test_diagnostics(
                     "relay": True,
                     "lock": True
                 }
-                },
-                "e7693eb9582644e5b865dba8d4447cf1": {
+            },
+            "e7693eb9582644e5b865dba8d4447cf1": {
                 "class": "thermostatic_radiator_valve",
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
