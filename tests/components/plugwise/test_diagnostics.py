@@ -36,7 +36,7 @@ async def test_diagnostics(
                 "fw": "2016-10-27T02:00:00+02:00",
                 "hw": "255",
                 "location": "12493538af164a409c6a1c79e38afe1c",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Lisa",
                 "name": "Zone Lisa Bios",
                 "vendor": "Plugwise",
@@ -95,7 +95,7 @@ async def test_diagnostics(
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
                 "location": "c50f167537524366a5af7aa3942feb1e",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Tom/Floor",
                 "name": "Floor kraan",
                 "vendor": "Plugwise",
@@ -114,7 +114,7 @@ async def test_diagnostics(
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
                 "location": "12493538af164a409c6a1c79e38afe1c",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Tom/Floor",
                 "name": "Bios Cv Thermostatic Radiator ",
                 "vendor": "Plugwise",
@@ -134,7 +134,7 @@ async def test_diagnostics(
                 "fw": "2016-08-02T02:00:00+02:00",
                 "hw": "255",
                 "location": "c50f167537524366a5af7aa3942feb1e",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Lisa",
                 "name": "Zone Lisa WK",
                 "vendor": "Plugwise",
@@ -201,7 +201,7 @@ async def test_diagnostics(
                 "regulation_mode": "heating",
                 "regulation_modes": [],
                 "binary_sensors": {
-                    "plugwise_notification": true
+                    "plugwise_notification": True
                 },
                 "sensors": {
                     "outdoor_temperature": 7.81
@@ -212,7 +212,7 @@ async def test_diagnostics(
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
                 "location": "82fa13f017d240daa0d0ea1775420f24",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Tom/Floor",
                 "name": "Thermostatic Radiator Jessie",
                 "vendor": "Plugwise",
@@ -230,9 +230,9 @@ async def test_diagnostics(
                 "21f2b542c49845e6bb416884c55778d6": {
                 "class": "game_console",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": null,
+                "hw": None,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Plug",
                 "name": "Playstation Smart Plug",
                 "vendor": "Plugwise",
@@ -244,16 +244,16 @@ async def test_diagnostics(
                     "electricity_produced_interval": 0.0
                 },
                 "switches": {
-                    "relay": true,
+                    "relay": True,
                     "lock": false
                 }
                 },
                 "78d1126fc4c743db81b61c20e88342a7": {
                 "class": "central_heating_pump",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": null,
+                "hw": None,
                 "location": "c50f167537524366a5af7aa3942feb1e",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Plug",
                 "name": "CV Pomp",
                 "vendor": "Plugwise",
@@ -265,20 +265,20 @@ async def test_diagnostics(
                     "electricity_produced_interval": 0.0
                 },
                 "switches": {
-                    "relay": true
+                    "relay": True
                 }
                 },
                 "90986d591dcd426cae3ec3e8111ff730": {
                 "class": "heater_central",
-                "fw": null,
-                "hw": null,
+                "fw": None,
+                "hw": None,
                 "location": "1f9dcf83fd4e4b66b72ff787957bfe5d",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Unknown",
                 "name": "OnOff",
-                "vendor": null,
+                "vendor": None,
                 "binary_sensors": {
-                    "heating_state": true
+                    "heating_state": True
                 },
                 "sensors": {
                     "water_temperature": 70.0,
@@ -289,9 +289,9 @@ async def test_diagnostics(
                 "cd0ddb54ef694e11ac18ed1cbce5dbbd": {
                 "class": "vcr",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": null,
+                "hw": None,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Plug",
                 "name": "NAS",
                 "vendor": "Plugwise",
@@ -303,16 +303,16 @@ async def test_diagnostics(
                     "electricity_produced_interval": 0.0
                 },
                 "switches": {
-                    "relay": true,
-                    "lock": true
+                    "relay": True,
+                    "lock": True
                 }
                 },
                 "4a810418d5394b3f82727340b91ba740": {
                 "class": "router",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": null,
+                "hw": None,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Plug",
                 "name": "USG Smart Plug",
                 "vendor": "Plugwise",
@@ -324,16 +324,16 @@ async def test_diagnostics(
                     "electricity_produced_interval": 0.0
                 },
                 "switches": {
-                    "relay": true,
-                    "lock": true
+                    "relay": True,
+                    "lock": True
                 }
                 },
                 "02cf28bfec924855854c544690a609ef": {
                 "class": "vcr",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": null,
+                "hw": None,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Plug",
                 "name": "NVR",
                 "vendor": "Plugwise",
@@ -345,16 +345,16 @@ async def test_diagnostics(
                     "electricity_produced_interval": 0.0
                 },
                 "switches": {
-                    "relay": true,
-                    "lock": true
+                    "relay": True,
+                    "lock": True
                 }
                 },
                 "a28f588dc4a049a483fd03a30361ad3a": {
                 "class": "settop",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": null,
+                "hw": None,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Plug",
                 "name": "Fibaro HC2",
                 "vendor": "Plugwise",
@@ -366,8 +366,8 @@ async def test_diagnostics(
                     "electricity_produced_interval": 0.0
                 },
                 "switches": {
-                    "relay": true,
-                    "lock": true
+                    "relay": True,
+                    "lock": True
                 }
                 },
                 "6a3bf693d05e48e0b460c815a4fdd09d": {
@@ -375,7 +375,7 @@ async def test_diagnostics(
                 "fw": "2016-10-27T02:00:00+02:00",
                 "hw": "255",
                 "location": "82fa13f017d240daa0d0ea1775420f24",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Lisa",
                 "name": "Zone Thermostat Jessie",
                 "vendor": "Plugwise",
@@ -434,7 +434,7 @@ async def test_diagnostics(
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
                 "location": "08963fec7c53423ca5680aa4cb502c63",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Tom/Floor",
                 "name": "Thermostatic Radiator Badkamer",
                 "vendor": "Plugwise",
@@ -454,7 +454,7 @@ async def test_diagnostics(
                 "fw": "2016-10-27T02:00:00+02:00",
                 "hw": "255",
                 "location": "08963fec7c53423ca5680aa4cb502c63",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Lisa",
                 "name": "Zone Thermostat Badkamer",
                 "vendor": "Plugwise",
@@ -511,9 +511,9 @@ async def test_diagnostics(
                 "675416a629f343c495449970e2ca37b5": {
                 "class": "router",
                 "fw": "2019-06-21T02:00:00+02:00",
-                "hw": null,
+                "hw": None,
                 "location": "cd143c07248f491493cea0533bc3d669",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Plug",
                 "name": "Ziggo Modem",
                 "vendor": "Plugwise",
@@ -525,8 +525,8 @@ async def test_diagnostics(
                     "electricity_produced_interval": 0.0
                 },
                 "switches": {
-                    "relay": true,
-                    "lock": true
+                    "relay": True,
+                    "lock": True
                 }
                 },
                 "e7693eb9582644e5b865dba8d4447cf1": {
@@ -534,7 +534,7 @@ async def test_diagnostics(
                 "fw": "2019-03-27T01:00:00+01:00",
                 "hw": "1",
                 "location": "446ac08dd04d4eff8ac57489757b7314",
-                "mac_address": null,
+                "mac_address": None,
                 "model": "Tom/Floor",
                 "name": "CV Kraan Garage",
                 "vendor": "Plugwise",
