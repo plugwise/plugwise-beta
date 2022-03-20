@@ -52,26 +52,11 @@ async def test_diagnostics(
                 ],
                 "active_preset": "away",
                 "presets": {
-                    "home": [
-                    20.0,
-                    22.0
-                    ],
-                    "asleep": [
-                    17.0,
-                    24.0
-                    ],
-                    "away": [
-                    15.0,
-                    25.0
-                    ],
-                    "vacation": [
-                    15.0,
-                    28.0
-                    ],
-                    "no_frost": [
-                    10.0,
-                    30.0
-                    ]
+                    "home": [20.0, 22.0],
+                    "asleep": [17.0, 24.0],
+                    "away": [15.0, 25.0],
+                    "vacation": [15.0, 28.0],
+                    "no_frost": [10.0, 30.0]
                 },
                 "available_schedules": [
                     "CV Roan",
@@ -150,26 +135,11 @@ async def test_diagnostics(
                 ],
                 "active_preset": "home",
                 "presets": {
-                    "home": [
-                    20.0,
-                    22.0
-                    ],
-                    "asleep": [
-                    17.0,
-                    24.0
-                    ],
-                    "away": [
-                    15.0,
-                    25.0
-                    ],
-                    "vacation": [
-                    15.0,
-                    28.0
-                    ],
-                    "no_frost": [
-                    10.0,
-                    30.0
-                    ]
+                    "home": [20.0, 22.0],
+                    "asleep": [17.0, 24.0],
+                    "away": [15.0, 25.0],
+                    "vacation": [15.0, 28.0],
+                    "no_frost": [10.0, 30.0]
                 },
                 "available_schedules": [
                     "CV Roan",
@@ -391,26 +361,11 @@ async def test_diagnostics(
                 ],
                 "active_preset": "asleep",
                 "presets": {
-                    "home": [
-                    20.0,
-                    22.0
-                    ],
-                    "asleep": [
-                    17.0,
-                    24.0
-                    ],
-                    "away": [
-                    15.0,
-                    25.0
-                    ],
-                    "vacation": [
-                    15.0,
-                    28.0
-                    ],
-                    "no_frost": [
-                    10.0,
-                    30.0
-                    ]
+                    "home": [20.0, 22.0],
+                    "asleep": [17.0, 24.0],
+                    "away": [15.0, 25.0],
+                    "vacation": [15.0, 28.0],
+                    "no_frost": [10.0, 30.0]
                 },
                 "available_schedules": [
                     "CV Roan",
@@ -470,26 +425,11 @@ async def test_diagnostics(
                 ],
                 "active_preset": "away",
                 "presets": {
-                    "home": [
-                    20.0,
-                    22.0
-                    ],
-                    "asleep": [
-                    17.0,
-                    24.0
-                    ],
-                    "away": [
-                    15.0,
-                    25.0
-                    ],
-                    "vacation": [
-                    15.0,
-                    28.0
-                    ],
-                    "no_frost": [
-                    10.0,
-                    30.0
-                    ]
+                    "home": [20.0, 22.0],
+                    "asleep": [17.0, 24.0],
+                    "away": [15.0, 25.0],
+                    "vacation": [15.0, 28.0],
+                    "no_frost": [10.0, 30.0]
                 },
                 "available_schedules": [
                     "CV Roan",
@@ -550,26 +490,11 @@ async def test_diagnostics(
                 ],
                 "active_preset": "no_frost",
                 "presets": {
-                    "home": [
-                    20.0,
-                    22.0
-                    ],
-                    "asleep": [
-                    17.0,
-                    24.0
-                    ],
-                    "away": [
-                    15.0,
-                    25.0
-                    ],
-                    "vacation": [
-                    15.0,
-                    28.0
-                    ],
-                    "no_frost": [
-                    10.0,
-                    30.0
-                    ]
+                    "home": [20.0, 22.0],
+                    "asleep": [17.0, 24.0],
+                    "away": [15.0, 25.0],
+                    "vacation": [15.0, 28.0],
+                    "no_frost": [10.0, 30.0]
                 },
                 "available_schedules": [
                     "CV Roan",
