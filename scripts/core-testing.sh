@@ -134,7 +134,7 @@ echo "Installing pip modules"
 echo ""
 echo " - HA requirements (core and test)"
 pip install -q --disable-pip-version-check -r requirements.txt -r requirements_test.txt
-grep -hEi "voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
+grep -hEi "fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 echo " - extra's required for plugwise"
 pip install -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
 echo " - flake8"
