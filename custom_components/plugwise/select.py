@@ -71,7 +71,10 @@ async def async_setup_entry(
     entities: list[PlugwiseSelectEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in SELECT_TYPES:
-            if description.options in device and len(device.get(description.options)) > 1:
+            if (
+                description.options in device
+                and len(device.get(description.options)) > 1
+            ):
                 entities.append(
                     PlugwiseSelectEntity(coordinator, device_id, description)
                 )
@@ -105,9 +108,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         """Change the selected option."""
         result = await self.async_send_api_call(option, self.entity_description.command)
         if result:
-            LOGGER.debug(
-                "%s to %s was succesful", self.entity_description.name, option
-            )
+            LOGGER.debug("%s to %s was succesful", self.entity_description.name, option)
             await self.coordinator.async_request_refresh()
         else:
             LOGGER.error("Failed to %s", self.entity_description.name)
