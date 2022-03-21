@@ -42,20 +42,20 @@ if [ -z "${GITHUB_ACTIONS}" ] ; then
 		break
 	    fi
 	done
-fi
 
-# shellcheck source=/dev/null
-. "${my_venv}/bin/activate"
-# shellcheck disable=2145
-which python3 || ( echo "You should have python3 (${pyversions[@]}) installed, or change the script yourself, exiting"; exit 1)
-python3 --version
+	# shellcheck source=/dev/null
+	. "${my_venv}/bin/activate"
+	# shellcheck disable=2145
+	which python3 || ( echo "You should have python3 (${pyversions[@]}) installed, or change the script yourself, exiting"; exit 1)
+	python3 --version
 
-# Failsafe
-if [ ! -d "${my_venv}" ]; then
-    echo "Unable to instantiate venv, check your base python3 version and if you have python3-venv installed"
-    exit 1
+	# Failsafe
+	if [ ! -d "${my_venv}" ]; then
+	    echo "Unable to instantiate venv, check your base python3 version and if you have python3-venv installed"
+	    exit 1
+	fi
+	# /Cloned code
 fi
-# /Cloned code
 
 # Handle variables
 subject=""
