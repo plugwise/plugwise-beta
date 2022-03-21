@@ -3,7 +3,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from homeassistant.components.number import NumberEntity, NumberEntityDescription
+from homeassistant.components.number import (
+    NumberEntity,
+    NumberEntityDescription,
+    NumberMode,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
@@ -81,6 +85,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
+        self._attr_mode = NumberMode.BOX
 
     @property
     def value(self) -> float | None:
