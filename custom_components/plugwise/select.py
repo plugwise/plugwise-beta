@@ -118,4 +118,4 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
             )
             await self.coordinator.async_request_refresh()
         else:
-            raise HomeAssistantErrorf("Failed to set {self.entity_description.name}")
+            raise HomeAssistantError(f"Failed to set {self.entity_description.name}")
