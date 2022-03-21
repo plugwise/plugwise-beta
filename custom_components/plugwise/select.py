@@ -112,7 +112,9 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         """Change to the selected entity option."""
         result = await self.async_send_api_call(option, self.entity_description.command)
         if result:
-            LOGGER.debug("%s to %s was successful", self.entity_description.name, option)
+            LOGGER.debug(
+                "%s to %s was successful", self.entity_description.name, option
+            )
             await self.coordinator.async_request_refresh()
         else:
             LOGGER.error("Failed to %s to %s", self.entity_description.name, option)
