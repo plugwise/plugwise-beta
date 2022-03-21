@@ -83,11 +83,11 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
 
     @property
     def value(self) -> float | None:
-        """Return the value from coordinator data."""
+        """Return the present setpoint value."""
         return self.device.get(self.entity_description.key)
 
     async def async_set_value(self, value: float) -> None:
-        """Set setpoint value."""
+        """Change to the new setpoint value."""
         result = await self.async_send_api_call(value, self.entity_description.command)
         if result:
             LOGGER.debug("%s to %s was succesful", self.entity_description.name, value)
