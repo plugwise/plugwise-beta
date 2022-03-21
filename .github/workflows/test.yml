@@ -101,9 +101,15 @@ jobs:
           exit 1
       - name: Debug
         run: |
+          echo "git top level"
+          git rev-parse --show-toplevel
+          echo "pwd"
           pwd
+          echo "env"
           env
+          echo "set"
           set
+          echo "ls s"
           ls -l
           ls -l ~
           ls -l ~/ha-core
