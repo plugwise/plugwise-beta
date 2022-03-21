@@ -102,6 +102,8 @@ jobs:
       - name: Debug
         run: |
           pwd
+          env
+          set
           ls -l
           ls -l ~
           ls -l ~/ha-core
