@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -117,4 +118,4 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
             )
             await self.coordinator.async_request_refresh()
         else:
-            LOGGER.error("Failed to %s to %s", self.entity_description.name, option)
+            raise HomeAssistantError("Failed to %s to %s", self.entity_description.name, option)
