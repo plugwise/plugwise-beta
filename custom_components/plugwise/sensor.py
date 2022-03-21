@@ -96,7 +96,8 @@ async def async_setup_entry_gateway(
             LOGGER.debug("Add %s sensor", description.key)
 
     async_add_entities(entities)
-    
+
+
 async def migrate_sensor_entity(
     hass: HomeAssistant,
     coordinator: PlugwiseDataUpdateCoordinator,
