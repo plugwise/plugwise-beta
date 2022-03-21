@@ -28,7 +28,7 @@ pyversions=(3.9 dummy) # HA-Core is pinned to 3.9
 my_path=$(git rev-parse --show-toplevel)
 my_venv=${my_path}/venv
 
-if [ -z "${GITHUB_ACTIONS}"] ; then 
+if [ -z "${GITHUB_ACTIONS}" ] ; then 
 	# Ensures a python virtualenv is available at the highest available python3 version
 	for pv in "${pyversions[@]};"; do
 	    if [ "$(which "python$pv")" ]; then
@@ -95,7 +95,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo ""
 		echo " ** Running setup script from HA core **"
 		echo ""
-		if [ -z "${GITHUB_ACTIONS}"] ; then 
+		if [ -z "${GITHUB_ACTIONS}" ] ; then 
 			# shellcheck source=/dev/null
 			. "${my_path}/venv/bin/activate"
 			python3 -m venv venv
@@ -103,7 +103,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		python3 -m pip install --upgrade pip 
 		# Not a typo, core setup script resets back to pip 20.3
 		script/setup || python3 -m pip install --upgrade pip 
-		if [ -z "${GITHUB_ACTIONS}"] ; then 
+		if [ -z "${GITHUB_ACTIONS}" ] ; then 
 			# shellcheck source=/dev/null
 			. venv/bin/activate
 		fi
@@ -141,7 +141,7 @@ fi # core_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then 
 	cd "${coredir}" || exit
-	if [ -z "${GITHUB_ACTIONS}"] ; then 
+	if [ -z "${GITHUB_ACTIONS}" ] ; then 
 		echo "Activating venv and installing selected test modules (zeroconf,pyserial, etc)"
 		echo ""
 		# shellcheck source=/dev/null
@@ -209,7 +209,7 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	)
 	echo "Running hassfest for plugwise"
 	python3 -m script.hassfest --integration-path homeassistant/components/plugwise
-	if [ -z "${GITHUB_ACTIONS}"] ; then 
+	if [ -z "${GITHUB_ACTIONS}" ] ; then 
 		deactivate
 	fi
 fi
