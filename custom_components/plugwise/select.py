@@ -40,7 +40,7 @@ class PlugwiseSelectEntityDescription(
 SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
         key="select_schedule",
-        name="Set Schedule",
+        name="Thermostat Schedule",
         icon="mdi:calendar-clock",
         command="set_schedule_state",
         current_option="selected_schedule",
@@ -48,7 +48,7 @@ SELECT_TYPES = (
     ),
     PlugwiseSelectEntityDescription(
         key="select_regulation_mode",
-        name="Set Regulation Mode",
+        name="Regulation Mode",
         icon="mdi:hvac",
         entity_category=EntityCategory.CONFIG,
         command="set_regulation_mode",
@@ -114,8 +114,8 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         result = await self.async_send_api_call(option, self.entity_description.command)
         if result:
             LOGGER.debug(
-                "%s to %s was successful", self.entity_description.name, option
+                "Set %s to %s was successful", self.entity_description.name, option
             )
             await self.coordinator.async_request_refresh()
         else:
-            raise HomeAssistantError("Failed to %s to %s", self.entity_description.name, option)
+            raise HomeAssistantError("Failed to set %s", self.entity_description.name)
