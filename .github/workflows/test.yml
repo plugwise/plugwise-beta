@@ -33,6 +33,7 @@ jobs:
         env:
           cache-name: cache-hacore
         with:
+          path: ./
           key: >-
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
             steps.python.outputs.python-version }}-${{
@@ -68,6 +69,7 @@ jobs:
         env:
           cache-name: cache-hacore
         with:
+          path: ./
           key: >-
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
             steps.python.outputs.python-version }}-${{
@@ -105,6 +107,7 @@ jobs:
         env:
           cache-name: cache-hacore
         with:
+          path: ./
           key: >-
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
             steps.python.outputs.python-version }}-${{
