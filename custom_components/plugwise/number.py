@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from homeassistant.components.number import NumberEntity, NumberEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -90,7 +91,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         """Change to the new setpoint value."""
         result = await self.async_send_api_call(value, self.entity_description.command)
         if result:
-            LOGGER.debug("%s to %s was succesful", self.entity_description.name, value)
+            LOGGER.debug("Setting %s to %s was successful", self.entity_description.name, value)
             await self.coordinator.async_request_refresh()
         else:
-            LOGGER.error("Failed to %s", self.entity_description.name)
+            raise HomeAssistantError("Failed to set %s", self.entity_description.name)
