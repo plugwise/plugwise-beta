@@ -101,4 +101,4 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
             )
             await self.coordinator.async_request_refresh()
         else:
-            raise HomeAssistantError("Failed to set %s", self.entity_description.name)
+            raise HomeAssistantError(f"Failed to set {self.entity_description.name}")
