@@ -1,7 +1,6 @@
 """Plugwise Climate component for Home Assistant."""
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import Any
 
 from homeassistant.components.climate import ClimateEntity
@@ -136,7 +135,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def preset_mode(self) -> str | None:
         """Return the current preset mode."""
         return self.device.get("active_preset")
-
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
