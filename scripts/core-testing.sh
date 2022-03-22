@@ -121,7 +121,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		git pull
 	fi
 	# Add tracker
-	git log -1 | head -1 > ${coredir}/.git/plugwise-tracking
+	git log -1 | head -1 > "${coredir}/.git/plugwise-tracking"
 
 	echo ""
 	echo "Cleaning existing plugwise from HA core"
