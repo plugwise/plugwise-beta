@@ -24,7 +24,7 @@ which git || ( echo "You should have git installed, exiting"; exit 1)
 # - quality
 
 
-pyversions=(3.9 dummy) # HA-Core is pinned to 3.9
+pyversions=("3.10" 3.9 dummy) # HA-Core is pinned to 3.9
 my_path=$(git rev-parse --show-toplevel)
 my_venv=${my_path}/venv
 
@@ -57,14 +57,18 @@ if [ -z "${GITHUB_ACTIONS}" ] ; then
 	# /Cloned code
 fi
 
-# Handle variables
-subject=""
-basedir=""
-if [ $# -eq 2 ]; then
-	subject=$2
-fi
-if [ $# -gt 0 ]; then
-	basedir=$1
+# Skip targetting for github
+# i.e. args used for functions, not directions 
+if [ -z "${GITHUB_ACTIONS}" ] ; then
+	# Handle variables
+	subject=""
+	basedir=""
+	if [ $# -eq 2 ]; then
+		subject=$2
+	fi
+	if [ $# -gt 0 ]; then
+		basedir=$1
+	fi
 fi
 
 # Ensure ha-core exists
