@@ -7,6 +7,14 @@ set -e
 #
 # if you fancy more options (i.e. show test results)
 # run as "scripts/core_testing.sh test_config_flow.py -rP"
+#
+# If you want to prepare for Core PR, run as
+# "COMMIT_CHECK=true scripts/core_testing.sh"
+
+# Which packages to install (to prevent installing all test requirements)
+# actual package version ARE verified (i.e. grepped) from requirements_test_all
+# seperate packges with |
+pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket|pre-commit"
 
 echo ""
 echo "Checking for neccesary tools and prearing setup:"
@@ -120,12 +128,20 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo ""
 		echo " ** Resetting/rebasing core **"
 		echo ""
+		# Always start from dev, dropping any leftovers
+		git stash || echo " - Nothing to stash"
+		git stash drop -q || echo " - Nothing in stash"
+		git checkout dev || echo " - Already in dev-branch"
+		git branch -D fake_branch || echo " - No fake_branch to delete"
+		# Force pull
 		git config pull.rebase true
 		git reset --hard
 		git pull
 	fi
 	# Add tracker
 	git log -1 | head -1 > "${coredir}/.git/plugwise-tracking"
+	# Fake branch
+	git checkout -b fake_branch
 
 	echo ""
 	echo "Cleaning existing plugwise from HA core"
@@ -159,7 +175,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo ""
 	echo " - HA requirements (core and test)"
 	pip install -q --disable-pip-version-check -r requirements.txt -r requirements_test.txt
-	grep -hEi "fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
+	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise"
 	pip install -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
 	echo " - flake8"
@@ -185,7 +201,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo ""
 	echo "... flake8-ing component..."
 	flake8 homeassistant/components/plugwise/*py || exit
-	echo "... flak8-ing tests..."
+	echo "... flake8-ing tests..."
 	flake8 tests/components/plugwise/*py || exit
 	#echo "... pylint-ing component ..."
 	#pylint homeassistant/components/plugwise/*py tests/components/plugwise/*py|| exit
@@ -213,9 +229,18 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	)
 	echo "Running hassfest for plugwise"
 	python3 -m script.hassfest --integration-path homeassistant/components/plugwise
-	if [ -z "${GITHUB_ACTIONS}" ] ; then 
-		deactivate
-	fi
+fi
+
+if [ -z "${GITHUB_ACTIONS}" ] && [ ! -z "${COMMIT_CHECK}" ] ; then 
+	cd "${coredir}" || exit
+	echo ""
+	echo "Core PR pre-commit check ..."
+	echo ""
+        git add -A ; pre-commit
+fi
+
+if [ -z "${GITHUB_ACTIONS}" ] ; then 
+	deactivate
 fi
 
 	#        # disable for further figuring out, apparently HA doesn't pylint against test
