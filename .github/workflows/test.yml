@@ -60,7 +60,6 @@ jobs:
   shellcheck:
     name: Shellcheck
     runs-on: ubuntu-latest
-    needs: ha-core-quality
     steps:
       - uses: actions/checkout@v3
       - name: Run ShellCheck
