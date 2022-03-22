@@ -137,13 +137,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Return the current preset mode."""
         return self.device.get("active_preset")
 
-    @property
-    def extra_state_attributes(self) -> Mapping[str, Any] | None:
-        """Return entity specific state attributes."""
-        return {
-            "available_schedule": self.device.get("available_schedules"),
-            "selected_schedule": self.device.get("selected_schedule"),
-        }
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
