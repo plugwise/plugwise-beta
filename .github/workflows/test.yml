@@ -4,8 +4,8 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 3
-  DEFAULT_PYTHON: 3.9
+  CACHE_VERSION: 4
+  DEFAULT_PYTHON: 3.10
 
 on:
   workflow_dispatch:
