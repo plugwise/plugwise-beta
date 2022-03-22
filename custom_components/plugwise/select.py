@@ -23,7 +23,7 @@ PARALLEL_UPDATES = 0
 
 @dataclass
 class PlugwiseSelectDescriptionMixin:
-    """Mixin values for Sensibo entities."""
+    """Mixin values for Plugwise Select entities."""
 
     command: str
     current_option: str
@@ -34,7 +34,7 @@ class PlugwiseSelectDescriptionMixin:
 class PlugwiseSelectEntityDescription(
     SelectEntityDescription, PlugwiseSelectDescriptionMixin
 ):
-    """Class describing Sensibo Number entities."""
+    """Class describing Plugwise Number entities."""
 
 
 SELECT_TYPES = (
