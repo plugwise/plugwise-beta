@@ -203,8 +203,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	flake8 homeassistant/components/plugwise/*py || exit
 	echo "... flake8-ing tests..."
 	flake8 tests/components/plugwise/*py || exit
-	#echo "... pylint-ing component ..."
-	#pylint homeassistant/components/plugwise/*py tests/components/plugwise/*py|| exit
 	echo "... black-ing ..."
 	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
 fi # quality
@@ -231,7 +229,10 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	python3 -m script.hassfest --integration-path homeassistant/components/plugwise
 fi
 
-if [ -z "${GITHUB_ACTIONS}" ] && [ ! -z "${COMMIT_CHECK}" ] ; then 
+# pylint was removed from 'quality' some time ago
+# this is a much better replacement for actually checking everything
+# including isort and mypy
+if [ -z "${GITHUB_ACTIONS}" ] && [ -n "${COMMIT_CHECK}" ] ; then 
 	cd "${coredir}" || exit
 	echo ""
 	echo "Core PR pre-commit check ..."
@@ -242,8 +243,4 @@ fi
 if [ -z "${GITHUB_ACTIONS}" ] ; then 
 	deactivate
 fi
-
-	#        # disable for further figuring out, apparently HA doesn't pylint against test
-	#        #pylint tests/components/plugwise/*py
-
 
