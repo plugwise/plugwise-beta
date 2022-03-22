@@ -31,8 +31,8 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 ## MAR 2022 [0.22.0]
 - Smile:
   - Link to plugwise v0.17.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.0
-  - Add Select platform: provide changing of thermostat schedules and heating/cooling system regulation mode
-  - Add Number platform: provide changing of the maximum boiler temperature setpoint
+  - Rework select.py, add selector for the heating/cooling-system regulation mode
+  - Add number.py, provide an option for changing the maximum boiler (water) temperature setpoint
 
 ## MAR 2022 [0.21.5]
  - Smile:
