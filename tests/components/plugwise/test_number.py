@@ -19,7 +19,9 @@ async def test_anna_number_entities(
     # enable number entity
     init_integration.add_to_hass(hass)
     registry = er.async_get(hass)
-    registry.async_update_entity("number.opentherm_maximum_boiler_temperature_setpoint", disabled_by=None)
+    registry.async_update_entity(
+        "number.opentherm_maximum_boiler_temperature_setpoint", disabled_by=None
+    )
     await hass.config_entries.async_reload(init_integration.entry_id)
     await hass.async_block_till_done()
 
