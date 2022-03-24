@@ -94,11 +94,9 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
 
     async def async_set_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        result = await self.async_send_api_call(value, self.entity_description.command)
-        if result:
-            LOGGER.debug(
-                "Setting %s to %s was successful", self.entity_description.name, value
-            )
-            await self.coordinator.async_request_refresh()
-        else:
-            raise HomeAssistantError(f"Failed to set {self.entity_description.name}")
+        await self.async_send_api_call(value, self.entity_description.command)
+        LOGGER.debug(
+            "Setting %s to %s was successful", self.entity_description.name, value
+        )
+        await self.coordinator.async_request_refresh()
+
