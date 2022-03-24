@@ -30,7 +30,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 ## MAR 2022 [0.22.0]
 - Smile:
-  - Link to plugwise v0.17.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.0
+  - Link to plugwise v0.17.1a0 - https://github.com/plugwise/python-plugwise/blob/legacy_anna_heater_fix/CHANGELOG.md
   - Rework select.py, add selector for the heating/cooling-system regulation mode.
   - Add number.py (and tests), provide an option for changing the maximum boiler (water) temperature setpoint.
   - Remove climate schedule attributes, moved to the options-attribute of the select schedule entity.
