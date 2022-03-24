@@ -2,9 +2,6 @@
 
 from unittest.mock import MagicMock
 
-from plugwise.exceptions import PlugwiseException
-import pytest
-
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 
@@ -47,7 +44,7 @@ async def test_anna_max_boiler_temp_change(
     )
     await hass.config_entries.async_reload(init_integration.entry_id)
     await hass.async_block_till_done()
-    
+
     await hass.services.async_call(
         "number",
         "set_value",
