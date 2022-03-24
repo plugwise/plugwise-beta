@@ -10,7 +10,6 @@ from homeassistant.components.number import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -99,4 +98,3 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
             "Setting %s to %s was successful", self.entity_description.name, value
         )
         await self.coordinator.async_request_refresh()
-
