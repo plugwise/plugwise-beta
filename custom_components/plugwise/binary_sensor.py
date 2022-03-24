@@ -174,6 +174,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
             return None
 
         attrs: dict[str, list[str]] = {f"{severity}_msg": [] for severity in SEVERITIES}
+        self._notification = {}  # pw-beta
         if notify := self.coordinator.data.gateway.get("notifications"):
             for notify_id, details in notify.items():
                 for msg_type, msg in details.items():
