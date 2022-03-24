@@ -32,8 +32,9 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 - Smile:
   - Link to plugwise v0.17.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.0
   - Rework select.py, add selector for the heating/cooling-system regulation mode.
-  - Add number.py, provide an option for changing the maximum boiler (water) temperature setpoint.
-  - Remove climate schedule attributes, moved to the select platform.
+  - Add number.py (and tests), provide an option for changing the maximum boiler (water) temperature setpoint.
+  - Remove climate schedule attributes, moved to the options-attribute of the select schedule entity.
+  - Implement fix for the sticking HA persistent notifications
 
 ## MAR 2022 [0.21.5]
  - Smile:
