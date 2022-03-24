@@ -48,7 +48,10 @@ async def test_anna_max_boiler_temp_change(
     await hass.services.async_call(
         "number",
         "set_value",
-        {"entity_id": "number.opentherm_maximum_boiler_temperature_setpoint", "value": 65},
+        {
+            "entity_id": "number.opentherm_maximum_boiler_temperature_setpoint",
+            "value": 65,
+        },
         blocking=True,
     )
 
