@@ -78,11 +78,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_preset_modes = list(presets)
 
         # Determine hvac modes and current hvac mode
-        self._attr_hvac_modes = [HVAC_MODE_HEAT, HVAC_MODE_OFF]
+        self._attr_hvac_modes = [HVAC_MODE_HEAT]
         if self.coordinator.data.gateway.get("cooling_present"):
             self._attr_hvac_modes.append(HVAC_MODE_COOL)
         if self.device.get("available_schedules") != ["None"]:
             self._attr_hvac_modes.append(HVAC_MODE_AUTO)
+        if self._homekit_enabled:  # pw-beta homekit emulation
+            self._attr_hvac_modes.append(HVAC_OFF)
 
         self._attr_min_temp = self.device.get("lower_bound", DEFAULT_MIN_TEMP)
         self._attr_max_temp = self.device.get("upper_bound", DEFAULT_MAX_TEMP)
