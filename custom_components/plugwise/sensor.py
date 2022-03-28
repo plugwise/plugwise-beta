@@ -5,6 +5,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from plugwise.nodes import PlugwiseNode
@@ -77,6 +78,7 @@ async def async_setup_entry_gateway(
 
     entities: list[PlugwiseSensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
+        await migrate_sensor_entity(hass, coordinator, device_id, device)
         for description in PW_SENSOR_TYPES:
             if (
                 "sensors" not in device
@@ -94,6 +96,31 @@ async def async_setup_entry_gateway(
             LOGGER.debug("Add %s sensor", description.key)
 
     async_add_entities(entities)
+
+
+async def migrate_sensor_entity(
+    hass: HomeAssistant,
+    coordinator: PlugwiseDataUpdateCoordinator,
+    device_id: str,
+    device: str,
+) -> None:
+    """Migrate Sensors if needed."""
+    ent_reg = entity_registry.async_get(hass)
+
+    # Migrating opentherm_outdoor_temperature to opentherm_outdoor_air_temperature sensor
+    if device["class"] == "heater_central":
+        old_unique_id = f"{device_id}_outdoor_temperature"
+        if entity_id := ent_reg.async_get_entity_id(
+            Platform.SENSOR, DOMAIN, old_unique_id
+        ):
+            new_unique_id = f"{device_id}_outdoor_air_temperature"
+            LOGGER.debug(
+                "Migrating entity %s from old unique ID '%s' to new unique ID '%s'",
+                entity_id,
+                old_unique_id,
+                new_unique_id,
+            )
+            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
 
 class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):

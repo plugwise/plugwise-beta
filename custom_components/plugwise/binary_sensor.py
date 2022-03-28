@@ -173,14 +173,19 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         if self.entity_description.key != "plugwise_notification":
             return None
 
-        attrs: dict[str, list[str]] = {f"{severity}_msg": [] for severity in SEVERITIES}
+        attrs: dict[str, list[str]] = {}
+        self._notification = {}  # pw-beta
         if notify := self.coordinator.data.gateway.get("notifications"):
             for notify_id, details in notify.items():
                 for msg_type, msg in details.items():
                     msg_type = msg_type.lower()
                     if msg_type not in SEVERITIES:
                         msg_type = "other"
+
+                    if f"{msg_type}_msg" not in attrs:
+                        attrs[f"{msg_type}_msg"] = []
                     attrs[f"{msg_type}_msg"].append(msg)
+
                     self._notification[
                         notify_id
                     ] = f"{msg_type.title()}: {msg}"  # pw-beta

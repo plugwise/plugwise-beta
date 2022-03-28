@@ -28,14 +28,24 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW MAR 2022 [0.21.5]
+## MAR 2022 [0.22.0]
+- Smile:
+  - Link to plugwise v0.17.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.1, fixing https://github.com/home-assistant/core/issues/68621
+  - Link to plugwise v0.17.2 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.2
+  - Rework select.py, add selector for the heating/cooling-system regulation mode.
+  - Add number.py (and tests), provide an option for changing the maximum boiler (water) temperature setpoint.
+  - Remove climate schedule attributes, moved to the options-attribute of the select schedule entity.
+  - Implement fix for the sticking HA persistent notifications
+  - Only show HVAC_MODE off for HomeKit emulation
+
+## MAR 2022 [0.21.5]
  - Smile:
   - **BREAKING** improved naming of the locally present outdoor temp sensor connected to the OpenTherm device: `outdoor_air_temperature`. The former `sensor.opentherm_outdoor_temperature` is now visible as `sensor.opentherm_outdoor_air_temperature`. Use of the zipcode based `outdoor_temperature` has not changed.
-  - **POTENTIALLY BREAKING** for consistency renamed schema to schedule, i.e. the attributes will now be `available_schedules` and `selected_schedule`
+  - **POTENTIALLY BREAKING** for consistency renamed schema to schedule, i.e. the attributes will now be `available_schedules` and `selected_schedule`.
   - Link to plugwise v0.16.9 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.9
-  - Added schedule selector per thermostat using the new `select` platform
+  - Added schedule selector per thermostat using the new `select` platform.
 
-## NEW MAR 2022 [0.21.4]
+## MAR 2022 [0.21.4]
 - Smile:
   - Link to plugwise v0.16.8 - https://github.com/plugwise/python-plugwise/releases/tag/v0.16.8
   - Bugfixes via updating plugwise: 
