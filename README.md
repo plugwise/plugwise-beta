@@ -36,6 +36,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
   - Add number.py (and tests), provide an option for changing the maximum boiler (water) temperature setpoint.
   - Remove climate schedule attributes, moved to the options-attribute of the select schedule entity.
   - Implement fix for the sticking HA persistent notifications
+  - Only show HVAC_MODE off for HomeKit emulation
 
 ## MAR 2022 [0.21.5]
  - Smile:
