@@ -144,7 +144,11 @@ RELAY: Final = "relay"
 
 # --- Const for Plugwise USB-stick.
 
-PLATFORMS_USB: Final[list[str]] = [Platform.BINARY_SENSOR, Platform.SENSOR, Platform.SWITCH]
+PLATFORMS_USB: Final[list[str]] = [
+    Platform.BINARY_SENSOR,
+    Platform.SENSOR,
+    Platform.SWITCH,
+]
 CONF_USB_PATH: Final = "usb_path"
 
 # Callback types
@@ -159,7 +163,9 @@ ATTR_MAC_ADDRESS: Final = "mac"
 
 SERVICE_USB_DEVICE_ADD: Final = "device_add"
 SERVICE_USB_DEVICE_REMOVE: Final = "device_remove"
-SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
+SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
+    {vol.Required(ATTR_MAC_ADDRESS): cv.string}
+)
 
 
 # USB Relay device constants
