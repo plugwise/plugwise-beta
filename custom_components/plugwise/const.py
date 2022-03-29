@@ -1,6 +1,7 @@
 """Constants for Plugwise beta component."""
 
 import logging
+from typing import Final
 
 import voluptuous as vol
 from homeassistant.const import Platform
