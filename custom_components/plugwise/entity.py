@@ -59,7 +59,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseData]):
         if device_id != coordinator.data.gateway["gateway_id"]:
             self._attr_device_info.update(
                 {
-                    ATTR_NAME: data.get("name"),
+                    ATTR_NAME: data.get(ATTR_NAME),
                     ATTR_VIA_DEVICE: (
                         DOMAIN,
                         str(self.coordinator.data.gateway["gateway_id"]),
