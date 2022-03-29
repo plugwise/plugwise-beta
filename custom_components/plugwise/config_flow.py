@@ -299,7 +299,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     # pw-beta
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry: ConfigEntry) -> None:
+    def async_get_options_flow(config_entry: ConfigEntry) -> config_entries.OptionsFlow:
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
 
