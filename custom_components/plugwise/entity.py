@@ -3,7 +3,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.const import ATTR_NAME, ATTR_VIA_DEVICE, CONF_HOST
+from homeassistant.const import (
+    ATTR_NAME,
+    ATTR_VIA_DEVICE,
+    CONF_HOST,
+    CONF_MODEL,
+)
 from homeassistant.helpers.device_registry import (
     CONNECTION_NETWORK_MAC,
     CONNECTION_ZIGBEE,
@@ -11,7 +16,7 @@ from homeassistant.helpers.device_registry import (
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, SCHEDULE_ON
+from .const import CONF_VENDOR, DOMAIN, SCHEDULE_ON
 from .coordinator import PlugwiseData, PlugwiseDataUpdateCoordinator
 
 
@@ -44,8 +49,8 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseData]):
             configuration_url=configuration_url,
             identifiers={(DOMAIN, device_id)},
             connections=connections,
-            manufacturer=data.get("vendor"),
-            model=data.get("model"),
+            manufacturer=data.get(CONF_VENDOR),
+            model=data.get(CONF_MODEL),
             name=f"Smile {coordinator.data.gateway['smile_name']}",
             sw_version=data.get("fw"),
             hw_version=data.get("hw"),

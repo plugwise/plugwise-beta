@@ -13,6 +13,7 @@ LOGGER = logging.getLogger(__package__)
 
 API: Final = "api"
 ATTR_ENABLED_DEFAULT: Final = "enabled_default"
+CONF_VENDOR: Final = "vendor"
 COORDINATOR: Final = "coordinator"
 FW: Final = "fw"
 GATEWAY: Final = "gateway"
@@ -27,7 +28,6 @@ SMILE: Final = "smile"
 STICK: Final = "stick"
 STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
-VENDOR: Final = "vendor"
 UNIT_LUMEN: Final = "lm"
 USB: Final = "usb"
 
