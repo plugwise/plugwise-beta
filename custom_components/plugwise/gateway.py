@@ -88,7 +88,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # pw-beta - update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, api, update_interval)
     await coordinator.async_config_entry_first_refresh()
-    async_migrate_sensor_entity(coordinator, entry))
+    async_migrate_sensor_entity(coordinator, entry)
 
     # pw-beta
     undo_listener = entry.add_update_listener(_update_listener)
