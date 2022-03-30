@@ -73,6 +73,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     api.get_all_devices()
 
+    # Migrate to the new smile hostname as unique_id
     if entry.unique_id is None and api.smile_version[0] != "1.8.0":
         hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
@@ -87,6 +88,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # pw-beta - update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, api, update_interval)
     await coordinator.async_config_entry_first_refresh()
+    # Migrate a changed sensor unique_id
     migrate_sensor_entity(hass, coordinator)
 
     # pw-beta
@@ -177,10 +179,4 @@ def migrate_sensor_entity(
             Platform.SENSOR, DOMAIN, old_unique_id
         ):
             new_unique_id = f"{device_id}-outdoor_air_temperature"
-            LOGGER.debug(
-                "Migrating entity %s from old unique ID '%s' to new unique ID '%s'",
-                entity_id,
-                old_unique_id,
-                new_unique_id,
-            )
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
