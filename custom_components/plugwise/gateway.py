@@ -159,6 +159,7 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
     # No migration needed
     return None
 
+
 def migrate_sensor_entity(
     hass: HomeAssistant,
     coordinator: PlugwiseDataUpdateCoordinator,
