@@ -173,7 +173,7 @@ def aync_migrate_sensor_entity(
             continue
         
         old_unique_id = f"{device_id}_outdoor_temperature"
-        if entity_id := ent_reg.async_get_entity_id(
+        if entity_id := entry.async_get_entity_id(
             Platform.SENSOR, DOMAIN, old_unique_id
         ):
             new_unique_id = f"{device_id}_outdoor_air_temperature"
