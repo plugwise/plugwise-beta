@@ -1,57 +1,58 @@
 """Constants for Plugwise beta component."""
 
 import logging
+from typing import Final
 
 import voluptuous as vol
 from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
 
-DOMAIN = "plugwise"
+DOMAIN: Final = "plugwise"
 
 LOGGER = logging.getLogger(__package__)
 
-API = "api"
-ATTR_ENABLED_DEFAULT = "enabled_default"
-COORDINATOR = "coordinator"
-FW = "fw"
-GATEWAY = "gateway"
-ID = "id"
-PW_CLASS = "class"
-PW_LOCATION = "location"
-PW_MODEL = "model"
-PW_TYPE = "plugwise_type"
-SCHEDULE_OFF = "off"
-SCHEDULE_ON = "on"
-SMILE = "smile"
-STICK = "stick"
-STRETCH = "stretch"
-STRETCH_USERNAME = "stretch"
-VENDOR = "vendor"
-UNIT_LUMEN = "lm"
-USB = "usb"
+API: Final = "api"
+ATTR_ENABLED_DEFAULT: Final = "enabled_default"
+COORDINATOR: Final = "coordinator"
+FW: Final = "fw"
+GATEWAY: Final = "gateway"
+ID: Final = "id"
+PW_CLASS: Final = "class"
+PW_LOCATION: Final = "location"
+PW_MODEL: Final = "model"
+PW_TYPE: Final = "plugwise_type"
+SCHEDULE_OFF: Final = "off"
+SCHEDULE_ON: Final = "on"
+SMILE: Final = "smile"
+STICK: Final = "stick"
+STRETCH: Final = "stretch"
+STRETCH_USERNAME: Final = "stretch"
+VENDOR: Final = "vendor"
+UNIT_LUMEN: Final = "lm"
+USB: Final = "usb"
 
-FLOW_NET = "Network: Smile/Stretch"
-FLOW_SMILE = "Smile (Adam/Anna/P1)"
-FLOW_STRETCH = "Stretch (Stretch)"
-FLOW_TYPE = "flow_type"
-FLOW_USB = "USB: Stick"
+FLOW_NET: Final = "Network: Smile/Stretch"
+FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
+FLOW_STRETCH: Final = "Stretch (Stretch)"
+FLOW_TYPE: Final = "flow_type"
+FLOW_USB: Final = "USB: Stick"
 
-UNDO_UPDATE_LISTENER = "undo_update_listener"
+UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 
 # Default directives
-DEFAULT_MAX_TEMP = 30
-DEFAULT_MIN_TEMP = 4
-DEFAULT_PORT = 80
-DEFAULT_SCAN_INTERVAL = {
+DEFAULT_MAX_TEMP: Final = 30
+DEFAULT_MIN_TEMP: Final = 4
+DEFAULT_PORT: Final = 80
+DEFAULT_SCAN_INTERVAL: Final[dict[str, float]] = {
     "power": 10,
     "stretch": 60,
     "thermostat": 60,
 }
-DEFAULT_TIMEOUT = 10
-DEFAULT_USERNAME = "smile"
+DEFAULT_TIMEOUT: Final = 10
+DEFAULT_USERNAME: Final = "smile"
 
 # --- Const for Plugwise Smile and Stretch
-PLATFORMS_GATEWAY = [
+PLATFORMS_GATEWAY: Final[list[str]] = [
     Platform.BINARY_SENSOR,
     Platform.CLIMATE,
     Platform.NUMBER,
@@ -59,13 +60,13 @@ PLATFORMS_GATEWAY = [
     Platform.SELECT,
     Platform.SWITCH,
 ]
-SENSOR_PLATFORMS = [Platform.SENSOR, Platform.SWITCH]
-SERVICE_DELETE = "delete_notification"
+SENSOR_PLATFORMS: Final[list[str]] = [Platform.SENSOR, Platform.SWITCH]
+SERVICE_DELETE: Final = "delete_notification"
 SEVERITIES = ["other", "info", "warning", "error"]
 CONF_HOMEKIT_EMULATION = "homekit_emulation"  # pw-beta
 
 # Climate const:
-MASTER_THERMOSTATS = [
+MASTER_THERMOSTATS: Final[list[str]] = [
     "thermostat",
     "zone_thermometer",
     "zone_thermostat",
@@ -73,7 +74,7 @@ MASTER_THERMOSTATS = [
 ]
 
 # Config_flow const:
-ZEROCONF_MAP = {
+ZEROCONF_MAP: Final[dict[str, str]] = {
     "smile": "P1",
     "smile_thermo": "Anna",
     "smile_open_therm": "Adam",
@@ -81,99 +82,105 @@ ZEROCONF_MAP = {
 }
 
 # Icons
-COOLING_ICON = "mdi:snowflake"
-FLAME_ICON = "mdi:fire"
-FLOW_OFF_ICON = "mdi:water-pump-off"
-FLOW_ON_ICON = "mdi:water-pump"
-HEATING_ICON = "mdi:radiator"
-IDLE_ICON = "mdi:circle-off-outline"
-NOTIFICATION_ICON = "mdi:mailbox-up-outline"
-NO_NOTIFICATION_ICON = "mdi:mailbox-outline"
-SWITCH_ICON = "mdi:electric-switch"
+COOLING_ICON: Final = "mdi:snowflake"
+FLAME_ICON: Final = "mdi:fire"
+FLOW_OFF_ICON: Final = "mdi:water-pump-off"
+FLOW_ON_ICON: Final = "mdi:water-pump"
+HEATING_ICON: Final = "mdi:radiator"
+IDLE_ICON: Final = "mdi:circle-off-outline"
+NOTIFICATION_ICON: Final = "mdi:mailbox-up-outline"
+NO_NOTIFICATION_ICON: Final = "mdi:mailbox-outline"
+SWITCH_ICON: Final = "mdi:electric-switch"
 
 # Binary Sensors:
-DHW_STATE = "dhw_state"
-FLAME_STATE = "flame_state"
-PW_NOTIFICATION = "plugwise_notification"
-SLAVE_BOILER_STATE = "slave_boiler_state"
+DHW_STATE: Final = "dhw_state"
+FLAME_STATE: Final = "flame_state"
+PW_NOTIFICATION: Final = "plugwise_notification"
+SLAVE_BOILER_STATE: Final = "slave_boiler_state"
 
 # Sensors:
-BATTERY = "battery"
-CURRENT_TEMP = "temperature"
-DEVICE_STATE = "device_state"
-EL_CONSUMED = "electricity_consumed"
-EL_CONSUMED_INTERVAL = "electricity_consumed_interval"
-EL_CONSUMED_OFF_PEAK_CUMULATIVE = "electricity_consumed_off_peak_cumulative"
-EL_CONSUMED_OFF_PEAK_INTERVAL = "electricity_consumed_off_peak_interval"
-EL_CONSUMED_OFF_PEAK_POINT = "electricity_consumed_off_peak_point"
-EL_CONSUMED_PEAK_CUMULATIVE = "electricity_consumed_peak_cumulative"
-EL_CONSUMED_PEAK_INTERVAL = "electricity_consumed_peak_interval"
-EL_CONSUMED_PEAK_POINT = "electricity_consumed_peak_point"
-EL_CONSUMED_POINT = "electricity_consumed_point"
-EL_PRODUCED = "electricity_produced"
-EL_PRODUCED_INTERVAL = "electricity_produced_interval"
-EL_PRODUCED_OFF_PEAK_CUMULATIVE = "electricity_produced_off_peak_cumulative"
-EL_PRODUCED_OFF_PEAK_INTERVAL = "electricity_produced_off_peak_interval"
-EL_PRODUCED_OFF_PEAK_POINT = "electricity_produced_off_peak_point"
-EL_PRODUCED_PEAK_CUMULATIVE = "electricity_produced_peak_cumulative"
-EL_PRODUCED_PEAK_INTERVAL = "electricity_produced_peak_interval"
-EL_PRODUCED_PEAK_POINT = "electricity_produced_peak_point"
-EL_PRODUCED_POINT = "electricity_produced_point"
-GAS_CONSUMED_CUMULATIVE = "gas_consumed_cumulative"
-GAS_CONSUMED_INTERVAL = "gas_consumed_interval"
-HUMIDITY = "humidity"
-INTENDED_BOILER_TEMP = "intended_boiler_temperature"
-MOD_LEVEL = "modulation_level"
-NET_EL_CUMULATIVE = "net_electricity_cumulative"
-NET_EL_POINT = "net_electricity_point"
-OUTDOOR_AIR_TEMP = "outdoor_air_temperature"
-OUTDOOR_TEMP = "outdoor_temperature"
-RETURN_TEMP = "return_temperature"
-TARGET_TEMP = "setpoint"
-TEMP_DIFF = "temperature_difference"
-VALVE_POS = "valve_position"
-WATER_PRESSURE = "water_pressure"
-WATER_TEMP = "water_temperature"
+BATTERY: Final = "battery"
+CURRENT_TEMP: Final = "temperature"
+DEVICE_STATE: Final = "device_state"
+EL_CONSUMED: Final = "electricity_consumed"
+EL_CONSUMED_INTERVAL: Final = "electricity_consumed_interval"
+EL_CONSUMED_OFF_PEAK_CUMULATIVE: Final = "electricity_consumed_off_peak_cumulative"
+EL_CONSUMED_OFF_PEAK_INTERVAL: Final = "electricity_consumed_off_peak_interval"
+EL_CONSUMED_OFF_PEAK_POINT: Final = "electricity_consumed_off_peak_point"
+EL_CONSUMED_PEAK_CUMULATIVE: Final = "electricity_consumed_peak_cumulative"
+EL_CONSUMED_PEAK_INTERVAL: Final = "electricity_consumed_peak_interval"
+EL_CONSUMED_PEAK_POINT: Final = "electricity_consumed_peak_point"
+EL_CONSUMED_POINT: Final = "electricity_consumed_point"
+EL_PRODUCED: Final = "electricity_produced"
+EL_PRODUCED_INTERVAL: Final = "electricity_produced_interval"
+EL_PRODUCED_OFF_PEAK_CUMULATIVE: Final = "electricity_produced_off_peak_cumulative"
+EL_PRODUCED_OFF_PEAK_INTERVAL: Final = "electricity_produced_off_peak_interval"
+EL_PRODUCED_OFF_PEAK_POINT: Final = "electricity_produced_off_peak_point"
+EL_PRODUCED_PEAK_CUMULATIVE: Final = "electricity_produced_peak_cumulative"
+EL_PRODUCED_PEAK_INTERVAL: Final = "electricity_produced_peak_interval"
+EL_PRODUCED_PEAK_POINT: Final = "electricity_produced_peak_point"
+EL_PRODUCED_POINT: Final = "electricity_produced_point"
+GAS_CONSUMED_CUMULATIVE: Final = "gas_consumed_cumulative"
+GAS_CONSUMED_INTERVAL: Final = "gas_consumed_interval"
+HUMIDITY: Final = "humidity"
+INTENDED_BOILER_TEMP: Final = "intended_boiler_temperature"
+MOD_LEVEL: Final = "modulation_level"
+NET_EL_CUMULATIVE: Final = "net_electricity_cumulative"
+NET_EL_POINT: Final = "net_electricity_point"
+OUTDOOR_AIR_TEMP: Final = "outdoor_air_temperature"
+OUTDOOR_TEMP: Final = "outdoor_temperature"
+RETURN_TEMP: Final = "return_temperature"
+TARGET_TEMP: Final = "setpoint"
+TEMP_DIFF: Final = "temperature_difference"
+VALVE_POS: Final = "valve_position"
+WATER_PRESSURE: Final = "water_pressure"
+WATER_TEMP: Final = "water_temperature"
 
 # Switches
-DHW_COMF_MODE = "dhw_cm_switch"
-LOCK = "lock"
-RELAY = "relay"
+DHW_COMF_MODE: Final = "dhw_cm_switch"
+LOCK: Final = "lock"
+RELAY: Final = "relay"
 
 
 # --- Const for Plugwise USB-stick.
 
-PLATFORMS_USB = [Platform.BINARY_SENSOR, Platform.SENSOR, Platform.SWITCH]
-CONF_USB_PATH = "usb_path"
+PLATFORMS_USB: Final[list[str]] = [
+    Platform.BINARY_SENSOR,
+    Platform.SENSOR,
+    Platform.SWITCH,
+]
+CONF_USB_PATH: Final = "usb_path"
 
 # Callback types
-CB_NEW_NODE = "NEW_NODE"
-CB_JOIN_REQUEST = "JOIN_REQUEST"
+CB_NEW_NODE: Final = "NEW_NODE"
+CB_JOIN_REQUEST: Final = "JOIN_REQUEST"
 
 
 # USB generic device constants
-USB_AVAILABLE_ID = "available"
+USB_AVAILABLE_ID: Final = "available"
 
-ATTR_MAC_ADDRESS = "mac"
+ATTR_MAC_ADDRESS: Final = "mac"
 
-SERVICE_USB_DEVICE_ADD = "device_add"
-SERVICE_USB_DEVICE_REMOVE = "device_remove"
-SERVICE_USB_DEVICE_SCHEMA = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
+SERVICE_USB_DEVICE_ADD: Final = "device_add"
+SERVICE_USB_DEVICE_REMOVE: Final = "device_remove"
+SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
+    {vol.Required(ATTR_MAC_ADDRESS): cv.string}
+)
 
 
 # USB Relay device constants
-USB_RELAY_ID = "relay"
+USB_RELAY_ID: Final = "relay"
 
 
 # USB SED (battery powered) device constants
-ATTR_SED_STAY_ACTIVE = "stay_active"
-ATTR_SED_SLEEP_FOR = "sleep_for"
-ATTR_SED_MAINTENANCE_INTERVAL = "maintenance_interval"
-ATTR_SED_CLOCK_SYNC = "clock_sync"
-ATTR_SED_CLOCK_INTERVAL = "clock_interval"
+ATTR_SED_STAY_ACTIVE: Final = "stay_active"
+ATTR_SED_SLEEP_FOR: Final = "sleep_for"
+ATTR_SED_MAINTENANCE_INTERVAL: Final = "maintenance_interval"
+ATTR_SED_CLOCK_SYNC: Final = "clock_sync"
+ATTR_SED_CLOCK_INTERVAL: Final = "clock_interval"
 
-SERVICE_USB_SED_BATTERY_CONFIG = "configure_battery_savings"
-SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA = {
+SERVICE_USB_SED_BATTERY_CONFIG: Final = "configure_battery_savings"
+SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA: Final = {
     vol.Required(ATTR_SED_STAY_ACTIVE): vol.All(
         vol.Coerce(int), vol.Range(min=1, max=120)
     ),
@@ -191,22 +198,22 @@ SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA = {
 
 
 # USB Scan device constants
-USB_MOTION_ID = "motion"
+USB_MOTION_ID: Final = "motion"
 
-ATTR_SCAN_DAYLIGHT_MODE = "day_light"
-ATTR_SCAN_SENSITIVITY_MODE = "sensitivity_mode"
-ATTR_SCAN_RESET_TIMER = "reset_timer"
+ATTR_SCAN_DAYLIGHT_MODE: Final = "day_light"
+ATTR_SCAN_SENSITIVITY_MODE: Final = "sensitivity_mode"
+ATTR_SCAN_RESET_TIMER: Final = "reset_timer"
 
-SCAN_SENSITIVITY_HIGH = "high"
-SCAN_SENSITIVITY_MEDIUM = "medium"
-SCAN_SENSITIVITY_OFF = "off"
+SCAN_SENSITIVITY_HIGH: Final = "high"
+SCAN_SENSITIVITY_MEDIUM: Final = "medium"
+SCAN_SENSITIVITY_OFF: Final = "off"
 SCAN_SENSITIVITY_MODES = [
     SCAN_SENSITIVITY_HIGH,
     SCAN_SENSITIVITY_MEDIUM,
     SCAN_SENSITIVITY_OFF,
 ]
 
-SERVICE_USB_SCAN_CONFIG = "configure_scan"
+SERVICE_USB_SCAN_CONFIG: Final = "configure_scan"
 SERVICE_USB_SCAN_CONFIG_SCHEMA = (
     {
         vol.Required(ATTR_SCAN_SENSITIVITY_MODE): vol.In(SCAN_SENSITIVITY_MODES),
