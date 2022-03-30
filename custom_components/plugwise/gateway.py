@@ -162,7 +162,6 @@ def async_migrate_entity_entry(entry: RegistryEntry) -> dict[str, Any] | None:
 
 @callback
 def aync_migrate_sensor_entity(
-    hass: HomeAssistant,
     coordinator: PlugwiseDataUpdateCoordinator,
     entry: RegistryEntry,
 ) -> None:
