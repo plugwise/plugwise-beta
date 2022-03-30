@@ -22,7 +22,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity_registry import RegistryEntry, async_migrate_entries
 
@@ -165,7 +165,7 @@ def migrate_sensor_entity(
     coordinator: PlugwiseDataUpdateCoordinator,
 ) -> None:
     """Migrate Sensors if needed."""
-    ent_reg = entity_registry.async_get(hass)
+    ent_reg = er.async_get(hass)
 
     # Migrating opentherm_outdoor_temperature to opentherm_outdoor_air_temperature sensor
     for device_id, device in coordinator.data.devices.items():
