@@ -88,7 +88,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # pw-beta - update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, api, update_interval)
     await coordinator.async_config_entry_first_refresh()
-    await async_migrate_entries(hass, entry.entry_id, aync_migrate_sensor_entity(coordinator, entry))
+    async_migrate_sensor_entity(coordinator, entry))
 
     # pw-beta
     undo_listener = entry.add_update_listener(_update_listener)
@@ -160,8 +160,7 @@ def async_migrate_entity_entry(entry: RegistryEntry) -> dict[str, Any] | None:
     # No migration needed
     return None
 
-@callback
-def aync_migrate_sensor_entity(
+def async_migrate_sensor_entity(
     coordinator: PlugwiseDataUpdateCoordinator,
     entry: RegistryEntry,
 ) -> None:
