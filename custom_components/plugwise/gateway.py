@@ -24,7 +24,6 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.entity_registry import RegistryEntry, async_migrate_entries
 
 from .const import (
     COORDINATOR,
@@ -44,7 +43,7 @@ from .coordinator import PlugwiseDataUpdateCoordinator
 
 async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
-    await async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
+    await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
@@ -149,7 +148,7 @@ async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
 
 
 @callback
-def async_migrate_entity_entry(entry: RegistryEntry) -> dict[str, Any] | None:
+def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
     """Migrate Plugwise entity entries.
 
     - Migrates unique ID from old relay switches to the new unique ID
