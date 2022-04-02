@@ -38,8 +38,6 @@ FLOW_USB: Final = "USB: Stick"
 UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 
 # Default directives
-DEFAULT_MAX_TEMP: Final = 30
-DEFAULT_MIN_TEMP: Final = 4
 DEFAULT_PORT: Final = 80
 DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
     "power": timedelta(seconds=10),
