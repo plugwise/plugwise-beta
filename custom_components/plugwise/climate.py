@@ -108,9 +108,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if (mode := self.device.get("mode")) is None or mode not in self.hvac_modes:
             return HVAC_MODE_HEAT
         # pw-beta homekit emulation
-        if (
-            self._homekit_enabled and self._homekit_mode == HVAC_MODE_OFF
-        ):
+        if self._homekit_enabled and self._homekit_mode == HVAC_MODE_OFF:
             mode = HVAC_MODE_OFF
         return mode
 
