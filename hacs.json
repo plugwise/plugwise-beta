@@ -1,6 +1,6 @@
 {
   "name": "Plugwise beta custom component",
   "domains": ["binary_sensor","climate","sensor","switch"],
-  "homeassistant": "2022.4.0",
+  "homeassistant": "2022.4.0b0",
   "render_readme": true
 }
