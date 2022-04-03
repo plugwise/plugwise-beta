@@ -8,6 +8,7 @@ from homeassistant.const import (
     ATTR_VIA_DEVICE,
     CONF_HOST,
     CONF_MODEL,
+    STATE_ON,
 )
 from homeassistant.helpers.device_registry import (
     CONNECTION_NETWORK_MAC,
@@ -16,7 +17,7 @@ from homeassistant.helpers.device_registry import (
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import CONF_VENDOR, DOMAIN, SCHEDULE_ON
+from .const import CONF_VENDOR, DOMAIN
 from .coordinator import PlugwiseData, PlugwiseDataUpdateCoordinator
 
 
@@ -78,7 +79,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseData]):
             result = await self.coordinator.api.set_schedule_state(
                 self.device.get("location"),
                 target,
-                SCHEDULE_ON,
+                STATE_ON,
             )
 
         return result
