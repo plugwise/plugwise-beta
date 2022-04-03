@@ -578,6 +578,13 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
+        key="relay",
+        plugwise_api=SMILE,
+        name="Special Purpose Plug",
+        device_class=BinarySensorDeviceClass.POWER,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
         key=PW_NOTIFICATION,
         plugwise_api=SMILE,
         icon="mdi:mailbox-up-outline",
