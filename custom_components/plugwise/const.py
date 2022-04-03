@@ -92,6 +92,7 @@ SWITCH_ICON: Final = "mdi:electric-switch"
 DHW_STATE: Final = "dhw_state"
 FLAME_STATE: Final = "flame_state"
 PW_NOTIFICATION: Final = "plugwise_notification"
+RELAY: Final = "relay"
 SLAVE_BOILER_STATE: Final = "slave_boiler_state"
 
 # Sensors:
