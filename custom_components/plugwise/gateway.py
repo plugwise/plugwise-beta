@@ -28,7 +28,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .const import (
     COORDINATOR,
     DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,
+    DEFAULT_SCAN_INTERVAL,  # pw-beta
     DEFAULT_USERNAME,
     DOMAIN,
     GATEWAY,
@@ -78,12 +78,10 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     # pw-beta refresh-interval
-    update_interval = timedelta(
-        seconds=entry.options.get(
-            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL[api.smile_type]
-        )
-    )
-    LOGGER.debug("DUC update iterval: %s", update_interval)
+    update_interval = DEFAULT_SCAN_INTERVAL[api.smile_type]
+    if custom_time := entry.options.get(CONF_SCAN_INTERVAL):
+        update_interval = timedelta(seconds=int(custom_time))
+    LOGGER.debug("DUC update interval: %s", update_interval)
 
     # pw-beta - update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, api, update_interval)

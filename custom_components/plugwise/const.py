@@ -1,5 +1,5 @@
 """Constants for Plugwise beta component."""
-
+from datetime import timedelta
 import logging
 from typing import Final
 
@@ -43,10 +43,10 @@ UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 DEFAULT_MAX_TEMP: Final = 30
 DEFAULT_MIN_TEMP: Final = 4
 DEFAULT_PORT: Final = 80
-DEFAULT_SCAN_INTERVAL: Final[dict[str, float]] = {
-    "power": 10,
-    "stretch": 60,
-    "thermostat": 60,
+DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
+    "power": timedelta(seconds=10),
+    "stretch": timedelta(seconds=60),
+    "thermostat": timedelta(seconds=60),
 }
 DEFAULT_TIMEOUT: Final = 10
 DEFAULT_USERNAME: Final = "smile"
