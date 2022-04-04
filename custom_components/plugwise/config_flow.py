@@ -21,7 +21,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.components import usb
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
-from homeassistant.config_entries import ConfigFlow
+from homeassistant.config_entries import ConfigEntry, ConfigFlow
 from homeassistant.const import (
     CONF_BASE,
     CONF_HOST,
@@ -175,7 +175,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         )
         return await self.async_step_user_gateway()
 
-    async def async_step_user_usb(self, user_input=None):
+    async def async_step_user_usb(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Step when user initializes a integration."""
         errors = {}
         ports = await self.hass.async_add_executor_job(serial.tools.list_ports.comports)
@@ -211,7 +213,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_manual_path(self, user_input=None):
+    async def async_step_manual_path(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Step when manual path to device."""
         errors = {}
         if user_input is not None:
@@ -275,7 +279,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Handle the initial step when using network/gateway setups."""
         errors = {}
         if user_input is not None:
@@ -294,7 +300,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     # pw-beta
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry):
+    def async_get_options_flow(config_entry: ConfigEntry) -> config_entries.OptionsFlow:
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
 
@@ -304,11 +310,13 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
 
-    def __init__(self, config_entry):
+    def __init__(self, config_entry: ConfigEntry) -> FlowResult:
         """Initialize options flow."""
         self.config_entry = config_entry
 
-    async def async_step_none(self, user_input=None):
+    async def async_step_none(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """No options available."""
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
@@ -316,7 +324,9 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
 
         return self.async_show_form(step_id="none")
 
-    async def async_step_init(self, user_input=None):
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Manage the Plugwise options."""
         if not self.config_entry.data.get(CONF_HOST):
             return await self.async_step_none(user_input)

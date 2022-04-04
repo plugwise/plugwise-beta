@@ -22,9 +22,8 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.entity_registry import RegistryEntry, async_migrate_entries
 
 from .const import (
     COORDINATOR,
@@ -44,7 +43,7 @@ from .coordinator import PlugwiseDataUpdateCoordinator
 
 async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
-    await async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
+    await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
@@ -74,6 +73,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     api.get_all_devices()
 
+    # Migrate to the new smile hostname as unique_id
     if entry.unique_id is None and api.smile_version[0] != "1.8.0":
         hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
@@ -86,6 +86,8 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # pw-beta - update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, api, update_interval)
     await coordinator.async_config_entry_first_refresh()
+    # Migrate a changed sensor unique_id
+    migrate_sensor_entity(hass, coordinator)
 
     # pw-beta
     undo_listener = entry.add_update_listener(_update_listener)
@@ -146,7 +148,7 @@ async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
 
 
 @callback
-def async_migrate_entity_entry(entry: RegistryEntry) -> dict[str, Any] | None:
+def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
     """Migrate Plugwise entity entries.
 
     - Migrates unique ID from old relay switches to the new unique ID
@@ -156,3 +158,23 @@ def async_migrate_entity_entry(entry: RegistryEntry) -> dict[str, Any] | None:
 
     # No migration needed
     return None
+
+
+def migrate_sensor_entity(
+    hass: HomeAssistant,
+    coordinator: PlugwiseDataUpdateCoordinator,
+) -> None:
+    """Migrate Sensors if needed."""
+    ent_reg = er.async_get(hass)
+
+    # Migrating opentherm_outdoor_temperature to opentherm_outdoor_air_temperature sensor
+    for device_id, device in coordinator.data.devices.items():
+        if device["class"] != "heater_central":
+            continue
+
+        old_unique_id = f"{device_id}-outdoor_temperature"
+        if entity_id := ent_reg.async_get_entity_id(
+            Platform.SENSOR, DOMAIN, old_unique_id
+        ):
+            new_unique_id = f"{device_id}-outdoor_air_temperature"
+            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)

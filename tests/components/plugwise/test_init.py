@@ -75,12 +75,12 @@ async def test_config_entry_not_ready(
             {
                 "domain": SENSOR_DOMAIN,
                 "platform": DOMAIN,
-                "unique_id": f"{HEATER_ID}_outdoor_temperature",
-                "suggested_object_id": f"{HEATER_ID}_outdoor_temperature",
+                "unique_id": f"{HEATER_ID}-outdoor_temperature",
+                "suggested_object_id": f"{HEATER_ID}-outdoor_temperature",
                 "disabled_by": None,
             },
-            f"{HEATER_ID}_outdoor_temperature",
-            f"{HEATER_ID}_outdoor_air_temperature",
+            f"{HEATER_ID}-outdoor_temperature",
+            f"{HEATER_ID}-outdoor_air_temperature",
         ),
     ],
 )
@@ -91,7 +91,7 @@ async def test_migrate_unique_id_temperature(
     entitydata: dict,
     old_unique_id: str,
     new_unique_id: str,
-):
+) -> None:
     """Test migration of unique_id."""
     mock_config_entry.add_to_hass(hass)
 
@@ -132,7 +132,7 @@ async def test_migrate_unique_id_relay(
     entitydata: dict,
     old_unique_id: str,
     new_unique_id: str,
-):
+) -> None:
     """Test migration of unique_id."""
     mock_config_entry.add_to_hass(hass)
 
