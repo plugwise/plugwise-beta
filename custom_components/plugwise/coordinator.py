@@ -1,4 +1,5 @@
 """DataUpdateCoordinator for Plugwise."""
+from datetime import timedelta
 from typing import Any, NamedTuple
 
 from plugwise import Smile
@@ -8,6 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
+# pw-beta - for core compat should import DEFAULT_SCAN_INTERVAL
 from .const import DOMAIN, LOGGER
 
 
@@ -21,13 +23,14 @@ class PlugwiseData(NamedTuple):
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     """Class to manage fetching Plugwise data from single endpoint."""
 
-    def __init__(self, hass: HomeAssistant, api: Smile, interval: float) -> None:
+    def __init__(self, hass: HomeAssistant, api: Smile, interval: timedelta) -> None:
         """Initialize the coordinator."""
         super().__init__(
             hass,
             LOGGER,
             name=api.smile_name or DOMAIN,
-            update_interval=interval,
+            # Core directly updates from const's DEFAULT_SCAN_INTERVAL
+            update_interval=interval,  # pw-beta
             # Don't refresh immediately, give the device time to process
             # the change in state before we query it.
             request_refresh_debouncer=Debouncer(

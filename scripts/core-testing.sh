@@ -122,7 +122,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo ""
 		echo " ** Installing test requirements **"
 		echo ""
-		pip install -r requirements_test.txt
+		pip install --upgrade -r requirements_test.txt
 	else
 		cd "${coredir}" || exit
 		echo ""
@@ -174,17 +174,17 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo "Installing pip modules"
 	echo ""
 	echo " - HA requirements (core and test)"
-	pip install -q --disable-pip-version-check -r requirements.txt -r requirements_test.txt
+	pip install --upgrade -q --disable-pip-version-check -r requirements.txt -r requirements_test.txt
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise"
-	pip install -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
+	pip install --upgrade -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
 	echo " - flake8"
-	pip install -q flake8
+	pip install --upgrade -q flake8
 	echo ""
 	module=$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
 	echo "Checking manifest for current python-plugwise to install: ${module}"
 	echo ""
-	pip install -q --disable-pip-version-check "${module}"
+	pip install --upgrade -q --disable-pip-version-check "${module}"
 fi # pip_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then 
