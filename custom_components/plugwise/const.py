@@ -13,21 +13,17 @@ LOGGER = logging.getLogger(__package__)
 
 API: Final = "api"
 ATTR_ENABLED_DEFAULT: Final = "enabled_default"
+CONF_VENDOR: Final = "vendor"
 COORDINATOR: Final = "coordinator"
-FW: Final = "fw"
 GATEWAY: Final = "gateway"
 ID: Final = "id"
 PW_CLASS: Final = "class"
 PW_LOCATION: Final = "location"
-PW_MODEL: Final = "model"
 PW_TYPE: Final = "plugwise_type"
-SCHEDULE_OFF: Final = "off"
-SCHEDULE_ON: Final = "on"
 SMILE: Final = "smile"
 STICK: Final = "stick"
 STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
-VENDOR: Final = "vendor"
 UNIT_LUMEN: Final = "lm"
 USB: Final = "usb"
 
@@ -40,8 +36,6 @@ FLOW_USB: Final = "USB: Stick"
 UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 
 # Default directives
-DEFAULT_MAX_TEMP: Final = 30
-DEFAULT_MIN_TEMP: Final = 4
 DEFAULT_PORT: Final = 80
 DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
     "power": timedelta(seconds=10),

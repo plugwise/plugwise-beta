@@ -28,6 +28,12 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
+## NEW APR 2022 [0.22.1]
+- Smile:
+  - link to plugwise v0.17.3 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.3
+  - Implement https://github.com/home-assistant/core/pull/69094
+  - Code improvements based on HA Core 2022.4.0
+
 ## MAR 2022 [0.22.0]
 - Smile:
   - Link to plugwise v0.17.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.1, fixing https://github.com/home-assistant/core/issues/68621
