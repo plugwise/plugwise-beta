@@ -193,7 +193,8 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         return attrs
 
 
-class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
+# Github issue #265
+class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):  # type: ignore[misc]
     """Representation of a Plugwise USB Binary Sensor."""
 
     def __init__(
@@ -205,7 +206,8 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool:
         """Return true if the binary_sensor is on."""
-        return getattr(self._node, self.entity_description.state_request_method)
+        # Github issue #265
+        return getattr(self._node, self.entity_description.state_request_method)  # type: ignore[attr-defined]
 
     def _service_scan_config(self, **kwargs):
         """Service call to configure motion sensor of Scan device."""
