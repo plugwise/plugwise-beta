@@ -145,7 +145,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     discovery_info: ZeroconfServiceInfo | None = None
     _username: str = DEFAULT_USERNAME
 
-    async def async_step_zeroconf(self, discovery_info: ZeroconfServiceInfo) -> FlowResult:
+    async def async_step_zeroconf(
+        self, discovery_info: ZeroconfServiceInfo
+    ) -> FlowResult:
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
         _properties = discovery_info.properties
@@ -173,7 +175,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         )
         return await self.async_step_user_gateway()
 
-    async def async_step_user_usb(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_user_usb(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Step when user initializes a integration."""
         errors = {}
         ports = await self.hass.async_add_executor_job(serial.tools.list_ports.comports)
@@ -192,7 +196,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 return await self.async_step_manual_path()
 
             port = ports[list_of_ports.index(user_selection)]
-            device_path = await self.hass.async_add_executor_job(usb.get_serial_by_id, port.device)
+            device_path = await self.hass.async_add_executor_job(
+                usb.get_serial_by_id, port.device
+            )
             errors, api_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 await self.async_set_unique_id(api_stick.mac)
@@ -201,11 +207,15 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 )
         return self.async_show_form(
             step_id="user_usb",
-            data_schema=vol.Schema({vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}),
+            data_schema=vol.Schema(
+                {vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}
+            ),
             errors=errors,
         )
 
-    async def async_step_manual_path(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_manual_path(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Step when manual path to device."""
         errors = {}
         if user_input is not None:
@@ -216,11 +226,17 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             errors, api_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 await self.async_set_unique_id(api_stick.mac)
-                return self.async_create_entry(title="Stick", data={CONF_USB_PATH: device_path})
+                return self.async_create_entry(
+                    title="Stick", data={CONF_USB_PATH: device_path}
+                )
         return self.async_show_form(
             step_id="manual_path",
             data_schema=vol.Schema(
-                {vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0" or vol.UNDEFINED): str}
+                {
+                    vol.Required(
+                        CONF_USB_PATH, default="/dev/ttyUSB0" or vol.UNDEFINED
+                    ): str
+                }
             ),
             errors=errors,
         )
@@ -263,7 +279,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Handle the initial step when using network/gateway setups."""
         errors = {}
         if user_input is not None:
@@ -296,7 +314,9 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         """Initialize options flow."""
         self.config_entry = config_entry
 
-    async def async_step_none(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_none(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """No options available."""
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
@@ -304,7 +324,9 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
 
         return self.async_show_form(step_id="none")
 
-    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Manage the Plugwise options."""
         if not self.config_entry.data.get(CONF_HOST):
             return await self.async_step_none(user_input)
