@@ -1,6 +1,7 @@
 """Config flow for Plugwise integration."""
 from __future__ import annotations
 
+from datetime import timedelta  # pw-beta
 from typing import Any
 
 from plugwise.exceptions import (
@@ -324,27 +325,27 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             return self.async_create_entry(title="", data=user_input)
 
         coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][COORDINATOR]
-        interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]
+        interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]  # pw-beta
 
         data = {
             vol.Optional(
-                CONF_SCAN_INTERVAL,
+                timedelta(seconds=CONF_SCAN_INTERVAL),
                 default=self.config_entry.options.get(CONF_SCAN_INTERVAL, interval),
             ): int,
-        }
+        }  # pw-beta
 
         if coordinator.api.smile_type != "thermostat":
             return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
 
         data = {
             vol.Optional(
-                CONF_SCAN_INTERVAL,
+                timedelta(seconds=CONF_SCAN_INTERVAL),
                 default=self.config_entry.options.get(CONF_SCAN_INTERVAL, interval),
             ): int,
             vol.Optional(
                 CONF_HOMEKIT_EMULATION,
                 default=self.config_entry.options.get(CONF_HOMEKIT_EMULATION, False),
             ): cv.boolean,
-        }
+        }  # pw-beta
 
         return self.async_show_form(step_id="init", data_schema=vol.Schema(data))

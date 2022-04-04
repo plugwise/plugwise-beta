@@ -1,5 +1,5 @@
 """Constants for Plugwise beta component."""
-
+from datetime import timedelta
 import logging
 
 import voluptuous as vol
@@ -43,9 +43,9 @@ DEFAULT_MAX_TEMP = 30
 DEFAULT_MIN_TEMP = 4
 DEFAULT_PORT = 80
 DEFAULT_SCAN_INTERVAL = {
-    "power": 10,
-    "stretch": 60,
-    "thermostat": 60,
+    "power": timedelta(seconds=10),
+    "stretch": timedelta(seconds=60),
+    "thermostat": timedelta(seconds=60),
 }
 DEFAULT_TIMEOUT = 10
 DEFAULT_USERNAME = "smile"
