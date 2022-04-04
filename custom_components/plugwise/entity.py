@@ -18,7 +18,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import CONF_VENDOR, DOMAIN
-from .coordinator import PlugwiseData, PlugwiseDataUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator
 
 
 class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
