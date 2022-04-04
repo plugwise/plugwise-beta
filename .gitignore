@@ -4,3 +4,5 @@ ha-core
 venv
 *.sedbck
 *.swp
+*.rej
+*.orig
