@@ -129,7 +129,9 @@ class USBSensor(PlugwiseUSBEntity, SensorEntity):
     @property
     def native_value(self) -> float | None:
         """Return the native value of the sensor."""
-        state_value = getattr(self._node, self.entity_description.state_request_method)
+        # Github issue #265
+        state_value = getattr(self._node, self.entity_description.state_request_method)  # type: ignore[attr-defined]
+        # /Github issue #265
         if state_value is not None:
             return float(round(state_value, 3))
         return None
