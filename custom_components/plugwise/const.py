@@ -40,9 +40,9 @@ FLOW_USB: Final = "USB: Stick"
 UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 
 # Default directives
-DEFAULT_MAX_TEMP = 30
-DEFAULT_MIN_TEMP = 4
-DEFAULT_PORT = 80
+DEFAULT_MAX_TEMP: Final = 30
+DEFAULT_MIN_TEMP: Final = 4
+DEFAULT_PORT: Final = 80
 DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
     "power": timedelta(seconds=10),
     "stretch": timedelta(seconds=60),
@@ -163,9 +163,7 @@ ATTR_MAC_ADDRESS: Final = "mac"
 
 SERVICE_USB_DEVICE_ADD: Final = "device_add"
 SERVICE_USB_DEVICE_REMOVE: Final = "device_remove"
-SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
-    {vol.Required(ATTR_MAC_ADDRESS): cv.string}
-)
+SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema({vol.Required(ATTR_MAC_ADDRESS): cv.string})
 
 
 # USB Relay device constants
@@ -181,19 +179,13 @@ ATTR_SED_CLOCK_INTERVAL: Final = "clock_interval"
 
 SERVICE_USB_SED_BATTERY_CONFIG: Final = "configure_battery_savings"
 SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA: Final = {
-    vol.Required(ATTR_SED_STAY_ACTIVE): vol.All(
-        vol.Coerce(int), vol.Range(min=1, max=120)
-    ),
-    vol.Required(ATTR_SED_SLEEP_FOR): vol.All(
-        vol.Coerce(int), vol.Range(min=10, max=60)
-    ),
+    vol.Required(ATTR_SED_STAY_ACTIVE): vol.All(vol.Coerce(int), vol.Range(min=1, max=120)),
+    vol.Required(ATTR_SED_SLEEP_FOR): vol.All(vol.Coerce(int), vol.Range(min=10, max=60)),
     vol.Required(ATTR_SED_MAINTENANCE_INTERVAL): vol.All(
         vol.Coerce(int), vol.Range(min=5, max=1440)
     ),
     vol.Required(ATTR_SED_CLOCK_SYNC): cv.boolean,
-    vol.Required(ATTR_SED_CLOCK_INTERVAL): vol.All(
-        vol.Coerce(int), vol.Range(min=60, max=10080)
-    ),
+    vol.Required(ATTR_SED_CLOCK_INTERVAL): vol.All(vol.Coerce(int), vol.Range(min=60, max=10080)),
 }
 
 
@@ -217,9 +209,7 @@ SERVICE_USB_SCAN_CONFIG: Final = "configure_scan"
 SERVICE_USB_SCAN_CONFIG_SCHEMA = (
     {
         vol.Required(ATTR_SCAN_SENSITIVITY_MODE): vol.In(SCAN_SENSITIVITY_MODES),
-        vol.Required(ATTR_SCAN_RESET_TIMER): vol.All(
-            vol.Coerce(int), vol.Range(min=1, max=240)
-        ),
+        vol.Required(ATTR_SCAN_RESET_TIMER): vol.All(vol.Coerce(int), vol.Range(min=1, max=240)),
         vol.Required(ATTR_SCAN_DAYLIGHT_MODE): cv.boolean,
     },
 )
