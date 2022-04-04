@@ -145,7 +145,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     discovery_info: ZeroconfServiceInfo | None = None
     _username: str = DEFAULT_USERNAME
 
-    async def async_step_zeroconf(self, discovery_info: ZeroconfServiceInfo) -> FlowResult:
+    async def async_step_zeroconf(
+        self, discovery_info: ZeroconfServiceInfo
+    ) -> FlowResult:
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
         _properties = discovery_info.properties
@@ -173,9 +175,11 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         )
         return await self.async_step_user_gateway()
 
-    async def async_step_user_usb(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_user_usb(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Step when user initializes a integration."""
-        errors = {}
+        errors: dict[str, str] = {}
         ports = await self.hass.async_add_executor_job(serial.tools.list_ports.comports)
         list_of_ports = [
             f"{p}, s/n: {p.serial_number or 'n/a'}"
@@ -192,7 +196,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 return await self.async_step_manual_path()
 
             port = ports[list_of_ports.index(user_selection)]
-            device_path = await self.hass.async_add_executor_job(usb.get_serial_by_id, port.device)
+            device_path = await self.hass.async_add_executor_job(
+                usb.get_serial_by_id, port.device
+            )
             errors, api_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 await self.async_set_unique_id(api_stick.mac)
@@ -201,13 +207,17 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 )
         return self.async_show_form(
             step_id="user_usb",
-            data_schema=vol.Schema({vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}),
+            data_schema=vol.Schema(
+                {vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}
+            ),
             errors=errors,
         )
 
-    async def async_step_manual_path(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_manual_path(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Step when manual path to device."""
-        errors = {}
+        errors: dict[str, str] = {}
         if user_input is not None:
             user_input.pop(FLOW_TYPE, None)
             device_path = await self.hass.async_add_executor_job(
@@ -216,11 +226,17 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             errors, api_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 await self.async_set_unique_id(api_stick.mac)
-                return self.async_create_entry(title="Stick", data={CONF_USB_PATH: device_path})
+                return self.async_create_entry(
+                    title="Stick", data={CONF_USB_PATH: device_path}
+                )
         return self.async_show_form(
             step_id="manual_path",
             data_schema=vol.Schema(
-                {vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0" or vol.UNDEFINED): str}
+                {
+                    vol.Required(
+                        CONF_USB_PATH, default="/dev/ttyUSB0" or vol.UNDEFINED
+                    ): str
+                }
             ),
             errors=errors,
         )
@@ -263,9 +279,11 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Handle the initial step when using network/gateway setups."""
-        errors = {}
+        errors: dict[str, str] = {}
         if user_input is not None:
             if user_input[FLOW_TYPE] == FLOW_NET:
                 return await self.async_step_user_gateway()
@@ -292,11 +310,13 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
 
-    def __init__(self, config_entry: ConfigEntry) -> FlowResult:
+    def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
         self.config_entry = config_entry
 
-    async def async_step_none(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_none(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """No options available."""
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
@@ -304,7 +324,9 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
 
         return self.async_show_form(step_id="none")
 
-    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Manage the Plugwise options."""
         if not self.config_entry.data.get(CONF_HOST):
             return await self.async_step_none(user_input)
@@ -317,7 +339,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
 
         data = {
             vol.Optional(
-                timedelta(seconds=CONF_SCAN_INTERVAL),
+                timedelta(seconds=float(CONF_SCAN_INTERVAL)),
                 default=interval,
             ): timedelta,
         }  # pw-beta
@@ -325,15 +347,15 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         if coordinator.api.smile_type != "thermostat":
             return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
 
-        data = {
-            vol.Optional(
-                timedelta(seconds=CONF_SCAN_INTERVAL),
-                default=interval,
-            ): timedelta,
-            vol.Optional(
-                CONF_HOMEKIT_EMULATION,
-                default=self.config_entry.options.get(CONF_HOMEKIT_EMULATION, False),
-            ): cv.boolean,
-        }  # pw-beta
+        data.update(
+            {
+                vol.Optional(
+                    CONF_HOMEKIT_EMULATION,
+                    default=self.config_entry.options.get(
+                        CONF_HOMEKIT_EMULATION, False
+                    ),
+                ): cv.boolean,
+            }
+        )  # pw-beta
 
         return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
