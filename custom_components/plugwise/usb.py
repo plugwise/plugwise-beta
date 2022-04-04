@@ -186,6 +186,8 @@ async def _async_update_listener(hass: HomeAssistant, config_entry: ConfigEntry)
 class PlugwiseUSBEntity(Entity):
     """Base class for Plugwise USB entities."""
 
+    entity_description: PlugwiseEntityDescription
+
     def __init__(
         self, node: PlugwiseNode, entity_description: PlugwiseEntityDescription
     ) -> None:
