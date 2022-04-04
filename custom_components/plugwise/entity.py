@@ -68,7 +68,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
                 }
             )
 
-    async def async_send_api_call(self, target: str, command: str) -> bool:
+    async def async_send_api_call(self, target: str | float, command: str) -> bool:
         """Send api call."""
         result = False
         if command == "set_max_boiler_temperature":
