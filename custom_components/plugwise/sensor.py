@@ -117,7 +117,8 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
         return self.device["sensors"].get(self.entity_description.key)
 
 
-class USBSensor(PlugwiseUSBEntity, SensorEntity):
+# Github issue #265
+class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]
     """Representation of a Plugwise USB sensor."""
 
     def __init__(
