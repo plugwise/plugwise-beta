@@ -137,7 +137,8 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
         )
 
 
-class USBSwitch(PlugwiseUSBEntity, SwitchEntity):
+# Github issue #265
+class USBSwitch(PlugwiseUSBEntity, SwitchEntity):  # type: ignore[misc]
     """Representation of a Stick Node switch."""
 
     def __init__(
@@ -149,7 +150,8 @@ class USBSwitch(PlugwiseUSBEntity, SwitchEntity):
     @property
     def is_on(self) -> bool:
         """Return true if the switch is on."""
-        return getattr(self._node, self.entity_description.state_request_method)
+        # Github issue #265
+        return getattr(self._node, self.entity_description.state_request_method)  # type: ignore[attr-defined]
 
     def turn_off(self, **kwargs):
         """Instruct the switch to turn off."""

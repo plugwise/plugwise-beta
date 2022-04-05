@@ -205,6 +205,8 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	flake8 tests/components/plugwise/*py || exit
 	echo "... black-ing ..."
 	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
+	echo "... mypy ..."
+	script/run-in-env.sh mypy homeassistant/components/plugwise/*.py || exit
 fi # quality
 
 # Copying back not neccesary in actions

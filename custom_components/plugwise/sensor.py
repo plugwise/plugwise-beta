@@ -117,7 +117,8 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
         return self.device["sensors"].get(self.entity_description.key)
 
 
-class USBSensor(PlugwiseUSBEntity, SensorEntity):
+# Github issue #265
+class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]
     """Representation of a Plugwise USB sensor."""
 
     def __init__(
@@ -129,7 +130,9 @@ class USBSensor(PlugwiseUSBEntity, SensorEntity):
     @property
     def native_value(self) -> float | None:
         """Return the native value of the sensor."""
-        state_value = getattr(self._node, self.entity_description.state_request_method)
+        # Github issue #265
+        state_value = getattr(self._node, self.entity_description.state_request_method)  # type: ignore[attr-defined]
+        # /Github issue #265
         if state_value is not None:
             return float(round(state_value, 3))
         return None

@@ -18,10 +18,10 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import CONF_VENDOR, DOMAIN
-from .coordinator import PlugwiseData, PlugwiseDataUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator
 
 
-class PlugwiseEntity(CoordinatorEntity[PlugwiseData]):
+class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
     """Represent a PlugWise Entity."""
 
     coordinator: PlugwiseDataUpdateCoordinator
@@ -68,7 +68,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseData]):
                 }
             )
 
-    async def async_send_api_call(self, target: str, command: str) -> bool:
+    async def async_send_api_call(self, target: str | float, command: str) -> bool:
         """Send api call."""
         result = False
         if command == "set_max_boiler_temperature":

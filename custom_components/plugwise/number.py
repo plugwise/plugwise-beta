@@ -73,6 +73,8 @@ async def async_setup_entry(
 class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     """Representation of a Plugwise number."""
 
+    entity_description: PlugwiseNumberEntityDescription
+
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,

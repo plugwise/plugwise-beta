@@ -77,7 +77,10 @@ def plugwise_stick_entries(hass):
     return sticks
 
 
-async def validate_usb_connection(self, device_path=None) -> dict[str, str]:
+# Github issue: #265
+# Might be a `tuple[dict[str, str], Stick | None]` for typing, but that throws
+# Item None of Optional[Any] not having attribute mac [union-attr]
+async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str], Any]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
 
@@ -179,7 +182,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Step when user initializes a integration."""
-        errors = {}
+        errors: dict[str, str] = {}
         ports = await self.hass.async_add_executor_job(serial.tools.list_ports.comports)
         list_of_ports = [
             f"{p}, s/n: {p.serial_number or 'n/a'}"
@@ -217,7 +220,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Step when manual path to device."""
-        errors = {}
+        errors: dict[str, str] = {}
         if user_input is not None:
             user_input.pop(FLOW_TYPE, None)
             device_path = await self.hass.async_add_executor_job(
@@ -283,7 +286,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the initial step when using network/gateway setups."""
-        errors = {}
+        errors: dict[str, str] = {}
         if user_input is not None:
             if user_input[FLOW_TYPE] == FLOW_NET:
                 return await self.async_step_user_gateway()
@@ -310,7 +313,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
 
-    def __init__(self, config_entry: ConfigEntry) -> FlowResult:
+    def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
         self.config_entry = config_entry
 
@@ -339,7 +342,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
 
         data = {
             vol.Optional(
-                timedelta(seconds=CONF_SCAN_INTERVAL),
+                timedelta(seconds=int(CONF_SCAN_INTERVAL)),
                 default=interval,
             ): timedelta,
         }  # pw-beta
@@ -347,15 +350,15 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         if coordinator.api.smile_type != "thermostat":
             return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
 
-        data = {
-            vol.Optional(
-                timedelta(seconds=CONF_SCAN_INTERVAL),
-                default=interval,
-            ): timedelta,
-            vol.Optional(
-                CONF_HOMEKIT_EMULATION,
-                default=self.config_entry.options.get(CONF_HOMEKIT_EMULATION, False),
-            ): cv.boolean,
-        }  # pw-beta
+        data.update(
+            {
+                vol.Optional(
+                    CONF_HOMEKIT_EMULATION,
+                    default=self.config_entry.options.get(
+                        CONF_HOMEKIT_EMULATION, False
+                    ),
+                ): cv.boolean,
+            }
+        )  # pw-beta
 
         return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
