@@ -342,7 +342,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
 
         data = {
             vol.Optional(
-                timedelta(seconds=float(CONF_SCAN_INTERVAL)),
+                timedelta(seconds=int(CONF_SCAN_INTERVAL)),
                 default=interval,
             ): timedelta,
         }  # pw-beta
