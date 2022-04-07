@@ -1,7 +1,7 @@
 """Plugwise Select component for Home Assistant."""
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Any, Awaitable, Callable
 from dataclasses import dataclass
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
@@ -28,7 +28,7 @@ class PlugwiseSelectDescriptionMixin:
     """Mixin values for Plugwise Select entities."""
 
     current_option: str
-    command: Callable[[str, str], bool]
+    command: Callable[..., Awaitable[Any]]
     options: str
 
 
