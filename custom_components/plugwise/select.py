@@ -25,8 +25,8 @@ PARALLEL_UPDATES = 0
 class PlugwiseSelectDescriptionMixin:
     """Mixin values for Plugwise Select entities."""
 
-    command: str
     current_option: str
+    command: Callable[[str, str], bool]
     options: str
 
 
@@ -42,7 +42,7 @@ SELECT_TYPES = (
         key="select_schedule",
         name="Thermostat Schedule",
         icon="mdi:calendar-clock",
-        command="set_schedule_state",
+        command=lambda coordinator, location, option: coordinator.api_set_schedule_state(location, option, STATE_ON),
         current_option="selected_schedule",
         options="available_schedules",
     ),
@@ -51,7 +51,7 @@ SELECT_TYPES = (
         name="Regulation Mode",
         icon="mdi:hvac",
         entity_category=EntityCategory.CONFIG,
-        command="set_regulation_mode",
+        command=lambda coordinator, dummy, option: coordinator.api_set_regulation_mode(option),
         current_option="regulation_mode",
         options="regulation_modes",
         entity_registry_enabled_default=False,
@@ -115,11 +115,8 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
-        if not (
-            await self.async_send_api_call(option, self.entity_description.command)
-        ):
-            raise HomeAssistantError(f"Failed to set {self.entity_description.name}")
+        result = await self.entity_description.command(self.device["location"], option)
         LOGGER.debug(
-            "Set %s to %s was successful", self.entity_description.name, option
+            "Set %s to %s was successful, %s", self.entity_description.name, option, result
         )
         await self.coordinator.async_request_refresh()
