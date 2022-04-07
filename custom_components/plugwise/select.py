@@ -9,6 +9,7 @@ from homeassistant.components.select import SelectEntity, SelectEntityDescriptio
 from homeassistant.const import STATE_ON
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+
 # from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -45,7 +46,9 @@ SELECT_TYPES = (
         key="select_schedule",
         name="Thermostat Schedule",
         icon="mdi:calendar-clock",
-        command=lambda coordinator, location, option: coordinator.api_set_schedule_state(location, option, STATE_ON),
+        command=lambda coordinator, location, option: coordinator.api_set_schedule_state(
+            location, option, STATE_ON
+        ),
         current_option="selected_schedule",
         options="available_schedules",
     ),
@@ -54,7 +57,9 @@ SELECT_TYPES = (
         name="Regulation Mode",
         icon="mdi:hvac",
         entity_category=EntityCategory.CONFIG,
-        command=lambda coordinator, dummy, option: coordinator.api_set_regulation_mode(option),
+        command=lambda coordinator, dummy, option: coordinator.api_set_regulation_mode(
+            option
+        ),
         current_option="regulation_mode",
         options="regulation_modes",
         entity_registry_enabled_default=False,
@@ -120,6 +125,9 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         """Change to the selected entity option."""
         result = await self.entity_description.command(self.device["location"], option)
         LOGGER.debug(
-            "Set %s to %s was successful, %s", self.entity_description.name, option, result
+            "Set %s to %s was successful, %s",
+            self.entity_description.name,
+            option,
+            result,
         )
         await self.coordinator.async_request_refresh()
