@@ -1,8 +1,9 @@
 """Plugwise Select component for Home Assistant."""
 from __future__ import annotations
 
-from collections.abc import Any, Awaitable, Callable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
+from typing import Any
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.const import STATE_ON
