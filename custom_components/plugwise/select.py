@@ -82,12 +82,12 @@ async def async_setup_entry(
         for description in SELECT_TYPES:
             if (
                 description.options in device
-                and len(device.get(description.options, [])) > 1
+                and len(device[description.options]) > 1
             ):
                 entities.append(
                     PlugwiseSelectEntity(coordinator, device_id, description)
                 )
-                LOGGER.debug("Add %s %s selector", device.get("name"), description.name)
+                LOGGER.debug("Add %s %s selector", device["name"], description.name)
 
     async_add_entities(entities)
 
@@ -108,18 +108,18 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         self.entity_description = entity_description
         self._attr_unique_id = f"{device_id}-{entity_description.key}"
         self._attr_name = (
-            f"{self.device.get('name', '')} {entity_description.name}"
+            f"{self.device['name']} {entity_description.name}"
         ).lstrip()
 
     @property
-    def current_option(self) -> str | None:
+    def current_option(self) -> str:
         """Return the selected entity option to represent the entity state."""
-        return self.device.get(self.entity_description.current_option)
+        return self.device[self.entity_description.current_option]
 
     @property
     def options(self) -> list[str]:
         """Return the selectable entity options."""
-        return self.device.get(self.entity_description.options, [])
+        return self.device[self.entity_description.options]
 
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""

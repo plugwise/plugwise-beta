@@ -69,7 +69,7 @@ async def async_setup_entry(
                 entities.append(
                     PlugwiseNumberEntity(coordinator, device_id, description)
                 )
-                LOGGER.debug("Add %s %s number", device.get("name"), description.name)
+                LOGGER.debug("Add %s %s number", device["name"], description.name)
 
     async_add_entities(entities)
 
@@ -89,13 +89,13 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
+        self._attr_name = (f"{self.device['name']} {description.name}").lstrip()
         self._attr_mode = NumberMode.BOX
 
     @property
-    def value(self) -> float | None:
+    def value(self) -> float:
         """Return the present setpoint value."""
-        return self.device.get(self.entity_description.key)
+        return self.device[self.entity_description.key]
 
     async def async_set_value(self, value: float) -> None:
         """Change to the new setpoint value."""
