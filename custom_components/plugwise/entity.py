@@ -1,6 +1,7 @@
 """Generic Plugwise Entity Class."""
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
 from typing import Any
 
 from homeassistant.const import (
@@ -8,7 +9,6 @@ from homeassistant.const import (
     ATTR_VIA_DEVICE,
     CONF_HOST,
     CONF_MODEL,
-    STATE_ON,
 )
 from homeassistant.helpers.device_registry import (
     CONNECTION_NETWORK_MAC,
