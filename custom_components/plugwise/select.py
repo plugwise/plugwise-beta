@@ -80,10 +80,7 @@ async def async_setup_entry(
     entities: list[PlugwiseSelectEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in SELECT_TYPES:
-            if (
-                description.options in device
-                and len(device[description.options]) > 1
-            ):
+            if description.options in device and len(device[description.options]) > 1:
                 entities.append(
                     PlugwiseSelectEntity(coordinator, device_id, description)
                 )
@@ -107,9 +104,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = entity_description
         self._attr_unique_id = f"{device_id}-{entity_description.key}"
-        self._attr_name = (
-            f"{self.device['name']} {entity_description.name}"
-        ).lstrip()
+        self._attr_name = (f"{self.device['name']} {entity_description.name}").lstrip()
 
     @property
     def current_option(self) -> str:
