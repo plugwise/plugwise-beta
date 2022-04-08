@@ -46,7 +46,7 @@ SELECT_TYPES = (
         key="select_schedule",
         name="Thermostat Schedule",
         icon="mdi:calendar-clock",
-        command=lambda coordinator, location, option: coordinator.api_set_schedule_state(
+        command=lambda coordinator, location, option: coordinator.api.set_schedule_state(
             location, option, STATE_ON
         ),
         current_option="selected_schedule",
@@ -57,7 +57,7 @@ SELECT_TYPES = (
         name="Regulation Mode",
         icon="mdi:hvac",
         entity_category=EntityCategory.CONFIG,
-        command=lambda coordinator, dummy, option: coordinator.api_set_regulation_mode(
+        command=lambda coordinator, dummy, option: coordinator.api.set_regulation_mode(
             option
         ),
         current_option="regulation_mode",
@@ -123,7 +123,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
-        result = await self.entity_description.command(self.device["location"], option)
+        result = await self.entity_description.command(self.coordinator, self.device["location"], option)
         LOGGER.debug(
             "Set %s to %s was successful, %s",
             self.entity_description.name,
