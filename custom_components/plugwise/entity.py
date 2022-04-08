@@ -1,6 +1,8 @@
 """Generic Plugwise Entity Class."""
 from __future__ import annotations
 
+from typing import Any
+
 from homeassistant.const import (
     ATTR_NAME,
     ATTR_VIA_DEVICE,
