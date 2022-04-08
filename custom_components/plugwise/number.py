@@ -37,7 +37,9 @@ class PlugwiseNumberEntityDescription(
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
-        command=lambda coordinator, value: coordinator.api.set_max_boiler_temperature(value),
+        command=lambda coordinator, value: coordinator.api.set_max_boiler_temperature(
+            value
+        ),
         name="Maximum Boiler Temperature Setpoint",
         icon="mdi:thermometer",
         entity_category=EntityCategory.CONFIG,
