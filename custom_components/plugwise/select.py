@@ -123,13 +123,12 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
-        result = await self.entity_description.command(
+        await self.entity_description.command(
             self.coordinator, self.device["location"], option
         )
         LOGGER.debug(
-            "Set %s to %s was successful, %s",
+            "Set %s to %s was successful.",
             self.entity_description.name,
             option,
-            result,
         )
         await self.coordinator.async_request_refresh()
