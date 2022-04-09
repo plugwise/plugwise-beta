@@ -84,8 +84,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._attr_hvac_modes = [HVAC_MODE_HEAT]
         if self.coordinator.data.gateway.get("cooling_present"):
             if self._attr_name == "Anna":
-                self._attr_hvac_modes.pop(HVAC_MODE_HEAT)
                 self._attr_hvac_modes.append(HVAC_MODE_HEAT_COOL)
+                self._attr_hvac_modes.remove(HVAC_MODE_HEAT)
             else:
                 self._attr_hvac_modes.append(HVAC_MODE_COOL)
         if self.device.get("available_schedules") != ["None"]:
