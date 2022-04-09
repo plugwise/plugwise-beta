@@ -7,7 +7,6 @@ import pytest
 
 from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
-    HVAC_MODE_COOL,
     HVAC_MODE_HEAT,
     HVAC_MODE_HEAT_COOL,
 )
@@ -162,6 +161,7 @@ async def test_anna_climate_entity_attributes(
     assert state.attributes["preset_mode"] == "home"
     assert state.attributes["supported_features"] == 17
     assert state.attributes["temperature"] == 21.0
+
 
 async def test_anna_climate_entity_climate_changes(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
