@@ -9,6 +9,7 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
     HVAC_MODE_COOL,
     HVAC_MODE_HEAT,
+    HVAC_MODE_HEAT_COOL,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
@@ -151,8 +152,7 @@ async def test_anna_climate_entity_attributes(
     assert state
     assert state.state == HVAC_MODE_HEAT
     assert state.attributes["hvac_modes"] == [
-        HVAC_MODE_HEAT,
-        HVAC_MODE_COOL,
+        HVAC_MODE_HEAT_COOL,
     ]
     assert "no_frost" in state.attributes["preset_modes"]
     assert "home" in state.attributes["preset_modes"]
