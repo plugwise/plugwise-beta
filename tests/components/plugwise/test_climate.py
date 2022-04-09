@@ -162,7 +162,7 @@ async def test_anna_climate_entity_attributes(
     assert state.attributes["preset_mode"] == "home"
     assert state.attributes["supported_features"] == 17
     assert state.attributes["temperature"] == 21.0
-
+    assert state.attributes["selected_schedule"] == "None"
 
 async def test_anna_climate_entity_climate_changes(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
@@ -206,7 +206,7 @@ async def test_anna_climate_entity_climate_changes(
     )
 
     # Auto mode is not available, no schedules
-    with pytest.raises(ValueError):
+    with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
             "climate",
             "set_hvac_mode",
