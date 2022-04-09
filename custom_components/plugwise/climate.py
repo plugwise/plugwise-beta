@@ -12,6 +12,7 @@ from homeassistant.components.climate.const import (
     DEFAULT_MIN_TEMP,
     HVAC_MODE_AUTO,
     HVAC_MODE_HEAT,
+    HVAC_MODE_HEAT_COOL,
     HVAC_MODE_COOL,
     HVAC_MODE_OFF,
     PRESET_AWAY,  # pw-beta homekit emulation
@@ -82,7 +83,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Determine hvac modes and current hvac mode
         self._attr_hvac_modes = [HVAC_MODE_HEAT]
         if self.coordinator.data.gateway.get("cooling_present"):
-            self._attr_hvac_modes.append(HVAC_MODE_COOL)
+            if self._attr_name == "Anna":
+                self._attr_hvac_modes.append(HVAC_MODE_HEAT_COOL)
+            else:
+                self._attr_hvac_modes.append(HVAC_MODE_COOL)
         if self.device.get("available_schedules") != ["None"]:
             self._attr_hvac_modes.append(HVAC_MODE_AUTO)
         if self._homekit_enabled:  # pw-beta homekit emulation
