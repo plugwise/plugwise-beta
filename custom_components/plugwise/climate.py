@@ -164,13 +164,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Set the hvac mode."""
         if hvac_mode not in self._attr_hvac_modes:
             raise HomeAssistantError("Unsupported hvac_mode")
-            return
 
         if hvac_mode == HVAC_MODE_AUTO and not self.device.get("schedule_temperature"):
             raise HomeAssistantError(
                 "Cannot set HVAC mode to Auto: No schedule available"
             )
-            return
 
         await self.coordinator.api.set_schedule_state(
             self.device["location"],
@@ -197,6 +195,5 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             and preset_mode not in self._attr_preset_modes
         ):
             raise HomeAssistantError("Unsupported preset mode")
-            return
 
         await self.coordinator.api.set_preset(self.device["location"], preset_mode)
