@@ -85,9 +85,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if self.gateway["smile_name"] == "Anna":
                 self._attr_hvac_modes.append(HVAC_MODE_HEAT_COOL)
                 self._attr_hvac_modes.remove(HVAC_MODE_HEAT)
-            if self.gateway["smile_name"] == "Adam" and self.coordinator.data.devices[
-                self.gateway["gateway_id"]
-            ]["regulation_mode"] == "cooling":
+            if (
+                self.gateway["smile_name"] == "Adam"
+                and self.coordinator.data.devices[self.gateway["gateway_id"]][
+                    "regulation_mode"
+                ]
+                == "cooling"
+            ):
                 self._attr_hvac_modes.append(HVAC_MODE_COOL)
                 self._attr_hvac_modes.remove(HVAC_MODE_HEAT)
         if self.device["available_schedules"] != ["None"]:
@@ -132,7 +136,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if self.device["control_state"] in ["heating", "preheating"]:
                 return CURRENT_HVAC_HEAT
         else:
-            heater_central_data = self.coordinator.data.devices[self.gateway["heater_id"]]
+            heater_central_data = self.coordinator.data.devices[
+                self.gateway["heater_id"]
+            ]
             if heater_central_data["binary_sensors"]["heating_state"]:
                 return CURRENT_HVAC_HEAT
             if heater_central_data["binary_sensors"]["cooling_state"]:
@@ -160,7 +166,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             raise HomeAssistantError("Unsupported hvac_mode")
 
         if hvac_mode == HVAC_MODE_AUTO and not self.device.get("schedule_temperature"):
-            raise HomeAssistantError("Cannot set HVAC mode to Auto: No schedule available")
+            raise HomeAssistantError(
+                "Cannot set HVAC mode to Auto: No schedule available"
+            )
 
         await self.coordinator.api.set_schedule_state(
             self.device["location"],
