@@ -82,12 +82,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine hvac modes and current hvac mode
         self._attr_hvac_modes = [HVAC_MODE_HEAT]
-        if self.coordinator.data.gateway.get("cooling_present"):
-            if self._attr_name == "Anna":
+        if self.gateway["cooling_present"]:
+            if self.gateway["name"] == "Anna":
                 self._attr_hvac_modes.append(HVAC_MODE_HEAT_COOL)
                 self._attr_hvac_modes.remove(HVAC_MODE_HEAT)
-            else:
+            if self.gateway["name"] == "Adam" and self.coordinator.data.devices[self.gateway["gateway_id"]]["regulation_mode"] == "cooling":
                 self._attr_hvac_modes.append(HVAC_MODE_COOL)
+                self._attr_hvac_modes.remove(HVAC_MODE_HEAT)
         if self.device.get("available_schedules") != ["None"]:
             self._attr_hvac_modes.append(HVAC_MODE_AUTO)
         if self._homekit_enabled:  # pw-beta homekit emulation
@@ -130,12 +131,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if self.device.get("control_state") in ["heating", "preheating"]:
                 return CURRENT_HVAC_HEAT
         else:
-            heater_central_data = self.coordinator.data.devices[
-                self.coordinator.data.gateway["heater_id"]
-            ]
-            if heater_central_data["binary_sensors"].get("heating_state"):
+            heater_central_data = self.coordinator.data.devices[self.gateway["heater_id"]]
+            if heater_central_data["binary_sensors"]["heating_state"]:
                 return CURRENT_HVAC_HEAT
-            if heater_central_data["binary_sensors"].get("cooling_state"):
+            if heater_central_data["binary_sensors"]["cooling_state"]:
                 return CURRENT_HVAC_COOL
         return CURRENT_HVAC_IDLE
 
