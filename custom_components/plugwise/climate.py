@@ -192,7 +192,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode."""
-        if preset_mode not in self._attr_preset_modes:
+        if self._attr_preset_modes is not None and preset_mode not in self._attr_preset_modes:
             raise HomeAssistantError("Unsupported preset mode")
             return
 
