@@ -22,6 +22,8 @@ from homeassistant.components.climate.const import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
+
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
@@ -149,9 +151,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: str) -> None:
         """Set the hvac mode."""
-        self._homekit_mode = hvac_mode  # pw-beta homekit emulation
+        if hvac_mode not in self._attr_hvac_modes:
+            raise HomeAssistantError("Unsupported hvac_mode")
+
         if hvac_mode == HVAC_MODE_AUTO and not self.device.get("schedule_temperature"):
-            raise ValueError("Cannot set HVAC mode to Auto: No schedule available")
+            raise HomeAssistantError("Cannot set HVAC mode to Auto: No schedule available")
 
         await self.coordinator.api.set_schedule_state(
             self.device["location"],
@@ -160,6 +164,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         )
 
         # pw-beta: feature request - mimic HomeKit behavior
+        self._homekit_mode = hvac_mode
         if self._homekit_enabled:
             if self._homekit_mode == HVAC_MODE_OFF:
                 await self.async_set_preset_mode(PRESET_AWAY)
@@ -172,4 +177,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode."""
+        if preset_mode not in self._attr_preset_modes:
+            raise HomeAssistantError("Unsupported preset mode")
+
         await self.coordinator.api.set_preset(self.device["location"], preset_mode)
