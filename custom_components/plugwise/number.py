@@ -1,7 +1,9 @@
 """Number platform for Plugwise integration."""
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
+from typing import Any
 
 from homeassistant.components.number import (
     NumberEntity,
@@ -22,7 +24,7 @@ from .entity import PlugwiseEntity
 class PlugwiseEntityDescriptionMixin:
     """Mixin values for Plugwse entities."""
 
-    command: str
+    command: Callable[..., Awaitable[Any]]
 
 
 @dataclass
@@ -35,7 +37,9 @@ class PlugwiseNumberEntityDescription(
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
-        command="set_max_boiler_temperature",
+        command=lambda coordinator, value: coordinator.api.set_max_boiler_temperature(
+            value
+        ),
         name="Maximum Boiler Temperature Setpoint",
         icon="mdi:thermometer",
         entity_category=EntityCategory.CONFIG,
@@ -65,7 +69,7 @@ async def async_setup_entry(
                 entities.append(
                     PlugwiseNumberEntity(coordinator, device_id, description)
                 )
-                LOGGER.debug("Add %s %s number", device.get("name"), description.name)
+                LOGGER.debug("Add %s %s number", device["name"], description.name)
 
     async_add_entities(entities)
 
@@ -85,17 +89,17 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
+        self._attr_name = (f"{self.device['name']} {description.name}").lstrip()
         self._attr_mode = NumberMode.BOX
 
     @property
-    def value(self) -> float | None:
+    def value(self) -> float:
         """Return the present setpoint value."""
-        return self.device.get(self.entity_description.key)
+        return self.device[self.entity_description.key]
 
     async def async_set_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.async_send_api_call(value, self.entity_description.command)
+        await self.entity_description.command(self.coordinator, value)
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.name, value
         )
