@@ -28,7 +28,14 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW APR 2022 [0.22.1]
+## NEW APR 2022 [0.22.2]
+- Smile climate:
+  - Add input filtering in the set-functions
+  - Improve generation of the hvac_modes list:
+    - Improve support for the cooling implementations of the Adam (manual) and the Anna (automatic)
+    - Make hvac_modes a property as the contents of the hvac_modes isn't fixed
+
+## APR 2022 [0.22.1]
 - Smile:
   - link to plugwise v0.17.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.6
   - link to plugwise v0.17.5 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.5
