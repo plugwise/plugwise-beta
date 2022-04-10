@@ -79,26 +79,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= SUPPORT_PRESET_MODE
             self._attr_preset_modes = list(presets)
 
-        # Determine hvac modes and current hvac mode
-        self._attr_hvac_modes = [HVAC_MODE_HEAT]
-        if self.gateway["cooling_present"]:
-            if self.gateway["smile_name"] == "Anna":
-                self._attr_hvac_modes.append(HVAC_MODE_HEAT_COOL)
-                self._attr_hvac_modes.remove(HVAC_MODE_HEAT)
-            if (
-                self.gateway["smile_name"] == "Adam"
-                and self.coordinator.data.devices[self.gateway["gateway_id"]][
-                    "regulation_mode"
-                ]
-                == "cooling"
-            ):
-                self._attr_hvac_modes.append(HVAC_MODE_COOL)
-                self._attr_hvac_modes.remove(HVAC_MODE_HEAT)
-        if self.device["available_schedules"] != ["None"]:
-            self._attr_hvac_modes.append(HVAC_MODE_AUTO)
-        if self._homekit_enabled:  # pw-beta homekit emulation
-            self._attr_hvac_modes.append(HVAC_MODE_OFF)
-
         self._attr_min_temp = self.device.get("lower_bound", DEFAULT_MIN_TEMP)
         self._attr_max_temp = self.device.get("upper_bound", DEFAULT_MAX_TEMP)
         if resolution := self.device.get("resolution"):
@@ -144,6 +124,30 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if heater_central_data["binary_sensors"]["cooling_state"]:
                 return CURRENT_HVAC_COOL
         return CURRENT_HVAC_IDLE
+
+    @property
+    def hvac_modes(self) -> list[str]:
+        """Return the current hvac modes."""
+        hvac_modes = [HVAC_MODE_HEAT]
+        if self.gateway["cooling_present"]:
+            if self.gateway["smile_name"] == "Anna":
+                hvac_modes.append(HVAC_MODE_HEAT_COOL)
+                hvac_modes.remove(HVAC_MODE_HEAT)
+            if (
+                self.gateway["smile_name"] == "Adam"
+                and self.coordinator.data.devices[self.gateway["gateway_id"]][
+                    "regulation_mode"
+                ]
+                == "cooling"
+            ):
+                hvac_modes.append(HVAC_MODE_COOL)
+                hvac_modes.remove(HVAC_MODE_HEAT)
+        if self.device["available_schedules"] != ["None"]:
+            hvac_modes.append(HVAC_MODE_AUTO)
+        if self._homekit_enabled:  # pw-beta homekit emulation
+            hvac_modes.append(HVAC_MODE_OFF)
+
+        return hvac_modes
 
     @property
     def preset_mode(self) -> str:
