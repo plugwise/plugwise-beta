@@ -30,6 +30,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 ## NEW APR 2022 [0.22.1]
 - Smile:
+  - link to plugwise v0.17.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.6
   - link to plugwise v0.17.5 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.5
   - link to plugwise v0.17.3 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.3
   - Implement https://github.com/home-assistant/core/pull/69094
