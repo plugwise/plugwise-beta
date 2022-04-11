@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import aiohttp
-from datetime import timedelta
+import datetime as dt
 from typing import Any
 import voluptuous as vol
 
@@ -78,10 +78,10 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
 
     # pw-beta refresh-interval
-    update_interval = DEFAULT_SCAN_INTERVAL[api.smile_type]
+    update_interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[api.smile_type]
     if custom_time := entry.options.get(CONF_SCAN_INTERVAL):
         update_interval = timedelta(seconds=int(custom_time))
-    LOGGER.debug("DUC update interval: %s", update_interval)
+    LOGGER.debug("DUC update interval: %s", update_interval.seconds)
 
     # pw-beta - update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, api, update_interval)
