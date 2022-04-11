@@ -338,14 +338,16 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             return self.async_create_entry(title="", data=user_input)
 
         coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][COORDINATOR]
-        interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]  # pw-beta
+        interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[
+            coordinator.api.smile_type
+        ]  # pw-beta
 
         data = {
             vol.Optional(
                 CONF_SCAN_INTERVAL,
                 default=self.config_entry.options.get(
                     CONF_SCAN_INTERVAL, interval.seconds
-                )
+                ),
             ): int,
         }  # pw-beta
 
