@@ -348,7 +348,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
                 default=self.config_entry.options.get(
                     CONF_SCAN_INTERVAL, interval.seconds
                 ),
-            ): int,
+            ): vol.All(cv.positive_int, vol.Clamp(min=10)),
         }  # pw-beta
 
         if coordinator.api.smile_type != "thermostat":
