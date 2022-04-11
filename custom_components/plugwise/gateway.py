@@ -80,7 +80,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # pw-beta refresh-interval
     update_interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[api.smile_type]
     if custom_time := entry.options.get(CONF_SCAN_INTERVAL):
-        update_interval = timedelta(seconds=int(custom_time))
+        update_interval = dt.timedelta(seconds=int(custom_time))
     LOGGER.debug("DUC update interval: %s", update_interval.seconds)
 
     # pw-beta - update_interval as extra

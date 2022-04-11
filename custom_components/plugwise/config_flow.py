@@ -344,7 +344,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional(
                 CONF_SCAN_INTERVAL,
                 default=self.config_entry.options.get(
-                    CONF_SCAN_INTERVAL,interval.seconds
+                    CONF_SCAN_INTERVAL, interval.seconds
                 )
             ): int,
         }  # pw-beta
