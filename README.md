@@ -28,7 +28,15 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW APR 2022 [0.22.1]
+## NEW APR 2022 [0.22.2]
+- Smile:
+  - Climate: filter/report invalid options when using the HA climate service functions
+  - Climate: improve generation of the hvac_modes list:
+    - Improve support for the cooling implementations of the Adam (manual) and the Anna (automatic)
+    - Make hvac_modes a property as the contents of the hvac_modes list isn't fixed
+  - Integration: fix CONFIGURE options not working
+
+## APR 2022 [0.22.1]
 - Smile:
   - link to plugwise v0.17.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.6
   - link to plugwise v0.17.5 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.5

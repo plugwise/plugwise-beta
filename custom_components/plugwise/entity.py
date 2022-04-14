@@ -77,6 +77,11 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         """Return data for this device."""
         return self.coordinator.data.devices[self._dev_id]
 
+    @property
+    def gateway(self) -> dict[str, Any]:
+        """Return data for this device."""
+        return self.coordinator.data.gateway
+
     async def async_added_to_hass(self) -> None:
         """Subscribe to updates."""
         self._handle_coordinator_update()
