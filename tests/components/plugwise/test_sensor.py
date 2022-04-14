@@ -91,9 +91,9 @@ async def test_stretch_sensor_entities(
     hass: HomeAssistant, mock_stretch: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test creation of power related sensor entities."""
-    state = hass.states.get("sensor.koelkast_92c4a_electricity_consumed")
+    state = hass.states.get("sensor.boiler_1EB31_electricity_consumed")
     assert state
-    assert float(state.state) == 50.5
+    assert float(state.state) == 1.19
 
     state = hass.states.get("sensor.droger_52559_electricity_consumed_interval")
     assert state
