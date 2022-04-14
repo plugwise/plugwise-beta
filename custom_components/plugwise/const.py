@@ -87,6 +87,7 @@ NO_NOTIFICATION_ICON: Final = "mdi:mailbox-outline"
 SWITCH_ICON: Final = "mdi:electric-switch"
 
 # Binary Sensors:
+COMPRESSOR_STATE: Final = "compressor_state"
 DHW_STATE: Final = "dhw_state"
 FLAME_STATE: Final = "flame_state"
 PW_NOTIFICATION: Final = "plugwise_notification"

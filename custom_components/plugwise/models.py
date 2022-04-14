@@ -31,6 +31,7 @@ from homeassistant.helpers.entity import EntityCategory, EntityDescription
 
 from .const import (
     BATTERY,
+    COMPRESSOR_STATE,
     CURRENT_TEMP,
     DHW_COMF_MODE,
     DHW_STATE,
@@ -544,6 +545,14 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         name="Motion",
         device_class=BinarySensorDeviceClass.MOTION,
         state_request_method="motion",
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key=COMPRESSOR_STATE,
+        plugwise_api=SMILE,
+        name="Compressor State",
+        icon="mdi:hvac",
+        icon_off="mdi:hvac-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=DHW_STATE,
