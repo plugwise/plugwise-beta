@@ -121,7 +121,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             ]
             if heater_central_data["binary_sensors"]["heating_state"]:
                 return CURRENT_HVAC_HEAT
-            if heater_central_data["binary_sensors"]["cooling_state"]:
+            if heater_central_data["binary_sensors"].get("cooling_state", False):
                 return CURRENT_HVAC_COOL
         return CURRENT_HVAC_IDLE
 
