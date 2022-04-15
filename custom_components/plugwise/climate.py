@@ -116,9 +116,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if control_state in ["heating", "preheating"]:
             return CURRENT_HVAC_HEAT 
         
-        heater_central_data = self.coordinator.data.devices[
-            self.gateway["heater_id"]
-        ]
+        heater_central_data = self.devices[self.gateway["heater_id"]]
         if heater_central_data["binary_sensors"]["heating_state"]:
             return CURRENT_HVAC_HEAT
         if heater_central_data["binary_sensors"].get("cooling_state", False):
@@ -136,7 +134,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 hvac_modes.remove(HVAC_MODE_HEAT)
             if (
                 self.gateway["smile_name"] == "Adam"
-                and self.coordinator.data.devices[self.gateway["gateway_id"]][
+                and self.devices[self.gateway["gateway_id"]][
                     "regulation_mode"
                 ]
                 == "cooling"
