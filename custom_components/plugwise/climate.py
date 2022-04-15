@@ -81,7 +81,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         self._attr_min_temp = self.device.get("lower_bound", DEFAULT_MIN_TEMP)
         self._attr_max_temp = self.device.get("upper_bound", DEFAULT_MAX_TEMP)
-        if resolution := self.device.get("resolution"):
+        if resolution := self.device.get("resolution", 0.1):
             # Ensure we don't drop below 0.1
             self._attr_target_temperature_step = max(resolution, 0.1)
 
@@ -109,12 +109,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def hvac_action(self) -> str:
         """Return the current running hvac operation if supported."""
         # When control_state is present, prefer this data
-        if "control_state" in self.device:
-            if self.device["control_state"] == "cooling":
-                return CURRENT_HVAC_COOL
-            # Support preheating state as heating, until preheating is added as a separate state
-            if self.device["control_state"] in ["heating", "preheating"]:
-                return CURRENT_HVAC_HEAT
+        control_state: str = self.device.get("control_state", "not_found")
+        if control_state == "cooling":
+            return CURRENT_HVAC_COOL
+        # Support preheating state as heating, until preheating is added as a separate state
+        elif control_state in ["heating", "preheating"]:
+            return CURRENT_HVAC_HEAT 
         else:
             heater_central_data = self.coordinator.data.devices[
                 self.gateway["heater_id"]
@@ -123,6 +123,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 return CURRENT_HVAC_HEAT
             if heater_central_data["binary_sensors"].get("cooling_state", False):
                 return CURRENT_HVAC_COOL
+
         return CURRENT_HVAC_IDLE
 
     @property
