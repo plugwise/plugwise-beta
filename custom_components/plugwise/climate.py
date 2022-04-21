@@ -134,9 +134,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 hvac_modes.remove(HVAC_MODE_HEAT)
             if (
                 self.gateway["smile_name"] == "Adam"
-                and self.devices[self.gateway["gateway_id"]][
-                    "regulation_mode"
-                ]
+                and self.devices[self.gateway["gateway_id"]]["regulation_mode"]
                 == "cooling"
             ):
                 hvac_modes.append(HVAC_MODE_COOL)
