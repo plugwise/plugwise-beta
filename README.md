@@ -28,7 +28,14 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW APR 2022 [0.22.2]
+## NEW APR 2022 [0.22.3]
+- Smile:
+  - Link to plugwise v0.17.7 and adapt to changes (fixtures, tests) - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.7
+  - Add (back) compressor_state as binary_sensor (Anna - heat-pump)
+  - Implement HA Core PR #70366 fixing connectivity issues (should also fix issues #268, #274)
+  - Improvements in climate-code
+
+## APR 2022 [0.22.2]
 - Smile:
   - Climate: filter/report invalid options when using the HA climate service functions
   - Climate: improve generation of the hvac_modes list:
@@ -38,9 +45,9 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 ## APR 2022 [0.22.1]
 - Smile:
-  - link to plugwise v0.17.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.6
-  - link to plugwise v0.17.5 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.5
-  - link to plugwise v0.17.3 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.3
+  - Link to plugwise v0.17.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.6
+  - Link to plugwise v0.17.5 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.5
+  - Link to plugwise v0.17.3 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.3
   - Implement https://github.com/home-assistant/core/pull/69094
   - Code improvements based on HA Core 2022.4.0
 

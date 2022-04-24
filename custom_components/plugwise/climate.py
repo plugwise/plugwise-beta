@@ -75,13 +75,14 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine preset modes
         self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE
-        if presets := self.device["presets"]:
+        self._attr_preset_modes = None
+        if preset_modes := self.device["preset_modes"]:
             self._attr_supported_features |= SUPPORT_PRESET_MODE
-            self._attr_preset_modes = list(presets)
+            self._attr_preset_modes = preset_modes
 
         self._attr_min_temp = self.device.get("lower_bound", DEFAULT_MIN_TEMP)
         self._attr_max_temp = self.device.get("upper_bound", DEFAULT_MAX_TEMP)
-        if resolution := self.device.get("resolution"):
+        if resolution := self.device.get("resolution", 0.1):
             # Ensure we don't drop below 0.1
             self._attr_target_temperature_step = max(resolution, 0.1)
 
@@ -109,20 +110,19 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def hvac_action(self) -> str:
         """Return the current running hvac operation if supported."""
         # When control_state is present, prefer this data
-        if "control_state" in self.device:
-            if self.device["control_state"] == "cooling":
-                return CURRENT_HVAC_COOL
-            # Support preheating state as heating, until preheating is added as a separate state
-            if self.device["control_state"] in ["heating", "preheating"]:
-                return CURRENT_HVAC_HEAT
-        else:
-            heater_central_data = self.coordinator.data.devices[
-                self.gateway["heater_id"]
-            ]
-            if heater_central_data["binary_sensors"]["heating_state"]:
-                return CURRENT_HVAC_HEAT
-            if heater_central_data["binary_sensors"]["cooling_state"]:
-                return CURRENT_HVAC_COOL
+        control_state: str = self.device.get("control_state", "not_found")
+        if control_state == "cooling":
+            return CURRENT_HVAC_COOL
+        # Support preheating state as heating, until preheating is added as a separate state
+        if control_state in ["heating", "preheating"]:
+            return CURRENT_HVAC_HEAT
+
+        heater_central_data = self.devices[self.gateway["heater_id"]]
+        if heater_central_data["binary_sensors"]["heating_state"]:
+            return CURRENT_HVAC_HEAT
+        if heater_central_data["binary_sensors"].get("cooling_state", False):
+            return CURRENT_HVAC_COOL
+
         return CURRENT_HVAC_IDLE
 
     @property
@@ -135,9 +135,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 hvac_modes.remove(HVAC_MODE_HEAT)
             if (
                 self.gateway["smile_name"] == "Adam"
-                and self.coordinator.data.devices[self.gateway["gateway_id"]][
-                    "regulation_mode"
-                ]
+                and self.devices[self.gateway["gateway_id"]]["regulation_mode"]
                 == "cooling"
             ):
                 hvac_modes.append(HVAC_MODE_COOL)

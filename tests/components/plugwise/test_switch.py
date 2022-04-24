@@ -104,7 +104,7 @@ async def test_stretch_switch_entities(
     hass: HomeAssistant, mock_stretch: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test creation of climate related switch entities."""
-    state = hass.states.get("switch.koelkast_92c4a_relay")
+    state = hass.states.get("switch.boiler_1eb31_relay")
     assert state
     assert state.state == "on"
 
@@ -120,12 +120,12 @@ async def test_stretch_switch_changes(
     await hass.services.async_call(
         "switch",
         "turn_off",
-        {"entity_id": "switch.koelkast_92c4a_relay"},
+        {"entity_id": "switch.boiler_1eb31_relay"},
         blocking=True,
     )
     assert mock_stretch.set_switch_state.call_count == 1
     mock_stretch.set_switch_state.assert_called_with(
-        "e1c884e7dede431dadee09506ec4f859", None, "relay", "off"
+        "5871317346d045bc9f6b987ef25ee638", None, "relay", "off"
     )
 
     await hass.services.async_call(
