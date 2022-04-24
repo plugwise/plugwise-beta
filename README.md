@@ -31,7 +31,9 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 ## NEW APR 2022 [0.22.3]
 - Smile:
   - Link to plugwise v0.17.7 and adapt to changes (fixtures, tests) - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.7
-  - Add (back) compressor_state as binary_sensor
+  - Add (back) compressor_state as binary_sensor (Anna - heat-pump)
+  - Implement HA Core PR #70366 fixing connectivity issues (should also fix issues #268, #274)
+  - Improvements in climate-code
 
 ## APR 2022 [0.22.2]
 - Smile:
