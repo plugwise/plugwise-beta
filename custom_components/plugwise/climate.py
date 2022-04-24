@@ -75,8 +75,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine preset modes
         self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE
-        if self._attr_preset_modes := self.device["preset_modes"]:
+        self._attr_preset_modes = None
+        if preset_modes := self.device["preset_modes"]:
             self._attr_supported_features |= SUPPORT_PRESET_MODE
+            self._attr_preset_modes = preset_modes
 
         self._attr_min_temp = self.device.get("lower_bound", DEFAULT_MIN_TEMP)
         self._attr_max_temp = self.device.get("upper_bound", DEFAULT_MAX_TEMP)
