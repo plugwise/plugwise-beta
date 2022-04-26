@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW APR 2022 [0.22.3]
+## NEW APR 2022 [0.22.4]
+- Smile: Stretch bugfix, solving #277 via plugwise v0.17.8 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.8
+
+## APR 2022 [0.22.3]
 - Smile:
   - Link to plugwise v0.17.7 and adapt to changes (fixtures, tests) - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.7
   - Add (back) compressor_state as binary_sensor (Anna - heat-pump)
