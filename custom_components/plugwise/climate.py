@@ -51,7 +51,7 @@ async def async_setup_entry(
     async_add_entities(
         PlugwiseClimateEntity(coordinator, device_id, homekit_enabled)
         for device_id, device in coordinator.data.devices.items()
-        if device["class"] in MASTER_THERMOSTATS
+        if device["dev_class"] in MASTER_THERMOSTATS
     )
 
 
