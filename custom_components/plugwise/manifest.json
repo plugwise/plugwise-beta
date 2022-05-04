@@ -4,7 +4,7 @@
   "version": "0.22.5a0",
   "documentation": "https://github.com/plugwise/plugwise-beta",
   "after_dependencies": ["usb", "zeroconf"],
-  "requirements": ["https://test-files.pythonhosted.org/packages/30/dd/da27a90ec056e92387457821bf0cb292ac6caab80f8240801723f2a1bb5d/plugwise-0.18.0a6.tar.gz#plugwise==0.18.0a6"],
+  "requirements": ["https://test-files.pythonhosted.org/packages/ba/7e/0ed43ffff64cd9bca559bc0f49e53b745d57fd19e93a44786d3f82d3b394/plugwise-0.18.0a7.tar.gz#plugwise==0.18.0a7"],
   "codeowners": ["@CoMPaTech","@bouwew","@brefra"],
   "iot_class": "local_polling",
   "config_flow": true
