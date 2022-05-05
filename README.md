@@ -28,10 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW MAY 2022 [0.22.5]
+## NEW MAY 2022 [0.23.0]
 - Smile: improve cooling support: cooling via schedules should work (untested, users with cooling capability, please test) 
   - Link to plugwise v0.18.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.18.0
   - Implement Core PR https://github.com/home-assistant/core/pull/70975
+  - Set coordinator cooldown time to 5.0 secs
 
 ## APR 2022 [0.22.4]
 - Smile: Stretch bugfix, solving #277 via plugwise v0.17.8 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.8
