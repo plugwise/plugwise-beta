@@ -36,7 +36,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             request_refresh_debouncer=Debouncer(
                 hass,
                 LOGGER,
-                cooldown=1.5,
+                cooldown=5.0,
                 immediate=False,
             ),
         )
