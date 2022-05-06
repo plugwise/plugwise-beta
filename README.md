@@ -29,10 +29,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 # Changelog
 
 ## NEW MAY 2022 [0.23.0]
-- Smile: improve cooling support: automation of cooling via schedules should work (untested, users with cooling capability, please test) 
+- Smile: improve cooling support: automation of cooling via schedules should work (untested, users with cooling capability, please test).
   - Link to plugwise v0.18.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.18.0
   - Implement Core PR https://github.com/home-assistant/core/pull/70975
-  - Set coordinator cooldown time to 5.0 secs, this should allow for showing the correct climate status on the Core frontend after a manual change (in temperature setpoint, preset, schedule)
+  - Set coordinator cooldown time to 5.0 secs, this should allow for showing the correct climate status on the Core frontend after a manual change (in temperature setpoint, preset, schedule) after 5 seconds.
 
 ## APR 2022 [0.22.4]
 - Smile: Stretch bugfix, solving #277 via plugwise v0.17.8 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.8
