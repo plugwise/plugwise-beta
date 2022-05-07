@@ -55,7 +55,7 @@ PLATFORMS_GATEWAY: Final[list[str]] = [
 ]
 SENSOR_PLATFORMS: Final[list[str]] = [Platform.SENSOR, Platform.SWITCH]
 SERVICE_DELETE: Final = "delete_notification"
-SEVERITIES = ["other", "info", "warning", "error"]
+SEVERITIES = ["other", "info", "message", "warning", "error"]
 CONF_HOMEKIT_EMULATION = "homekit_emulation"  # pw-beta
 
 # Climate const:
