@@ -120,7 +120,7 @@ async def test_diagnostics(
                 ],
                 "selected_schedule": "GF7  Woonkamer",
                 "last_used": "GF7  Woonkamer",
-                "schedule_temperature": 20.0,
+                "schedule_temperature": 15.0,
                 "mode": "auto",
                 "sensors": {"temperature": 20.9, "setpoint": 21.5, "battery": 34},
             },
