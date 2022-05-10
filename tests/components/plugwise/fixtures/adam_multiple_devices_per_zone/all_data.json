@@ -27,7 +27,6 @@
         "home",
         "asleep",
         "away",
-        "vacation",
         "no_frost"
       ],
       "active_preset": "away",
@@ -103,7 +102,6 @@
         "home",
         "asleep",
         "away",
-        "vacation",
         "no_frost"
       ],
       "active_preset": "home",
@@ -116,7 +114,7 @@
       ],
       "selected_schedule": "GF7  Woonkamer",
       "last_used": "GF7  Woonkamer",
-      "schedule_temperature": 20.0,
+      "schedule_temperature": 15.0,
       "mode": "auto",
       "sensors": {
         "temperature": 20.9,
@@ -306,7 +304,6 @@
         "home",
         "asleep",
         "away",
-        "vacation",
         "no_frost"
       ],
       "active_preset": "asleep",
@@ -363,7 +360,6 @@
         "home",
         "asleep",
         "away",
-        "vacation",
         "no_frost"
       ],
       "active_preset": "away",
@@ -419,7 +415,6 @@
         "home",
         "asleep",
         "away",
-        "vacation",
         "no_frost"
       ],
       "active_preset": "no_frost",
