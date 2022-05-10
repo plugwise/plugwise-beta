@@ -43,7 +43,7 @@ async def test_diagnostics(
                 "lower_bound": 0.0,
                 "upper_bound": 99.9,
                 "resolution": 0.01,
-                "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
+                "preset_modes": ["home", "asleep", "away", "no_frost"],
                 "active_preset": "away",
                 "available_schedules": [
                     "CV Roan",
@@ -109,7 +109,7 @@ async def test_diagnostics(
                 "lower_bound": 0.0,
                 "upper_bound": 99.9,
                 "resolution": 0.01,
-                "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
+                "preset_modes": ["home", "asleep", "away", "no_frost"],
                 "active_preset": "home",
                 "available_schedules": [
                     "CV Roan",
@@ -279,7 +279,7 @@ async def test_diagnostics(
                 "lower_bound": 0.0,
                 "upper_bound": 99.9,
                 "resolution": 0.01,
-                "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
+                "preset_modes": ["home", "asleep", "away", "no_frost"],
                 "active_preset": "asleep",
                 "available_schedules": [
                     "CV Roan",
@@ -326,7 +326,7 @@ async def test_diagnostics(
                 "lower_bound": 0.0,
                 "upper_bound": 99.9,
                 "resolution": 0.01,
-                "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
+                "preset_modes": ["home", "asleep", "away", "no_frost"],
                 "active_preset": "away",
                 "available_schedules": [
                     "CV Roan",
@@ -369,7 +369,7 @@ async def test_diagnostics(
                 "lower_bound": 0.0,
                 "upper_bound": 100.0,
                 "resolution": 0.01,
-                "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
+                "preset_modes": ["home", "asleep", "away", "no_frost"],
                 "active_preset": "no_frost",
                 "available_schedules": [
                     "CV Roan",
