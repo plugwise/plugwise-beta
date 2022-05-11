@@ -26,7 +26,7 @@ from .entity import PlugwiseEntity
 class PlugwiseEntityDescriptionMixin:
     """Mixin values for Plugwse entities."""
 
-    command: Callable[[Smile, str], Awaitable[Any]]
+    command: Callable[[Smile, float], Awaitable[Any]]
 
 
 @dataclass
