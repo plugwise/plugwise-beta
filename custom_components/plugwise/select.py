@@ -5,12 +5,12 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from typing import Any
 
-from homeassistant.components.select import SelectEntity, SelectEntityDescription
-from homeassistant.const import STATE_ON
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from plugwise import Smile
 
-# from homeassistant.exceptions import HomeAssistantError
+from homeassistant.components.select import SelectEntity, SelectEntityDescription
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import STATE_ON
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -29,8 +29,8 @@ PARALLEL_UPDATES = 0
 class PlugwiseSelectDescriptionMixin:
     """Mixin values for Plugwise Select entities."""
 
+    command: Callable[[Smile, str, str], Awaitable[Any]]
     current_option: str
-    command: Callable[..., Awaitable[Any]]
     options: str
 
 
@@ -46,9 +46,7 @@ SELECT_TYPES = (
         key="select_schedule",
         name="Thermostat Schedule",
         icon="mdi:calendar-clock",
-        command=lambda coordinator, location, option: coordinator.api.set_schedule_state(
-            location, option, STATE_ON
-        ),
+        command=lambda api, loc, opt: api.set_schedule_state(loc, opt, STATE_ON),
         current_option="selected_schedule",
         options="available_schedules",
     ),
@@ -57,9 +55,7 @@ SELECT_TYPES = (
         name="Regulation Mode",
         icon="mdi:hvac",
         entity_category=EntityCategory.CONFIG,
-        command=lambda coordinator, dummy, option: coordinator.api.set_regulation_mode(
-            option
-        ),
+        command=lambda api, loc, opt: api.set_regulation_mode(opt),
         current_option="regulation_mode",
         options="regulation_modes",
         entity_registry_enabled_default=False,
@@ -119,7 +115,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
         await self.entity_description.command(
-            self.coordinator, self.device["location"], option
+            self.coordinator.api, self.device["location"], option
         )
         LOGGER.debug(
             "Set %s to %s was successful.",
