@@ -14,6 +14,7 @@ LOGGER = logging.getLogger(__package__)
 API: Final = "api"
 ATTR_ENABLED_DEFAULT: Final = "enabled_default"
 COORDINATOR: Final = "coordinator"
+CONF_MANUAL_PATH: Final = "Enter Manually"
 GATEWAY: Final = "gateway"
 ID: Final = "id"
 PW_LOCATION: Final = "location"

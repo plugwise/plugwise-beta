@@ -40,6 +40,7 @@ from .const import (
     API,
     COORDINATOR,
     CONF_HOMEKIT_EMULATION,  # pw-beta option
+    CONF_MANUAL_PATH,
     CONF_USB_PATH,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,  # pw-beta option
@@ -59,8 +60,6 @@ from .const import (
     ZEROCONF_MAP,
 )
 
-
-CONF_MANUAL_PATH = "Enter Manually"
 
 CONNECTION_SCHEMA = vol.Schema(
     {vol.Required(FLOW_TYPE, default=FLOW_NET): vol.In([FLOW_NET, FLOW_USB])}
