@@ -13,7 +13,6 @@ LOGGER = logging.getLogger(__package__)
 
 API: Final = "api"
 ATTR_ENABLED_DEFAULT: Final = "enabled_default"
-CONF_VENDOR: Final = "vendor"
 COORDINATOR: Final = "coordinator"
 GATEWAY: Final = "gateway"
 ID: Final = "id"
