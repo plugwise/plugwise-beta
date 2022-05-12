@@ -214,4 +214,4 @@ async def test_anna_climate_entity_climate_changes(
         )
 
     assert mock_smile_anna.set_temperature.call_count == 1
-    assert mock_smile_anna.set_schedule_state.call_count == 1
+    assert mock_smile_anna.set_schedule_state.call_count == 0
