@@ -174,11 +174,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 "Cannot set HVAC mode to Auto: No schedule available"
             )
 
-        await self.coordinator.api.set_schedule_state(
-            self.device["location"],
-            self.device.get("last_used"),
-            "on" if hvac_mode == HVAC_MODE_AUTO else "off",
-        )
+        if (last_used := self.device["last_used"]) is not None:
+            await self.coordinator.api.set_schedule_state(
+                self.device["location"],
+                last_used,
+                "on" if hvac_mode == HVAC_MODE_AUTO else "off",
+            )
 
         # pw-beta: feature request - mimic HomeKit behavior
         self._homekit_mode = hvac_mode
