@@ -64,11 +64,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
-        enabled: bool,  # pw-beta homekit emulation
+        homekit_enabled: bool,  # pw-beta homekit emulation
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
-        self._homekit_enabled = enabled  # pw-beta homekit emulation
+        self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
         self._attr_name = self.device["name"]
@@ -76,9 +76,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Determine preset modes
         self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE
         self._attr_preset_modes = None
-        if preset_modes := self.device["preset_modes"]:
+        if presets := self.device["preset_modes"]:
             self._attr_supported_features |= SUPPORT_PRESET_MODE
-            self._attr_preset_modes = preset_modes
+            self._attr_preset_modes = presets
 
         self._attr_min_temp = self.device.get("lower_bound", DEFAULT_MIN_TEMP)
         self._attr_max_temp = self.device.get("upper_bound", DEFAULT_MAX_TEMP)
