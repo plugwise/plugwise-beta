@@ -116,6 +116,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Support preheating state as heating, until preheating is added as a separate state
         if control_state in ["heating", "preheating"]:
             return CURRENT_HVAC_HEAT
+        if control_state == "off":
+            return CURRENT_HVAC_IDLE
 
         heater_central_data = self.devices[self.gateway["heater_id"]]
         if heater_central_data["binary_sensors"]["heating_state"]:
