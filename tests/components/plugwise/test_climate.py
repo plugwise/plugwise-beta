@@ -199,8 +199,10 @@ async def test_anna_climate_entity_climate_changes(
     )
 
     assert mock_smile_anna.set_temperature.call_count == 1
-    assert mock_smile_anna.set_schedule_state.call_count == 0
-    mock_smile_anna.set_schedule_state.assert_not_called()
+    assert mock_smile_anna.set_schedule_state.call_count == 1
+    mock_smile_anna.set_schedule_state.assert_called_with(
+        "c784ee9fdab44e1395b8dee7d7a497d5", None, "off"
+    )
 
     # Auto mode is not available, no schedules
     with pytest.raises(HomeAssistantError):
@@ -212,4 +214,4 @@ async def test_anna_climate_entity_climate_changes(
         )
 
     assert mock_smile_anna.set_temperature.call_count == 1
-    assert mock_smile_anna.set_schedule_state.call_count == 0
+    assert mock_smile_anna.set_schedule_state.call_count == 1
