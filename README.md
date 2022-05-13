@@ -35,7 +35,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 - Implement Core PR https://github.com/home-assistant/core/pull/70975
 - Set coordinator cooldown time to 5.0 secs, this should allow for showing the correct climate status on the Core frontend after a manual change (in temperature setpoint, preset, schedule) after 5 seconds.
 - Update number.py and select.py (add tests) based on review-feedback on changes in https://github.com/home-assistant/core/pull/69210
-- Fix issues https://github.com/plugwise/plugwise-beta/issues/276 and https://github.com/plugwise/plugwise-beta/issues/280
+- Fix issues https://github.com/plugwise/plugwise-beta/issues/276 and https://github.com/plugwise/plugwise-beta/issues/280 - via plugwise v0.18.3 - https://github.com/plugwise/python-plugwise/releases/tag/v0.18.3
 
 ## APR 2022 [0.22.4]
 - Smile: Stretch bugfix, solving #277 via plugwise v0.17.8 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.8
