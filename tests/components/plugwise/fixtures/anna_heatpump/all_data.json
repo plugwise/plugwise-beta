@@ -74,7 +74,6 @@
       ],
       "selected_schedule": "None",
       "last_used": null,
-      "schedule_temperature": null,
       "mode": "heat",
       "sensors": {
         "temperature": 19.3,
