@@ -186,7 +186,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if self._homekit_mode == HVAC_MODE_OFF:
                 await self.async_set_preset_mode(PRESET_AWAY)
             if (
-                self._homekit_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_HEAT_COOL]
+                self._homekit_mode
+                in [HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_HEAT_COOL]
                 and self.device["active_preset"] == PRESET_AWAY
             ):
                 await self.async_set_preset_mode(PRESET_HOME)
