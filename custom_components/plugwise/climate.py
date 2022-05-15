@@ -169,7 +169,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if hvac_mode not in self.hvac_modes:
             raise HomeAssistantError("Unsupported hvac_mode")
 
-        if hvac_mode == HVAC_MODE_AUTO and self.device["last_used"] is not None:
+        if hvac_mode == HVAC_MODE_AUTO and self.device["last_used"] is None:
             raise HomeAssistantError(
                 "Cannot set HVAC mode to Auto: no schedule available"
             )
