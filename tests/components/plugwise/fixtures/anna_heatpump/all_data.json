@@ -70,11 +70,11 @@
       ],
       "active_preset": "home",
       "available_schedules": [
-        "None"
+        "standaard"
       ],
-      "selected_schedule": "None",
-      "last_used": null,
-      "mode": "heat",
+      "selected_schedule": "standaard",
+      "last_used": "standaard",
+      "mode": "auto",
       "sensors": {
         "temperature": 19.3,
         "setpoint": 21.0,
