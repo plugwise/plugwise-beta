@@ -381,7 +381,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
                     ),
                 ): cv.boolean,
                 vol.Optional(
-                    CONF_REFRESH_INYERVAL,
+                    CONF_REFRESH_INTERVAL,
                     default=self.config_entry.options.get(
                         CONF_REFRESH_INTERVAL, 1.5
                     ),
