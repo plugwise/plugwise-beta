@@ -10,7 +10,7 @@
         "data": {
           "scan_interval": "Scan Interval (seconds)",
           "homekit_emulation": "Homekit emulation (i.e. on hvac_off => Away)",
-          "refesh_interval": "Frontend refresh-time (seconds)"
+          "refresh_interval": "Frontend refresh-time (max. 5 seconds)"
         }
       }
     }
