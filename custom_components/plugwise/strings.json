@@ -9,7 +9,8 @@
         "description": "Adjust Smile/Stretch Options",
         "data": {
           "scan_interval": "Scan Interval (seconds)",
-          "homekit_emulation": "Homekit emulation (i.e. on hvac_off => Away)"
+          "homekit_emulation": "Homekit emulation (i.e. on hvac_off => Away)",
+          "refesh_interval": "Frontend refresh-time (seconds)"
         }
       }
     }
