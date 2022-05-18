@@ -382,9 +382,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
                 ): cv.boolean,
                 vol.Optional(
                     CONF_REFRESH_INTERVAL,
-                    default=self.config_entry.options.get(
-                        CONF_REFRESH_INTERVAL, 1.5
-                    ),
+                    default=self.config_entry.options.get(CONF_REFRESH_INTERVAL, 1.5),
                 ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=5.0)),
             }
         )  # pw-beta
