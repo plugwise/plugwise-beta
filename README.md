@@ -39,7 +39,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 - Speed up data collection - via plugwise v0.18.4 - https://github.com/plugwise/python-plugwise/releases/tag/v0.18.4
 - Climate: move error-handling of set-functions to backend - via plugwise v0.18.4
 - Smile Anna & Adam: provide the Frontend refresh-interval as a settable parameter via the CONFIGURE button (1.5 to 5 seconds).
-- Add tests for the number-platform.
+- Add tests for the select-platform.
 
 ## APR 2022 [0.22.4]
 - Smile: Stretch bugfix, solving #277 via plugwise v0.17.8 - https://github.com/plugwise/python-plugwise/releases/tag/v0.17.8
