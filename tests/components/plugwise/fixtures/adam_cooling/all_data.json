@@ -101,8 +101,9 @@
       "name": "Adam",
       "zigbee_mac_address": "ABCD012345670101",
       "vendor": "Plugwise B.V.",
-      "regulation_mode": "heating",
+      "regulation_mode": "cooling",
       "regulation_modes": [
+        "cooling",
         "heating",
         "off",
         "bleeding_cold",
