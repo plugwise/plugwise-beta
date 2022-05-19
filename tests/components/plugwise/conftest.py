@@ -192,6 +192,30 @@ def mock_smile_anna_2() -> Generator[None, MagicMock, None]:
 
 
 @pytest.fixture
+def mock_smile_anna_3() -> Generator[None, MagicMock, None]:
+    """Create a 3nd Mock Anna environment for testing exceptions."""
+    chosen_env = "anna_heatpump_idle"
+    with patch(
+        "homeassistant.components.plugwise.gateway.Smile", autospec=True
+    ) as smile_mock:
+        smile = smile_mock.return_value
+
+        smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
+        smile.heater_id = "1cbf783bb11e4a7c8a6843dee3a86927"
+        smile.smile_version = "4.0.15"
+        smile.smile_type = "thermostat"
+        smile.smile_hostname = "smile98765"
+        smile.smile_name = "Anna"
+
+        smile.connect.return_value = True
+
+        smile.notifications = _read_json(chosen_env, "notifications")
+        smile.async_update.return_value = _read_json(chosen_env, "all_data")
+
+        yield smile
+
+
+@pytest.fixture
 def mock_smile_p1() -> Generator[None, MagicMock, None]:
     """Create a Mock P1 DSMR environment for testing exceptions."""
     chosen_env = "p1v3_full_option"
