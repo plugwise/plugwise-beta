@@ -7,6 +7,7 @@ import pytest
 
 from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
+    HVAC_MODE_COOL,
     HVAC_MODE_HEAT,
     HVAC_MODE_HEAT_COOL,
 )
@@ -72,7 +73,7 @@ async def test_adam_3_climate_entity_attributes(
 
     assert state
     assert state.attributes["hvac_action"] == "cooling"
-    assert state.attributes["hvac_modes"] == "heat_cool"
+    assert state.attributes["hvac_modes"] == [HVAC_MODE_COOL, HVAC_MODE_AUTO]
 
 
 async def test_adam_climate_adjust_negative_testing(
