@@ -3,7 +3,7 @@
     "smile_name": "Adam",
     "gateway_id": "da224107914542988a88561b4452b0f6",
     "heater_id": "056ee145a816487eaa69243c3280f8bf",
-    "cooling_present": false,
+    "cooling_present": true,
     "notifications": {}
   },
   {
@@ -28,69 +28,13 @@
         "Badkamer",
         "Test"
       ],
-      "selected_schedule": "Weekschema",
+      "selected_schedule": "None",
       "last_used": "Weekschema",
-      "control_state": "heating",
-      "mode": "auto",
+      "control_state": "cooling",
+      "mode": "cool",
       "sensors": {
         "temperature": 18.1,
         "setpoint": 18.5
-      }
-    },
-    "29542b2b6a6a4169acecc15c72a599b8": {
-      "dev_class": "hometheater",
-      "firmware": "2020-11-10T01:00:00+01:00",
-      "location": "f2bf9048bef64cc5b6d5110154e33c81",
-      "model": "Plug",
-      "name": "Plug Mediacenter",
-      "zigbee_mac_address": "ABCD012345670A02",
-      "vendor": "Plugwise",
-      "sensors": {
-        "electricity_consumed": 12.2,
-        "electricity_consumed_interval": 3.0,
-        "electricity_produced": 0.0,
-        "electricity_produced_interval": 0.0
-      },
-      "switches": {
-        "relay": true,
-        "lock": false
-      }
-    },
-    "2568cc4b9c1e401495d4741a5f89bee1": {
-      "dev_class": "computer_desktop",
-      "firmware": "2020-11-10T01:00:00+01:00",
-      "location": "f2bf9048bef64cc5b6d5110154e33c81",
-      "model": "Plug",
-      "name": "Plug Werkplek",
-      "zigbee_mac_address": "ABCD012345670A03",
-      "vendor": "Plugwise",
-      "sensors": {
-        "electricity_consumed": 98.0,
-        "electricity_consumed_interval": 24.0,
-        "electricity_produced": 0.0,
-        "electricity_produced_interval": 0.0
-      },
-      "switches": {
-        "relay": true,
-        "lock": true
-      }
-    },
-    "854f8a9b0e7e425db97f1f110e1ce4b3": {
-      "dev_class": "central_heating_pump",
-      "firmware": "2020-11-10T01:00:00+01:00",
-      "location": "f2bf9048bef64cc5b6d5110154e33c81",
-      "model": "Plug",
-      "name": "Plug Vloerverwarming",
-      "zigbee_mac_address": "ABCD012345670A05",
-      "vendor": "Plugwise",
-      "sensors": {
-        "electricity_consumed": 46.8,
-        "electricity_consumed_interval": 0.0,
-        "electricity_produced": 0.0,
-        "electricity_produced_interval": 0.0
-      },
-      "switches": {
-        "relay": true
       }
     },
     "1772a4ea304041adb83f357b751341ff": {
@@ -178,8 +122,9 @@
       "name": "OpenTherm",
       "maximum_boiler_temperature": 60.0,
       "binary_sensors": {
+        "cooling_state": true,
         "dhw_state": false,
-        "heating_state": true,
+        "heating_state": false,
         "flame_state": false
       },
       "sensors": {
