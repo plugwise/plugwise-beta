@@ -184,6 +184,15 @@ async def test_anna_climate_entity_attributes(
     assert state.attributes["temperature"] == 21.0
 
 
+async def test_anna_2_climate_entity_attributes(
+    hass: HomeAssistant, mock_smile_anna_2: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test creation of anna climate device environment."""
+    state = hass.states.get("climate.anna")
+    assert state
+    assert state.attributes["hvac_action"] == "cooling"
+
+
 async def test_anna_climate_entity_climate_changes(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
