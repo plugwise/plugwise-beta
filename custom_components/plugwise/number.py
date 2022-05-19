@@ -5,6 +5,8 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from typing import Any
 
+from plugwise import Smile
+
 from homeassistant.components.number import (
     NumberEntity,
     NumberEntityDescription,
@@ -24,7 +26,7 @@ from .entity import PlugwiseEntity
 class PlugwiseEntityDescriptionMixin:
     """Mixin values for Plugwse entities."""
 
-    command: Callable[..., Awaitable[Any]]
+    command: Callable[[Smile, float], Awaitable[Any]]
 
 
 @dataclass
@@ -37,9 +39,7 @@ class PlugwiseNumberEntityDescription(
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
-        command=lambda coordinator, value: coordinator.api.set_max_boiler_temperature(
-            value
-        ),
+        command=lambda api, value: api.set_max_boiler_temperature(value),
         name="Maximum Boiler Temperature Setpoint",
         icon="mdi:thermometer",
         entity_category=EntityCategory.CONFIG,
@@ -99,7 +99,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
 
     async def async_set_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.entity_description.command(self.coordinator, value)
+        await self.entity_description.command(self.coordinator.api, value)
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.name, value
         )

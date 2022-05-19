@@ -51,7 +51,7 @@ async def async_setup_entry(
     async_add_entities(
         PlugwiseClimateEntity(coordinator, device_id, homekit_enabled)
         for device_id, device in coordinator.data.devices.items()
-        if device["class"] in MASTER_THERMOSTATS
+        if device["dev_class"] in MASTER_THERMOSTATS
     )
 
 
@@ -64,11 +64,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
-        enabled: bool,  # pw-beta homekit emulation
+        homekit_enabled: bool,  # pw-beta homekit emulation
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
-        self._homekit_enabled = enabled  # pw-beta homekit emulation
+        self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
         self._attr_name = self.device["name"]
@@ -76,9 +76,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Determine preset modes
         self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE
         self._attr_preset_modes = None
-        if preset_modes := self.device["preset_modes"]:
+        if presets := self.device["preset_modes"]:
             self._attr_supported_features |= SUPPORT_PRESET_MODE
-            self._attr_preset_modes = preset_modes
+            self._attr_preset_modes = presets
 
         self._attr_min_temp = self.device.get("lower_bound", DEFAULT_MIN_TEMP)
         self._attr_max_temp = self.device.get("upper_bound", DEFAULT_MAX_TEMP)
@@ -116,6 +116,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Support preheating state as heating, until preheating is added as a separate state
         if control_state in ["heating", "preheating"]:
             return CURRENT_HVAC_HEAT
+        if control_state == "off":
+            return CURRENT_HVAC_IDLE
 
         heater_central_data = self.devices[self.gateway["heater_id"]]
         if heater_central_data["binary_sensors"]["heating_state"]:
@@ -167,14 +169,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if hvac_mode not in self.hvac_modes:
             raise HomeAssistantError("Unsupported hvac_mode")
 
-        if hvac_mode == HVAC_MODE_AUTO and not self.device.get("schedule_temperature"):
-            raise HomeAssistantError(
-                "Cannot set HVAC mode to Auto: No schedule available"
-            )
-
         await self.coordinator.api.set_schedule_state(
             self.device["location"],
-            self.device.get("last_used"),
+            self.device["last_used"],
             "on" if hvac_mode == HVAC_MODE_AUTO else "off",
         )
 
@@ -184,7 +181,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if self._homekit_mode == HVAC_MODE_OFF:
                 await self.async_set_preset_mode(PRESET_AWAY)
             if (
-                self._homekit_mode in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
+                self._homekit_mode
+                in [HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_HEAT_COOL]
                 and self.device["active_preset"] == PRESET_AWAY
             ):
                 await self.async_set_preset_mode(PRESET_HOME)
@@ -192,10 +190,4 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode."""
-        if (
-            self._attr_preset_modes is not None
-            and preset_mode not in self._attr_preset_modes
-        ):
-            raise HomeAssistantError("Unsupported preset mode")
-
         await self.coordinator.api.set_preset(self.device["location"], preset_mode)

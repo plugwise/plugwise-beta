@@ -101,7 +101,11 @@ async def async_setup_entry_usb(hass, config_entry, async_add_entities):
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-async def async_setup_entry_gateway(hass, config_entry, async_add_entities):
+async def async_setup_entry_gateway(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Smile binary_sensors from a config entry."""
     coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
@@ -149,7 +153,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         self._notification: dict[str, str] = {}  # pw-beta
 
     @property
-    def is_on(self) -> bool | None:
+    def is_on(self) -> bool:
         """Return true if the binary sensor is on."""
         # pw-beta: show Plugwise notifications as HA persistent notifications
         if self._notification:
@@ -158,7 +162,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self.device["binary_sensors"].get(self.entity_description.key)
+        return self.device["binary_sensors"][self.entity_description.key]
 
     @property
     def icon(self) -> str | None:

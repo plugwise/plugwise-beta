@@ -2,6 +2,12 @@
 
 from unittest.mock import MagicMock
 
+from homeassistant.components.number import (
+    ATTR_VALUE,
+    DOMAIN as NUMBER_DOMAIN,
+    SERVICE_SET_VALUE,
+)
+from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 
@@ -46,11 +52,11 @@ async def test_anna_max_boiler_temp_change(
     await hass.async_block_till_done()
 
     await hass.services.async_call(
-        "number",
-        "set_value",
+        NUMBER_DOMAIN,
+        SERVICE_SET_VALUE,
         {
-            "entity_id": "number.opentherm_maximum_boiler_temperature_setpoint",
-            "value": 65,
+            ATTR_ENTITY_ID: "number.opentherm_maximum_boiler_temperature_setpoint",
+            ATTR_VALUE: 65,
         },
         blocking=True,
     )

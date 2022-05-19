@@ -23,7 +23,9 @@ class PlugwiseData(NamedTuple):
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     """Class to manage fetching Plugwise data from single endpoint."""
 
-    def __init__(self, hass: HomeAssistant, api: Smile, interval: timedelta) -> None:
+    def __init__(
+        self, hass: HomeAssistant, api: Smile, cooldown: float, interval: timedelta
+    ) -> None:
         """Initialize the coordinator."""
         super().__init__(
             hass,
@@ -36,7 +38,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             request_refresh_debouncer=Debouncer(
                 hass,
                 LOGGER,
-                cooldown=1.5,
+                cooldown=cooldown,
                 immediate=False,
             ),
         )

@@ -153,9 +153,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	cp -r ../custom_components/plugwise ./homeassistant/components/
 	cp -r ../tests/components/plugwise ./tests/components/
 	echo ""
-	echo "Adding select to coveragerc as we don't mock this yet"
+	echo "Removing select from coveragerc as we have a test now."
 	echo ""
-	sed -i".sedbck" 's#homeassistant/scripts/..py#homeassistant/components/plugwise/select.py#' .coveragerc
+	sed -i".sedbck" 's#homeassistant/components/plugwise/select.py##' .coveragerc
 	echo ""
 fi # core_prep
 

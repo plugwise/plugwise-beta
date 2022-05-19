@@ -13,11 +13,12 @@ LOGGER = logging.getLogger(__package__)
 
 API: Final = "api"
 ATTR_ENABLED_DEFAULT: Final = "enabled_default"
-CONF_VENDOR: Final = "vendor"
 COORDINATOR: Final = "coordinator"
+CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta
+CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta
+CONF_MANUAL_PATH: Final = "Enter Manually"
 GATEWAY: Final = "gateway"
 ID: Final = "id"
-PW_CLASS: Final = "class"
 PW_LOCATION: Final = "location"
 PW_TYPE: Final = "plugwise_type"
 SMILE: Final = "smile"
@@ -56,8 +57,7 @@ PLATFORMS_GATEWAY: Final[list[str]] = [
 ]
 SENSOR_PLATFORMS: Final[list[str]] = [Platform.SENSOR, Platform.SWITCH]
 SERVICE_DELETE: Final = "delete_notification"
-SEVERITIES = ["other", "info", "warning", "error"]
-CONF_HOMEKIT_EMULATION = "homekit_emulation"  # pw-beta
+SEVERITIES: Final[list[str]] = ["other", "info", "message", "warning", "error"]
 
 # Climate const:
 MASTER_THERMOSTATS: Final[list[str]] = [

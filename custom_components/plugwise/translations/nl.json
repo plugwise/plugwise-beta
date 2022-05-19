@@ -9,7 +9,8 @@
         "description": "Smile/Stretch Opties aanpassen",
         "data": {
           "scan_interval": "Scan Interval (seconden) *) optie alleen in beta",
-          "homekit_emulation": "Homekit emulatie (bij hvac_off => Afwezig) *) optie alleen in beta"
+          "homekit_emulation": "Homekit emulatie (bij hvac_off => Afwezig) *) optie alleen in beta",
+          "refresh_interval": "Frontend ververs-tijd (1,5 - 5 seconden) *) optie alleen in beta"
         }
       }
     }
