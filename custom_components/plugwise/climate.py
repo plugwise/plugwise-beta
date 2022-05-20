@@ -157,8 +157,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        if ((temperature := kwargs.get(ATTR_TEMPERATURE)) is None) or (
-            self._attr_max_temp < temperature < self._attr_min_temp
+        if ((temperature := kwargs.get(ATTR_TEMPERATURE)) is None) or not (
+            self._attr_min_temp < temperature < self._attr_max_temp
         ):
             raise ValueError("Invalid temperature requested")
         await self.coordinator.api.set_temperature(self.device["location"], temperature)
