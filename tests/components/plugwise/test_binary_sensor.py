@@ -19,19 +19,6 @@ async def test_anna_climate_binary_sensor_entities(
     # Test disabled_by default entry
     assert hass.states.get(entity_id) is None
 
-    # # Enable entry
-    # #registry = er.async_get(hass)
-    # #registry.async_update_entity(
-    # #    entity_id, disabled_by=None
-    # #)
-    # #await hass.async_block_till_done()
-
-    # # Try again
-    # # 20220213 TODO: Broken - used ozw and roku as examples
-    # #state = hass.states.get(entity_id)
-    # #assert state
-    # #assert state.state == STATE_OFF
-
     state = hass.states.get("binary_sensor.opentherm_dhw_state")
     assert state
     assert state.state == STATE_OFF
