@@ -172,6 +172,7 @@ async def test_adam_climate_entity_climate_changes(
             blocking=True,
         )
 
+
 async def test_anna_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
