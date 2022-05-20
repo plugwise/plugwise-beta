@@ -100,17 +100,6 @@ async def test_adam_climate_adjust_negative_testing(
             blocking=True,
         )
 
-    with pytest.raises(HomeAssistantError):
-        await hass.services.async_call(
-            "climate",
-            "set_hvac_mode",
-            {
-                "entity_id": "climate.zone_thermostat_jessie",
-                "hvac_mode": HVAC_MODE_AUTO,
-            },
-            blocking=True,
-        )
-
 
 async def test_adam_climate_entity_climate_changes(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
@@ -172,6 +161,16 @@ async def test_adam_climate_entity_climate_changes(
         "82fa13f017d240daa0d0ea1775420f24", "home"
     )
 
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            "climate",
+            "set_hvac_mode",
+            {
+                "entity_id": "climate.zone_thermostat_jessie",
+                "hvac_mode": "dry",
+            },
+            blocking=True,
+        )
 
 async def test_anna_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
