@@ -184,7 +184,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                 for msg_type, msg in details.items():
                     msg_type = msg_type.lower()
                     if msg_type not in SEVERITIES:
-                        msg_type = "other"
+                        msg_type = "other"  # pragma: no cover
 
                     if f"{msg_type}_msg" not in attrs:
                         attrs[f"{msg_type}_msg"] = []
