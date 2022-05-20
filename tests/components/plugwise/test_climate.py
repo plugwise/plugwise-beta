@@ -128,6 +128,14 @@ async def test_adam_climate_entity_climate_changes(
         "c50f167537524366a5af7aa3942feb1e", 25.0
     )
 
+    with pytest.raises(ValueError):
+        await hass.services.async_call(
+            "climate",
+            "set_temperature",
+            {"entity_id": "climate.zone_lisa_wk", "temperature": 150},
+            blocking=True,
+        )
+
     await hass.services.async_call(
         "climate",
         "set_preset_mode",
