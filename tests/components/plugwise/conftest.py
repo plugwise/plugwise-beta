@@ -96,7 +96,7 @@ def mock_smile_adam() -> Generator[None, MagicMock, None]:
 @pytest.fixture
 def mock_smile_adam_2() -> Generator[None, MagicMock, None]:
     """Create a 2nd Mock Adam environment for testing exceptions."""
-    chosen_env = "adam_heating"
+    chosen_env = "m_adam_heating"
 
     with patch(
         "homeassistant.components.plugwise.gateway.Smile", autospec=True
@@ -121,7 +121,7 @@ def mock_smile_adam_2() -> Generator[None, MagicMock, None]:
 @pytest.fixture
 def mock_smile_adam_3() -> Generator[None, MagicMock, None]:
     """Create a 3nd Mock Adam environment for testing exceptions."""
-    chosen_env = "adam_cooling"
+    chosen_env = "m_adam_cooling"
 
     with patch(
         "homeassistant.components.plugwise.gateway.Smile", autospec=True
@@ -170,7 +170,7 @@ def mock_smile_anna() -> Generator[None, MagicMock, None]:
 @pytest.fixture
 def mock_smile_anna_2() -> Generator[None, MagicMock, None]:
     """Create a 2nd Mock Anna environment for testing exceptions."""
-    chosen_env = "anna_heatpump_cooling"
+    chosen_env = "m_anna_heatpump_cooling"
     with patch(
         "homeassistant.components.plugwise.gateway.Smile", autospec=True
     ) as smile_mock:
@@ -194,7 +194,7 @@ def mock_smile_anna_2() -> Generator[None, MagicMock, None]:
 @pytest.fixture
 def mock_smile_anna_3() -> Generator[None, MagicMock, None]:
     """Create a 3nd Mock Anna environment for testing exceptions."""
-    chosen_env = "anna_heatpump_idle"
+    chosen_env = "m_anna_heatpump_idle"
     with patch(
         "homeassistant.components.plugwise.gateway.Smile", autospec=True
     ) as smile_mock:
