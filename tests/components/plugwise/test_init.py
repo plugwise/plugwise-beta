@@ -76,6 +76,22 @@ async def test_config_entry_not_ready(
     )
 
 
+@pytest.mark.parametrize("side_effect", [(XMLDataMissingError), (PlugwiseException)])
+async def test_async_update_fail(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_smile_anna: MagicMock,
+    side_effect: Exception,
+) -> None:
+    """Test the Plugwise coordinator async_update failing."""
+    mock_smile_anna.async_update.side_effect = side_effect
+
+    mock_config_entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+    assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
+
+
 @pytest.mark.parametrize(
     "entitydata,old_unique_id,new_unique_id",
     [
