@@ -7,6 +7,7 @@ import pytest
 
 from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
+    HVAC_MODE_COOL,
     HVAC_MODE_HEAT,
     HVAC_MODE_HEAT_COOL,
 )
@@ -54,6 +55,27 @@ async def test_adam_climate_entity_attributes(
     assert state.attributes["temperature"] == 15.0
 
 
+async def test_adam_2_climate_entity_attributes(
+    hass: HomeAssistant, mock_smile_adam_2: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test creation of adam climate device environment."""
+    state = hass.states.get("climate.anna")
+
+    assert state
+    assert state.attributes["hvac_action"] == "heating"
+
+
+async def test_adam_3_climate_entity_attributes(
+    hass: HomeAssistant, mock_smile_adam_3: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test creation of adam climate device environment."""
+    state = hass.states.get("climate.anna")
+
+    assert state
+    assert state.attributes["hvac_action"] == "cooling"
+    assert state.attributes["hvac_modes"] == [HVAC_MODE_COOL, HVAC_MODE_AUTO]
+
+
 async def test_adam_climate_adjust_negative_testing(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
@@ -78,17 +100,6 @@ async def test_adam_climate_adjust_negative_testing(
             blocking=True,
         )
 
-    with pytest.raises(HomeAssistantError):
-        await hass.services.async_call(
-            "climate",
-            "set_hvac_mode",
-            {
-                "entity_id": "climate.zone_thermostat_jessie",
-                "hvac_mode": HVAC_MODE_AUTO,
-            },
-            blocking=True,
-        )
-
 
 async def test_adam_climate_entity_climate_changes(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
@@ -105,6 +116,14 @@ async def test_adam_climate_entity_climate_changes(
     mock_smile_adam.set_temperature.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", 25.0
     )
+
+    with pytest.raises(ValueError):
+        await hass.services.async_call(
+            "climate",
+            "set_temperature",
+            {"entity_id": "climate.zone_lisa_wk", "temperature": 150},
+            blocking=True,
+        )
 
     await hass.services.async_call(
         "climate",
@@ -142,6 +161,17 @@ async def test_adam_climate_entity_climate_changes(
         "82fa13f017d240daa0d0ea1775420f24", "home"
     )
 
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            "climate",
+            "set_hvac_mode",
+            {
+                "entity_id": "climate.zone_thermostat_jessie",
+                "hvac_mode": "dry",
+            },
+            blocking=True,
+        )
+
 
 async def test_anna_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
@@ -162,6 +192,24 @@ async def test_anna_climate_entity_attributes(
     assert state.attributes["preset_mode"] == "home"
     assert state.attributes["supported_features"] == 17
     assert state.attributes["temperature"] == 21.0
+
+
+async def test_anna_2_climate_entity_attributes(
+    hass: HomeAssistant, mock_smile_anna_2: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test creation of anna climate device environment."""
+    state = hass.states.get("climate.anna")
+    assert state
+    assert state.attributes["hvac_action"] == "cooling"
+
+
+async def test_anna_3_climate_entity_attributes(
+    hass: HomeAssistant, mock_smile_anna_3: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test creation of anna climate device environment."""
+    state = hass.states.get("climate.anna")
+    assert state
+    assert state.attributes["hvac_action"] == "idle"
 
 
 async def test_anna_climate_entity_climate_changes(

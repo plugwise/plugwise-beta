@@ -100,10 +100,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def hvac_mode(self) -> str:
         """Return HVAC operation ie. auto, heat, cool, or off mode."""
         if (mode := self.device["mode"]) is None or mode not in self.hvac_modes:
-            return HVAC_MODE_HEAT
+            return HVAC_MODE_HEAT  # pragma: no cover
         # pw-beta homekit emulation
         if self._homekit_enabled and self._homekit_mode == HVAC_MODE_OFF:
-            mode = HVAC_MODE_OFF
+            mode = HVAC_MODE_OFF  # pragma: no cover
         return mode
 
     @property
@@ -145,7 +145,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if self.device["available_schedules"] != ["None"]:
             hvac_modes.append(HVAC_MODE_AUTO)
         if self._homekit_enabled:  # pw-beta homekit emulation
-            hvac_modes.append(HVAC_MODE_OFF)
+            hvac_modes.append(HVAC_MODE_OFF)  # pragma: no cover
 
         return hvac_modes
 
@@ -157,8 +157,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        if ((temperature := kwargs.get(ATTR_TEMPERATURE)) is None) or (
-            self._attr_max_temp < temperature < self._attr_min_temp
+        if ((temperature := kwargs.get(ATTR_TEMPERATURE)) is None) or not (
+            self._attr_min_temp < temperature < self._attr_max_temp
         ):
             raise ValueError("Invalid temperature requested")
         await self.coordinator.api.set_temperature(self.device["location"], temperature)
@@ -178,14 +178,14 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # pw-beta: feature request - mimic HomeKit behavior
         self._homekit_mode = hvac_mode
         if self._homekit_enabled:
-            if self._homekit_mode == HVAC_MODE_OFF:
-                await self.async_set_preset_mode(PRESET_AWAY)
+            if self._homekit_mode == HVAC_MODE_OFF:  # pragma: no cover
+                await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
             if (
                 self._homekit_mode
                 in [HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_HEAT_COOL]
                 and self.device["active_preset"] == PRESET_AWAY
-            ):
-                await self.async_set_preset_mode(PRESET_HOME)
+            ):  # pragma: no cover
+                await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
 
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
