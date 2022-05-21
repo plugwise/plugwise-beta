@@ -16,7 +16,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return await async_setup_entry_gw(hass, entry)
     if entry.data.get(CONF_USB_PATH):
         return await async_setup_entry_usb(hass, entry)
-    return False
+    return False  # pragma: no cover
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -25,4 +25,4 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return await async_unload_entry_gw(hass, entry)
     if entry.data.get(CONF_USB_PATH):
         return await async_unload_entry_usb(hass, entry)
-    return False
+    return False  # pragma: no cover
