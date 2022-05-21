@@ -1,9 +1,12 @@
 """Tests for the Plugwise Climate integration."""
 import asyncio
+import aiohttp
+
 from unittest.mock import MagicMock
 
 from plugwise.exceptions import (
     ConnectionFailedError,
+    InvalidAuthentication,
     PlugwiseException,
     XMLDataMissingError,
 )
