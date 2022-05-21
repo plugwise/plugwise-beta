@@ -75,18 +75,21 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     api.get_all_devices()
 
     # Migrate to the new smile hostname as unique_id
+    # This migration is from several years back, can probably be removed
     if entry.unique_id is None and api.smile_version[0] != "1.8.0":
-        hass.config_entries.async_update_entry(entry, unique_id=api.smile_hostname)
+        hass.config_entries.async_update_entry(
+            entry, unique_id=api.smile_hostname
+        )  # pragma: no cover
 
     # pw-beta scan-interval
     update_interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[api.smile_type]
     if custom_time := entry.options.get(CONF_SCAN_INTERVAL):
-        update_interval = dt.timedelta(seconds=int(custom_time))
+        update_interval = dt.timedelta(seconds=int(custom_time))  # pragma: no cover
     LOGGER.debug("DUC update interval: %s", update_interval.seconds)
 
     # pw-beta frontend refresh-interval
     cooldown = 1.5
-    if custom_refresh := entry.options.get(CONF_REFRESH_INTERVAL):
+    if custom_refresh := entry.options.get(CONF_REFRESH_INTERVAL):  # pragma: no cover
         cooldown = custom_refresh
     LOGGER.debug("DUC cooldown interval: %s", custom_refresh)
 
@@ -142,7 +145,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 # pw-beta
 async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Handle options update."""
-    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.config_entries.async_reload(entry.entry_id)  # pragma: no cover
 
 
 async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
