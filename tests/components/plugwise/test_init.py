@@ -45,9 +45,11 @@ async def test_load_unload_config_entry(
 @pytest.mark.parametrize(
     "side_effect",
     [
+        (InvalidAuthentication),
         (ConnectionFailedError),
         (PlugwiseException),
         (XMLDataMissingError),
+        (aiohttp.ClientError),
         (asyncio.TimeoutError),
     ],
 )
