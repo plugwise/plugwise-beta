@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW MAY 2022 [0.23.0]
+## NEW MAY 2022 [0.23.1]
+- Smile: improve testcoverage, correct a small bug in climate.py
+
+# MAY 2022 [0.23.0]
 - Smile: rework & improve plugwise backend - via plugwise v0.18.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.18.0
   - Adam: don't show vacation-preset - via plugwise v0.18.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.18.1
   - Fix handling of a connection-issue - via plugwise v0.18.2 - https://github.com/plugwise/python-plugwise/releases/tag/v0.18.2
