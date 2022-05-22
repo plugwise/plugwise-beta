@@ -119,18 +119,18 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     # pw-beta: HA service - delete_notification
-    async def delete_notification(self):
+    async def delete_notification(self):  # pragma: no cover
         """Service: delete the Plugwise Notification."""
         LOGGER.debug(
             "Service delete PW Notification called for %s", api.smile_name
-        )  # pragma: no cover
-        try:  # pragma: no cover
-            deleted = await api.delete_notification()  # pragma: no cover
-            LOGGER.debug("PW Notification deleted: %s", deleted)  # pragma: no cover
-        except PlugwiseException:  # pragma: no cover
+        )
+        try:
+            deleted = await api.delete_notification()
+            LOGGER.debug("PW Notification deleted: %s", deleted)
+        except PlugwiseException:
             LOGGER.debug(
                 "Failed to delete the Plugwise Notification for %s", api.smile_name
-            )  # pragma: no cover
+            )
 
     hass.config_entries.async_setup_platforms(entry, PLATFORMS_GATEWAY)
 
