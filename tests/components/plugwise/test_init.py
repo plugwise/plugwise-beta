@@ -12,10 +12,11 @@ from plugwise.exceptions import (
 )
 import pytest
 
-from homeassistant.components.plugwise.const import DOMAIN
+from homeassistant.components.plugwise.const import COORDINATOR, DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntryState
+from homeassistant.helpers.update_coordinator import UpdateFailed
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 
@@ -84,12 +85,17 @@ async def test_async_update_fail(
     side_effect: Exception,
 ) -> None:
     """Test the Plugwise coordinator async_update failing."""
-    mock_smile_anna.async_update.side_effect = side_effect
-
     mock_config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
-    assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
+
+    mock_smile_anna.async_update.side_effect = side_effect
+    coordinator = hass.data[DOMAIN][mock_config_entry.entry_id][COORDINATOR]
+    await coordinator.async_refresh()
+    await hass.async_block_till_done()
+
+    assert not coordinator.last_update_success
+    assert isinstance(coordinator.last_exception, UpdateFailed)
 
 
 @pytest.mark.parametrize(
