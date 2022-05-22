@@ -338,7 +338,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
 
     async def async_step_none(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:   # pragma: no cover
+    ) -> FlowResult:  # pragma: no cover
         """No options available."""
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
