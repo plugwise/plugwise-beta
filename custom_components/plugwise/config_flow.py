@@ -326,18 +326,19 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         return PlugwiseOptionsFlowHandler(config_entry)
 
 
-# pw-beta - change the refresh-interval via CONFIGURATION
-# pw-beta - add homekit emulation via CONFIGURATION
+# pw-beta - change the scan-interval via CONFIGURE
+# pw-beta - add homekit emulation via CONFIGURE
+# pw-beta - change the frontend refresh interval via CONFIGURE
 class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
     """Plugwise option flow."""
 
-    def __init__(self, config_entry: ConfigEntry) -> None:
+    def __init__(self, config_entry: ConfigEntry) -> None:  # pragma: no cover
         """Initialize options flow."""
         self.config_entry = config_entry
 
     async def async_step_none(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> FlowResult:  # pragma: no cover
         """No options available."""
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
@@ -347,7 +348,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> FlowResult:  # pragma: no cover
         """Manage the Plugwise options."""
         if not self.config_entry.data.get(CONF_HOST):
             return await self.async_step_none(user_input)
