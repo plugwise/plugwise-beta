@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-## NEW MAY 2022 [0.23.1]
+## NEW MAY [0.23.2]
+- Smile bugfix: fixing https://github.com/plugwise/python-plugwise/issues/192 and https://github.com/home-assistant/core/issues/72305
+
+# MAY 2022 [0.23.1]
 - Smile: improve testcoverage, correct a small bug in climate.py
 
 # MAY 2022 [0.23.0]
