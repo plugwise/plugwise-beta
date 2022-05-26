@@ -68,7 +68,7 @@ async def test_adam_2_climate_entity_attributes(
 
     state = hass.states.get("climate.lisa_badkamer")
     assert state
-    assert state.state == HVACMode.AUTO
+    assert state.state == HVAC_MODE_AUTO
     assert state.attributes["hvac_action"] == "idle"
     assert state.attributes["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
 
@@ -80,7 +80,7 @@ async def test_adam_3_climate_entity_attributes(
     state = hass.states.get("climate.anna")
 
     assert state
-    assert state.state == HVACMode.COOL
+    assert state.state == HVAC_MODE_COOL
     assert state.attributes["hvac_action"] == "cooling"
     assert state.attributes["hvac_modes"] == [HVAC_MODE_COOL, HVAC_MODE_AUTO]
 
@@ -229,12 +229,12 @@ async def test_anna_3_climate_entity_attributes(
     """Test creation of anna climate device environment."""
     state = hass.states.get("climate.anna")
     assert state
-    assert state.state == HVACMode.AUTO
+    assert state.state == HVAC_MODE_AUTO
     assert state.attributes["hvac_action"] == "idle"
     assert state.attributes["hvac_modes"] == [
-        HVACMode.HEAT,
-        HVACMode.COOL,
-        HVACMode.AUTO,
+        HVAC_MODE_HEAT,
+        HVAC_MODE_COOL,
+        HVAC_MODE_AUTO,
     ]
 
 
