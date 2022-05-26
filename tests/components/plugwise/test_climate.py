@@ -21,12 +21,10 @@ async def test_adam_climate_entity_attributes(
 ) -> None:
     """Test creation of adam climate device environment."""
     state = hass.states.get("climate.zone_lisa_wk")
-
     assert state
-    assert state.attributes["hvac_modes"] == [
-        HVAC_MODE_HEAT,
-        HVAC_MODE_AUTO,
-    ]
+    assert state.state == HVAC_MODE_AUTO
+    assert state.attributes["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
+    # hvac_action is not asserted as the fixture is not in line with recent firmware functionality
 
     assert "preset_modes" in state.attributes
     assert "no_frost" in state.attributes["preset_modes"]
@@ -36,14 +34,15 @@ async def test_adam_climate_entity_attributes(
     assert state.attributes["preset_mode"] == "home"
     assert state.attributes["supported_features"] == 17
     assert state.attributes["temperature"] == 21.5
+    assert state.attributes["min_temp"] == 0.0
+    assert state.attributes["max_temp"] == 99.9
+    assert state.attributes["target_temp_step"] == 0.1
 
     state = hass.states.get("climate.zone_thermostat_jessie")
     assert state
-
-    assert state.attributes["hvac_modes"] == [
-        HVAC_MODE_HEAT,
-        HVAC_MODE_AUTO,
-    ]
+    assert state.state == HVAC_MODE_AUTO
+    assert state.attributes["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
+    # hvac_action is not asserted as the fixture is not in line with recent firmware functionality
 
     assert "preset_modes" in state.attributes
     assert "no_frost" in state.attributes["preset_modes"]
@@ -52,6 +51,9 @@ async def test_adam_climate_entity_attributes(
     assert state.attributes["current_temperature"] == 17.2
     assert state.attributes["preset_mode"] == "asleep"
     assert state.attributes["temperature"] == 15.0
+    assert state.attributes["min_temp"] == 0.0
+    assert state.attributes["max_temp"] == 99.9
+    assert state.attributes["target_temp_step"] == 0.1
 
 
 async def test_adam_2_climate_entity_attributes(
@@ -59,9 +61,16 @@ async def test_adam_2_climate_entity_attributes(
 ) -> None:
     """Test creation of adam climate device environment."""
     state = hass.states.get("climate.anna")
-
     assert state
+    assert state.state == HVAC_MODE_HEAT
     assert state.attributes["hvac_action"] == "heating"
+    assert state.attributes["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
+
+    state = hass.states.get("climate.lisa_badkamer")
+    assert state
+    assert state.state == HVACMode.AUTO
+    assert state.attributes["hvac_action"] == "idle"
+    assert state.attributes["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
 
 
 async def test_adam_3_climate_entity_attributes(
@@ -71,6 +80,7 @@ async def test_adam_3_climate_entity_attributes(
     state = hass.states.get("climate.anna")
 
     assert state
+    assert state.state == HVACMode.COOL
     assert state.attributes["hvac_action"] == "cooling"
     assert state.attributes["hvac_modes"] == [HVAC_MODE_COOL, HVAC_MODE_AUTO]
 
@@ -193,6 +203,9 @@ async def test_anna_climate_entity_attributes(
     assert state.attributes["preset_mode"] == "home"
     assert state.attributes["supported_features"] == 17
     assert state.attributes["temperature"] == 21.0
+    assert state.attributes["min_temp"] == 4.0
+    assert state.attributes["max_temp"] == 30.0
+    assert state.attributes["target_temp_step"] == 0.1
 
 
 async def test_anna_2_climate_entity_attributes(
@@ -216,7 +229,13 @@ async def test_anna_3_climate_entity_attributes(
     """Test creation of anna climate device environment."""
     state = hass.states.get("climate.anna")
     assert state
+    assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_action"] == "idle"
+    assert state.attributes["hvac_modes"] == [
+        HVACMode.HEAT,
+        HVACMode.COOL,
+        HVACMode.AUTO,
+    ]
 
 
 async def test_anna_climate_entity_climate_changes(
