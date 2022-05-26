@@ -13,7 +13,6 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
     HVAC_MODE_COOL,
     HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
     HVAC_MODE_OFF,
     PRESET_AWAY,  # pw-beta homekit emulation
     PRESET_HOME,  # pw-beta homekit emulation
@@ -133,8 +132,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         hvac_modes = [HVAC_MODE_HEAT]
         if self.gateway["cooling_present"]:
             if self.gateway["smile_name"] == "Anna":
-                hvac_modes.append(HVAC_MODE_HEAT_COOL)
-                hvac_modes.remove(HVAC_MODE_HEAT)
+                hvac_modes.append(HVAC_MODE_COOL)
             if (
                 self.gateway["smile_name"] == "Adam"
                 and self.devices[self.gateway["gateway_id"]]["regulation_mode"]
@@ -182,7 +180,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
             if (
                 self._homekit_mode
-                in [HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_HEAT_COOL]
+                in [HVAC_MODE_HEAT, HVAC_MODE_COOL]
                 and self.device["active_preset"] == PRESET_AWAY
             ):  # pragma: no cover
                 await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
