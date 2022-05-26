@@ -180,15 +180,17 @@ async def test_anna_climate_entity_attributes(
     state = hass.states.get("climate.anna")
     assert state
     assert state.state == HVAC_MODE_AUTO
+    assert state.attributes["hvac_action"] == "heating"
     assert state.attributes["hvac_modes"] == [
-        HVAC_MODE_HEAT_COOL,
+        HVAC_MODE_HEAT,
+        HVAC_MODE_COOL,
         HVAC_MODE_AUTO,
     ]
+    
     assert "no_frost" in state.attributes["preset_modes"]
     assert "home" in state.attributes["preset_modes"]
 
     assert state.attributes["current_temperature"] == 19.3
-    assert state.attributes["hvac_action"] == "heating"
     assert state.attributes["preset_mode"] == "home"
     assert state.attributes["supported_features"] == 17
     assert state.attributes["temperature"] == 21.0
@@ -200,7 +202,13 @@ async def test_anna_2_climate_entity_attributes(
     """Test creation of anna climate device environment."""
     state = hass.states.get("climate.anna")
     assert state
+    assert state.state == HVAC_MODE_AUTO
     assert state.attributes["hvac_action"] == "cooling"
+    assert state.attributes["hvac_modes"] == [
+        HVAC_MODE_HEAT,
+        HVAC_MODE_COOL,
+        HVAC_MODE_AUTO,
+    ]
 
 
 async def test_anna_3_climate_entity_attributes(
