@@ -9,7 +9,6 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
     HVAC_MODE_COOL,
     HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
@@ -251,7 +250,7 @@ async def test_anna_climate_entity_climate_changes(
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
-        {"entity_id": "climate.anna", "hvac_mode": "heat_cool"},
+        {"entity_id": "climate.anna", "hvac_mode": "heat"},
         blocking=True,
     )
 
