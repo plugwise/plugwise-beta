@@ -191,8 +191,7 @@ async def test_anna_climate_entity_attributes(
     assert state.state == HVAC_MODE_AUTO
     assert state.attributes["hvac_action"] == "heating"
     assert state.attributes["hvac_modes"] == [
-        HVAC_MODE_HEAT,
-        HVAC_MODE_COOL,
+        HVAC_MODE_HEAT_COOL,
         HVAC_MODE_AUTO,
     ]
 
@@ -202,7 +201,9 @@ async def test_anna_climate_entity_attributes(
     assert state.attributes["current_temperature"] == 19.3
     assert state.attributes["preset_mode"] == "home"
     assert state.attributes["supported_features"] == 17
-    assert state.attributes["temperature"] == 21.0
+    assert state.attributes["temperature"] is None
+    assert state.attributes["temperature_high"] == 21.0
+    assert state.attributes["temperature_high"] == 21.0
     assert state.attributes["min_temp"] == 4.0
     assert state.attributes["max_temp"] == 30.0
     assert state.attributes["target_temp_step"] == 0.1
@@ -217,8 +218,7 @@ async def test_anna_2_climate_entity_attributes(
     assert state.state == HVAC_MODE_AUTO
     assert state.attributes["hvac_action"] == "cooling"
     assert state.attributes["hvac_modes"] == [
-        HVAC_MODE_HEAT,
-        HVAC_MODE_COOL,
+        HVAC_MODE_HEAT_COOL,
         HVAC_MODE_AUTO,
     ]
 
@@ -232,8 +232,7 @@ async def test_anna_3_climate_entity_attributes(
     assert state.state == HVAC_MODE_AUTO
     assert state.attributes["hvac_action"] == "idle"
     assert state.attributes["hvac_modes"] == [
-        HVAC_MODE_HEAT,
-        HVAC_MODE_COOL,
+        HVAC_MODE_HEAT_COOL,
         HVAC_MODE_AUTO,
     ]
 
