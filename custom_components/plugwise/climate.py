@@ -91,9 +91,25 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return self.device["sensors"]["temperature"]
 
     @property
-    def target_temperature(self) -> float:
-        """Return the temperature we try to reach."""
-        return self.device["sensors"]["setpoint"]
+    def target_temperature(self) -> float | None:
+        """Return the temperature we try to reach.
+        Connected to the HVACModes combinations of AUTO/HEAT and AUTO/COOL.
+        """
+        return self.device["sensors"].get("setpoint")
+
+    @property
+    def target_temperature_high(self) -> float | None:
+        """Return the temperature we try to reach in case of cooling.
+        Connected to the HVACMode combination of AUTO/HEAT_COOL.
+        """
+        return self.device["sensors"].get("setpoint_high")
+
+    @property
+    def target_temperature_low(self) -> float | None:
+        """Return the heating temperature we try to reach in case of heating.
+        Connected to the HVACMode combination AUTO/HEAT_COOL.
+        """
+        return self.device["sensors"].get("setpoint_low")
 
     @property
     def hvac_mode(self) -> str:
