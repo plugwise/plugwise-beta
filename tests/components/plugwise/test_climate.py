@@ -190,6 +190,7 @@ async def test_anna_climate_entity_attributes(
     state = hass.states.get("climate.anna")
     assert state
     assert state.state == HVAC_MODE_AUTO
+    LOGGER.debug("HOI %s", state.attributes)
     assert state.attributes["hvac_action"] == "heating"
     assert state.attributes["hvac_modes"] == [
         HVAC_MODE_HEAT_COOL,
