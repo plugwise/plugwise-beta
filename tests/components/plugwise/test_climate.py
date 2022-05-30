@@ -14,6 +14,8 @@ from homeassistant.components.climate.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 
+from homeassistant.components.plugwise.const import LOGGER
+
 from tests.common import MockConfigEntry
 
 
