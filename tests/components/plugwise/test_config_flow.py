@@ -17,6 +17,7 @@ from homeassistant.components.plugwise.config_flow import CONF_MANUAL_PATH
 from homeassistant.components import zeroconf
 from homeassistant.components.plugwise.const import (
     API,
+    CONF_COOLING_ON,
     CONF_USB_PATH,
     DEFAULT_PORT,
     DOMAIN,
@@ -468,6 +469,38 @@ async def test_form_other_problem(hass, mock_smile):
 
     assert result2["type"] == RESULT_TYPE_FORM
     assert result2["errors"] == {"base": "unknown"}
+
+
+async def test_options_flow_thermo(hass, mock_smile) -> None:
+    """Test config flow options for thermostatic environments."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        title=CONF_NAME,
+        data={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
+        options={CONF_COOLING_ON: False},
+    )
+    with patch("homeassistant.components.plugwise.coordinator.api") as mock_api:
+        instance = mock_api.return_value
+        instance.smile_type = MagicMock(return_value="thermostat")
+        yield mock_api
+
+    hass.data[DOMAIN] = {entry.entry_id: mock_api}
+    entry.add_to_hass(hass)
+    with patch(
+        "homeassistant.components.plugwise.async_setup_entry", return_value=True
+    ):
+        assert await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+        result = await hass.config_entries.options.async_init(entry.entry_id)
+        assert result["type"] == RESULT_TYPE_FORM
+        assert result["step_id"] == "init"
+        result = await hass.config_entries.options.async_configure(
+            result["flow_id"], user_input={CONF_COOLING_ON: True}
+        )
+        assert result["type"] == RESULT_TYPE_CREATE_ENTRY
+        assert result["data"] == {
+            CONF_COOLING_ON: True,
+        }
 
 
 @patch("serial.tools.list_ports.comports", MagicMock(return_value=[com_port()]))
