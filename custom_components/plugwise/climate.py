@@ -28,6 +28,7 @@ from homeassistant.exceptions import HomeAssistantError
 
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
+    CONF_COOLING_ON,
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     COORDINATOR,
     DOMAIN,
@@ -46,11 +47,13 @@ async def async_setup_entry(
     """Set up the Smile Thermostats from a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
+    cooling_on = config_entry.options.get(CONF_COOLING_ON, False)
+
     # pw-beta homekit emulation
     homekit_enabled = config_entry.options.get(CONF_HOMEKIT_EMULATION, False)
 
     async_add_entities(
-        PlugwiseClimateEntity(coordinator, device_id, homekit_enabled)
+        PlugwiseClimateEntity(coordinator, device_id, coolin_on, homekit_enabled)
         for device_id, device in coordinator.data.devices.items()
         if device["dev_class"] in MASTER_THERMOSTATS
     )
@@ -65,6 +68,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
+        cooling_on: bool,
         homekit_enabled: bool,  # pw-beta homekit emulation
     ) -> None:
         """Set up the Plugwise API."""
@@ -76,7 +80,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine supported_features, preset modes, etc.
         self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE
-        if self.gateway["smile_name"] == "Anna" and self.gateway["cooling_present"]:
+        if (
+            self.gateway["smile_name"] == "Anna" 
+            and self.gateway["cooling_present"]
+            and cooling_on
+        ):
             self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE_RANGE
 
         self._attr_preset_modes = None

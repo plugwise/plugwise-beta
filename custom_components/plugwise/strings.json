@@ -8,6 +8,7 @@
       "init": {
         "description": "Adjust Smile/Stretch Options",
         "data": {
+          "cooling_on": "Anna: cooling-mode is on",
           "scan_interval": "Scan Interval (seconds)",
           "homekit_emulation": "Homekit emulation (i.e. on hvac_off => Away)",
           "refresh_interval": "Frontend refresh-time (1.5 - 5 seconds)"

@@ -14,6 +14,7 @@ LOGGER = logging.getLogger(__package__)
 API: Final = "api"
 ATTR_ENABLED_DEFAULT: Final = "enabled_default"
 COORDINATOR: Final = "coordinator"
+CONF_COOLING_ON: Final = "cooling_on"
 CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta
 CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta
 CONF_MANUAL_PATH: Final = "Enter Manually"
