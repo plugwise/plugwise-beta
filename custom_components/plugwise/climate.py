@@ -80,11 +80,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine supported_features, preset modes, etc.
         self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE
-        if (
-            self.gateway["smile_name"] == "Anna" 
-            and self.gateway["cooling_present"]
-            and cooling_on
-        ):
+        if cooling_on:
             self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE_RANGE
 
         self._attr_preset_modes = None
