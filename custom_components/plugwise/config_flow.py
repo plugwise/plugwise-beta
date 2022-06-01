@@ -389,14 +389,15 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             }
         )  # pw-beta
 
-        if coordinator.api.smile_name == "Anna" and coordinator.gateway["cooling_present"]:
+        if (
+            coordinator.api.smile_name == "Anna"
+            and coordinator.gateway["cooling_present"]
+        ):
             data.update(
                 {
                     vol.Optional(
                         CONF_COOLING_ON,
-                        default=self.config_entry.options.get(
-                            CONF_COOLING_ON, False
-                        ),
+                        default=self.config_entry.options.get(CONF_COOLING_ON, False),
                     ): cv.boolean,
                 }
             )
