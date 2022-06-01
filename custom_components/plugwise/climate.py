@@ -45,12 +45,12 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile Thermostats from a config entry."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
-    cooling_on = config_entry.options.get(CONF_COOLING_ON, False)
+    cooling_on: bool | None = config_entry.options.get(CONF_COOLING_ON)
 
     # pw-beta homekit emulation
-    homekit_enabled = config_entry.options.get(CONF_HOMEKIT_EMULATION, False)
+    homekit_enabled: bool = config_entry.options.get(CONF_HOMEKIT_EMULATION, False)
 
     async_add_entities(
         PlugwiseClimateEntity(coordinator, device_id, cooling_on, homekit_enabled)
@@ -68,7 +68,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
-        cooling_on: bool,
+        cooling_on: bool | None,
         homekit_enabled: bool,  # pw-beta homekit emulation
     ) -> None:
         """Set up the Plugwise API."""
@@ -81,7 +81,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine supported_features, preset modes, etc.
         self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE
-        if cooling_on:
+        if self._cooling_on:
             self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE_RANGE
 
         self._attr_preset_modes = None
@@ -98,10 +98,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def current_temperature(self) -> float | None:
         """Return the current temperature."""
-        if self._cooling_on:
-            return self.device["sensors"].get("setpoint_low")
-
-        return self.device["sensors"].get("temperature")
+         return self.device["sensors"]["temperature"]
 
     @property
     def target_temperature(self) -> float | None:
@@ -109,6 +106,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACModes combinations of AUTO/HEAT and AUTO/COOL.
         """
+        if not self._cooling_on:
+            return self.device["sensors"].get("setpoint_low")
+
         return self.device["sensors"].get("setpoint")
 
     @property
