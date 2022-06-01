@@ -106,7 +106,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACModes combinations of AUTO/HEAT and AUTO/COOL.
         """
-        if not self._cooling_on:
+        if self._cooling_on is not None and not self._cooling_on:
             return self.device["sensors"].get("setpoint_low")
 
         return self.device["sensors"].get("setpoint")
