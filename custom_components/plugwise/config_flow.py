@@ -390,7 +390,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         )  # pw-beta
 
         if (
-            coordinator.api.smile_name == "Anna"
+            coordinator.gateway["smile_name"] == "Anna"
             and coordinator.gateway["cooling_present"]
         ):
             data.update(
