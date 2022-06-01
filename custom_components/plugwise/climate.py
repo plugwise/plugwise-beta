@@ -73,6 +73,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
+        self._cooling_on = cooling_on
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
@@ -95,9 +96,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_target_temperature_step = max(resolution, 0.1)
 
     @property
-    def current_temperature(self) -> float:
+    def current_temperature(self) -> float | None:
         """Return the current temperature."""
-        return self.device["sensors"]["temperature"]
+        if self._cooling_on:
+            return self.device["sensors"].get("setpoint_low")
+
+        return self.device["sensors"].get("temperature")
 
     @property
     def target_temperature(self) -> float | None:
