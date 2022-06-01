@@ -98,7 +98,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def current_temperature(self) -> float | None:
         """Return the current temperature."""
-         return self.device["sensors"]["temperature"]
+        return self.device["sensors"]["temperature"]
 
     @property
     def target_temperature(self) -> float | None:
