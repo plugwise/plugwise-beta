@@ -46,7 +46,6 @@ def mock_config_entry() -> MockConfigEntry:
             CONF_USERNAME: "smile",
             PW_TYPE: API,
         },
-        options={CONF_COOLING_ON: False},
         unique_id="smile98765",
     )
 
