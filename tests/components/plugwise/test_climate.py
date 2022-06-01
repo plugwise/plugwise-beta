@@ -16,6 +16,9 @@ from homeassistant.exceptions import HomeAssistantError
 
 from tests.common import MockConfigEntry
 
+TEST_HOST = "1.1.1.1"
+TEST_PASSWORD = "test_password"
+
 
 async def test_adam_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
@@ -184,7 +187,7 @@ async def test_adam_climate_entity_climate_changes(
 
 
 async def test_anna_climate_entity_attributes(
-    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration_2: MagicMock
 ) -> None:
     """Test creation of anna climate device environment."""
     state = hass.states.get("climate.anna")

@@ -8,7 +8,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from homeassistant.components.plugwise.const import API, DOMAIN, PW_TYPE
+from homeassistant.components.plugwise.const import (
+    API,
+    CONF_COOLING_ON,
+    DOMAIN,
+    PW_TYPE,
+)
 from homeassistant.const import (
     CONF_HOST,
     CONF_MAC,
@@ -41,6 +46,26 @@ def mock_config_entry() -> MockConfigEntry:
             CONF_USERNAME: "smile",
             PW_TYPE: API,
         },
+        options={CONF_COOLING_ON: False},
+        unique_id="smile98765",
+    )
+
+
+@pytest.fixture
+def mock_config_entry_2() -> MockConfigEntry:
+    """Return the default mocked config entry."""
+    return MockConfigEntry(
+        title="My Plugwise",
+        domain=DOMAIN,
+        data={
+            CONF_HOST: "127.0.0.1",
+            CONF_MAC: "AA:BB:CC:DD:EE:FF",
+            CONF_PASSWORD: "test-password",
+            CONF_PORT: 80,
+            CONF_USERNAME: "smile",
+            PW_TYPE: API,
+        },
+        options={CONF_COOLING_ON: True},
         unique_id="smile98765",
     )
 
@@ -272,3 +297,16 @@ async def init_integration(
     await hass.async_block_till_done()
 
     return mock_config_entry
+
+
+@pytest.fixture
+async def init_integration_2(
+    hass: HomeAssistant, mock_config_entry_2: MockConfigEntry
+) -> MockConfigEntry:
+    """Set up the Plugwise integration for testing."""
+    mock_config_entry_2.add_to_hass(hass)
+
+    await hass.config_entries.async_setup(mock_config_entry_2.entry_id)
+    await hass.async_block_till_done()
+
+    return mock_config_entry_2
