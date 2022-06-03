@@ -357,10 +357,8 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][COORDINATOR]
-        interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[
-            coordinator.api.smile_type
-        ]  # pw-beta
+        api = self.hass.data[DOMAIN][self.config_entry.entry_id][API]
+        interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[api.smile_type]  # pw-beta
 
         data = {
             vol.Optional(
@@ -371,7 +369,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             ): vol.All(cv.positive_int, vol.Clamp(min=10)),
         }  # pw-beta
 
-        if coordinator.api.smile_type != "thermostat":
+        if api.smile_type != "thermostat":
             return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
 
         data.update(
@@ -389,10 +387,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             }
         )  # pw-beta
 
-        if (
-            coordinator.gateway["smile_name"] == "Anna"
-            and coordinator.gateway["cooling_present"]
-        ):
+        if api_anna_no_cooling_enabled:
             data.update(
                 {
                     vol.Optional(
