@@ -38,7 +38,6 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     API,
-    COORDINATOR,
     CONF_COOLING_ON,
     CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_MANUAL_PATH,
