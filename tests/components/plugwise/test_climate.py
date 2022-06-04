@@ -187,7 +187,7 @@ async def test_adam_climate_entity_climate_changes(
 
 
 async def test_anna_climate_entity_attributes(
-    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration_2: MagicMock
+    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration_3: MagicMock
 ) -> None:
     """Test creation of anna climate device environment."""
     state = hass.states.get("climate.anna")
