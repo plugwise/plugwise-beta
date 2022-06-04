@@ -38,6 +38,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     API,
+    COORDINATOR,
     CONF_COOLING_ON,
     CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_MANUAL_PATH,
@@ -356,8 +357,8 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        api = self.hass.data[DOMAIN][self.config_entry.entry_id][API]
-        interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[api.smile_type]  # pw-beta
+        coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][COORDINATOR]
+        interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]  # pw-beta
 
         data = {
             vol.Optional(
@@ -368,7 +369,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             ): vol.All(cv.positive_int, vol.Clamp(min=10)),
         }  # pw-beta
 
-        if api.smile_type != "thermostat":
+        if coordinator.api.smile_type != "thermostat":
             return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
 
         data.update(
@@ -386,7 +387,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             }
         )  # pw-beta
 
-        if api.anna_no_cooling_enabled:
+        if coordinator.api.anna_no_cooling_enabled:
             data.update(
                 {
                     vol.Optional(
