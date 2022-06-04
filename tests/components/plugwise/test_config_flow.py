@@ -474,7 +474,7 @@ async def test_form_other_problem(hass, mock_smile):
     assert result2["errors"] == {"base": "unknown"}
 
 
-async def test_options_flow_thermo(hass, mock_smile_anna) -> None:
+async def test_options_flow_thermo(hass, mock_smile_anna_2) -> None:
     """Test config flow options for thermostatic environments."""
     entry = MockConfigEntry(
         domain=DOMAIN,
@@ -488,7 +488,7 @@ async def test_options_flow_thermo(hass, mock_smile_anna) -> None:
         },
     )
 
-    hass.data[DOMAIN] = {entry.entry_id: {"api": mock_smile_anna}}
+    hass.data[DOMAIN] = {entry.entry_id: {"api": mock_smile_anna_2}}
     entry.add_to_hass(hass)
     with patch(
         "homeassistant.components.plugwise.async_setup_entry", return_value=True
