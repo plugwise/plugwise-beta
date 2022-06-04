@@ -488,7 +488,9 @@ async def test_options_flow_thermo(hass, mock_smile_anna_2) -> None:
         },
     )
 
-    hass.data[DOMAIN] = {entry.entry_id: {"api": mock_smile_anna_2}}
+    hass.data[DOMAIN] = {
+        entry.entry_id: {"coordinator": MagicMock(api=mock_smile_anna_2)}
+    }
     entry.add_to_hass(hass)
     with patch(
         "homeassistant.components.plugwise.async_setup_entry", return_value=True
