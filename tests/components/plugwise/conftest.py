@@ -68,6 +68,7 @@ def mock_config_entry_2() -> MockConfigEntry:
         unique_id="smile98765",
     )
 
+
 @pytest.fixture
 def mock_config_entry_3() -> MockConfigEntry:
     """Return the default mocked config entry."""
@@ -85,6 +86,7 @@ def mock_config_entry_3() -> MockConfigEntry:
         options={CONF_COOLING_ON: False},
         unique_id="smile98765",
     )
+
 
 @pytest.fixture
 def mock_setup_entry() -> Generator[AsyncMock, None, None]:
