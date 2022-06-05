@@ -121,6 +121,7 @@ def mock_smile_adam() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
+        smile.anna_cooling_enabled = None
         smile.gateway_id = "fe799307f1624099878210aa0b9f1475"
         smile.heater_id = "90986d591dcd426cae3ec3e8111ff730"
         smile.smile_version = "3.0.15"
@@ -146,6 +147,7 @@ def mock_smile_adam_2() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
+        smile.anna_cooling_enabled = None
         smile.gateway_id = "da224107914542988a88561b4452b0f6"
         smile.heater_id = "056ee145a816487eaa69243c3280f8bf"
         smile.smile_version = "3.6.4"
@@ -171,6 +173,7 @@ def mock_smile_adam_3() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
+        smile.anna_cooling_enabled = None
         smile.gateway_id = "da224107914542988a88561b4452b0f6"
         smile.heater_id = "056ee145a816487eaa69243c3280f8bf"
         smile.smile_version = "3.6.4"
