@@ -161,7 +161,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if self._cooling_on or self.coordinator.api.anna_cooling_enabled:
             features = SUPPORT_TARGET_TEMPERATURE_RANGE
         if self.device.get("preset_modes"):
-           features |= SUPPORT_PRESET_MODE
+            features |= SUPPORT_PRESET_MODE
 
         return features
 
