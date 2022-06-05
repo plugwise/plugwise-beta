@@ -389,7 +389,10 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
             }
         )  # pw-beta
 
-        if not coordinator.api.anna_cool_ena_indication:
+        if (
+            coordinator.api.anna_cool_ena_indication is not None 
+            and not coordinator.api.anna_cool_ena_indication
+        ):
             data.update(
                 {
                     vol.Optional(
