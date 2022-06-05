@@ -195,7 +195,8 @@ def mock_smile_anna() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.anna_no_cooling_enabled = False
+        smile.anna_cool_ena_indication = False
+        smile.anna_cooling_enabled = False
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
         smile.heater_id = "1cbf783bb11e4a7c8a6843dee3a86927"
         smile.smile_version = "4.0.15"
@@ -220,7 +221,8 @@ def mock_smile_anna_2() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.anna_no_cooling_enabled = True
+        smile.anna_cool_ena_indication = True
+        smile.anna_cooling_enabled = True
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
         smile.heater_id = "1cbf783bb11e4a7c8a6843dee3a86927"
         smile.smile_version = "4.0.15"
@@ -245,7 +247,8 @@ def mock_smile_anna_3() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.anna_no_cooling_enabled = True
+        smile.anna_cool_ena_indication = True
+        smile.anna_cooling_enabled = False
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
         smile.heater_id = "1cbf783bb11e4a7c8a6843dee3a86927"
         smile.smile_version = "4.0.15"
