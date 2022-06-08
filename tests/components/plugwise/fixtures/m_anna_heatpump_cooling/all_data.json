@@ -10,7 +10,7 @@
     "1cbf783bb11e4a7c8a6843dee3a86927": {
       "dev_class": "heater_central",
       "location": "a57efe5f145f498c9be62a9b63626fbf",
-      "model": "Generic heater",
+      "model": "Generic heater/cooler",
       "name": "OpenTherm",
       "vendor": "Techneco",
       "maximum_boiler_temperature": 60.0,
@@ -47,7 +47,7 @@
         "plugwise_notification": false
       },
       "sensors": {
-        "outdoor_temperature": 20.2
+        "outdoor_temperature": 28.2
       }
     },
     "3cb70739631c4d17a86b8b12e8a5161b": {
@@ -76,11 +76,12 @@
       "last_used": "standaard",
       "mode": "auto",
       "sensors": {
-        "temperature": 19.3,
-        "setpoint": 21.0,
+        "temperature": 26.3,
         "illuminance": 86.0,
         "cooling_activation_outdoor_temperature": 21.0,
-        "cooling_deactivation_threshold": 4.0
+        "cooling_deactivation_threshold": 4.0,
+        "setpoint_low": 20.5,
+        "setpoint_high": 24.0
       }
     }
   }

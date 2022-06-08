@@ -28,7 +28,14 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW MAY [0.23.2]
+# NEW June [0.24.0]
+- Smile Anna cooling-related updates
+  - Link to plugwise v0.19.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.19.0
+  - For the Anna with Elga combination, add a CONFIGURE option `cooling on`. Select this option to let the Plugwise integration know that the cooling-feature of your Elga has been set to on. 
+  - Show `target_temp_high` and `target_temp_low` instead of `target_temperature`, when cooling is active, next to heating.
+  - Add the `supported_features` as a property as they can change when the cooling-feature (on the Elga/Loria/Thermastage) is turned on or off.
+
+# MAY [0.23.2]
 - Smile bugfix: fixing https://github.com/plugwise/python-plugwise/issues/192 and https://github.com/home-assistant/core/issues/72305
   via plugwise v0.18.5 - https://github.com/plugwise/python-plugwise/releases/tag/v0.18.5
 

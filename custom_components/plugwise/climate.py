@@ -19,6 +19,7 @@ from homeassistant.components.climate.const import (
     PRESET_HOME,  # pw-beta homekit emulation
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
+    SUPPORT_TARGET_TEMPERATURE_RANGE,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
@@ -27,6 +28,7 @@ from homeassistant.exceptions import HomeAssistantError
 
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
+    CONF_COOLING_ON,
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     COORDINATOR,
     DOMAIN,
@@ -43,13 +45,17 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile Thermostats from a config entry."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
+        config_entry.entry_id
+    ][COORDINATOR]
+
+    cooling_on: bool | None = config_entry.options.get(CONF_COOLING_ON)
 
     # pw-beta homekit emulation
-    homekit_enabled = config_entry.options.get(CONF_HOMEKIT_EMULATION, False)
+    homekit_enabled: bool = config_entry.options.get(CONF_HOMEKIT_EMULATION, False)
 
     async_add_entities(
-        PlugwiseClimateEntity(coordinator, device_id, homekit_enabled)
+        PlugwiseClimateEntity(coordinator, device_id, cooling_on, homekit_enabled)
         for device_id, device in coordinator.data.devices.items()
         if device["dev_class"] in MASTER_THERMOSTATS
     )
@@ -64,20 +70,18 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
+        cooling_on: bool | None,
         homekit_enabled: bool,  # pw-beta homekit emulation
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
+        self._cooling_on = cooling_on
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
         self._attr_name = self.device["name"]
 
-        # Determine preset modes
-        self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE
-        self._attr_preset_modes = None
-        if presets := self.device["preset_modes"]:
-            self._attr_supported_features |= SUPPORT_PRESET_MODE
+        if presets := self.device.get("preset_modes"):
             self._attr_preset_modes = presets
 
         self._attr_min_temp = self.device.get("lower_bound", DEFAULT_MIN_TEMP)
@@ -90,21 +94,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def current_temperature(self) -> float:
         """Return the current temperature."""
         return self.device["sensors"]["temperature"]
-
-    @property
-    def target_temperature(self) -> float:
-        """Return the temperature we try to reach."""
-        return self.device["sensors"]["setpoint"]
-
-    @property
-    def hvac_mode(self) -> str:
-        """Return HVAC operation ie. auto, heat, cool, or off mode."""
-        if (mode := self.device["mode"]) is None or mode not in self.hvac_modes:
-            return HVAC_MODE_HEAT  # pragma: no cover
-        # pw-beta homekit emulation
-        if self._homekit_enabled and self._homekit_mode == HVAC_MODE_OFF:
-            mode = HVAC_MODE_OFF  # pragma: no cover
-        return mode
 
     @property
     def hvac_action(self) -> str:
@@ -126,6 +115,17 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             return CURRENT_HVAC_COOL
 
         return CURRENT_HVAC_IDLE
+
+    @property
+    def hvac_mode(self) -> str:
+        """Return HVAC operation ie. auto, heat, cool, or off mode."""
+        if (mode := self.device["mode"]) is None or mode not in self.hvac_modes:
+            return HVAC_MODE_HEAT  # pragma: no cover
+        # pw-beta homekit emulation
+        if self._homekit_enabled and self._homekit_mode == HVAC_MODE_OFF:
+            mode = HVAC_MODE_OFF  # pragma: no cover
+
+        return mode
 
     @property
     def hvac_modes(self) -> list[str]:
@@ -153,6 +153,46 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def preset_mode(self) -> str:
         """Return the current preset mode."""
         return self.device["active_preset"]
+
+    @property
+    def supported_features(self) -> int:
+        """Return the supported features."""
+        features = SUPPORT_TARGET_TEMPERATURE
+        if self._cooling_on or self.coordinator.api.anna_cooling_enabled:
+            features = SUPPORT_TARGET_TEMPERATURE_RANGE
+        if self.device.get("preset_modes"):
+            features |= SUPPORT_PRESET_MODE
+
+        return features
+
+    @property
+    def target_temperature(self) -> float | None:
+        """Return the temperature we try to reach.
+
+        Connected to the HVACModes combinations of AUTO/HEAT and AUTO/COOL.
+        """
+        if self._cooling_on is not None and not (
+            self._cooling_on or self.coordinator.api.anna_cooling_enabled
+        ):
+            return self.device["sensors"].get("setpoint_low")
+
+        return self.device["sensors"].get("setpoint")
+
+    @property
+    def target_temperature_high(self) -> float | None:
+        """Return the temperature we try to reach in case of cooling.
+
+        Connected to the HVACMode combination of AUTO/HEAT_COOL.
+        """
+        return self.device["sensors"].get("setpoint_high")
+
+    @property
+    def target_temperature_low(self) -> float | None:
+        """Return the heating temperature we try to reach in case of heating.
+
+        Connected to the HVACMode combination AUTO/HEAT_COOL.
+        """
+        return self.device["sensors"].get("setpoint_low")
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:

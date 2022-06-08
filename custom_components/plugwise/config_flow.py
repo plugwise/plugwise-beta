@@ -39,6 +39,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .const import (
     API,
     COORDINATOR,
+    CONF_COOLING_ON,
     CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_MANUAL_PATH,
     CONF_REFRESH_INTERVAL,  # pw-beta option
@@ -387,5 +388,18 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
                 ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=5.0)),
             }
         )  # pw-beta
+
+        if (
+            coordinator.api.anna_cool_ena_indication is not None
+            and not coordinator.api.anna_cool_ena_indication
+        ):
+            data.update(
+                {
+                    vol.Optional(
+                        CONF_COOLING_ON,
+                        default=self.config_entry.options.get(CONF_COOLING_ON, False),
+                    ): cv.boolean,
+                }
+            )
 
         return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
