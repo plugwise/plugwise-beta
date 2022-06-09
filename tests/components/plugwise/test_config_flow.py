@@ -323,7 +323,8 @@ async def test_zercoconf_discovery_update_configuration(
         (InvalidSetupError, "invalid_setup"),
         (InvalidAuthentication, "invalid_auth"),
         (ConnectionFailedError, "cannot_connect"),
-        (PlugwiseException, "cannot_connect"),
+        (InvalidXMLError, "cannot_connect"),
+        (ResponseError, "cannot_connect"),
         (RuntimeError, "unknown"),
     ],
 )
