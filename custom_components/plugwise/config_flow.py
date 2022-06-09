@@ -281,7 +281,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors[CONF_BASE] = "invalid_setup"
             except InvalidAuthentication:
                 errors[CONF_BASE] = "invalid_auth"
-            except PlugwiseException:
+            except InvalidXMLError, ResponseError, aiohttp.ClientError, ConnectionFailedError:
                 errors[CONF_BASE] = "cannot_connect"
             except Exception:  # pylint: disable=broad-except
                 LOGGER.exception("Unexpected exception")
