@@ -1,7 +1,6 @@
 """Plugwise network/gateway platform."""
 from __future__ import annotations
 
-import asyncio
 import aiohttp
 import datetime as dt
 from typing import Any
@@ -67,10 +66,6 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ) from err
     except aiohttp.ClientError as err:
         raise ConfigEntryNotReady("Failed connecting to the Plugwise Smile") from err
-    except asyncio.TimeoutError as err:
-        raise ConfigEntryNotReady(
-            "Timeout while connecting to the Plugwise Smile"
-        ) from err
 
     api.get_all_devices()
 
