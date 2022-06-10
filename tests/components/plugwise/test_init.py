@@ -8,6 +8,7 @@ from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
     PlugwiseException,
+    ResponseError,
     XMLDataMissingError,
 )
 import pytest
@@ -51,7 +52,7 @@ async def test_load_unload_config_entry(
     [
         (InvalidAuthentication),
         (ConnectionFailedError),
-        (PlugwiseException),
+        (ResponseError),
         (XMLDataMissingError),
         (aiohttp.ClientError),
         (asyncio.TimeoutError),
