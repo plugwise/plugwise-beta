@@ -5,8 +5,10 @@ from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
     InvalidSetupError,
+    InvalidXMLError,
     NetworkDown,
     PlugwiseException,
+    ResponseError,
     StickInitError,
     TimeoutException,
 )

@@ -1,12 +1,18 @@
 """Plugwise network/gateway platform."""
 from __future__ import annotations
 
-import aiohttp
+from aiohttp import ClientError
 import datetime as dt
 from typing import Any
 import voluptuous as vol
 
-from plugwise.exceptions import InvalidAuthentication, PlugwiseException
+from plugwise.exceptions import (
+    ConnectionFailedError,
+    InvalidAuthentication,
+    InvalidXMLError,
+    PlugwiseException,
+    ResponseError,
+)
 from plugwise.smile import Smile
 
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
@@ -64,7 +70,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         raise ConfigEntryNotReady(
             "Error while communicating to the Plugwise Smile"
         ) from err
-    except (aiohttp.ClientError, ConnectionFailedError) as err:
+    except (ClientError, ConnectionFailedError) as err:
         raise ConfigEntryNotReady("Failed connecting to the Plugwise Smile") from err
 
     api.get_all_devices()
