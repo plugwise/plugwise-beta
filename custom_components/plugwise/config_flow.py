@@ -1,14 +1,17 @@
 """Config flow for Plugwise integration."""
 from __future__ import annotations
 
+from aiohttp import ClientError
 import datetime as dt  # pw-beta
 from typing import Any
 
 from plugwise.exceptions import (
+    ConnectionFailedError,
     InvalidAuthentication,
     InvalidSetupError,
+    InvalidXMLError,
     NetworkDown,
-    PlugwiseException,
+    ResponseError,
     PortError,
     StickInitError,
     TimeoutException,
@@ -281,7 +284,12 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors[CONF_BASE] = "invalid_setup"
             except InvalidAuthentication:
                 errors[CONF_BASE] = "invalid_auth"
-            except PlugwiseException:
+            except (
+                ClientError,
+                ConnectionFailedError,
+                InvalidXMLError,
+                ResponseError,
+            ):
                 errors[CONF_BASE] = "cannot_connect"
             except Exception:  # pylint: disable=broad-except
                 LOGGER.exception("Unexpected exception")
