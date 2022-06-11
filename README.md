@@ -28,7 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW June [0.24.0]
+# NEW June [0.24.1]
+- Smiles & Stretches: clean up & improve error handling/reporting
+  - Link to plugwise v0.19.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.19.1
+
+# June [0.24.0]
 - Smile Anna cooling-related updates
   - Link to plugwise v0.19.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.19.0
   - For the Anna with Elga combination, add a CONFIGURE option `cooling on`. Select this option to let the Plugwise integration know that the cooling-feature of your Elga has been set to on. 
