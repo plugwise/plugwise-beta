@@ -43,7 +43,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     """Establish connection with plugwise USB-stick."""
     hass.data.setdefault(DOMAIN, {})
-    device_registry = await dr.async_get(hass)
+    device_registry = dr.async_get(hass)
 
     def discover_finished():
         """Create entities for all discovered nodes."""
