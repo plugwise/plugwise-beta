@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW June [0.24.1]
+# NEW June [0.24.2]
+- Stick: fix async_get_registry warning in Core Log
+
+# June [0.24.1]
 - Smiles & Stretches: clean up & improve error handling/reporting
   - Link to plugwise v0.19.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.19.1
 
