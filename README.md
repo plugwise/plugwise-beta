@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW June [0.24.2]
+# NEW June [0.25.0]
+- Adam: add support for the Aqara Plug - via plugwise v0.20.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.20.0
+
+# June [0.24.2]
 - Stick: fix async_get_registry warning in Core Log
 
 # June [0.24.1]
