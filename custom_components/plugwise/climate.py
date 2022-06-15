@@ -205,7 +205,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         data: dict[str, Any] = {}
         if ATTR_TEMPERATURE in kwargs:
             data["setpoint"] = kwargs.get(ATTR_TEMPERATURE)
-        else: 
+        else:
             data["setpoint_high"] = kwargs.get(ATTR_TARGET_TEMP_HIGH)
             data["setpoint_low"] = kwargs.get(ATTR_TARGET_TEMP_LOW)
 
