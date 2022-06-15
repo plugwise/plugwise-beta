@@ -5,9 +5,8 @@ from typing import Any
 
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
-    ATTR_TEMPERATURE,
-    ATTR_TEMPERATURE_HIGH,
-    ATTR_TEMPERATURE_LOW,
+    ATTR_TARGET_TEMP_HIGH,
+    ATTR_TARGET_TEMP_LOW,
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
@@ -23,9 +22,12 @@ from homeassistant.components.climate.const import (
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
     SUPPORT_TARGET_TEMPERATURE_RANGE,
-    TEMP_CELSIUS,
 )
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import (
+    ATTR_TEMPERATURE,
+    TEMP_CELSIUS,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 
@@ -204,9 +206,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         data: dict[str, float] = {}
         if ATTR_TEMPERATURE in kwargs:
             data["setpoint"] = kwargs.get(ATTR_TEMPERATURE)
-        if ATTR_TEMPERATURE_HIGH in kwargs:
+        if ATTR_TARGET_TEMP_HIGH in kwargs:
             data["setpoint_high"] = kwargs.get(ATTR_TEMPERATURE_HIGH)
-        if ATTR_TEMPERATURE_LOW in kwargs:
+        if ATTR_TARGET_TEMP_LOW in kwargs:
             data["setpoint_low"] = kwargs.get(ATTR_TEMPERATURE_LOW)
         
         for _, temperature in data.items():
