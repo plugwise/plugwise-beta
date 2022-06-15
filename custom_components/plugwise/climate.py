@@ -22,7 +22,12 @@ from homeassistant.components.climate.const import (
     SUPPORT_TARGET_TEMPERATURE_RANGE,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
+from homeassistant.const import (
+    ATTR_TEMPERATURE,
+    ATTR_TARGET_TEMP_LOW,
+    ATTR_TARGET_TEMP_HIGH,
+    TEMP_CELSIUS,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 
@@ -198,8 +203,14 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        LOGGER.debug("Set_temperature input: %s", kwargs)
-        if ((temperature := kwargs.get(ATTR_TEMPERATURE)) is None) or not (
+        if ATTR_TEMPERATURE in kwargs:
+            temperature := kwargs.get(ATTR_TEMPERATURE)
+        if ATTR_TEMPERATURE_LOW in kwargs:
+            temperature := kwargs.get(ATTR_TEMPERATURE_LOW)
+        if ATTR_TEMPERATURE_HIGH in kwargs:
+            temperature := kwargs.get(ATTR_TEMPERATURE_HIGH)
+        
+        if temperature is None or not (
             self._attr_min_temp < temperature < self._attr_max_temp
         ):
             raise ValueError("Invalid temperature requested")
