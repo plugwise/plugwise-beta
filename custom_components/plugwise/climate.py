@@ -205,14 +205,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         data: dict[str, Any] = {}
         if ATTR_TEMPERATURE in kwargs:
             data["setpoint"] = kwargs.get(ATTR_TEMPERATURE)
-        if ATTR_TARGET_TEMP_HIGH in kwargs:
+        else: 
             data["setpoint_high"] = kwargs.get(ATTR_TARGET_TEMP_HIGH)
-        if ATTR_TARGET_TEMP_LOW in kwargs:
             data["setpoint_low"] = kwargs.get(ATTR_TARGET_TEMP_LOW)
 
         for _, temperature in data.items():
             if temperature is None or not (
-                self._attr_min_temp < temperature < self._attr_max_temp
+                self._attr_min_temp <= temperature <= self._attr_max_temp
             ):
                 raise ValueError("Invalid temperature requested")
 
