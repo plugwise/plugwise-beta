@@ -198,7 +198,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        LOGGER.debug("Set_temperature input: %s", kwargs.get(ATTR_TEMPERATURE))
+        LOGGER.debug("Set_temperature input: %s", kwargs))
         if ((temperature := kwargs.get(ATTR_TEMPERATURE)) is None) or not (
             self._attr_min_temp < temperature < self._attr_max_temp
         ):
