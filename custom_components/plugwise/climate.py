@@ -203,18 +203,21 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
+        data: dict[str, float] = {}
         if ATTR_TEMPERATURE in kwargs:
-            temperature := kwargs.get(ATTR_TEMPERATURE)
-        if ATTR_TEMPERATURE_LOW in kwargs:
-            temperature := kwargs.get(ATTR_TEMPERATURE_LOW)
+            data["setpoint"] = kwargs.get(ATTR_TEMPERATURE)
         if ATTR_TEMPERATURE_HIGH in kwargs:
-            temperature := kwargs.get(ATTR_TEMPERATURE_HIGH)
+            data["setpoint_high"] = kwargs.get(ATTR_TEMPERATURE_HIGH)
+        if ATTR_TEMPERATURE_LOW in kwargs:
+            data["setpoint_low"] := kwargs.get(ATTR_TEMPERATURE_LOW)
         
-        if temperature is None or not (
-            self._attr_min_temp < temperature < self._attr_max_temp
-        ):
-            raise ValueError("Invalid temperature requested")
-        await self.coordinator.api.set_temperature(self.device["location"], temperature)
+        for _, temperature in data.items(:)
+            if temperature is None or not (
+                self._attr_min_temp < temperature < self._attr_max_temp
+            ):
+                raise ValueError("Invalid temperature requested")
+
+        await self.coordinator.api.set_temperature(self.device["location"], **data)
 
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: str) -> None:
