@@ -217,7 +217,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             ):
                 raise ValueError("Invalid temperature requested")
 
-        await self.coordinator.api.set_temperature(self.device["location"], **data)
+        await self.coordinator.api.set_temperature(self.device["location"], data)
 
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: str) -> None:
