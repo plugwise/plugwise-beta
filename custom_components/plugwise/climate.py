@@ -213,7 +213,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if temperature is None or not (
                 self._attr_min_temp <= temperature <= self._attr_max_temp
             ):
-                raise ValueError("Invalid temperature requested")
+                raise ValueError("Invalid temperature change requested")
 
         await self.coordinator.api.set_temperature(self.device["location"], data)
 
