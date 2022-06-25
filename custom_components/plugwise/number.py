@@ -8,6 +8,7 @@ from typing import Any
 from plugwise import Smile
 
 from homeassistant.components.number import (
+    NumberDeviceClass,
     NumberEntity,
     NumberEntityDescription,
     NumberMode,
@@ -40,6 +41,7 @@ NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
         command=lambda api, value: api.set_max_boiler_temperature(value),
+        device_class=NumberDeviceClass.TEMPERATURE,
         name="Maximum Boiler Temperature Setpoint",
         icon="mdi:thermometer",
         entity_category=EntityCategory.CONFIG,
@@ -93,11 +95,11 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self._attr_mode = NumberMode.BOX
 
     @property
-    def value(self) -> float:
+    def native_value(self) -> float:
         """Return the present setpoint value."""
         return self.device[self.entity_description.key]
 
-    async def async_set_value(self, value: float) -> None:
+    async def set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
         await self.entity_description.command(self.coordinator.api, value)
         LOGGER.debug(
