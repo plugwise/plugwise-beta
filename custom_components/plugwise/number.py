@@ -46,9 +46,9 @@ NUMBER_TYPES = (
         icon="mdi:thermometer",
         entity_category=EntityCategory.CONFIG,
         entity_registry_enabled_default=False,
-        native_min_value=25,
-        native_max_value=95,
-        native_step=5,
+        min_value=25,
+        max_value=95,
+        step=5,
     ),
 )
 
