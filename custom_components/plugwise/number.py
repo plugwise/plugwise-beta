@@ -99,7 +99,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         """Return the present setpoint value."""
         return self.device[self.entity_description.key]
 
-    async def async_set_native_value(self, value: float) -> None:
+    async def set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
         await self.entity_description.command(self.coordinator.api, value)
         LOGGER.debug(
