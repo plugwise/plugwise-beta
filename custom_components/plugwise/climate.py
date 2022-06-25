@@ -92,6 +92,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             # Ensure we don't drop below 0.1
             self._attr_target_temperature_step = max(resolution, 0.1)
 
+        if cooling_on is not None:
+            self.coordinator.api.send_cooling_on(cooling_on)
+
     @property
     def current_temperature(self) -> float:
         """Return the current temperature."""
