@@ -94,8 +94,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_target_temperature_step = max(resolution, 0.1)
 
         if cooling_on is not None:
-            LOGGER.debug("HOI sending cooling_state: %s", cooling_on)
-            self.coordinator.api.send_cooling_on(cooling_on)
+            LOGGER.debug("HOI cooling_on: %s", cooling_on)
+            result = self.coordinator.api.send_cooling_on(cooling_on)
+            LOGGER.debug("HOI sending cooling_state succes: %s", result)
 
     @property
     def current_temperature(self) -> float:
