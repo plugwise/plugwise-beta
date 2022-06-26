@@ -77,6 +77,7 @@
       "mode": "auto",
       "sensors": {
         "temperature": 21.3,
+        "setpoint": 20.5,
         "illuminance": 86.0,
         "cooling_activation_outdoor_temperature": 21.0,
         "cooling_deactivation_threshold": 4.0,
