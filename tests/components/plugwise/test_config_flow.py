@@ -503,10 +503,14 @@ async def test_options_flow_thermo(hass, mock_smile_anna_2) -> None:
         assert result["type"] == RESULT_TYPE_FORM
         assert result["step_id"] == "init"
 
+        result = await hass.config_entries.options.async_configure(
+            result["flow_id"], user_input={CONF_REFRESH_INTERVAL: 3.0}
+        )
+
         assert result["type"] == RESULT_TYPE_CREATE_ENTRY
         assert result["data"] == {
             CONF_HOMEKIT_EMULATION: False,
-            CONF_REFRESH_INTERVAL: 1.5,
+            CONF_REFRESH_INTERVAL: 3.0,
             CONF_SCAN_INTERVAL: 60,
         }
 
