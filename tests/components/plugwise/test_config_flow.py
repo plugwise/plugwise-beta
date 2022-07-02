@@ -19,7 +19,6 @@ from homeassistant.components.plugwise.config_flow import CONF_MANUAL_PATH
 from homeassistant.components import zeroconf
 from homeassistant.components.plugwise.const import (
     API,
-    CONF_COOLING_ON,
     CONF_HOMEKIT_EMULATION,
     CONF_REFRESH_INTERVAL,
     CONF_USB_PATH,
@@ -484,7 +483,6 @@ async def test_options_flow_thermo(hass, mock_smile_anna_2) -> None:
         title=CONF_NAME,
         data={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
         options={
-            CONF_COOLING_ON: False,
             CONF_HOMEKIT_EMULATION: False,
             CONF_REFRESH_INTERVAL: 1.5,
             CONF_SCAN_INTERVAL: 60,
@@ -505,12 +503,8 @@ async def test_options_flow_thermo(hass, mock_smile_anna_2) -> None:
         assert result["type"] == RESULT_TYPE_FORM
         assert result["step_id"] == "init"
 
-        result = await hass.config_entries.options.async_configure(
-            result["flow_id"], user_input={CONF_COOLING_ON: True}
-        )
         assert result["type"] == RESULT_TYPE_CREATE_ENTRY
         assert result["data"] == {
-            CONF_COOLING_ON: True,
             CONF_HOMEKIT_EMULATION: False,
             CONF_REFRESH_INTERVAL: 1.5,
             CONF_SCAN_INTERVAL: 60,
