@@ -10,7 +10,6 @@ import pytest
 
 from homeassistant.components.plugwise.const import (
     API,
-    CONF_COOLING_ON,
     DOMAIN,
     PW_TYPE,
 )
@@ -289,4 +288,3 @@ async def init_integration(
     await hass.async_block_till_done()
 
     return mock_config_entry
-
