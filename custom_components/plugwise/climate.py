@@ -30,7 +30,6 @@ from homeassistant.exceptions import HomeAssistantError
 
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
-    CONF_COOLING_ON,
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     COORDINATOR,
     DOMAIN,
@@ -52,13 +51,11 @@ async def async_setup_entry(
         config_entry.entry_id
     ][COORDINATOR]
 
-    cooling_on: bool | None = config_entry.options.get(CONF_COOLING_ON)
-
     # pw-beta homekit emulation
     homekit_enabled: bool = config_entry.options.get(CONF_HOMEKIT_EMULATION, False)
 
     async_add_entities(
-        PlugwiseClimateEntity(coordinator, device_id, cooling_on, homekit_enabled)
+        PlugwiseClimateEntity(coordinator, device_id, homekit_enabled)
         for device_id, device in coordinator.data.devices.items()
         if device["dev_class"] in MASTER_THERMOSTATS
     )
@@ -73,12 +70,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
-        cooling_on: bool | None,
         homekit_enabled: bool,  # pw-beta homekit emulation
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
-        self._cooling_on = cooling_on
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
@@ -92,11 +87,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if resolution := self.device.get("resolution", 0.1):
             # Ensure we don't drop below 0.1
             self._attr_target_temperature_step = max(resolution, 0.1)
-
-        if cooling_on is not None:
-            LOGGER.debug("cooling_on: %s", cooling_on)
-            result = self.coordinator.api.send_cooling_on(cooling_on)
-            LOGGER.debug("Sending cooling_on state succesfully: %s", result)
 
     @property
     def current_temperature(self) -> float:
@@ -166,7 +156,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def supported_features(self) -> int:
         """Return the supported features."""
         features = SUPPORT_TARGET_TEMPERATURE
-        if self._cooling_on or self.coordinator.api.anna_cooling_enabled:
+        if (
+            self.coordinator.api.elga_cooling_enabled
+            or self.coordinator.api.lortherm_cooling_enabled
+        ):
             features = SUPPORT_TARGET_TEMPERATURE_RANGE
         if self.device.get("preset_modes"):
             features |= SUPPORT_PRESET_MODE
@@ -179,8 +172,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACModes combinations of AUTO/HEAT and AUTO/COOL.
         """
-        if self._cooling_on is not None and not (
-            self._cooling_on or self.coordinator.api.anna_cooling_enabled
+        if (
+            self.coordinator.api.elga_cooling_enabled
+            or self.coordinator.api.lortherm_cooling_enabled
         ):
             return self.device["sensors"].get("setpoint_low")
 
