@@ -51,44 +51,6 @@ def mock_config_entry() -> MockConfigEntry:
 
 
 @pytest.fixture
-def mock_config_entry_2() -> MockConfigEntry:
-    """Return the default mocked config entry."""
-    return MockConfigEntry(
-        title="My Plugwise",
-        domain=DOMAIN,
-        data={
-            CONF_HOST: "127.0.0.1",
-            CONF_MAC: "AA:BB:CC:DD:EE:FF",
-            CONF_PASSWORD: "test-password",
-            CONF_PORT: 80,
-            CONF_USERNAME: "smile",
-            PW_TYPE: API,
-        },
-        options={CONF_COOLING_ON: True},
-        unique_id="smile98765",
-    )
-
-
-@pytest.fixture
-def mock_config_entry_3() -> MockConfigEntry:
-    """Return the default mocked config entry."""
-    return MockConfigEntry(
-        title="My Plugwise",
-        domain=DOMAIN,
-        data={
-            CONF_HOST: "127.0.0.1",
-            CONF_MAC: "AA:BB:CC:DD:EE:FF",
-            CONF_PASSWORD: "test-password",
-            CONF_PORT: 80,
-            CONF_USERNAME: "smile",
-            PW_TYPE: API,
-        },
-        options={CONF_COOLING_ON: False},
-        unique_id="smile98765",
-    )
-
-
-@pytest.fixture
 def mock_setup_entry() -> Generator[AsyncMock, None, None]:
     """Mock setting up a config entry."""
     with patch(
@@ -325,28 +287,3 @@ async def init_integration(
 
     return mock_config_entry
 
-
-@pytest.fixture
-async def init_integration_2(
-    hass: HomeAssistant, mock_config_entry_2: MockConfigEntry
-) -> MockConfigEntry:
-    """Set up the Plugwise integration for testing."""
-    mock_config_entry_2.add_to_hass(hass)
-
-    await hass.config_entries.async_setup(mock_config_entry_2.entry_id)
-    await hass.async_block_till_done()
-
-    return mock_config_entry_2
-
-
-@pytest.fixture
-async def init_integration_3(
-    hass: HomeAssistant, mock_config_entry_3: MockConfigEntry
-) -> MockConfigEntry:
-    """Set up the Plugwise integration for testing."""
-    mock_config_entry_3.add_to_hass(hass)
-
-    await hass.config_entries.async_setup(mock_config_entry_3.entry_id)
-    await hass.async_block_till_done()
-
-    return mock_config_entry_3
