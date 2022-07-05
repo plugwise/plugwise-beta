@@ -155,10 +155,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def supported_features(self) -> int:
         """Return the supported features."""
         features = SUPPORT_TARGET_TEMPERATURE
-        if (
-            self.coordinator.api.elga_cooling_enabled
-            or self.coordinator.api.lortherm_cooling_enabled
-        ):
+        if self.coordinator.api.elga_cooling_enabled:
             features = SUPPORT_TARGET_TEMPERATURE_RANGE
         if self.device.get("preset_modes"):
             features |= SUPPORT_PRESET_MODE
@@ -171,11 +168,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACModes combinations of AUTO/HEAT and AUTO/COOL.
         """
-        if (
-            self.coordinator.api.elga_cooling_enabled
-            or self.coordinator.api.lortherm_cooling_enabled
-        ):
-            return self.device["sensors"].get("setpoint_low")
+        if self.coordinator.api.elga_cooling_enabled:
+            return None
 
         return self.device["sensors"].get("setpoint")
 
