@@ -168,8 +168,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACModes combinations of AUTO/HEAT and AUTO/COOL.
         """
-        if self.coordinator.api.elga_cooling_enabled:
-            return None
 
         return self.device["sensors"].get("setpoint")
 
