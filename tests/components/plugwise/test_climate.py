@@ -259,7 +259,8 @@ async def test_anna_climate_entity_climate_changes(
 
     assert mock_smile_anna.set_temperature.call_count == 1
     mock_smile_anna.set_temperature.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", {"setpoint_high": 25.0, "setpoint_low": 20.0}
+        "c784ee9fdab44e1395b8dee7d7a497d5",
+        {"setpoint_high": 25.0, "setpoint_low": 20.0},
     )
 
     await hass.services.async_call(
