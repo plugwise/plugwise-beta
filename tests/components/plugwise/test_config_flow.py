@@ -43,11 +43,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 
-from homeassistant.data_entry_flow import (
-    RESULT_TYPE_ABORT,
-    RESULT_TYPE_CREATE_ENTRY,
-    RESULT_TYPE_FORM,
-)
+from homeassistant.data_entry_flow import FlowResultType
 from tests.common import MockConfigEntry
 from voluptuous.error import MultipleInvalid
 
@@ -122,7 +118,7 @@ async def test_form_flow_gateway(
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={CONF_SOURCE: SOURCE_USER}
     )
-    assert result.get("type") == RESULT_TYPE_FORM
+    assert result.get("type") == FlowResultType.FORM
     assert result.get("errors") == {}
     assert result.get("step_id") == "user"
     assert "flow_id" in result
@@ -130,7 +126,7 @@ async def test_form_flow_gateway(
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input={FLOW_TYPE: FLOW_NET}
     )
-    assert result.get("type") == RESULT_TYPE_FORM
+    assert result.get("type") == FlowResultType.FORM
     assert result.get("errors") == {}
     assert result.get("step_id") == "user_gateway"
 
@@ -144,7 +140,7 @@ async def test_form_flow_usb(
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={CONF_SOURCE: SOURCE_USER}
     )
-    assert result.get("type") == RESULT_TYPE_FORM
+    assert result.get("type") == FlowResultType.FORM
     assert result.get("errors") == {}
     assert result.get("step_id") == "user"
     assert "flow_id" in result
@@ -152,7 +148,7 @@ async def test_form_flow_usb(
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input={FLOW_TYPE: FLOW_USB}
     )
-    assert result.get("type") == RESULT_TYPE_FORM
+    assert result.get("type") == FlowResultType.FORM
     assert result.get("errors") == {}
     assert result.get("step_id") == "user_usb"
 
@@ -166,7 +162,7 @@ async def test_form(
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_NET}
     )
-    assert result.get("type") == RESULT_TYPE_FORM
+    assert result.get("type") == FlowResultType.FORM
     assert result.get("errors") == {}
     assert result.get("step_id") == "user_gateway"
     assert "flow_id" in result
@@ -180,7 +176,7 @@ async def test_form(
     )
     await hass.async_block_till_done()
 
-    assert result2.get("type") == RESULT_TYPE_CREATE_ENTRY
+    assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
     assert result2.get("data") == {
         CONF_HOST: TEST_HOST,
@@ -214,7 +210,7 @@ async def test_zeroconf_form(
         context={CONF_SOURCE: SOURCE_ZEROCONF},
         data=TEST_DISCOVERY,
     )
-    assert result.get("type") == RESULT_TYPE_FORM
+    assert result.get("type") == FlowResultType.FORM
     assert result.get("errors") == {}
     assert result.get("step_id") == "user_gateway"
     assert "flow_id" in result
@@ -225,7 +221,7 @@ async def test_zeroconf_form(
     )
     await hass.async_block_till_done()
 
-    assert result2.get("type") == RESULT_TYPE_CREATE_ENTRY
+    assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
     assert result2.get("data") == {
         CONF_HOST: TEST_HOST,
@@ -250,7 +246,7 @@ async def test_zeroconf_stretch_form(
         context={CONF_SOURCE: SOURCE_ZEROCONF},
         data=TEST_DISCOVERY2,
     )
-    assert result.get("type") == RESULT_TYPE_FORM
+    assert result.get("type") == FlowResultType.FORM
     assert result.get("errors") == {}
     assert result.get("step_id") == "user_gateway"
     assert "flow_id" in result
@@ -261,7 +257,7 @@ async def test_zeroconf_stretch_form(
     )
     await hass.async_block_till_done()
 
-    assert result2.get("type") == RESULT_TYPE_CREATE_ENTRY
+    assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
     assert result2.get("data") == {
         CONF_HOST: TEST_HOST,
@@ -302,7 +298,7 @@ async def test_zercoconf_discovery_update_configuration(
         context={CONF_SOURCE: SOURCE_ZEROCONF},
         data=TEST_DISCOVERY,
     )
-    assert result.get("type") == RESULT_TYPE_ABORT
+    assert result.get("type") == FlowResultType.ABORT
     assert result.get("reason") == "already_configured"
     assert entry.data[CONF_HOST] == "0.0.0.0"
 
@@ -313,7 +309,7 @@ async def test_zercoconf_discovery_update_configuration(
         data=TEST_DISCOVERY,
     )
 
-    assert result.get("type") == RESULT_TYPE_ABORT
+    assert result.get("type") == FlowResultType.ABORT
     assert result.get("reason") == "already_configured"
     assert entry.data[CONF_HOST] == "1.1.1.1"
 
@@ -341,7 +337,7 @@ async def test_flow_errors(
         DOMAIN,
         context={CONF_SOURCE: SOURCE_USER},
     )
-    assert result.get("type") == RESULT_TYPE_FORM
+    assert result.get("type") == FlowResultType.FORM
     assert result.get("errors") == {}
     assert result.get("step_id") == "user"
     assert "flow_id" in result
@@ -355,7 +351,7 @@ async def test_flow_errors(
         user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
     )
 
-    assert result3.get("type") == RESULT_TYPE_FORM
+    assert result3.get("type") == FlowResultType.FORM
     assert result3.get("errors") == {"base": reason}
     assert result3.get("step_id") == "user_gateway"
 
@@ -368,7 +364,7 @@ async def test_flow_errors(
         user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
     )
 
-    assert result4.get("type") == RESULT_TYPE_CREATE_ENTRY
+    assert result4.get("type") == FlowResultType.CREATE_ENTRY
     assert result4.get("title") == "Test Smile Name"
     assert result4.get("data") == {
         CONF_HOST: TEST_HOST,
@@ -396,7 +392,7 @@ async def test_form_invalid_setup(hass, mock_smile):
         user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
     )
 
-    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["type"] == FlowResultType.FORM
     assert result2["errors"] == {"base": "invalid_setup"}
 
 
@@ -414,7 +410,7 @@ async def test_form_invalid_auth(hass, mock_smile):
         user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
     )
 
-    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["type"] == FlowResultType.FORM
     assert result2["errors"] == {"base": "invalid_auth"}
 
 
@@ -432,7 +428,7 @@ async def test_form_cannot_connect(hass, mock_smile):
         user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
     )
 
-    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["type"] == FlowResultType.FORM
     assert result2["errors"] == {"base": "cannot_connect"}
 
 
@@ -454,7 +450,7 @@ async def test_form_cannot_connect_port(hass, mock_smile):
         },
     )
 
-    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["type"] == FlowResultType.FORM
     assert result2["errors"] == {"base": "cannot_connect"}
 
 
@@ -472,7 +468,7 @@ async def test_form_other_problem(hass, mock_smile):
         user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
     )
 
-    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["type"] == FlowResultType.FORM
     assert result2["errors"] == {"base": "unknown"}
 
 
@@ -500,14 +496,14 @@ async def test_options_flow_thermo(hass, mock_smile_anna_2) -> None:
         await hass.async_block_till_done()
 
         result = await hass.config_entries.options.async_init(entry.entry_id)
-        assert result["type"] == RESULT_TYPE_FORM
+        assert result["type"] == FlowResultType.FORM
         assert result["step_id"] == "init"
 
         result = await hass.config_entries.options.async_configure(
             result["flow_id"], user_input={CONF_REFRESH_INTERVAL: 3.0}
         )
 
-        assert result["type"] == RESULT_TYPE_CREATE_ENTRY
+        assert result["type"] == FlowResultType.CREATE_ENTRY
         assert result["data"] == {
             CONF_HOMEKIT_EMULATION: False,
             CONF_REFRESH_INTERVAL: 3.0,
@@ -530,7 +526,7 @@ async def test_user_flow_select(hass):
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input={CONF_USB_PATH: port_select}
     )
-    assert result["type"] == RESULT_TYPE_CREATE_ENTRY
+    assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result["data"] == {PW_TYPE: STICK, CONF_USB_PATH: TEST_USBPORT}
 
     # Retry to ensure configuring the same port is not allowed
@@ -540,7 +536,7 @@ async def test_user_flow_select(hass):
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input={CONF_USB_PATH: port_select}
     )
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["errors"] == {"base": "already_configured"}
 
 
@@ -553,7 +549,7 @@ async def test_user_flow_manual_selected_show_form(hass):
         result["flow_id"],
         user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
     )
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "manual_path"
 
 
@@ -579,7 +575,7 @@ async def test_user_flow_manual(hass):
             result["flow_id"],
             user_input={CONF_USB_PATH: TEST_USBPORT2},
         )
-    assert result["type"] == RESULT_TYPE_CREATE_ENTRY
+    assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result["data"] == {CONF_USB_PATH: TEST_USBPORT2}
 
 
@@ -598,7 +594,7 @@ async def test_invalid_connection(hass):
         {CONF_USB_PATH: "/dev/null"},
     )
 
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["errors"] == {"base": "cannot_connect"}
 
 
@@ -621,7 +617,7 @@ async def test_empty_connection(hass):
     except MultipleInvalid:
         assert True
 
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["errors"] == {}
 
 
@@ -706,7 +702,7 @@ async def test_options_flow_stick(hass) -> None:
 
         result = await hass.config_entries.options.async_init(entry.entry_id)
 
-        assert result["type"] == RESULT_TYPE_FORM
+        assert result["type"] == FlowResultType.FORM
         assert result["step_id"] == "none"
 
 
@@ -732,5 +728,5 @@ async def test_options_flow_stick_with_input(hass) -> None:
             user_input={CONF_USB_PATH: TEST_USBPORT2},
         )
 
-        assert result["type"] == RESULT_TYPE_CREATE_ENTRY
+        assert result["type"] == FlowResultType.CREATE_ENTRY
         assert result["title"] == ""
