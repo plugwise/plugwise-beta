@@ -28,7 +28,13 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW July [0.25.1b0]
+# NEW July [0.25.2b0]
+- Smile: NumberEntity, config_flow test updates
+  - Implement NumberEntity updates from Core
+  - Implement FlowResultType in config_flow test (Core PR #74638)
+  - HACS: bump minimum Core version to 2022.7.0
+
+# July [0.25.1b0]
 - Smile: fix/improve cooling support - via plugwise v0.20.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.20.1
 
 # June [0.25.0]
