@@ -33,6 +33,7 @@ from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     COORDINATOR,
     DOMAIN,
+    LOGGER,
     MASTER_THERMOSTATS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
@@ -197,6 +198,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             data["setpoint_high"] = kwargs.get(ATTR_TARGET_TEMP_HIGH)
         if ATTR_TARGET_TEMP_LOW in kwargs:
             data["setpoint_low"] = kwargs.get(ATTR_TARGET_TEMP_LOW)
+        LOGGER.debug("set_temperature input: %s", data)
 
         for _, temperature in data.items():
             if temperature is None or not (
