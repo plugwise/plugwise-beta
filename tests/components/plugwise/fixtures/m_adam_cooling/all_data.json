@@ -13,9 +13,12 @@
       "model": "Anna",
       "name": "Anna",
       "vendor": "Plugwise B.V.",
-      "lower_bound": 1.0,
-      "upper_bound": 35.0,
-      "resolution": 0.01,
+      "thermostat": {
+        "setpoint": 18.5,
+        "lower_bound": 1.0,
+        "upper_bound": 35.0,
+        "resolution": 0.01
+      },
       "preset_modes": [
         "home",
         "asleep",
@@ -32,10 +35,7 @@
       "last_used": "Weekschema",
       "control_state": "cooling",
       "mode": "cool",
-      "sensors": {
-        "temperature": 18.1,
-        "setpoint": 18.5
-      }
+      "sensors": {"temperature": 18.1}
     },
     "1772a4ea304041adb83f357b751341ff": {
       "dev_class": "thermo_sensor",
@@ -46,12 +46,8 @@
       "name": "Tom Badkamer",
       "zigbee_mac_address": "ABCD012345670A01",
       "vendor": "Plugwise",
-      "lower_bound": 7.0,
-      "upper_bound": 30.0,
-      "resolution": 0.01,
       "sensors": {
         "temperature": 21.6,
-        "setpoint": 15.0,
         "battery": 99,
         "temperature_difference": 2.3,
         "valve_position": 0.0
@@ -66,9 +62,12 @@
       "name": "Lisa Badkamer",
       "zigbee_mac_address": "ABCD012345670A04",
       "vendor": "Plugwise",
-      "lower_bound": 0.0,
-      "upper_bound": 99.9,
-      "resolution": 0.01,
+      "thermostat": {
+        "setpoint": 15.0,
+        "lower_bound": 0.0,
+        "upper_bound": 99.9,
+        "resolution": 0.01
+      },
       "preset_modes": [
         "home",
         "asleep",
@@ -87,7 +86,6 @@
       "mode": "auto",
       "sensors": {
         "temperature": 17.9,
-        "setpoint": 15.0,
         "battery": 56
       }
     },
@@ -121,7 +119,12 @@
       "location": "bc93488efab249e5bc54fd7e175a6f91",
       "model": "Generic heater",
       "name": "OpenTherm",
-      "maximum_boiler_temperature": 60.0,
+      "maximum_boiler_temperature": {
+        "setpoint": 60.0,
+        "lower_bound": 25.0,
+        "upper_bound": 95.0,
+        "resolution": 0.01,
+      },
       "binary_sensors": {
         "cooling_state": true,
         "dhw_state": false,
