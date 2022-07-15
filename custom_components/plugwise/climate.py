@@ -191,9 +191,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        for _, temperature in kwargs.items():
-            if temperature is None or not (
-                self._attr_min_temp <= temperature <= self._attr_max_temp
+        for key, item in kwargs.items():
+            if "temp" not in item:
+                continue
+                
+            if item is None or not (
+                self._attr_min_temp <= item <= self._attr_max_temp
             ):
                 raise ValueError("Invalid temperature change requested")
 
