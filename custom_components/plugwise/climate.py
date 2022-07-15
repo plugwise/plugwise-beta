@@ -192,7 +192,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         for key, item in kwargs.items():
-            if "temp" not in item:
+            if "temp" not in key:
                 continue
                 
             if item is None or not (
