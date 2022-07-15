@@ -82,9 +82,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if presets := self.device.get("preset_modes"):
             self._attr_preset_modes = presets
 
-        self._attr_min_temp = self.device.get("lower_bound", DEFAULT_MIN_TEMP)
-        self._attr_max_temp = self.device.get("upper_bound", DEFAULT_MAX_TEMP)
-        if resolution := self.device.get("resolution", 0.1):
+        self._attr_min_temp = self.device["thermostat"].get("lower_bound", DEFAULT_MIN_TEMP)
+        self._attr_max_temp = self.device["thermostat"].get("upper_bound", DEFAULT_MAX_TEMP)
+        if resolution := self.device["thermostat"].get("resolution", 0.1):
             # Ensure we don't drop below 0.1
             self._attr_target_temperature_step = max(resolution, 0.1)
 
@@ -170,7 +170,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         Connected to the HVACModes combinations of AUTO/HEAT and AUTO/COOL.
         """
 
-        return self.device["sensors"].get("setpoint")
+        return self.device["thermostat"].get("setpoint")
 
     @property
     def target_temperature_high(self) -> float | None:
@@ -178,7 +178,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACMode combination of AUTO/HEAT_COOL.
         """
-        return self.device["sensors"].get("setpoint_high")
+        return self.device["thermostat"].get("setpoint_high")
 
     @property
     def target_temperature_low(self) -> float | None:
@@ -186,27 +186,18 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACMode combination AUTO/HEAT_COOL.
         """
-        return self.device["sensors"].get("setpoint_low")
+        return self.device["thermostat"].get("setpoint_low")
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        data: dict[str, Any] = {}
-        if ATTR_TEMPERATURE in kwargs:
-            data["setpoint"] = kwargs.get(ATTR_TEMPERATURE)
-        if ATTR_TARGET_TEMP_HIGH in kwargs:
-            data["setpoint_high"] = kwargs.get(ATTR_TARGET_TEMP_HIGH)
-        if ATTR_TARGET_TEMP_LOW in kwargs:
-            data["setpoint_low"] = kwargs.get(ATTR_TARGET_TEMP_LOW)
-        LOGGER.debug("set_temperature input: %s", data)
-
-        for _, temperature in data.items():
+        for _, temperature in kwargs.items():
             if temperature is None or not (
                 self._attr_min_temp <= temperature <= self._attr_max_temp
             ):
                 raise ValueError("Invalid temperature change requested")
 
-        await self.coordinator.api.set_temperature(self.device["location"], data)
+        await self.coordinator.api.set_temperature(self.device["location"], kwargs)
 
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: str) -> None:
