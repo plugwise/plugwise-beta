@@ -27,7 +27,7 @@ from .entity import PlugwiseEntity
 class PlugwiseEntityDescriptionMixin:
     """Mixin values for Plugwse entities."""
 
-    command: Callable[[Smile, float], Awaitable[Any]]
+    command: Callable[[Smile, float], Awaitable[None]]
 
 
 @dataclass
@@ -40,15 +40,12 @@ class PlugwiseNumberEntityDescription(
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
-        command=lambda api, value: api.set_max_boiler_temperature(value),
+        command=lambda api, value: api.set_number_setpoint(key, value),
         device_class=NumberDeviceClass.TEMPERATURE,
-        name="Maximum Boiler Temperature Setpoint",
-        icon="mdi:thermometer",
+        name="Maximum boiler temperature setpoint",
         entity_category=EntityCategory.CONFIG,
         entity_registry_enabled_default=False,
-        native_min_value=25,
-        native_max_value=95,
-        native_step=5,
+        native_unit_of_measurement=TEMP_CELSIUS,
     ),
 )
 
@@ -95,9 +92,24 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self._attr_mode = NumberMode.BOX
 
     @property
+    def native_step(self) -> float:
+        """Return the setpoint step value."""
+        return max(self.device["resolution"], 1)
+
+    @property
     def native_value(self) -> float:
         """Return the present setpoint value."""
         return self.device[self.entity_description.key]
+
+    @property
+    def native_min_value(self) -> float:
+        """Return the setpoint min. value."""
+        return self.device["lower_bound"]
+
+    @property
+    def native_max_value(self) -> float:
+        """Return the setpoint max. value."""
+        return self.device["upper_bound"]
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
