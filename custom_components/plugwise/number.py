@@ -41,7 +41,7 @@ class PlugwiseNumberEntityDescription(
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
-        command=lambda api, value: api.set_number_setpoint(key, value),
+        command=lambda api, key, value: api.set_number_setpoint(key, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         name="Maximum boiler temperature setpoint",
         entity_category=EntityCategory.CONFIG,
@@ -91,30 +91,31 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_name = (f"{self.device['name']} {description.name}").lstrip()
         self._attr_mode = NumberMode.BOX
+        self._key = description.key
 
     @property
     def native_step(self) -> float:
         """Return the setpoint step value."""
-        return max(self.device[self.entity_description.key]["resolution"], 1)
+        return max(self.device[self._key]["resolution"], 1)
 
     @property
     def native_value(self) -> float:
         """Return the present setpoint value."""
-        return self.device[self.entity_description.key]["setpoint"]
+        return self.device[self._key]["setpoint"]
 
     @property
     def native_min_value(self) -> float:
         """Return the setpoint min. value."""
-        return self.device[self.entity_description.key]["lower_bound"]
+        return self.device[self._key]["lower_bound"]
 
     @property
     def native_max_value(self) -> float:
         """Return the setpoint max. value."""
-        return self.device[self.entity_description.key]["upper_bound"]
+        return self.device[self._key]["upper_bound"]
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.entity_description.command(self.coordinator.api, value)
+        await self.entity_description.command(self.coordinator.api, self._key, value)
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.name, value
         )
