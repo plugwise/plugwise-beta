@@ -40,9 +40,16 @@ class PlugwiseNumberEntityDescription(
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
-        command=lambda api, item, value: api.set_number_setpoint(item, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         name="Maximum boiler temperature setpoint",
+        entity_category=EntityCategory.CONFIG,
+        entity_registry_enabled_default=False,
+        native_unit_of_measurement=TEMP_CELSIUS,
+    ),
+    PlugwiseNumberEntityDescription(
+        key="domestic_hot_water_setpoint",
+        device_class=NumberDeviceClass.TEMPERATURE,
+        name="Domestic hot water setpoint",
         entity_category=EntityCategory.CONFIG,
         entity_registry_enabled_default=False,
         native_unit_of_measurement=TEMP_CELSIUS,
@@ -114,7 +121,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.entity_description.command(self.coordinator.api, self._item, value)
+        await self.coordinator.api.set_number_setpoint(self._item, value),
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.name, value
         )
