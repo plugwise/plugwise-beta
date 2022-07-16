@@ -204,7 +204,7 @@ async def test_anna_climate_entity_attributes(
 
     assert state.attributes["current_temperature"] == 19.3
     assert state.attributes["preset_mode"] == "home"
-    assert state.attributes["supported_features"] == 17
+    assert state.attributes["supported_features"] == 18
     assert state.attributes["target_temp_high"] == 24.0
     assert state.attributes["target_temp_low"] == 20.5
     assert state.attributes["min_temp"] == 4.0
