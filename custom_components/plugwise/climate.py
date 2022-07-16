@@ -81,8 +81,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if presets := self.device.get("preset_modes"):
             self._attr_preset_modes = presets
 
-        self._attr_min_temp = self.device["thermostat"].get("lower_bound", DEFAULT_MIN_TEMP)
-        self._attr_max_temp = self.device["thermostat"].get("upper_bound", DEFAULT_MAX_TEMP)
+        self._attr_min_temp = self.device["thermostat"].get(
+            "lower_bound", DEFAULT_MIN_TEMP
+        )
+        self._attr_max_temp = self.device["thermostat"].get(
+            "upper_bound", DEFAULT_MAX_TEMP
+        )
         if resolution := self.device["thermostat"].get("resolution", 0.1):
             # Ensure we don't drop below 0.1
             self._attr_target_temperature_step = max(resolution, 0.1)

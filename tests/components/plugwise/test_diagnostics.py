@@ -44,7 +44,7 @@ async def test_diagnostics(
                     "setpoint": 13.0,
                     "lower_bound": 0.0,
                     "upper_bound": 99.9,
-                    "resolution": 0.01
+                    "resolution": 0.01,
                 },
                 "preset_modes": ["home", "asleep", "away", "no_frost"],
                 "active_preset": "away",
@@ -104,7 +104,7 @@ async def test_diagnostics(
                     "setpoint": 21.5,
                     "lower_bound": 0.0,
                     "upper_bound": 99.9,
-                    "resolution": 0.01
+                    "resolution": 0.01,
                 },
                 "preset_modes": ["home", "asleep", "away", "no_frost"],
                 "active_preset": "home",
@@ -272,7 +272,7 @@ async def test_diagnostics(
                     "setpoint": 15.0,
                     "lower_bound": 0.0,
                     "upper_bound": 99.9,
-                    "resolution": 0.01
+                    "resolution": 0.01,
                 },
                 "preset_modes": ["home", "asleep", "away", "no_frost"],
                 "active_preset": "asleep",
@@ -317,7 +317,7 @@ async def test_diagnostics(
                     "setpoint": 14.0,
                     "lower_bound": 0.0,
                     "upper_bound": 99.9,
-                    "resolution": 0.01
+                    "resolution": 0.01,
                 },
                 "preset_modes": ["home", "asleep", "away", "no_frost"],
                 "active_preset": "away",
@@ -362,7 +362,7 @@ async def test_diagnostics(
                     "setpoint": 5.5,
                     "lower_bound": 0.0,
                     "upper_bound": 100.0,
-                    "resolution": 0.01
+                    "resolution": 0.01,
                 },
                 "preset_modes": ["home", "asleep", "away", "no_frost"],
                 "active_preset": "no_frost",
