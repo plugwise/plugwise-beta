@@ -162,7 +162,7 @@ def mock_smile_anna() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.elga_cooling_enabled = False
+        smile.elga_cooling_enabled = True
         smile.lortherm_cooling_enabled = False
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
         smile.heater_id = "1cbf783bb11e4a7c8a6843dee3a86927"
