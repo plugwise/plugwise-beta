@@ -27,7 +27,7 @@ from .entity import PlugwiseEntity
 class PlugwiseEntityDescriptionMixin:
     """Mixin values for Plugwse entities."""
 
-    command: Callable[[Smile, float], Awaitable[None]]
+    command: Callable[[Smile, str, float], Awaitable[None]]
 
 
 @dataclass
@@ -40,7 +40,7 @@ class PlugwiseNumberEntityDescription(
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
-        command=lambda api, key, value: api.set_number_setpoint(key, value),
+        command=lambda api, item, value: api.set_number_setpoint(item, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         name="Maximum boiler temperature setpoint",
         entity_category=EntityCategory.CONFIG,
@@ -90,31 +90,31 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_name = (f"{self.device['name']} {description.name}").lstrip()
         self._attr_mode = NumberMode.BOX
-        self._key = description.key
+        self._item = description.key
 
     @property
     def native_step(self) -> float:
         """Return the setpoint step value."""
-        return max(self.device[self._key]["resolution"], 1)
+        return max(self.device[self._item]["resolution"], 1)
 
     @property
     def native_value(self) -> float:
         """Return the present setpoint value."""
-        return self.device[self._key]["setpoint"]
+        return self.device[self._item]["setpoint"]
 
     @property
     def native_min_value(self) -> float:
         """Return the setpoint min. value."""
-        return self.device[self._key]["lower_bound"]
+        return self.device[self._item]["lower_bound"]
 
     @property
     def native_max_value(self) -> float:
         """Return the setpoint max. value."""
-        return self.device[self._key]["upper_bound"]
+        return self.device[self._item]["upper_bound"]
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.entity_description.command(self.coordinator.api, self._key, value)
+        await self.entity_description.command(self.coordinator.api, self._item, value)
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.name, value
         )
