@@ -1,10 +1,7 @@
 """Number platform for Plugwise integration."""
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-
-from plugwise import Smile
 
 from homeassistant.components.number import (
     NumberDeviceClass,
@@ -24,16 +21,7 @@ from .entity import PlugwiseEntity
 
 
 @dataclass
-class PlugwiseEntityDescriptionMixin:
-    """Mixin values for Plugwse entities."""
-
-    command: Callable[[Smile, str, float], Awaitable[None]]
-
-
-@dataclass
-class PlugwiseNumberEntityDescription(
-    NumberEntityDescription, PlugwiseEntityDescriptionMixin
-):
+class PlugwiseNumberEntityDescription(NumberEntityDescription):
     """Class describing Plugwise Number entities."""
 
 
