@@ -190,7 +190,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        data: dict[str, float] = {}
+        data: dict[str, Any] = {}
         if ATTR_TEMPERATURE in kwargs:
             data["setpoint"] = kwargs.get(ATTR_TEMPERATURE)
         if ATTR_TARGET_TEMP_HIGH in kwargs:
