@@ -61,5 +61,5 @@ async def test_anna_max_boiler_temp_change(
         blocking=True,
     )
 
-    assert mock_smile_anna.set_max_boiler_temperature.call_count == 1
-    mock_smile_anna.set_max_boiler_temperature.assert_called_with(65)
+    assert mock_smile_anna.set_number_setpoint.call_count == 1
+    mock_smile_anna.set_number_setpoint.assert_called_with(65)
