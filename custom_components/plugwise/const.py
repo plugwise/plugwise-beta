@@ -52,8 +52,8 @@ PLATFORMS_GATEWAY: Final[list[str]] = [
     Platform.BINARY_SENSOR,
     Platform.CLIMATE,
     Platform.NUMBER,
-    Platform.SENSOR,
     Platform.SELECT,
+    Platform.SENSOR,
     Platform.SWITCH,
 ]
 SENSOR_PLATFORMS: Final[list[str]] = [Platform.SENSOR, Platform.SWITCH]
