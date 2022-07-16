@@ -40,7 +40,8 @@ async def test_diagnostics(
                 "name": "Zone Lisa Bios",
                 "zigbee_mac_address": "ABCD012345670A06",
                 "vendor": "Plugwise",
-                "thermostat": {"setpoint": 13.0,
+                "thermostat": {
+                    "setpoint": 13.0,
                     "lower_bound": 0.0,
                     "upper_bound": 99.9,
                     "resolution": 0.01
@@ -99,7 +100,8 @@ async def test_diagnostics(
                 "name": "Zone Lisa WK",
                 "zigbee_mac_address": "ABCD012345670A07",
                 "vendor": "Plugwise",
-                "thermostat": {"setpoint": 21.5,
+                "thermostat": {
+                    "setpoint": 21.5,
                     "lower_bound": 0.0,
                     "upper_bound": 99.9,
                     "resolution": 0.01
@@ -266,7 +268,8 @@ async def test_diagnostics(
                 "name": "Zone Thermostat Jessie",
                 "zigbee_mac_address": "ABCD012345670A03",
                 "vendor": "Plugwise",
-                "thermostat": {"setpoint": 15.0,
+                "thermostat": {
+                    "setpoint": 15.0,
                     "lower_bound": 0.0,
                     "upper_bound": 99.9,
                     "resolution": 0.01
@@ -310,7 +313,8 @@ async def test_diagnostics(
                 "name": "Zone Thermostat Badkamer",
                 "zigbee_mac_address": "ABCD012345670A08",
                 "vendor": "Plugwise",
-                "thermostat": {"setpoint": 14.0,
+                "thermostat": {
+                    "setpoint": 14.0,
                     "lower_bound": 0.0,
                     "upper_bound": 99.9,
                     "resolution": 0.01
@@ -354,7 +358,8 @@ async def test_diagnostics(
                 "name": "CV Kraan Garage",
                 "zigbee_mac_address": "ABCD012345670A11",
                 "vendor": "Plugwise",
-                "thermostat": {"setpoint": 5.5,
+                "thermostat": {
+                    "setpoint": 5.5,
                     "lower_bound": 0.0,
                     "upper_bound": 100.0,
                     "resolution": 0.01
