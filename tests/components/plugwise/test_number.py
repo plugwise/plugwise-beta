@@ -62,4 +62,4 @@ async def test_anna_max_boiler_temp_change(
     )
 
     assert mock_smile_anna.set_number_setpoint.call_count == 1
-    mock_smile_anna.set_number_setpoint.assert_called_with(65)
+    mock_smile_anna.set_number_setpoint.assert_called_with('maximum_boiler_temperature', 65.0)
