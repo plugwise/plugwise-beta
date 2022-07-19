@@ -58,7 +58,7 @@ async def test_diagnostics(
                 "selected_schedule": "None",
                 "last_used": "Badkamer Schema",
                 "mode": "heat",
-                "sensors": {"temperature": 16.5, "battery": 67},
+                "sensors": {"temperature": 16.5, "battery": 67, "setpoint": 13.0},
             },
             "b310b72a0e354bfab43089919b9a88bf": {
                 "dev_class": "thermo_sensor",
@@ -73,6 +73,7 @@ async def test_diagnostics(
                     "temperature": 26.0,
                     "temperature_difference": 3.5,
                     "valve_position": 100,
+                    "setpoint": 21.5,
                 },
             },
             "a2c3583e0a6349358998b760cea82d2a": {
@@ -89,6 +90,7 @@ async def test_diagnostics(
                     "battery": 62,
                     "temperature_difference": -0.2,
                     "valve_position": 0.0,
+                    "setpoint": 13.0,
                 },
             },
             "b59bcebaf94b499ea7d46e4a66fb62d8": {
@@ -118,7 +120,7 @@ async def test_diagnostics(
                 "selected_schedule": "GF7  Woonkamer",
                 "last_used": "GF7  Woonkamer",
                 "mode": "auto",
-                "sensors": {"temperature": 20.9, "battery": 34},
+                "sensors": {"temperature": 20.9, "battery": 34, "setpoint": 21.5},
             },
             "fe799307f1624099878210aa0b9f1475": {
                 "dev_class": "gateway",
@@ -149,6 +151,7 @@ async def test_diagnostics(
                     "battery": 62,
                     "temperature_difference": 0.1,
                     "valve_position": 0.0,
+                    "setpoint": 15.0,
                 },
             },
             "21f2b542c49845e6bb416884c55778d6": {
@@ -286,7 +289,7 @@ async def test_diagnostics(
                 "selected_schedule": "CV Jessie",
                 "last_used": "CV Jessie",
                 "mode": "auto",
-                "sensors": {"temperature": 17.2, "battery": 37},
+                "sensors": {"temperature": 17.2, "battery": 37, "setpoint": 15.0},
             },
             "680423ff840043738f42cc7f1ff97a36": {
                 "dev_class": "thermo_sensor",
@@ -302,6 +305,7 @@ async def test_diagnostics(
                     "battery": 51,
                     "temperature_difference": -0.4,
                     "valve_position": 0.0,
+                    "setpoint": 14.0,
                 },
             },
             "f1fee6043d3642a9b0a65297455f008e": {
@@ -331,7 +335,7 @@ async def test_diagnostics(
                 "selected_schedule": "Badkamer Schema",
                 "last_used": "Badkamer Schema",
                 "mode": "auto",
-                "sensors": {"temperature": 18.9, "battery": 92},
+                "sensors": {"temperature": 18.9, "battery": 92, "setpoint": 14.0},
             },
             "675416a629f343c495449970e2ca37b5": {
                 "dev_class": "router",
@@ -381,6 +385,7 @@ async def test_diagnostics(
                     "battery": 68,
                     "temperature_difference": 0.0,
                     "valve_position": 0.0,
+                    "setpoint": 5.5,
                 },
             },
         },
