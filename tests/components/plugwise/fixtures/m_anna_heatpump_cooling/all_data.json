@@ -88,7 +88,9 @@
         "temperature": 26.3,
         "illuminance": 86.0,
         "cooling_activation_outdoor_temperature": 21.0,
-        "cooling_deactivation_threshold": 4.0
+        "cooling_deactivation_threshold": 4.0,
+        "setpoint_low": 20.5,
+        "setpoint_high": 24.0
       }
     }
   }

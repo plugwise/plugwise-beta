@@ -35,7 +35,7 @@
       "last_used": "Weekschema",
       "control_state": "cooling",
       "mode": "cool",
-      "sensors": {"temperature": 18.1}
+      "sensors": {"temperature": 18.1, "setpoint": 18.5}
     },
     "1772a4ea304041adb83f357b751341ff": {
       "dev_class": "thermo_sensor",
@@ -86,7 +86,8 @@
       "mode": "auto",
       "sensors": {
         "temperature": 17.9,
-        "battery": 56
+        "battery": 56,
+        "setpoint": 15.0
       }
     },
     "da224107914542988a88561b4452b0f6": {

@@ -45,6 +45,7 @@
       "mode": "heat",
       "sensors": {
         "temperature": 16.5,
+        "setpoint": 13.0,
         "battery": 67
       }
     },
@@ -59,6 +60,7 @@
       "vendor": "Plugwise",
       "sensors": {
         "temperature": 26.0,
+        "setpoint": 21.5,
         "temperature_difference": 3.5,
         "valve_position": 100
       }
@@ -74,6 +76,7 @@
       "vendor": "Plugwise",
       "sensors": {
         "temperature": 17.2,
+        "setpoint": 13.0,
         "battery": 62,
         "temperature_difference": -0.2,
         "valve_position": 0.0
@@ -113,6 +116,7 @@
       "mode": "auto",
       "sensors": {
         "temperature": 20.9,
+        "setpoint": 21.5,
         "battery": 34
       }
     },
@@ -146,6 +150,7 @@
       "vendor": "Plugwise",
       "sensors": {
         "temperature": 17.1,
+        "setpoint": 15.0,
         "battery": 62,
         "temperature_difference": 0.1,
         "valve_position": 0.0
@@ -312,6 +317,7 @@
       "mode": "auto",
       "sensors": {
         "temperature": 17.2,
+        "setpoint": 15.0,
         "battery": 37
       }
     },
@@ -326,6 +332,7 @@
       "vendor": "Plugwise",
       "sensors": {
         "temperature": 19.1,
+        "setpoint": 14.0,
         "battery": 51,
         "temperature_difference": -0.4,
         "valve_position": 0.0
@@ -365,6 +372,7 @@
       "mode": "auto",
       "sensors": {
         "temperature": 18.9,
+        "setpoint": 14.0,
         "battery": 92
       }
     },
@@ -421,6 +429,7 @@
       "mode": "heat",
       "sensors": {
         "temperature": 15.6,
+        "setpoint": 5.5,
         "battery": 68,
         "temperature_difference": 0.0,
         "valve_position": 0.0
