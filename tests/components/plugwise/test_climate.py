@@ -127,7 +127,7 @@ async def test_adam_climate_entity_climate_changes(
 
     assert mock_smile_adam.set_temperature.call_count == 1
     mock_smile_adam.set_temperature.assert_called_with(
-        "c50f167537524366a5af7aa3942feb1e", 25.0
+        "c50f167537524366a5af7aa3942feb1e", {"setpoint": 25.0}
     )
 
     with pytest.raises(ValueError):
@@ -159,7 +159,7 @@ async def test_adam_climate_entity_climate_changes(
 
     assert mock_smile_adam.set_temperature.call_count == 2
     mock_smile_adam.set_temperature.assert_called_with(
-        "82fa13f017d240daa0d0ea1775420f24", 25.0
+        "82fa13f017d240daa0d0ea1775420f24", {"setpoint": 25.0}
     )
 
     await hass.services.async_call(
@@ -187,7 +187,7 @@ async def test_adam_climate_entity_climate_changes(
 
 
 async def test_anna_climate_entity_attributes(
-    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration_3: MagicMock
+    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MagicMock
 ) -> None:
     """Test creation of anna climate device environment."""
     state = hass.states.get("climate.anna")
@@ -204,8 +204,9 @@ async def test_anna_climate_entity_attributes(
 
     assert state.attributes["current_temperature"] == 19.3
     assert state.attributes["preset_mode"] == "home"
-    assert state.attributes["supported_features"] == 17
-    assert state.attributes["temperature"] == 20.5
+    assert state.attributes["supported_features"] == 18
+    assert state.attributes["target_temp_high"] == 24.0
+    assert state.attributes["target_temp_low"] == 21.0
     assert state.attributes["min_temp"] == 4.0
     assert state.attributes["max_temp"] == 30.0
     assert state.attributes["target_temp_step"] == 0.1
@@ -214,7 +215,7 @@ async def test_anna_climate_entity_attributes(
 async def test_anna_2_climate_entity_attributes(
     hass: HomeAssistant,
     mock_smile_anna_2: MagicMock,
-    init_integration_2: MockConfigEntry,
+    init_integration: MockConfigEntry,
 ) -> None:
     """Test creation of anna climate device environment."""
     state = hass.states.get("climate.anna")
@@ -233,7 +234,7 @@ async def test_anna_2_climate_entity_attributes(
 async def test_anna_3_climate_entity_attributes(
     hass: HomeAssistant,
     mock_smile_anna_3: MagicMock,
-    init_integration_2: MockConfigEntry,
+    init_integration: MockConfigEntry,
 ) -> None:
     """Test creation of anna climate device environment."""
     state = hass.states.get("climate.anna")
@@ -247,19 +248,20 @@ async def test_anna_3_climate_entity_attributes(
 
 
 async def test_anna_climate_entity_climate_changes(
-    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration_2: MockConfigEntry
+    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test handling of user requests in anna climate device environment."""
     await hass.services.async_call(
         "climate",
         "set_temperature",
-        {"entity_id": "climate.anna", "temperature": 25},
+        {"entity_id": "climate.anna", "target_temp_high": 25, "target_temp_low": 20},
         blocking=True,
     )
 
     assert mock_smile_anna.set_temperature.call_count == 1
     mock_smile_anna.set_temperature.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", 25.0
+        "c784ee9fdab44e1395b8dee7d7a497d5",
+        {"setpoint_high": 25.0, "setpoint_low": 20.0},
     )
 
     await hass.services.async_call(

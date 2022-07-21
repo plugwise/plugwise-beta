@@ -1,18 +1,16 @@
 """Number platform for Plugwise integration."""
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from typing import Any
-
-from plugwise import Smile
 
 from homeassistant.components.number import (
+    NumberDeviceClass,
     NumberEntity,
     NumberEntityDescription,
     NumberMode,
 )
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -23,30 +21,26 @@ from .entity import PlugwiseEntity
 
 
 @dataclass
-class PlugwiseEntityDescriptionMixin:
-    """Mixin values for Plugwse entities."""
-
-    command: Callable[[Smile, float], Awaitable[Any]]
-
-
-@dataclass
-class PlugwiseNumberEntityDescription(
-    NumberEntityDescription, PlugwiseEntityDescriptionMixin
-):
+class PlugwiseNumberEntityDescription(NumberEntityDescription):
     """Class describing Plugwise Number entities."""
 
 
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
-        command=lambda api, value: api.set_max_boiler_temperature(value),
-        name="Maximum Boiler Temperature Setpoint",
-        icon="mdi:thermometer",
+        device_class=NumberDeviceClass.TEMPERATURE,
+        name="Maximum boiler temperature setpoint",
         entity_category=EntityCategory.CONFIG,
         entity_registry_enabled_default=False,
-        min_value=25,
-        max_value=95,
-        step=5,
+        native_unit_of_measurement=TEMP_CELSIUS,
+    ),
+    PlugwiseNumberEntityDescription(
+        key="domestic_hot_water_setpoint",
+        device_class=NumberDeviceClass.TEMPERATURE,
+        name="Domestic hot water setpoint",
+        entity_category=EntityCategory.CONFIG,
+        entity_registry_enabled_default=False,
+        native_unit_of_measurement=TEMP_CELSIUS,
     ),
 )
 
@@ -91,15 +85,31 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_name = (f"{self.device['name']} {description.name}").lstrip()
         self._attr_mode = NumberMode.BOX
+        self._item = description.key
 
     @property
-    def value(self) -> float:
-        """Return the present setpoint value."""
-        return self.device[self.entity_description.key]
+    def native_step(self) -> float:
+        """Return the setpoint step value."""
+        return max(self.device[self._item]["resolution"], 1)
 
-    async def async_set_value(self, value: float) -> None:
+    @property
+    def native_value(self) -> float:
+        """Return the present setpoint value."""
+        return self.device[self._item]["setpoint"]
+
+    @property
+    def native_min_value(self) -> float:
+        """Return the setpoint min. value."""
+        return self.device[self._item]["lower_bound"]
+
+    @property
+    def native_max_value(self) -> float:
+        """Return the setpoint max. value."""
+        return self.device[self._item]["upper_bound"]
+
+    async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.entity_description.command(self.coordinator.api, value)
+        await self.coordinator.api.set_number_setpoint(self._item, value),
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.name, value
         )

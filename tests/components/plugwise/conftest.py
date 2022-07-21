@@ -10,7 +10,6 @@ import pytest
 
 from homeassistant.components.plugwise.const import (
     API,
-    CONF_COOLING_ON,
     DOMAIN,
     PW_TYPE,
 )
@@ -51,44 +50,6 @@ def mock_config_entry() -> MockConfigEntry:
 
 
 @pytest.fixture
-def mock_config_entry_2() -> MockConfigEntry:
-    """Return the default mocked config entry."""
-    return MockConfigEntry(
-        title="My Plugwise",
-        domain=DOMAIN,
-        data={
-            CONF_HOST: "127.0.0.1",
-            CONF_MAC: "AA:BB:CC:DD:EE:FF",
-            CONF_PASSWORD: "test-password",
-            CONF_PORT: 80,
-            CONF_USERNAME: "smile",
-            PW_TYPE: API,
-        },
-        options={CONF_COOLING_ON: True},
-        unique_id="smile98765",
-    )
-
-
-@pytest.fixture
-def mock_config_entry_3() -> MockConfigEntry:
-    """Return the default mocked config entry."""
-    return MockConfigEntry(
-        title="My Plugwise",
-        domain=DOMAIN,
-        data={
-            CONF_HOST: "127.0.0.1",
-            CONF_MAC: "AA:BB:CC:DD:EE:FF",
-            CONF_PASSWORD: "test-password",
-            CONF_PORT: 80,
-            CONF_USERNAME: "smile",
-            PW_TYPE: API,
-        },
-        options={CONF_COOLING_ON: False},
-        unique_id="smile98765",
-    )
-
-
-@pytest.fixture
 def mock_setup_entry() -> Generator[AsyncMock, None, None]:
     """Mock setting up a config entry."""
     with patch(
@@ -121,7 +82,8 @@ def mock_smile_adam() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.anna_cooling_enabled = None
+        smile.elga_cooling_enabled = False
+        smile.lortherm_cooling_enabled = False
         smile.gateway_id = "fe799307f1624099878210aa0b9f1475"
         smile.heater_id = "90986d591dcd426cae3ec3e8111ff730"
         smile.smile_version = "3.0.15"
@@ -147,7 +109,8 @@ def mock_smile_adam_2() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.anna_cooling_enabled = None
+        smile.elga_cooling_enabled = False
+        smile.lortherm_cooling_enabled = False
         smile.gateway_id = "da224107914542988a88561b4452b0f6"
         smile.heater_id = "056ee145a816487eaa69243c3280f8bf"
         smile.smile_version = "3.6.4"
@@ -173,7 +136,8 @@ def mock_smile_adam_3() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.anna_cooling_enabled = None
+        smile.elga_cooling_enabled = False
+        smile.lortherm_cooling_enabled = False
         smile.gateway_id = "da224107914542988a88561b4452b0f6"
         smile.heater_id = "056ee145a816487eaa69243c3280f8bf"
         smile.smile_version = "3.6.4"
@@ -198,8 +162,8 @@ def mock_smile_anna() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.anna_cool_ena_indication = False
-        smile.anna_cooling_enabled = False
+        smile.elga_cooling_enabled = True
+        smile.lortherm_cooling_enabled = False
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
         smile.heater_id = "1cbf783bb11e4a7c8a6843dee3a86927"
         smile.smile_version = "4.0.15"
@@ -224,8 +188,8 @@ def mock_smile_anna_2() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.anna_cool_ena_indication = False
-        smile.anna_cooling_enabled = True
+        smile.elga_cooling_enabled = True
+        smile.lortherm_cooling_enabled = False
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
         smile.heater_id = "1cbf783bb11e4a7c8a6843dee3a86927"
         smile.smile_version = "4.0.15"
@@ -250,8 +214,8 @@ def mock_smile_anna_3() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.anna_cool_ena_indication = False
-        smile.anna_cooling_enabled = True
+        smile.elga_cooling_enabled = True
+        smile.lortherm_cooling_enabled = False
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
         smile.heater_id = "1cbf783bb11e4a7c8a6843dee3a86927"
         smile.smile_version = "4.0.15"
@@ -324,29 +288,3 @@ async def init_integration(
     await hass.async_block_till_done()
 
     return mock_config_entry
-
-
-@pytest.fixture
-async def init_integration_2(
-    hass: HomeAssistant, mock_config_entry_2: MockConfigEntry
-) -> MockConfigEntry:
-    """Set up the Plugwise integration for testing."""
-    mock_config_entry_2.add_to_hass(hass)
-
-    await hass.config_entries.async_setup(mock_config_entry_2.entry_id)
-    await hass.async_block_till_done()
-
-    return mock_config_entry_2
-
-
-@pytest.fixture
-async def init_integration_3(
-    hass: HomeAssistant, mock_config_entry_3: MockConfigEntry
-) -> MockConfigEntry:
-    """Set up the Plugwise integration for testing."""
-    mock_config_entry_3.add_to_hass(hass)
-
-    await hass.config_entries.async_setup(mock_config_entry_3.entry_id)
-    await hass.async_block_till_done()
-
-    return mock_config_entry_3

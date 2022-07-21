@@ -28,7 +28,22 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW June [0.25.0]
+# NEW July [0.26.0]
+- Smile: Add domestic_hot_water_setpoint Number, further fix cooling support.
+  - Link to plugwise v0.21.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.21.0
+  - Add domestic_hot_water_setpoint Number, update/simplify number-set-value function.
+  - Fix cooling support for Anna + Elga (user-tested).
+
+# July [0.25.2b0]
+- Smile: NumberEntity, config_flow test updates
+  - Implement NumberEntity updates from Core
+  - Implement FlowResultType in config_flow test (Core PR #74638)
+  - HACS: bump minimum Core version to 2022.7.0
+
+# July [0.25.1b0]
+- Smile: fix/improve cooling support - via plugwise v0.20.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.20.1
+
+# June [0.25.0]
 - Adam: add support for the Aqara Plug - via plugwise v0.20.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.20.0
 
 # June [0.24.2]

@@ -52,8 +52,8 @@ PLATFORMS_GATEWAY: Final[list[str]] = [
     Platform.BINARY_SENSOR,
     Platform.CLIMATE,
     Platform.NUMBER,
-    Platform.SENSOR,
     Platform.SELECT,
+    Platform.SENSOR,
     Platform.SWITCH,
 ]
 SENSOR_PLATFORMS: Final[list[str]] = [Platform.SENSOR, Platform.SWITCH]
@@ -127,6 +127,8 @@ OUTDOOR_AIR_TEMP: Final = "outdoor_air_temperature"
 OUTDOOR_TEMP: Final = "outdoor_temperature"
 RETURN_TEMP: Final = "return_temperature"
 TARGET_TEMP: Final = "setpoint"
+TARGET_TEMP_HIGH: Final = "setpoint_high"
+TARGET_TEMP_LOW: Final = "setpoint_low"
 TEMP_DIFF: Final = "temperature_difference"
 VALVE_POS: Final = "valve_position"
 WATER_PRESSURE: Final = "water_pressure"
