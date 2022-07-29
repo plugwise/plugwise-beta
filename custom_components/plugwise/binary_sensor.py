@@ -149,7 +149,6 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
             description.entity_registry_enabled_default
         )
         self._attr_unique_id = f"{device_id}-{description.key}"
-        self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
         self._notification: dict[str, str] = {}  # pw-beta
 
     @property

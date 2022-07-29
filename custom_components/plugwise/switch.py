@@ -109,7 +109,6 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
             description.entity_registry_enabled_default
         )
         self._attr_unique_id = f"{device_id}-{description.key}"
-        self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
 
     @property
     def is_on(self) -> bool | None:
