@@ -83,7 +83,6 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        self._attr_name = (f"{self.device['name']} {description.name}").lstrip()
         self._attr_mode = NumberMode.BOX
         self._item = description.key
 

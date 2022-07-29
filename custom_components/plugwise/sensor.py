@@ -109,7 +109,6 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
 
     @property
     def native_value(self) -> int | float | None:
