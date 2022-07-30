@@ -165,6 +165,7 @@ def mock_smile_anna() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
+        smile.adam_cooling_enabled = False
         smile.elga_cooling_enabled = True
         smile.lortherm_cooling_enabled = False
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
@@ -191,6 +192,7 @@ def mock_smile_anna_2() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
+        smile.adam_cooling_enabled = False
         smile.elga_cooling_enabled = True
         smile.lortherm_cooling_enabled = False
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
@@ -217,6 +219,7 @@ def mock_smile_anna_3() -> Generator[None, MagicMock, None]:
     ) as smile_mock:
         smile = smile_mock.return_value
 
+        smile.adam_cooling_enabled = False
         smile.elga_cooling_enabled = True
         smile.lortherm_cooling_enabled = False
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
