@@ -112,7 +112,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
     @property
     def hvac_mode(self) -> HVACMode:
-      """Return HVAC operation ie. auto, heat, cool, or off mode."""
+        """Return HVAC operation ie. auto, heat, cool, or off mode."""
         if (mode := self.device["mode"]) is None or mode not in self.hvac_modes:
             return HVACMode.HEAT  # pragma: no cover
         # pw-beta homekit emulation
