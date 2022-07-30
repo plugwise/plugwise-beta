@@ -148,7 +148,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def supported_features(self) -> int:
         """Return the supported features."""
         features: int = ClimateEntityFeature.TARGET_TEMPERATURE
-        if self.coordinator.api.elga_cooling_enabled:
+        if self._hc_data.get("elga_cooling_enabled", False):
             features = ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
         if self.device.get("preset_modes"):
             features |= ClimateEntityFeature.PRESET_MODE
