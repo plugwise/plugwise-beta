@@ -320,7 +320,7 @@ async def test_zeroconf_abort_anna_with_adam(hass: HomeAssistant) -> None:
         data=TEST_DISCOVERY_ANNA,
     )
     assert result.get("type") == FlowResultType.FORM
-    assert result.get("step_id") == "user"
+    assert result.get("step_id") == "user_gateway"
 
     flows_in_progress = hass.config_entries.flow.async_progress()
     assert len(flows_in_progress) == 1
@@ -334,7 +334,7 @@ async def test_zeroconf_abort_anna_with_adam(hass: HomeAssistant) -> None:
     )
 
     assert result2.get("type") == FlowResultType.FORM
-    assert result2.get("step_id") == "user"
+    assert result2.get("step_id") == "user_gateway"
 
     flows_in_progress = hass.config_entries.flow.async_progress()
     assert len(flows_in_progress) == 1
