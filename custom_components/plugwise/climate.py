@@ -67,9 +67,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
+        self._heater_central_data = self.devices[self.gateway["heater_id"]]
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
+
 
         if presets := self.device.get("preset_modes"):
             self._attr_preset_modes = presets
@@ -101,11 +103,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             return HVACAction.HEATING
         if control_state == "off":
             return HVACAction.IDLE
-
-        heater_central_data = self.devices[self.gateway["heater_id"]]
-        if heater_central_data["binary_sensors"]["heating_state"]:
+        
+        if self._heater_central_data["binary_sensors"]["heating_state"]:
             return HVACAction.HEATING
-        if heater_central_data["binary_sensors"].get("cooling_state", False):
+        if self._heater_central_data["binary_sensors"].get("cooling_state", False):
             return HVACAction.COOLING
 
         return HVACAction.IDLE
@@ -126,12 +127,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Return the current hvac modes."""
         hvac_modes = [HVACMode.HEAT]
         if self.gateway["cooling_present"]:
-            if self.coordinator.api.elga_cooling_enabled:
+            if self._heater_central_data["elga_cooling_enabled"]:
                 hvac_modes.append(HVACMode.HEAT_COOL)
                 hvac_modes.remove(HVACMode.HEAT)
             if (
-                self.coordinator.api.lortherm_cooling_enabled
-                or self.coordinator.api.adam_cooling_enabled
+                self._heater_central_data["lortherm_cooling_enabled"]
+                or self._heater_central_data["adam_cooling_enabled"]
             ):
                 hvac_modes.append(HVACMode.COOL)
                 hvac_modes.remove(HVACMode.HEAT)
