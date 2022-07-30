@@ -213,17 +213,17 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         await self.coordinator.api.set_schedule_state(
             self.device["location"],
             self.device["last_used"],
-            "on" if hvac_mode == HVAC_MODE_AUTO else "off",
+            "on" if hvac_mode == HVACMode.AUTO else "off",
         )
 
         # pw-beta: feature request - mimic HomeKit behavior
         self._homekit_mode = hvac_mode
         if self._homekit_enabled:
-            if self._homekit_mode == HVAC_MODE_OFF:  # pragma: no cover
+            if self._homekit_mode == HVACMode.OFF:  # pragma: no cover
                 await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
             if (
                 self._homekit_mode
-                in [HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_HEAT_COOL]
+                in [HVACMode.HEAT, HVACMode.COOL, HVACMode.HEAT_COOL]
                 and self.device["active_preset"] == PRESET_AWAY
             ):  # pragma: no cover
                 await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
