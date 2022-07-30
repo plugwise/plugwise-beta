@@ -129,7 +129,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if self.coordinator.api.elga_cooling_enabled:
                 hvac_modes.append(HVACMode.HEAT_COOL)
                 hvac_modes.remove(HVACMode.HEAT)
-            if self.coordinator.api.lortherm_cooling_enabled or self.coordinator.api.adam_cooling_eanbled:
+            if self.coordinator.api.lortherm_cooling_enabled or self.coordinator.api.adam_cooling_enabled:
                 hvac_modes.append(HVACMode.COOL)
                 hvac_modes.remove(HVACMode.HEAT)
         if self.device["available_schedules"] != ["None"]:
