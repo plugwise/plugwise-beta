@@ -222,8 +222,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if self._homekit_mode == HVACMode.OFF:  # pragma: no cover
                 await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
             if (
-                self._homekit_mode
-                in [HVACMode.HEAT, HVACMode.COOL, HVACMode.HEAT_COOL]
+                self._homekit_mode in [HVACMode.HEAT, HVACMode.COOL, HVACMode.HEAT_COOL]
                 and self.device["active_preset"] == PRESET_AWAY
             ):  # pragma: no cover
                 await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
