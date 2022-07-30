@@ -113,6 +113,7 @@ TEST_DISCOVERY_ADAM = ZeroconfServiceInfo(
     type="mock_type",
 )
 
+
 @pytest.fixture(name="mock_smile")
 def mock_smile():
     """Create a Mock Smile for testing exceptions."""
@@ -296,6 +297,7 @@ async def test_zeroconf_stretch_form(
 
     assert len(mock_setup_entry.mock_calls) == 1
     assert len(mock_smile_config_flow.connect.mock_calls) == 1
+
 
 async def test_zeroconf_abort_anna_with_existing_config_entries(
     hass: HomeAssistant,
