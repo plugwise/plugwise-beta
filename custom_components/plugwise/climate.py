@@ -127,12 +127,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Return the current hvac modes."""
         hvac_modes = [HVACMode.HEAT]
         if self.gateway["cooling_present"]:
-            if self._heater_central_data["elga_cooling_enabled"]:
+            if self._heater_central_data.get("elga_cooling_enabled", False):
                 hvac_modes.append(HVACMode.HEAT_COOL)
                 hvac_modes.remove(HVACMode.HEAT)
             if (
-                self._heater_central_data["lortherm_cooling_enabled"]
-                or self._heater_central_data["adam_cooling_enabled"]
+                self._heater_central_data.get("lortherm_cooling_enabled", False)
+                or self._heater_central_data.get("adam_cooling_enabled", False)
             ):
                 hvac_modes.append(HVACMode.COOL)
                 hvac_modes.remove(HVACMode.HEAT)
