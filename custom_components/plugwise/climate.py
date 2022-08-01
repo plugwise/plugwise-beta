@@ -195,7 +195,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             data["setpoint_low"] = kwargs.get(ATTR_TARGET_TEMP_LOW)
 
         for _, temperature in data.items():
-            if temperature is None or not (
+            if not (
                 self._attr_min_temp <= temperature <= self._attr_max_temp
             ):
                 raise ValueError("Invalid temperature change requested.")
