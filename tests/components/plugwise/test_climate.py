@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock
 
-from plugwise.exceptions import PlugwiseException
+from plugwise.exceptions import PlugwiseError
 import pytest
 
 from homeassistant.components.climate.const import (
@@ -93,9 +93,9 @@ async def test_adam_climate_adjust_negative_testing(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test exceptions of climate entities."""
-    mock_smile_adam.set_preset.side_effect = PlugwiseException
-    mock_smile_adam.set_schedule_state.side_effect = PlugwiseException
-    mock_smile_adam.set_temperature.side_effect = PlugwiseException
+    mock_smile_adam.set_preset.side_effect = PlugwiseError
+    mock_smile_adam.set_schedule_state.side_effect = PlugwiseError
+    mock_smile_adam.set_temperature.side_effect = PlugwiseError
 
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
