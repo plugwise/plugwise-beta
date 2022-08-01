@@ -2,7 +2,6 @@
 
 from unittest.mock import MagicMock
 
-from plugwise.exceptions import PlugwiseError
 import pytest
 
 from homeassistant.components.climate.const import (
@@ -87,31 +86,6 @@ async def test_adam_3_climate_entity_attributes(
     assert state.state == HVAC_MODE_COOL
     assert state.attributes["hvac_action"] == "cooling"
     assert state.attributes["hvac_modes"] == [HVAC_MODE_COOL, HVAC_MODE_AUTO]
-
-
-async def test_adam_climate_adjust_negative_testing(
-    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
-) -> None:
-    """Test exceptions of climate entities."""
-    mock_smile_adam.set_preset.side_effect = PlugwiseError
-    mock_smile_adam.set_schedule_state.side_effect = PlugwiseError
-    mock_smile_adam.set_temperature.side_effect = PlugwiseError
-
-    with pytest.raises(HomeAssistantError):
-        await hass.services.async_call(
-            "climate",
-            "set_temperature",
-            {"entity_id": "climate.zone_lisa_wk", "temperature": 25},
-            blocking=True,
-        )
-
-    with pytest.raises(HomeAssistantError):
-        await hass.services.async_call(
-            "climate",
-            "set_preset_mode",
-            {"entity_id": "climate.zone_thermostat_jessie", "preset_mode": "home"},
-            blocking=True,
-        )
 
 
 async def test_adam_climate_entity_climate_changes(
