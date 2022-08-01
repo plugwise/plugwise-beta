@@ -138,6 +138,14 @@ async def test_adam_climate_entity_climate_changes(
             blocking=True,
         )
 
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            "climate",
+            "set_temperature",
+            {"entity_id": "climate.zone_lisa_wk", "hvac_mode": "heat", "temperature": 25},
+            blocking=True,
+        )
+
     await hass.services.async_call(
         "climate",
         "set_preset_mode",
