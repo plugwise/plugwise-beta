@@ -142,7 +142,11 @@ async def test_adam_climate_entity_climate_changes(
         await hass.services.async_call(
             "climate",
             "set_temperature",
-            {"entity_id": "climate.zone_lisa_wk", "hvac_mode": "heat", "temperature": 25},
+            {
+                "entity_id": "climate.zone_lisa_wk",
+                "hvac_mode": "heat",
+                "temperature": 25,
+            },
             blocking=True,
         )
 
