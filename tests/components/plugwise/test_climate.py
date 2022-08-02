@@ -143,8 +143,8 @@ async def test_adam_climate_entity_climate_changes(
         blocking=True,
     )
 
-    assert mock_smile_anna.set_schedule_state.call_count == 1
-    mock_smile_anna.set_schedule_state.assert_called_with(
+    assert mock_smile_adam.set_schedule_state.call_count == 1
+    mock_smile_adam.set_schedule_state.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", "standaard", "off"
     )
 
