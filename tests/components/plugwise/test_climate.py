@@ -240,30 +240,6 @@ async def test_anna_climate_entity_climate_changes(
 
     await hass.services.async_call(
         "climate",
-        "set_preset_mode",
-        {"entity_id": "climate.anna", "preset_mode": "away"},
-        blocking=True,
-    )
-
-    assert mock_smile_anna.set_preset.call_count == 1
-    mock_smile_anna.set_preset.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", "away"
-    )
-
-    await hass.services.async_call(
-        "climate",
-        "set_hvac_mode",
-        {"entity_id": "climate.anna", "hvac_mode": "heat_cool"},
-        blocking=True,
-    )
-
-    assert mock_smile_anna.set_schedule_state.call_count == 1
-    mock_smile_anna.set_schedule_state.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", "standaard", "off"
-    )
-
-    await hass.services.async_call(
-        "climate",
         "set_hvac_mode",
         {"entity_id": "climate.anna", "hvac_mode": "auto"},
         blocking=True,
