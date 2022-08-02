@@ -184,7 +184,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         if ATTR_HVAC_MODE in kwargs:
-            raise HomeAssistantError("Changing hvac_mode is not supported.")
+            raise HomeAssistantError("Changing hvac_mode via this command is not supported")
 
         data: dict[str, Any] = {}
         if ATTR_TEMPERATURE in kwargs:
@@ -196,7 +196,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         for _, temperature in data.items():
             if not (self._attr_min_temp <= temperature <= self._attr_max_temp):
-                raise ValueError("Invalid temperature change requested.")
+                raise ValueError("Invalid temperature change requested")
 
         await self.coordinator.api.set_temperature(self.device["location"], data)
 
@@ -204,7 +204,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode: str) -> None:
         """Set the hvac mode."""
         if hvac_mode not in self.hvac_modes:
-            raise HomeAssistantError("Unsupported hvac_mode.")
+            raise HomeAssistantError("Unsupported hvac_mode")
 
         await self.coordinator.api.set_schedule_state(
             self.device["location"],
