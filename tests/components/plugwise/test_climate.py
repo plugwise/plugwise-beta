@@ -121,23 +121,27 @@ async def test_adam_climate_entity_climate_changes(
         "c50f167537524366a5af7aa3942feb1e", {"setpoint": 25.0}
     )
 
+    await hass.services.async_call(
+        "climate",
+        "set_temperature",
+        {
+            "entity_id": "climate.zone_lisa_wk",
+            "hvac_mode": "heat",
+            "temperature": 25,
+        },
+        blocking=True,
+    )
+
+    assert mock_smile_adam.set_temperature.call_count == 2
+    mock_smile_adam.set_temperature.assert_called_with(
+        "c50f167537524366a5af7aa3942feb1e", {"setpoint": 25.0}
+    )
+
     with pytest.raises(ValueError):
         await hass.services.async_call(
             "climate",
             "set_temperature",
             {"entity_id": "climate.zone_lisa_wk", "temperature": 150},
-            blocking=True,
-        )
-
-    with pytest.raises(HomeAssistantError):
-        await hass.services.async_call(
-            "climate",
-            "set_temperature",
-            {
-                "entity_id": "climate.zone_lisa_wk",
-                "hvac_mode": "heat",
-                "temperature": 25,
-            },
             blocking=True,
         )
 
@@ -160,7 +164,7 @@ async def test_adam_climate_entity_climate_changes(
         blocking=True,
     )
 
-    assert mock_smile_adam.set_schedule_state.call_count == 1
+    assert mock_smile_adam.set_schedule_state.call_count == 2
     mock_smile_adam.set_schedule_state.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", "GF7  Woonkamer", "off"
     )
