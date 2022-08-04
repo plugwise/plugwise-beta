@@ -184,7 +184,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         if ATTR_HVAC_MODE in kwargs:
-            raise HomeAssistantError("Changing hvac_mode via this command is not supported")
+            await self.async_set_hvac_mode(kwargs[ATTR_HVAC_MODE])
 
         data: dict[str, Any] = {}
         if ATTR_TEMPERATURE in kwargs:
