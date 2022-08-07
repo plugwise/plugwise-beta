@@ -7,9 +7,8 @@ from unittest.mock import MagicMock
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
-    PlugwiseException,
     ResponseError,
-    XMLDataMissingError,
+    InvalidXMLError,
 )
 import pytest
 
@@ -53,7 +52,7 @@ async def test_load_unload_config_entry(
         (InvalidAuthentication),
         (ConnectionFailedError),
         (ResponseError),
-        (XMLDataMissingError),
+        (InvalidXMLError),
         (aiohttp.ClientError),
         (asyncio.TimeoutError),
     ],
@@ -78,7 +77,14 @@ async def test_config_entry_not_ready(
     )
 
 
-@pytest.mark.parametrize("side_effect", [(XMLDataMissingError), (PlugwiseException)])
+@pytest.mark.parametrize(
+    "side_effect",
+    [
+        (ConnectionFailedError),
+        (ResponseError),
+        (InvalidXMLError),
+    ],
+)
 async def test_async_update_fail(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
