@@ -43,7 +43,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             ),
         )
         self.api = api
-        self._available = False
+        self._available = True
         self._unavailable_logged = False
 
     async def _async_update_data(self) -> PlugwiseData:
