@@ -55,6 +55,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if self._available and self._unavailable_logged:
                 LOGGER.info(f"Reconnected to {self.api.smile_name}")
                 self._unavailable_logged = False
+            LOGGER.debug("Data: %s", PlugwiseData(*data))
+            return PlugwiseData(*data)
         except (InvalidXMLError, ResponseError) as err:
             raise UpdateFailed(
                 f"No or invalid XML data, or error indication received for: {self.api.smile_name}"
@@ -64,6 +66,3 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 self._available = False
                 raise UpdateFailed(f"Failed connecting to {self.api.smile_name}")
-
-        LOGGER.debug("Data: %s", PlugwiseData(*data))
-        return PlugwiseData(*data)
