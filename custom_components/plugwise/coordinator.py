@@ -50,8 +50,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         """Fetch data from Plugwise."""
         try:
             data = await self.api.async_update()
-            LOGGER.debug("Plugwise %s updated", self.api.smile_name)
             self._available = True
+            LOGGER.debug("Plugwise %s updated", self.api.smile_name)
+            LOGGER.debug("Data: %s", PlugwiseData(*data))
+            return PlugwiseData(*data)
         except (InvalidXMLError, ResponseError) as err:
             raise UpdateFailed(
                 f"No or invalid XML data, or error indication received for: {self.api.smile_name}"
@@ -66,5 +68,3 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             LOGGER.info(f"Reconnected to {self.api.smile_name}")
             self._unavailable_logged = False
 
-        LOGGER.debug("Data: %s", PlugwiseData(*data))
-        return PlugwiseData(*data)
