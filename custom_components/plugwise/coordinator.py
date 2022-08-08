@@ -63,7 +63,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 raise UpdateFailed(f"Failed connecting to {self.api.smile_name}")
 
         if self._available and self._unavailable_logged:
-            LOGGER.info(f"{self.api.smile_name} is available again")
+            LOGGER.info(f"Reconnected to {self.api.smile_name}")
             self._unavailable_logged = False
 
         LOGGER.debug("Data: %s", PlugwiseData(*data))
