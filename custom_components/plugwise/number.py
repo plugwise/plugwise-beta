@@ -113,26 +113,39 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     @property
     def native_step(self) -> float:
         """Return the setpoint step value."""
-        return max(self.device[self.entity_description.key][self.entity_description.native_step_key], 1)
+        return max(
+            self.device[self.entity_description.key][
+                self.entity_description.native_step_key
+            ],
+            1,
+        )
 
     @property
     def native_value(self) -> float:
         """Return the present setpoint value."""
-        return self.device[self.entity_description.key][self.entity_description.native_value_key]
+        return self.device[self.entity_description.key][
+            self.entity_description.native_value_key
+        ]
 
     @property
     def native_min_value(self) -> float:
         """Return the setpoint min. value."""
-        return self.device[self.entity_description.key][self.entity_description.native_min_value_key]
+        return self.device[self.entity_description.key][
+            self.entity_description.native_min_value_key
+        ]
 
     @property
     def native_max_value(self) -> float:
         """Return the setpoint max. value."""
-        return self.device[self.entity_description.key][self.entity_description.native_max_value_key]
+        return self.device[self.entity_description.key][
+            self.entity_description.native_max_value_key
+        ]
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.entity_description.command(self.coordinator.api, self.entity_description.key, value)
+        await self.entity_description.command(
+            self.coordinator.api, self.entity_description.key, value
+        )
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.name, value
         )
