@@ -72,23 +72,66 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
 
+        # Determine preset modes
+        self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
+        if self.hc_data.get("elga_cooling_enabled", False):
+            self._attr_supported_features = (
+                ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
+            )
         if presets := self.device.get("preset_modes"):
+            self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
 
-        self._attr_min_temp = self.device["thermostat"].get(
-            "lower_bound", DEFAULT_MIN_TEMP
+        # Determine hvac modes and current hvac mode
+        self._attr_hvac_modes = [HVACMode.HEAT]
+        if self.coordinator.data.gateway["cooling_present"]:
+            self.elga_cooling_enabled = self.hc_data.get("elga_cooling_enabled", False)
+            self.lortherm_cooling_enabled = self.hc_data.get(
+                "lortherm_cooling_enabled", False
+            )
+            self.adam_cooling_enabled = self.hc_data.get("adam_cooling_enabled", False)
+            if self.elga_cooling_enabled:
+                self._attr_hvac_modes.append(HVACMode.HEAT_COOL)
+                self._attr_hvac_modes.remove(HVACMode.HEAT)
+            if self.lortherm_cooling_enabled or self.adam_cooling_enabled:
+                self._attr_hvac_modes.append(HVACMode.COOL)
+                self._attr_hvac_modes.remove(HVACMode.HEAT)
+        if self.device["available_schedules"] != ["None"]:
+            self._attr_hvac_modes.append(HVACMode.AUTO)
+
+        self._attr_min_temp = self.device["thermostat"]["lower_bound"]
+        self._attr_max_temp = self.device["thermostat"]["upper_bound"]
+        # Ensure we don't drop below 0.1
+        self._attr_target_temperature_step = max(
+            self.device["thermostat"]["resolution"], 0.1
         )
-        self._attr_max_temp = self.device["thermostat"].get(
-            "upper_bound", DEFAULT_MAX_TEMP
+
+        self.old_state = (
+            self.elga_cooling_enabled
+            or self.lortherm_cooling_enabled
+            or self.adam_cooling_enabled
         )
-        if resolution := self.device["thermostat"].get("resolution", 0.1):
-            # Ensure we don't drop below 0.1
-            self._attr_target_temperature_step = max(resolution, 0.1)
+
+    def check_for_function_change(self) -> None:
+        """Check for a function-change that will require a Home Assistant restart."""
+        if self.coordinator.data.gateway["cooling_present"]:
+            new_state = (
+                self.elga_cooling_enabled
+                or self.lortherm_cooling_enabled
+                or self.adam_cooling_enabled
+            )
+            if new_state != self.old_state:
+                raise HomeAssistantError(
+                    "Your Plugwise configuration has changed, this integration \
+                    is no longer working correctly. \
+                    Make sure to restart Home Assistant Core!!"
+                )
 
     @property
-    def current_temperature(self) -> float:
+    def current_temperature(self) -> float | None:
         """Return the current temperature."""
-        return self.device["sensors"]["temperature"]
+        self.check_for_function_change()
+        return self.device["sensors"].get("temperature")
 
     @property
     def hvac_action(self) -> HVACAction:
@@ -122,38 +165,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return HVACMode(mode)
 
     @property
-    def hvac_modes(self) -> list[HVACMode]:
-        """Return the current hvac modes."""
-        hvac_modes = [HVACMode.HEAT]
-        if self.gateway["cooling_present"]:
-            if self._hc_data.get("elga_cooling_enabled", False):
-                hvac_modes.append(HVACMode.HEAT_COOL)
-                hvac_modes.remove(HVACMode.HEAT)
-            if self._hc_data.get(
-                "lortherm_cooling_enabled", False
-            ) or self._hc_data.get("adam_cooling_enabled", False):
-                hvac_modes.append(HVACMode.COOL)
-                hvac_modes.remove(HVACMode.HEAT)
-        if self.device["available_schedules"] != ["None"]:
-            hvac_modes.append(HVACMode.AUTO)
-
-        return hvac_modes
-
-    @property
     def preset_mode(self) -> str:
         """Return the current preset mode."""
         return self.device["active_preset"]
-
-    @property
-    def supported_features(self) -> int:
-        """Return the supported features."""
-        features: int = ClimateEntityFeature.TARGET_TEMPERATURE
-        if self._hc_data.get("elga_cooling_enabled", False):
-            features = ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
-        if self.device.get("preset_modes"):
-            features |= ClimateEntityFeature.PRESET_MODE
-
-        return features
 
     @property
     def target_temperature(self) -> float | None:
