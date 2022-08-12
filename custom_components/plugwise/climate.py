@@ -67,7 +67,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
-        self._hc_data = self.devices[self.gateway["heater_id"]]
+        self.hc_data = self.devices[self.gateway["heater_id"]]
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
@@ -146,9 +146,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if control_state == "off":
             return HVACAction.IDLE
 
-        if self._hc_data["binary_sensors"]["heating_state"]:
+        if self.hc_data["binary_sensors"]["heating_state"]:
             return HVACAction.HEATING
-        if self._hc_data["binary_sensors"].get("cooling_state", False):
+        if self.hc_data["binary_sensors"].get("cooling_state", False):
             return HVACAction.COOLING
 
         return HVACAction.IDLE
