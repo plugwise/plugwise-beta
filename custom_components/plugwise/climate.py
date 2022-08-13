@@ -82,8 +82,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
-        self._attr_min_temp = self.device["thermostat"].get("lower_bound", DEFAULT_MIN_TEMP)
-        self._attr_max_temp = self.device["thermostat"].get("upper_bound", DEFAULT_MAX_TEMP)
+        self._attr_min_temp = self.device["thermostat"].get(
+            "lower_bound", DEFAULT_MIN_TEMP
+        )
+        self._attr_max_temp = self.device["thermostat"].get(
+            "upper_bound", DEFAULT_MAX_TEMP
+        )
         if resolution := self.device["thermostat"]["resolution"]:
             # Ensure we don't drop below 0.1
             self._attr_target_temperature_step = max(resolution, 0.1)
