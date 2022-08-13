@@ -10,7 +10,6 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_AUTO,
     HVAC_MODE_COOL,
     HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
@@ -87,7 +86,7 @@ async def test_adam_3_climate_entity_attributes(
     assert state
     assert state.state == HVAC_MODE_COOL
     assert state.attributes["hvac_action"] == "cooling"
-    assert state.attributes["hvac_modes"] == [HVAC_MODE_COOL, HVAC_MODE_AUTO]
+    assert state.attributes["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_AUTO]
 
 
 async def test_adam_climate_adjust_negative_testing(
@@ -190,7 +189,8 @@ async def test_anna_climate_entity_attributes(
     assert state.state == HVAC_MODE_AUTO
     assert state.attributes["hvac_action"] == "heating"
     assert state.attributes["hvac_modes"] == [
-        HVAC_MODE_HEAT_COOL,
+        HVAC_MODE_HEAT,
+        HVAC_MODE_COOL,
         HVAC_MODE_AUTO,
     ]
 
@@ -218,7 +218,8 @@ async def test_anna_2_climate_entity_attributes(
     assert state.state == HVAC_MODE_AUTO
     assert state.attributes["hvac_action"] == "cooling"
     assert state.attributes["hvac_modes"] == [
-        HVAC_MODE_HEAT_COOL,
+        HVAC_MODE_HEAT,
+        HVAC_MODE_COOL,
         HVAC_MODE_AUTO,
     ]
     assert state.attributes["target_temp_high"] == 24.0
@@ -237,7 +238,8 @@ async def test_anna_3_climate_entity_attributes(
     assert state.state == HVAC_MODE_AUTO
     assert state.attributes["hvac_action"] == "idle"
     assert state.attributes["hvac_modes"] == [
-        HVAC_MODE_HEAT_COOL,
+        HVAC_MODE_HEAT,
+        HVAC_MODE_COOL,
         HVAC_MODE_AUTO,
     ]
 
