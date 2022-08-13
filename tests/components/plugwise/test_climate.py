@@ -86,7 +86,11 @@ async def test_adam_3_climate_entity_attributes(
     assert state
     assert state.state == HVAC_MODE_COOL
     assert state.attributes["hvac_action"] == "cooling"
-    assert state.attributes["hvac_modes"] == [HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_AUTO]
+    assert state.attributes["hvac_modes"] == [
+        HVAC_MODE_HEAT,
+        HVAC_MODE_COOL,
+        HVAC_MODE_AUTO,
+    ]
 
 
 async def test_adam_climate_adjust_negative_testing(
@@ -255,7 +259,8 @@ async def test_anna_climate_entity_climate_changes(
 
     assert mock_smile_anna.set_temperature.call_count == 1
     mock_smile_anna.set_temperature.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", 20.0,
+        "c784ee9fdab44e1395b8dee7d7a497d5",
+        20.0,
     )
 
     await hass.services.async_call(
