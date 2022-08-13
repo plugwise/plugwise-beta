@@ -79,14 +79,14 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine hvac modes and current hvac mode
         self._attr_hvac_modes = [HVACMode.HEAT]
-        if self.coordinator.data.gateway.get("cooling_present"):
+        if self.coordinator.data.gateway["cooling_present"]:
             self._attr_hvac_modes.append(HVACMode.COOL)
-        if self.device.get("available_schedules") != ["None"]:
+        if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
         self._attr_min_temp = self.device.get("lower_bound", DEFAULT_MIN_TEMP)
         self._attr_max_temp = self.device.get("upper_bound", DEFAULT_MAX_TEMP)
-        if resolution := self.device.get("resolution"):
+        if resolution := self.device["resolution"]:
             # Ensure we don't drop below 0.1
             self._attr_target_temperature_step = max(resolution, 0.1)
 
