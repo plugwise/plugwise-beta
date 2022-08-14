@@ -91,10 +91,10 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # pw-beta frontend refresh-interval
     cooldown = 1.5
     if (
-        custom_refresh := entry.options.get(CONF_REFRESH_INTERVAL) is not None
-    ):  # pragma: no cover
+        custom_refresh := entry.options.get(CONF_REFRESH_INTERVAL)
+    ) is not None:  # pragma: no cover
         cooldown = custom_refresh
-    LOGGER.debug("DUC cooldown interval: %s", custom_refresh)
+    LOGGER.debug("DUC cooldown interval: %s", cooldown)
 
     # pw-beta - update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, api, cooldown, update_interval)
