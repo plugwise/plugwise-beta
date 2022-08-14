@@ -49,7 +49,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         """Fetch data from Plugwise."""
         try:
             data = await self.api.async_update()
-            LOGGER.debug("Data: %s", PlugwiseData(*data))
+            LOGGER.debug(f"{self.api.smile_name} data: %s", PlugwiseData(*data))
             if self._unavailable_logged:
                 self._unavailable_logged = False
         except (InvalidXMLError, ResponseError) as err:
