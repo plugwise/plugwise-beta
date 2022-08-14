@@ -51,7 +51,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         try:
             data = await self.api.async_update()
             self._available = True
-            LOGGER.debug("Plugwise %s updated", self.api.smile_name)
+            LOGGER.debug("Data: %s", PlugwiseData(*data))
             if self._available and self._unavailable_logged:
                 self._unavailable_logged = False
         except (InvalidXMLError, ResponseError) as err:
@@ -63,6 +63,5 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 ) from err
         except ConnectionFailedError:
             raise UpdateFailed
-        else:
-            LOGGER.debug("Data: %s", PlugwiseData(*data))
-            return PlugwiseData(*data)
+
+        return PlugwiseData(*data)
