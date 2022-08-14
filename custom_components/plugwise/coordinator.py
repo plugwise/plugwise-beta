@@ -62,7 +62,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                     f"No or invalid XML data, or error indication received for: {self.api.smile_name}"
                 ) from err
         except ConnectionFailedError:
-                raise UpdateFailed
+            raise UpdateFailed
         else:
             LOGGER.debug("Data: %s", PlugwiseData(*data))
             return PlugwiseData(*data)
