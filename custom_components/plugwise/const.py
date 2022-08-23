@@ -70,8 +70,8 @@ MASTER_THERMOSTATS: Final[list[str]] = [
 
 # Config_flow const:
 ZEROCONF_MAP: Final[dict[str, str]] = {
-    "smile": "Smile P1",
-    "smile_thermo": "Smile Anna",
+    "smile": "P1",
+    "smile_thermo": "Anna",
     "smile_open_therm": "Adam",
     "stretch": "Stretch",
 }
