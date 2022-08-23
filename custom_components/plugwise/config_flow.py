@@ -150,7 +150,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
     discovery_info: ZeroconfServiceInfo | None = None
     _username: str = DEFAULT_USERNAME
-    _name: str
 
     async def async_step_zeroconf(
         self, discovery_info: ZeroconfServiceInfo
@@ -183,11 +182,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if DEFAULT_USERNAME not in unique_id:
             self._username = STRETCH_USERNAME
-        _product = _properties.get("product")
-        self._name = ZEROCONF_MAP.get(_product, _product)
+        _product = _properties.get("product", None)
         _version = _properties.get("version", "n/a")
-        _name = f"{self._name} v{_version}"
- 
+        _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
 
         self.context.update(
             {
@@ -303,7 +300,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 self._abort_if_unique_id_configured()
 
                 user_input[PW_TYPE] = API
-                return self.async_create_entry(title=self._name, data=user_input)
+                return self.async_create_entry(title=api.smile_name, data=user_input)
 
         return self.async_show_form(
             step_id="user_gateway",
