@@ -161,7 +161,7 @@ def mock_smile_anna() -> Generator[None, MagicMock, None]:
         smile.smile_version = "4.0.15"
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
-        smile.smile_name = "Anna"
+        smile.smile_name = "Smile Anna"
 
         smile.connect.return_value = True
 
@@ -185,7 +185,7 @@ def mock_smile_anna_2() -> Generator[None, MagicMock, None]:
         smile.smile_version = "4.0.15"
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
-        smile.smile_name = "Anna"
+        smile.smile_name = "Smile Anna"
 
         smile.connect.return_value = True
 
@@ -209,7 +209,7 @@ def mock_smile_anna_3() -> Generator[None, MagicMock, None]:
         smile.smile_version = "4.0.15"
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
-        smile.smile_name = "Anna"
+        smile.smile_name = "Smile Anna"
 
         smile.connect.return_value = True
 
