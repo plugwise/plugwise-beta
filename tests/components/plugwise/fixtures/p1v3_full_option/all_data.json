@@ -5,7 +5,7 @@
     "notifications": {}
   },
   {
-    "e950c7d5e1ee407a858e2a8b5016c8b3": {
+    "cd3e822288064775a7c4afcdd70bdda2": {
       "dev_class": "gateway",
       "firmware": "3.3.9",
       "hardware": "AME Smile 2.0 board",
@@ -15,7 +15,7 @@
       "name": "Smile P1",
       "vendor": "Plugwise B.V."
     },
-    "cd3e822288064775a7c4afcdd70bdda2": {
+    "e950c7d5e1ee407a858e2a8b5016c8b3": {
       "dev_class": "smartmeter",
       "location": "cd3e822288064775a7c4afcdd70bdda2",
       "model": "2M550E-1012",
