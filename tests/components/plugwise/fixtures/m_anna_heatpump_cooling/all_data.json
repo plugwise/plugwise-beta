@@ -47,7 +47,7 @@
       "mac_address": "012345670001",
       "model": "Gateway",
       "name": "Smile Anna",
-      "vendor": "Plugwise B.V.",
+      "vendor": "Plugwise",
       "binary_sensors": {
         "plugwise_notification": false
       },
