@@ -128,7 +128,7 @@ async def test_diagnostics(
                 "hardware": "AME Smile 2.0 board",
                 "location": "1f9dcf83fd4e4b66b72ff787957bfe5d",
                 "mac_address": "012345670001",
-                "model": "Adam",
+                "model": "Gateway",
                 "name": "Adam",
                 "zigbee_mac_address": "ABCD012345670101",
                 "vendor": "Plugwise B.V.",
