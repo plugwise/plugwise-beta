@@ -10,7 +10,7 @@
     "ad4838d7d35c4d6ea796ee12ae5aedf8": {
       "dev_class": "thermostat",
       "location": "f2bf9048bef64cc5b6d5110154e33c81",
-      "model": "Anna",
+      "model": "ThermoTouch",
       "name": "Anna",
       "vendor": "Plugwise",
       "thermostat": {
