@@ -12,7 +12,7 @@
       "location": "f2bf9048bef64cc5b6d5110154e33c81",
       "model": "Anna",
       "name": "Anna",
-      "vendor": "Plugwise B.V.",
+      "vendor": "Plugwise",
       "thermostat": {
         "setpoint": 18.5,
         "lower_bound": 1.0,
@@ -99,7 +99,7 @@
       "model": "Gateway",
       "name": "Adam",
       "zigbee_mac_address": "ABCD012345670101",
-      "vendor": "Plugwise B.V.",
+      "vendor": "Plugwise",
       "regulation_mode": "heating",
       "regulation_modes": [
         "heating",
