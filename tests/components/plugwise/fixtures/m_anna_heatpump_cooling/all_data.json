@@ -45,7 +45,7 @@
       "hardware": "AME Smile 2.0 board",
       "location": "a57efe5f145f498c9be62a9b63626fbf",
       "mac_address": "012345670001",
-      "model": "Smile Anna",
+      "model": "Gateway",
       "name": "Smile Anna",
       "vendor": "Plugwise B.V.",
       "binary_sensors": {
