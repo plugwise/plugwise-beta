@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW July [0.26.0]
+# NEW Aug 2022 [0.27.0]
+- Smile: P1 - create an additional P1 device, update device names and models - via plugwise v0.22.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.22.0
+
+# July [0.26.0]
 - Smile: Add domestic_hot_water_setpoint Number, further fix cooling support.
   - Link to plugwise v0.21.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.21.0
   - Add domestic_hot_water_setpoint Number, update/simplify number-set-value function.
