@@ -10,9 +10,9 @@
     "ad4838d7d35c4d6ea796ee12ae5aedf8": {
       "dev_class": "thermostat",
       "location": "f2bf9048bef64cc5b6d5110154e33c81",
-      "model": "Anna",
+      "model": "ThermoTouch",
       "name": "Anna",
-      "vendor": "Plugwise B.V.",
+      "vendor": "Plugwise",
       "thermostat": {
         "setpoint": 18.5,
         "lower_bound": 1.0,
@@ -96,10 +96,10 @@
       "hardware": "AME Smile 2.0 board",
       "location": "bc93488efab249e5bc54fd7e175a6f91",
       "mac_address": "012345670001",
-      "model": "Adam",
+      "model": "Gateway",
       "name": "Adam",
       "zigbee_mac_address": "ABCD012345670101",
-      "vendor": "Plugwise B.V.",
+      "vendor": "Plugwise",
       "regulation_mode": "cooling",
       "regulation_modes": [
         "cooling",
