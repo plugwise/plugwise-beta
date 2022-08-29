@@ -133,7 +133,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Return the current hvac modes."""
         hvac_modes = [HVAC_MODE_HEAT]
         if self.gateway["cooling_present"]:
-            if self.gateway["smile_name"] == "Smile Anna":
+            if self.gateway["smile_name"] == "Anna":
                 hvac_modes.append(HVAC_MODE_HEAT_COOL)
                 hvac_modes.remove(HVAC_MODE_HEAT)
             if (
