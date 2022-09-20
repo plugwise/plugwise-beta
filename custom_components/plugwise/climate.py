@@ -83,7 +83,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_hvac_modes.append(HVACMode.AUTO)
         # pw-beta homekit emulation
         if homekit_enabled:
-            self._attr_hvac_modes.append(HVACMode.OFF)
+            self._attr_hvac_modes.append(HVACMode.OFF)  # pragma: no cover
 
         self._attr_min_temp = self.device["thermostat"].get(
             "lower_bound", DEFAULT_MIN_TEMP
