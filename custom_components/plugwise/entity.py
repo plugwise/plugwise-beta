@@ -67,7 +67,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         """Return if entity is available."""
         if "available" in self.data:
             return super().available and self.data["available"]
-        
+
         return super().available
 
     @property
