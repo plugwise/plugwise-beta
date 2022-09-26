@@ -77,7 +77,7 @@ async def async_setup_entry(
     for device_id, device in coordinator.data.devices.items():
         for description in SELECT_TYPES:
             if (
-                description.options in device
+                description.options_key in device
                 and len(device[description.options_key]) > 1
             ):
                 entities.append(
