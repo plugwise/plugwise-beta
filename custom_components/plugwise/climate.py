@@ -101,24 +101,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return self.device["sensors"]["temperature"]
 
     @property
-    def hvac_action(self) -> HVACAction:
-        """Return the current running hvac operation if supported."""
-        # When control_state is present, prefer this data
-        if (control_state := self.device.get("control_state")) == "cooling":
-            return HVACAction.COOLING
-        # Support preheating state as heating, until preheating is added as a separate state
-        if control_state in ["heating", "preheating"]:
-            return HVACAction.HEATING
-        if control_state == "off":
-            return HVACAction.IDLE
-
-        hc_data = self.devices[self.gateway["heater_id"]]
-        if hc_data["binary_sensors"]["heating_state"]:
-            return HVACAction.HEATING
-        if hc_data["binary_sensors"].get("cooling_state", False):
-            return HVACAction.COOLING
-
-        return HVACAction.IDLE
+    def target_temperature(self) -> float:
+        """Return the temperature we try to reach."""
+        return self.device["thermostat"]["setpoint"]
 
     @property
     def hvac_mode(self) -> HVACMode:
@@ -132,15 +117,31 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return HVACMode(mode)
 
     @property
+    def hvac_action(self) -> HVACAction:
+        """Return the current running hvac operation if supported."""
+        # When control_state is present, prefer this data
+        if (control_state := self.device.get("control_state")) == "cooling":
+            return HVACAction.COOLING
+        # Support preheating state as heating, until preheating is added as a separate state
+        if control_state in ["heating", "preheating"]:
+            return HVACAction.HEATING
+        if control_state == "off":
+            return HVACAction.IDLE
+
+        hc_data = self.coordinator.data.devices[
+            self.coordinator.data.gateway["heater_id"]
+        ]
+        if hc_data["binary_sensors"]["heating_state"]:
+            return HVACAction.HEATING
+        if hc_data["binary_sensors"].get("cooling_state", False):
+            return HVACAction.COOLING
+
+        return HVACAction.IDLE
+
+    @property
     def preset_mode(self) -> str:
         """Return the current preset mode."""
         return self.device["active_preset"]
-
-    @property
-    def target_temperature(self) -> float:
-        """Return the temperature we try to reach."""
-
-        return self.device["thermostat"]["setpoint"]
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
