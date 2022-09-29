@@ -28,7 +28,22 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW July [0.26.0]
+# NEW Sept [0.27.0] 
+- Implement https://github.com/home-assistant/core/pull/75109 via plugwise v0.21.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.21.1
+- Implement https://github.com/home-assistant/core/pull/75161
+- Climate:  implementing the new Climate classes `ClimateEntityFeature`,  `HVACAction`, and `HVACMode`.
+- Climate: fix bug in `hvac_modes` determination, implement changes from plugwise v0.21.1
+- Climate: `async_set_temperature()`: support `hvac_mode`-change
+- Refresh test fixtures
+- Adapt tests/asserts
+- Adapt to recent DUC changes wrt error handling
+- DUC: provide a single error-message (platinum requirement) when the connection is lost (a single return-message is not needed, provided by the DUC)
+- Fix cooldown-interval is None at init, raise max. to 10 (max in Core)
+- Follow https://github.com/home-assistant/core/pull/76610 (link to plugwise v0.21.3, simplify/revert cooling-related code)
+- Implement https://github.com/home-assistant/core/pull/78680
+- Implement https://github.com/home-assistant/core/pull/78935
+
+# July [0.26.0]
 - Smile: Add domestic_hot_water_setpoint Number, further fix cooling support.
   - Link to plugwise v0.21.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.21.0
   - Add domestic_hot_water_setpoint Number, update/simplify number-set-value function.

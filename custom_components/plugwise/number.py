@@ -1,8 +1,9 @@
 """Number platform for Plugwise integration."""
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-
+from plugwise import Smile
 from homeassistant.components.number import (
     NumberDeviceClass,
     NumberEntity,
@@ -21,26 +22,50 @@ from .entity import PlugwiseEntity
 
 
 @dataclass
-class PlugwiseNumberEntityDescription(NumberEntityDescription):
+class PlugwiseEntityDescriptionMixin:
+    """Mixin values for Plugwse entities."""
+
+    command: Callable[[Smile, str, float], Awaitable[None]]
+
+
+@dataclass
+class PlugwiseNumberEntityDescription(
+    NumberEntityDescription, PlugwiseEntityDescriptionMixin
+):
     """Class describing Plugwise Number entities."""
+
+    native_max_value_key: str | None = None
+    native_min_value_key: str | None = None
+    native_step_key: str | None = None
+    native_value_key: str | None = None
 
 
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
+        command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         name="Maximum boiler temperature setpoint",
         entity_category=EntityCategory.CONFIG,
         entity_registry_enabled_default=False,
+        native_max_value_key="upper_bound",
+        native_min_value_key="lower_bound",
+        native_step_key="resolution",
         native_unit_of_measurement=TEMP_CELSIUS,
+        native_value_key="setpoint",
     ),
     PlugwiseNumberEntityDescription(
         key="domestic_hot_water_setpoint",
+        command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         name="Domestic hot water setpoint",
         entity_category=EntityCategory.CONFIG,
         entity_registry_enabled_default=False,
+        native_max_value_key="upper_bound",
+        native_min_value_key="lower_bound",
+        native_step_key="resolution",
         native_unit_of_measurement=TEMP_CELSIUS,
+        native_value_key="setpoint",
     ),
 )
 
@@ -83,33 +108,44 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        self._attr_name = (f"{self.device['name']} {description.name}").lstrip()
         self._attr_mode = NumberMode.BOX
-        self._item = description.key
 
     @property
     def native_step(self) -> float:
         """Return the setpoint step value."""
-        return max(self.device[self._item]["resolution"], 1)
+        return max(
+            self.device[self.entity_description.key][
+                self.entity_description.native_step_key
+            ],
+            1,
+        )
 
     @property
     def native_value(self) -> float:
         """Return the present setpoint value."""
-        return self.device[self._item]["setpoint"]
+        return self.device[self.entity_description.key][
+            self.entity_description.native_value_key
+        ]
 
     @property
     def native_min_value(self) -> float:
         """Return the setpoint min. value."""
-        return self.device[self._item]["lower_bound"]
+        return self.device[self.entity_description.key][
+            self.entity_description.native_min_value_key
+        ]
 
     @property
     def native_max_value(self) -> float:
         """Return the setpoint max. value."""
-        return self.device[self._item]["upper_bound"]
+        return self.device[self.entity_description.key][
+            self.entity_description.native_max_value_key
+        ]
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.coordinator.api.set_number_setpoint(self._item, value),
+        await self.entity_description.command(
+            self.coordinator.api, self.entity_description.key, value
+        )
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.name, value
         )

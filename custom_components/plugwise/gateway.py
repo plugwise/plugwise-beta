@@ -90,9 +90,11 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # pw-beta frontend refresh-interval
     cooldown = 1.5
-    if custom_refresh := entry.options.get(CONF_REFRESH_INTERVAL):  # pragma: no cover
+    if (
+        custom_refresh := entry.options.get(CONF_REFRESH_INTERVAL)
+    ) is not None:  # pragma: no cover
         cooldown = custom_refresh
-    LOGGER.debug("DUC cooldown interval: %s", custom_refresh)
+    LOGGER.debug("DUC cooldown interval: %s", cooldown)
 
     # pw-beta - update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, api, cooldown, update_interval)
@@ -115,7 +117,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         identifiers={(DOMAIN, str(api.gateway_id))},
         manufacturer="Plugwise",
         name=entry.title,
-        model=f"Smile {api.smile_name}",
+        model=api.smile_name,
         sw_version=api.smile_version[0],
     )
 

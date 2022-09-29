@@ -149,7 +149,6 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
             description.entity_registry_enabled_default
         )
         self._attr_unique_id = f"{device_id}-{description.key}"
-        self._attr_name = (f"{self.device.get('name', '')} {description.name}").lstrip()
         self._notification: dict[str, str] = {}  # pw-beta
 
     @property
@@ -179,7 +178,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
 
         attrs: dict[str, list[str]] = {}
         self._notification = {}  # pw-beta
-        if notify := self.gateway.get("notifications"):
+        if notify := self.coordinator.data.gateway["notifications"]:
             for notify_id, details in notify.items():
                 for msg_type, msg in details.items():
                     msg_type = msg_type.lower()

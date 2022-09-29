@@ -18,7 +18,7 @@ from .coordinator import PlugwiseDataUpdateCoordinator
 class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
     """Represent a PlugWise Entity."""
 
-    coordinator: PlugwiseDataUpdateCoordinator
+    _attr_has_entity_name = True
 
     def __init__(
         self,
@@ -46,7 +46,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
             connections=connections,
             manufacturer=data.get("vendor"),
             model=data.get("model"),
-            name=f"Smile {coordinator.data.gateway['smile_name']}",
+            name=coordinator.data.gateway["smile_name"],
             sw_version=data.get("firmware"),
             hw_version=data.get("hardware"),
         )
@@ -65,22 +65,16 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
     @property
     def available(self) -> bool:
         """Return if entity is available."""
-        return super().available and self._dev_id in self.coordinator.data.devices
+        device_available = False
+        if self.coordinator.data is not None:
+            device_available = self._dev_id in self.coordinator.data.devices
+
+        return super().available and device_available
 
     @property
     def device(self) -> dict[str, Any]:
         """Return data for this device."""
         return self.coordinator.data.devices[self._dev_id]
-
-    @property
-    def devices(self) -> dict[str, dict[str, Any]]:
-        """Return devices data."""
-        return self.coordinator.data.devices
-
-    @property
-    def gateway(self) -> dict[str, Any]:
-        """Return gateway data."""
-        return self.coordinator.data.gateway
 
     async def async_added_to_hass(self) -> None:
         """Subscribe to updates."""

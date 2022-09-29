@@ -14,7 +14,7 @@ set -e
 # Which packages to install (to prevent installing all test requirements)
 # actual package version ARE verified (i.e. grepped) from requirements_test_all
 # seperate packges with |
-pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket|pre-commit|paho-mqtt"
+pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket|pre-commit|paho-mqtt|numpy"
 
 echo ""
 echo "Checking for neccesary tools and prearing setup:"
@@ -152,10 +152,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	echo ""
 	cp -r ../custom_components/plugwise ./homeassistant/components/
 	cp -r ../tests/components/plugwise ./tests/components/
-	echo ""
-	echo "Removing select from coveragerc as we have a test now."
-	echo ""
-	sed -i".sedbck" 's#homeassistant/components/plugwise/select.py##' .coveragerc
 	echo ""
 fi # core_prep
 

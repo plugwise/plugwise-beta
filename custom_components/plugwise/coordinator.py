@@ -3,7 +3,7 @@ from datetime import timedelta
 from typing import Any, NamedTuple
 
 from plugwise import Smile
-from plugwise.exceptions import PlugwiseException, XMLDataMissingError
+from plugwise.exceptions import ConnectionFailedError, InvalidXMLError, ResponseError
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.debounce import Debouncer
@@ -43,17 +43,22 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             ),
         )
         self.api = api
+        self._unavailable_logged = False
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
         try:
             data = await self.api.async_update()
-            LOGGER.debug("Plugwise %s updated", self.api.smile_name)
-        except XMLDataMissingError as err:
-            raise UpdateFailed(
-                f"No XML data received for: {self.api.smile_name}"
-            ) from err
-        except PlugwiseException as err:
-            raise UpdateFailed(f"Updated failed for: {self.api.smile_name}") from err
-        LOGGER.debug("Data: %s", PlugwiseData(*data))
+            LOGGER.debug(f"{self.api.smile_name} data: %s", PlugwiseData(*data))
+            if self._unavailable_logged:
+                self._unavailable_logged = False
+        except (InvalidXMLError, ResponseError) as err:
+            if not self._unavailable_logged:
+                self._unavailable_logged = True
+                raise UpdateFailed(
+                    f"No or invalid XML data, or error indication received for: {self.api.smile_name}"
+                ) from err
+        except ConnectionFailedError:
+            raise UpdateFailed
+
         return PlugwiseData(*data)
