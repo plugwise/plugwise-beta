@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW Sept [0.27.0] 
+# NEW Sept [0.28.0]
+- Smile P1: change to two devices, rename/streamline device names and models
+
+# Sept [0.27.0] 
 - Implement https://github.com/home-assistant/core/pull/75109 via plugwise v0.21.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.21.1
 - Implement https://github.com/home-assistant/core/pull/75161
 - Climate:  implementing the new Climate classes `ClimateEntityFeature`,  `HVACAction`, and `HVACMode`.
