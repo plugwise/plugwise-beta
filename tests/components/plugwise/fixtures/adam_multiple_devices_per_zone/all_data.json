@@ -26,10 +26,12 @@
         "upper_bound": 99.9,
         "resolution": 0.01
       },
+      "available": true,
       "preset_modes": [
         "home",
         "asleep",
         "away",
+        "vacation",
         "no_frost"
       ],
       "active_preset": "away",
@@ -58,6 +60,7 @@
       "name": "Floor kraan",
       "zigbee_mac_address": "ABCD012345670A02",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "temperature": 26.0,
         "setpoint": 21.5,
@@ -74,6 +77,7 @@
       "name": "Bios Cv Thermostatic Radiator ",
       "zigbee_mac_address": "ABCD012345670A09",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "temperature": 17.2,
         "setpoint": 13.0,
@@ -97,10 +101,12 @@
         "upper_bound": 99.9,
         "resolution": 0.01
       },
+      "available": true,
       "preset_modes": [
         "home",
         "asleep",
         "away",
+        "vacation",
         "no_frost"
       ],
       "active_preset": "home",
@@ -131,7 +137,6 @@
       "zigbee_mac_address": "ABCD012345670101",
       "vendor": "Plugwise",
       "regulation_mode": "heating",
-      "regulation_modes": [],
       "binary_sensors": {
         "plugwise_notification": true
       },
@@ -148,6 +153,7 @@
       "name": "Thermostatic Radiator Jessie",
       "zigbee_mac_address": "ABCD012345670A10",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "temperature": 17.1,
         "setpoint": 15.0,
@@ -164,6 +170,7 @@
       "name": "Playstation Smart Plug",
       "zigbee_mac_address": "ABCD012345670A12",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "electricity_consumed": 82.6,
         "electricity_consumed_interval": 8.6,
@@ -183,6 +190,7 @@
       "name": "CV Pomp",
       "zigbee_mac_address": "ABCD012345670A05",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "electricity_consumed": 35.6,
         "electricity_consumed_interval": 7.37,
@@ -215,6 +223,7 @@
       "name": "NAS",
       "zigbee_mac_address": "ABCD012345670A14",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "electricity_consumed": 16.5,
         "electricity_consumed_interval": 0.5,
@@ -234,6 +243,7 @@
       "name": "USG Smart Plug",
       "zigbee_mac_address": "ABCD012345670A16",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "electricity_consumed": 8.5,
         "electricity_consumed_interval": 0.0,
@@ -253,6 +263,7 @@
       "name": "NVR",
       "zigbee_mac_address": "ABCD012345670A15",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "electricity_consumed": 34.0,
         "electricity_consumed_interval": 9.15,
@@ -272,6 +283,7 @@
       "name": "Fibaro HC2",
       "zigbee_mac_address": "ABCD012345670A13",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "electricity_consumed": 12.5,
         "electricity_consumed_interval": 3.8,
@@ -298,10 +310,12 @@
         "upper_bound": 99.9,
         "resolution": 0.01
       },
+      "available": true,
       "preset_modes": [
         "home",
         "asleep",
         "away",
+        "vacation",
         "no_frost"
       ],
       "active_preset": "asleep",
@@ -330,6 +344,7 @@
       "name": "Thermostatic Radiator Badkamer",
       "zigbee_mac_address": "ABCD012345670A17",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "temperature": 19.1,
         "setpoint": 14.0,
@@ -353,10 +368,12 @@
         "upper_bound": 99.9,
         "resolution": 0.01
       },
+      "available": true,
       "preset_modes": [
         "home",
         "asleep",
         "away",
+        "vacation",
         "no_frost"
       ],
       "active_preset": "away",
@@ -384,6 +401,7 @@
       "name": "Ziggo Modem",
       "zigbee_mac_address": "ABCD012345670A01",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "electricity_consumed": 12.2,
         "electricity_consumed_interval": 2.97,
@@ -410,10 +428,12 @@
         "upper_bound": 100.0,
         "resolution": 0.01
       },
+      "available": true,
       "preset_modes": [
         "home",
         "asleep",
         "away",
+        "vacation",
         "no_frost"
       ],
       "active_preset": "no_frost",
