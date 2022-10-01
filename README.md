@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW Sept [0.28.0]
+# NEW OCT [0.29.0] Non-legacy Smiles: introduce device availability
+- Adam: Re-add vacation-preset (following change in the Plugwise App)
+
+#Sept [0.28.0]
 - Smile P1: change to two devices, rename/streamline device names and models
 
 # Sept [0.27.0] 
