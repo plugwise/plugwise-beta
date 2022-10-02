@@ -109,14 +109,14 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def hvac_modes(self) -> list[HVACMode]:
         """Return the current hvac modes."""
-        hvac_modes = [HVAC_MODE_HEAT]
+        hvac_modes = [HVACMode.HEAT]
         if self.coordinator.data["cooling_enbled"]:
-            hvac_modes.append(HVAC_MODE_COOL)
-            hvac_modes.remove(HVAC_MODE_HEAT)
+            hvac_modes.append(HVACMode.COOL)
+            hvac_modes.remove(HVACMode.HEAT)
         if self.device["available_schedules"] != ["None"]:
             hvac_modes.append(HVAC_MODE_AUTO)
         if self._homekit_enabled:  # pw-beta homekit emulation
-            hvac_modes.append(HVAC_MODE_OFF)  # pragma: no cover
+            hvac_modes.append(HVACMode.OFF)  # pragma: no cover
 
         return hvac_modes
 
