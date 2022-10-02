@@ -75,16 +75,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
 
-        # Determine hvac modes and current hvac mode
-        self._attr_hvac_modes = [HVACMode.HEAT]
-        if self.coordinator.data.gateway["cooling_present"]:
-            self._attr_hvac_modes.append(HVACMode.COOL)
-        if self.device["available_schedules"] != ["None"]:
-            self._attr_hvac_modes.append(HVACMode.AUTO)
-        # pw-beta homekit emulation
-        if homekit_enabled:
-            self._attr_hvac_modes.append(HVACMode.OFF)  # pragma: no cover
-
         self._attr_min_temp = self.device["thermostat"].get(
             "lower_bound", DEFAULT_MIN_TEMP
         )
@@ -115,6 +105,20 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             mode = HVACMode.OFF  # pragma: no cover
 
         return HVACMode(mode)
+
+    @property
+    def hvac_modes(self) -> list[HVACMode]:
+        """Return the current hvac modes."""
+        hvac_modes = [HVAC_MODE_HEAT]
+        if self.coordinator.data["cooling_enbled"]:
+            hvac_modes.append(HVAC_MODE_COOL)
+            hvac_modes.remove(HVAC_MODE_HEAT)
+        if self.device["available_schedules"] != ["None"]:
+            hvac_modes.append(HVAC_MODE_AUTO)
+        if self._homekit_enabled:  # pw-beta homekit emulation
+            hvac_modes.append(HVAC_MODE_OFF)  # pragma: no cover
+
+        return hvac_modes
 
     @property
     def hvac_action(self) -> HVACAction:
