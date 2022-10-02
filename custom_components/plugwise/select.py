@@ -63,9 +63,9 @@ SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
         key="select_dhw_mode",
         name="DHW mode",
-        icon="mdi:hvac",
+        icon="mdi:shower",
         entity_category=EntityCategory.CONFIG,
-        command=lambda api, loc, opt: api.set_regulation_mode(opt),
+        command=lambda api, loc, opt: api.set_dhw_mode(opt),
         current_option_key="dhw_mode",
         options_key="dhw_modes",
         entity_registry_enabled_default=False,
