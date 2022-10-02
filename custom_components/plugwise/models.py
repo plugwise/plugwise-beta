@@ -32,6 +32,7 @@ from homeassistant.helpers.entity import EntityCategory, EntityDescription
 from .const import (
     BATTERY,
     COMPRESSOR_STATE,
+    COOLING_ENABLED,
     CURRENT_TEMP,
     DHW_COMF_MODE,
     DHW_STATE,
@@ -555,6 +556,13 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Relay",
         device_class=SwitchDeviceClass.SWITCH,
+    ),
+    PlugwiseSwitchEntityDescription(
+        key=COOLING_ENABLED,
+        plugwise_api=SMILE,
+        name="Cooling",
+        device_class=SwitchDeviceClass.SWITCH,
+        entity_category=EntityCategory.CONFIG,
     ),
 )
 
