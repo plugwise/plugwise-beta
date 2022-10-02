@@ -114,7 +114,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Return the current hvac modes."""
         hvac_modes = [HVACMode.HEAT]
         if "cooling_enabled" in self._hc_data:
-            if self._hc_data["cooling_enbled"]:
+            if self._hc_data["cooling_enabled"]:
                 hvac_modes.append(HVACMode.COOL)
                 hvac_modes.remove(HVACMode.HEAT)
         if self.device["available_schedules"] != ["None"]:
