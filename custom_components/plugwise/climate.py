@@ -118,7 +118,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 hvac_modes.append(HVACMode.COOL)
                 hvac_modes.remove(HVACMode.HEAT)
         if self.device["available_schedules"] != ["None"]:
-            hvac_modes.append(HVAC_MODE_AUTO)
+            hvac_modes.append(HVACMode.AUTO)
         if self._homekit_enabled:  # pw-beta homekit emulation
             hvac_modes.append(HVACMode.OFF)  # pragma: no cover
 
