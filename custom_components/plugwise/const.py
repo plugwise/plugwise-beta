@@ -135,6 +135,7 @@ WATER_PRESSURE: Final = "water_pressure"
 WATER_TEMP: Final = "water_temperature"
 
 # Switches
+COOLING_ENABLED = "cooling_enabled"
 DHW_COMF_MODE: Final = "dhw_cm_switch"
 LOCK: Final = "lock"
 RELAY: Final = "relay"
