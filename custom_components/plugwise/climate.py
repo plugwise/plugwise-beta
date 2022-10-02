@@ -113,7 +113,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def hvac_modes(self) -> list[HVACMode]:
         """Return the current hvac modes."""
         hvac_modes = [HVACMode.HEAT]
-        if "cooling_enbled" in self._hc_data:
+        if "cooling_enabled" in self._hc_data:
             if self._hc_data["cooling_enbled"]:
                 hvac_modes.append(HVACMode.COOL)
                 hvac_modes.remove(HVACMode.HEAT)
