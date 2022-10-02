@@ -1,7 +1,7 @@
 {
   "domain": "plugwise",
   "name": "Plugwise Beta",
-  "version": "0.30.0a0",
+  "version": "0.30.0a1",
   "documentation": "https://github.com/plugwise/plugwise-beta",
   "after_dependencies": ["usb", "zeroconf"],
   "requirements": ["https://test-files.pythonhosted.org/packages/2d/30/e10e506ea5cf40ff036b1fc7827fadc88e01a9310ec1bccfa6352b1f1567/plugwise-0.24.0a2.tar.gz#plugwise==0.24.0a2"],
