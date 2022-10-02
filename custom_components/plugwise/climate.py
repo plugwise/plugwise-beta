@@ -68,6 +68,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
+        self._hc_data = self.coordinator.data.devices[
+            self.coordinator.data.gateway["heater_id"]
+        ]
 
         # Determine preset modes
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
@@ -110,9 +113,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def hvac_modes(self) -> list[HVACMode]:
         """Return the current hvac modes."""
         hvac_modes = [HVACMode.HEAT]
-        if self.coordinator.data["cooling_enbled"]:
-            hvac_modes.append(HVACMode.COOL)
-            hvac_modes.remove(HVACMode.HEAT)
+        if "cooling_enbled" in self._hc_data:
+            if self._hc_data["cooling_enbled"]:
+                hvac_modes.append(HVACMode.COOL)
+                hvac_modes.remove(HVACMode.HEAT)
         if self.device["available_schedules"] != ["None"]:
             hvac_modes.append(HVAC_MODE_AUTO)
         if self._homekit_enabled:  # pw-beta homekit emulation
@@ -132,7 +136,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if control_state == "off":
             return HVACAction.IDLE
 
-        hc_data = self.coordinator.data.devices[
+        self._hc_data = self.coordinator.data.devices[
             self.coordinator.data.gateway["heater_id"]
         ]
         if hc_data["binary_sensors"]["heating_state"]:
