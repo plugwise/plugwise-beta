@@ -131,7 +131,7 @@
         "upper_bound": 95.0,
         "resolution": 0.01
       },
-      "adam_cooling_enabled": true,
+      "cooling_enabled": true,
       "available": true,
       "binary_sensors": {
         "cooling_state": true,

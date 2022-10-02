@@ -136,6 +136,7 @@
         "upper_bound": 60.0,
         "resolution": 0.01
       },
+      "cooling_enabled": false,
       "available": true,
       "binary_sensors": {
         "dhw_state": false,
