@@ -19,7 +19,7 @@
         "upper_bound": 100.0,
         "resolution": 1.0
       },
-      "cooling_enabled": false,
+      "cooling_enabled": true,
       "available": true,
       "binary_sensors": {
         "dhw_state": false,
@@ -31,6 +31,7 @@
       },
       "sensors": {
         "water_temperature": 29.1,
+        "dhw_temperature": 46.3,
         "intended_boiler_temperature": 0.0,
         "modulation_level": 52,
         "return_temperature": 25.1,
