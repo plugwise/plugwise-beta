@@ -28,11 +28,15 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW OCT [0.29.0] Non-legacy Smiles: introduce device availability
+# NEW OCT [0.30.0] Improve support for Anna-Loria combination
+- Enable Plugiwse notifications for non-legacy Smile P1's
+- Link to plugwise v0.24.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.23.0
+
+# OCT [0.29.0] Non-legacy Smiles: introduce device availability
 - Adam: Re-add vacation-preset (following change in the Plugwise App)
 - Link to plugwise v0.23.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.23.0
 
-#Sept [0.28.0]
+# Sept [0.28.0]
 - Smile P1: change to two devices, rename/streamline device names and models - via plugwise v0.22.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.22.1
 
 # Sept [0.27.0] 
