@@ -28,8 +28,12 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW Sept [0.28.0]
-- Smile P1: change to two devices, rename/streamline device names and models
+# NEW OCT [0.29.0] Non-legacy Smiles: introduce device availability
+- Adam: Re-add vacation-preset (following change in the Plugwise App)
+- Link to plugwise v0.23.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.23.0
+
+#Sept [0.28.0]
+- Smile P1: change to two devices, rename/streamline device names and models - via plugwise v0.22.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.22.1
 
 # Sept [0.27.0] 
 - Implement https://github.com/home-assistant/core/pull/75109 via plugwise v0.21.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.21.1

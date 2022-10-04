@@ -137,7 +137,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # pw-beta
     for component in PLATFORMS_GATEWAY:
-        if component == Platform.CLIMATE:
+        if component == Platform.BINARY_SENSOR:
             hass.services.async_register(
                 DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
             )

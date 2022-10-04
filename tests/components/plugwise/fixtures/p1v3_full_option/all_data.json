@@ -21,6 +21,7 @@
       "model": "2M550E-1012",
       "name": "P1",
       "vendor": "ISKRAEMECO",
+      "available": true,
       "sensors": {
         "net_electricity_point": -2816,
         "electricity_consumed_peak_point": 0,

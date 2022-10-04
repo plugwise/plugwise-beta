@@ -19,10 +19,12 @@
         "upper_bound": 35.0,
         "resolution": 0.01
       },
+      "available": true,
       "preset_modes": [
         "home",
         "asleep",
         "away",
+        "vacation",
         "no_frost"
       ],
       "active_preset": "asleep",
@@ -46,6 +48,7 @@
       "name": "Tom Badkamer",
       "zigbee_mac_address": "ABCD012345670A01",
       "vendor": "Plugwise",
+      "available": true,
       "sensors": {
         "temperature": 21.6,
         "battery": 99,
@@ -68,10 +71,12 @@
         "upper_bound": 99.9,
         "resolution": 0.01
       },
+      "available": true,
       "preset_modes": [
         "home",
         "asleep",
         "away",
+        "vacation",
         "no_frost"
       ],
       "active_preset": "home",
@@ -127,6 +132,7 @@
         "resolution": 0.01
       },
       "adam_cooling_enabled": true,
+      "available": true,
       "binary_sensors": {
         "cooling_state": true,
         "dhw_state": false,
