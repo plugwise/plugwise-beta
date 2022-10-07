@@ -68,22 +68,15 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
+        self._hc_data = self.coordinator.data.devices[
+            self.coordinator.data.gateway["heater_id"]
+        ]
 
         # Determine preset modes
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         if presets := self.device.get("preset_modes"):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
-
-        # Determine hvac modes and current hvac mode
-        self._attr_hvac_modes = [HVACMode.HEAT]
-        if self.coordinator.data.gateway["cooling_present"]:
-            self._attr_hvac_modes.append(HVACMode.COOL)
-        if self.device["available_schedules"] != ["None"]:
-            self._attr_hvac_modes.append(HVACMode.AUTO)
-        # pw-beta homekit emulation
-        if homekit_enabled:
-            self._attr_hvac_modes.append(HVACMode.OFF)  # pragma: no cover
 
         self._attr_min_temp = self.device["thermostat"].get(
             "lower_bound", DEFAULT_MIN_TEMP
@@ -117,6 +110,20 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return HVACMode(mode)
 
     @property
+    def hvac_modes(self) -> list[HVACMode]:
+        """Return the current hvac modes."""
+        hvac_modes = [HVACMode.HEAT]
+        if "cooling_enabled" in self._hc_data and self._hc_data["cooling_enabled"]:
+            hvac_modes.append(HVACMode.COOL)
+            hvac_modes.remove(HVACMode.HEAT)
+        if self.device["available_schedules"] != ["None"]:
+            hvac_modes.append(HVACMode.AUTO)
+        if self._homekit_enabled:  # pw-beta homekit emulation
+            hvac_modes.append(HVACMode.OFF)  # pragma: no cover
+
+        return hvac_modes
+
+    @property
     def hvac_action(self) -> HVACAction:
         """Return the current running hvac operation if supported."""
         # When control_state is present, prefer this data
@@ -128,12 +135,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if control_state == "off":
             return HVACAction.IDLE
 
-        hc_data = self.coordinator.data.devices[
-            self.coordinator.data.gateway["heater_id"]
-        ]
-        if hc_data["binary_sensors"]["heating_state"]:
+        if self._hc_data["binary_sensors"]["heating_state"]:
             return HVACAction.HEATING
-        if hc_data["binary_sensors"].get("cooling_state", False):
+        if self._hc_data["binary_sensors"].get("cooling_state", False):
             return HVACAction.COOLING
 
         return HVACAction.IDLE
