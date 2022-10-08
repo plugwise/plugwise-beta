@@ -28,9 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW OCT [0.30.0] Improve support for Anna-Loria combination
+# NEW OCT [0.30.1] Bugfix in plugwise v0.24.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.24.1
+
+# OCT [0.30.0] Improve support for Anna-Loria combination
 - Enable Plugiwse notifications for non-legacy Smile P1's
-- Link to plugwise v0.24.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.23.0
+- Link to plugwise v0.24.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.24.0
 
 # OCT [0.29.0] Non-legacy Smiles: introduce device availability
 - Adam: Re-add vacation-preset (following change in the Plugwise App)
