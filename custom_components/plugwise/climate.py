@@ -9,8 +9,6 @@ from homeassistant.components.climate.const import (
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
-    DEFAULT_MAX_TEMP,
-    DEFAULT_MIN_TEMP,
     PRESET_AWAY,  # pw-beta homekit emulation
     PRESET_HOME,  # pw-beta homekit emulation
 )
