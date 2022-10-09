@@ -42,7 +42,7 @@
         "temperature": 25.8,
         "setpoint_low": 20.0,
         "setpoint_high": 23.5
-      },
+      }
     },
     "1772a4ea304041adb83f357b751341ff": {
       "dev_class": "thermo_sensor",
