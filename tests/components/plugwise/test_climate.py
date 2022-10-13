@@ -98,7 +98,7 @@ async def test_adam_climate_adjust_negative_testing(
         await hass.services.async_call(
             "climate",
             "set_temperature",
-            {"entity_id": "climate.zone_lisa_wk", {"setpoint": 25}},
+            {"entity_id": "climate.zone_lisa_wk", "temperature": 25},
             blocking=True,
         )
 
@@ -110,7 +110,7 @@ async def test_adam_climate_entity_climate_changes(
     await hass.services.async_call(
         "climate",
         "set_temperature",
-        {"entity_id": "climate.zone_lisa_wk", {"setpoint": 25}},
+        {"entity_id": "climate.zone_lisa_wk", "temperature": 25},
         blocking=True,
     )
 
@@ -125,7 +125,7 @@ async def test_adam_climate_entity_climate_changes(
         {
             "entity_id": "climate.zone_lisa_wk",
             "hvac_mode": "heat",
-            {"setpoint": 25},
+            "temperature": 25},
         },
         blocking=True,
     )
@@ -139,7 +139,7 @@ async def test_adam_climate_entity_climate_changes(
         await hass.services.async_call(
             "climate",
             "set_temperature",
-            {"entity_id": "climate.zone_lisa_wk", {"setpoint": 150}},
+            {"entity_id": "climate.zone_lisa_wk", "temperature": 150},
             blocking=True,
         )
 
