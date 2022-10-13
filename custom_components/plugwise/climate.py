@@ -102,7 +102,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def target_temperature(self) -> float | None:
         """Return the temperature we try to reach.
-        Connected to the HVACModes combinations of AUTO/HEAT.
+
+        Connected to the HVACMode combination of AUTO-HEAT.
         """
 
         return self.device["thermostat"].get("setpoint")
@@ -110,20 +111,22 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def target_temperature_high(self) -> float | None:
         """Return the temperature we try to reach in case of cooling.
-        Connected to the HVACMode combination of AUTO/HEAT_COOL.
+
+        Connected to the HVACMode combination of AUTO-HEAT_COOL.
         """
         return self.device["thermostat"].get("setpoint_high")
 
     @property
     def target_temperature_low(self) -> float | None:
         """Return the heating temperature we try to reach in case of heating.
-        Connected to the HVACMode combination AUTO/HEAT_COOL.
+
+        Connected to the HVACMode combination AUTO-HEAT_COOL.
         """
         return self.device["thermostat"].get("setpoint_low")
 
     @property
     def hvac_mode(self) -> HVACMode:
-        """Return HVAC operation ie. auto, heat, cool, or off mode."""
+        """Return HVAC operation ie. auto, heat, heat_cool, or off mode."""
         if (mode := self.device["mode"]) is None or mode not in self.hvac_modes:
             return HVACMode.HEAT  # pragma: no cover
         # pw-beta homekit emulation
