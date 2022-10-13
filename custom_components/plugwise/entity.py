@@ -70,6 +70,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
             and ("available" not in self.device or self.device["available"])
             and super().available
         )
+
     @property
     def device(self) -> dict[str, Any]:
         """Return data for this device."""
