@@ -125,7 +125,7 @@ async def test_adam_climate_entity_climate_changes(
         {
             "entity_id": "climate.zone_lisa_wk",
             "hvac_mode": "heat",
-            "temperature": 25},
+            "temperature": 25,
         },
         blocking=True,
     )
