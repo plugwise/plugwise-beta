@@ -75,7 +75,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         if self.coordinator.data.gateway["cooling_present"]:
-            self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
+            self._attr_supported_features = (
+                ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
+            )
         if presets := self.device.get("preset_modes"):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
