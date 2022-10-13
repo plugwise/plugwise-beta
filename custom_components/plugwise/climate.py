@@ -6,6 +6,8 @@ from typing import Any
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
     ATTR_HVAC_MODE,
+    ATTR_TARGET_TEMP_HIGH,
+    ATTR_TARGET_TEMP_LOW,
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
