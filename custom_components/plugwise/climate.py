@@ -177,7 +177,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         for temperature in list(data.values()):
             if temperature is None or not (
-                self._attr_min_temp < temperature < self._attr_max_temp
+                self._attr_min_temp <= temperature <= self._attr_max_temp
             ):
                 raise ValueError("Invalid temperature change requested")
 
