@@ -4,9 +4,6 @@ from unittest.mock import MagicMock
 
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
-
-# from homeassistant.helpers import entity_registry as er
 
 from tests.common import MockConfigEntry
 
