@@ -68,9 +68,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
-        self._hc_data = self.coordinator.data.devices[
-            self.coordinator.data.gateway["heater_id"]
-        ]
 
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
@@ -85,8 +82,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Determine hvac modes and current hvac mode
         self._attr_hvac_modes = [HVACMode.HEAT]
         if self.coordinator.data.gateway["cooling_present"]:
-            self._attr_hvac_modes.append(HVACMode.HEAT_COOL)
-            self._attr_hvac_modes.remove(HVACMode.HEAT)
+            self._attr_hvac_modes = [HVACMode.HEAT_COOL]
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
@@ -102,29 +98,29 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return self.device["sensors"]["temperature"]
 
     @property
-    def target_temperature(self) -> float | None:
+    def target_temperature(self) -> float:
         """Return the temperature we try to reach.
 
         Connected to the HVACMode combination of AUTO-HEAT.
         """
 
-        return self.device["thermostat"].get("setpoint")
+        return self.device["thermostat"]["setpoint"]
 
     @property
-    def target_temperature_high(self) -> float | None:
+    def target_temperature_high(self) -> float:
         """Return the temperature we try to reach in case of cooling.
 
         Connected to the HVACMode combination of AUTO-HEAT_COOL.
         """
-        return self.device["thermostat"].get("setpoint_high")
+        return self.device["thermostat"]["setpoint_high"]
 
     @property
-    def target_temperature_low(self) -> float | None:
+    def target_temperature_low(self) -> float:
         """Return the heating temperature we try to reach in case of heating.
 
         Connected to the HVACMode combination AUTO-HEAT_COOL.
         """
-        return self.device["thermostat"].get("setpoint_low")
+        return self.device["thermostat"]["setpoint_low"]
 
     @property
     def hvac_mode(self) -> HVACMode:
@@ -149,9 +145,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if control_state == "off":
             return HVACAction.IDLE
 
-        if self._hc_data["binary_sensors"]["heating_state"]:
+        hc_data = self.coordinator.data.devices[
+            self.coordinator.data.gateway["heater_id"]
+        ]
+        if hc_data["binary_sensors"]["heating_state"]:
             return HVACAction.HEATING
-        if self._hc_data["binary_sensors"].get("cooling_state", False):
+        if hc_data["binary_sensors"].get("cooling_state", False):
             return HVACAction.COOLING
 
         return HVACAction.IDLE
