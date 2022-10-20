@@ -220,7 +220,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
     ),
     PlugwiseSensorEntityDescription(
         key="power_con_yesterday",
-        plugwise_api=SMILE,
+        plugwise_api=STICK,
         name="Power consumption yesterday",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
@@ -234,6 +234,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.BATTERY,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=CURRENT_TEMP,
@@ -242,6 +243,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED,
@@ -249,30 +251,31 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=POWER_WATT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_INTERVAL,
         plugwise_api=SMILE,
         name="Electricity consumed interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_OFF_PEAK_CUMULATIVE,
         plugwise_api=SMILE,
         name="Electricity consumed off peak cumulative",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_OFF_PEAK_INTERVAL,
         plugwise_api=SMILE,
         name="Electricity consumed off peak interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_OFF_PEAK_POINT,
@@ -280,22 +283,23 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed off peak point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=POWER_WATT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_PEAK_CUMULATIVE,
         plugwise_api=SMILE,
         name="Electricity consumed peak cumulative",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_PEAK_INTERVAL,
         plugwise_api=SMILE,
         name="Electricity consumed peak interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_PEAK_POINT,
@@ -303,6 +307,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed peak point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=POWER_WATT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_POINT,
@@ -310,6 +315,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=POWER_WATT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED,
@@ -317,6 +323,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=POWER_WATT,
+        state_class=SensorStateClass.MEASUREMENT,
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
@@ -324,8 +331,8 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity produced interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
+        state_class=SensorStateClass.MEASUREMENT,
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
@@ -333,16 +340,16 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity produced off peak cumulative",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_OFF_PEAK_INTERVAL,
         plugwise_api=SMILE,
         name="Electricity produced off peak interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_OFF_PEAK_POINT,
@@ -350,22 +357,23 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced off peak point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=POWER_WATT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_PEAK_CUMULATIVE,
         plugwise_api=SMILE,
         name="Electricity produced peak cumulative",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_PEAK_INTERVAL,
         plugwise_api=SMILE,
         name="Electricity produced peak interval",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_WATT_HOUR,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_PEAK_POINT,
@@ -373,6 +381,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced peak point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=POWER_WATT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_POINT,
@@ -380,22 +389,23 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=POWER_WATT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=GAS_CONSUMED_CUMULATIVE,
         plugwise_api=SMILE,
         name="Gas consumed cumulative",
         device_class=SensorDeviceClass.GAS,
-        state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=VOLUME_CUBIC_METERS,
+        state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
         key=GAS_CONSUMED_INTERVAL,
         plugwise_api=SMILE,
         name="Gas consumed interval",
         device_class=SensorDeviceClass.GAS,
-        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=VOLUME_CUBIC_METERS,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=ATTR_HUMIDITY,
@@ -403,6 +413,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Relative humidity",
         device_class=SensorDeviceClass.HUMIDITY,
         native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=ILLUMINANCE,
@@ -410,6 +421,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Illuminance",
         device_class=SensorDeviceClass.ILLUMINANCE,
         native_unit_of_measurement=UNIT_LUMEN,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=INTENDED_BOILER_TEMP,
@@ -418,6 +430,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=MOD_LEVEL,
@@ -426,14 +439,15 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
         icon="mdi:percent",
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=NET_EL_CUMULATIVE,
         plugwise_api=SMILE,
         name="Net electricity cumulative",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
         key=NET_EL_POINT,
@@ -441,6 +455,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Net electricity point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=POWER_WATT,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=OUTDOOR_TEMP,
@@ -448,6 +463,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Outdoor temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=TEMP_CELSIUS,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=OUTDOOR_AIR_TEMP,
@@ -456,6 +472,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=RETURN_TEMP,
@@ -464,6 +481,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=TARGET_TEMP,
@@ -472,7 +490,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
-        entity_registry_enabled_default=False,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=TARGET_TEMP_HIGH,
@@ -481,7 +499,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
-        entity_registry_enabled_default=False,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=TARGET_TEMP_LOW,
@@ -490,7 +508,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
-        entity_registry_enabled_default=False,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=TEMP_DIFF,
@@ -499,7 +517,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_KELVIN,
-        entity_registry_enabled_default=False,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=VALVE_POS,
@@ -508,6 +526,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         icon="mdi:valve",
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=WATER_PRESSURE,
@@ -516,6 +535,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.PRESSURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PRESSURE_BAR,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=WATER_TEMP,
@@ -524,6 +544,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=DHW_TEMP,
@@ -532,6 +553,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=TEMP_CELSIUS,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
 )
 
@@ -558,7 +580,6 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         icon="mdi:lock",
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
-        entity_registry_enabled_default=False,
     ),
     PlugwiseSwitchEntityDescription(
         key=RELAY,
@@ -630,7 +651,6 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         icon_off="mdi:mailbox-outline",
         name="Plugwise notification",
         entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=False,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=SLAVE_BOILER_STATE,
@@ -639,6 +659,5 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         icon="mdi:fire",
         icon_off="mdi:circle-off-outline",
         entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=False,
     ),
 )

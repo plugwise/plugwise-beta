@@ -13,7 +13,10 @@
       "mac_address": "012345670001",
       "model": "Gateway",
       "name": "Smile P1",
-      "vendor": "Plugwise"
+      "vendor": "Plugwise",
+      "binary_sensors": {
+        "plugwise_notification": false
+      }
     },
     "e950c7d5e1ee407a858e2a8b5016c8b3": {
       "dev_class": "smartmeter",

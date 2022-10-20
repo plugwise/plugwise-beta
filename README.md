@@ -30,7 +30,16 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # NEW OCT [0.30.1] Bugfix in plugwise v0.24.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.24.1
 
-# OCT [0.30.0] Improve support for Anna-Loria combination
+# OCT [0.31.0] Change to hvac_mode heat_cool, improvements and bugfixes
+- Implement hvac_mode heat_cool for heating + cooling as required by HA Core
+- Fix for plugwise/plugwise-beta#309 via plugwise v0.25.3 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.3
+- Fix heat_cool-related bug via plugwise v0.25.2 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.2
+- Link to plugwise v0.25.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.1
+- Link to plugwise v0.25.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.0
+- Fix for home-assistant/core#79708 via plugwise v0.24.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.24.1
+- Follow lastest HA Core Plugwise changes
+
+# [0.30.0] Improve support for Anna-Loria combination
 - Enable Plugiwse notifications for non-legacy Smile P1's
 - Link to plugwise v0.24.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.24.0
 

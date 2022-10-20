@@ -33,28 +33,28 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         if entry := self.coordinator.config_entry:
             configuration_url = f"http://{entry.data[CONF_HOST]}"
 
-        self.data = coordinator.data.devices[device_id]
+        data = coordinator.data.devices[device_id]
         connections = set()
-        if mac := self.data.get("mac_address"):
+        if mac := data.get("mac_address"):
             connections.add((CONNECTION_NETWORK_MAC, mac))
-        if mac := self.data.get("zigbee_mac_address"):
+        if mac := data.get("zigbee_mac_address"):
             connections.add((CONNECTION_ZIGBEE, mac))
 
         self._attr_device_info = DeviceInfo(
             configuration_url=configuration_url,
             identifiers={(DOMAIN, device_id)},
             connections=connections,
-            manufacturer=self.data.get("vendor"),
-            model=self.data.get("model"),
+            manufacturer=data.get("vendor"),
+            model=data.get("model"),
             name=coordinator.data.gateway["smile_name"],
-            sw_version=self.data.get("firmware"),
-            hw_version=self.data.get("hardware"),
+            sw_version=data.get("firmware"),
+            hw_version=data.get("hardware"),
         )
 
         if device_id != coordinator.data.gateway["gateway_id"]:
             self._attr_device_info.update(
                 {
-                    ATTR_NAME: self.data.get("name"),
+                    ATTR_NAME: data.get("name"),
                     ATTR_VIA_DEVICE: (
                         DOMAIN,
                         str(self.coordinator.data.gateway["gateway_id"]),
@@ -65,10 +65,11 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
     @property
     def available(self) -> bool:
         """Return if entity is available."""
-        if "available" in self.data:
-            return super().available and self.data["available"]
-
-        return super().available
+        return (
+            self._dev_id in self.coordinator.data.devices
+            and ("available" not in self.device or self.device["available"])
+            and super().available
+        )
 
     @property
     def device(self) -> dict[str, Any]:
