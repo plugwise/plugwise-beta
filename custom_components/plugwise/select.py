@@ -58,7 +58,6 @@ SELECT_TYPES = (
         command=lambda api, loc, opt: api.set_regulation_mode(opt),
         current_option_key="regulation_mode",
         options_key="regulation_modes",
-        entity_registry_enabled_default=False,
     ),
     PlugwiseSelectEntityDescription(
         key="select_dhw_mode",
@@ -68,7 +67,6 @@ SELECT_TYPES = (
         command=lambda api, loc, opt: api.set_dhw_mode(opt),
         current_option_key="dhw_mode",
         options_key="dhw_modes",
-        entity_registry_enabled_default=False,
     ),
 )
 
