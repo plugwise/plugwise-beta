@@ -28,9 +28,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW OCT [0.30.1] Bugfix in plugwise v0.24.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.24.1
-
-# OCT [0.31.0] Change to hvac_mode heat_cool, improvements and bugfixes
+# NEW OCT 2022 [0.31.0] Change to hvac_mode heat_cool, improvements and bugfixes
 - Implement hvac_mode heat_cool for heating + cooling as required by HA Core
 - Fix for plugwise/plugwise-beta#309 via plugwise v0.25.3 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.3
 - Fix heat_cool-related bug via plugwise v0.25.2 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.2
@@ -39,18 +37,20 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 - Fix for home-assistant/core#79708 via plugwise v0.24.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.24.1
 - Follow lastest HA Core Plugwise changes
 
-# [0.30.0] Improve support for Anna-Loria combination
+# OCT 2022 [0.30.1] Bugfix in plugwise v0.24.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.24.1
+
+# OCT 2022 [0.30.0] Improve support for Anna-Loria combination
 - Enable Plugiwse notifications for non-legacy Smile P1's
 - Link to plugwise v0.24.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.24.0
 
-# OCT [0.29.0] Non-legacy Smiles: introduce device availability
+# OCT 2022 [0.29.0] Non-legacy Smiles: introduce device availability
 - Adam: Re-add vacation-preset (following change in the Plugwise App)
 - Link to plugwise v0.23.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.23.0
 
-# Sept [0.28.0]
+# Sept 2022 [0.28.0]
 - Smile P1: change to two devices, rename/streamline device names and models - via plugwise v0.22.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.22.1
 
-# Sept [0.27.0] 
+# Sept 2022 [0.27.0] 
 - Implement https://github.com/home-assistant/core/pull/75109 via plugwise v0.21.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.21.1
 - Implement https://github.com/home-assistant/core/pull/75161
 - Climate:  implementing the new Climate classes `ClimateEntityFeature`,  `HVACAction`, and `HVACMode`.
@@ -65,39 +65,39 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 - Implement https://github.com/home-assistant/core/pull/78680
 - Implement https://github.com/home-assistant/core/pull/78935
 
-# July [0.26.0]
+# July 2022 [0.26.0]
 - Smile: Add domestic_hot_water_setpoint Number, further fix cooling support.
   - Link to plugwise v0.21.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.21.0
   - Add domestic_hot_water_setpoint Number, update/simplify number-set-value function.
   - Fix cooling support for Anna + Elga (user-tested).
 
-# July [0.25.2b0]
+# July 2022 [0.25.2b0]
 - Smile: NumberEntity, config_flow test updates
   - Implement NumberEntity updates from Core
   - Implement FlowResultType in config_flow test (Core PR #74638)
   - HACS: bump minimum Core version to 2022.7.0
 
-# July [0.25.1b0]
+# July 2022 [0.25.1b0]
 - Smile: fix/improve cooling support - via plugwise v0.20.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.20.1
 
-# June [0.25.0]
+# June 2022 [0.25.0]
 - Adam: add support for the Aqara Plug - via plugwise v0.20.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.20.0
 
-# June [0.24.2]
+# June 2022 [0.24.2]
 - Stick: fix async_get_registry warning in Core Log
 
-# June [0.24.1]
+# June 2022 [0.24.1]
 - Smiles & Stretches: clean up & improve error handling/reporting
   - Link to plugwise v0.19.1 - https://github.com/plugwise/python-plugwise/releases/tag/v0.19.1
 
-# June [0.24.0]
+# June 2022 [0.24.0]
 - Smile Anna cooling-related updates
   - Link to plugwise v0.19.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.19.0
   - For the Anna with Elga combination, add a CONFIGURE option `cooling on`. Select this option to let the Plugwise integration know that the cooling-feature of your Elga has been set to on. 
   - Show `target_temp_high` and `target_temp_low` instead of `target_temperature`, when cooling is active, next to heating.
   - Add the `supported_features` as a property as they can change when the cooling-feature (on the Elga/Loria/Thermastage) is turned on or off.
 
-# MAY [0.23.2]
+# MAY 2022 [0.23.2]
 - Smile bugfix: fixing https://github.com/plugwise/python-plugwise/issues/192 and https://github.com/home-assistant/core/issues/72305
   via plugwise v0.18.5 - https://github.com/plugwise/python-plugwise/releases/tag/v0.18.5
 
