@@ -158,7 +158,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         if "heater_id" in self.coordinator.data.gateway:
             hc_bin_sens = self.coordinator.data.devices[
-                self.coordinator.data.gateway["heater_id"]
+                str(self.coordinator.data.gateway["heater_id"])
             ]["binary_sensors"]
             if hc_bin_sens["heating_state"]:
                 return HVACAction.HEATING
