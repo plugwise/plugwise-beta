@@ -12,7 +12,7 @@ from .coordinator import PlugwiseDataUpdateCoordinator
 
 async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, entry: ConfigEntry
-) -> dict[str, GatewayData | DeviceData]:
+) -> dict[str: GatewayData, str: DeviceData]:
     """Return diagnostics for a config entry."""
     coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][
         COORDINATOR
