@@ -17,7 +17,7 @@ from .const import DOMAIN, LOGGER
 class PlugwiseData(NamedTuple):
     """Plugwise data stored in the DataUpdateCoordinator."""
 
-    gateway: Gateway
+    gateway: GatewayData
     devices: dict[str, DeviceData]
 
 
