@@ -93,8 +93,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._attr_target_temperature_step = 0.5
         for item in ("thermostat", "hc_thermostat"):
             if item in self.device:
-                self._attr_min_temp = max(self.device[item]["lower_bound"], DEFAULT_MIN_TEMP)  # typing: ignore [literal-required]
-                self._attr_max_temp = min(self.device[item]["upper_bound"], DEFAULT_MAX_TEMP)  # typing: ignore [literal-required]
+                self._attr_min_temp = max(
+                    self.device[item]["lower_bound"], DEFAULT_MIN_TEMP
+                )
+                self._attr_max_temp = min(
+                    self.device[item]["upper_bound"], DEFAULT_MAX_TEMP
+                )
                 if resolution := self.device[item]["resolution"]:
                     # Ensure we don't drop below 0.1
                     self._attr_target_temperature_step = max(resolution, 0.1)
@@ -152,7 +156,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if control_state == "off":
             return HVACAction.IDLE
 
-        hc_bin_sens = self.coordinator.data.devices[self.coordinator.data.gateway["heater_id"]]["binary_sensors"]
+        hc_bin_sens = self.coordinator.data.devices[
+            self.coordinator.data.gateway["heater_id"]
+        ]["binary_sensors"]
         if hc_bin_sens["heating_state"]:
             return HVACAction.HEATING
         if "cooling_state" in hc_bin_sens and hc_bin_sens["cooling_state"]:
