@@ -3,7 +3,7 @@ from datetime import timedelta
 from typing import NamedTuple
 
 from plugwise import Smile
-from plugwise.constants import DeviceData, GatewayData
+from plugwise.constants import PlugwiseData
 from plugwise.exceptions import ConnectionFailedError, InvalidXMLError, ResponseError
 
 from homeassistant.core import HomeAssistant
@@ -12,13 +12,6 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 # pw-beta - for core compat should import DEFAULT_SCAN_INTERVAL
 from .const import DOMAIN, LOGGER
-
-
-class PlugwiseData(NamedTuple):
-    """Plugwise data stored in the DataUpdateCoordinator."""
-
-    gateway: GatewayData
-    devices: dict[str, DeviceData]
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
