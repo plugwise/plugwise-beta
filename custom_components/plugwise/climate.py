@@ -167,7 +167,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return HVACAction.IDLE
 
     @property
-    def preset_mode(self) -> str:
+    def preset_mode(self) -> str | None:
         """Return the current preset mode."""
         return self.device["active_preset"]
 
