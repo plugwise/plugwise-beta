@@ -73,7 +73,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
-        if self.coordinator.data.gateway["cooling_present"]:
+        if coordinator.data.gateway["cooling_present"]:
             self._attr_supported_features = (
                 ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
             )
@@ -83,7 +83,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine hvac modes and current hvac mode
         self._attr_hvac_modes = [HVACMode.HEAT]
-        if self.coordinator.data.gateway["cooling_present"]:
+        if coordinator.data.gateway["cooling_present"]:
             self._attr_hvac_modes = [HVACMode.HEAT_COOL]
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
