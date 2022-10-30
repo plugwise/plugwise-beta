@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from plugwise.constants import DeviceData
+
 from homeassistant.const import ATTR_NAME, ATTR_VIA_DEVICE, CONF_HOST
 from homeassistant.helpers.device_registry import (
     CONNECTION_NETWORK_MAC,
@@ -72,7 +74,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         )
 
     @property
-    def device(self) -> dict[str, Any]:
+    def device(self) -> DeviceData:
         """Return data for this device."""
         return self.coordinator.data.devices[self._dev_id]
 
