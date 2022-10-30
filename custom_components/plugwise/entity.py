@@ -63,7 +63,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
             )
 
     @property
-    def available(self) -> bool:
+    def available(self) -> bool | None:
         """Return if entity is available."""
         return (
             self._dev_id in self.coordinator.data.devices
