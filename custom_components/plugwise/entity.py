@@ -57,7 +57,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
                     ATTR_NAME: data.get("name"),
                     ATTR_VIA_DEVICE: (
                         DOMAIN,
-                        str(self.coordinator.data.gateway["gateway_id"]),
+                        str(coordinator.data.gateway["gateway_id"]),
                     ),
                 }
             )
