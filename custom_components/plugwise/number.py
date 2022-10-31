@@ -116,28 +116,28 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
                 self.entity_description.native_step_key
             ],
             1,
-        )  # typing: ignore [literal-required]
+        )  # typing: ignore[literal-required]
 
     @property
     def native_value(self) -> float:
         """Return the present setpoint value."""
         return self.device[self.entity_description.key][
             self.entity_description.native_value_key
-        ]  # typing: ignore [literal-required]
+        ]  # typing: ignore[literal-required]
 
     @property
     def native_min_value(self) -> float:
         """Return the setpoint min. value."""
         return self.device[self.entity_description.key][
             self.entity_description.native_min_value_key
-        ]  # typing: ignore [literal-required]
+        ]  # typing: ignore[literal-required]
 
     @property
     def native_max_value(self) -> float:
         """Return the setpoint max. value."""
         return self.device[self.entity_description.key][
             self.entity_description.native_max_value_key
-        ]  # typing: ignore [literal-required]
+        ]  # typing: ignore[literal-required]
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
