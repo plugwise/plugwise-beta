@@ -88,20 +88,15 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
-        self._attr_min_temp = DEFAULT_MIN_TEMP
-        self._attr_max_temp = DEFAULT_MAX_TEMP
-        self._attr_target_temperature_step = 0.5
-        for item in ("thermostat", "hc_thermostat"):
-            if item in self.device:
-                self._attr_min_temp = max(
-                    self.device[item]["lower_bound"], DEFAULT_MIN_TEMP  # type: ignore[literal-required]
-                )
-                self._attr_max_temp = min(
-                    self.device[item]["upper_bound"], DEFAULT_MAX_TEMP  # type: ignore[literal-required]
-                )
-                if resolution := self.device[item]["resolution"]:  # type: ignore[literal-required]
-                    # Ensure we don't drop below 0.1
-                    self._attr_target_temperature_step = max(resolution, 0.1)
+        self._attr_min_temp = max(
+            self.device["thermostat"]["lower_bound"], DEFAULT_MIN_TEMP  # type: ignore[literal-required]
+        )
+        self._attr_max_temp = min(
+            self.device["thermostat"]["upper_bound"], DEFAULT_MAX_TEMP  # type: ignore[literal-required]
+        )
+        if resolution := self.device["thermostat"]["resolution"]:  # type: ignore[literal-required]
+            # Ensure we don't drop below 0.1
+            self._attr_target_temperature_step = max(resolution, 0.1)
 
     @property
     def current_temperature(self) -> float:
@@ -123,7 +118,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACMode combination of AUTO-HEAT_COOL.
         """
-        return self.device["hc_thermostat"]["setpoint_high"]
+        return self.device["thermostat"]["setpoint_high"]
 
     @property
     def target_temperature_low(self) -> float:
@@ -131,7 +126,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACMode combination AUTO-HEAT_COOL.
         """
-        return self.device["hc_thermostat"]["setpoint_low"]
+        return self.device["thermostat"]["setpoint_low"]
 
     @property
     def hvac_mode(self) -> HVACMode:
