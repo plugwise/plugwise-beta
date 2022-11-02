@@ -13,7 +13,7 @@
       "model": "ThermoTouch",
       "name": "Anna",
       "vendor": "Plugwise",
-      "hc_thermostat": {
+      "thermostat": {
         "setpoint_low":4.0,
         "setpoint_high": 23.5,
         "lower_bound": 1.0,
@@ -70,7 +70,7 @@
       "name": "Lisa Badkamer",
       "zigbee_mac_address": "ABCD012345670A04",
       "vendor": "Plugwise",
-      "hc_thermostat": {
+      "thermostat": {
         "setpoint_low": 19.0,
         "setpoint_high": 25.0,
         "lower_bound": 0.0,
