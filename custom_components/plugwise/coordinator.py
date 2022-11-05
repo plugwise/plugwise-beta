@@ -1,8 +1,9 @@
 """DataUpdateCoordinator for Plugwise."""
 from datetime import timedelta
-from typing import Any, NamedTuple
+from typing import NamedTuple, cast
 
 from plugwise import Smile
+from plugwise.constants import DeviceData, GatewayData
 from plugwise.exceptions import ConnectionFailedError, InvalidXMLError, ResponseError
 
 from homeassistant.core import HomeAssistant
@@ -16,8 +17,8 @@ from .const import DOMAIN, LOGGER
 class PlugwiseData(NamedTuple):
     """Plugwise data stored in the DataUpdateCoordinator."""
 
-    gateway: dict[str, Any]
-    devices: dict[str, dict[str, Any]]
+    gateway: GatewayData
+    devices: dict[str, DeviceData]
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -49,7 +50,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         """Fetch data from Plugwise."""
         try:
             data = await self.api.async_update()
-            LOGGER.debug(f"{self.api.smile_name} data: %s", PlugwiseData(*data))
+            LOGGER.debug(
+                f"{self.api.smile_name} data: %s", PlugwiseData(data[0], data[1])
+            )
             if self._unavailable_logged:
                 self._unavailable_logged = False
         except (InvalidXMLError, ResponseError) as err:
@@ -61,4 +64,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         except ConnectionFailedError:
             raise UpdateFailed
 
-        return PlugwiseData(*data)
+        return PlugwiseData(
+            gateway=cast(GatewayData, data[0]),
+            devices=cast(dict[str, DeviceData], data[1]),
+        )

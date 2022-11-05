@@ -591,6 +591,7 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         key=COOLING_ENABLED,
         plugwise_api=SMILE,
         name="Cooling",
+        icon="mdi:snowflake-thermometer",
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
     ),
