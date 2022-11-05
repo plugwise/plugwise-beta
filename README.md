@@ -29,7 +29,8 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 # Changelog
 
 # NEW NOV 2022 [0.31.1] Bugfix for Core issue #81531
-- Fix bug via plugwise v0.25.6 -  https://github.com/plugwise/python-plugwise/releases/tag/v0.25.6
+- Fix wrong logic in v0.25.7 - via https://github.com/plugwise/python-plugwise/releases/tag/v0.25.7
+- Fix bug via plugwise v0.25.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.6
 - Implement Core PR #80722
 
 # NEW OCT 2022 [0.31.0] Change to hvac_mode heat_cool, improvements and bugfixes
