@@ -28,12 +28,16 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW NOV 2022 [0.31.1] Bugfix for Core issue #81531
+# NEW NOV 2022 [0.31.2] Bug-fixes
+- Hide cooling-related switch, binary_sensors when there is no cooling present, this fixes the unexpected appearance of new entities after the Adam 3.7.1 firmware-update.
+- Properly handle an empty schedule, should fix #313
+
+# NOV 2022 [0.31.1] Bugfix for Core issue #81531
 - Fix wrong logic in v0.25.7 - via https://github.com/plugwise/python-plugwise/releases/tag/v0.25.7
 - Fix bug via plugwise v0.25.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.6
 - Implement Core PR #80722
 
-# NEW OCT 2022 [0.31.0] Change to hvac_mode heat_cool, improvements and bugfixes
+# OCT 2022 [0.31.0] Change to hvac_mode heat_cool, improvements and bugfixes
 - Implement hvac_mode heat_cool for heating + cooling as required by HA Core
 - Fix for plugwise/plugwise-beta#309 via plugwise v0.25.3 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.3
 - Fix heat_cool-related bug via plugwise v0.25.2 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.2
