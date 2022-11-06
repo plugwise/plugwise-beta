@@ -28,7 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW NOV 2022 [0.31.2] Bug-fixes
+# NEW NOV [0.32.0] Smile P1: add support for 3-phase DMSR
+- Add 3-phase support, this requires P1 firmware >= 4.4.0(beta) - via plugwise v0.26.0
+- Add missed Cooling binary_sensor, when the cooling-switch is not present
+
+# NOV 2022 [0.31.2] Bug-fixes
 - Hide cooling-related switch, binary_sensors when there is no cooling present, this fixes the unexpected appearance of new entities after the Adam 3.7.1 firmware-update.
 - Properly handle an empty schedule, should fix #313
 
