@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW NOV 2022 [0.31.2] Bug-fixes
+# NEW NOV 2022 [0.31.3] Thermostats: more improvements
+- Link to plugwise v0.25.10 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.7
+
+# NOV 2022 [0.31.2] Bug-fixes
 - Hide cooling-related switch, binary_sensors when there is no cooling present, this fixes the unexpected appearance of new entities after the Adam 3.7.1 firmware-update.
 - Properly handle an empty schedule, should fix #313
 
