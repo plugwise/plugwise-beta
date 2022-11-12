@@ -72,7 +72,6 @@
         "upper_bound": 30.0,
         "resolution": 0.1
       },
-      "available": true,
       "preset_modes": [
         "no_frost",
         "home",
