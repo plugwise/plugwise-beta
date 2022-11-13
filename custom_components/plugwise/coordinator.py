@@ -4,7 +4,12 @@ from typing import NamedTuple, cast
 
 from plugwise import Smile
 from plugwise.constants import DeviceData, GatewayData
-from plugwise.exceptions import ConnectionFailedError, InvalidXMLError, ResponseError
+from plugwise.exceptions import (
+    ConnectionFailedError,
+    InvalidXMLError,
+    ResponseError,
+    XMLDataMissingError,
+)
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.debounce import Debouncer
@@ -55,11 +60,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             )
             if self._unavailable_logged:
                 self._unavailable_logged = False
-        except (InvalidXMLError, ResponseError) as err:
+        except (InvalidXMLError, ResponseError, XMLDataMissingError) as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
                 raise UpdateFailed(
-                    f"No or invalid XML data, or error indication received for: {self.api.smile_name}"
+                    f"No or invalid XML data, or error indication received for the Plugwise Smile/Adam"
                 ) from err
         except ConnectionFailedError:
             raise UpdateFailed
