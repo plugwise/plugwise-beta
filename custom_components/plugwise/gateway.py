@@ -133,7 +133,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 "Failed to delete the Plugwise Notification for %s", api.smile_name
             )
 
-    hass.config_entries.async_setup_platforms(entry, PLATFORMS_GATEWAY)
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_GATEWAY)
 
     # pw-beta
     for component in PLATFORMS_GATEWAY:
