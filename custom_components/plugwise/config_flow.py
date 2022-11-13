@@ -15,6 +15,7 @@ from plugwise.exceptions import (
     PortError,
     StickInitError,
     TimeoutException,
+    XMLDataMissingError,
 )
 from plugwise.smile import Smile
 from plugwise.stick import Stick
@@ -315,6 +316,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 ConnectionFailedError,
                 InvalidXMLError,
                 ResponseError,
+                XMLDataMissingError,
             ):
                 errors[CONF_BASE] = "cannot_connect"
             except Exception:  # pylint: disable=broad-except
