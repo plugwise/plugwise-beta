@@ -17,16 +17,16 @@
     }
   },
   "config": {
-    "flow_title": "Plugwise {name}",
     "step": {
       "user": {
-        "description": "Selecteer je Plugwise connectie-type",
+        "title": "Plugwise connectie-type"
+        "description": "Selecteer aub:",
         "data": {
           "flow_type": "Connectie-type"
         }
       },
       "user_gateway": {
-        "title": "Verbinden met de Plugwise Smile/Stretch",
+        "title": "Verbinden met de Plugwise Adam/Smile/Stretch",
         "description": "Aub invoeren:",
         "data": {
           "password": "ID",
@@ -49,13 +49,13 @@
       }
     },
     "error": {
-      "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je ID goed in",
       "cannot_connect": "Verbinden is mislukt",
-      "network_down": "Plugwise Zigbee netwerk is down",
+      "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je ID goed in",
+      "invalid_setup": "Voeg je Adam toe in plaats van je Anna, zie de documentatie",
+      "network_down": "Plugwise Zigbee netwerk is onbereikbaar",
       "network_timeout": "Network communicatie timeout",
       "retry": "Er ging iets mis, probeer het opnieuw",
       "stick_init": "Initaliseren van USB-stick mislukt",
-      "invalid_setup": "Voeg je Adam toe in plaats van je Anna, zie de documentatie",
       "unknown": "Onbekende fout!"
     },
     "abort": {

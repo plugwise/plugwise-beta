@@ -17,16 +17,16 @@
     }
   },
   "config": {
-    "flow_title": "Plugwise {name}",
     "step": {
       "user": {
-        "description": "Select your Plugwise connection type",
+        "title": "Plugwise connection type",
+        "description": "Please select:",
         "data": {
           "flow_type": "Connection type"
         }
       },
       "user_gateway": {
-        "title": "Connect to the Plugwise Smile/Stretch",
+        "title": "Connect to the Plugwise Adam/Smile/Stretch",
         "description": "Please enter:",
         "data": {
           "password": "ID",
@@ -49,14 +49,13 @@
       }
     },
     "error": {
-      "already_configured": "This device is already configured",
-      "invalid_auth": "Invalid authentication, check the 8 characters of your ID",
       "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication, check the 8 characters of your ID",
+      "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "retry": "Something went wrong, please retry",
       "stick_init": "Initialization of Plugwise USB-stick failed",
-      "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "unknown": "Unknown error!"
     },
     "abort": {
