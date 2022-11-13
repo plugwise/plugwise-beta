@@ -29,7 +29,9 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 # Changelog
 
 # NEW NOV 2022 [0.31.3] Thermostats: more improvements
+- Anna+Elga: remove cooling-switch, add cooling_enabled binary_sensor (NOTE: reload integration every time the Elga cooling-enabled switch position is changed)
 - Link to plugwise v0.25.10 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.10
+  - Fixes for https://github.com/plugwise/python-plugwise/issues/240, https://github.com/home-assistant/core/issues/81716, https://github.com/home-assistant/core/issues/81839, https://github.com/home-assistant/core/issues/81672, https://github.com/plugwise/python-plugwise/issues/241
 
 # NOV 2022 not released [0.31.2] Bug-fixes
 - Adam: hide cooling-related switch, binary_sensors when there is no cooling present, this fixes the unexpected appearance of new entities after the Adam 3.7.1 firmware-update.
