@@ -11,6 +11,7 @@ from plugwise.exceptions import (
     ResponseError,
     StickInitError,
     TimeoutException,
+    XMLDataMissingError,
 )
 import pytest
 import serial.tools.list_ports
@@ -408,6 +409,7 @@ async def test_zercoconf_discovery_update_configuration(
         (InvalidAuthentication, "invalid_auth"),
         (ConnectionFailedError, "cannot_connect"),
         (InvalidXMLError, "cannot_connect"),
+        (XMLDataMissingError, "retry"),
         (ResponseError, "cannot_connect"),
         (RuntimeError, "unknown"),
     ],
