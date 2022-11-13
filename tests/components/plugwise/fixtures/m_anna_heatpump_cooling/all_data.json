@@ -21,6 +21,7 @@
       },
       "available": true,
       "binary_sensors": {
+        "cooling_enabled": true,
         "dhw_state": false,
         "heating_state": false,
         "compressor_state": true,
