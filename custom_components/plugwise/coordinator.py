@@ -64,7 +64,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._unavailable_logged:
                 self._unavailable_logged = True
                 raise UpdateFailed(
-                    f"No or invalid XML data, or error indication received for the Plugwise Smile/Adam"
+                    "No or invalid XML data, or error indication received for the Plugwise Smile/Adam"
                 ) from err
         except ConnectionFailedError:
             raise UpdateFailed
