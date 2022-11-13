@@ -316,9 +316,10 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 ConnectionFailedError,
                 InvalidXMLError,
                 ResponseError,
-                XMLDataMissingError,
             ):
                 errors[CONF_BASE] = "cannot_connect"
+            except XMLDataMissingError:
+                errors[CONF_BASE] = "retry"
             except Exception:  # pylint: disable=broad-except
                 LOGGER.exception("Unexpected exception")
                 errors[CONF_BASE] = "unknown"
