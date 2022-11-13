@@ -49,11 +49,11 @@
       }
     },
     "error": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
       "invalid_auth": "Invalid authentication, check the 8 characters of your ID",
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
+      "retry": "Something went wrong, please retry",
       "stick_init": "Initialization of Plugwise USB-stick failed",
       "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "unknown": "[%key:common::config_flow::error::unknown%]"
