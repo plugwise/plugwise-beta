@@ -19,7 +19,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Plugwise connectie-type"
+        "title": "Plugwise connectie-type",
         "description": "Selecteer aub:",
         "data": {
           "flow_type": "Connectie-type"
