@@ -188,7 +188,7 @@ async def test_anna_climate_entity_attributes(
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_action"] == "heating"
     assert state.attributes["hvac_modes"] == [
-        HVACMode.HEAT_COOL,
+        HVACMode.HEAT,
         HVACMode.AUTO,
     ]
 
@@ -197,9 +197,8 @@ async def test_anna_climate_entity_attributes(
 
     assert state.attributes["current_temperature"] == 19.3
     assert state.attributes["preset_mode"] == "home"
-    assert state.attributes["supported_features"] == 18
-    assert state.attributes["target_temp_high"] == 24.0
-    assert state.attributes["target_temp_low"] == 20.5
+    assert state.attributes["supported_features"] == 17
+    assert state.attributes["temperature"] == 20.5
     assert state.attributes["min_temp"] == 4.0
     assert state.attributes["max_temp"] == 30.0
     assert state.attributes["target_temp_step"] == 0.1
@@ -272,7 +271,7 @@ async def test_anna_climate_entity_climate_changes(
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
-        {"entity_id": "climate.anna", "hvac_mode": "heat_cool"},
+        {"entity_id": "climate.anna", "hvac_mode": "heat"},
         blocking=True,
     )
 

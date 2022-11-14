@@ -9,6 +9,7 @@ from plugwise.exceptions import (
     InvalidAuthentication,
     ResponseError,
     InvalidXMLError,
+    XMLDataMissingError,
 )
 import pytest
 
@@ -53,6 +54,7 @@ async def test_load_unload_config_entry(
         (ConnectionFailedError),
         (ResponseError),
         (InvalidXMLError),
+        (XMLDataMissingError),
         (aiohttp.ClientError),
         (asyncio.TimeoutError),
     ],
@@ -83,6 +85,7 @@ async def test_config_entry_not_ready(
         (ConnectionFailedError),
         (ResponseError),
         (InvalidXMLError),
+        (XMLDataMissingError),
     ],
 )
 async def test_async_update_fail_and_reconnect(
