@@ -17,7 +17,7 @@ set -e
 pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket|pre-commit|paho-mqtt|numpy"
 
 echo ""
-echo "Checking for neccesary tools and prearing setup:"
+echo "Checking for neccesary tools and preparing setup:"
 
 which git || ( echo "You should have git installed, exiting"; exit 1)
 
@@ -224,7 +224,7 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise/manifest.json
 	)
 	echo "Running hassfest for plugwise"
-	python3 -m script.hassfest --integration-path homeassistant/components/plugwise
+	python3 -m script.hassfest 
 fi
 
 # pylint was removed from 'quality' some time ago
