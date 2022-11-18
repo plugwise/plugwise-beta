@@ -15,7 +15,7 @@ from plugwise.exceptions import (
     PortError,
     StickInitError,
     TimeoutException,
-    XMLDataMissingError,
+    UnsupportedDeviceError,
 )
 from plugwise.smile import Smile
 from plugwise.stick import Stick
