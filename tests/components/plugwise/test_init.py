@@ -64,7 +64,7 @@ async def test_config_entry_not_ready(
     mock_config_entry: MockConfigEntry,
     mock_smile_anna: MagicMock,
     side_effect: Exception,
-    entry_state,
+    entry_state: ConfigEntryState,
 ) -> None:
     """Test the Plugwise configuration entry not ready."""
     mock_smile_anna.connect.side_effect = side_effect
