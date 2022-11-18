@@ -4,7 +4,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
-    InvalidSetupError,
     InvalidXMLError,
     NetworkDown,
     PlugwiseException,
