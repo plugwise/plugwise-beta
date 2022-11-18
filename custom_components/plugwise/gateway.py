@@ -12,6 +12,7 @@ from plugwise.exceptions import (
     InvalidXMLError,
     PlugwiseException,
     ResponseError,
+    UnsupportedDeviceError,
 )
 from plugwise.smile import Smile
 
@@ -66,11 +67,11 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except InvalidAuthentication:
         LOGGER.error("Invalid username or Smile ID")
         return False
-    except (InvalidXMLError, ResponseError) as err:
+    except (InvalidXMLError, ResponseError, UnsupportedDeviceError) as err:
         raise ConfigEntryNotReady(
             "Error while communicating to the Plugwise Smile"
         ) from err
-    except (ClientError, ConnectionFailedError) as err:
+    except (ConnectionFailedError) as err:
         raise ConfigEntryNotReady("Failed connecting to the Plugwise Smile") from err
 
     api.get_all_devices()
