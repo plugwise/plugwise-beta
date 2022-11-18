@@ -72,7 +72,9 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "Error while communicating to the Plugwise Smile"
         ) from err
     except UnsupportedDeviceError:
-        LOGGER.error("Unsupported device found: please create an Issue in the HA Core github")
+        LOGGER.error(
+            "Unsupported device found: please create an Issue in the HA Core github"
+        )
         return False
 
     api.get_all_devices()
