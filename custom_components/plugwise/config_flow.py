@@ -307,15 +307,16 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
             try:
                 api = await validate_gw_input(self.hass, user_input)
-            except InvalidAuthentication:
-                errors[CONF_BASE] = "invalid_auth"
             except (
                 ConnectionFailedError,
                 InvalidXMLError,
                 ResponseError,
-                UnsupportedDeviceError,
             ):
                 errors[CONF_BASE] = "cannot_connect"
+            except InvalidAuthentication:
+                errors[CONF_BASE] = "invalid_auth"
+            except UnsupportedDeviceError:
+                errors[CONF_BASE] = "warn_code_owner"
             except Exception:  # pylint: disable=broad-except
                 errors[CONF_BASE] = "unknown"
             else:

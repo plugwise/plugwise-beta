@@ -8,7 +8,6 @@ from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidXMLError,
     ResponseError,
-    UnsupportedDeviceError,
 )
 
 from homeassistant.core import HomeAssistant
@@ -60,11 +59,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             )
             if self._unavailable_logged:
                 self._unavailable_logged = False
-        except (InvalidXMLError, ResponseError, UnsupportedDeviceError) as err:
+        except (InvalidXMLError, ResponseError) as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
                 raise UpdateFailed(
-                    "No or invalid XML data, or error indication received for the Plugwise Adam/Smile/Stretch"
+                    "Invalid XML data, or error indication received for the Plugwise Adam/Smile/Stretch"
                 ) from err
         except ConnectionFailedError:
             raise UpdateFailed
