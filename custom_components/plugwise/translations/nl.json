@@ -54,7 +54,8 @@
       "network_down": "Plugwise Zigbee netwerk is onbereikbaar",
       "network_timeout": "Network communicatie timeout",
       "stick_init": "Initaliseren van USB-stick mislukt",
-      "unknown": "Onbekende fout!"
+      "unknown": "Onbekende fout!",
+      "warn_code_owner": "Onbekend apparaat gevonden, maak aub een Issue aan in de HA Core github"
     },
     "abort": {
       "already_configured": "Dit apparaat is al geconfigureerd",

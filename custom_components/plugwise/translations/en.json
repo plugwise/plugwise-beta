@@ -54,7 +54,8 @@
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "stick_init": "Initialization of Plugwise USB-stick failed",
-      "unknown": "Unknown error!"
+      "unknown": "Unknown error!",
+      "warn_code_owner": "Unsupported device found, please create an Issue in the HA Core github"
     },
     "abort": {
       "already_configured": "This device is already configured",
