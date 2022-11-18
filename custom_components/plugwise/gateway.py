@@ -1,7 +1,6 @@
 """Plugwise network/gateway platform."""
 from __future__ import annotations
 
-from aiohttp import ClientError
 import datetime as dt
 from typing import Any
 import voluptuous as vol

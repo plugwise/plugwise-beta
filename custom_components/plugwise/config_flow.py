@@ -1,14 +1,12 @@
 """Config flow for Plugwise integration."""
 from __future__ import annotations
 
-from aiohttp import ClientError
 import datetime as dt  # pw-beta
 from typing import Any
 
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
-    InvalidSetupError,
     InvalidXMLError,
     NetworkDown,
     ResponseError,
@@ -56,7 +54,6 @@ from .const import (
     FLOW_STRETCH,
     FLOW_TYPE,
     FLOW_USB,
-    LOGGER,
     PW_TYPE,
     SMILE,
     STICK,
