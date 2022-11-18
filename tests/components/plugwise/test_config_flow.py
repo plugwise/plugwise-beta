@@ -403,14 +403,14 @@ async def test_zercoconf_discovery_update_configuration(
 
 
 @pytest.mark.parametrize(
-    "side_effect,reason",
+    "side_effect, reason",
     [
-        (InvalidAuthentication, "invalid_auth"),
         (ConnectionFailedError, "cannot_connect"),
+        (InvalidAuthentication, "invalid_auth"),
         (InvalidXMLError, "cannot_connect"),
-        (UnsupportedDeviceError, "cannot_connect"),
         (ResponseError, "cannot_connect"),
         (RuntimeError, "unknown"),
+        (UnsupportedDeviceError, "warn_code_owner"),
     ],
 )
 async def test_flow_errors(
