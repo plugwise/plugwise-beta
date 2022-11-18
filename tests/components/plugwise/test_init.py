@@ -50,11 +50,11 @@ async def test_load_unload_config_entry(
 @pytest.mark.parametrize(
     "side_effect, entry_state",
     [
+        (ConnectionFailedError, ConfigEntryState.SETUP_RETRY),
         (InvalidAuthentication, ConfigEntryState.SETUP_ERROR),
-        (ConnectionFailedError, ConfigEntryState.SETUP_ERROR),
-        (ResponseError, ConfigEntryState.SETUP_ERROR),
-        (InvalidXMLError, ConfigEntryState.SETUP_ERROR),
-        (UnsupportedDeviceError, ConfigEntryState.SETUP_ERROR),
+        (InvalidXMLError, ConfigEntryState.SETUP_RETRY),
+        (ResponseError, ConfigEntryState.SETUP_RETRY),
+        (UnsupportedDeviceError, ConfigEntryState.SETUP_RETRY),
         (aiohttp.ClientError, ConfigEntryState.SETUP_ERROR),
         (asyncio.TimeoutError, ConfigEntryState.SETUP_ERROR),
     ],
