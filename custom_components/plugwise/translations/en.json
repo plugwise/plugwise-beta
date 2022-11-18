@@ -51,10 +51,8 @@
     "error": {
       "cannot_connect": "Failed to connect",
       "invalid_auth": "Invalid authentication, check the 8 characters of your ID",
-      "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
-      "retry": "Something went wrong, please retry",
       "stick_init": "Initialization of Plugwise USB-stick failed",
       "unknown": "Unknown error!"
     },

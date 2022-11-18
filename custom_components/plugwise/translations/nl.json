@@ -51,10 +51,8 @@
     "error": {
       "cannot_connect": "Verbinden is mislukt",
       "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je ID goed in",
-      "invalid_setup": "Voeg je Adam toe in plaats van je Anna, zie de documentatie",
       "network_down": "Plugwise Zigbee netwerk is onbereikbaar",
       "network_timeout": "Network communicatie timeout",
-      "retry": "Er ging iets mis, probeer het opnieuw",
       "stick_init": "Initaliseren van USB-stick mislukt",
       "unknown": "Onbekende fout!"
     },
