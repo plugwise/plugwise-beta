@@ -81,8 +81,9 @@ async def test_config_entry_not_ready(
     "side_effect",
     [
         (ConnectionFailedError),
-        (ResponseError),
         (InvalidXMLError),
+        (ResponseError),
+        (UnsupportedDeviceError),
     ],
 )
 async def test_async_update_fail_and_reconnect(
