@@ -26,7 +26,7 @@ from homeassistant.const import (
     Platform,
 )
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
@@ -64,18 +64,17 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     try:
         await api.connect()
     except ConnectionFailedError as err:
-        raise ConfigEntryNotReady("Failed connecting to the Plugwise Smile") from err
+        raise ConfigEntryNotReady("Failed to connect to the Plugwise Smile") from err
     except InvalidAuthentication as err:
-        raise HomeAssistantError("Invalid username or Smile ID") from err
+        raise ConfigEntryAuthFailed("Invalid username or Smile ID") from err
     except (InvalidXMLError, ResponseError) as err:
         raise ConfigEntryNotReady(
             "Error while communicating to the Plugwise Smile"
         ) from err
-    except UnsupportedDeviceError:
-        LOGGER.error(
+    except UnsupportedDeviceError as err:
+        raise HomeAssistantError(
             "Unsupported device found: please create an Issue in the HA Core github"
-        )
-        return False
+        ) from err
 
     api.get_all_devices()
 
