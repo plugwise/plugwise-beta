@@ -53,6 +53,7 @@
       "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je ID goed in",
       "network_down": "Plugwise Zigbee netwerk is onbereikbaar",
       "network_timeout": "Network communicatie timeout",
+      "response_error": "Ongeldige XML data, of error-indicatie ontvangen",
       "stick_init": "Initaliseren van USB-stick mislukt",
       "unknown": "Onbekende fout!",
       "warn_code_owner": "Onbekend apparaat gevonden, maak aub een Issue aan in de HA Core github"

@@ -53,6 +53,7 @@
       "invalid_auth": "Invalid authentication, check the 8 characters of your ID",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
+      "response_error": "Invalid XML data, or error indication received",
       "stick_init": "Initialization of Plugwise USB-stick failed",
       "unknown": "[%key:common::config_flow::error::unknown%]",
       "warn_code_owner": "Unsupported device found, please create an Issue in the HA Core github"
