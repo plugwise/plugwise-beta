@@ -406,8 +406,8 @@ async def test_zercoconf_discovery_update_configuration(
     [
         (ConnectionFailedError, "cannot_connect"),
         (InvalidAuthentication, "invalid_auth"),
-        (InvalidXMLError, "cannot_connect"),
-        (ResponseError, "cannot_connect"),
+        (InvalidXMLError, "response_error"),
+        (ResponseError, "response_error"),
         (RuntimeError, "unknown"),
         (UnsupportedDeviceError, "warn_code_owner"),
     ],
