@@ -6,7 +6,6 @@ from plugwise.exceptions import (
     InvalidAuthentication,
     InvalidXMLError,
     NetworkDown,
-    PlugwiseException,
     ResponseError,
     StickInitError,
     TimeoutException,
@@ -121,9 +120,11 @@ def mock_smile():
     with patch(
         "homeassistant.components.plugwise.config_flow.Smile",
     ) as smile_mock:
-        smile_mock.PlugwiseException = PlugwiseException
-        smile_mock.InvalidAuthentication = InvalidAuthentication
         smile_mock.ConnectionFailedError = ConnectionFailedError
+        smile_mock.InvalidAuthentication = InvalidAuthentication
+        smile_mock.InvalidXMLError = InvalidXMLError
+        smile_mock.ResponseError = ResponseError
+        smile_mock.UnsupportedDeviceError = UnsupportedDeviceError
         smile_mock.return_value.connect.return_value = True
         yield smile_mock.return_value
 
