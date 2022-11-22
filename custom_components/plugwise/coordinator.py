@@ -72,8 +72,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 raise UpdateFailed(
                     "Unsupported device found, please create an Issue in the Home Assistant Core github"
                 ) from err
-        except ConnectionFailedError:
-            raise UpdateFailed
+        except ConnectionFailedError as err:
+            raise UpdateFailed from err
 
         return PlugwiseData(
             gateway=cast(GatewayData, data[0]),
