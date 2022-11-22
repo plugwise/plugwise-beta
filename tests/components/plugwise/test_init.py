@@ -1,7 +1,4 @@
 """Tests for the Plugwise Climate integration."""
-import asyncio
-import aiohttp
-
 from unittest.mock import MagicMock
 
 from plugwise.exceptions import (
@@ -55,8 +52,6 @@ async def test_load_unload_config_entry(
         (InvalidXMLError, ConfigEntryState.SETUP_RETRY),
         (ResponseError, ConfigEntryState.SETUP_RETRY),
         (UnsupportedDeviceError, ConfigEntryState.SETUP_ERROR),
-        (aiohttp.ClientError, ConfigEntryState.SETUP_ERROR),
-        (asyncio.TimeoutError, ConfigEntryState.SETUP_ERROR),
     ],
 )
 async def test_config_entry_not_ready(
