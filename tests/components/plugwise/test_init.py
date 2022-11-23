@@ -48,7 +48,7 @@ async def test_load_unload_config_entry(
     "side_effect, entry_state",
     [
         (ConnectionFailedError, ConfigEntryState.SETUP_RETRY),
-        (InvalidAuthentication, ConfigEntryState.SETUP_ERROR),
+        (InvalidAuthentication, ConfigEntryState.SETUP_RETRY),
         (InvalidXMLError, ConfigEntryState.SETUP_RETRY),
         (ResponseError, ConfigEntryState.SETUP_RETRY),
         (UnsupportedDeviceError, ConfigEntryState.SETUP_RETRY),
