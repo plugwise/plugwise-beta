@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
+    InvalidSetupError,
     InvalidXMLError,
     NetworkDown,
     ResponseError,
@@ -407,10 +408,11 @@ async def test_zercoconf_discovery_update_configuration(
     [
         (ConnectionFailedError, "cannot_connect"),
         (InvalidAuthentication, "invalid_auth"),
+        (InvalidSetupError, "invalid_setup"),
         (InvalidXMLError, "response_error"),
         (ResponseError, "response_error"),
         (RuntimeError, "unknown"),
-        (UnsupportedDeviceError, "warn_code_owner"),
+        (UnsupportedDeviceError, "unsupported"),
     ],
 )
 async def test_flow_errors(
