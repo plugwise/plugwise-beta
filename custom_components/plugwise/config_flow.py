@@ -7,6 +7,7 @@ from typing import Any
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
+    InvalidSetupError,
     InvalidXMLError,
     NetworkDown,
     ResponseError,
@@ -308,10 +309,12 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors[CONF_BASE] = "cannot_connect"
             except InvalidAuthentication:
                 errors[CONF_BASE] = "invalid_auth"
+            except InvalidSetupError:
+                errors[CONF_BASE] = "invalid_setup"
             except (InvalidXMLError, ResponseError):
                 errors[CONF_BASE] = "response_error"
             except UnsupportedDeviceError:
-                errors[CONF_BASE] = "warn_code_owner"
+                errors[CONF_BASE] = "unsupported"
             except Exception:  # pylint: disable=broad-except
                 errors[CONF_BASE] = "unknown"
             else:
