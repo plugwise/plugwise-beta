@@ -73,7 +73,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ) from err
     except UnsupportedDeviceError as err:
         raise HomeAssistantError(
-            "Unsupported device found: please create an Issue in the HA Core github"
+            "Device with unsupported firmware"
         ) from err
 
     api.get_all_devices()
