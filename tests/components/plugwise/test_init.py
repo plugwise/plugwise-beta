@@ -51,7 +51,7 @@ async def test_load_unload_config_entry(
         (InvalidAuthentication, ConfigEntryState.SETUP_ERROR),
         (InvalidXMLError, ConfigEntryState.SETUP_RETRY),
         (ResponseError, ConfigEntryState.SETUP_RETRY),
-        (UnsupportedDeviceError, ConfigEntryState.SETUP_ERROR),
+        (UnsupportedDeviceError, ConfigEntryState.SETUP_RETRY),
     ],
 )
 async def test_config_entry_not_ready(
