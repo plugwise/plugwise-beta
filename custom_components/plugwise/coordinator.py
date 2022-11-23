@@ -6,6 +6,7 @@ from plugwise import Smile
 from plugwise.constants import DeviceData, GatewayData
 from plugwise.exceptions import (
     ConnectionFailedError,
+    InvalidAuthError,
     InvalidXMLError,
     ResponseError,
     UnsupportedDeviceError,
@@ -60,11 +61,17 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             )
             if self._unavailable_logged:
                 self._unavailable_logged = False
+        except InvalidAuthError as err:
+            if not self._unavailable_logged:
+                self._unavailable_logged = True
+                raise UpdateFailed(
+                    "Authentication failed"
+                ) from err
         except (InvalidXMLError, ResponseError) as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
                 raise UpdateFailed(
-                    "Invalid XML data, or error indication received for the Plugwise Adam/Smile/Stretch"
+                    "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
                 ) from err
         except UnsupportedDeviceError as err:
             if not self._unavailable_logged:
