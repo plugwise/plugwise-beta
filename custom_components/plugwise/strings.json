@@ -51,6 +51,7 @@
     "error": {
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
       "invalid_auth": "Invalid authentication, check the 8 characters of your ID",
+      "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "response_error": "Invalid XML data, or error indication received",
