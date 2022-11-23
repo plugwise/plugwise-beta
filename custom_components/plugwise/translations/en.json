@@ -51,12 +51,13 @@
     "error": {
       "cannot_connect": "Failed to connect",
       "invalid_auth": "Invalid authentication, check the 8 characters of your ID",
+      "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "response_error": "Invalid XML data, or error indication received",
       "stick_init": "Initialization of Plugwise USB-stick failed",
       "unknown": "Unknown error!",
-      "warn_code_owner": "Unsupported device found, please create an Issue in the HA Core github"
+      "unsupported": "Device with unsupported firmware"
     },
     "abort": {
       "already_configured": "This device is already configured",
