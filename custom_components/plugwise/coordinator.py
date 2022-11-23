@@ -6,7 +6,7 @@ from plugwise import Smile
 from plugwise.constants import DeviceData, GatewayData
 from plugwise.exceptions import (
     ConnectionFailedError,
-    InvalidAuthError,
+    InvalidAuthentication,
     InvalidXMLError,
     ResponseError,
     UnsupportedDeviceError,
@@ -61,12 +61,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             )
             if self._unavailable_logged:
                 self._unavailable_logged = False
-        except InvalidAuthError as err:
+        except InvalidAuthentication as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
-                raise UpdateFailed(
-                    "Authentication failed"
-                ) from err
+                raise UpdateFailed("Authentication failed") from err
         except (InvalidXMLError, ResponseError) as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
@@ -76,11 +74,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         except UnsupportedDeviceError as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
-                raise UpdateFailed(
-                    "Device with unsupported firmware"
-                ) from err
+                raise UpdateFailed("Device with unsupported firmware") from err
         except ConnectionFailedError as err:
-            raise UpdateFailed from err
+            if not self._unavailable_logged:
+                self._unavailable_logged = True
+                raise UpdateFailed("Failed to connect") from err
 
         return PlugwiseData(
             gateway=cast(GatewayData, data[0]),
