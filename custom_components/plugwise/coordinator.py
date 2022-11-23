@@ -70,7 +70,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._unavailable_logged:
                 self._unavailable_logged = True
                 raise UpdateFailed(
-                    "Unsupported device found, please create an Issue in the Home Assistant Core github"
+                    "Device with unsupported firmware"
                 ) from err
         except ConnectionFailedError as err:
             raise UpdateFailed from err
