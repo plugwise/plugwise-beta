@@ -10,11 +10,10 @@ from plugwise.exceptions import (
 )
 import pytest
 
-from homeassistant.components.plugwise.const import COORDINATOR, DOMAIN
+from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.helpers.update_coordinator import UpdateFailed
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 
