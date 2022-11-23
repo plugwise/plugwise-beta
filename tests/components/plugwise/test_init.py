@@ -62,7 +62,7 @@ async def test_config_entry_not_ready(
     entry_state: ConfigEntryState,
 ) -> None:
     """Test the Plugwise configuration entry not ready."""
-    mock_smile_anna.connect.side_effect = side_effect
+    mock_smile_anna.async_update.side_effect = side_effect
 
     mock_config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(mock_config_entry.entry_id)
@@ -70,41 +70,6 @@ async def test_config_entry_not_ready(
 
     assert len(mock_smile_anna.connect.mock_calls) == 1
     assert mock_config_entry.state == entry_state
-
-
-@pytest.mark.parametrize(
-    "side_effect",
-    [
-        (ConnectionFailedError),
-        (InvalidXMLError),
-        (ResponseError),
-        (UnsupportedDeviceError),
-    ],
-)
-async def test_async_update_fail_and_reconnect(
-    hass: HomeAssistant,
-    mock_config_entry: MockConfigEntry,
-    mock_smile_anna: MagicMock,
-    side_effect: Exception,
-) -> None:
-    """Test the Plugwise coordinator async_update failing."""
-    mock_config_entry.add_to_hass(hass)
-    await hass.config_entries.async_setup(mock_config_entry.entry_id)
-    await hass.async_block_till_done()
-
-    mock_smile_anna.async_update.side_effect = side_effect
-    coordinator = hass.data[DOMAIN][mock_config_entry.entry_id][COORDINATOR]
-    await coordinator.async_refresh()
-    await hass.async_block_till_done()
-
-    assert not coordinator.last_update_success
-    assert isinstance(coordinator.last_exception, UpdateFailed)
-
-    mock_smile_anna.async_update.side_effect = None
-    await coordinator.async_refresh()
-    await hass.async_block_till_done()
-
-    assert coordinator.last_update_success
 
 
 @pytest.mark.parametrize(
