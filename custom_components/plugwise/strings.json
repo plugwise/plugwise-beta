@@ -56,7 +56,7 @@
       "response_error": "Invalid XML data, or error indication received",
       "stick_init": "Initialization of Plugwise USB-stick failed",
       "unknown": "[%key:common::config_flow::error::unknown%]",
-      "warn_code_owner": "Unsupported device found, please create an Issue in the HA Core github"
+      "unsupported": "Device with unsupported firmware"
     },
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_service%]",
