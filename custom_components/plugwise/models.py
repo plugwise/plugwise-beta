@@ -638,6 +638,14 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
+        key="c_heating_state",
+        plugwise_api=SMILE,
+        name="C_Heating",
+        icon="mdi:radiator",
+        icon_off="mdi:radiator-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
         key="cooling_enabled",
         plugwise_api=SMILE,
         name="Cooling enabled",
