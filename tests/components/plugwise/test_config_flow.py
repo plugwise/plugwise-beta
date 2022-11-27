@@ -468,6 +468,24 @@ async def test_flow_errors(
     assert len(mock_smile_config_flow.connect.mock_calls) == 2
 
 
+async def test_form_invalid_setup(hass, mock_smile):
+    """Test we handle invalid setup."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_NET}
+    )
+
+    mock_smile.connect.side_effect = InvalidSetupError
+    mock_smile.gateway_id = "0a636a4fc1704ab4a24e4f7e37fb187a"
+
+    result2 = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
+    )
+
+    assert result2["type"] == FlowResultType.FORM
+    assert result2["errors"] == {"base": "invalid_setup"}
+
+
 async def test_form_invalid_auth(hass, mock_smile):
     """Test we handle invalid auth."""
     result = await hass.config_entries.flow.async_init(
