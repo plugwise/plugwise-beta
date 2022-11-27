@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import datetime as dt  # pw-beta
+from collections.abc import Mapping
 from typing import Any
 
 from plugwise.exceptions import (
@@ -107,20 +108,22 @@ async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str
     return errors, api_stick
 
 
-def _base_gw_schema(discovery_info):
+def _base_gw_schema(discovery_info: ZeroconfServiceInfo | None) -> vol.Schema:
     """Generate base schema for gateways."""
-    base_gw_schema = {}
+    base_gw_schema = vol.Schema({vol.Required(CONF_PASSWORD): str})
 
     if not discovery_info:
-        base_gw_schema[vol.Required(CONF_HOST)] = str
-        base_gw_schema[vol.Optional(CONF_PORT, default=DEFAULT_PORT)] = int
-        base_gw_schema[vol.Required(CONF_USERNAME, default=SMILE)] = vol.In(
-            {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
+        base_gw_schema = base_gw_schema.extend(
+            {
+                vol.Required(CONF_HOST): str,
+                vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
+                vol.Required(CONF_USERNAME, default=SMILE): vol.In(
+                    {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
+                ),
+            }
         )
 
-    base_gw_schema.update({vol.Required(CONF_PASSWORD): str})
-
-    return vol.Schema(base_gw_schema)
+    return base_gw_schema
 
 
 async def validate_gw_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
@@ -295,7 +298,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the initial step when using network/gateway setups."""
-        errors = {}
+        errors: dict[str, str] = {}
 
         if user_input is not None:
             if self.discovery_info:
@@ -349,6 +352,10 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             data_schema=CONNECTION_SCHEMA,
             errors=errors,
         )
+
+    async def async_step_reauth(self, entry_data: Mapping[str, Any]) -> FlowResult:
+        """Handle a reauthorization flow request."""
+        return await self.async_step_user()
 
     # pw-beta
     @staticmethod
