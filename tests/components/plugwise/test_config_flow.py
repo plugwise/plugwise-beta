@@ -7,11 +7,10 @@ from plugwise.exceptions import (
     InvalidSetupError,
     InvalidXMLError,
     NetworkDown,
-    PlugwiseException,
     ResponseError,
     StickInitError,
     TimeoutException,
-    XMLDataMissingError,
+    UnsupportedDeviceError,
 )
 import pytest
 import serial.tools.list_ports
@@ -122,9 +121,11 @@ def mock_smile():
     with patch(
         "homeassistant.components.plugwise.config_flow.Smile",
     ) as smile_mock:
-        smile_mock.PlugwiseException = PlugwiseException
-        smile_mock.InvalidAuthentication = InvalidAuthentication
         smile_mock.ConnectionFailedError = ConnectionFailedError
+        smile_mock.InvalidAuthentication = InvalidAuthentication
+        smile_mock.InvalidXMLError = InvalidXMLError
+        smile_mock.ResponseError = ResponseError
+        smile_mock.UnsupportedDeviceError = UnsupportedDeviceError
         smile_mock.return_value.connect.return_value = True
         yield smile_mock.return_value
 
@@ -403,15 +404,15 @@ async def test_zercoconf_discovery_update_configuration(
 
 
 @pytest.mark.parametrize(
-    "side_effect,reason",
+    "side_effect, reason",
     [
-        (InvalidSetupError, "invalid_setup"),
-        (InvalidAuthentication, "invalid_auth"),
         (ConnectionFailedError, "cannot_connect"),
-        (InvalidXMLError, "cannot_connect"),
-        (XMLDataMissingError, "retry"),
-        (ResponseError, "cannot_connect"),
+        (InvalidAuthentication, "invalid_auth"),
+        (InvalidSetupError, "invalid_setup"),
+        (InvalidXMLError, "response_error"),
+        (ResponseError, "response_error"),
         (RuntimeError, "unknown"),
+        (UnsupportedDeviceError, "unsupported"),
     ],
 )
 async def test_flow_errors(

@@ -6,9 +6,10 @@ from plugwise import Smile
 from plugwise.constants import DeviceData, GatewayData
 from plugwise.exceptions import (
     ConnectionFailedError,
+    InvalidAuthentication,
     InvalidXMLError,
     ResponseError,
-    XMLDataMissingError,
+    UnsupportedDeviceError,
 )
 
 from homeassistant.core import HomeAssistant
@@ -60,14 +61,24 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             )
             if self._unavailable_logged:
                 self._unavailable_logged = False
-        except (InvalidXMLError, ResponseError, XMLDataMissingError) as err:
+        except InvalidAuthentication as err:
+            if not self._unavailable_logged:
+                self._unavailable_logged = True
+                raise UpdateFailed("Authentication failed") from err
+        except (InvalidXMLError, ResponseError) as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
                 raise UpdateFailed(
-                    "No or invalid XML data, or error indication received for the Plugwise Adam/Smile/Stretch"
+                    "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
                 ) from err
-        except ConnectionFailedError:
-            raise UpdateFailed
+        except UnsupportedDeviceError as err:
+            if not self._unavailable_logged:
+                self._unavailable_logged = True
+                raise UpdateFailed("Device with unsupported firmware") from err
+        except ConnectionFailedError as err:
+            if not self._unavailable_logged:
+                self._unavailable_logged = True
+                raise UpdateFailed("Failed to connect") from err
 
         return PlugwiseData(
             gateway=cast(GatewayData, data[0]),

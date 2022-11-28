@@ -86,7 +86,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
         if self._homekit_enabled:  # pw-beta homekit emulation
-            self._attr_hvac_modes.append(HVACMode.OFF)
+            self._attr_hvac_modes.append(HVACMode.OFF)  # pragma: no cover
 
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         self._attr_max_temp = self.device["thermostat"]["upper_bound"]

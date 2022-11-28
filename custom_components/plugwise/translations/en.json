@@ -54,9 +54,10 @@
       "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
-      "retry": "Something went wrong, please retry",
+      "response_error": "Invalid XML data, or error indication received",
       "stick_init": "Initialization of Plugwise USB-stick failed",
-      "unknown": "Unknown error!"
+      "unknown": "Unknown error!",
+      "unsupported": "Device with unsupported firmware"
     },
     "abort": {
       "already_configured": "This device is already configured",

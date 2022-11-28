@@ -1,8 +1,8 @@
 """Config flow for Plugwise integration."""
 from __future__ import annotations
 
-from aiohttp import ClientError
 import datetime as dt  # pw-beta
+from collections.abc import Mapping
 from typing import Any
 
 from plugwise.exceptions import (
@@ -15,7 +15,7 @@ from plugwise.exceptions import (
     PortError,
     StickInitError,
     TimeoutException,
-    XMLDataMissingError,
+    UnsupportedDeviceError,
 )
 from plugwise.smile import Smile
 from plugwise.stick import Stick
@@ -56,7 +56,6 @@ from .const import (
     FLOW_STRETCH,
     FLOW_TYPE,
     FLOW_USB,
-    LOGGER,
     PW_TYPE,
     SMILE,
     STICK,
@@ -109,20 +108,22 @@ async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str
     return errors, api_stick
 
 
-def _base_gw_schema(discovery_info):
+def _base_gw_schema(discovery_info: ZeroconfServiceInfo | None) -> vol.Schema:
     """Generate base schema for gateways."""
-    base_gw_schema = {}
+    base_gw_schema = vol.Schema({vol.Required(CONF_PASSWORD): str})
 
     if not discovery_info:
-        base_gw_schema[vol.Required(CONF_HOST)] = str
-        base_gw_schema[vol.Optional(CONF_PORT, default=DEFAULT_PORT)] = int
-        base_gw_schema[vol.Required(CONF_USERNAME, default=SMILE)] = vol.In(
-            {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
+        base_gw_schema = base_gw_schema.extend(
+            {
+                vol.Required(CONF_HOST): str,
+                vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
+                vol.Required(CONF_USERNAME, default=SMILE): vol.In(
+                    {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
+                ),
+            }
         )
 
-    base_gw_schema.update({vol.Required(CONF_PASSWORD): str})
-
-    return vol.Schema(base_gw_schema)
+    return base_gw_schema
 
 
 async def validate_gw_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
@@ -297,7 +298,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the initial step when using network/gateway setups."""
-        errors = {}
+        errors: dict[str, str] = {}
 
         if user_input is not None:
             if self.discovery_info:
@@ -307,21 +308,17 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
             try:
                 api = await validate_gw_input(self.hass, user_input)
-            except InvalidSetupError:
-                errors[CONF_BASE] = "invalid_setup"
+            except ConnectionFailedError:
+                errors[CONF_BASE] = "cannot_connect"
             except InvalidAuthentication:
                 errors[CONF_BASE] = "invalid_auth"
-            except (
-                ClientError,
-                ConnectionFailedError,
-                InvalidXMLError,
-                ResponseError,
-            ):
-                errors[CONF_BASE] = "cannot_connect"
-            except XMLDataMissingError:
-                errors[CONF_BASE] = "retry"
+            except InvalidSetupError:
+                errors[CONF_BASE] = "invalid_setup"
+            except (InvalidXMLError, ResponseError):
+                errors[CONF_BASE] = "response_error"
+            except UnsupportedDeviceError:
+                errors[CONF_BASE] = "unsupported"
             except Exception:  # pylint: disable=broad-except
-                LOGGER.exception("Unexpected exception")
                 errors[CONF_BASE] = "unknown"
             else:
                 await self.async_set_unique_id(
