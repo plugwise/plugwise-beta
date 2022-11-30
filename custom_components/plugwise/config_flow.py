@@ -125,12 +125,15 @@ def _base_gw_schema(discovery_info: ZeroconfServiceInfo | None) -> vol.Schema:
     return base_gw_schema
 
 
-async def validate_gw_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
+async def validate_gw_input(
+    hass: HomeAssistant, data: dict[str, Any]
+) -> tuple[Smile, dict[str, str]]:
     """
     Validate whether the user input allows us to connect to the gateway.
 
     Data has the keys from _base_gw_schema() with values provided by the user.
     """
+    errors: dict[str, str] = {}
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
         host=data[CONF_HOST],
@@ -140,8 +143,22 @@ async def validate_gw_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
         timeout=30,
         websession=websession,
     )
-    await api.connect()
-    return api
+    try:
+        await api.connect()
+    except ConnectionFailedError:
+        errors[CONF_BASE] = "cannot_connect"
+    except InvalidAuthentication:
+        errors[CONF_BASE] = "invalid_auth"
+    except InvalidSetupError:
+        errors[CONF_BASE] = "invalid_setup"
+    except (InvalidXMLError, ResponseError):
+        errors[CONF_BASE] = "response_error"
+    except UnsupportedDeviceError:
+        errors[CONF_BASE] = "unsupported"
+    except Exception:  # pylint: disable=broad-except
+        errors[CONF_BASE] = "unknown"
+
+    return (api, errors)
 
 
 class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -161,17 +178,16 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         unique_id = discovery_info.hostname.split(".")[0].split("-")[0]
         if config_entry := await self.async_set_unique_id(unique_id):
-            try:
-                await validate_gw_input(
-                    self.hass,
-                    {
-                        CONF_HOST: discovery_info.host,
-                        CONF_PORT: discovery_info.port,
-                        CONF_USERNAME: config_entry.data[CONF_USERNAME],
-                        CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
-                    },
-                )
-            except Exception:  # pylint: disable=broad-except
+            (api, errors) = await validate_gw_input(
+                self.hass,
+                {
+                    CONF_HOST: discovery_info.host,
+                    CONF_PORT: discovery_info.port,
+                    CONF_USERNAME: config_entry.data[CONF_USERNAME],
+                    CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
+                },
+            )
+            if errors:
                 self._abort_if_unique_id_configured()
             else:
                 self._abort_if_unique_id_configured(
@@ -298,28 +314,14 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> FlowResult:
         """Handle the initial step when using network/gateway setups."""
         errors: dict[str, str] = {}
-
         if user_input is not None:
             if self.discovery_info:
                 user_input[CONF_HOST] = self.discovery_info.host
                 user_input[CONF_PORT] = self.discovery_info.port
                 user_input[CONF_USERNAME] = self._username
 
-            try:
-                api = await validate_gw_input(self.hass, user_input)
-            except ConnectionFailedError:
-                errors[CONF_BASE] = "cannot_connect"
-            except InvalidAuthentication:
-                errors[CONF_BASE] = "invalid_auth"
-            except InvalidSetupError:
-                errors[CONF_BASE] = "invalid_setup"
-            except (InvalidXMLError, ResponseError):
-                errors[CONF_BASE] = "response_error"
-            except UnsupportedDeviceError:
-                errors[CONF_BASE] = "unsupported"
-            except Exception:  # pylint: disable=broad-except
-                errors[CONF_BASE] = "unknown"
-            else:
+            (api, errors) = await validate_gw_input(self.hass, user_input)
+            if not errors:
                 await self.async_set_unique_id(
                     api.smile_hostname or api.gateway_id, raise_on_progress=False
                 )
