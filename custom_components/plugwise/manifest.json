@@ -1,10 +1,10 @@
 {
   "domain": "plugwise",
   "name": "Plugwise Beta",
-  "version": "0.31.5a0",
+  "version": "0.31.5a1",
   "documentation": "https://github.com/plugwise/plugwise-beta",
   "after_dependencies": ["usb", "zeroconf"],
-  "requirements": ["https://test-files.pythonhosted.org/packages/4c/f1/144da879b9aa3ec8c6023e6d461a2ca26190325ade94eea43941dc2358ea/plugwise-0.25.13a1.tar.gz#plugwise==0.25.13a1"],
+  "requirements": ["https://test-files.pythonhosted.org/packages/ee/3d/4b045756eb87561d2c9fdf5b66437ff8af165f5aa4dfc96fdf354490d419/plugwise-0.25.14a0.tar.gz#plugwise==0.25.14a0"],
   "codeowners": ["@CoMPaTech","@bouwew","@brefra"],
   "integration_type": "hub",
   "iot_class": "local_polling",
