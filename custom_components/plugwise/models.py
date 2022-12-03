@@ -237,7 +237,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
-        key="domestic_hot_water_temperature_setpoint",
+        key="domestic_hot_water_setpoint",
         plugwise_api=SMILE,
         name="DHW setpoint",
         device_class=SensorDeviceClass.TEMPERATURE,
