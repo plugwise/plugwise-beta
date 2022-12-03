@@ -84,7 +84,7 @@ async def async_setup_entry(
         for description in NUMBER_TYPES:
             if (
                 description.key in device 
-                and native_value_key in device[description.key]
+                and "setpoint" in device[description.key]
             ):
                 entities.append(
                     PlugwiseNumberEntity(coordinator, device_id, description)
