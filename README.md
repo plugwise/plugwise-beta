@@ -28,8 +28,12 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW NOV 2022 [0.31.4] Bugfixes, improve exception-handling
-- Bugfixes via plugwise v0.25.12 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.10
+# NEW DEC 2022 [0.31.5] Bugfix
+- Bugfix via plugwise v0.25.14 - - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.14
+- Add two new sensors: DHW setpoint and Maximum boiler temperature, these sensors can be present (not always) when they are not available as Numbers
+
+# NOV 2022 [0.31.4] Bugfixes, improve exception-handling
+- Bugfixes via plugwise v0.25.12 - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.12
 
 # NOV 2022 [0.31.3] Thermostats: more improvements
 - Anna+Elga: remove cooling-switch, add cooling_enabled binary_sensor (NOTE: reload integration every time the cooling-enabled switch position on the Elga is changed)
