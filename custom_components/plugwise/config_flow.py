@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import datetime as dt  # pw-beta
-from collections.abc import Mapping
 from typing import Any
 
 from plugwise.exceptions import (
