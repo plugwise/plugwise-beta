@@ -30,6 +30,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # NEW DEC 2022 [0.31.5] Bugfix
 - Bugfix via plugwise v0.25.14 - - https://github.com/plugwise/python-plugwise/releases/tag/v0.25.14
+- Improve number-detection so that it doesn't error on a sensor with the same name - fixing https://github.com/home-assistant/core/issues/83068
 - Add two new sensors: DHW setpoint and Maximum boiler temperature, these sensors can be present (not always) when they are not available as Numbers
 
 # NOV 2022 [0.31.4] Bugfixes, improve exception-handling
