@@ -19,7 +19,6 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
-    DEFAULT_SCAN_INTERVAL,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
