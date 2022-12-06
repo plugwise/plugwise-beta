@@ -86,7 +86,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         except InvalidAuthentication as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
-                raise UpdateFailed("Authentication failed") from err
+                raise ConfigEntryError("Authentication failed") from err
         except (InvalidXMLError, ResponseError) as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
@@ -96,7 +96,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         except UnsupportedDeviceError as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
-                raise UpdateFailed("Device with unsupported firmware") from err
+                raise ConfigEntryError("Device with unsupported firmware") from err
         except ConnectionFailedError as err:
             if not self._unavailable_logged:
                 self._unavailable_logged = True
