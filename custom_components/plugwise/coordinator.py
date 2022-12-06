@@ -1,6 +1,4 @@
 """DataUpdateCoordinator for Plugwise."""
-import datetime as dt
-
 from datetime import timedelta
 from typing import NamedTuple, cast
 
@@ -86,10 +84,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             self.api.smile_type, timedelta(seconds=60)
         )
         if (custom_time := self._entry.options.get(CONF_SCAN_INTERVAL)) is not None:
-            self.update_interval = dt.timedelta(
+            self.update_interval = timedelta(
                 seconds=int(custom_time)
             )  # pragma: no cover
-        # LOGGER.debug("DUC update interval: %s", self.update_interval.seconds)
+
+        LOGGER.debug("DUC update interval: %s", self.update_interval.seconds)
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
