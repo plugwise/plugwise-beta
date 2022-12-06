@@ -37,7 +37,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     _connected: bool = False
 
     def __init__(
-        self, hass: HomeAssistant, entry: ConfigEntry, cooldown: float, interval: timedelta
+        self, hass: HomeAssistant, entry: ConfigEntry, cooldown: float
     ) -> None:
         """Initialize the coordinator."""
         super().__init__(
