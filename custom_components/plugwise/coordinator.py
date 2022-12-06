@@ -85,7 +85,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         )
         if custom_time := self._entry.options.get(CONF_SCAN_INTERVAL):
             self.update_interval = dt.timedelta(seconds=int(custom_time))  # pragma: no cover
-        LOGGER.debug("DUC update interval: %s", update_interval.seconds)
+        LOGGER.debug("DUC update interval: %s", self.update_interval.seconds)
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
