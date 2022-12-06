@@ -75,7 +75,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
         # pw-beta scan-interval
         self.update_interval = DEFAULT_SCAN_INTERVAL.get(
-            self.api.smile_type), timedelta(seconds=60)
+            self.api.smile_type, timedelta(seconds=60)
         )
         if custom_time := entry.options.get(CONF_SCAN_INTERVAL):
             self.update_interval = dt.timedelta(seconds=int(custom_time))  # pragma: no cover
