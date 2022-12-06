@@ -74,7 +74,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self.name = self.api.smile_name
 
         # pw-beta scan-interval
-        self.update_interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[self.api.smile_type]
+        self.update_interval = DEFAULT_SCAN_INTERVAL.get(
+            self.api.smile_type), timedelta(seconds=60)
+        )
         if custom_time := entry.options.get(CONF_SCAN_INTERVAL):
             self.update_interval = dt.timedelta(seconds=int(custom_time))  # pragma: no cover
         LOGGER.debug("DUC update interval: %s", update_interval.seconds)
