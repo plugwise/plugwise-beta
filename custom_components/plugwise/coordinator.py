@@ -12,12 +12,16 @@ from plugwise.exceptions import (
     UnsupportedDeviceError,
 )
 
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_USERNAME
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryError
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 # pw-beta - for core compat should import DEFAULT_SCAN_INTERVAL
-from .const import DOMAIN, LOGGER
+from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
 
 
 class PlugwiseData(NamedTuple):
@@ -30,14 +34,16 @@ class PlugwiseData(NamedTuple):
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     """Class to manage fetching Plugwise data from single endpoint."""
 
+    _connected: bool = False
+
     def __init__(
-        self, hass: HomeAssistant, api: Smile, cooldown: float, interval: timedelta
+        self, hass: HomeAssistant, entry: ConfigEntry, cooldown: float, interval: timedelta
     ) -> None:
         """Initialize the coordinator."""
         super().__init__(
             hass,
             LOGGER,
-            name=api.smile_name or DOMAIN,
+            name=DOMAIN,
             # Core directly updates from const's DEFAULT_SCAN_INTERVAL
             update_interval=interval,  # pw-beta
             # Don't refresh immediately, give the device time to process
@@ -49,12 +55,28 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 immediate=False,
             ),
         )
-        self.api = api
+
+        self.api = Smile(
+            host=entry.data[CONF_HOST],
+            username=entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
+            password=entry.data[CONF_PASSWORD],
+            port=entry.data.get(CONF_PORT, DEFAULT_PORT),
+            timeout=30,
+            websession=async_get_clientsession(hass, verify_ssl=False),
+        )
         self._unavailable_logged = False
+
+    async def _connect(self) -> None:
+        """Connect to the Plugwise Smile."""
+        self._connected = await self.api.connect()
+        self.api.get_all_devices()
+        self.name = self.api.smile_name
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
         try:
+            if not self._connected:
+                await self._connect()
             data = await self.api.async_update()
             LOGGER.debug(
                 f"{self.api.smile_name} data: %s", PlugwiseData(data[0], data[1])
