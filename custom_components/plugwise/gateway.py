@@ -5,37 +5,15 @@ import datetime as dt
 from typing import Any
 import voluptuous as vol
 
-from plugwise.exceptions import (
-    ConnectionFailedError,
-    InvalidAuthentication,
-    InvalidXMLError,
-    PlugwiseException,
-    ResponseError,
-    UnsupportedDeviceError,
-)
-from plugwise.smile import Smile
-
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_USERNAME,
-    CONF_SCAN_INTERVAL,
-    Platform,
-)
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta
     COORDINATOR,
-    DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,  # pw-beta
-    DEFAULT_USERNAME,
     DOMAIN,
     GATEWAY,
     LOGGER,
@@ -77,11 +55,11 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, str(api.gateway_id))},
+        identifiers={(DOMAIN, str(coordinator.api.gateway_id))},
         manufacturer="Plugwise",
-        model=api.smile_model,
-        name=api.smile_name,
-        sw_version=api.smile_version[0],
+        model=coordinator.api.smile_model,
+        name=coordinator.api.smile_name,
+        sw_version=coordinator.api.smile_version[0],
     )
 
     # pw-beta: HA service - delete_notification
