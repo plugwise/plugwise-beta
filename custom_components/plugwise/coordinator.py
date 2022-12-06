@@ -45,7 +45,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             LOGGER,
             name=DOMAIN,
             # Core directly updates from const's DEFAULT_SCAN_INTERVAL
-            update_interval=timedelta(seconds=60)
+            update_interval=timedelta(seconds=60),
             # Don't refresh immediately, give the device time to process
             # the change in state before we query it.
             request_refresh_debouncer=Debouncer(
