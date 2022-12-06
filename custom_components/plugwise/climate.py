@@ -15,11 +15,11 @@ from homeassistant.components.climate.const import (
     PRESET_HOME,  # pw-beta homekit emulation
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
+from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
-
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
 from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     COORDINATOR,
@@ -54,7 +54,7 @@ async def async_setup_entry(
 class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     """Representation of an Plugwise thermostat."""
 
-    _attr_temperature_unit = TEMP_CELSIUS
+    _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_has_entity_name = True
 
     def __init__(
@@ -158,7 +158,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return HVACAction.IDLE
 
     @property
-    def preset_mode(self) -> str:
+    def preset_mode(self) -> str | None:
         """Return the current preset mode."""
         return self.device["active_preset"]
 
@@ -176,7 +176,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if ATTR_TARGET_TEMP_LOW in kwargs:
             data["setpoint_low"] = kwargs.get(ATTR_TARGET_TEMP_LOW)
 
-        for temperature in list(data.values()):
+        for temperature in data.values():
             if temperature is None or not (
                 self._attr_min_temp <= temperature <= self._attr_max_temp
             ):
