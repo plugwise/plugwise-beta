@@ -51,31 +51,6 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
-    websession = async_get_clientsession(hass, verify_ssl=False)
-    api = Smile(
-        host=entry.data[CONF_HOST],
-        username=entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
-        password=entry.data[CONF_PASSWORD],
-        port=entry.data.get(CONF_PORT, DEFAULT_PORT),
-        timeout=30,
-        websession=websession,
-    )
-
-    try:
-        await api.connect()
-    except ConnectionFailedError as err:
-        raise ConfigEntryNotReady("Failed to connect to the Plugwise Smile") from err
-    except InvalidAuthentication as err:
-        raise HomeAssistantError("Invalid username or Smile ID") from err
-    except (InvalidXMLError, ResponseError) as err:
-        raise ConfigEntryNotReady(
-            "Error while communicating to the Plugwise Smile"
-        ) from err
-    except UnsupportedDeviceError as err:
-        raise HomeAssistantError("Device with unsupported firmware") from err
-
-    api.get_all_devices()
-
     # Migrate to the new smile hostname as unique_id
     # This migration is from several years back, can probably be removed
     if entry.unique_id is None and api.smile_version[0] != "1.8.0":
@@ -98,7 +73,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     LOGGER.debug("DUC cooldown interval: %s", cooldown)
 
     # pw-beta - update_interval as extra
-    coordinator = PlugwiseDataUpdateCoordinator(hass, api, cooldown, update_interval)
+    coordinator = PlugwiseDataUpdateCoordinator(hass, entry, cooldown, update_interval)
     await coordinator.async_config_entry_first_refresh()
     # Migrate a changed sensor unique_id
     migrate_sensor_entity(hass, coordinator)
