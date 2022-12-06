@@ -13,7 +13,14 @@ from plugwise.exceptions import (
 )
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_USERNAME
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_PASSWORD,
+    CONF_PORT,
+    CONF_SCAN_INTERVAL,
+    CONF_USERNAME,
+    DEFAULT_SCAN_INTERVAL,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
