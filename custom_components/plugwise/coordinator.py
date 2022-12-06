@@ -45,7 +45,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             LOGGER,
             name=DOMAIN,
             # Core directly updates from const's DEFAULT_SCAN_INTERVAL
-            update_interval=interval,  # pw-beta
+            update_interval=timedelta(seconds=60)
             # Don't refresh immediately, give the device time to process
             # the change in state before we query it.
             request_refresh_debouncer=Debouncer(
@@ -64,6 +64,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             timeout=30,
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
+        self._entry = entry
         self._unavailable_logged = False
 
     async def _connect(self) -> None:
@@ -71,6 +72,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self._connected = await self.api.connect()
         self.api.get_all_devices()
         self.name = self.api.smile_name
+
+        # pw-beta scan-interval
+        self.update_interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[self.api.smile_type]
+        if custom_time := entry.options.get(CONF_SCAN_INTERVAL):
+            self.update_interval = dt.timedelta(seconds=int(custom_time))  # pragma: no cover
+        LOGGER.debug("DUC update interval: %s", update_interval.seconds)
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""

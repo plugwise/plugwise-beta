@@ -51,19 +51,6 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
-    # Migrate to the new smile hostname as unique_id
-    # This migration is from several years back, can probably be removed
-    if entry.unique_id is None and api.smile_version[0] != "1.8.0":
-        hass.config_entries.async_update_entry(
-            entry, unique_id=api.smile_hostname
-        )  # pragma: no cover
-
-    # pw-beta scan-interval
-    update_interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[api.smile_type]
-    if custom_time := entry.options.get(CONF_SCAN_INTERVAL):
-        update_interval = dt.timedelta(seconds=int(custom_time))  # pragma: no cover
-    LOGGER.debug("DUC update interval: %s", update_interval.seconds)
-
     # pw-beta frontend refresh-interval
     cooldown = 1.5
     if (
@@ -72,7 +59,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         cooldown = custom_refresh
     LOGGER.debug("DUC cooldown interval: %s", cooldown)
 
-    # pw-beta - update_interval as extra
+    # pw-beta - cooldown, update_interval as extra
     coordinator = PlugwiseDataUpdateCoordinator(hass, entry, cooldown, update_interval)
     await coordinator.async_config_entry_first_refresh()
     # Migrate a changed sensor unique_id
