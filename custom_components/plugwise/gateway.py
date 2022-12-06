@@ -1,7 +1,6 @@
 """Plugwise network/gateway platform."""
 from __future__ import annotations
 
-import datetime as dt
 from typing import Any
 import voluptuous as vol
 
@@ -10,6 +9,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+
+from plugwise.exceptions import PlugwiseError
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta
@@ -65,13 +66,13 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # pw-beta: HA service - delete_notification
     async def delete_notification(self):  # pragma: no cover
         """Service: delete the Plugwise Notification."""
-        LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
+        LOGGER.debug("Service delete PW Notification called for %s", coordinator.api.smile_name)
         try:
-            deleted = await api.delete_notification()
+            deleted = await coordinator.api.delete_notification()
             LOGGER.debug("PW Notification deleted: %s", deleted)
-        except PlugwiseException:
+        except PlugwiseError:
             LOGGER.debug(
-                "Failed to delete the Plugwise Notification for %s", api.smile_name
+                "Failed to delete the Plugwise Notification for %s", coordinator.api.smile_name
             )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_GATEWAY)
