@@ -79,7 +79,7 @@ def mock_smile_adam() -> Generator[None, MagicMock, None]:
     chosen_env = "adam_multiple_devices_per_zone"
 
     with patch(
-        "homeassistant.components.plugwise.gateway.Smile", autospec=True
+        "homeassistant.components.plugwise.coordinator.Smile", autospec=True
     ) as smile_mock:
         smile = smile_mock.return_value
 
