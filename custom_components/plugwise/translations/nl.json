@@ -1,4 +1,21 @@
 {
+  "options": {
+    "step": {
+      "none": {
+        "title": "Geen Opties beschikbaar",
+        "description": "Deze Integratie heeft geen Opties"
+      },
+      "init": {
+        "description": "Smile/Stretch Opties aanpassen",
+        "data": {
+          "cooling_on": "Anna: koelmode is aan",
+          "scan_interval": "Scan Interval (seconden) *) optie alleen in beta",
+          "homekit_emulation": "Homekit emulatie (bij hvac_off => Afwezig) *) optie alleen in beta",
+          "refresh_interval": "Frontend ververs-tijd (1,5 - 5 seconden) *) optie alleen in beta"
+        }
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
@@ -64,23 +81,6 @@
           "cooling": "Koelen",
           "heating": "Verwarmen",
           "off": "Uit"
-        }
-      }
-    }
-  },
-  "options": {
-    "step": {
-      "none": {
-        "title": "Geen Opties beschikbaar",
-        "description": "Deze Integratie heeft geen Opties"
-      },
-      "init": {
-        "description": "Smile/Stretch Opties aanpassen",
-        "data": {
-          "cooling_on": "Anna: koelmode is aan",
-          "scan_interval": "Scan Interval (seconden) *) optie alleen in beta",
-          "homekit_emulation": "Homekit emulatie (bij hvac_off => Afwezig) *) optie alleen in beta",
-          "refresh_interval": "Frontend ververs-tijd (1,5 - 5 seconden) *) optie alleen in beta"
         }
       }
     }
