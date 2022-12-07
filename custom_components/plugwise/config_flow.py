@@ -352,7 +352,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input and self._reauth_username:
             data = {
                 CONF_HOST: user_input[CONF_HOST],
-                CONF_PASSWORD: user_input[CONF_PASSWORD],
+                CONF_PORT: user_input[CONF_PORT],
+                CONF_USERNAME: self._reauth_username,
             }
 
             (api, errors) = await validate_gw_input(self.hass, user_input)
