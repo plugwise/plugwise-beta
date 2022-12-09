@@ -111,7 +111,7 @@ async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str
 def _base_gw_schema(
     discovery_info: ZeroconfServiceInfo | None,
     user_input: dict[str, Any] | None,
-    ) -> vol.Schema:
+) -> vol.Schema:
     """Generate base schema for gateways."""
     if not discovery_info:
         if not user_input:
@@ -129,20 +129,21 @@ def _base_gw_schema(
             {
                 vol.Required(
                     CONF_PASSWORD, default=user_input[CONF_PASSWORD]
-                    ): str,
+                ): str,
                 vol.Required(
                     CONF_HOST, default=user_input[CONF_HOST]
-                    ): str,
+                ): str,
                 vol.Optional(
                     CONF_PORT, default=user_input[CONF_PORT]
-                    ): int,
+                ): int,
                 vol.Required(
                     CONF_USERNAME, default=user_input[CONF_USERNAME]
-                    ): vol.In({SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}),
+                ): vol.In({SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}),
             }
         )
 
     return vol.Schema({vol.Required(CONF_PASSWORD): str})
+
 
 async def validate_gw_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
     """
