@@ -127,18 +127,12 @@ def _base_gw_schema(
             )
         return vol.Schema(
             {
-                vol.Required(
-                    CONF_PASSWORD, default=user_input[CONF_PASSWORD]
-                ): str,
-                vol.Required(
-                    CONF_HOST, default=user_input[CONF_HOST]
-                ): str,
-                vol.Optional(
-                    CONF_PORT, default=user_input[CONF_PORT]
-                ): int,
-                vol.Required(
-                    CONF_USERNAME, default=user_input[CONF_USERNAME]
-                ): vol.In({SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}),
+                vol.Required(CONF_PASSWORD, default=user_input[CONF_PASSWORD]): str,
+                vol.Required(CONF_HOST, default=user_input[CONF_HOST]): str,
+                vol.Optional(CONF_PORT, default=user_input[CONF_PORT]): int,
+                vol.Required(CONF_USERNAME, default=user_input[CONF_USERNAME]): vol.In(
+                    {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
+                ),
             }
         )
 
