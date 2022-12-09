@@ -55,6 +55,7 @@ from .const import (
     FLOW_STRETCH,
     FLOW_TYPE,
     FLOW_USB,
+    LOGGER,
     PW_TYPE,
     SMILE,
     STICK,
@@ -107,23 +108,41 @@ async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str
     return errors, api_stick
 
 
-def _base_gw_schema(discovery_info: ZeroconfServiceInfo | None) -> vol.Schema:
+def _base_gw_schema(
+    discovery_info: ZeroconfServiceInfo | None,
+    user_input: dict[str, Any] | None,
+    ) -> vol.Schema:
     """Generate base schema for gateways."""
-    base_gw_schema = vol.Schema({vol.Required(CONF_PASSWORD): str})
-
     if not discovery_info:
-        base_gw_schema = base_gw_schema.extend(
+        if not user_input:
+            return vol.Schema(
+                {
+                    vol.Required(CONF_PASSWORD): str,
+                    vol.Required(CONF_HOST): str,
+                    vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
+                    vol.Required(CONF_USERNAME, default=SMILE): vol.In(
+                        {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
+                    ),
+                }
+            )
+        return vol.Schema(
             {
-                vol.Required(CONF_HOST): str,
-                vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
-                vol.Required(CONF_USERNAME, default=SMILE): vol.In(
-                    {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
-                ),
+                vol.Required(
+                    CONF_PASSWORD, default=user_input[CONF_PASSWORD]
+                    ): str,
+                vol.Required(
+                    CONF_HOST, default=user_input[CONF_HOST]
+                    ): str,
+                vol.Optional(
+                    CONF_PORT, default=user_input[CONF_PORT]
+                    ): int,
+                vol.Required(
+                    CONF_USERNAME, default=user_input[CONF_USERNAME]
+                    ): vol.In({SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}),
             }
         )
 
-    return base_gw_schema
-
+    return vol.Schema({vol.Required(CONF_PASSWORD): str})
 
 async def validate_gw_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
     """
@@ -297,42 +316,57 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the initial step when using network/gateway setups."""
+        LOGGER.debug("Step_user: %s", user_input)
         errors: dict[str, str] = {}
 
-        if user_input is not None:
-            if self.discovery_info:
-                user_input[CONF_HOST] = self.discovery_info.host
-                user_input[CONF_PORT] = self.discovery_info.port
-                user_input[CONF_USERNAME] = self._username
+        if not user_input:
+            LOGGER.debug("Show_form...")
+            return self.async_show_form(
+                step_id="user_gateway",
+                data_schema=_base_gw_schema(self.discovery_info, None),
+                errors=errors,
+            )
 
-            try:
-                api = await validate_gw_input(self.hass, user_input)
-            except ConnectionFailedError:
-                errors[CONF_BASE] = "cannot_connect"
-            except InvalidAuthentication:
-                errors[CONF_BASE] = "invalid_auth"
-            except InvalidSetupError:
-                errors[CONF_BASE] = "invalid_setup"
-            except (InvalidXMLError, ResponseError):
-                errors[CONF_BASE] = "response_error"
-            except UnsupportedDeviceError:
-                errors[CONF_BASE] = "unsupported"
-            except Exception:  # pylint: disable=broad-except
-                errors[CONF_BASE] = "unknown"
-            else:
-                await self.async_set_unique_id(
-                    api.smile_hostname or api.gateway_id, raise_on_progress=False
-                )
-                self._abort_if_unique_id_configured()
+        if self.discovery_info:
+            LOGGER.debug("Discovery info: %s", self.discovery_info)
+            user_input[CONF_HOST] = self.discovery_info.host
+            user_input[CONF_PORT] = self.discovery_info.port
+            user_input[CONF_USERNAME] = self._username
+        LOGGER.debug("Starting...")
+        try:
+            LOGGER.debug("Validating...")
+            api = await validate_gw_input(self.hass, user_input)
+        except ConnectionFailedError:
+            errors[CONF_BASE] = "cannot_connect"
+        except InvalidAuthentication:
+            errors[CONF_BASE] = "invalid_auth"
+            LOGGER.debug("Auth error")
+        except InvalidSetupError:
+            errors[CONF_BASE] = "invalid_setup"
+        except (InvalidXMLError, ResponseError):
+            errors[CONF_BASE] = "response_error"
+        except UnsupportedDeviceError:
+            errors[CONF_BASE] = "unsupported"
+        except Exception:  # pylint: disable=broad-except
+            errors[CONF_BASE] = "unknown"
 
-                user_input[PW_TYPE] = API
-                return self.async_create_entry(title=api.smile_name, data=user_input)
+        if errors:
+            LOGGER.debug("Show form again...")
+            LOGGER.debug(user_input)
+            return self.async_show_form(
+                step_id="user_gateway",
+                data_schema=_base_gw_schema(None, user_input),
+                errors=errors,
+            )
 
-        return self.async_show_form(
-            step_id="user_gateway",
-            data_schema=_base_gw_schema(self.discovery_info),
-            errors=errors,
+        LOGGER.debug("No error")
+        await self.async_set_unique_id(
+            api.smile_hostname or api.gateway_id, raise_on_progress=False
         )
+        self._abort_if_unique_id_configured()
+
+        user_input[PW_TYPE] = API
+        return self.async_create_entry(title=api.smile_name, data=user_input)
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
