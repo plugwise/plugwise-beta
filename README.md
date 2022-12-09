@@ -29,7 +29,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 # Changelog
 
 # NEW DEC 2022 [0.32.0] Update to Core 2022.12
-- Implement Core PR's #83286, #82694
+- Implement Core PR #82694
 - Impelement `UnitOfTemperature` in sensor.py
 
 # DEC 2022 [0.31.5] Bugfix
