@@ -50,7 +50,7 @@
     },
     "error": {
       "cannot_connect": "Verbinden is mislukt",
-      "invalid_auth": "Authenticatie mislukt, voer de 8 karakters van je ID goed in",
+      "invalid_auth": "Authenticatie mislukt",
       "invalid_setup": "Voeg je Adam toe in plaats van je Anna, lees de documentatie",
       "network_down": "Plugwise Zigbee netwerk is onbereikbaar",
       "network_timeout": "Network communicatie timeout",
