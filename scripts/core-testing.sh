@@ -224,7 +224,7 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise/manifest.json
 	)
 	echo "Running hassfest for plugwise"
-	python3 -m script.hassfest 
+	python3 -m script.hassfest --requirements --action validate
 fi
 
 # pylint was removed from 'quality' some time ago

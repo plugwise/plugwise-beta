@@ -1,41 +1,20 @@
 """Plugwise network/gateway platform."""
 from __future__ import annotations
 
-import datetime as dt
 from typing import Any
 import voluptuous as vol
 
-from plugwise.exceptions import (
-    ConnectionFailedError,
-    InvalidAuthentication,
-    InvalidXMLError,
-    PlugwiseException,
-    ResponseError,
-    UnsupportedDeviceError,
-)
-from plugwise.smile import Smile
-
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_USERNAME,
-    CONF_SCAN_INTERVAL,
-    Platform,
-)
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
+
+from plugwise.exceptions import PlugwiseError
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta
     COORDINATOR,
-    DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,  # pw-beta
-    DEFAULT_USERNAME,
     DOMAIN,
     GATEWAY,
     LOGGER,
@@ -51,44 +30,6 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
-    websession = async_get_clientsession(hass, verify_ssl=False)
-    api = Smile(
-        host=entry.data[CONF_HOST],
-        username=entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
-        password=entry.data[CONF_PASSWORD],
-        port=entry.data.get(CONF_PORT, DEFAULT_PORT),
-        timeout=30,
-        websession=websession,
-    )
-
-    try:
-        await api.connect()
-    except ConnectionFailedError as err:
-        raise ConfigEntryNotReady("Failed to connect to the Plugwise Smile") from err
-    except InvalidAuthentication as err:
-        raise HomeAssistantError("Invalid username or Smile ID") from err
-    except (InvalidXMLError, ResponseError) as err:
-        raise ConfigEntryNotReady(
-            "Error while communicating to the Plugwise Smile"
-        ) from err
-    except UnsupportedDeviceError as err:
-        raise HomeAssistantError("Device with unsupported firmware") from err
-
-    api.get_all_devices()
-
-    # Migrate to the new smile hostname as unique_id
-    # This migration is from several years back, can probably be removed
-    if entry.unique_id is None and api.smile_version[0] != "1.8.0":
-        hass.config_entries.async_update_entry(
-            entry, unique_id=api.smile_hostname
-        )  # pragma: no cover
-
-    # pw-beta scan-interval
-    update_interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[api.smile_type]
-    if custom_time := entry.options.get(CONF_SCAN_INTERVAL):
-        update_interval = dt.timedelta(seconds=int(custom_time))  # pragma: no cover
-    LOGGER.debug("DUC update interval: %s", update_interval.seconds)
-
     # pw-beta frontend refresh-interval
     cooldown = 1.5
     if (
@@ -97,8 +38,8 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         cooldown = custom_refresh
     LOGGER.debug("DUC cooldown interval: %s", cooldown)
 
-    # pw-beta - update_interval as extra
-    coordinator = PlugwiseDataUpdateCoordinator(hass, api, cooldown, update_interval)
+    # pw-beta - cooldown, update_interval as extra
+    coordinator = PlugwiseDataUpdateCoordinator(hass, entry, cooldown)
     await coordinator.async_config_entry_first_refresh()
     # Migrate a changed sensor unique_id
     migrate_sensor_entity(hass, coordinator)
@@ -115,23 +56,26 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, str(api.gateway_id))},
+        identifiers={(DOMAIN, str(coordinator.api.gateway_id))},
         manufacturer="Plugwise",
-        model=api.smile_model,
-        name=api.smile_name,
-        sw_version=api.smile_version[0],
+        model=coordinator.api.smile_model,
+        name=coordinator.api.smile_name,
+        sw_version=coordinator.api.smile_version[0],
     )
 
     # pw-beta: HA service - delete_notification
     async def delete_notification(self):  # pragma: no cover
         """Service: delete the Plugwise Notification."""
-        LOGGER.debug("Service delete PW Notification called for %s", api.smile_name)
+        LOGGER.debug(
+            "Service delete PW Notification called for %s", coordinator.api.smile_name
+        )
         try:
-            deleted = await api.delete_notification()
+            deleted = await coordinator.api.delete_notification()
             LOGGER.debug("PW Notification deleted: %s", deleted)
-        except PlugwiseException:
+        except PlugwiseError:
             LOGGER.debug(
-                "Failed to delete the Plugwise Notification for %s", api.smile_name
+                "Failed to delete the Plugwise Notification for %s",
+                coordinator.api.smile_name,
             )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_GATEWAY)

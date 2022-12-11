@@ -7,8 +7,8 @@
       "off": "Uit"
     },
     "plugwise__regulation_mode": {
-      "bleeding_cold": "Super koud",
-      "bleeding_hot": "Super heet",
+      "bleeding_cold": "Koud ontluchten",
+      "bleeding_hot": "Warm ontluchten",
       "cooling": "Koelen",
       "heating": "Verwarmen",
       "off": "Uit"
