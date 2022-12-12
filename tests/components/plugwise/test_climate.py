@@ -234,7 +234,7 @@ async def test_anna_3_climate_entity_attributes(
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_action"] == "idle"
     assert state.attributes["hvac_modes"] == [
-        HVACMode.HEAT_COOL,
+        HVACMode.HEAT,
         HVACMode.AUTO,
     ]
 
