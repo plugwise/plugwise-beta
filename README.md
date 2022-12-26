@@ -29,8 +29,8 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 # Changelog
 
 # NEW DEC 2022 [0.33.0] Smile P1: add support for 3-phase DMSR
-- Add 3-phase support, this requires P1 firmware >= 4.4.2 - via plugwise v0.26.0
-- Add missed Cooling binary_sensor, when the cooling-switch is not present
+- Add 3-phase support, this requires P1 firmware >= 4.4.2 - via plugwise v0.27.0 - https://github.com/plugwise/python-plugwise/releases/tag/v0.27.0
+- Add missed Cooling (enabled) binary_sensor, when the cooling-switch is not present
 
 # DEC 2022 [0.32.0] Update to Core 2022.12
 - Implement Core PR #82694
