@@ -250,6 +250,7 @@ def mock_smile_p1() -> Generator[None, MagicMock, None]:
 
         yield smile
 
+
 @pytest.fixture
 def mock_smile_p1_2() -> Generator[None, MagicMock, None]:
     """Create a Mock P1 3-phase DSMR environment for testing exceptions."""
@@ -273,6 +274,7 @@ def mock_smile_p1_2() -> Generator[None, MagicMock, None]:
         smile.async_update.return_value = _read_json(chosen_env, "all_data")
 
         yield smile
+
 
 @pytest.fixture
 def mock_stretch() -> Generator[None, MagicMock, None]:
