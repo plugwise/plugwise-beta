@@ -74,6 +74,31 @@ async def test_p1_dsmr_sensor_entities(
     hass: HomeAssistant, mock_smile_p1: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test creation of power related sensor entities."""
+    state = hass.states.get("sensor.p1_net_electricity_point")
+    assert state
+    assert float(state.state) == -2816.0
+
+    state = hass.states.get("sensor.p1_electricity_consumed_off_peak_cumulative")
+    assert state
+    assert float(state.state) == 551.09
+
+    state = hass.states.get("sensor.p1_electricity_produced_peak_point")
+    assert state
+    assert float(state.state) == 2816.0
+
+    state = hass.states.get("sensor.p1_electricity_consumed_peak_cumulative")
+    assert state
+    assert float(state.state) == 442.932
+
+    state = hass.states.get("sensor.p1_gas_consumed_cumulative")
+    assert state
+    assert float(state.state) == 584.85
+
+
+async def test_p1_3ph_dsmr_sensor_entities(
+    hass: HomeAssistant, mock_smile_p1_2: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test creation of power related sensor entities."""
     state = hass.states.get("sensor.p1_electricity_phase_one_consumed")
     assert state
     assert float(state.state) == 1763.0
@@ -97,31 +122,6 @@ async def test_p1_dsmr_sensor_entities(
     state = hass.states.get("sensor.p1_voltage_phase_three")
     assert state
     assert float(state.state) == 234.7
-
-
-async def test_p1_3ph_dsmr_sensor_entities(
-    hass: HomeAssistant, mock_smile_p1_2: MagicMock, init_integration: MockConfigEntry
-) -> None:
-    """Test creation of power related sensor entities."""
-    state = hass.states.get("sensor.p1_net_electricity_point")
-    assert state
-    assert float(state.state) == -2816.0
-
-    state = hass.states.get("sensor.p1_electricity_consumed_off_peak_cumulative")
-    assert state
-    assert float(state.state) == 551.09
-
-    state = hass.states.get("sensor.p1_electricity_produced_peak_point")
-    assert state
-    assert float(state.state) == 2816.0
-
-    state = hass.states.get("sensor.p1_electricity_consumed_peak_cumulative")
-    assert state
-    assert float(state.state) == 442.932
-
-    state = hass.states.get("sensor.p1_gas_consumed_cumulative")
-    assert state
-    assert float(state.state) == 584.85
 
 
 async def test_stretch_sensor_entities(
