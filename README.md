@@ -29,7 +29,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 # Changelog
 
 # NEW JAN 2023 [0.34.0] Implement Core Climate and Select translations
-Implement Core PR's ##83286 and #84617
+Implement Core PR's #83286 and #84617
 
 # JAN 2023 [0.33.1] Bump plugwise to v0.27.1
 https://github.com/plugwise/python-plugwise/releases/tag/v0.27.1
