@@ -55,7 +55,6 @@ from .const import (
     FLOW_STRETCH,
     FLOW_TYPE,
     FLOW_USB,
-    LOGGER,
     PW_TYPE,
     SMILE,
     STICK,
@@ -311,11 +310,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the initial step when using network/gateway setups."""
-        LOGGER.debug("Step_user: %s", user_input)
         errors: dict[str, str] = {}
 
         if not user_input:
-            LOGGER.debug("Show_form...")
             return self.async_show_form(
                 step_id="user_gateway",
                 data_schema=_base_gw_schema(self.discovery_info, None),
@@ -323,19 +320,15 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             )
 
         if self.discovery_info:
-            LOGGER.debug("Discovery info: %s", self.discovery_info)
             user_input[CONF_HOST] = self.discovery_info.host
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
-        LOGGER.debug("Starting...")
         try:
-            LOGGER.debug("Validating...")
             api = await validate_gw_input(self.hass, user_input)
         except ConnectionFailedError:
             errors[CONF_BASE] = "cannot_connect"
         except InvalidAuthentication:
             errors[CONF_BASE] = "invalid_auth"
-            LOGGER.debug("Auth error")
         except InvalidSetupError:
             errors[CONF_BASE] = "invalid_setup"
         except (InvalidXMLError, ResponseError):
@@ -346,15 +339,12 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             errors[CONF_BASE] = "unknown"
 
         if errors:
-            LOGGER.debug("Show form again...")
-            LOGGER.debug(user_input)
             return self.async_show_form(
                 step_id="user_gateway",
                 data_schema=_base_gw_schema(None, user_input),
                 errors=errors,
             )
 
-        LOGGER.debug("No error")
         await self.async_set_unique_id(
             api.smile_hostname or api.gateway_id, raise_on_progress=False
         )
