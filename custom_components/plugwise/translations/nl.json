@@ -63,5 +63,41 @@
       "already_configured": "Dit apparaat is al geconfigureerd",
       "anna_with_adam": "Zowel Anna als Adam gedetecteerd. Voeg alleen de Adam toe, niet de Anna"
     }
+  },
+  "entity": {
+    "climate": {
+      "plugwise": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "asleep": "Nacht",
+              "away": "Afwezig",
+              "home": "Thuis",
+              "no_frost": "Vorst-bescherming",
+              "vacation": "Vakantie"
+            }
+          }
+        }
+      }
+    },
+    "select":{
+      "dhw_mode": {
+        "state": {
+          "auto": "Auto",
+          "boost": "Boost",
+          "comfort": "Comfort",
+          "off": "Uit"
+        }
+      },
+      "regulation_mode": {
+        "state": {
+          "bleeding_cold": "Koud ontluchten",
+          "bleeding_hot": "Warm ontluchten",
+          "cooling": "Koelen",
+          "heating": "Verwarmen",
+          "off": "Uit"
+        }
+      }
+    }
   }
 }
