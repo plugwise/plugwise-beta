@@ -16,6 +16,7 @@ from homeassistant.components.sensor import (
 from homeassistant.components.switch import SwitchDeviceClass, SwitchEntityDescription
 from homeassistant.const import (
     ILLUMINANCE,
+    LIGHT_LUX,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     PERCENTAGE,
     UnitOfElectricPotential,
@@ -242,6 +243,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Battery",
         device_class=SensorDeviceClass.BATTERY,
         entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=PERCENTAGE,
     ),
     PlugwiseSensorEntityDescription(
         key="domestic_hot_water_setpoint",
@@ -491,12 +493,14 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Relative humidity",
         device_class=SensorDeviceClass.HUMIDITY,
+        native_unit_of_measurement=PERCENTAGE,
     ),
     PlugwiseSensorEntityDescription(
         key=ILLUMINANCE,
         plugwise_api=SMILE,
         name="Illuminance",
         device_class=SensorDeviceClass.ILLUMINANCE,
+        native_unit_of_measurement=LIGHT_LUX,
     ),
     PlugwiseSensorEntityDescription(
         key=INTENDED_BOILER_TEMP,
