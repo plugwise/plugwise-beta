@@ -243,7 +243,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Battery",
         device_class=SensorDeviceClass.BATTERY,
         entity_category=EntityCategory.DIAGNOSTIC,
-        native_unit_of_measurement=PERCENTAGE,
     ),
     PlugwiseSensorEntityDescription(
         key="domestic_hot_water_setpoint",
@@ -493,14 +492,12 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Relative humidity",
         device_class=SensorDeviceClass.HUMIDITY,
-        native_unit_of_measurement=PERCENTAGE,
     ),
     PlugwiseSensorEntityDescription(
         key=ILLUMINANCE,
         plugwise_api=SMILE,
         name="Illuminance",
         device_class=SensorDeviceClass.ILLUMINANCE,
-        native_unit_of_measurement=UNIT_LUMEN,
     ),
     PlugwiseSensorEntityDescription(
         key=INTENDED_BOILER_TEMP,
