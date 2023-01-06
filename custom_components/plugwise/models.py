@@ -82,7 +82,6 @@ from .const import (
     TARGET_TEMP_HIGH,
     TARGET_TEMP_LOW,
     TEMP_DIFF,
-    UNIT_LUMEN,
     USB_MOTION_ID,
     USB_RELAY_ID,
     VALVE_POS,

@@ -26,7 +26,6 @@ SMILE: Final = "smile"
 STICK: Final = "stick"
 STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
-UNIT_LUMEN: Final = "lm"
 USB: Final = "usb"
 
 FLOW_NET: Final = "Network: Smile/Stretch"
