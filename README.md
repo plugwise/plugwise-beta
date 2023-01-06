@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW JAN 2023 [0.34.1] Smile: save user input when adding the integration
+# NEW JAN 2023 [0.34.2] Adapt to importing more Core UnitOf... enumerators
+- https://developers.home-assistant.io/blog/2022/12/05/more-unit-enumerators
+
+# JAN 2023 [0.34.1] Smile: save user input when adding the integration
 
 # JAN 2023 [0.34.0] Implement Core Climate and Select translations
 - Implement Core PR's #83286 and #84617
