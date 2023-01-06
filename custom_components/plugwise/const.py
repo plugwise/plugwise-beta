@@ -12,15 +12,11 @@ DOMAIN: Final = "plugwise"
 LOGGER = logging.getLogger(__package__)
 
 API: Final = "api"
-ATTR_ENABLED_DEFAULT: Final = "enabled_default"
 COORDINATOR: Final = "coordinator"
-CONF_COOLING_ON: Final = "cooling_on"
 CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta
 CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta
 CONF_MANUAL_PATH: Final = "Enter Manually"
 GATEWAY: Final = "gateway"
-ID: Final = "id"
-PW_LOCATION: Final = "location"
 PW_TYPE: Final = "plugwise_type"
 SMILE: Final = "smile"
 STICK: Final = "stick"
@@ -74,17 +70,6 @@ ZEROCONF_MAP: Final[dict[str, str]] = {
     "smile_open_therm": "Adam",
     "stretch": "Stretch",
 }
-
-# Icons
-COOLING_ICON: Final = "mdi:snowflake"
-FLAME_ICON: Final = "mdi:fire"
-FLOW_OFF_ICON: Final = "mdi:water-pump-off"
-FLOW_ON_ICON: Final = "mdi:water-pump"
-HEATING_ICON: Final = "mdi:radiator"
-IDLE_ICON: Final = "mdi:circle-off-outline"
-NOTIFICATION_ICON: Final = "mdi:mailbox-up-outline"
-NO_NOTIFICATION_ICON: Final = "mdi:mailbox-outline"
-SWITCH_ICON: Final = "mdi:electric-switch"
 
 # Binary Sensors:
 COOLING: Final = "cooling_enabled"
