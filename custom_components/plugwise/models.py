@@ -369,7 +369,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Electricity phase two produced",
         device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPowerWATT,
+        native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
