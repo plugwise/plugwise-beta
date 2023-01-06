@@ -30,6 +30,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # NEW JAN 2023 [0.34.2] Adapt to importing more Core UnitOf... enumerators
 - https://developers.home-assistant.io/blog/2022/12/05/more-unit-enumerators
+- Alternative implementation of https://github.com/home-assistant/core/pull/84386
 
 # JAN 2023 [0.34.1] Smile: save user input when adding the integration
 
