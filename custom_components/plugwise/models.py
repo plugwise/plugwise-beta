@@ -26,7 +26,6 @@ from homeassistant.const import (
     UnitOfTemperature,
     UnitOfTime,
     UnitOfVolume,
-
 )
 from homeassistant.helpers.entity import EntityCategory, EntityDescription
 
@@ -456,6 +455,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
         key=V_PHASE_TWO,
@@ -464,6 +464,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
         key=V_PHASE_THREE,
@@ -472,6 +473,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
         key=GAS_CONSUMED_CUMULATIVE,
