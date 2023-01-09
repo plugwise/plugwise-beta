@@ -26,7 +26,6 @@ from homeassistant.const import (
     UnitOfTemperature,
     UnitOfTime,
     UnitOfVolume,
-
 )
 from homeassistant.helpers.entity import EntityCategory, EntityDescription
 
