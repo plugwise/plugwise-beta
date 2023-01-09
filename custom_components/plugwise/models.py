@@ -683,6 +683,13 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
+        key=COOLING,
+        plugwise_api=SMILE,
+        name="Cooling enabled",
+        icon="mdi:snowflake-thermometer",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
         key=DHW_STATE,
         plugwise_api=SMILE,
         name="DHW state",
@@ -715,10 +722,11 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
-        key=COOLING,
+        key=SLAVE_BOILER_STATE,
         plugwise_api=SMILE,
-        name="Cooling enabled",
-        icon="mdi:snowflake-thermometer",
+        name="Secondary boiler state",
+        icon="mdi:fire",
+        icon_off="mdi:circle-off-outline",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
@@ -727,14 +735,6 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         icon="mdi:mailbox-up-outline",
         icon_off="mdi:mailbox-outline",
         name="Plugwise notification",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    PlugwiseBinarySensorEntityDescription(
-        key=SLAVE_BOILER_STATE,
-        plugwise_api=SMILE,
-        name="Secondary boiler state",
-        icon="mdi:fire",
-        icon_off="mdi:circle-off-outline",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
 )
