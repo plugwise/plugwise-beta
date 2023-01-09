@@ -8,7 +8,7 @@ from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import async_get
+from homeassistant.helpers.entity_registry import async_get
 
 from tests.common import MockConfigEntry
 
