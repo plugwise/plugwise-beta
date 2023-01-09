@@ -441,9 +441,8 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
-    # Present in Core, not in pw-beta!
     PlugwiseSensorEntityDescription(
-        key="electricity_produced_peak_cumulative",
+        key=EL_PRODUCED_PEAK_CUMULATIVE,
         plugwise_api=SMILE,
         name="Electricity produced peak cumulative",
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
