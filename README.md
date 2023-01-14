@@ -450,7 +450,7 @@ Please note that you can also click the cogwheel right top corner to rename all 
 
 If you notice issues, we are on Discord and on the [Community forums](https://community.home-assistant.io/t/plugwise-core-and-custom-component/236250). You can also create an Issue in these repositories:
 
-- [plugwise-beta](https://github.com/plugwise/plugwise-beta) - the `custom_component` for HA Core
+- [plugwise-beta](https://github.com/plugwise/plugwise-beta) - the beta `custom_component` for HA Core we use for testing (also required for USB as Plugwise USB support is not available in Home Assistant Core yet).
 - [python-plugwise](https://github.com/plugwise/python-plugwise) - the python module interfacing with the plugwise Smile or USB-stick
 
 ## Why 'Smile'?
@@ -461,7 +461,9 @@ We use the term Smile for the 'device connected to your home network', called Sm
 
 While we try to make sure that everything works as intended, we can't really test out changes happening to hardware devices. Our testing is done through testing against files from community members (see [python-plugwise tests](https://github.com/plugwise/python-plugwise/tree/main/tests)) and if you have a setup you are willing to share we highly welcome that. Just send us the files or submit a PR. Including your test code into the `tests/test_Smile.py` code is highly recommended.
 
-Results of our tests are checked by Travis, click the left button (the one that should say 'Build passing' :)) on the [python-plugwise repository](https://github.com/plugwise/python-plugwise/).
+Ensuring our commits work `scripts/core-testing.sh` will create a local clone of the Home Assistant Core dev-branch to test against. For full visibility of tests run this as `DEBUG=1 scripts/core-testing.sh` (or export DEBUG to something other than none). `pytest` will show full log by default when tests are failing.
+
+Results of our tests are checked by GitHub Actions against Home Assistant (dev-branch), click the button 'Test with HA-core' in this repository or the 'Latest release'/'Latest commit' buttons on our [python-plugwise repository](https://github.com/plugwise/python-plugwise/).
 
 ## There is Plugwise / used to be Anna support in HA Core already?
 

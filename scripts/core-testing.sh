@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+# If you want full pytest output run as
+# DEBUG=1 scripts/core-testing.sh
+
 # If you want to test a single file
 # run as "scripts/core_testing.sh test_config_flow.py" or
 # "scripts/core_testing.sh test_sensor.py"
@@ -188,8 +191,12 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 	echo ""
 	echo "Test commencing ..."
 	echo ""
+        debug_params=""
+	if [ ! "${DEBUG}" == "" ] ; then 
+        	debug_params="-rpP"
+	fi
 	# shellcheck disable=SC2086
-	pytest ${subject} --cov=homeassistant/components/plugwise/ --cov-report term-missing -- "tests/components/plugwise/${basedir}" || exit
+	pytest "${debug_params}" ${subject} --cov=homeassistant/components/plugwise/ --cov-report term-missing -- "tests/components/plugwise/${basedir}" || exit
 fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
