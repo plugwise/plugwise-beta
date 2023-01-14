@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+# If you want full pytest output run as
+# DEBUG=1 scripts/core-testing.sh
+
 # If you want to test a single file
 # run as "scripts/core_testing.sh test_config_flow.py" or
 # "scripts/core_testing.sh test_sensor.py"
