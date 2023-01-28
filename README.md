@@ -28,7 +28,11 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW JAN 2023 [0.34.2] Adapt to importing more Core UnitOf... enumerators
+# NEW JAN 2023 [0.34.3] Bump plugwise to v0.27.4
+- https://github.com/plugwise/python-plugwise/releases/tag/v0.27.4
+- Fix Temperature difference sensor, not a SensorDeviceClass.TEMPERATURE sensor
+
+# JAN 2023 [0.34.2] Adapt to importing more Core UnitOf... enumerators
 - Follow https://developers.home-assistant.io/blog/2022/12/05/more-unit-enumerators
 - Implementation alternative for https://github.com/home-assistant/core/pull/84386
 

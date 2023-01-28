@@ -280,9 +280,9 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         key=TEMP_DIFF,
         plugwise_api=SMILE,
         name="Temperature difference",
-        device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.KELVIN,
+        icon="mdi:temperature-kelvin",
     ),
     PlugwiseSensorEntityDescription(
         key=OUTDOOR_TEMP,
