@@ -193,7 +193,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 	echo ""
         debug_params=""
 	if [ ! "${DEBUG}" == "" ] ; then 
-        	debug_params="-rpP"
+        	debug_params="-rpP --log-cli-level=DEBUG"
 	fi
 	# shellcheck disable=SC2086
 	pytest ${debug_params} ${subject} --cov=homeassistant/components/plugwise/ --cov-report term-missing -- "tests/components/plugwise/${basedir}" || exit
