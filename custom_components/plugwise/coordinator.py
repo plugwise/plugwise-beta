@@ -30,7 +30,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
 
 
-class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
+class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching Plugwise data from single endpoint."""
 
     _connected: bool = False
