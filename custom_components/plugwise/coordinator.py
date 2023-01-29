@@ -97,7 +97,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 await self._connect()
             data = await self.api.async_update()
             LOGGER.debug(
-                f"{self.api.smile_name} data: %s, %s", data.gateway, data.devices)
+                f"{self.api.smile_name} data: %s, %s", data.gateway, data.devices
             )
             if self._unavailable_logged:
                 self._unavailable_logged = False
@@ -120,4 +120,4 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
-        return PlugwiseData(data[0], data[1])
+        return (data.gateway, data.devices)
