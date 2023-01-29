@@ -64,7 +64,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     # pw-beta: HA service - delete_notification
-    async def delete_notification(self):  # pragma: no cover
+    async def delete_notification(self) -> None:  # pragma: no cover
         """Service: delete the Plugwise Notification."""
         LOGGER.debug(
             "Service delete PW Notification called for %s", coordinator.api.smile_name
@@ -91,12 +91,12 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 # pw-beta
-async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):  # pragma: no cover
+async def _update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:  # pragma: no cover
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
 
 
-async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
+async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(
         entry, PLATFORMS_GATEWAY
