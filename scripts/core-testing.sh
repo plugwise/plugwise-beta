@@ -157,9 +157,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	cp -r ../tests/components/plugwise ./tests/components/
 	echo ""
 	echo "Add plugwise to .strict-typing"
-	sed '/^homeassistant.components.pi_hole.*/a homeassistant.components.plugwise.*' .strict-typing
+	sed -i '/^homeassistant.components.pi_hole.*/a homeassistant.components.plugwise.*' .strict-typing
 	echo "Add plugwise mympy requirements to mypy.ini"
-	sed '$ a [mypy-homeassistant.components.plugwise.*]\ncheck_untyped_defs = true\ndisallow_incomplete_defs = true\ndisallow_subclassing_any = true\ndisallow_untyped_calls = true\ndisallow_untyped_decorators = true\ndisallow_untyped_defs = true\nwarn_return_any = true\nwarn_unreachable = true' mypy.ini
+	sed -i '$ a [mypy-homeassistant.components.plugwise.*]\ncheck_untyped_defs = true\ndisallow_incomplete_defs = true\ndisallow_subclassing_any = true\ndisallow_untyped_calls = true\ndisallow_untyped_decorators = true\ndisallow_untyped_defs = true\nwarn_return_any = true\nwarn_unreachable = true' mypy.ini
 	echo ""
 fi # core_prep
 
