@@ -95,7 +95,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         try:
             if not self._connected:
                 await self._connect()
-            data = await self.api.async_update()
+            data: PlugwiseData = await self.api.async_update()
             LOGGER.debug(
                 f"{self.api.smile_name} data: %s, %s", data.gateway, data.devices
             )
