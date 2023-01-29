@@ -156,6 +156,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	cp -r ../custom_components/plugwise ./homeassistant/components/
 	cp -r ../tests/components/plugwise ./tests/components/
 	echo ""
+	echo "Add plugwise to .strict-typing"
+	sed `/^homeassistant.components.pi_hole.*/a homeassistant.components.plugwise.*
+	echo "Add plugwise mympy requirements to mypy.ini"
+	echo ""
 fi # core_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then 
