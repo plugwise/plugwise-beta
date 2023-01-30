@@ -28,7 +28,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW JAN 2023 [0.34.3] Bump plugwise to v0.27.4
+# NEW JAN 2023 [0.34.4] Bugfix for https://github.com/plugwise/plugwise-beta/issues/340
+- Bugfix via plugwise v0.27.5 - https://github.com/plugwise/python-plugwise/releases/tag/v0.27.5
+
+# JAN 2023 [0.34.3] Bump plugwise to v0.27.4
 - https://github.com/plugwise/python-plugwise/releases/tag/v0.27.4
 - Fix Temperature difference sensor, not a SensorDeviceClass.TEMPERATURE sensor
 
