@@ -1,4 +1,5 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
+import asyncio
 import logging
 
 from homeassistant.config_entries import ConfigEntry
@@ -68,7 +69,10 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
                     ].append(mac)
                 hass.data[DOMAIN][config_entry.entry_id][Platform.SENSOR].append(mac)
 
-        hass.config_entries.async_setup_platforms(config_entry, PLATFORMS_USB)
+        asyncio.run_coroutine_threadsafe(
+            hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS_USB),
+            hass.loop,
+        )
 
         def add_new_node(mac):
             """Add Listener when a new Plugwise node joined the network."""
