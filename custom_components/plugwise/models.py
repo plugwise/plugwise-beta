@@ -352,6 +352,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed interval",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_PEAK_INTERVAL,
@@ -359,6 +360,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed peak interval",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_OFF_PEAK_INTERVAL,
@@ -366,6 +368,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed off peak interval",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_INTERVAL,
@@ -373,6 +376,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced interval",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        state_class=SensorStateClass.TOTAL,
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
@@ -381,6 +385,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced peak interval",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_OFF_PEAK_INTERVAL,
@@ -388,6 +393,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced off peak interval",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_OFF_PEAK_POINT,
@@ -528,8 +534,8 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         key=GAS_CONSUMED_INTERVAL,
         plugwise_api=SMILE,
         name="Gas consumed interval",
-        device_class=SensorDeviceClass.GAS,
-        native_unit_of_measurement=UnitOfVolume.CUBIC_METERS,
+        native_unit_of_measurement="m³/h",
+        state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
         key=GAS_CONSUMED_CUMULATIVE,
