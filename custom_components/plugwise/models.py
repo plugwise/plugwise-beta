@@ -415,6 +415,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed off peak cumulative",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        native_precision=3,
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
@@ -423,6 +424,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed peak cumulative",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+                native_precision=3,
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
@@ -445,14 +447,16 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced off peak cumulative",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        native_precision=3,
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_PEAK_CUMULATIVE,
         plugwise_api=SMILE,
         name="Electricity produced peak cumulative",
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        native_precision=3,
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
@@ -543,6 +547,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Gas consumed cumulative",
         device_class=SensorDeviceClass.GAS,
         native_unit_of_measurement=UnitOfVolume.CUBIC_METERS,
+        native_precision=3,
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
@@ -558,6 +563,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Net electricity cumulative",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        native_precision=3,
         state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
