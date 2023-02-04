@@ -337,6 +337,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        native_precision=0,
     ),
     # Does not exist in Core
     PlugwiseSensorEntityDescription(
@@ -345,6 +346,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        native_precision=0,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_INTERVAL,
@@ -401,6 +403,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed off peak point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        native_precision=0,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_PEAK_POINT,
@@ -408,6 +411,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity consumed peak point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        native_precision=0,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_CONSUMED_OFF_PEAK_CUMULATIVE,
@@ -433,6 +437,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced off peak point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        native_precision=0,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_PEAK_POINT,
@@ -440,6 +445,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity produced peak point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        native_precision=0,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PRODUCED_OFF_PEAK_CUMULATIVE,
@@ -556,6 +562,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Net electricity point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        native_precision=0,
     ),
     PlugwiseSensorEntityDescription(
         key=NET_EL_CUMULATIVE,
