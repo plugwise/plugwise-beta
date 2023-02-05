@@ -30,8 +30,8 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # NEW FEB 2023 [0.34.5] Fix various warnings
 - Via plugwise v0.27.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.27.6
-- Adapt to HA Core - PR #342
-- Correct various sensor attributes: PR's #343, #344
+- Adapt to HA Core - http://github.com/plugwise/plugwise-beta/pull/342
+- Correct various sensor attributes: PR's http://github.com/plugwise/plugwise-beta/pull/343, http://github.com/plugwise/plugwise-beta/pull/344
 
 # JAN 2023 [0.34.4] Bugfix for https://github.com/plugwise/plugwise-beta/issues/340
 - Bugfix via plugwise v0.27.5 - https://github.com/plugwise/python-plugwise/releases/tag/v0.27.5
