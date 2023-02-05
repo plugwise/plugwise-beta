@@ -534,6 +534,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         key=GAS_CONSUMED_INTERVAL,
         plugwise_api=SMILE,
         name="Gas consumed interval",
+        icon="mdi:meter-gas",
         native_unit_of_measurement="m³/h",
         state_class=SensorStateClass.TOTAL,
     ),
