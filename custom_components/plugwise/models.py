@@ -461,7 +461,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity phase one consumed",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
-        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PHASE_TWO_CONSUMED,
@@ -469,7 +468,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity phase two consumed",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
-        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PHASE_THREE_CONSUMED,
@@ -477,7 +475,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity phase three consumed",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
-        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PHASE_ONE_PRODUCED,
@@ -485,7 +482,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity phase one produced",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
-        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PHASE_TWO_PRODUCED,
@@ -493,7 +489,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity phase two produced",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
-        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=EL_PHASE_THREE_PRODUCED,
@@ -501,7 +496,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity phase three produced",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
-        state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
         key=V_PHASE_ONE,
@@ -509,7 +503,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Voltage phase one",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
-        state_class=SensorStateClass.MEASUREMENT,
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
@@ -518,7 +511,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Voltage phase two",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
-        state_class=SensorStateClass.MEASUREMENT,
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
@@ -527,7 +519,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Voltage phase three",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
-        state_class=SensorStateClass.MEASUREMENT,
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
@@ -536,7 +527,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Gas consumed interval",
         icon="mdi:meter-gas",
         native_unit_of_measurement=f"{UnitOfVolume.CUBIC_METERS}/{UnitOfTime.HOURS}",
-        state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
         key=GAS_CONSUMED_CUMULATIVE,
