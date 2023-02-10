@@ -7,7 +7,7 @@
   "documentation": "https://github.com/plugwise/plugwise-beta",
   "integration_type": "hub",
   "iot_class": "local_polling",
-  "loggers": ["plugwise"]
+  "loggers": ["plugwise"],
   "requirements": ["plugwise==0.27.6"],
-  "version": "0.34.5",
+  "version": "0.34.5"
 }
