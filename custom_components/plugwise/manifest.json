@@ -1,6 +1,7 @@
 {
   "domain": "plugwise",
   "name": "Plugwise Beta",
+  "version": "0.34.5",
   "after_dependencies": ["usb", "zeroconf"],
   "codeowners": ["@CoMPaTech","@bouwew","@brefra"],
   "config_flow": true,
@@ -8,6 +9,5 @@
   "integration_type": "hub",
   "iot_class": "local_polling",
   "loggers": ["plugwise"],
-  "requirements": ["plugwise==0.27.6"],
-  "version": "0.34.5"
+  "requirements": ["plugwise==0.27.6"]
 }
