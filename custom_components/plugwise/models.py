@@ -15,6 +15,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.components.switch import SwitchDeviceClass, SwitchEntityDescription
 from homeassistant.const import (
+    EntityCategory,
     ILLUMINANCE,
     LIGHT_LUX,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
@@ -27,7 +28,7 @@ from homeassistant.const import (
     UnitOfTime,
     UnitOfVolume,
 )
-from homeassistant.helpers.entity import EntityCategory, EntityDescription
+from homeassistant.helpers.entity import EntityDescription
 
 from .const import (
     BATTERY,
