@@ -137,7 +137,7 @@ def migrate_sensor_entity(
             new_unique_id = f"{device_id}-outdoor_air_temperature"
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
-    # Migrate gas_consumed_interval to gas_consumed_interval_previous_hour sensor
+    # Migrate gas_consumed_interval to gas_consumed_previous_hour sensor
     for device_id, device in coordinator.data.devices.items():
         if device["dev_class"] != "smartmeter":
             continue
