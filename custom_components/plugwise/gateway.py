@@ -125,7 +125,7 @@ def migrate_sensor_entity(
     """Migrate Sensors if needed."""
     ent_reg = er.async_get(hass)
 
-    # Migrating opentherm_outdoor_temperature to opentherm_outdoor_air_temperature sensor
+    # Migrate opentherm_outdoor_temperature to opentherm_outdoor_air_temperature sensor
     for device_id, device in coordinator.data.devices.items():
         if device["dev_class"] != "heater_central":
             continue
@@ -135,4 +135,16 @@ def migrate_sensor_entity(
             Platform.SENSOR, DOMAIN, old_unique_id
         ):
             new_unique_id = f"{device_id}-outdoor_air_temperature"
+            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+
+    # Migrate gas_consumed_interval to gas_consumed_interval_previous_hour sensor
+    for device_id, device in coordinator.data.devices.items():
+        if device["dev_class"] != "smartmeter":
+            continue
+
+        old_unique_id = f"{device_id}-gas_consumed_interval"
+        if entity_id := ent_reg.async_get_entity_id(
+            Platform.SENSOR, DOMAIN, old_unique_id
+        ):
+            new_unique_id = f"{device_id}-gas_consumed_interval_previous_hour"
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
