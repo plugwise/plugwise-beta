@@ -146,5 +146,5 @@ def migrate_sensor_entity(
         if entity_id := ent_reg.async_get_entity_id(
             Platform.SENSOR, DOMAIN, old_unique_id
         ):
-            new_unique_id = f"{device_id}-gas_consumed_interval_previous_hour"
+            new_unique_id = f"{device_id}-gas_consumed_previous_hour"
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)

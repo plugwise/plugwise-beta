@@ -521,7 +521,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
         key=GAS_CONSUMED_INTERVAL,
         plugwise_api=SMILE,
-        name="Gas consumed interval previous hour",
+        name="Gas consumed previous hour",
         icon="mdi:meter-gas",
         native_unit_of_measurement=f"{UnitOfVolume.CUBIC_METERS}/{UnitOfTime.HOURS}",
     ),
