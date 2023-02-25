@@ -28,7 +28,20 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW FEB 2023 [0.34.5] Fix various warnings
+# NEW FEB 2023 [0.34.6] Stick-bugfix, rename P1 gas-interval sensor, line up with Core Plugwise
+- Sort manifest-json - Core PR #87082
+- Link to plugwise v0.27.7 - https://github.com/plugwise/python-plugwise/releases/tag/v0.27.7
+- Implement moved EntityCategory
+- Correct state_class to MEASUREMENT for all interval-sensors
+- Remove unneeded state_class=MEASUREMENT, already set in PlugwiseSensorEntityDescription-class
+- Implement CORE PR #87449
+- Implement `suggested_display_precision` for outdoor sensors
+- Rename P1 sensor `gas_consumed_interval` to `gas_consumed_previous_hour gas_consumed_interval` and migrate
+- Add pydantic to pip-packages, bump CACHE_VERSION to fix a test-enviroment error
+- Implement CORE PR #87347
+- Implement CORE PR #87381
+
+# FEB 2023 [0.34.5] Fix various warnings
 - Via plugwise v0.27.6 - https://github.com/plugwise/python-plugwise/releases/tag/v0.27.6
 - Adapt to HA Core - http://github.com/plugwise/plugwise-beta/pull/342
 - Correct various sensor attributes: PR's http://github.com/plugwise/plugwise-beta/pull/343, http://github.com/plugwise/plugwise-beta/pull/344
