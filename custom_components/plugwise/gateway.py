@@ -125,7 +125,7 @@ def migrate_sensor_entity(
     """Migrate Sensors if needed."""
     ent_reg = er.async_get(hass)
 
-    # Migrate opentherm_outdoor_temperature 
+    # Migrate opentherm_outdoor_temperature
     # to opentherm_outdoor_air_temperature sensor
     for device_id, device in coordinator.data.devices.items():
         if device["dev_class"] != "heater_central":
