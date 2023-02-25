@@ -224,7 +224,8 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo "Removing 'version' from manifest for hassfest-ing, version not allowed in core components"
 	echo ""
 	# shellcheck disable=SC2090
-	sed -i".sedbck" '/version.:/d' ./homeassistant/components/plugwise/manifest.json
+	#sed -i".sedbck" '/version.:/d' ./homeassistant/components/plugwise/manifest.json
+        ./scripts/version_remove.py ./homeassistant/components/plugwise/manifest.json
 	grep -q -E 'require.*http.*test-files.pythonhosted.*#' ./homeassistant/components/plugwise/manifest.json && (
 	  echo "Changing requirement for hassfest pass ...."
 	  # shellcheck disable=SC2090
