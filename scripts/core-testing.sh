@@ -24,6 +24,8 @@ echo "Checking for neccesary tools and preparing setup:"
 
 which git || ( echo "You should have git installed, exiting"; exit 1)
 
+which jq || ( echo "You should have jq installed, exiting"; exit 1)
+
 # Cloned/adjusted code from python-plugwise, note that we don't actually
 # use the 'venv', but instantiate it to ensure it works in the
 # ha-core testing later on
@@ -224,8 +226,9 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo "Removing 'version' from manifest for hassfest-ing, version not allowed in core components"
 	echo ""
 	# shellcheck disable=SC2090
-	#sed -i".sedbck" '/version.:/d' ./homeassistant/components/plugwise/manifest.json
-        ./scripts/version_remove.py ./homeassistant/components/plugwise/manifest.json
+	src_manifest="../custom_components/plugwise/manifest.json"
+	dst_manifest="./homeassistant/components/plugwise/manifest.json"
+        jq 'del(.version)' ${src_manifest} | tee ${dst_manifest}
 	grep -q -E 'require.*http.*test-files.pythonhosted.*#' ./homeassistant/components/plugwise/manifest.json && (
 	  echo "Changing requirement for hassfest pass ...."
 	  # shellcheck disable=SC2090
