@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """JSON Version remover."""
 
-import json
+from collections import OrderedDict
 from sys import argv
+
+import json
 
 
 def version_removal(remove_from):
@@ -10,7 +12,7 @@ def version_removal(remove_from):
 
     try:
         json_file = open(remove_from, "r")
-        data = json.load(json_file)
+        data = json.load(json_file, object_pairs_hook=OrderedDict)
 
         if "version" not in data:
             print(f"No version in {remove_from}")
