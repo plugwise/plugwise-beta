@@ -38,7 +38,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 - Remove unneeded state_class=MEASUREMENT, already set in PlugwiseSensorEntityDescription-class
 - Implement CORE PR #87449
 - Implement `suggested_display_precision` for outdoor sensors
-- Rename P1 sensor `gas_consumed_interval` to `gas_consumed_previous_hour gas_consumed_interval` and migrate
+- Rename P1 sensor `gas_consumed_interval` to `gas_consumed_previous_hour` and migrate
 - Add pydantic to pip-packages, bump CACHE_VERSION to fix a test-enviroment error
 - Implement CORE PR #87347
 - Implement CORE PR #87381
