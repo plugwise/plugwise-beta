@@ -1,6 +1,9 @@
 # Plugwise custom_component (BETA)
 
-**:warning::warning::warning: Read the [release notes](<https://github.com/plugwise/plugwise-beta/releases>) before upgrading, in case there are BREAKING changes! :warning::warning::warning:**
+:no_entry::no_entry::no_entry: If you are **not** using USB based Plugwise equipment or have no intention to beta-test our integration, please defer to the **supported** release of this integration **natively** available in [Home Assistant](https://www.home-assistant.io/integrations/plugwise/)! :no_entry::no_entry::no_entry:
+
+:warning::warning::warning: Always **read** the [release notes](<https://github.com/plugwise/plugwise-beta/releases>) before upgrading, in case there are BREAKING changes! **Do note** the release title on alpha releases and only install them if specifically instructed by our team! :warning::warning::warning:
+
 
 A fully asynchronous approach to supporting Plugwise devices in Home-Assistant. This repository is **meant** for use of beta-testing. As of March 2021 we include testing against latest `dev` in Home-Assistant Core, the above batches should indicate compatibility and compliance.
 
@@ -24,6 +27,10 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
  [![CodeFactor](https://www.codefactor.io/repository/github/plugwise/python-plugwise/badge)](https://www.codefactor.io/repository/github/plugwise/python-plugwise)
  [![codecov](https://codecov.io/gh/plugwise/python-plugwise/branch/main/graph/badge.svg)](https://codecov.io/gh/plugwise/python-plugwise)
  [![PyPI version fury.io](https://badge.fury.io/py/plugwise.svg)](https://pypi.python.org/pypi/plugwise/)
+
+## Changelog
+
+Our [Changelog](CHANGELOG.MD) is available as a [separate file](CHANGELOG.md) in addition to our commit-history.
 
 ## Usage
 
