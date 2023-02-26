@@ -1,0 +1,13 @@
+# Plugwise CodeOwners
+# Order is important. The last matching pattern has the most precedence.
+
+# Specific files
+hacs.json @plugwise/devs
+
+# Main code
+/custom_components/ @plugwise/devs
+/tests/ @plugwise/devs
+
+# Tests and development support
+/scripts/ @bouwew @compatech
+
