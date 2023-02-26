@@ -28,7 +28,9 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 # Changelog
 
-# NEW FEB 2023 [0.34.6] Stick-bugfix, rename P1 gas-interval sensor, line up with Core Plugwise
+# NEW FEB 2023 [0.34.7] Revert rename P1 gas-interval sensor
+
+# FEB 2023 [0.34.6] Stick-bugfix, rename P1 gas-interval sensor, line up with Core Plugwise
 - Sort manifest-json - Core PR #87082
 - Link to plugwise v0.27.7 - https://github.com/plugwise/python-plugwise/releases/tag/v0.27.7
 - Implement moved EntityCategory
