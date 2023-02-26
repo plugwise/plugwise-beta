@@ -4,17 +4,17 @@
 
 ### NEW FEB 2023 [0.34.6] Stick-bugfix, rename P1 gas-interval sensor, line up with Core Plugwise
 
-- Sort manifest-json - Core PR #87082
+- Sort manifest-json - [Core PR 87082](https://github.com/home-assistant/core/pull/87082)
 - Link to plugwise module [v0.27.7](https://github.com/plugwise/python-plugwise/releases/tag/v0.27.7)
 - Implement moved EntityCategory
 - Correct state_class to MEASUREMENT for all interval-sensors
 - Remove unneeded state_class=MEASUREMENT, already set in PlugwiseSensorEntityDescription-class
-- Implement CORE PR #87449
+- Implement Core PR 87449
 - Implement `suggested_display_precision` for outdoor sensors
 - Rename P1 sensor `gas_consumed_interval` to `gas_consumed_previous_hour gas_consumed_interval` and migrate
 - Add pydantic to pip-packages, bump CACHE_VERSION to fix a test-enviroment error
-- Implement CORE PR #87347
-- Implement CORE PR #87381
+- Implement [Core PR 87347](https://github.com/home-assistant/core/pull/87347)
+- Implement [Core PR 87381](https://github.com/home-assistant/core/pull/87381)
 
 ### FEB 2023 [0.34.5] Fix various warnings
 
@@ -40,7 +40,7 @@
 
 ### JAN 2023 [0.34.0] Implement Core Climate and Select translations
 
-- Implement Core PRs #83286 and #84617
+- Implement Core PRs [83286](https://github.com/home-assistant/core/pull/83286) and [84617](https://github.com/home-assistant/core/pull/84617)
 
 ### JAN 2023 [0.33.1] Bump plugwise to v0.27.1
 
@@ -52,7 +52,7 @@
 
 ### DEC 2022 [0.32.0] Update to Core 2022.12
 
-- Implement Core PR #82694
+- Implement [Core PR 82694](https://github.com/home-assistant/core/pull/82694)
 - Implement `UnitOfTemperature` in `sensor.py`
 
 ### DEC 2022 [0.31.5] Bugfix
@@ -82,7 +82,7 @@
 
 - Fix wrong logic in plugwise module [v0.25.7](https://github.com/plugwise/python-plugwise/releases/tag/v0.25.7)
 - Fix bug via plugwise module [v0.25.6](https://github.com/plugwise/python-plugwise/releases/tag/v0.25.6)
-- Implement Core PR #80722
+- Implement [Core PR 80722](https://github.com/home-assistant/core/pull/80722)
 
 ### OCT 2022 [0.31.0] Change to hvac_mode heat_cool, improvements and bugfixes
 
@@ -141,7 +141,7 @@
 
 - Smile: NumberEntity, config_flow test updates
   - Implement NumberEntity updates from Core
-  - Implement FlowResultType in config_flow test (Core PR #74638)
+  - Implement FlowResultType in config_flow test [Core PR 74638](https://github.com/home-assistant/core/pull/74638)
   - HACS: bump minimum Core version to 2022.7.0
 
 ### July 2022 [0.25.1b0]
@@ -201,7 +201,7 @@
 - Smile:
   - Link to plugwise module [v0.17.7](https://github.com/plugwise/python-plugwise/releases/tag/v0.17.7) and adapt to changes (fixtures, tests)
   - Add (back) compressor_state as binary_sensor (Anna - heat-pump)
-  - Implement HA Core PR #70366 fixing connectivity issues (should also fix issues #268, #274)
+  - Implement HA [Core PR 70366](https://github.com/home-assistant/core/pull/70366) fixing connectivity issues (should also fix issues #268, #274)
   - Improvements in climate-code
 
 ### APR 2022 [0.22.2]
@@ -328,7 +328,7 @@
 ### Nov 2021 [v0.19.0]
 
 - Support new Core 2021.11 functionality: implement Visit Device button
-- Bug fix: handle changing Smile IP (Core PR #58819)
+- Bug fix: handle changing Smile IP [Core PR 58819](https://github.com/home-assistant/core/pull/58819)
 
 ### Oct 2021 [v0.18.2]
 
