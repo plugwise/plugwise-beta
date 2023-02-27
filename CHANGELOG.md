@@ -2,6 +2,10 @@
 
 ## Versions from 0.30 and up
 
+### Ongoing
+
+- Added pre-commit and additional linting
+
 ### NEW FEB 2023 [0.34.6] Stick-bugfix, rename P1 gas-interval sensor, line up with Core Plugwise
 
 - Sort manifest-json - [Core PR 87082](https://github.com/home-assistant/core/pull/87082)
@@ -92,7 +96,7 @@
 - Link to plugwise module [v0.25.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.25.1)
 - Link to plugwise module [v0.25.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.25.0)
 - Fix for home-assistant/core#79708 via plugwise module [v0.24.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.24.1)
-- Follow lastest HA Core Plugwise changes
+- Follow latest HA Core Plugwise changes
 
 ### OCT 2022 [0.30.1] Bugfix in plugwise module [v0.24.1]
 
@@ -118,7 +122,7 @@
 
 - Implement [Core PR 75109](https://github.com/home-assistant/core/pull/75109) via plugwise module [v0.21.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.21.1)
 - Implement [Core PR 75161](https://github.com/home-assistant/core/pull/75161)
-- Climate:  implementing the new Climate classes `ClimateEntityFeature`,  `HVACAction`, and `HVACMode`.
+- Climate: implementing the new Climate classes `ClimateEntityFeature`, `HVACAction`, and `HVACMode`.
 - Climate: fix bug in `hvac_modes` determination, implement changes from plugwise module [v0.21.1
 - Climate: `async_set_temperature()`: support `hvac_mode`-change
 - Refresh test fixtures
@@ -261,7 +265,7 @@
 - Smile:
   - Make homekit emulation an option (like scan-interval)
   - Make explicit that this is (most probably) non-core functionality
-  - Reference for [Core PR 65808 / `scan_interval`](https://github.com/home-assistant/core/pull/65808) ```If you need to customize the interval, you can do so by disabling automatic updates for the integration and using an automation to trigger homeassistant.update_entity service on your preferred interval.```
+  - Reference for [Core PR 65808 / `scan_interval`](https://github.com/home-assistant/core/pull/65808) `If you need to customize the interval, you can do so by disabling automatic updates for the integration and using an automation to trigger homeassistant.update_entity service on your preferred interval.`
 
 ### FEB 2022 [0.21.1]
 
