@@ -33,7 +33,7 @@ Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python modu
 
 Our [Changelog](CHANGELOG.MD) is available as a [separate file](CHANGELOG.md) in addition to our commit-history.
 
-# Usage
+## Usage
 
 ### What do we support (in short)?
 
@@ -53,7 +53,6 @@ Our [Changelog](CHANGELOG.MD) is available as a [separate file](CHANGELOG.md) in
 - `number`: Numerical indication on boiler setpoints.
 - `select`: Input selector to choose the active schedule.
 - `switch`: The switch-parts of Plugs/Circles are available as switches, also switching them on/off is supported.
-
 
 The `water_heater`-device present in previous releases has been replaced by an Auxiliary Device state-sensor. This sensor will only show up when there are more (than one) thermostats present in your climate-system.
 
