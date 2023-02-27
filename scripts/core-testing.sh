@@ -212,6 +212,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
 	echo "... mypy ..."
 	script/run-in-env.sh mypy homeassistant/components/plugwise/*.py || exit
+	cd ..
+	echo "... markdownlint ..."
+	pre-commit run --all-files --hook-stage manual markdownlint
 fi # quality
 
 # Copying back not neccesary in actions
