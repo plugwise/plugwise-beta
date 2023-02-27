@@ -54,8 +54,6 @@ Our [Changelog](CHANGELOG.MD) is available as a [separate file](CHANGELOG.md) in
 - `select`: Input selector to choose the active schedule.
 - `switch`: The switch-parts of Plugs/Circles are available as switches, also switching them on/off is supported.
 
-The `water_heater`-device present in previous releases has been replaced by an Auxiliary Device state-sensor. This sensor will only show up when there are more (than one) thermostats present in your climate-system.
-
 ### How to install?
 
 - Use [HACS](https://hacs.xyz)
@@ -106,10 +104,10 @@ Please note that you can also click the cogwheel right top corner to rename all 
 
 ### It doesn't work
 
-If you notice issues, we are on Discord and on the [Community forums](https://community.home-assistant.io/t/plugwise-core-and-custom-component/236250). You can also create an Issue in these repositories:
+If you notice issues please create an issue in the appropriate repository, while we are on Discord and on the [Community forums](https://community.home-assistant.io/t/plugwise-core-and-custom-component/236250) this is not where we are actively checking for support requests. 
 
-- [plugwise-beta](https://github.com/plugwise/plugwise-beta) - the beta `custom_component` for HA Core we use for testing (also required for USB as Plugwise USB support is not available in Home Assistant Core yet).
-- [python-plugwise](https://github.com/plugwise/python-plugwise) - the python module interfacing with the plugwise Smile or USB-stick
+- [plugwise-beta](https://github.com/plugwise/plugwise-beta/issues/new/choose) - the beta `custom_component` for HA Core we use for testing (also required for USB as Plugwise USB support is not available in Home Assistant Core yet).
+- [python-plugwise](https://github.com/plugwise/python-plugwise/issues/new/choose) - the python module interfacing with the plugwise Smile or USB-stick
 
 ### Why 'Smile'?
 
