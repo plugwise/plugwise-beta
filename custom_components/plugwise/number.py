@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from plugwise import Smile
+
 from homeassistant.components.number import (
     NumberDeviceClass,
     NumberEntity,
@@ -11,9 +11,10 @@ from homeassistant.components.number import (
     NumberMode,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory, TEMP_CELSIUS
+from homeassistant.const import TEMP_CELSIUS, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from plugwise import Smile
 
 from .const import COORDINATOR, DOMAIN, LOGGER
 from .coordinator import PlugwiseDataUpdateCoordinator

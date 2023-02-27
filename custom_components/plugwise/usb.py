@@ -8,7 +8,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity import Entity
-
 from plugwise.exceptions import (
     CirclePlusError,
     NetworkDown,

@@ -5,7 +5,6 @@ from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 
 from .const import CONF_USB_PATH
-
 from .gateway import async_setup_entry_gw, async_unload_entry_gw
 from .usb import async_setup_entry_usb, async_unload_entry_usb
 

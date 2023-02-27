@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from typing import Any
+
 import voluptuous as vol
 
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
@@ -9,11 +10,9 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-
 from plugwise.exceptions import PlugwiseError
 
 from .const import (
-    CONF_REFRESH_INTERVAL,  # pw-beta
     COORDINATOR,
     DOMAIN,
     GATEWAY,
@@ -23,6 +22,7 @@ from .const import (
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
+from .const import CONF_REFRESH_INTERVAL  # pw-beta
 from .coordinator import PlugwiseDataUpdateCoordinator
 
 
