@@ -12,23 +12,27 @@ repos:
     rev: 5.12.0
     hooks:
       - id: isort
+        name: "Verifying/updating code using isort"
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
       - id: check-executables-have-shebangs
         stages: [manual]
       - id: no-commit-to-branch
+        name: "Verifying git branch exists"
         args:
           - --branch=main
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.3.1
     hooks:
       - id: pyupgrade
+        name: "Checking pyupgrade"
         args: [--py39-plus]
   - repo: https://github.com/psf/black
     rev: 23.1.0
     hooks:
       - id: black
+        name: "Verifying/updating code using black"
         args:
           - --safe
           - --quiet
@@ -37,6 +41,7 @@ repos:
     rev: v2.2.2
     hooks:
       - id: codespell
+        name: "Verifying/updating code for spelling issues"
         args:
           - --ignore-words-list=hass,alot,datas,dof,dur,ether,farenheit,hist,iff,iif,ines,ist,lightsensor,mut,nd,pres,referer,rime,ser,serie,te,technik,ue,uint,visability,wan,wanna,withing,iam,incomfort,ba,haa,pullrequests
           - --skip="./.*,*.csv,*.json"
@@ -46,6 +51,7 @@ repos:
     rev: 1.7.4
     hooks:
       - id: bandit
+        name: "Linting with bandit"
         args:
           - --quiet
           - --format=custom
@@ -55,10 +61,12 @@ repos:
     rev: v1.29.0
     hooks:
       - id: yamllint
+        name: "Linting yaml"
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.0.0-alpha.4
     hooks:
       - id: prettier
+        name: "Verifying/updating code with prettier"
   - repo: https://github.com/cdce8p/python-typing-update
     rev: v0.5.1
     hooks:
@@ -66,13 +74,37 @@ repos:
       # to update python typing syntax.
       # Will require manual work, before submitting changes!
       - id: python-typing-update
+        name: "Verifying code for typing-update"
         stages: [manual]
         args:
           - --py39-plus
           - --force
           - --keep-updates
         files: ^(custom_components|tests)/.+\.py$
+  - repo: local
+    hooks:
+      - id: test-core-prep
+        name: "Home Assistant Core Testing - Cloning/updating HA core#dev - patience!"
+        entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh core_prep'
+        language: script
+        pass_filenames: false
+      - id: test-pip-prep
+        name: "Home Assistant Core Testing - Installing dependencies - patience!"
+        entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh pip_prep'
+        language: script
+        pass_filenames: false
+      - id: testing
+        name: "Home Assistant Core Testing - Performing Tests"
+        entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh testing'
+        language: script
+        pass_filenames: false
+      - id: quality
+        name: "Home Assistant Core Testing - Quality checks - might need patience"
+        entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh quality'
+        language: script
+        pass_filenames: false
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.33.0
     hooks:
       - id: markdownlint
+        name: "Linting Markdown"

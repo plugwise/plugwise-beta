@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -x
 set -e
 
 # If you want full pytest output run as
@@ -16,11 +16,11 @@ set -e
 
 # Which packages to install (to prevent installing all test requirements)
 # actual package version ARE verified (i.e. grepped) from requirements_test_all
-# seperate packges with |
+# separate packages with |
 pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic"
 
 echo ""
-echo "Checking for neccesary tools and preparing setup:"
+echo "Checking for necessary tools and preparing setup:"
 
 which git || ( echo "You should have git installed, exiting"; exit 1)
 
@@ -70,7 +70,7 @@ if [ -z "${GITHUB_ACTIONS}" ] ; then
 	# /Cloned code
 fi
 
-# Skip targetting for github
+# Skip targeting for github
 # i.e. args used for functions, not directions 
 if [ -z "${GITHUB_ACTIONS}" ] ; then
 	# Handle variables
@@ -217,7 +217,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	pre-commit run --all-files --hook-stage manual markdownlint
 fi # quality
 
-# Copying back not neccesary in actions
+# Copying back not necessary in actions
 # hassfest is another action
 if [ -z "${GITHUB_ACTIONS}" ]; then
 	cd "${coredir}" || exit
