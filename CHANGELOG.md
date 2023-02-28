@@ -2,6 +2,11 @@
 
 ## Versions from 0.30 and up
 
+### NEW FEB 2023 [0.34.8b0] Stick-bugfix
+
+- Fix USB-Stick communication which could randomly stop the communication for up to a minute
+- Link to plugwise module [v0.28.0.a8](https://github.com/plugwise/python-plugwise/tree/fix-usb-request-queue)
+
 ### NEW FEB 2023 [0.34.6] Stick-bugfix, rename P1 gas-interval sensor, line up with Core Plugwise
 
 - Sort manifest-json - [Core PR 87082](https://github.com/home-assistant/core/pull/87082)
