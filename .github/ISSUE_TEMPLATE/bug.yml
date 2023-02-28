@@ -21,7 +21,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ## Environment
+        ## Plugwise Integration
   - type: input
     id: pwversion
     validations:
@@ -30,13 +30,17 @@ body:
       label: What version of Plugwise Beta are you using?
       placeholder: vx.yy.z
       description: >
-        Can be found in: HACS panel -> Integrations -> Plugwise Beta (left top
+        Can be found in: HACS panel -> Integrations -> Plugwise Beta (left top of the page)
   - type: input
     attributes:
-      label: What was the last working version of Plugwise Beta (or Core if not using beta before)??
+      label: What was the last working version of Plugwise Beta (or Core if not using beta before)?
       placeholder: vxx.yy.z or core-
       description: >
         If known, otherwise leave blank.
+  - type: markdown
+    attributes:
+      value: |
+        ## Home Assistant Environment
   - type: input
     id: haversion
     validations:
@@ -84,7 +88,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        # Plugwise Information
+        # Plugwise Specific Information
   - type: dropdown
     validations:
       required: true
