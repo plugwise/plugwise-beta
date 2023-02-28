@@ -21,35 +21,51 @@ body:
   - type: markdown
     attributes:
       value: |
-        ## Environment
+        ## Plugwise Integration
   - type: input
-    id: version
+    id: pwversion
     validations:
       required: true
     attributes:
-      label: What version of Home Assistant Core has the issue?
+      label: What version of Plugwise Beta are you using?
+      placeholder: vx.yy.z
+      description: >
+        Can be found in: HACS panel -> Integrations -> Plugwise Beta (left top of the page)
+  - type: input
+    attributes:
+      label: What was the last working version of Plugwise Beta (or Core if not using beta before)?
+      placeholder: vxx.yy.z or core-
+      description: >
+        If known, otherwise leave blank.
+  - type: markdown
+    attributes:
+      value: |
+        ## Home Assistant Environment
+  - type: input
+    id: haversion
+    validations:
+      required: true
+    attributes:
+      label: What version of Home Assistant Core are you using?
       placeholder: core-
       description: >
         Can be found in: [Configuration panel -> Info](https://my.home-assistant.io/redirect/info/).
 
         [![Open your Home Assistant instance and show your Home Assistant version information.](https://my.home-assistant.io/badges/info.svg)](https://my.home-assistant.io/redirect/info/)
-  - type: input
-    attributes:
-      label: What was the last working version of Home Assistant Core?
-      placeholder: core-
-      description: >
-        If known, otherwise leave blank.
   - type: dropdown
     validations:
       required: true
     attributes:
       label: What type of installation are you running?
+      placeholder: Home Assistant OS
       description: >
         Can be found in: [Configuration panel -> Info](https://my.home-assistant.io/redirect/info/).
 
         When selecting `Core`: remember to specify your way of running in the `additional information` textarea at the bottom, including your python version!
 
         [![Open your Home Assistant instance and show your Home Assistant version information.](https://my.home-assistant.io/badges/info.svg)](https://my.home-assistant.io/redirect/info/)
+
+        If unsure, select **Home Assistant OS**
       options:
         - Home Assistant OS
         - Home Assistant Container
@@ -72,7 +88,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        # Plugwise Information
+        # Plugwise Specific Information
   - type: dropdown
     validations:
       required: true
