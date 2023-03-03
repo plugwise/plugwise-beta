@@ -37,7 +37,7 @@ which jq || ( echo "You should have jq installed, exiting"; exit 1)
 # - quality
 
 
-pyversions=("3.10" 3.9 dummy) # HA-Core is pinned to 3.9
+pyversions=("3.11" "3.10" 3.9 dummy) 
 my_path=$(git rev-parse --show-toplevel)
 my_venv=${my_path}/venv
 
