@@ -1,4 +1,5 @@
 ci:
+  skip: [local]
   submodules: true
 
 default_language_version:

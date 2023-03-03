@@ -1,4 +1,7 @@
 # Copy of github.com/home-assistant/core .yamllint
+# Our addition to truthy
+#   truthy:
+#     allowed-values: ['true', 'false', 'on']
 ignore: |
   azure-*.yml
 rules:
@@ -59,4 +62,5 @@ rules:
   trailing-spaces:
     level: error
   truthy:
+    allowed-values: ['true', 'false', 'on', 'False']  # 'on' for github actions, 'False' for our services.yaml
     level: error
