@@ -8,11 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from homeassistant.components.plugwise.const import (
-    API,
-    DOMAIN,
-    PW_TYPE,
-)
+from homeassistant.components.plugwise.const import API, DOMAIN, PW_TYPE
 from homeassistant.const import (
     CONF_HOST,
     CONF_MAC,
@@ -127,7 +123,7 @@ def mock_smile_adam_2() -> Generator[None, MagicMock, None]:
 
 @pytest.fixture
 def mock_smile_adam_3() -> Generator[None, MagicMock, None]:
-    """Create a 3nd Mock Adam environment for testing exceptions."""
+    """Create a 3rd Mock Adam environment for testing exceptions."""
     chosen_env = "m_adam_cooling"
 
     with patch(
@@ -203,7 +199,7 @@ def mock_smile_anna_2() -> Generator[None, MagicMock, None]:
 
 @pytest.fixture
 def mock_smile_anna_3() -> Generator[None, MagicMock, None]:
-    """Create a 3nd Mock Anna environment for testing exceptions."""
+    """Create a 3rd Mock Anna environment for testing exceptions."""
     chosen_env = "m_anna_heatpump_idle"
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
