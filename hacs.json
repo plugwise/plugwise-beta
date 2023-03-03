@@ -1,6 +1,13 @@
 {
   "name": "Plugwise beta custom component",
-  "domains": ["binary_sensor","climate","number","select","sensor","switch"],
+  "domains": [
+    "binary_sensor",
+    "climate",
+    "number",
+    "select",
+    "sensor",
+    "switch"
+  ],
   "homeassistant": "2023.3.0",
   "render_readme": true
 }

@@ -20,24 +20,14 @@
         "resolution": 0.01
       },
       "available": true,
-      "preset_modes": [
-        "home",
-        "asleep",
-        "away",
-        "vacation",
-        "no_frost"
-      ],
+      "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
       "active_preset": "asleep",
-      "available_schedules": [
-        "Weekschema",
-        "Badkamer",
-        "Test"
-      ],
+      "available_schedules": ["Weekschema", "Badkamer", "Test"],
       "selected_schedule": "None",
       "last_used": "Weekschema",
       "control_state": "heating",
       "mode": "heat",
-      "sensors": {"temperature": 19.1, "setpoint": 20.0}
+      "sensors": { "temperature": 19.1, "setpoint": 20.0 }
     },
     "1772a4ea304041adb83f357b751341ff": {
       "dev_class": "thermo_sensor",
@@ -72,19 +62,9 @@
         "resolution": 0.01
       },
       "available": true,
-      "preset_modes": [
-        "home",
-        "asleep",
-        "away",
-        "vacation",
-        "no_frost"
-      ],
+      "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
       "active_preset": "home",
-      "available_schedules": [
-        "Weekschema",
-        "Badkamer",
-        "Test"
-      ],
+      "available_schedules": ["Weekschema", "Badkamer", "Test"],
       "selected_schedule": "Badkamer",
       "last_used": "Badkamer",
       "control_state": "off",
@@ -106,12 +86,7 @@
       "zigbee_mac_address": "ABCD012345670101",
       "vendor": "Plugwise",
       "regulation_mode": "heating",
-      "regulation_modes": [
-        "heating",
-        "off",
-        "bleeding_cold",
-        "bleeding_hot"
-      ],
+      "regulation_modes": ["heating", "off", "bleeding_cold", "bleeding_hot"],
       "binary_sensors": {
         "plugwise_notification": false
       },

@@ -30,7 +30,7 @@
         "description": "Aub invoeren:",
         "data": {
           "password": "ID",
-          "username" : "Gebruikersnaam",
+          "username": "Gebruikersnaam",
           "host": "IP-adres",
           "port": "Poortnummer"
         }
@@ -80,7 +80,7 @@
         }
       }
     },
-    "select":{
+    "select": {
       "dhw_mode": {
         "state": {
           "auto": "Auto",

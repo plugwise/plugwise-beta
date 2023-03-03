@@ -2,7 +2,7 @@
   "domain": "plugwise",
   "name": "Plugwise Beta",
   "after_dependencies": ["usb", "zeroconf"],
-  "codeowners": ["@CoMPaTech","@bouwew","@brefra"],
+  "codeowners": ["@CoMPaTech", "@bouwew", "@brefra"],
   "config_flow": true,
   "documentation": "https://github.com/plugwise/plugwise-beta",
   "integration_type": "hub",
