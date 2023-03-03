@@ -137,4 +137,3 @@ def migrate_sensor_entity(
         ):
             new_unique_id = f"{device_id}-outdoor_air_temperature"
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
-
