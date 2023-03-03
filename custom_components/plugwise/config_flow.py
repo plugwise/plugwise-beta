@@ -4,20 +4,6 @@ from __future__ import annotations
 import datetime as dt  # pw-beta
 from typing import Any
 
-from plugwise.exceptions import (
-    ConnectionFailedError,
-    InvalidAuthentication,
-    InvalidSetupError,
-    InvalidXMLError,
-    NetworkDown,
-    ResponseError,
-    PortError,
-    StickInitError,
-    TimeoutException,
-    UnsupportedDeviceError,
-)
-from plugwise.smile import Smile
-from plugwise.stick import Stick
 import serial.tools.list_ports
 import voluptuous as vol
 
@@ -34,20 +20,31 @@ from homeassistant.const import (
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
 )
-from homeassistant.core import callback, HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from plugwise.exceptions import (
+    ConnectionFailedError,
+    InvalidAuthentication,
+    InvalidSetupError,
+    InvalidXMLError,
+    NetworkDown,
+    PortError,
+    ResponseError,
+    StickInitError,
+    TimeoutException,
+    UnsupportedDeviceError,
+)
+from plugwise.smile import Smile
+from plugwise.stick import Stick
 
 from .const import (
     API,
-    COORDINATOR,
-    CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_MANUAL_PATH,
-    CONF_REFRESH_INTERVAL,  # pw-beta option
     CONF_USB_PATH,
+    COORDINATOR,
     DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,  # pw-beta option
     DEFAULT_USERNAME,
     DOMAIN,
     FLOW_NET,
@@ -62,7 +59,9 @@ from .const import (
     STRETCH_USERNAME,
     ZEROCONF_MAP,
 )
-
+from .const import CONF_HOMEKIT_EMULATION  # pw-beta option
+from .const import CONF_REFRESH_INTERVAL  # pw-beta option
+from .const import DEFAULT_SCAN_INTERVAL  # pw-beta option
 
 CONNECTION_SCHEMA = vol.Schema(
     {vol.Required(FLOW_TYPE, default=FLOW_NET): vol.In([FLOW_NET, FLOW_USB])}

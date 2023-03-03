@@ -2,16 +2,6 @@
 from datetime import timedelta
 from typing import NamedTuple, cast
 
-from plugwise import Smile
-from plugwise.constants import DeviceData, GatewayData
-from plugwise.exceptions import (
-    ConnectionFailedError,
-    InvalidAuthentication,
-    InvalidXMLError,
-    ResponseError,
-    UnsupportedDeviceError,
-)
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_HOST,
@@ -25,6 +15,15 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from plugwise import Smile
+from plugwise.constants import DeviceData, GatewayData
+from plugwise.exceptions import (
+    ConnectionFailedError,
+    InvalidAuthentication,
+    InvalidXMLError,
+    ResponseError,
+    UnsupportedDeviceError,
+)
 
 # pw-beta - for core compat should import DEFAULT_SCAN_INTERVAL
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER

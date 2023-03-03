@@ -2,10 +2,10 @@
 from collections.abc import Awaitable, Callable, Coroutine
 from typing import Any, TypeVar
 
-from plugwise.exceptions import PlugwiseException
 from typing_extensions import Concatenate, ParamSpec
 
 from homeassistant.exceptions import HomeAssistantError
+from plugwise.exceptions import PlugwiseException
 
 from .entity import PlugwiseEntity
 

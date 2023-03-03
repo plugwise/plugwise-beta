@@ -5,30 +5,17 @@ from typing import Any
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-
-from homeassistant.const import (
-    Platform,
-)
-
 from plugwise.nodes import PlugwiseNode
 
-from .const import (
-    CB_NEW_NODE,
-    COORDINATOR,
-    DOMAIN,
-    LOGGER,
-    PW_TYPE,
-    SMILE,
-    STICK,
-    USB,
-)
+from .const import CB_NEW_NODE, COORDINATOR, DOMAIN, LOGGER, PW_TYPE, SMILE, STICK, USB
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .util import plugwise_command
 from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
 from .usb import PlugwiseUSBEntity
+from .util import plugwise_command
 
 
 async def async_setup_entry(

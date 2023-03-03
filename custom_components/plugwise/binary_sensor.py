@@ -10,7 +10,6 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-
 from plugwise.nodes import PlugwiseNode
 
 from .const import (
@@ -27,11 +26,11 @@ from .const import (
     DOMAIN,
     LOGGER,
     PW_TYPE,
-    SEVERITIES,
     SERVICE_USB_SCAN_CONFIG,
     SERVICE_USB_SCAN_CONFIG_SCHEMA,
     SERVICE_USB_SED_BATTERY_CONFIG,
     SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
+    SEVERITIES,
     STICK,
     USB,
     USB_MOTION_ID,
