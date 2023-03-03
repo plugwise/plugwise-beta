@@ -1,5 +1,5 @@
 ci:
-  skip: [local]
+  skip: [test-core-prep, test-pip-prep, testing, quality]
   submodules: true
 
 default_language_version:
