@@ -254,6 +254,12 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
     PlugwiseSensorEntityDescription(
+        key="elga_status_code",
+        plugwise_api=SMILE,
+        name="Elga status code",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseSensorEntityDescription(
         key=TARGET_TEMP_LOW,
         plugwise_api=SMILE,
         name="Heating setpoint",
@@ -697,6 +703,22 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         name="Flame state",
         icon="mdi:fire",
         icon_off="mdi:fire-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="c_heating_state",
+        plugwise_api=SMILE,
+        name="Central Heating",
+        icon="mdi:radiator",
+        icon_off="mdi:radiator-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="i_heating_state",
+        plugwise_api=SMILE,
+        name="Intended central heating",
+        icon="mdi:radiator",
+        icon_off="mdi:radiator-off",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
