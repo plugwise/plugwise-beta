@@ -1,4 +1,4 @@
-"""Plugwise beta for Home Assistant Core."""
+"""Plugwise platform for Home Assistant Core."""
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST
