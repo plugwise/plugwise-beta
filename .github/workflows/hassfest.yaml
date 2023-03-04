@@ -12,4 +12,3 @@ jobs:
     steps:
       - uses: "actions/checkout@v3.3.0"
       - uses: home-assistant/actions/hassfest@master
-

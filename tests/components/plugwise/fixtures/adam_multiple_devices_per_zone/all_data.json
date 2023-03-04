@@ -27,13 +27,7 @@
         "resolution": 0.01
       },
       "available": true,
-      "preset_modes": [
-        "home",
-        "asleep",
-        "away",
-        "vacation",
-        "no_frost"
-      ],
+      "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
       "active_preset": "away",
       "available_schedules": [
         "CV Roan",
@@ -102,13 +96,7 @@
         "resolution": 0.01
       },
       "available": true,
-      "preset_modes": [
-        "home",
-        "asleep",
-        "away",
-        "vacation",
-        "no_frost"
-      ],
+      "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
       "active_preset": "home",
       "available_schedules": [
         "CV Roan",
@@ -311,13 +299,7 @@
         "resolution": 0.01
       },
       "available": true,
-      "preset_modes": [
-        "home",
-        "asleep",
-        "away",
-        "vacation",
-        "no_frost"
-      ],
+      "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
       "active_preset": "asleep",
       "available_schedules": [
         "CV Roan",
@@ -369,13 +351,7 @@
         "resolution": 0.01
       },
       "available": true,
-      "preset_modes": [
-        "home",
-        "asleep",
-        "away",
-        "vacation",
-        "no_frost"
-      ],
+      "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
       "active_preset": "away",
       "available_schedules": [
         "CV Roan",
@@ -429,13 +405,7 @@
         "resolution": 0.01
       },
       "available": true,
-      "preset_modes": [
-        "home",
-        "asleep",
-        "away",
-        "vacation",
-        "no_frost"
-      ],
+      "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
       "active_preset": "no_frost",
       "available_schedules": [
         "CV Roan",

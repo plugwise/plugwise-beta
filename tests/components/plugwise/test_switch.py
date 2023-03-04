@@ -1,7 +1,6 @@
 """Tests for the Plugwise switch integration."""
 from unittest.mock import MagicMock
 
-from plugwise.exceptions import PlugwiseException
 import pytest
 
 from homeassistant.components.plugwise.const import DOMAIN
@@ -9,6 +8,7 @@ from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_registry import async_get
+from plugwise.exceptions import PlugwiseException
 
 from tests.common import MockConfigEntry
 

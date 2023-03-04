@@ -114,9 +114,7 @@
       "dev_class": "switching",
       "model": "Switchgroup",
       "name": "Test",
-      "members": [
-        "5ca521ac179d468e91d772eeeb8a2117"
-      ],
+      "members": ["5ca521ac179d468e91d772eeeb8a2117"],
       "switches": {
         "relay": true
       }

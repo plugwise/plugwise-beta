@@ -1,13 +1,6 @@
 """Tests for the Plugwise Climate integration."""
 from unittest.mock import MagicMock
 
-from plugwise.exceptions import (
-    ConnectionFailedError,
-    InvalidAuthentication,
-    ResponseError,
-    InvalidXMLError,
-    UnsupportedDeviceError,
-)
 import pytest
 
 from homeassistant.components.plugwise.const import DOMAIN
@@ -16,6 +9,13 @@ from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_registry import async_get
+from plugwise.exceptions import (
+    ConnectionFailedError,
+    InvalidAuthentication,
+    InvalidXMLError,
+    ResponseError,
+    UnsupportedDeviceError,
+)
 
 from tests.common import MockConfigEntry
 

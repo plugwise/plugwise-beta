@@ -1,5 +1,5 @@
 ci:
-  skip: [pylint]
+  skip: [test-core-prep, test-pip-prep, testing, quality]
   submodules: true
 
 default_language_version:

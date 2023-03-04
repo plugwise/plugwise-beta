@@ -72,13 +72,7 @@
         "upper_bound": 30.0,
         "resolution": 0.1
       },
-      "preset_modes": [
-        "no_frost",
-        "home",
-        "away",
-        "asleep",
-        "vacation"
-      ],
+      "preset_modes": ["no_frost", "home", "away", "asleep", "vacation"],
       "active_preset": "home",
       "available_schedules": ["standaard"],
       "selected_schedule": "standaard",
