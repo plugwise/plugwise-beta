@@ -12,33 +12,27 @@ from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise.nodes import PlugwiseNode
 
-from .const import (
-    ATTR_SCAN_DAYLIGHT_MODE,
-    ATTR_SCAN_RESET_TIMER,
-    ATTR_SCAN_SENSITIVITY_MODE,
-    ATTR_SED_CLOCK_INTERVAL,
-    ATTR_SED_CLOCK_SYNC,
-    ATTR_SED_MAINTENANCE_INTERVAL,
-    ATTR_SED_SLEEP_FOR,
-    ATTR_SED_STAY_ACTIVE,
-    CB_NEW_NODE,
-    COORDINATOR,
-    DOMAIN,
-    LOGGER,
-    PW_TYPE,
-    SERVICE_USB_SCAN_CONFIG,
-    SERVICE_USB_SCAN_CONFIG_SCHEMA,
-    SERVICE_USB_SED_BATTERY_CONFIG,
-    SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
-    SEVERITIES,
-    STICK,
-    USB,
-    USB_MOTION_ID,
-)
+from .const import ATTR_SCAN_DAYLIGHT_MODE  # pw-beta
+from .const import ATTR_SCAN_RESET_TIMER  # pw-beta
+from .const import ATTR_SCAN_SENSITIVITY_MODE  # pw-beta
+from .const import ATTR_SED_CLOCK_INTERVAL  # pw-beta
+from .const import ATTR_SED_CLOCK_SYNC  # pw-beta
+from .const import ATTR_SED_MAINTENANCE_INTERVAL  # pw-beta
+from .const import ATTR_SED_SLEEP_FOR  # pw-beta
+from .const import ATTR_SED_STAY_ACTIVE  # pw-beta
+from .const import CB_NEW_NODE  # pw-beta
+from .const import COORDINATOR, DOMAIN, LOGGER, SEVERITIES, STICK
+from .const import PW_TYPE  # pw-beta
+from .const import SERVICE_USB_SCAN_CONFIG  # pw-beta
+from .const import SERVICE_USB_SCAN_CONFIG_SCHEMA  # pw-beta
+from .const import SERVICE_USB_SED_BATTERY_CONFIG  # pw-beta
+from .const import SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA  # pw-beta
+from .const import USB  # pw-beta
+from .const import USB_MOTION_ID  # pw-beta
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
-from .usb import PlugwiseUSBEntity
+from .usb import PlugwiseUSBEntity  # pw-beta
 
 PARALLEL_UPDATES = 0
 
@@ -55,7 +49,7 @@ async def async_setup_entry(
     return await async_setup_entry_gateway(hass, config_entry, async_add_entities)
 
 
-async def async_setup_entry_usb(hass, config_entry, async_add_entities):
+async def async_setup_entry_usb(hass, config_entry, async_add_entities):  # pw-beta
     """Set up Plugwise binary sensor based on config_entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
     platform = entity_platform.current_platform.get()
@@ -150,8 +144,9 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
-        # pw-beta: show Plugwise notifications as HA persistent notifications
-        if self._notification:
+        if (
+            self._notification
+        ):  # pw-beta: show Plugwise notifications as HA persistent notifications
             for notify_id, message in self._notification.items():
                 self.hass.components.persistent_notification.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
@@ -172,17 +167,15 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         if self.entity_description.key != "plugwise_notification":
             return None
 
-        attrs: dict[str, list[str]] = {}
+        attrs: dict[str, list[str]] = {f"{severity}_msg": [] for severity in SEVERITIES}
         self._notification = {}  # pw-beta
         if notify := self.coordinator.data.gateway["notifications"]:
-            for notify_id, details in notify.items():
+            for notify_id, details in notify.items():  # pw-beta uses notify_id
                 for msg_type, msg in details.items():
                     msg_type = msg_type.lower()
                     if msg_type not in SEVERITIES:
                         msg_type = "other"  # pragma: no cover
 
-                    if f"{msg_type}_msg" not in attrs:
-                        attrs[f"{msg_type}_msg"] = []
                     attrs[f"{msg_type}_msg"].append(msg)
 
                     self._notification[
@@ -192,6 +185,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         return attrs
 
 
+# pw-beta
 # Github issue #265
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):  # type: ignore[misc]
     """Representation of a Plugwise USB Binary Sensor."""
