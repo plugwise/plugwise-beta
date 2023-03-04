@@ -1,7 +1,6 @@
 """Plugwise Climate component for Home Assistant."""
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import Any
 
 from homeassistant.components.climate import (
@@ -144,7 +143,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return HVACMode(mode)
 
     @property
-    def hvac_action(self) -> HVACAction | None:
+    def hvac_action(self) -> HVACAction:  # pw-beta add to Core
         """Return the current running hvac operation if supported."""
         # When control_state is present, prefer this data
         if (control_state := self.device.get("control_state")) == "cooling":
@@ -167,14 +166,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return HVACAction.IDLE
 
     @property
-    def extra_state_attributes(self) -> Mapping[str, Any] | None:
-        """Return entity specific state attributes."""
-        return {
-            "available_schemas": self.device["available_schedules"],
-            "selected_schema": self.device["selected_schedule"],
-        }
-
-    @property
     def preset_mode(self) -> str | None:
         """Return the current preset mode."""
         return self.device["active_preset"]
@@ -182,8 +173,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        if ATTR_HVAC_MODE in kwargs:  # pw-beta
-            await self.async_set_hvac_mode(kwargs[ATTR_HVAC_MODE])  # pw-beta
+        if ATTR_HVAC_MODE in kwargs:  # pw-beta add to Core
+            await self.async_set_hvac_mode(
+                kwargs[ATTR_HVAC_MODE]
+            )  # pw-beta add to Core
 
         data: dict[str, Any] = {}
         if ATTR_TEMPERATURE in kwargs:
