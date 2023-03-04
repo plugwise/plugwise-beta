@@ -167,7 +167,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         if self.entity_description.key != "plugwise_notification":
             return None
 
-        attrs: dict[str, list[str]] = {f"{severity}_msg": [] for severity in SEVERITIES}
+        attrs: dict[str, list[str]] = {}  # pw-beta Re-evaluate against Core
         self._notification = {}  # pw-beta
         if notify := self.coordinator.data.gateway["notifications"]:
             for notify_id, details in notify.items():  # pw-beta uses notify_id
@@ -176,6 +176,10 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                     if msg_type not in SEVERITIES:
                         msg_type = "other"  # pragma: no cover
 
+                    if (
+                        f"{msg_type}_msg" not in attrs
+                    ):  # pw-beta Re-evaluate against Core
+                        attrs[f"{msg_type}_msg"] = []
                     attrs[f"{msg_type}_msg"].append(msg)
 
                     self._notification[
