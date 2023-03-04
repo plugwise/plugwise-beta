@@ -8,7 +8,7 @@ import serial.tools.list_ports  # pw-beta usb
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.components import usb
+from homeassistant.components import usb  # pw-beta usb
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
 from homeassistant.config_entries import ConfigEntry, ConfigFlow
 from homeassistant.const import (
