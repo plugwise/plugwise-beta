@@ -10,25 +10,25 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise.nodes import PlugwiseNode
+from plugwise.nodes import PlugwiseNode  # pw-beta usb
 
-from .const import ATTR_SCAN_DAYLIGHT_MODE  # pw-beta
-from .const import ATTR_SCAN_RESET_TIMER  # pw-beta
-from .const import ATTR_SCAN_SENSITIVITY_MODE  # pw-beta
-from .const import ATTR_SED_CLOCK_INTERVAL  # pw-beta
-from .const import ATTR_SED_CLOCK_SYNC  # pw-beta
-from .const import ATTR_SED_MAINTENANCE_INTERVAL  # pw-beta
-from .const import ATTR_SED_SLEEP_FOR  # pw-beta
-from .const import ATTR_SED_STAY_ACTIVE  # pw-beta
-from .const import CB_NEW_NODE  # pw-beta
+from .const import ATTR_SCAN_DAYLIGHT_MODE  # pw-beta usb
+from .const import ATTR_SCAN_RESET_TIMER  # pw-beta usb
+from .const import ATTR_SCAN_SENSITIVITY_MODE  # pw-beta usb
+from .const import ATTR_SED_CLOCK_INTERVAL  # pw-beta usb
+from .const import ATTR_SED_CLOCK_SYNC  # pw-beta usb
+from .const import ATTR_SED_MAINTENANCE_INTERVAL  # pw-beta usb
+from .const import ATTR_SED_SLEEP_FOR  # pw-beta usb
+from .const import ATTR_SED_STAY_ACTIVE  # pw-beta usb
+from .const import CB_NEW_NODE  # pw-beta usb
 from .const import COORDINATOR, DOMAIN, LOGGER, SEVERITIES, STICK
 from .const import PW_TYPE  # pw-beta
-from .const import SERVICE_USB_SCAN_CONFIG  # pw-beta
-from .const import SERVICE_USB_SCAN_CONFIG_SCHEMA  # pw-beta
-from .const import SERVICE_USB_SED_BATTERY_CONFIG  # pw-beta
-from .const import SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA  # pw-beta
-from .const import USB  # pw-beta
-from .const import USB_MOTION_ID  # pw-beta
+from .const import SERVICE_USB_SCAN_CONFIG  # pw-beta usb
+from .const import SERVICE_USB_SCAN_CONFIG_SCHEMA  # pw-beta usb
+from .const import SERVICE_USB_SED_BATTERY_CONFIG  # pw-beta usb
+from .const import SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA  # pw-beta usb
+from .const import USB  # pw-beta usb
+from .const import USB_MOTION_ID  # pw-beta usb
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
