@@ -1,4 +1,4 @@
-"""Plugwise network/gateway platform."""
+"""Plugwise platform for Home Assistant Core."""
 from __future__ import annotations
 
 from typing import Any
@@ -22,7 +22,7 @@ from .const import (
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
-from .const import CONF_REFRESH_INTERVAL  # pw-beta
+from .const import CONF_REFRESH_INTERVAL  # pw-beta options
 from .coordinator import PlugwiseDataUpdateCoordinator
 
 
@@ -30,22 +30,21 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
-    # pw-beta frontend refresh-interval
-    cooldown = 1.5
+    cooldown = 1.5  # pw-beta frontend refresh-interval
     if (
         custom_refresh := entry.options.get(CONF_REFRESH_INTERVAL)
     ) is not None:  # pragma: no cover
         cooldown = custom_refresh
     LOGGER.debug("DUC cooldown interval: %s", cooldown)
 
-    # pw-beta - cooldown, update_interval as extra
-    coordinator = PlugwiseDataUpdateCoordinator(hass, entry, cooldown)
+    coordinator = PlugwiseDataUpdateCoordinator(
+        hass, entry, cooldown
+    )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
     # Migrate a changed sensor unique_id
-    migrate_sensor_entity(hass, coordinator)
+    migrate_sensor_entities(hass, coordinator)
 
-    # pw-beta
-    undo_listener = entry.add_update_listener(_update_listener)
+    undo_listener = entry.add_update_listener(_update_listener)  # pw-beta
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         COORDINATOR: coordinator,  # pw-beta
@@ -63,8 +62,9 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         sw_version=coordinator.api.smile_version[0],
     )
 
-    # pw-beta: HA service - delete_notification
-    async def delete_notification(self):  # pragma: no cover
+    async def delete_notification(
+        self,
+    ):  # pragma: no cover  # pw-beta: HA service - delete_notification
         """Service: delete the Plugwise Notification."""
         LOGGER.debug(
             "Service delete PW Notification called for %s", coordinator.api.smile_name
@@ -80,8 +80,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_GATEWAY)
 
-    # pw-beta
-    for component in PLATFORMS_GATEWAY:
+    for component in PLATFORMS_GATEWAY:  # pw-beta
         if component == Platform.BINARY_SENSOR:
             hass.services.async_register(
                 DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
@@ -90,8 +89,9 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
-# pw-beta
-async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):  # pragma: no cover
+async def _update_listener(
+    hass: HomeAssistant, entry: ConfigEntry
+):  # pragma: no cover  # pw-beta
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
 
@@ -118,17 +118,17 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
     return None
 
 
-def migrate_sensor_entity(
+def migrate_sensor_entities(
     hass: HomeAssistant,
     coordinator: PlugwiseDataUpdateCoordinator,
 ) -> None:
     """Migrate Sensors if needed."""
     ent_reg = er.async_get(hass)
 
-    # Migrate opentherm_outdoor_temperature
+    # Migrate opentherm_outdoor_temperature  # pw-beta add to Core
     # to opentherm_outdoor_air_temperature sensor
     for device_id, device in coordinator.data.devices.items():
-        if device["dev_class"] != "heater_central":
+        if device["dev_class"] != "heater_central":  # pw-beta add to Core
             continue
 
         old_unique_id = f"{device_id}-outdoor_temperature"
