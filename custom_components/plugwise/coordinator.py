@@ -37,7 +37,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     def __init__(
         self, hass: HomeAssistant, entry: ConfigEntry, cooldown: float
-    ) -> None:  # pw-beta add to Core
+    ) -> None:  # pw-beta cooldown
         """Initialize the coordinator."""
         super().__init__(
             hass,
