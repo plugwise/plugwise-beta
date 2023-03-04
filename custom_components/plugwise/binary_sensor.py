@@ -167,6 +167,8 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         if self.entity_description.key != "plugwise_notification":
             return None
 
+        # pw-beta adjustment with attrs is to only represent severities *with* content
+        # not all severities including those without content as empty lists
         attrs: dict[str, list[str]] = {}  # pw-beta Re-evaluate against Core
         self._notification = {}  # pw-beta
         if notify := self.coordinator.data.gateway["notifications"]:
