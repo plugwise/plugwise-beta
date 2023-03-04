@@ -8,8 +8,11 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise.nodes import PlugwiseNode
 
-from .const import CB_NEW_NODE, COORDINATOR, DOMAIN, LOGGER, STICK, USB  # pw-beta usb
+from .const import CB_NEW_NODE  # pw-beta usb
+from .const import COORDINATOR, DOMAIN, LOGGER
 from .const import PW_TYPE  # pw-beta
+from .const import STICK  # pw-beta usb,
+from .const import USB  # pw-beta usb
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
