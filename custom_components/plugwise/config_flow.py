@@ -1,10 +1,10 @@
 """Config flow for Plugwise integration."""
 from __future__ import annotations
 
-import datetime as dt  # pw-beta
+import datetime as dt  # pw-beta options
 from typing import Any
 
-import serial.tools.list_ports
+import serial.tools.list_ports  # pw-beta usb
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -29,47 +29,51 @@ from plugwise.exceptions import (
     InvalidAuthentication,
     InvalidSetupError,
     InvalidXMLError,
-    NetworkDown,
-    PortError,
     ResponseError,
-    StickInitError,
-    TimeoutException,
     UnsupportedDeviceError,
 )
+
+# pw-beta Note; the below are explicit through isort
+from plugwise.exceptions import NetworkDown  # pw-beta usb
+from plugwise.exceptions import PortError  # pw-beta usb
+from plugwise.exceptions import StickInitError  # pw-beta usb
+from plugwise.exceptions import TimeoutException  # pw-beta usb
 from plugwise.smile import Smile
-from plugwise.stick import Stick
+from plugwise.stick import Stick  # pw-beta usb
 
 from .const import (
     API,
-    CONF_MANUAL_PATH,
-    CONF_USB_PATH,
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_USERNAME,
     DOMAIN,
-    FLOW_NET,
     FLOW_SMILE,
     FLOW_STRETCH,
-    FLOW_TYPE,
-    FLOW_USB,
     PW_TYPE,
     SMILE,
-    STICK,
     STRETCH,
     STRETCH_USERNAME,
     ZEROCONF_MAP,
 )
+
+# pw-beta Note; the below are explicit through isort
 from .const import CONF_HOMEKIT_EMULATION  # pw-beta option
+from .const import CONF_MANUAL_PATH  # pw-beta usb
 from .const import CONF_REFRESH_INTERVAL  # pw-beta option
+from .const import CONF_USB_PATH  # pw-beta usb
 from .const import DEFAULT_SCAN_INTERVAL  # pw-beta option
+from .const import FLOW_NET  # pw-beta usb
+from .const import FLOW_TYPE  # pw-beta usb
+from .const import FLOW_USB  # pw-beta usb
+from .const import STICK  # pw-beta usb
 
 CONNECTION_SCHEMA = vol.Schema(
     {vol.Required(FLOW_TYPE, default=FLOW_NET): vol.In([FLOW_NET, FLOW_USB])}
-)
+)  # pw-beta usb
 
 
 @callback
-def plugwise_stick_entries(hass):
+def plugwise_stick_entries(hass):  # pw-beta usb
     """Return existing connections for Plugwise USB-stick domain."""
     sticks = []
     for entry in hass.config_entries.async_entries(DOMAIN):
@@ -81,7 +85,9 @@ def plugwise_stick_entries(hass):
 # Github issue: #265
 # Might be a `tuple[dict[str, str], Stick | None]` for typing, but that throws
 # Item None of Optional[Any] not having attribute mac [union-attr]
-async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str], Any]:
+async def validate_usb_connection(
+    self, device_path=None
+) -> tuple[dict[str, str], Any]:  # pw-beta usb
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
 
@@ -240,7 +246,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_user_usb(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> FlowResult:  # pw-beta usb
         """Step when user initializes a integration."""
         errors: dict[str, str] = {}
         ports = await self.hass.async_add_executor_job(serial.tools.list_ports.comports)
@@ -278,7 +284,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_manual_path(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> FlowResult:  # pw-beta usb
         """Step when manual path to device."""
         errors: dict[str, str] = {}
         if user_input is not None:
@@ -369,10 +375,11 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    # pw-beta
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry: ConfigEntry) -> config_entries.OptionsFlow:
+    def async_get_options_flow(
+        config_entry: ConfigEntry,
+    ) -> config_entries.OptionsFlow:  # pw-beta options
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
 
@@ -380,7 +387,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 # pw-beta - change the scan-interval via CONFIGURE
 # pw-beta - add homekit emulation via CONFIGURE
 # pw-beta - change the frontend refresh interval via CONFIGURE
-class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
+class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
     """Plugwise option flow."""
 
     def __init__(self, config_entry: ConfigEntry) -> None:  # pragma: no cover
@@ -410,7 +417,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][COORDINATOR]
         interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[
             coordinator.api.smile_type
-        ]  # pw-beta
+        ]  # pw-beta options
 
         data = {
             vol.Optional(
