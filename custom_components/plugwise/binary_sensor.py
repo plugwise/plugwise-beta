@@ -12,10 +12,11 @@ from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise.nodes import PlugwiseNode  # pw-beta usb
 
-from .const import COORDINATOR, DOMAIN, LOGGER, SEVERITIES, STICK
-from .const import PW_TYPE  # pw-beta
+from .const import DOMAIN, LOGGER, SEVERITIES
 
 # isort: off
+from .const import COORDINATOR, PW_TYPE  # pw-beta
+
 from .const import (
     ATTR_SCAN_DAYLIGHT_MODE,
     ATTR_SCAN_RESET_TIMER,
@@ -30,6 +31,7 @@ from .const import (
     SERVICE_USB_SCAN_CONFIG_SCHEMA,
     SERVICE_USB_SED_BATTERY_CONFIG,
     SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
+    STICK,
     USB,
     USB_MOTION_ID,
 )  # pw-beta usb
