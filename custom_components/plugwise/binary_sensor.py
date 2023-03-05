@@ -12,23 +12,30 @@ from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise.nodes import PlugwiseNode  # pw-beta usb
 
-from .const import ATTR_SCAN_DAYLIGHT_MODE  # pw-beta usb
-from .const import ATTR_SCAN_RESET_TIMER  # pw-beta usb
-from .const import ATTR_SCAN_SENSITIVITY_MODE  # pw-beta usb
-from .const import ATTR_SED_CLOCK_INTERVAL  # pw-beta usb
-from .const import ATTR_SED_CLOCK_SYNC  # pw-beta usb
-from .const import ATTR_SED_MAINTENANCE_INTERVAL  # pw-beta usb
-from .const import ATTR_SED_SLEEP_FOR  # pw-beta usb
-from .const import ATTR_SED_STAY_ACTIVE  # pw-beta usb
-from .const import CB_NEW_NODE  # pw-beta usb
 from .const import COORDINATOR, DOMAIN, LOGGER, SEVERITIES, STICK
 from .const import PW_TYPE  # pw-beta
-from .const import SERVICE_USB_SCAN_CONFIG  # pw-beta usb
-from .const import SERVICE_USB_SCAN_CONFIG_SCHEMA  # pw-beta usb
-from .const import SERVICE_USB_SED_BATTERY_CONFIG  # pw-beta usb
-from .const import SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA  # pw-beta usb
-from .const import USB  # pw-beta usb
-from .const import USB_MOTION_ID  # pw-beta usb
+
+# isort: off
+from .const import (
+    ATTR_SCAN_DAYLIGHT_MODE,
+    ATTR_SCAN_RESET_TIMER,
+    ATTR_SCAN_SENSITIVITY_MODE,
+    ATTR_SED_CLOCK_INTERVAL,
+    ATTR_SED_CLOCK_SYNC,
+    ATTR_SED_MAINTENANCE_INTERVAL,
+    ATTR_SED_SLEEP_FOR,
+    ATTR_SED_STAY_ACTIVE,
+    CB_NEW_NODE,
+    SERVICE_USB_SCAN_CONFIG,
+    SERVICE_USB_SCAN_CONFIG_SCHEMA,
+    SERVICE_USB_SED_BATTERY_CONFIG,
+    SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
+    USB,
+    USB_MOTION_ID,
+)  # pw-beta usb
+
+# isort: on
+
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
