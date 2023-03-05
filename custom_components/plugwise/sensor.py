@@ -8,9 +8,10 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise.nodes import PlugwiseNode
 
-from .const import COORDINATOR, DOMAIN, LOGGER, PW_TYPE  # pw-beta
+from .const import DOMAIN, LOGGER
 
 # isort: off
+from .const import COORDINATOR, PW_TYPE  # pw-beta
 from .const import (
     CB_NEW_NODE,
     STICK,
