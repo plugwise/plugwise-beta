@@ -3,11 +3,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (
+from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
     ATTR_TARGET_TEMP_HIGH,
     ATTR_TARGET_TEMP_LOW,
+    ClimateEntity,
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
@@ -25,7 +25,8 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import CONF_HOMEKIT_EMULATION  # pw-beta homekit emulation
-from .const import COORDINATOR, DOMAIN, MASTER_THERMOSTATS
+from .const import COORDINATOR  # pw-beta
+from .const import DOMAIN, MASTER_THERMOSTATS
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
@@ -41,11 +42,14 @@ async def async_setup_entry(
         config_entry.entry_id
     ][COORDINATOR]
 
-    # pw-beta homekit emulation
-    homekit_enabled: bool = config_entry.options.get(CONF_HOMEKIT_EMULATION, False)
+    homekit_enabled: bool = config_entry.options.get(
+        CONF_HOMEKIT_EMULATION, False
+    )  # pw-beta homekit emulation
 
     async_add_entities(
-        PlugwiseClimateEntity(coordinator, device_id, homekit_enabled)
+        PlugwiseClimateEntity(
+            coordinator, device_id, homekit_enabled
+        )  # pw-beta homekit emulation
         for device_id, device in coordinator.data.devices.items()
         if device["dev_class"] in MASTER_THERMOSTATS
     )
@@ -91,9 +95,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         self._attr_max_temp = self.device["thermostat"]["upper_bound"]
-        if resolution := self.device["thermostat"]["resolution"]:
-            # Ensure we don't drop below 0.1
-            self._attr_target_temperature_step = max(resolution, 0.1)
+        # Ensure we don't drop below 0.1
+        self._attr_target_temperature_step = max(
+            self.device["thermostat"]["resolution"], 0.1
+        )
 
     @property
     def current_temperature(self) -> float:
@@ -128,7 +133,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, heat, heat_cool, or off mode."""
-        if (mode := self.device["mode"]) is None or mode not in self.hvac_modes:
+        if (
+            mode := self.device["mode"]
+        ) is None or mode not in self.hvac_modes:  # pw-beta add to Core
             return HVACMode.HEAT  # pragma: no cover
         # pw-beta homekit emulation
         if self._homekit_enabled and self._homekit_mode == HVACMode.OFF:
@@ -137,7 +144,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return HVACMode(mode)
 
     @property
-    def hvac_action(self) -> HVACAction:
+    def hvac_action(self) -> HVACAction:  # pw-beta add to Core
         """Return the current running hvac operation if supported."""
         # When control_state is present, prefer this data
         if (control_state := self.device.get("control_state")) == "cooling":
@@ -154,7 +161,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         ]
         if hc_data["binary_sensors"]["heating_state"]:
             return HVACAction.HEATING
-        if hc_data["binary_sensors"].get("cooling_state", False):
+        if hc_data["binary_sensors"].get("cooling_state", False):  # pw-beta adds False
             return HVACAction.COOLING
 
         return HVACAction.IDLE
@@ -167,8 +174,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        if ATTR_HVAC_MODE in kwargs:
-            await self.async_set_hvac_mode(kwargs[ATTR_HVAC_MODE])
+        if ATTR_HVAC_MODE in kwargs:  # pw-beta add to Core
+            await self.async_set_hvac_mode(
+                kwargs[ATTR_HVAC_MODE]
+            )  # pw-beta add to Core
 
         data: dict[str, Any] = {}
         if ATTR_TEMPERATURE in kwargs:
@@ -187,7 +196,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         await self.coordinator.api.set_temperature(self.device["location"], data)
 
     @plugwise_command
-    async def async_set_hvac_mode(self, hvac_mode: str) -> None:
+    async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set the hvac mode."""
         if hvac_mode not in self.hvac_modes:
             raise HomeAssistantError("Unsupported hvac_mode")

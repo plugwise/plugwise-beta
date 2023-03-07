@@ -10,11 +10,22 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise.nodes import PlugwiseNode
 
-from .const import CB_NEW_NODE, COORDINATOR, DOMAIN, LOGGER, PW_TYPE, SMILE, STICK, USB
+from .const import DOMAIN, LOGGER
+
+# isort: off
+from .const import COORDINATOR, PW_TYPE  # pw-beta
+from .const import (
+    CB_NEW_NODE,
+    SMILE,
+    STICK,
+    USB,
+)
+
+# isort: on
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
-from .usb import PlugwiseUSBEntity
+from .usb import PlugwiseUSBEntity  # pw-beta usb
 from .util import plugwise_command
 
 
@@ -24,13 +35,13 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile switches from a config entry."""
-    if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:
+    if hass.data[DOMAIN][config_entry.entry_id][PW_TYPE] == USB:  # pw-beta usb
         return await async_setup_entry_usb(hass, config_entry, async_add_entities)
     # Considered default and for earlier setups without usb/network config_flow
     return await async_setup_entry_gateway(hass, config_entry, async_add_entities)
 
 
-async def async_setup_entry_usb(hass, config_entry, async_add_entities):
+async def async_setup_entry_usb(hass, config_entry, async_add_entities):  # pw-beta usb
     """Set up the USB switches from a config entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
@@ -121,7 +132,7 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
 
 
 # Github issue #265
-class USBSwitch(PlugwiseUSBEntity, SwitchEntity):  # type: ignore[misc]
+class USBSwitch(PlugwiseUSBEntity, SwitchEntity):  # type: ignore[misc]  # pw-beta usb
     """Representation of a Stick Node switch."""
 
     def __init__(

@@ -3,13 +3,8 @@ from datetime import timedelta
 from typing import NamedTuple, cast
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SCAN_INTERVAL,
-    CONF_USERNAME,
-)
+from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_USERNAME
+from homeassistant.const import CONF_SCAN_INTERVAL  # pw-beta options
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -25,7 +20,6 @@ from plugwise.exceptions import (
     UnsupportedDeviceError,
 )
 
-# pw-beta - for core compat should import DEFAULT_SCAN_INTERVAL
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
 
 
@@ -43,7 +37,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     def __init__(
         self, hass: HomeAssistant, entry: ConfigEntry, cooldown: float
-    ) -> None:
+    ) -> None:  # pw-beta cooldown
         """Initialize the coordinator."""
         super().__init__(
             hass,
@@ -78,16 +72,15 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self.api.get_all_devices()
         self.name = self.api.smile_name
 
-        # pw-beta scan-interval
         self.update_interval = DEFAULT_SCAN_INTERVAL.get(
             self.api.smile_type, timedelta(seconds=60)
-        )
+        )  # pw-beta options scan-interval
         if (custom_time := self._entry.options.get(CONF_SCAN_INTERVAL)) is not None:
             self.update_interval = timedelta(
                 seconds=int(custom_time)
-            )  # pragma: no cover
+            )  # pragma: no cover  # pw-beta options
 
-        LOGGER.debug("DUC update interval: %s", self.update_interval)
+        LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
@@ -101,21 +94,21 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if self._unavailable_logged:
                 self._unavailable_logged = False
         except InvalidAuthentication as err:
-            if not self._unavailable_logged:
+            if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise ConfigEntryError("Authentication failed") from err
         except (InvalidXMLError, ResponseError) as err:
-            if not self._unavailable_logged:
+            if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise UpdateFailed(
                     "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
                 ) from err
         except UnsupportedDeviceError as err:
-            if not self._unavailable_logged:
+            if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise ConfigEntryError("Device with unsupported firmware") from err
         except ConnectionFailedError as err:
-            if not self._unavailable_logged:
+            if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 

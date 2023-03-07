@@ -1,9 +1,9 @@
-"""Constants for Plugwise beta component."""
+"""Constants for Plugwise component."""
 from datetime import timedelta
 import logging
 from typing import Final
 
-import voluptuous as vol
+import voluptuous as vol  # pw-beta usb
 
 from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
@@ -14,8 +14,8 @@ LOGGER = logging.getLogger(__package__)
 
 API: Final = "api"
 COORDINATOR: Final = "coordinator"
-CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta
-CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta
+CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta options
+CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta options
 CONF_MANUAL_PATH: Final = "Enter Manually"
 GATEWAY: Final = "gateway"
 PW_TYPE: Final = "plugwise_type"
@@ -160,7 +160,7 @@ SERVICE_USB_DEVICE_ADD: Final = "device_add"
 SERVICE_USB_DEVICE_REMOVE: Final = "device_remove"
 SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
     {vol.Required(ATTR_MAC_ADDRESS): cv.string}
-)
+)  # pw-beta usb
 
 
 # USB Relay device constants
