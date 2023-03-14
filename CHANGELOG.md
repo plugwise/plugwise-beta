@@ -4,7 +4,8 @@
 
 ### Ongoing
 
-- Added pre-commit and additional linting
+- Added pre-commit and additional linting (no or marginal code changes)
+- Added tagging in #361 to enable a path forward for upstreaming (mostly isort and tagging, no or marginal code changes)
 
 ### NEW FEB 2023 [0.34.6] Stick-bugfix, rename P1 gas-interval sensor, line up with Core Plugwise
 
