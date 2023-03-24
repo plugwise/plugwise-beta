@@ -221,7 +221,7 @@ async def test_form(
 
 
 @pytest.mark.parametrize(
-    "discovery,username",
+    ("discovery", "username"),
     [
         (TEST_DISCOVERY, TEST_USERNAME),
         (TEST_DISCOVERY2, TEST_USERNAME2),
@@ -403,7 +403,7 @@ async def test_zercoconf_discovery_update_configuration(
 
 
 @pytest.mark.parametrize(
-    "side_effect, reason",
+    ("side_effect", "reason"),
     [
         (ConnectionFailedError, "cannot_connect"),
         (InvalidAuthentication, "invalid_auth"),
@@ -702,7 +702,7 @@ async def test_empty_connection(hass):
             result["flow_id"],
             {CONF_USB_PATH: None},
         )
-        assert False
+        pytest.fail("Empty connection was accepted")
     except MultipleInvalid:
         assert True
 
