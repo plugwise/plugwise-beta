@@ -1,8 +1,8 @@
 """Utilities for Plugwise."""
 from collections.abc import Awaitable, Callable, Coroutine
-from typing import Any, TypeVar
+from typing import Any, Concatenate, TypeVar
 
-from typing_extensions import Concatenate, ParamSpec
+from typing_extensions import ParamSpec
 
 from homeassistant.exceptions import HomeAssistantError
 from plugwise.exceptions import PlugwiseException

@@ -179,8 +179,8 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise"
 	pip install --upgrade -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
-	echo " - flake8"
-	pip install --upgrade -q flake8
+	echo " - ruff"
+	pip install --upgrade -q ruff
 	echo ""
 	module=$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
 	echo "Checking manifest for current python-plugwise to install: ${module}"
@@ -204,10 +204,10 @@ fi # testing
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
 	cd "${coredir}" || exit
 	echo ""
-	echo "... flake8-ing component..."
-	flake8 homeassistant/components/plugwise/*py || exit
-	echo "... flake8-ing tests..."
-	flake8 tests/components/plugwise/*py || exit
+	echo "... ruff-ing component..."
+	ruff homeassistant/components/plugwise/*py || exit
+	echo "... ruff-ing tests..."
+	ruff tests/components/plugwise/*py || exit
 	echo "... black-ing ..."
 	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
 	echo "... mypy ..."
