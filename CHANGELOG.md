@@ -2,7 +2,9 @@
 
 ## Versions from 0.30 and up
 
-### NEW MAR 2023 [0.34.8] Bugfixes for Stick, P1 legacy
+### NEW MAR 2023 [0.34.9] Stick: 2nd fix for #369
+
+### MAR 2023 [0.34.8] Bugfixes for Stick, P1 legacy
 
 - Attempt to fix for reported Plugwise-Beta issue #347 - via plugwise [v0.27.8](https://github.com/plugwise/python-plugwise/releases/tag/v0.27.8)
 - Fix for #368 - via plugwise [v0.27.9](https://github.com/plugwise/python-plugwise/releases/tag/v0.27.0)
