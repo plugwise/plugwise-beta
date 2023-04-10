@@ -133,6 +133,9 @@
           "heating": "Verwarmen",
           "off": "Uit"
         }
+      },
+      "select_schedule": {
+        "name": "Thermostaat schema"
       }
     },
     "switch": {
