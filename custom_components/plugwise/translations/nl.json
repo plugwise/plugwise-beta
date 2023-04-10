@@ -125,7 +125,7 @@
         }
       },
       "regulation_mode": {
-        "name": "Regulatie mode",
+        "name": "Verwarmingsregeling",
         "state": {
           "bleeding_cold": "Koud ontluchten",
           "bleeding_hot": "Warm ontluchten",
