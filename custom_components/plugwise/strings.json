@@ -109,7 +109,7 @@
     "number": {
       "maximum_boiler_temperature": {
         "name": "Maximum boiler temperature setpoint"
-      }
+      },
       "domestic_hot_water_setpoint": {
         "name": "Domestic hot water setpoint"
       }
