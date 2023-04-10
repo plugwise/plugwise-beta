@@ -27,6 +27,7 @@ from homeassistant.const import (
     UnitOfTemperature,
     UnitOfTime,
     UnitOfVolume,
+    UnitOfVolumeFlowRate,
 )
 from homeassistant.helpers.entity import EntityDescription
 
@@ -528,7 +529,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         plugwise_api=SMILE,
         name="Gas consumed interval",
         icon="mdi:meter-gas",
-        native_unit_of_measurement=f"{UnitOfVolume.CUBIC_METERS}/{UnitOfTime.HOURS}",
+        native_unit_of_measurement=UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR,
     ),
     PlugwiseSensorEntityDescription(
         key=GAS_CONSUMED_CUMULATIVE,
