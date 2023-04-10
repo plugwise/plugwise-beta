@@ -109,7 +109,7 @@
     "number": {
       "maximum_boiler_temperature": {
         "name": "Max cv-ketel temperatuur"
-      }
+      },
       "domestic_hot_water_setpoint": {
         "name": "Max huishoudelijk warm water temperatuur"
       }
