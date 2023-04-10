@@ -44,9 +44,9 @@ class PlugwiseNumberEntityDescription(
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key="maximum_boiler_temperature",
+        translation_key="maximum_boiler_temperature",
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
-        name="Maximum boiler temperature setpoint",
         entity_category=EntityCategory.CONFIG,
         native_max_value_key="upper_bound",
         native_min_value_key="lower_bound",
@@ -56,9 +56,9 @@ NUMBER_TYPES = (
     ),
     PlugwiseNumberEntityDescription(
         key="domestic_hot_water_setpoint",
+        translation_key="domestic_hot_water_setpoint",
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
-        name="Domestic hot water setpoint",
         entity_category=EntityCategory.CONFIG,
         native_max_value_key="upper_bound",
         native_min_value_key="lower_bound",
