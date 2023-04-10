@@ -134,7 +134,7 @@
           "off": "Uit"
         }
       }
-    }
+    },
     "switch": {
       "cooling_ena_switch": {
         "name": "Koelen"
