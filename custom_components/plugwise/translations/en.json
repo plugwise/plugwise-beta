@@ -87,7 +87,7 @@
       "slave_boiler_state": {
         "name": "Secondary boiler state"
       },
-      "plugwise_notification": {
+      "adam_plugwise_notification": {
         "name": "Plugwise notification"
       }
     },

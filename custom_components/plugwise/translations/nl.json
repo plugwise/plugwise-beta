@@ -87,7 +87,7 @@
       "slave_boiler_state": {
         "name": "Secundaire boiler status"
       },
-      "plugwise_notification": {
+      "adam_plugwise_notification": {
         "name": "Plugwise notificatie"
       }
     },
