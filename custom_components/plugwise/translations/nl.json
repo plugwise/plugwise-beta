@@ -134,7 +134,7 @@
           "off": "Uit"
         }
       },
-      "select_schedule": {
+      "thermostat_schedule": {
         "name": "Thermostaat schema"
       }
     },
