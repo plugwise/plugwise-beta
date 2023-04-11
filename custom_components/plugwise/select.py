@@ -39,7 +39,7 @@ class PlugwiseSelectEntityDescription(
 SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
         key="select_schedule",
-        translation_key="select_schedule",
+        translation_key="thermostat_schedule",
         icon="mdi:calendar-clock",
         command=lambda api, loc, opt: api.set_schedule_state(loc, opt, STATE_ON),
         current_option_key="selected_schedule",

@@ -134,7 +134,7 @@
           "off": "[%key:common::state::off%]"
         }
       },
-      "select_schedule": {
+      "thermostat_schedule": {
         "name": "Thermostat schedule"
       }
     },

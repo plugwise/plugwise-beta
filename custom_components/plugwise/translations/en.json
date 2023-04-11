@@ -134,7 +134,7 @@
           "off": "Off"
         }
       },
-      "select_schedule": {
+      "thermostat_schedule": {
         "name": "Thermostat schedule"
       }
     },
