@@ -57,7 +57,6 @@ body:
       required: true
     attributes:
       label: What type of installation are you running?
-      placeholder: Home Assistant OS
       description: >
         Can be found in: [Configuration panel -> Info](https://my.home-assistant.io/redirect/info/).
 
