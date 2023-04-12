@@ -9,9 +9,9 @@
         "description": "Adjust Smile/Stretch Options",
         "data": {
           "cooling_on": "Anna: cooling-mode is on",
-          "scan_interval": "Scan Interval (seconds)",
-          "homekit_emulation": "Homekit emulation (i.e. on hvac_off => Away)",
-          "refresh_interval": "Frontend refresh-time (1.5 - 5 seconds)"
+          "scan_interval": "Scan Interval (seconds) *) beta-only option",
+          "homekit_emulation": "Homekit emulation (i.e. on hvac_off => Away) *) beta-only option",
+          "refresh_interval": "Frontend refresh-time (1.5 - 5 seconds) *) beta-only option"
         }
       }
     }
@@ -39,28 +39,28 @@
         "title": "Connect to Plugwise Stick",
         "description": "Please enter:",
         "data": {
-          "usb_path": "[%key:common::config_flow::data::usb_path%]"
+          "usb_path": "USB-path"
         }
       },
       "manual_path": {
         "data": {
-          "usb_path": "[%key:common::config_flow::data::usb_path%]"
+          "usb_path": "USB-path"
         }
       }
     },
     "error": {
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "cannot_connect": "Failed to connect",
       "invalid_auth": "Authentication failed",
       "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "response_error": "Invalid XML data, or error indication received",
       "stick_init": "Initialization of Plugwise USB-stick failed",
-      "unknown": "[%key:common::config_flow::error::unknown%]",
+      "unknown": "Unknown error!",
       "unsupported": "Device with unsupported firmware"
     },
     "abort": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_service%]",
+      "already_configured": "This device is already configured",
       "anna_with_adam": "Both Anna and Adam detected. Add your Adam instead of your Anna"
     }
   },
@@ -79,10 +79,10 @@
         "name": "Flame state"
       },
       "heating_state": {
-        "name": "[%key:component::climate::entity_component::_::state_attributes::hvac_action::state::heating%]"
+        "name": "Heating"
       },
       "cooling_state": {
-        "name": "[%key:component::climate::entity_component::_::state_attributes::hvac_action::state::cooling%]"
+        "name": "Cooling"
       },
       "slave_boiler_state": {
         "name": "Secondary boiler state"
@@ -97,8 +97,8 @@
           "preset_mode": {
             "state": {
               "asleep": "Night",
-              "away": "[%key:component::climate::entity_component::_::state_attributes::preset_mode::state::away%]",
-              "home": "[%key:component::climate::entity_component::_::state_attributes::preset_mode::state::home%]",
+              "away": "Away",
+              "home": "Home",
               "no_frost": "Anti-frost",
               "vacation": "Vacation"
             }
@@ -118,10 +118,10 @@
       "dhw_mode": {
         "name": "DHW mode",
         "state": {
-          "off": "[%key:common::state::off%]",
+          "off": "Off",
           "auto": "Auto",
-          "boost": "[%key:component::climate::entity_component::_::state_attributes::preset_mode::state::boost%]",
-          "comfort": "[%key:component::climate::entity_component::_::state_attributes::preset_mode::state::comfort%]"
+          "boost": "Boost",
+          "comfort": "Comfort"
         }
       },
       "regulation_mode": {
@@ -129,9 +129,9 @@
         "state": {
           "bleeding_cold": "Bleeding cold",
           "bleeding_hot": "Bleeding hot",
-          "cooling": "[%key:component::climate::entity_component::_::state_attributes::hvac_action::state::cooling%]",
-          "heating": "[%key:component::climate::entity_component::_::state_attributes::hvac_action::state::heating%]",
-          "off": "[%key:common::state::off%]"
+          "cooling": "Cooling",
+          "heating": "Heating",
+          "off": "Off"
         }
       },
       "thermostat_schedule": {
@@ -140,13 +140,13 @@
     },
     "switch": {
       "cooling_ena_switch": {
-        "name": "[%key:component::climate::entity_component::_::state_attributes::hvac_action::state::cooling%]"
+        "name": "Cooling"
       },
       "dhw_cm_switch": {
         "name": "DHW comfort mode"
       },
       "lock": {
-        "name": "[%key:component::lock::entity_component::_::name%]"
+        "name": "Lock"
       },
       "relay": {
         "name": "Relay"
