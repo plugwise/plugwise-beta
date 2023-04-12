@@ -39,12 +39,12 @@
         "title": "Verbinden met de Plugwise Stick",
         "description": "Aub invoeren:",
         "data": {
-          "usb_path": "USB pad"
+          "usb_path": "USB-pad"
         }
       },
       "manual_path": {
         "data": {
-          "usb_path": "USB pad"
+          "usb_path": "USB-pad"
         }
       }
     },
