@@ -66,30 +66,14 @@
   },
   "entity": {
     "binary_sensor": {
-      "compressor_state": {
-        "name": "Compressor state"
-      },
-      "cooling_enabled": {
-        "name": "Cooling enabled"
-      },
-      "dhw_state": {
-        "name": "DHW state"
-      },
-      "flame_state": {
-        "name": "Flame state"
-      },
-      "heating_state": {
-        "name": "Heating"
-      },
-      "cooling_state": {
-        "name": "Cooling"
-      },
-      "slave_boiler_state": {
-        "name": "Secondary boiler state"
-      },
-      "plugwise_notification": {
-        "name": "Plugwise notification"
-      }
+      "compressor_state": {"name": "Compressor state"},
+      "cooling_enabled": {"name": "Cooling enabled"},
+      "dhw_state": {"name": "DHW state"},
+      "flame_state": {"name": "Flame state"},
+      "heating_state": {"name": "Heating" },
+      "cooling_state": {"name": "Cooling"},
+      "slave_boiler_state": {"name": "Secondary boiler state"},
+      "plugwise_notification": {"name": "Plugwise notification"}
     },
     "climate": {
       "plugwise": {
@@ -107,12 +91,8 @@
       }
     },
     "number": {
-      "maximum_boiler_temperature": {
-        "name": "Maximum boiler temperature setpoint"
-      },
-      "domestic_hot_water_setpoint": {
-        "name": "Domestic hot water setpoint"
-      }
+      "maximum_boiler_temperature": {"name": "Maximum boiler temperature setpoint"},
+      "domestic_hot_water_setpoint": {"name": "Domestic hot water setpoint"}
     },
     "select": {
       "dhw_mode": {
@@ -134,23 +114,13 @@
           "off": "Off"
         }
       },
-      "thermostat_schedule": {
-        "name": "Thermostat schedule"
-      }
+      "thermostat_schedule": {"name": "Thermostat schedule"}
     },
     "switch": {
-      "cooling_ena_switch": {
-        "name": "Cooling"
-      },
-      "dhw_cm_switch": {
-        "name": "DHW comfort mode"
-      },
-      "lock": {
-        "name": "Lock"
-      },
-      "relay": {
-        "name": "Relay"
-      }
+      "cooling_ena_switch": {"name": "Cooling"},
+      "dhw_cm_switch": {"name": "DHW comfort mode"},
+      "lock": {"name": "Lock"},
+      "relay": {"name": "Relay"}
     }
   }
 }
