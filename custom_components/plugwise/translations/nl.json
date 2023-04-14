@@ -66,14 +66,14 @@
   },
   "entity": {
     "binary_sensor": {
-      "compressor_state": {"name": "Compressor status"},
-      "cooling_enabled": {"name": "Koelfunctie aan"},
-      "dhw_state": {"name": "DHW status"},
-      "flame_state": {"name": "Vlam status"},
-      "heating_state": {"name": "Verwarmen"},
-      "cooling_state": {"name": "Koelen"},
-      "slave_boiler_state": {"name": "Secundaire boiler status"},
-      "plugwise_notification": {"name": "Plugwise melding"}
+      "compressor_state": { "name": "Compressor status" },
+      "cooling_enabled": { "name": "Koelfunctie aan" },
+      "dhw_state": { "name": "DHW status" },
+      "flame_state": { "name": "Vlam status" },
+      "heating_state": { "name": "Verwarmen" },
+      "cooling_state": { "name": "Koelen" },
+      "slave_boiler_state": { "name": "Secundaire boiler status" },
+      "plugwise_notification": { "name": "Plugwise melding" }
     },
     "climate": {
       "plugwise": {
@@ -91,8 +91,10 @@
       }
     },
     "number": {
-      "maximum_boiler_temperature": {"name": "Max cv-ketel temperatuur"},
-      "domestic_hot_water_setpoint": {"name": "Max huishoudelijk warm water temperatuur"}
+      "maximum_boiler_temperature": { "name": "Max cv-ketel temperatuur" },
+      "domestic_hot_water_setpoint": {
+        "name": "Max huishoudelijk warm water temperatuur"
+      }
     },
     "select": {
       "dhw_mode": {
@@ -119,10 +121,10 @@
       }
     },
     "switch": {
-      "cooling_ena_switch": {"name": "Koelen"},
-      "dhw_cm_switch": {"name": "DHW comfort mode"},
-      "lock": {"name": "Slot"},
-      "relay": {"name": "Schakelaar"}
+      "cooling_ena_switch": { "name": "Koelen" },
+      "dhw_cm_switch": { "name": "DHW comfort mode" },
+      "lock": { "name": "Slot" },
+      "relay": { "name": "Schakelaar" }
     }
   }
 }
