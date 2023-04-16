@@ -29,12 +29,7 @@ from homeassistant.const import (
 )
 from homeassistant.helpers.entity import EntityDescription
 
-from .const import (
-    SMILE,
-    STICK,
-    USB_MOTION_ID,
-    USB_RELAY_ID,
-)
+from .const import SMILE, STICK, USB_MOTION_ID, USB_RELAY_ID
 
 
 @dataclass
