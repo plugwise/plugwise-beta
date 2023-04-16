@@ -149,8 +149,8 @@
       "electricity_produced_peak_cumulative": {"name": "Electricity produced peak cumulative"},
       "electricity_phase_one_consumed": {"name": "Electricity phase one consumed"},
       "electricity_phase_two_consumed": {"name": "Electricity phase two consumed"},
-      "electricity_phase_three_consumed": {"name": "Electricity phase three consumed"}
-      "electricity_phase_one_produced": {"name": "Electricity phase one produced"}
+      "electricity_phase_three_consumed": {"name": "Electricity phase three consumed"},
+      "electricity_phase_one_produced": {"name": "Electricity phase one produced"},
       "electricity_phase_two_produced": {"name": "Electricity phase two produced"},
       "electricity_phase_three_produced": {"name": "Electricity phase three produced"},
       "voltage_phase_one": {"name": "Voltage phase one"},
