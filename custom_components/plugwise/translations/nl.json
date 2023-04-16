@@ -169,7 +169,7 @@
       "water_pressure": {"name": "Water pressure"},
       "relative_humidity": {"name": "Relative humidity"},
       "dhw_temperature": {"name": "Domestic hot water temperature"},
-      "dhw_setpoint": {"name": "Domestic hot water setpoint"},
+      "domestic_hot_water_setpoint": {"name": "Domestic hot water setpoint"},
       "maximum_boiler_temperature": {"name": "Maximum boiler temperature"}
     },
     "switch": {
