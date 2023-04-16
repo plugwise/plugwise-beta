@@ -655,7 +655,6 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         plugwise_api=SMILE,
         key="relay",
         translation_key="relay",
-        plugwise_api=SMILE,
         device_class=SwitchDeviceClass.SWITCH,
     ),
     PlugwiseSwitchEntityDescription(
