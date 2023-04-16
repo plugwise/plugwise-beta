@@ -8,7 +8,7 @@
       "init": {
         "description": "Smile/Stretch Opties aanpassen",
         "data": {
-          "cooling_on": "Anna: koelmode is aan",
+          "cooling_on": "Anna: koelmodus is aan",
           "scan_interval": "Scan Interval (seconden) *) optie alleen in beta",
           "homekit_emulation": "Homekit emulatie (bij hvac_off => Afwezig) *) optie alleen in beta",
           "refresh_interval": "Frontend ververs-tijd (1,5 - 5 seconden) *) optie alleen in beta"
@@ -98,7 +98,7 @@
     },
     "select": {
       "dhw_mode": {
-        "name": "DHW mode",
+        "name": "Huishoudelijk warmwater modus",
         "state": {
           "auto": "Auto",
           "boost": "Boost",
@@ -121,100 +121,100 @@
       }
     },
     "sensor": {
-      "setpoint": { "name": "Setpoint" },
-      "cooling_setpoint": { "name": "Cooling setpoint" },
-      "heating_setpoint": { "name": " Heating setpoint" },
-      "temperature": { "name": "Temperature" },
-      "intended_boiler_temperature": { "name": "Intended boiler temperature" },
-      "temperature_difference": { "name": "Temperature difference" },
-      "outdoor_temperature": { "name": "Outdoor temperature" },
-      "outdoor_air_temperature": { "name": "Outdoor air temperature" },
-      "water_temperature": { "name": "Water temperature" },
-      "return_temperature": { "name": "Return temperature" },
-      "electricity_consumed": { "name": "Electricity consumed" },
-      "electricity_produced": { "name": "Electricity produced" },
-      "electricity_consumed_point": { "name": "Electricity consumed point" },
-      "electricity_produced_point": { "name": "Electricity produced point" },
+      "setpoint": { "name": "Instelling" },
+      "cooling_setpoint": { "name": "Instelling koelen" },
+      "heating_setpoint": { "name": " Instelling verwarmen" },
+      "temperature": { "name": "Temperatuur" },
+      "intended_boiler_temperature": { "name": "Boiler doel-temperature" },
+      "temperature_difference": { "name": "Temperatuur verschil" },
+      "outdoor_temperature": { "name": "Buiten temperatuur" },
+      "outdoor_air_temperature": { "name": "Buitenlucht temperatuur" },
+      "water_temperature": { "name": "Water temperatuur" },
+      "return_temperature": { "name": "Terugvoer temperatuur" },
+      "electricity_consumed": { "name": "Verbruikte electriciteit" },
+      "electricity_produced": { "name": "Teruggeleverde electriciteit" },
+      "electricity_consumed_point": { "name": "Electriciteitsgebruik" },
+      "electricity_produced_point": { "name": "Electriciteitsopwek" },
       "electricity_consumed_interval": {
-        "name": "Electricity consumed interval"
+        "name": "Electriciteitsgebruik - interval"
       },
       "electricity_consumed_peak_interval": {
-        "name": "Electricity consumed peak interval"
+        "name": "Electriciteitsgebruik - interval piek"
       },
       "electricity_consumed_off_peak_interval": {
-        "name": "Electricity consumed off peak interval"
+        "name": "Electriciteitsgebruik - interval dal"
       },
       "electricity_produced_interval": {
-        "name": "Electricity produced interval"
+        "name": "Electriciteitsopwek - interval"
       },
       "electricity_produced_peak_interval": {
-        "name": "Electricity produced peak interval"
+        "name": "Electriciteitsopwek - interval piek"
       },
       "electricity_produced_off_peak_interval": {
-        "name": "Electricity produced off peak interval"
+        "name": "Electriciteitsopwek - interval dal"
       },
       "electricity_consumed_off_peak_point": {
-        "name": "Electricity consumed off peak point"
+        "name": "ElectrElectriciteitsgebruik dal"
       },
       "electricity_consumed_peak_point": {
-        "name": "Electricity consumed peak point"
+        "name": "ElectrElectriciteitsgebruik piek"
       },
       "electricity_consumed_off_peak_cumulative": {
-        "name": "Electricity consumed off peak cumulative"
+        "name": "Electriciteitsgebruik - cumulatief dal"
       },
       "electricity_consumed_peak_cumulative": {
-        "name": "Electricity consumed peak cumulative"
+        "name": "Electriciteitsgebruik - cumulatief piek"
       },
       "electricity_produced_off_peak_point": {
-        "name": "Electricity produced off peak point"
+        "name": "Electriciteitsopwek - dal"
       },
       "electricity_produced_peak_point": {
-        "name": "Electricity produced peak point"
+        "name": "Electriciteitsopwek - piek"
       },
       "electricity_produced_off_peak_cumulative": {
-        "name": "Electricity produced off peak_cumulative"
+        "name": "Electriciteitsopwek - cumulatief dal"
       },
       "electricity_produced_peak_cumulative": {
-        "name": "Electricity produced peak cumulative"
+        "name": "Electriciteitsopwek - cumulatief piek"
       },
       "electricity_phase_one_consumed": {
-        "name": "Electricity phase one consumed"
+        "name": "Electriciteitsgebruik fase een"
       },
       "electricity_phase_two_consumed": {
-        "name": "Electricity phase two consumed"
+        "name": "Electriciteitsgebruik fase twee"
       },
       "electricity_phase_three_consumed": {
-        "name": "Electricity phase three consumed"
+        "name": "Electriciteitsgebruik fase drie"
       },
       "electricity_phase_one_produced": {
-        "name": "Electricity phase one produced"
+        "name": "Electriciteitsopwek fase een"
       },
       "electricity_phase_two_produced": {
-        "name": "Electricity phase two produced"
+        "name": "Electriciteitsopwek fase twee"
       },
       "electricity_phase_three_produced": {
-        "name": "Electricity phase three produced"
+        "name": "Electriciteitsopwek fase drie"
       },
-      "voltage_phase_one": { "name": "Voltage phase one" },
-      "voltage_phase_two": { "name": "Voltage phase two" },
-      "voltage_phase_three": { "name": "Voltage phase three" },
-      "gas_consumed_interval": { "name": "Gas consumed interval" },
-      "gas_consumed_cumulative": { "name": "Gas consumed cumulative" },
-      "net_electricity_point": { "name": "Net electricity point" },
-      "net_electricity_cumulative": { "name": "Net electricity cumulative" },
-      "battery": { "name": "Battery" },
-      "illuminance": { "name": "Illuminance" },
-      "modulation_level": { "name": "Modulation level" },
-      "valve_position": { "name": "Valve position" },
-      "water_pressure": { "name": "Water pressure" },
-      "relative_humidity": { "name": "Relative humidity" },
-      "dhw_temperature": { "name": "DHW temperature" },
-      "domestic_hot_water_setpoint": { "name": "DHW setpoint" },
-      "maximum_boiler_temperature": { "name": "Maximum boiler temperature" }
+      "voltage_phase_one": { "name": "Netspanning fase een" },
+      "voltage_phase_two": { "name": "Netspanning fase twee" },
+      "voltage_phase_three": { "name": "Netspanning fase drie" },
+      "gas_consumed_interval": { "name": "Gasverbruik - interval" },
+      "gas_consumed_cumulative": { "name": "Gasverbruik - cumulatief" },
+      "net_electricity_point": { "name": "Netto electriciteitsgebruik" },
+      "net_electricity_cumulative": { "name": "Netto electriciteitsgebruik - cumulatief" },
+      "battery": { "name": "Batterij" },
+      "illuminance": { "name": "Lichtsterkte" },
+      "modulation_level": { "name": "Modulatie" },
+      "valve_position": { "name": "Kleppositie" },
+      "water_pressure": { "name": "Waterdruk" },
+      "relative_humidity": { "name": "Relatieve luchtvochtigheid" },
+      "dhw_temperature": { "name": "Huishoudelijk warmwater temperatuur" },
+      "domestic_hot_water_setpoint": { "name": "Huishoudelijk warmwater instelling" },
+      "maximum_boiler_temperature": { "name": "Maximum boiler temperatuurinstelling" }
     },
     "switch": {
       "cooling_ena_switch": { "name": "Koelen" },
-      "dhw_cm_switch": { "name": "DHW comfort mode" },
+      "dhw_cm_switch": { "name": "Huishoudelijk warmwater comfort modus" },
       "lock": { "name": "Slot" },
       "relay": { "name": "Schakelaar" }
     }
