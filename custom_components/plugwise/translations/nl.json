@@ -201,7 +201,9 @@
       "gas_consumed_interval": { "name": "Gasverbruik - interval" },
       "gas_consumed_cumulative": { "name": "Gasverbruik - cumulatief" },
       "net_electricity_point": { "name": "Netto electriciteitsgebruik" },
-      "net_electricity_cumulative": { "name": "Netto electriciteitsgebruik - cumulatief" },
+      "net_electricity_cumulative": {
+        "name": "Netto electriciteitsgebruik - cumulatief"
+      },
       "battery": { "name": "Batterij" },
       "illuminance": { "name": "Lichtsterkte" },
       "modulation_level": { "name": "Modulatie" },
@@ -209,8 +211,12 @@
       "water_pressure": { "name": "Waterdruk" },
       "relative_humidity": { "name": "Relatieve luchtvochtigheid" },
       "dhw_temperature": { "name": "Huishoudelijk warmwater temperatuur" },
-      "domestic_hot_water_setpoint": { "name": "Huishoudelijk warmwater instelling" },
-      "maximum_boiler_temperature": { "name": "Maximum boiler temperatuurinstelling" }
+      "domestic_hot_water_setpoint": {
+        "name": "Huishoudelijk warmwater instelling"
+      },
+      "maximum_boiler_temperature": {
+        "name": "Maximum boiler temperatuurinstelling"
+      }
     },
     "switch": {
       "cooling_ena_switch": { "name": "Koelen" },
