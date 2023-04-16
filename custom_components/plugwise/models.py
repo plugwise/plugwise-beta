@@ -611,8 +611,8 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
     ),
     PlugwiseSensorEntityDescription(
         plugwise_api=SMILE,
-        key="dhw_setpoint",
-        translation_key="dhw_setpoint",
+        key="domestic_hot_water_setpoint",
+        translation_key="domestic_hot_water_setpoint",
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
