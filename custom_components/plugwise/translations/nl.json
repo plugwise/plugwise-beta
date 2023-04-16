@@ -168,7 +168,7 @@
       "valve_position": {"name": "Valve position"},
       "water_pressure": {"name": "Water pressure"},
       "relative_humidity": {"name": "Relative humidity"},
-      "dhw_temperature": {"name": "Domestic hot water temperature"},
+      "dhw_temperature": {"name": "DHW temperature"},
       "domestic_hot_water_setpoint": {"name": "DHW setpoint"},
       "maximum_boiler_temperature": {"name": "Maximum boiler temperature"}
     },
