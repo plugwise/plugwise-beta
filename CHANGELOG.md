@@ -4,8 +4,8 @@
 
 ### NEW APR 2023 [0.34.10] Implement latest Core PR's
 
--[88967](https://github.com/home-assistant/core/pull/88967) -[90537](https://github.com/home-assistant/core/pull/90537)
-
+- Core PR #[88967](https://github.com/home-assistant/core/pull/88967)
+- Core PR #[90537](https://github.com/home-assistant/core/pull/90537)
 - Implement name translations for sensors (translation_key)
 
 ## APR 2023 [0.34.9] Bugfixes for Stick and Anna + Elga
