@@ -2,7 +2,13 @@
 
 ## Versions from 0.30 and up
 
-### NEW MAR 2023 [0.34.9] Bugfixes for Stick and Anna + Elga
+### NEW APR 2023 [0.34.10] Implement latest Core PR's
+
+- Core PR #[88967](https://github.com/home-assistant/core/pull/88967)
+- Core PR #[90537](https://github.com/home-assistant/core/pull/90537)
+- Implement name translations for sensors (translation_key)
+
+## APR 2023 [0.34.9] Bugfixes for Stick and Anna + Elga
 
 - Stick: 2nd fix for #369, merge PR #374 by @mvdwetering
 - Final fix for #320 - via plugwise [v0.27.10](https://github.com/plugwise/python-plugwise/releases/tag/v0.27.10)

@@ -9,9 +9,9 @@
         "description": "Adjust Smile/Stretch Options",
         "data": {
           "cooling_on": "Anna: cooling-mode is on",
-          "scan_interval": "Scan Interval (seconds)",
-          "homekit_emulation": "Homekit emulation (i.e. on hvac_off => Away)",
-          "refresh_interval": "Frontend refresh-time (1.5 - 5 seconds)"
+          "scan_interval": "Scan Interval (seconds) *) beta-only option",
+          "homekit_emulation": "Homekit emulation (i.e. on hvac_off => Away) *) beta-only option",
+          "refresh_interval": "Frontend refresh-time (1.5 - 5 seconds) *) beta-only option"
         }
       }
     }
@@ -39,32 +39,42 @@
         "title": "Connect to Plugwise Stick",
         "description": "Please enter:",
         "data": {
-          "usb_path": "[%key:common::config_flow::data::usb_path%]"
+          "usb_path": "USB-path"
         }
       },
       "manual_path": {
         "data": {
-          "usb_path": "[%key:common::config_flow::data::usb_path%]"
+          "usb_path": "USB-path"
         }
       }
     },
     "error": {
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "cannot_connect": "Failed to connect",
       "invalid_auth": "Authentication failed",
       "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "response_error": "Invalid XML data, or error indication received",
       "stick_init": "Initialization of Plugwise USB-stick failed",
-      "unknown": "[%key:common::config_flow::error::unknown%]",
+      "unknown": "Unknown error!",
       "unsupported": "Device with unsupported firmware"
     },
     "abort": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_service%]",
+      "already_configured": "This device is already configured",
       "anna_with_adam": "Both Anna and Adam detected. Add your Adam instead of your Anna"
     }
   },
   "entity": {
+    "binary_sensor": {
+      "compressor_state": { "name": "Compressor state" },
+      "cooling_enabled": { "name": "Cooling enabled" },
+      "dhw_state": { "name": "DHW state" },
+      "flame_state": { "name": "Flame state" },
+      "heating_state": { "name": "Heating" },
+      "cooling_state": { "name": "Cooling" },
+      "slave_boiler_state": { "name": "Secondary boiler state" },
+      "plugwise_notification": { "name": "Plugwise notification" }
+    },
     "climate": {
       "plugwise": {
         "state_attributes": {
@@ -80,8 +90,15 @@
         }
       }
     },
+    "number": {
+      "maximum_boiler_temperature": {
+        "name": "Maximum boiler temperature setpoint"
+      },
+      "domestic_hot_water_setpoint": { "name": "Domestic hot water setpoint" }
+    },
     "select": {
       "dhw_mode": {
+        "name": "DHW mode",
         "state": {
           "off": "Off",
           "auto": "Auto",
@@ -90,6 +107,7 @@
         }
       },
       "regulation_mode": {
+        "name": "Regulation mode",
         "state": {
           "bleeding_cold": "Bleeding cold",
           "bleeding_hot": "Bleeding hot",
@@ -97,7 +115,106 @@
           "heating": "Heating",
           "off": "Off"
         }
-      }
+      },
+      "thermostat_schedule": { "name": "Thermostat schedule" }
+    },
+    "sensor": {
+      "setpoint": { "name": "Setpoint" },
+      "cooling_setpoint": { "name": "Cooling setpoint" },
+      "heating_setpoint": { "name": " Heating setpoint" },
+      "temperature": { "name": "Temperature" },
+      "intended_boiler_temperature": { "name": "Intended boiler temperature" },
+      "temperature_difference": { "name": "Temperature difference" },
+      "outdoor_temperature": { "name": "Outdoor temperature" },
+      "outdoor_air_temperature": { "name": "Outdoor air temperature" },
+      "water_temperature": { "name": "Water temperature" },
+      "return_temperature": { "name": "Return temperature" },
+      "electricity_consumed": { "name": "Electricity consumed" },
+      "electricity_produced": { "name": "Electricity produced" },
+      "electricity_consumed_point": { "name": "Electricity consumed point" },
+      "electricity_produced_point": { "name": "Electricity produced point" },
+      "electricity_consumed_interval": {
+        "name": "Electricity consumed interval"
+      },
+      "electricity_consumed_peak_interval": {
+        "name": "Electricity consumed peak interval"
+      },
+      "electricity_consumed_off_peak_interval": {
+        "name": "Electricity consumed off peak interval"
+      },
+      "electricity_produced_interval": {
+        "name": "Electricity produced interval"
+      },
+      "electricity_produced_peak_interval": {
+        "name": "Electricity produced peak interval"
+      },
+      "electricity_produced_off_peak_interval": {
+        "name": "Electricity produced off peak interval"
+      },
+      "electricity_consumed_off_peak_point": {
+        "name": "Electricity consumed off peak point"
+      },
+      "electricity_consumed_peak_point": {
+        "name": "Electricity consumed peak point"
+      },
+      "electricity_consumed_off_peak_cumulative": {
+        "name": "Electricity consumed off peak cumulative"
+      },
+      "electricity_consumed_peak_cumulative": {
+        "name": "Electricity consumed peak cumulative"
+      },
+      "electricity_produced_off_peak_point": {
+        "name": "Electricity produced off peak point"
+      },
+      "electricity_produced_peak_point": {
+        "name": "Electricity produced peak point"
+      },
+      "electricity_produced_off_peak_cumulative": {
+        "name": "Electricity produced off peak_cumulative"
+      },
+      "electricity_produced_peak_cumulative": {
+        "name": "Electricity produced peak cumulative"
+      },
+      "electricity_phase_one_consumed": {
+        "name": "Electricity phase one consumed"
+      },
+      "electricity_phase_two_consumed": {
+        "name": "Electricity phase two consumed"
+      },
+      "electricity_phase_three_consumed": {
+        "name": "Electricity phase three consumed"
+      },
+      "electricity_phase_one_produced": {
+        "name": "Electricity phase one produced"
+      },
+      "electricity_phase_two_produced": {
+        "name": "Electricity phase two produced"
+      },
+      "electricity_phase_three_produced": {
+        "name": "Electricity phase three produced"
+      },
+      "voltage_phase_one": { "name": "Voltage phase one" },
+      "voltage_phase_two": { "name": "Voltage phase two" },
+      "voltage_phase_three": { "name": "Voltage phase three" },
+      "gas_consumed_interval": { "name": "Gas consumed interval" },
+      "gas_consumed_cumulative": { "name": "Gas consumed cumulative" },
+      "net_electricity_point": { "name": "Net electricity point" },
+      "net_electricity_cumulative": { "name": "Net electricity cumulative" },
+      "battery": { "name": "Battery" },
+      "illuminance": { "name": "Illuminance" },
+      "modulation_level": { "name": "Modulation level" },
+      "valve_position": { "name": "Valve position" },
+      "water_pressure": { "name": "Water pressure" },
+      "relative_humidity": { "name": "Relative humidity" },
+      "dhw_temperature": { "name": "DHW temperature" },
+      "domestic_hot_water_setpoint": { "name": "DHW setpoint" },
+      "maximum_boiler_temperature": { "name": "Maximum boiler temperature" }
+    },
+    "switch": {
+      "cooling_ena_switch": { "name": "Cooling" },
+      "dhw_cm_switch": { "name": "DHW comfort mode" },
+      "lock": { "name": "Lock" },
+      "relay": { "name": "Relay" }
     }
   }
 }

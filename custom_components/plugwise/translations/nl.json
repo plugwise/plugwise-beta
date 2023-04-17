@@ -8,7 +8,7 @@
       "init": {
         "description": "Smile/Stretch Opties aanpassen",
         "data": {
-          "cooling_on": "Anna: koelmode is aan",
+          "cooling_on": "Anna: koelmodus is aan",
           "scan_interval": "Scan Interval (seconden) *) optie alleen in beta",
           "homekit_emulation": "Homekit emulatie (bij hvac_off => Afwezig) *) optie alleen in beta",
           "refresh_interval": "Frontend ververs-tijd (1,5 - 5 seconden) *) optie alleen in beta"
@@ -39,12 +39,12 @@
         "title": "Verbinden met de Plugwise Stick",
         "description": "Aub invoeren:",
         "data": {
-          "usb_path": "USB pad"
+          "usb_path": "USB-pad"
         }
       },
       "manual_path": {
         "data": {
-          "usb_path": "USB pad"
+          "usb_path": "USB-pad"
         }
       }
     },
@@ -65,6 +65,16 @@
     }
   },
   "entity": {
+    "binary_sensor": {
+      "compressor_state": { "name": "Compressor status" },
+      "cooling_enabled": { "name": "Koelfunctie aan" },
+      "dhw_state": { "name": "DHW status" },
+      "flame_state": { "name": "Vlam status" },
+      "heating_state": { "name": "Verwarmen" },
+      "cooling_state": { "name": "Koelen" },
+      "slave_boiler_state": { "name": "Secundaire boiler status" },
+      "plugwise_notification": { "name": "Plugwise melding" }
+    },
     "climate": {
       "plugwise": {
         "state_attributes": {
@@ -80,8 +90,15 @@
         }
       }
     },
+    "number": {
+      "maximum_boiler_temperature": { "name": "Max cv-ketel temperatuur" },
+      "domestic_hot_water_setpoint": {
+        "name": "Max huishoudelijk warm water temperatuur"
+      }
+    },
     "select": {
       "dhw_mode": {
+        "name": "Huishoudelijk warmwater modus",
         "state": {
           "auto": "Auto",
           "boost": "Boost",
@@ -90,6 +107,7 @@
         }
       },
       "regulation_mode": {
+        "name": "Verwarmingsregeling",
         "state": {
           "bleeding_cold": "Koud ontluchten",
           "bleeding_hot": "Warm ontluchten",
@@ -97,7 +115,114 @@
           "heating": "Verwarmen",
           "off": "Uit"
         }
+      },
+      "thermostat_schedule": {
+        "name": "Thermostaat schema"
       }
+    },
+    "sensor": {
+      "setpoint": { "name": "Instelling" },
+      "cooling_setpoint": { "name": "Instelling koelen" },
+      "heating_setpoint": { "name": " Instelling verwarmen" },
+      "temperature": { "name": "Temperatuur" },
+      "intended_boiler_temperature": { "name": "Boiler doel-temperature" },
+      "temperature_difference": { "name": "Temperatuur verschil" },
+      "outdoor_temperature": { "name": "Buiten temperatuur" },
+      "outdoor_air_temperature": { "name": "Buitenlucht temperatuur" },
+      "water_temperature": { "name": "Water temperatuur" },
+      "return_temperature": { "name": "Terugvoer temperatuur" },
+      "electricity_consumed": { "name": "Verbruikte electriciteit" },
+      "electricity_produced": { "name": "Teruggeleverde electriciteit" },
+      "electricity_consumed_point": { "name": "Electriciteitsgebruik" },
+      "electricity_produced_point": { "name": "Electriciteitsopwek" },
+      "electricity_consumed_interval": {
+        "name": "Electriciteitsgebruik - interval"
+      },
+      "electricity_consumed_peak_interval": {
+        "name": "Electriciteitsgebruik - interval piek"
+      },
+      "electricity_consumed_off_peak_interval": {
+        "name": "Electriciteitsgebruik - interval dal"
+      },
+      "electricity_produced_interval": {
+        "name": "Electriciteitsopwek - interval"
+      },
+      "electricity_produced_peak_interval": {
+        "name": "Electriciteitsopwek - interval piek"
+      },
+      "electricity_produced_off_peak_interval": {
+        "name": "Electriciteitsopwek - interval dal"
+      },
+      "electricity_consumed_off_peak_point": {
+        "name": "Electriciteitsgebruik dal"
+      },
+      "electricity_consumed_peak_point": {
+        "name": "Electriciteitsgebruik piek"
+      },
+      "electricity_consumed_off_peak_cumulative": {
+        "name": "Electriciteitsgebruik - cumulatief dal"
+      },
+      "electricity_consumed_peak_cumulative": {
+        "name": "Electriciteitsgebruik - cumulatief piek"
+      },
+      "electricity_produced_off_peak_point": {
+        "name": "Electriciteitsopwek - dal"
+      },
+      "electricity_produced_peak_point": {
+        "name": "Electriciteitsopwek - piek"
+      },
+      "electricity_produced_off_peak_cumulative": {
+        "name": "Electriciteitsopwek - cumulatief dal"
+      },
+      "electricity_produced_peak_cumulative": {
+        "name": "Electriciteitsopwek - cumulatief piek"
+      },
+      "electricity_phase_one_consumed": {
+        "name": "Electriciteitsgebruik fase een"
+      },
+      "electricity_phase_two_consumed": {
+        "name": "Electriciteitsgebruik fase twee"
+      },
+      "electricity_phase_three_consumed": {
+        "name": "Electriciteitsgebruik fase drie"
+      },
+      "electricity_phase_one_produced": {
+        "name": "Electriciteitsopwek fase een"
+      },
+      "electricity_phase_two_produced": {
+        "name": "Electriciteitsopwek fase twee"
+      },
+      "electricity_phase_three_produced": {
+        "name": "Electriciteitsopwek fase drie"
+      },
+      "voltage_phase_one": { "name": "Netspanning fase een" },
+      "voltage_phase_two": { "name": "Netspanning fase twee" },
+      "voltage_phase_three": { "name": "Netspanning fase drie" },
+      "gas_consumed_interval": { "name": "Gasverbruik - interval" },
+      "gas_consumed_cumulative": { "name": "Gasverbruik - cumulatief" },
+      "net_electricity_point": { "name": "Netto electriciteitsgebruik" },
+      "net_electricity_cumulative": {
+        "name": "Netto electriciteitsgebruik - cumulatief"
+      },
+      "battery": { "name": "Batterij" },
+      "illuminance": { "name": "Lichtsterkte" },
+      "modulation_level": { "name": "Modulatie" },
+      "valve_position": { "name": "Kleppositie" },
+      "water_pressure": { "name": "Waterdruk" },
+      "relative_humidity": { "name": "Relatieve luchtvochtigheid" },
+      "dhw_temperature": { "name": "Huishoudelijk warmwater temperatuur" },
+      "domestic_hot_water_setpoint": {
+        "name": "Huishoudelijk warmwater instelling"
+      },
+      "maximum_boiler_temperature": {
+        "name": "Maximum boiler temperatuurinstelling"
+      }
+    },
+    "switch": {
+      "cooling_ena_switch": { "name": "Koelen" },
+      "dhw_cm_switch": { "name": "Huishoudelijk warmwater comfort modus" },
+      "lock": { "name": "Slot" },
+      "relay": { "name": "Schakelaar" }
     }
   }
 }
