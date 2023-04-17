@@ -154,10 +154,10 @@
         "name": "Electriciteitsopwek - interval dal"
       },
       "electricity_consumed_off_peak_point": {
-        "name": "ElectrElectriciteitsgebruik dal"
+        "name": "Electriciteitsgebruik dal"
       },
       "electricity_consumed_peak_point": {
-        "name": "ElectrElectriciteitsgebruik piek"
+        "name": "Electriciteitsgebruik piek"
       },
       "electricity_consumed_off_peak_cumulative": {
         "name": "Electriciteitsgebruik - cumulatief dal"
