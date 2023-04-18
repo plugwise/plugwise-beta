@@ -17,7 +17,7 @@ set -e
 # Which packages to install (to prevent installing all test requirements)
 # actual package version ARE verified (i.e. grepped) from requirements_test_all
 # separate packages with |
-pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic"
+pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic"
 
 echo ""
 echo "Checking for necessary tools and preparing setup:"
@@ -163,7 +163,7 @@ fi # core_prep
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then 
 	cd "${coredir}" || exit
 	if [ -z "${GITHUB_ACTIONS}" ] ; then 
-		echo "Activating venv and installing selected test modules (zeroconf,pyserial, etc)"
+		echo "Activating venv and installing selected test modules (zeroconf, etc)"
 		echo ""
 		# shellcheck source=/dev/null
 		. venv/bin/activate
