@@ -4,11 +4,9 @@ from __future__ import annotations
 import datetime as dt  # pw-beta options
 from typing import Any
 
-import serial.tools.list_ports  # pw-beta usb
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.components import usb  # pw-beta usb
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
 from homeassistant.config_entries import ConfigEntry, ConfigFlow
 from homeassistant.const import (
@@ -24,6 +22,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from plugwise import Smile
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -33,83 +32,21 @@ from plugwise.exceptions import (
     UnsupportedDeviceError,
 )
 
-# pw-beta Note; the below are explicit through isort
-from plugwise.exceptions import NetworkDown  # pw-beta usb
-from plugwise.exceptions import PortError  # pw-beta usb
-from plugwise.exceptions import StickInitError  # pw-beta usb
-from plugwise.exceptions import TimeoutException  # pw-beta usb
-from plugwise.smile import Smile
-from plugwise.stick import Stick  # pw-beta usb
-
 from .const import (
-    API,
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_USERNAME,
     DOMAIN,
     FLOW_SMILE,
     FLOW_STRETCH,
-    PW_TYPE,
     SMILE,
     STRETCH,
     STRETCH_USERNAME,
     ZEROCONF_MAP,
 )
-
-# pw-beta Note; the below are explicit through isort
 from .const import CONF_HOMEKIT_EMULATION  # pw-beta option
-from .const import CONF_MANUAL_PATH  # pw-beta usb
 from .const import CONF_REFRESH_INTERVAL  # pw-beta option
-from .const import CONF_USB_PATH  # pw-beta usb
 from .const import DEFAULT_SCAN_INTERVAL  # pw-beta option
-from .const import FLOW_NET  # pw-beta usb
-from .const import FLOW_TYPE  # pw-beta usb
-from .const import FLOW_USB  # pw-beta usb
-from .const import STICK  # pw-beta usb
-
-CONNECTION_SCHEMA = vol.Schema(
-    {vol.Required(FLOW_TYPE, default=FLOW_NET): vol.In([FLOW_NET, FLOW_USB])}
-)  # pw-beta usb
-
-
-@callback
-def plugwise_stick_entries(hass):  # pw-beta usb
-    """Return existing connections for Plugwise USB-stick domain."""
-    sticks = []
-    for entry in hass.config_entries.async_entries(DOMAIN):
-        if entry.data.get(PW_TYPE) == STICK:
-            sticks.append(entry.data.get(CONF_USB_PATH))
-    return sticks
-
-
-# Github issue: #265
-# Might be a `tuple[dict[str, str], Stick | None]` for typing, but that throws
-# Item None of Optional[Any] not having attribute mac [union-attr]
-async def validate_usb_connection(
-    self, device_path=None
-) -> tuple[dict[str, str], Any]:  # pw-beta usb
-    """Test if device_path is a real Plugwise USB-Stick."""
-    errors = {}
-
-    # Avoid creating a 2nd connection to an already configured stick
-    if device_path in plugwise_stick_entries(self):
-        errors[CONF_BASE] = "already_configured"
-        return errors, None
-
-    api_stick = await self.async_add_executor_job(Stick, device_path)
-    try:
-        await self.async_add_executor_job(api_stick.connect)
-        await self.async_add_executor_job(api_stick.initialize_stick)
-        await self.async_add_executor_job(api_stick.disconnect)
-    except PortError:
-        errors[CONF_BASE] = "cannot_connect"
-    except StickInitError:
-        errors[CONF_BASE] = "stick_init"
-    except NetworkDown:
-        errors[CONF_BASE] = "network_down"
-    except TimeoutException:
-        errors[CONF_BASE] = "network_timeout"
-    return errors, api_stick
 
 
 def _base_gw_schema(
@@ -242,75 +179,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 "product": _product,
             }
         )
-        return await self.async_step_user_gateway()
+        return await self.async_step_user()
 
-    async def async_step_user_usb(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:  # pw-beta usb
-        """Step when user initializes a integration."""
-        errors: dict[str, str] = {}
-        ports = await self.hass.async_add_executor_job(serial.tools.list_ports.comports)
-        list_of_ports = [
-            f"{p}, s/n: {p.serial_number or 'n/a'}"
-            + (f" - {p.manufacturer}" if p.manufacturer else "")
-            for p in ports
-        ]
-        list_of_ports.append(CONF_MANUAL_PATH)
-
-        if user_input is not None:
-            user_input.pop(FLOW_TYPE, None)
-            user_selection = user_input[CONF_USB_PATH]
-
-            if user_selection == CONF_MANUAL_PATH:
-                return await self.async_step_manual_path()
-
-            port = ports[list_of_ports.index(user_selection)]
-            device_path = await self.hass.async_add_executor_job(
-                usb.get_serial_by_id, port.device
-            )
-            errors, api_stick = await validate_usb_connection(self.hass, device_path)
-            if not errors:
-                await self.async_set_unique_id(api_stick.mac)
-                return self.async_create_entry(
-                    title="Stick", data={CONF_USB_PATH: device_path, PW_TYPE: STICK}
-                )
-        return self.async_show_form(
-            step_id="user_usb",
-            data_schema=vol.Schema(
-                {vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}
-            ),
-            errors=errors,
-        )
-
-    async def async_step_manual_path(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:  # pw-beta usb
-        """Step when manual path to device."""
-        errors: dict[str, str] = {}
-        if user_input is not None:
-            user_input.pop(FLOW_TYPE, None)
-            device_path = await self.hass.async_add_executor_job(
-                usb.get_serial_by_id, user_input.get(CONF_USB_PATH)
-            )
-            errors, api_stick = await validate_usb_connection(self.hass, device_path)
-            if not errors:
-                await self.async_set_unique_id(api_stick.mac)
-                return self.async_create_entry(
-                    title="Stick", data={CONF_USB_PATH: device_path}
-                )
-        return self.async_show_form(
-            step_id="manual_path",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_USB_PATH, default="/dev/ttyUSB0" or vol.UNDEFINED
-                    ): str
-                }
-            ),
-            errors=errors,
-        )
-
-    async def async_step_user_gateway(
+    async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the initial step when using network/gateway setups."""
@@ -318,7 +189,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if not user_input:
             return self.async_show_form(
-                step_id="user_gateway",
+                step_id="user",
                 data_schema=_base_gw_schema(self.discovery_info, None),
                 errors=errors,
             )
@@ -344,7 +215,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if errors:
             return self.async_show_form(
-                step_id="user_gateway",
+                step_id="user",
                 data_schema=_base_gw_schema(None, user_input),
                 errors=errors,
             )
@@ -354,26 +225,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         )
         self._abort_if_unique_id_configured()
 
-        user_input[PW_TYPE] = API
         return self.async_create_entry(title=api.smile_name, data=user_input)
-
-    async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
-        """Handle the initial step when using network/gateway setups."""
-        errors: dict[str, str] = {}
-        if user_input is not None:
-            if user_input[FLOW_TYPE] == FLOW_NET:
-                return await self.async_step_user_gateway()
-
-            if user_input[FLOW_TYPE] == FLOW_USB:
-                return await self.async_step_user_usb()
-
-        return self.async_show_form(
-            step_id="user",
-            data_schema=CONNECTION_SCHEMA,
-            errors=errors,
-        )
 
     @staticmethod
     @callback

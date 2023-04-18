@@ -182,7 +182,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo " - ruff"
 	pip install --upgrade -q ruff
 	echo ""
-	module=$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
+	# When using test.py prettier makes multi-line, so use jq
+	module=$(jq '.requirements[]' ../custom_components/plugwise/manifest.json | tr -d '"')
+	#module=$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
 	echo "Checking manifest for current python-plugwise to install: ${module}"
 	echo ""
 	pip install --upgrade -q --disable-pip-version-check "${module}"
