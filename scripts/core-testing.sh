@@ -17,7 +17,7 @@ set -e
 # Which packages to install (to prevent installing all test requirements)
 # actual package version ARE verified (i.e. grepped) from requirements_test_all
 # separate packages with |
-pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic"
+pip_packages="fnvhash|lru-dict|voluptuous|pyroute2|sqlalchemy|pyserial|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic"
 
 echo ""
 echo "Checking for necessary tools and preparing setup:"
@@ -26,7 +26,7 @@ which git || ( echo "You should have git installed, exiting"; exit 1)
 
 which jq || ( echo "You should have jq installed, exiting"; exit 1)
 
-# Cloned/adjusted code from python-plugwise, note that we don't actually
+# Cloned/adjusted code from python-plugwise-usb, note that we don't actually
 # use the 'venv', but instantiate it to ensure it works in the
 # ha-core testing later on
 
@@ -144,26 +144,31 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		git pull
 	fi
 	# Add tracker
-	git log -1 | head -1 > "${coredir}/.git/plugwise-tracking"
+	git log -1 | head -1 > "${coredir}/.git/plugwise_usb-tracking"
 	# Fake branch
 	git checkout -b fake_branch
 
 	echo ""
-	echo "Cleaning existing plugwise from HA core"
+	echo "Cleaning existing plugwise_usb from HA core"
 	echo ""
-	rm -r homeassistant/components/plugwise tests/components/plugwise
+	if [ -d homeassistant/components/plugwise_usb ]; then
+		rm -r homeassistant/components/plugwise_usb 
+	fi
+	if [ -d tests/components/plugwise_usb  ]; then
+		rm -r tests/components/plugwise_usb
+	fi
 	echo ""
-	echo "Overwriting with plugwise-beta"
+	echo "Overwriting with plugwise_usb-beta"
 	echo ""
-	cp -r ../custom_components/plugwise ./homeassistant/components/
-	cp -r ../tests/components/plugwise ./tests/components/
+	cp -r ../custom_components/plugwise_usb ./homeassistant/components/
+	cp -r ../tests/components/plugwise_usb ./tests/components/
 	echo ""
 fi # core_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then 
 	cd "${coredir}" || exit
 	if [ -z "${GITHUB_ACTIONS}" ] ; then 
-		echo "Activating venv and installing selected test modules (zeroconf,pyserial, etc)"
+		echo "Activating venv and installing selected test modules (pyserial, etc)"
 		echo ""
 		# shellcheck source=/dev/null
 		. venv/bin/activate
@@ -177,13 +182,15 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo " - HA requirements (core and test)"
 	pip install --upgrade -q --disable-pip-version-check -r requirements.txt -r requirements_test.txt
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
-	echo " - extra's required for plugwise"
+	echo " - extra's required for plugwise_usb"
 	pip install --upgrade -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
 	echo " - ruff"
 	pip install --upgrade -q ruff
 	echo ""
-	module=$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
-	echo "Checking manifest for current python-plugwise to install: ${module}"
+        # When using test.py prettier makes multi-line, so use jq
+	#module=$(grep require ../custom_components/plugwise_usb/manifest.json | cut -f 4 -d '"')
+        module=$(jq '.requirements[]' ../custom_components/plugwise_usb/manifest.json | tr -d '"')
+	echo "Checking manifest for current python-plugwise-usb to install: ${module}"
 	echo ""
 	pip install --upgrade -q --disable-pip-version-check "${module}"
 fi # pip_prep
@@ -198,20 +205,20 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
         	debug_params="-rpP --log-cli-level=DEBUG"
 	fi
 	# shellcheck disable=SC2086
-	pytest ${debug_params} ${subject} --cov=homeassistant/components/plugwise/ --cov-report term-missing -- "tests/components/plugwise/${basedir}" || exit
+	pytest ${debug_params} ${subject} --cov=homeassistant/components/plugwise_usb/ --cov-report term-missing -- "tests/components/plugwise_usb/${basedir}" || exit
 fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
 	cd "${coredir}" || exit
 	echo ""
 	echo "... ruff-ing component..."
-	ruff homeassistant/components/plugwise/*py || exit
+	ruff homeassistant/components/plugwise_usb/*py || exit
 	echo "... ruff-ing tests..."
-	ruff tests/components/plugwise/*py || exit
+	ruff tests/components/plugwise_usb/*py || exit
 	echo "... black-ing ..."
-	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
+	black homeassistant/components/plugwise_usb/*py tests/components/plugwise_usb/*py || exit
 	echo "... mypy ..."
-	script/run-in-env.sh mypy homeassistant/components/plugwise/*.py || exit
+	script/run-in-env.sh mypy homeassistant/components/plugwise_usb/*.py || exit
 	cd ..
 	echo "... markdownlint ..."
 	pre-commit run --all-files --hook-stage manual markdownlint
@@ -224,20 +231,20 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo ""
 	echo "Copy back modified files ..."
 	echo ""
-	cp -r ./homeassistant/components/plugwise ../custom_components/
-	cp -r ./tests/components/plugwise ../tests/components/
+	cp -r ./homeassistant/components/plugwise_usb ../custom_components/
+	cp -r ./tests/components/plugwise_usb ../tests/components/
 	echo "Removing 'version' from manifest for hassfest-ing, version not allowed in core components"
 	echo ""
 	# shellcheck disable=SC2090
-	src_manifest="../custom_components/plugwise/manifest.json"
-	dst_manifest="./homeassistant/components/plugwise/manifest.json"
+	src_manifest="../custom_components/plugwise_usb/manifest.json"
+	dst_manifest="./homeassistant/components/plugwise_usb/manifest.json"
         jq 'del(.version)' ${src_manifest} | tee ${dst_manifest}
-	grep -q -E 'require.*http.*test-files.pythonhosted.*#' ./homeassistant/components/plugwise/manifest.json && (
+	grep -q -E 'require.*http.*test-files.pythonhosted.*#' ./homeassistant/components/plugwise_usb/manifest.json && (
 	  echo "Changing requirement for hassfest pass ...."
 	  # shellcheck disable=SC2090
-	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise/manifest.json
+	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise_usb/manifest.json
 	)
-	echo "Running hassfest for plugwise"
+	echo "Running hassfest for plugwise_usb"
 	python3 -m script.hassfest --requirements --action validate
 fi
 

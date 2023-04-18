@@ -1,4 +1,4 @@
-"""Support for Plugwise devices connected to a Plugwise USB-stick."""
+"""Support for Plugwise USB devices connected to a Plugwise USB-stick."""
 import asyncio
 import logging
 
@@ -8,15 +8,15 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity import Entity
-from plugwise.exceptions import (
+from plugwise_usb import Stick
+from plugwise_usb.exceptions import (
     CirclePlusError,
     NetworkDown,
     PortError,
     StickInitError,
     TimeoutException,
 )
-from plugwise.nodes import PlugwiseNode
-from plugwise.stick import Stick
+from plugwise_usb.nodes import PlugwiseNode
 
 from .const import (
     ATTR_MAC_ADDRESS,
@@ -24,13 +24,11 @@ from .const import (
     CONF_USB_PATH,
     DOMAIN,
     PLATFORMS_USB,
-    PW_TYPE,
     SERVICE_USB_DEVICE_ADD,
     SERVICE_USB_DEVICE_REMOVE,
     SERVICE_USB_DEVICE_SCHEMA,
     STICK,
     UNDO_UPDATE_LISTENER,
-    USB,
     USB_AVAILABLE_ID,
     USB_MOTION_ID,
     USB_RELAY_ID,
@@ -40,7 +38,7 @@ from .models import PlugwiseEntityDescription
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Establish connection with plugwise USB-stick."""
     hass.data.setdefault(DOMAIN, {})
     device_registry = dr.async_get(hass)
@@ -99,7 +97,7 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
         hass.async_add_executor_job(api_stick.disconnect)
 
     api_stick = Stick(config_entry.data[CONF_USB_PATH])
-    hass.data[DOMAIN][config_entry.entry_id] = {PW_TYPE: USB, STICK: api_stick}
+    hass.data[DOMAIN][config_entry.entry_id] = {STICK: api_stick}
     try:
         _LOGGER.debug("Connect to USB-Stick")
         await hass.async_add_executor_job(api_stick.connect)
@@ -167,8 +165,8 @@ async def async_setup_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
     return True
 
 
-async def async_unload_entry_usb(hass: HomeAssistant, config_entry: ConfigEntry):
-    """Unload the Plugwise stick connection."""
+async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+    """Unload the Plugwise USB stick connection."""
 
     unload_ok = await hass.config_entries.async_unload_platforms(
         config_entry, PLATFORMS_USB

@@ -1,11 +1,11 @@
-"""Utilities for Plugwise."""
+"""Utilities for Plugwise USB."""
 from collections.abc import Awaitable, Callable, Coroutine
 from typing import Any, Concatenate, TypeVar
 
 from typing_extensions import ParamSpec
 
 from homeassistant.exceptions import HomeAssistantError
-from plugwise.exceptions import PlugwiseException
+from plugwise_usb.exceptions import PlugwiseException
 
 from .entity import PlugwiseEntity
 

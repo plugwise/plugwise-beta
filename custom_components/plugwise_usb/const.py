@@ -1,4 +1,4 @@
-"""Constants for Plugwise component."""
+"""Constants for Plugwise USB component."""
 from datetime import timedelta
 import logging
 from typing import Final
@@ -8,28 +8,15 @@ import voluptuous as vol  # pw-beta usb
 from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
 
-DOMAIN: Final = "plugwise"
+DOMAIN: Final = "plugwise_usb"
 
 LOGGER = logging.getLogger(__package__)
 
-API: Final = "api"
 COORDINATOR: Final = "coordinator"
-CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta options
-CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta options
 CONF_MANUAL_PATH: Final = "Enter Manually"
 GATEWAY: Final = "gateway"
-PW_TYPE: Final = "plugwise_type"
-SMILE: Final = "smile"
 STICK: Final = "stick"
-STRETCH: Final = "stretch"
-STRETCH_USERNAME: Final = "stretch"
 USB: Final = "usb"
-
-FLOW_NET: Final = "Network: Smile/Stretch"
-FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
-FLOW_STRETCH: Final = "Stretch (Stretch)"
-FLOW_TYPE: Final = "flow_type"
-FLOW_USB: Final = "USB: Stick"
 
 UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 

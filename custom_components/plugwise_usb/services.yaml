@@ -1,5 +1,3 @@
-delete_notification:
-  description: Delete the Plugwise Notification(s).
 device_add:
   description: Manually add a new plugwise device.
   fields:

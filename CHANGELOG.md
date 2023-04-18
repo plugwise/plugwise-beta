@@ -1,5 +1,13 @@
 # Changelog
 
+## Versions from 0.4x
+
+### 0.41x
+
+- Release of standalone USB plugwise_usb-beta `custom_component`
+- More formal Split between Networked and USB code
+- Refactoring where necessary
+
 ## Versions from 0.30 and up
 
 ### NEW APR 2023 [0.34.10] Implement latest Core PR's
