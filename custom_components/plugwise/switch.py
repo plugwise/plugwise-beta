@@ -29,7 +29,6 @@ async def async_setup_entry(
             if (
                 "switches" not in device
                 or description.key not in device["switches"]
-                or description.plugwise_api != SMILE
             ):
                 continue
             entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
