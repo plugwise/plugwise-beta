@@ -30,7 +30,6 @@ class PlugwiseSensorEntityDescription(SensorEntityDescription):
 
     should_poll: bool = False
     state_class: str | None = SensorStateClass.MEASUREMENT
-    state_request_method: str | None = None
 
 
 @dataclass
@@ -38,7 +37,6 @@ class PlugwiseSwitchEntityDescription(SwitchEntityDescription):
     """Describes Plugwise switch entity."""
 
     should_poll: bool = False
-    state_request_method: str | None = None
 
 
 @dataclass
@@ -46,8 +44,7 @@ class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
     """Describes Plugwise binary sensor entity."""
 
     icon_off: str | None = None
-    should_poll: bool = False
-    state_request_method: str | None = None
+    should_poll: bool = flame_state
 
 
 PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
