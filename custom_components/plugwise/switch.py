@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import COORDINATOR  # pw-beta
-from .const import DOMAIN, LOGGER, SMILE
+from .const import DOMAIN, LOGGER
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
