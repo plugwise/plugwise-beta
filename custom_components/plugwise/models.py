@@ -28,7 +28,6 @@ from homeassistant.const import (
 class PlugwiseSensorEntityDescription(SensorEntityDescription):
     """Describes Plugwise sensor entity."""
 
-    should_poll: bool = False
     state_class: str | None = SensorStateClass.MEASUREMENT
 
 
@@ -36,15 +35,12 @@ class PlugwiseSensorEntityDescription(SensorEntityDescription):
 class PlugwiseSwitchEntityDescription(SwitchEntityDescription):
     """Describes Plugwise switch entity."""
 
-    should_poll: bool = False
-
 
 @dataclass
 class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
     """Describes Plugwise binary sensor entity."""
 
     icon_off: str | None = None
-    should_poll: bool = flame_state
 
 
 PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
