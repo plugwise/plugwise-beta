@@ -22,9 +22,6 @@ from homeassistant.const import (
     UnitOfVolume,
     UnitOfVolumeFlowRate,
 )
-from homeassistant.helpers.entity import EntityDescription
-
-from .const import SMILE
 
 
 @dataclass
