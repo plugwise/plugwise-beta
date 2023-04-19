@@ -1,6 +1,6 @@
 # Plugwise custom_component (BETA)
 
-:warning::no_entry::warning: Do **not** use this custom_component for **USB**, this functionality has been moved to [https://github.com/plugwise/plugwise_usb-beta], see [why](#usb-notes) :warning::no_entry::warning:
+:warning::no_entry::warning: Do **not** use this custom_component for **USB**, this functionality has been moved to (plugwise_usb)[https://github.com/plugwise/plugwise_usb-beta], see [why](#usb-notes) :warning::no_entry::warning:
 
 :no_entry::no_entry::no_entry: If you have **no** intention to beta-test our integration, please defer to the **supported** release of this integration **natively** available in [Home Assistant](https://www.home-assistant.io/integrations/plugwise/)! :no_entry::no_entry::no_entry:
 
