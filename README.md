@@ -1,4 +1,4 @@
-# Plugwise custom_component (BETA)
+# Plugwise Smile/Stretch custom_component (BETA)
 
 :warning::no_entry::warning: Do **not** install if you are using **USB** see [why](#usb-notes) :warning::no_entry::warning:
 
