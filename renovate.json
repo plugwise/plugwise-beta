@@ -20,7 +20,7 @@
     },
     {
       "matchManagers": ["pre-commit"],
-      "addLabels": ["dependencies", "python"],
+      "addLabels": ["dependencies", "pre-commit"],
       "automerge": true
     }
   ],
