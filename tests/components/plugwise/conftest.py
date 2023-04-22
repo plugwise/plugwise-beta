@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from homeassistant.components.plugwise.const import API, DOMAIN, PW_TYPE
+from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.const import (
     CONF_HOST,
     CONF_MAC,
@@ -39,7 +39,6 @@ def mock_config_entry() -> MockConfigEntry:
             CONF_PASSWORD: "test-password",
             CONF_PORT: 80,
             CONF_USERNAME: "smile",
-            PW_TYPE: API,
         },
         unique_id="smile98765",
     )

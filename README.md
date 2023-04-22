@@ -1,6 +1,8 @@
-# Plugwise custom_component (BETA)
+# Plugwise Smile/Stretch custom_component (BETA)
 
-:no_entry::no_entry::no_entry: If you are **not** using USB based Plugwise equipment or have no intention to beta-test our integration, please defer to the **supported** release of this integration **natively** available in [Home Assistant](https://www.home-assistant.io/integrations/plugwise/)! :no_entry::no_entry::no_entry:
+:warning::no_entry::warning: Do **not** use this custom_component for **USB**, this functionality was moved to [plugwise_usb](https://github.com/plugwise/plugwise_usb-beta), see [why](#usb-notes) :warning::no_entry::warning:
+
+:no_entry::no_entry::no_entry: If you have **no** intention to beta-test our integration, please defer to the **supported** release of this integration **natively** available in [Home Assistant](https://www.home-assistant.io/integrations/plugwise/)! :no_entry::no_entry::no_entry:
 
 :warning::warning::warning: Always **read** the [release notes](https://github.com/plugwise/plugwise-beta/releases) before upgrading, in case there are BREAKING changes! **Do note** the release title on alpha releases and only install them if specifically instructed by our team! :warning::warning::warning:
 
@@ -52,7 +54,14 @@ Our [Changelog](CHANGELOG.MD) is available as a [separate file](CHANGELOG.md) in
 - Power-related
   - Smile P1 (firmware 2.x, 3.x and 4.x)
   - Stretch (firmware 2.x and 3.x, legacy Circle's and Stealth's)
-  - Stick (legacy Circle's, Stealth's and Scan's)
+
+Additional to the **Core** component we support Homekit emulation, notifications and changing some timing. This will not be upstreamed and is code that remained in our codebase (i.e. denied upstreaming by the Core Team for acceptable reasons though we have some people already using that (mostly by them requested) functionality).
+
+#### USB notes
+
+Up to spring of 2023 this `custom_component` supported both Networked and USB Plugwise products, as of that time we have split both the backend (python module) and the frontend into separate instances as per recent discussion with the Core team. The `plugwise` integration in HA Core (and therefore `plugwise-beta`) will remain supporting networked Plugwise products under an envisioned `plugwise_bv` Brand umbrella. This paves the way for the upcoming `plugwise_usb-beta` `custom_integration` to refactor and again upstream to HA Core (which was originally planned but there was no branding umbrella in Core back then).
+
+As such we ask USB users, who are tied in with the `custom_component` as there is no Core integration available yet, for a little patience so we can split and refactor all repositories without loss of functionality for the end users. For our USB users that will however mean some **breaking changes** or customizing under the hood as the `custom_component` name will change and the appropriate naming in HA will do so accordingly. It is for the best though as this will ensure a way forward to HA Core integration, which has been our goal since starting to write Plugwise supporting code for Home Assistant.
 
 ### What can I expect in HA Core from this component
 
@@ -79,20 +88,14 @@ For each Plugwise Smile (i.e. gateway) you will have to add it as an integration
 - [ ] Click the `Configure` button and enter the Smile ID
 - [ ] Click Add to see the magic happens
 
-If there is no discovered Smile present or you are using the USB stick:
+If there is no discovered Smile present:
 
 - [ ] Hit the `+` button in the right lower corner
 - [ ] Search or browse for 'Plugwise beta' and click it
-- [ ] Select the type of integration: Network or USB
 
-- For the Network-selection:
 - [ ] Enter your Smile IP-address and the 8 character ID of the smile
 - [ ] Click SUBMIT and FINISH and hopefully the magic happens
 - [ ] Repeat this process to add more Smiles
-
-- For the USB-selection:
-- [ ] Select or enter the USB-path
-- [ ] Click SUBMIT and FINISH
 
 The config flow will then continue to ask you if you want to put your Smile and detected other devices in area's and presto, things should be available to configure in lovelace.
 
@@ -139,8 +142,10 @@ As things like async were in high demand from HA Core, desired by the original a
 
 With the three combined forces we now support, maintain and improve on:
 
-- `plugwise-beta` (this repository) for beta-testing new features to go into the `plugwise`-integration for HA
-- [`python-plugwise`](https://github.com/plugwise/python-plugwise) for connecting to Plugwise products
-- [`progress`](https://github.com/plugwise/progress) showing what are the differences between HA-core and this `custom_component` on [our progress page](https://plugwise.github.io/progress/)
+- `plugwise-beta` (this repository) for beta-testing new features to go into the Core `plugwise`-integration for HA
+- [`python-plugwise`](https://github.com/plugwise/python-plugwise-usb) for connecting to Networked Plugwise products
+- `plugwise_usb-beta` (the USB repository) for beta-testing new features to eventually go upstream to Core into the `plugwise_usb`-integration for HA
+- [`python-plugwise-usb`](https://github.com/plugwise/python-plugwise-usb) for connecting to Plugwise products via USB
+- [`progress`](https://github.com/plugwise/progress) showing what are the differences between HA-core and the network `custom_component` on [our progress page](https://plugwise.github.io/progress/) (marked as todo for USB as well)
 
 And yes anna-ha with haanna (to some degree) support Anna v1.8 - but they don't support Adam nor the Smile P1.
