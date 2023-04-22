@@ -1,8 +1,12 @@
 # Changelog
 
-## Versions from 0.4x
+## Versions from 0.40 and up
 
-### 0.41x
+### 0.40.1
+
+- Smile(/Stretch) custom_component only - USB split off to [plugwise_usb-beta](https://github.com/plugwise/plugwise_usb-beta)
+
+### 0.40.0
 
 - More formal Split between Networked and USB code
 - Refactoring where necessary
