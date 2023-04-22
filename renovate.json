@@ -1,6 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base", ":dependencyDashboard", "schedule:daily"],
+  "pre-commit": {
+    "enabled": true
+  },
+  "pip_requirements": {
+    "fileMatch": ["(^|/)([\\w-]*)requirements.*\\.(txt|pip)$"]
+  },
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
