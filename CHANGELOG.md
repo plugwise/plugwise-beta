@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+### Ongoing / Unreleased
+
+- CI improvements
+
 ### 0.40.1
 
 - Smile(/Stretch) custom_component only - USB split off to [plugwise_usb-beta](https://github.com/plugwise/plugwise_usb-beta)

@@ -1,4 +1,7 @@
+# For pre-commit.ci
 ci:
+  # Defer autoupdate to quarterly (there is no 'off' button) to have renovate pick up first
+  autoupdate_schedule: quarterly
   skip: [test-core-prep, test-pip-prep, testing, quality]
   submodules: true
 
