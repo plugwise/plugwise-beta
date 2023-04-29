@@ -31,7 +31,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         hass: HomeAssistant,
         entry: ConfigEntry,
         cooldown: float,
-        update_interval=timedelta(seconds=60),
+        update_interval: timedelta = timedelta(seconds=60),
     ) -> None:  # pw-beta cooldown
         """Initialize the coordinator."""
         super().__init__(
