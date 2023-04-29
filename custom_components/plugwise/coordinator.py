@@ -27,7 +27,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     _connected: bool = False
 
     def __init__(
-        self, hass: HomeAssistant, entry: ConfigEntry, cooldown: float
+        self,
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        cooldown: float,
+        update_interval=timedelta(seconds=60),
     ) -> None:  # pw-beta cooldown
         """Initialize the coordinator."""
         super().__init__(
@@ -35,7 +39,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             LOGGER,
             name=DOMAIN,
             # Core directly updates from const's DEFAULT_SCAN_INTERVAL
-            update_interval=timedelta(seconds=60),
+            update_interval=update_interval,
             # Don't refresh immediately, give the device time to process
             # the change in state before we query it.
             request_refresh_debouncer=Debouncer(
@@ -56,12 +60,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         )
         self._entry = entry
         self._unavailable_logged = False
+        self.update_interval = update_interval
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile."""
         self._connected = await self.api.connect()
         self.api.get_all_devices()
-        self.name = self.api.smile_name
 
         self.update_interval = DEFAULT_SCAN_INTERVAL.get(
             self.api.smile_type, timedelta(seconds=60)
