@@ -9,8 +9,7 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from plugwise import Smile
-from plugwise.constants import PlugwiseData
+from plugwise import PlugwiseData, Smile
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
