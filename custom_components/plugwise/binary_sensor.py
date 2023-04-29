@@ -66,17 +66,16 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         self._notification: dict[str, str] = {}  # pw-beta
 
     @property
-    def is_on(self) -> bool | None:
+    def is_on(self) -> bool:
         """Return true if the binary sensor is on."""
-        if (
-            self._notification
-        ):  # pw-beta: show Plugwise notifications as HA persistent notifications
+        # pw-beta: show Plugwise notifications as HA persistent notifications
+        if self._notification:
             for notify_id, message in self._notification.items():
                 self.hass.components.persistent_notification.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self.device["binary_sensors"].get(self.entity_description.key)
+        return self.device["binary_sensors"][self.entity_description.key]  # type: ignore [literal-required]
 
     @property
     def icon(self) -> str | None:

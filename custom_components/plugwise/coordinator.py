@@ -1,6 +1,5 @@
 """DataUpdateCoordinator for Plugwise."""
 from datetime import timedelta
-from typing import NamedTuple, cast
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_USERNAME
@@ -11,7 +10,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from plugwise import Smile
-from plugwise.constants import DeviceData, GatewayData
+from plugwise.constants import PlugwiseData
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -21,13 +20,6 @@ from plugwise.exceptions import (
 )
 
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
-
-
-class PlugwiseData(NamedTuple):
-    """Plugwise data stored in the DataUpdateCoordinator."""
-
-    gateway: GatewayData
-    devices: dict[str, DeviceData]
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -88,9 +80,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._connected:
                 await self._connect()
             data = await self.api.async_update()
-            LOGGER.debug(
-                f"{self.api.smile_name} data: %s", PlugwiseData(data[0], data[1])
-            )
+            LOGGER.debug(f"{self.api.smile_name} data: %s", data)
             if self._unavailable_logged:
                 self._unavailable_logged = False
         except InvalidAuthentication as err:
@@ -112,7 +102,4 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
-        return PlugwiseData(
-            gateway=cast(GatewayData, data[0]),
-            devices=cast(dict[str, DeviceData], data[1]),
-        )
+        return data
