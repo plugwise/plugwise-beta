@@ -148,6 +148,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	# Fake branch
 	git checkout -b fake_branch
 
+    echo "Prepping strict through hassfest"
+    echo "homeassistant.components.plugwise.*" >> .strict-typing
+    python3 -m script.hassfest
 	echo ""
 	echo "Cleaning existing plugwise from HA core"
 	echo ""
