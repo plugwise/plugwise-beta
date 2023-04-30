@@ -148,9 +148,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	# Fake branch
 	git checkout -b fake_branch
 
-    echo "Prepping strict through hassfest"
-    echo "homeassistant.components.plugwise.*" >> .strict-typing
-    python3 -m script.hassfest
 	echo ""
 	echo "Cleaning existing plugwise from HA core"
 	echo ""
@@ -216,6 +213,17 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo "... black-ing ..."
 	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
 	echo "... mypy ..."
+	echo "Prepping strict without hassfest"
+	echo "homeassistant.components.plugwise.*" >> .strict-typing
+	echo "[mypy-homeassistant.components.plugwise.*]
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+warn_return_any = true
+warn_unreachable = true" >> mypy.ini
 	script/run-in-env.sh mypy homeassistant/components/plugwise/*.py || exit
 	cd ..
 	echo "... markdownlint ..."
