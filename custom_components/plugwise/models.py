@@ -1,6 +1,7 @@
 """Models for the Plugwise integration."""
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 
 from homeassistant.components.binary_sensor import BinarySensorEntityDescription
@@ -22,6 +23,14 @@ from homeassistant.const import (
     UnitOfVolume,
     UnitOfVolumeFlowRate,
 )
+from plugwise import DeviceData
+
+
+@dataclass
+class PlugwiseSwitchBaseMixin:
+    """Mixin for required Plugwise switch base description keys."""
+
+    value_fn: Callable[[DeviceData], bool]
 
 
 @dataclass
@@ -32,7 +41,7 @@ class PlugwiseSensorEntityDescription(SensorEntityDescription):
 
 
 @dataclass
-class PlugwiseSwitchEntityDescription(SwitchEntityDescription):
+class PlugwiseSwitchEntityDescription(SwitchEntityDescription, PlugwiseSwitchBaseMixin):
     """Describes Plugwise switch entity."""
 
 
@@ -385,6 +394,7 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         icon="mdi:water-plus",
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
+        value_fn=lambda data: data["switches"]["dhw_cm_switch"],
     ),
     PlugwiseSwitchEntityDescription(
         key="lock",
@@ -392,11 +402,13 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         icon="mdi:lock",
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
+        value_fn=lambda data: data["switches"]["lock"],
     ),
     PlugwiseSwitchEntityDescription(
         key="relay",
         translation_key="relay",
         device_class=SwitchDeviceClass.SWITCH,
+        value_fn=lambda data: data["switches"]["relay"],
     ),
     PlugwiseSwitchEntityDescription(
         key="cooling_enabled",
@@ -404,6 +416,7 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         icon="mdi:snowflake-thermometer",
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
+        value_fn=lambda data: data["switches"]["cooling_ena_switch"],
     ),
 )
 
