@@ -91,7 +91,9 @@ def mock_smile_adam() -> Generator[None, MagicMock, None]:
 
         smile.notifications = _read_json(chosen_env, "notifications")
         all_data = _read_json(chosen_env, "all_data")
-        smile.async_update.return_value = PlugwiseData(all_data[0], all_data[1])
+        smile.async_update.return_value = PlugwiseData(
+            all_data["gateway"], all_data["devices"]
+        )
 
         yield smile
 
@@ -118,7 +120,9 @@ def mock_smile_adam_2() -> Generator[None, MagicMock, None]:
 
         smile.notifications = _read_json(chosen_env, "notifications")
         all_data = _read_json(chosen_env, "all_data")
-        smile.async_update.return_value = PlugwiseData(all_data[0], all_data[1])
+        smile.async_update.return_value = PlugwiseData(
+            all_data["gateway"], all_data["devices"]
+        )
 
         yield smile
 
@@ -145,7 +149,9 @@ def mock_smile_adam_3() -> Generator[None, MagicMock, None]:
 
         smile.notifications = _read_json(chosen_env, "notifications")
         all_data = _read_json(chosen_env, "all_data")
-        smile.async_update.return_value = PlugwiseData(all_data[0], all_data[1])
+        smile.async_update.return_value = PlugwiseData(
+            all_data["gateway"], all_data["devices"]
+        )
 
         yield smile
 
@@ -171,7 +177,9 @@ def mock_smile_anna() -> Generator[None, MagicMock, None]:
 
         smile.notifications = _read_json(chosen_env, "notifications")
         all_data = _read_json(chosen_env, "all_data")
-        smile.async_update.return_value = PlugwiseData(all_data[0], all_data[1])
+        smile.async_update.return_value = PlugwiseData(
+            all_data["gateway"], all_data["devices"]
+        )
 
         yield smile
 
@@ -197,7 +205,9 @@ def mock_smile_anna_2() -> Generator[None, MagicMock, None]:
 
         smile.notifications = _read_json(chosen_env, "notifications")
         all_data = _read_json(chosen_env, "all_data")
-        smile.async_update.return_value = PlugwiseData(all_data[0], all_data[1])
+        smile.async_update.return_value = PlugwiseData(
+            all_data["gateway"], all_data["devices"]
+        )
 
         yield smile
 
@@ -223,7 +233,9 @@ def mock_smile_anna_3() -> Generator[None, MagicMock, None]:
 
         smile.notifications = _read_json(chosen_env, "notifications")
         all_data = _read_json(chosen_env, "all_data")
-        smile.async_update.return_value = PlugwiseData(all_data[0], all_data[1])
+        smile.async_update.return_value = PlugwiseData(
+            all_data["gateway"], all_data["devices"]
+        )
 
         yield smile
 
@@ -249,7 +261,9 @@ def mock_smile_p1() -> Generator[None, MagicMock, None]:
 
         smile.notifications = _read_json(chosen_env, "notifications")
         all_data = _read_json(chosen_env, "all_data")
-        smile.async_update.return_value = PlugwiseData(all_data[0], all_data[1])
+        smile.async_update.return_value = PlugwiseData(
+            all_data["gateway"], all_data["devices"]
+        )
 
         yield smile
 
@@ -257,7 +271,7 @@ def mock_smile_p1() -> Generator[None, MagicMock, None]:
 @pytest.fixture
 def mock_smile_p1_2() -> Generator[None, MagicMock, None]:
     """Create a Mock P1 3-phase DSMR environment for testing exceptions."""
-    chosen_env = "p1v4_3ph"
+    chosen_env = "p1v4_442_triple"
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
     ) as smile_mock:
@@ -275,7 +289,9 @@ def mock_smile_p1_2() -> Generator[None, MagicMock, None]:
 
         smile.notifications = _read_json(chosen_env, "notifications")
         all_data = _read_json(chosen_env, "all_data")
-        smile.async_update.return_value = PlugwiseData(all_data[0], all_data[1])
+        smile.async_update.return_value = PlugwiseData(
+            all_data["gateway"], all_data["devices"]
+        )
 
         yield smile
 
@@ -299,7 +315,9 @@ def mock_stretch() -> Generator[None, MagicMock, None]:
 
         smile.connect.return_value = True
         all_data = _read_json(chosen_env, "all_data")
-        smile.async_update.return_value = PlugwiseData(all_data[0], all_data[1])
+        smile.async_update.return_value = PlugwiseData(
+            all_data["gateway"], all_data["devices"]
+        )
 
         yield smile
 
