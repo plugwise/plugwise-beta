@@ -52,10 +52,16 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_fn=lambda data: data["thermostat"]["upper_bound"],
-        native_min_value_fn=lambda data: data["thermostat"]["lower_bound"],
-        native_step_key_fn=lambda data: data["thermostat"]["resolution"],
-        native_value_fn=lambda data: data["thermostat"]["setpoint"],
+        native_max_value_fn=lambda data: data["maximum_boiler_temperature"][
+            "upper_bound"
+        ],
+        native_min_value_fn=lambda data: data["maximum_boiler_temperature"][
+            "lower_bound"
+        ],
+        native_step_key_fn=lambda data: data["maximum_boiler_temperature"][
+            "resolution"
+        ],
+        native_value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],
         native_unit_of_measurement=TEMP_CELSIUS,
     ),
     PlugwiseNumberEntityDescription(
@@ -64,10 +70,10 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_fn=lambda data: data["thermostat"]["upper_bound"],
-        native_min_value_fn=lambda data: data["thermostat"]["lower_bound"],
-        native_step_key_fn=lambda data: data["thermostat"]["resolution"],
-        native_value_fn=lambda data: data["thermostat"]["setpoint"],
+        native_max_value_fn=lambda data: data["domestic_hot_water"]["upper_bound"],
+        native_min_value_fn=lambda data: data["domestic_hot_water"]["lower_bound"],
+        native_step_key_fn=lambda data: data["domestic_hot_water"]["resolution"],
+        native_value_fn=lambda data: data["domestic_hot_water"]["setpoint"],
         native_unit_of_measurement=TEMP_CELSIUS,
     ),
 )

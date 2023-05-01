@@ -5,6 +5,9 @@
 ### Ongoing / Unreleased
 
 - CI improvements
+- Typing improvements
+- Dynamic generated fixtures re-introduced
+- TODO: rework marked TODOs
 
 ### 0.40.1
 
