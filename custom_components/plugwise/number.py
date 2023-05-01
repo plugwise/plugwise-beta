@@ -14,7 +14,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import TEMP_CELSIUS, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise import Smile, DeviceData
+from plugwise import DeviceData, Smile
 
 from .const import COORDINATOR  # pw-beta
 from .const import DOMAIN, LOGGER
