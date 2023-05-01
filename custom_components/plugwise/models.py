@@ -27,6 +27,13 @@ from plugwise import DeviceData
 
 
 @dataclass
+class PlugwiseSensorBaseMixin:
+    """Mixin for required Plugwise sensor base description keys."""
+
+    value_fn: Callable[[DeviceData], float | int]
+
+
+@dataclass
 class PlugwiseSwitchBaseMixin:
     """Mixin for required Plugwise switch base description keys."""
 
@@ -34,7 +41,7 @@ class PlugwiseSwitchBaseMixin:
 
 
 @dataclass
-class PlugwiseSensorEntityDescription(SensorEntityDescription):
+class PlugwiseSensorEntityDescription(SensorEntityDescription, PlugwiseSensorBaseMixin):
     """Describes Plugwise sensor entity."""
 
     state_class: str | None = SensorStateClass.MEASUREMENT
@@ -52,6 +59,23 @@ class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
     icon_off: str | None = None
 
 
+# TODO
+
+# Not existing in SmileSensors
+# Breaking to pw-beta tests
+# value_fn=lambda data: data["sensors"]["domestic_hot_water_setpoint"],
+
+# Non-breaking to pw-beta tests
+# relative_humidity
+# cooling_setpoint
+# heating_setpoint
+
+# Are these the same? (i.e. there is no maximum in SmileSensors)
+#        key="maximum_boiler_temperature",
+#        value_fn=lambda data: data["sensors"]["intended_boiler_temperature"],
+
+# /TODO
+
 PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
         key="setpoint",
@@ -59,27 +83,31 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["setpoint"],
     ),
-    PlugwiseSensorEntityDescription(
-        key="cooling_setpoint",
-        translation_key="cooling_setpoint",
-        device_class=SensorDeviceClass.TEMPERATURE,
-        entity_category=EntityCategory.DIAGNOSTIC,
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-    ),
-    PlugwiseSensorEntityDescription(
-        key="heating_setpoint",
-        translation_key="heating_setpoint",
-        device_class=SensorDeviceClass.TEMPERATURE,
-        entity_category=EntityCategory.DIAGNOSTIC,
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-    ),
+    #    PlugwiseSensorEntityDescription(
+    #        key="cooling_setpoint",
+    #        translation_key="cooling_setpoint",
+    #        device_class=SensorDeviceClass.TEMPERATURE,
+    #        entity_category=EntityCategory.DIAGNOSTIC,
+    #        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    #        value_fn=lambda data: data["sensors"]["cooling_setpoint"],
+    #    ),
+    #    PlugwiseSensorEntityDescription(
+    #        key="heating_setpoint",
+    #        translation_key="heating_setpoint",
+    #        device_class=SensorDeviceClass.TEMPERATURE,
+    #        entity_category=EntityCategory.DIAGNOSTIC,
+    #        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    #        value_fn=lambda data: data["sensors"]["heating_setpoint"],
+    #    ),
     PlugwiseSensorEntityDescription(
         key="temperature",
         translation_key="temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["temperature"],
     ),
     PlugwiseSensorEntityDescription(
         key="intended_boiler_temperature",
@@ -87,12 +115,14 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["intended_boiler_temperature"],
     ),
     PlugwiseSensorEntityDescription(
         key="temperature_difference",
         translation_key="temperature_difference",
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.KELVIN,
+        value_fn=lambda data: data["sensors"]["temperature_difference"],
         icon="mdi:temperature-kelvin",
     ),
     PlugwiseSensorEntityDescription(
@@ -100,6 +130,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key="outdoor_temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["outdoor_temperature"],
         suggested_display_precision=1,
     ),
     PlugwiseSensorEntityDescription(
@@ -108,6 +139,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["outdoor_air_temperature"],
         suggested_display_precision=1,
     ),
     PlugwiseSensorEntityDescription(
@@ -116,6 +148,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["water_temperature"],
     ),
     PlugwiseSensorEntityDescription(
         key="return_temperature",
@@ -123,18 +156,21 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["return_temperature"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_consumed",
         translation_key="electricity_consumed",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_consumed"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_produced",
         translation_key="electricity_produced",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_produced"],
         entity_registry_enabled_default=False,
     ),
     # Does not exist in Core - related to P1v2
@@ -143,6 +179,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key="electricity_consumed_point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_consumed_point"],
     ),
     # Does not exist in Core
     PlugwiseSensorEntityDescription(
@@ -150,30 +187,35 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key="electricity_produced_point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_produced_point"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_consumed_interval",
         translation_key="electricity_consumed_interval",
         icon="mdi:lightning-bolt",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        value_fn=lambda data: data["sensors"]["electricity_consumed_interval"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_consumed_peak_interval",
         translation_key="electricity_consumed_peak_interval",
         icon="mdi:lightning-bolt",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        value_fn=lambda data: data["sensors"]["electricity_consumed_peak_interval"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_consumed_off_peak_interval",
         translation_key="electricity_consumed_off_peak_interval",
         icon="mdi:lightning-bolt",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        value_fn=lambda data: data["sensors"]["electricity_consumed_off_peak_interval"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_produced_interval",
         translation_key="electricity_produced_interval",
         icon="mdi:lightning-bolt",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        value_fn=lambda data: data["sensors"]["electricity_produced_interval"],
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
@@ -181,30 +223,37 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key="electricity_produced_peak_interval",
         icon="mdi:lightning-bolt",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        value_fn=lambda data: data["sensors"]["electricity_produced_peak_interval"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_produced_off_peak_interval",
         translation_key="electricity_produced_off_peak_interval",
         icon="mdi:lightning-bolt",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        value_fn=lambda data: data["sensors"]["electricity_produced_off_peak_interval"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_consumed_off_peak_point",
         translation_key="electricity_consumed_off_peak_point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_consumed_off_peak_point"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_consumed_peak_point",
         translation_key="electricity_consumed_peak_point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_consumed_peak_point"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_consumed_off_peak_cumulative",
         translation_key="electricity_consumed_off_peak_cumulative",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        value_fn=lambda data: data["sensors"][
+            "electricity_consumed_off_peak_cumulative"
+        ],
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
@@ -212,6 +261,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key="electricity_consumed_peak_cumulative",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        value_fn=lambda data: data["sensors"]["electricity_consumed_peak_cumulative"],
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
@@ -219,24 +269,30 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key="electricity_produced_off_peak_point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_produced_off_peak_point"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_produced_peak_point",
         translation_key="electricity_produced_peak_point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_produced_peak_point"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_produced_off_peak_cumulative",
         translation_key="electricity_produced_off_peak_cumulative",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        value_fn=lambda data: data["sensors"][
+            "electricity_produced_off_peak_cumulative"
+        ],
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_produced_peak_cumulative",
         translation_key="electricity_produced_peak_cumulative",
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        value_fn=lambda data: data["sensors"]["electricity_produced_peak_cumulative"],
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
@@ -246,42 +302,49 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Electricity phase one consumed",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_phase_one_consumed"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_phase_two_consumed",
         translation_key="electricity_phase_two_consumed",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_phase_two_consumed"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_phase_three_consumed",
         translation_key="electricity_phase_three_consumed",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_phase_three_consumed"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_phase_one_produced",
         translation_key="electricity_phase_one_produced",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_phase_one_produced"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_phase_two_produced",
         translation_key="electricity_phase_two_produced",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_phase_two_produced"],
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_phase_three_produced",
         translation_key="electricity_phase_three_produced",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["electricity_phase_three_produced"],
     ),
     PlugwiseSensorEntityDescription(
         key="voltage_phase_one",
         translation_key="voltage_phase_one",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        value_fn=lambda data: data["sensors"]["voltage_phase_one"],
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
@@ -289,6 +352,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key="voltage_phase_two",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        value_fn=lambda data: data["sensors"]["voltage_phase_two"],
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
@@ -296,6 +360,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key="voltage_phase_three",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        value_fn=lambda data: data["sensors"]["voltage_phase_three"],
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
@@ -303,12 +368,14 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key="gas_consumed_interval",
         icon="mdi:meter-gas",
         native_unit_of_measurement=UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR,
+        value_fn=lambda data: data["sensors"]["gas_consumed_interval"],
     ),
     PlugwiseSensorEntityDescription(
         key="gas_consumed_cumulative",
         translation_key="gas_consumed_cumulative",
         device_class=SensorDeviceClass.GAS,
         native_unit_of_measurement=UnitOfVolume.CUBIC_METERS,
+        value_fn=lambda data: data["sensors"]["gas_consumed_cumulative"],
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     PlugwiseSensorEntityDescription(
@@ -316,12 +383,14 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key="net_electricity_point",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        value_fn=lambda data: data["sensors"]["net_electricity_point"],
     ),
     PlugwiseSensorEntityDescription(
         key="net_electricity_cumulative",
         translation_key="net_electricity_cumulative",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        value_fn=lambda data: data["sensors"]["net_electricity_cumulative"],
         state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
@@ -330,18 +399,21 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.BATTERY,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
+        value_fn=lambda data: data["sensors"]["battery"],
     ),
     PlugwiseSensorEntityDescription(
         key="illuminance",
         translation_key="illuminance",
         device_class=SensorDeviceClass.ILLUMINANCE,
         native_unit_of_measurement=LIGHT_LUX,
+        value_fn=lambda data: data["sensors"]["illuminance"],
     ),
     PlugwiseSensorEntityDescription(
         key="modulation_level",
         translation_key="modulation_level",
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
+        value_fn=lambda data: data["sensors"]["modulation_level"],
         icon="mdi:percent",
     ),
     PlugwiseSensorEntityDescription(
@@ -350,6 +422,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         icon="mdi:valve",
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
+        value_fn=lambda data: data["sensors"]["valve_position"],
     ),
     PlugwiseSensorEntityDescription(
         key="water_pressure",
@@ -357,19 +430,22 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.PRESSURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfPressure.BAR,
+        value_fn=lambda data: data["sensors"]["water_pressure"],
     ),
-    PlugwiseSensorEntityDescription(
-        key="relative_humidity",
-        translation_key="relative_humidity",
-        device_class=SensorDeviceClass.HUMIDITY,
-        native_unit_of_measurement=PERCENTAGE,
-    ),
+    #    PlugwiseSensorEntityDescription(
+    #        key="relative_humidity",
+    #        translation_key="relative_humidity",
+    #        device_class=SensorDeviceClass.HUMIDITY,
+    #        native_unit_of_measurement=PERCENTAGE,
+    #        value_fn=lambda data: data["sensors"]["relative_humidity"],
+    #    ),
     PlugwiseSensorEntityDescription(
         key="dhw_temperature",
         translation_key="dhw_temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["dhw_temperature"],
     ),
     PlugwiseSensorEntityDescription(
         key="domestic_hot_water_setpoint",
@@ -377,6 +453,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["domestic_hot_water_setpoint"],
     ),
     PlugwiseSensorEntityDescription(
         key="maximum_boiler_temperature",
@@ -384,6 +461,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["intended_boiler_temperature"],
     ),
 )
 

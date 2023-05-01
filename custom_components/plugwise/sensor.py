@@ -47,6 +47,8 @@ async def async_setup_entry(
 class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
     """Represent Plugwise Sensors."""
 
+    entity_description: PlugwiseSensorEntityDescription
+
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
@@ -61,4 +63,4 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
     @property
     def native_value(self) -> int | float:
         """Return the value reported by the sensor."""
-        return self.device["sensors"][self.entity_description.key]  # type: ignore [literal-required]
+        return self.entity_description.value_fn(self.device)
