@@ -14,7 +14,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import TEMP_CELSIUS, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise import Smile
+from plugwise import Smile, DeviceData
 
 from .const import COORDINATOR  # pw-beta
 from .const import DOMAIN, LOGGER
@@ -27,6 +27,10 @@ class PlugwiseEntityDescriptionMixin:
     """Mixin values for Plugwse entities."""
 
     command: Callable[[Smile, str, float], Awaitable[None]]
+    native_max_value_fn: Callable[[DeviceData], str]
+    native_min_value_fn: Callable[[DeviceData], str]
+    native_step_key_fn: Callable[[DeviceData], str]
+    native_value_fn: Callable[[DeviceData], str]
 
 
 @dataclass
@@ -48,11 +52,11 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_key="upper_bound",
-        native_min_value_key="lower_bound",
-        native_step_key="resolution",
+        native_max_value_fn=lambda data: data["thermostat"]["upper_bound"],
+        native_min_value_fn=lambda data: data["thermostat"]["lower_bound"],
+        native_step_key_fn=lambda data: data["thermostat"]["resolution"],
+        native_value_fn=lambda data: data["thermostat"]["setpoint"],
         native_unit_of_measurement=TEMP_CELSIUS,
-        native_value_key="setpoint",
     ),
     PlugwiseNumberEntityDescription(
         key="domestic_hot_water_setpoint",
@@ -60,11 +64,11 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_key="upper_bound",
-        native_min_value_key="lower_bound",
-        native_step_key="resolution",
+        native_max_value_fn=lambda data: data["thermostat"]["upper_bound"],
+        native_min_value_fn=lambda data: data["thermostat"]["lower_bound"],
+        native_step_key_fn=lambda data: data["thermostat"]["resolution"],
+        native_value_fn=lambda data: data["thermostat"]["setpoint"],
         native_unit_of_measurement=TEMP_CELSIUS,
-        native_value_key="setpoint",
     ),
 )
 
@@ -112,33 +116,37 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     @property
     def native_step(self) -> float:
         """Return the setpoint step value."""
-        return max(
-            self.device[self.entity_description.key][  # type: ignore [literal-required]
-                self.entity_description.native_step_key
-            ],
-            1,
-        )
+        # return max(
+        #    self.device[self.entity_description.key][  # type: ignore [literal-required]
+        #        self.entity_description.native_step_key
+        #    ],
+        #    1,
+        # )
+        return self.entity_description.native_step_key_fn(self.device)  # type: ignore [literal-required]
 
     @property
     def native_value(self) -> float:
         """Return the present setpoint value."""
-        return self.device[self.entity_description.key][  # type: ignore [literal-required]
-            self.entity_description.native_value_key
-        ]
+        # return self.device[self.entity_description.key][  # type: ignore [literal-required]
+        #    self.entity_description.native_value_key
+        # ]
+        return self.entity_description.native_value_fn(self.device)  # type: ignore [literal-required]
 
     @property
     def native_min_value(self) -> float:
         """Return the setpoint min. value."""
-        return self.device[self.entity_description.key][  # type: ignore [literal-required]
-            self.entity_description.native_min_value_key
-        ]
+        # return self.device[self.entity_description.key][  # type: ignore [literal-required]
+        #    self.entity_description.native_min_value_key
+        # ]
+        return self.entity_description.native_min_value_fn(self.device)
 
     @property
     def native_max_value(self) -> float:
         """Return the setpoint max. value."""
-        return self.device[self.entity_description.key][  # type: ignore [literal-required]
-            self.entity_description.native_max_value_key
-        ]
+        # return self.device[self.entity_description.key][  # type: ignore [literal-required]
+        #    self.entity_description.native_max_value_key
+        # ]
+        return self.entity_description.native_max_value_fn(self.device)
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
