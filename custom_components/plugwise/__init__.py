@@ -8,7 +8,7 @@ import voluptuous as vol
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from plugwise.exceptions import PlugwiseError
 
@@ -59,21 +59,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         sw_version=coordinator.api.smile_version[0],
     )
 
-    async def delete_notification(
-        self,
-    ) -> None:  # pragma: no cover  # pw-beta: HA service - delete_notification
+    async def delete_notification(call: ServiceCall) -> None:  # pragma: no cover  # pw-beta: HA service - delete_notification
         """Service: delete the Plugwise Notification."""
         LOGGER.debug(
             "Service delete PW Notification called for %s",
-            self.coordinator.api.smile_name,
+            coordinator.api.smile_name,
         )
         try:
-            await self.coordinator.api.delete_notification()
+            await coordinator.api.delete_notification()
             LOGGER.debug("PW Notification deleted")
         except PlugwiseError:
             LOGGER.debug(
                 "Failed to delete the Plugwise Notification for %s",
-                self.coordinator.api.smile_name,
+                coordinator.api.smile_name,
             )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_GATEWAY)
