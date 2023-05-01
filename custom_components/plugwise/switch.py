@@ -36,6 +36,8 @@ async def async_setup_entry(
 class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
     """Representation of a Plugwise plug."""
 
+    entity_description: PlugwiseSwitchEntityDescription
+
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
