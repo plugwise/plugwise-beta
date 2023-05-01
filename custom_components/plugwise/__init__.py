@@ -59,7 +59,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         sw_version=coordinator.api.smile_version[0],
     )
 
-    async def delete_notification(call: ServiceCall) -> None:  # pragma: no cover  # pw-beta: HA service - delete_notification
+    async def delete_notification(
+        call: ServiceCall,
+    ) -> None:  # pragma: no cover  # pw-beta: HA service - delete_notification
         """Service: delete the Plugwise Notification."""
         LOGGER.debug(
             "Service delete PW Notification called for %s",
