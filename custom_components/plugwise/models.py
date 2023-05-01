@@ -59,23 +59,6 @@ class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
     icon_off: str | None = None
 
 
-# TODO
-
-# Not existing in SmileSensors
-# Breaking to pw-beta tests
-# value_fn=lambda data: data["sensors"]["domestic_hot_water_setpoint"],
-
-# Non-breaking to pw-beta tests
-# relative_humidity
-# cooling_setpoint
-# heating_setpoint
-
-# Are these the same? (i.e. there is no maximum in SmileSensors)
-#        key="maximum_boiler_temperature",
-#        value_fn=lambda data: data["sensors"]["intended_boiler_temperature"],
-
-# /TODO
-
 PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
         key="setpoint",
@@ -85,22 +68,22 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         value_fn=lambda data: data["sensors"]["setpoint"],
     ),
-    #    PlugwiseSensorEntityDescription(
-    #        key="cooling_setpoint",
-    #        translation_key="cooling_setpoint",
-    #        device_class=SensorDeviceClass.TEMPERATURE,
-    #        entity_category=EntityCategory.DIAGNOSTIC,
-    #        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-    #        value_fn=lambda data: data["sensors"]["cooling_setpoint"],
-    #    ),
-    #    PlugwiseSensorEntityDescription(
-    #        key="heating_setpoint",
-    #        translation_key="heating_setpoint",
-    #        device_class=SensorDeviceClass.TEMPERATURE,
-    #        entity_category=EntityCategory.DIAGNOSTIC,
-    #        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-    #        value_fn=lambda data: data["sensors"]["heating_setpoint"],
-    #    ),
+    PlugwiseSensorEntityDescription(
+        key="cooling_setpoint",
+        translation_key="cooling_setpoint",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["setpoint_high"],
+    ),
+    PlugwiseSensorEntityDescription(
+        key="heating_setpoint",
+        translation_key="heating_setpoint",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        value_fn=lambda data: data["sensors"]["setpoint_low"],
+    ),
     PlugwiseSensorEntityDescription(
         key="temperature",
         translation_key="temperature",
@@ -432,13 +415,13 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfPressure.BAR,
         value_fn=lambda data: data["sensors"]["water_pressure"],
     ),
-    #    PlugwiseSensorEntityDescription(
-    #        key="relative_humidity",
-    #        translation_key="relative_humidity",
-    #        device_class=SensorDeviceClass.HUMIDITY,
-    #        native_unit_of_measurement=PERCENTAGE,
-    #        value_fn=lambda data: data["sensors"]["relative_humidity"],
-    #    ),
+    PlugwiseSensorEntityDescription(
+        key="relative_humidity",
+        translation_key="relative_humidity",
+        device_class=SensorDeviceClass.HUMIDITY,
+        native_unit_of_measurement=PERCENTAGE,
+        value_fn=lambda data: data["sensors"]["humidity"],
+    ),
     PlugwiseSensorEntityDescription(
         key="dhw_temperature",
         translation_key="dhw_temperature",
@@ -461,7 +444,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        value_fn=lambda data: data["sensors"]["intended_boiler_temperature"],
+        value_fn=lambda data: data["sensors"]["maximum_boiler_temperature"],
     ),
 )
 
