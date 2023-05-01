@@ -432,24 +432,24 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         value_fn=lambda data: data["sensors"]["dhw_temperature"],
     ),
-# TODO FIX
-#    PlugwiseSensorEntityDescription(
-#        key="domestic_hot_water_setpoint",
-#        translation_key="domestic_hot_water_setpoint",
-#        device_class=SensorDeviceClass.TEMPERATURE,
-#        entity_category=EntityCategory.DIAGNOSTIC,
-#        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-#        value_fn=lambda data: data["domestic_hot_water_setpoint"]["setpoint"],
-#    ),
-# TODO FIX
-#    PlugwiseSensorEntityDescription(
-#        key="maximum_boiler_temperature",
-#        translation_key="maximum_boiler_temperature",
-#        device_class=SensorDeviceClass.TEMPERATURE,
-#        entity_category=EntityCategory.DIAGNOSTIC,
-#        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-#        value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],
-#    ),
+    # TODO FIX
+    #    PlugwiseSensorEntityDescription(
+    #        key="domestic_hot_water_setpoint",
+    #        translation_key="domestic_hot_water_setpoint",
+    #        device_class=SensorDeviceClass.TEMPERATURE,
+    #        entity_category=EntityCategory.DIAGNOSTIC,
+    #        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    #        value_fn=lambda data: data["domestic_hot_water_setpoint"]["setpoint"],
+    #    ),
+    # TODO FIX
+    #    PlugwiseSensorEntityDescription(
+    #        key="maximum_boiler_temperature",
+    #        translation_key="maximum_boiler_temperature",
+    #        device_class=SensorDeviceClass.TEMPERATURE,
+    #        entity_category=EntityCategory.DIAGNOSTIC,
+    #        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    #        value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],
+    #    ),
 )
 
 PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
