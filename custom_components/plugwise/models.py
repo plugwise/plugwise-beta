@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from typing import TypeVar
 
 from homeassistant.components.binary_sensor import BinarySensorEntityDescription
 from homeassistant.components.sensor import (
@@ -25,19 +26,21 @@ from homeassistant.const import (
 )
 from plugwise import DeviceData
 
+T = TypeVar("T", bound=DeviceData)
+
 
 @dataclass
 class PlugwiseSensorBaseMixin:
     """Mixin for required Plugwise sensor base description keys."""
 
-    value_fn: Callable[[DeviceData], float | int]
+    value_fn: Callable[[T], float | int]
 
 
 @dataclass
 class PlugwiseSwitchBaseMixin:
     """Mixin for required Plugwise switch base description keys."""
 
-    value_fn: Callable[[DeviceData], bool]
+    value_fn: Callable[[T], bool]
 
 
 @dataclass

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
+from typing import TypeVar
 
 from homeassistant.components.number import (
     NumberDeviceClass,
@@ -21,16 +22,18 @@ from .const import DOMAIN, LOGGER
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 
+T = TypeVar("T", bound=DeviceData)
+
 
 @dataclass
 class PlugwiseEntityDescriptionMixin:
     """Mixin values for Plugwse entities."""
 
     command: Callable[[Smile, str, float], Awaitable[None]]
-    native_max_value_fn: Callable[[DeviceData], str]
-    native_min_value_fn: Callable[[DeviceData], str]
-    native_step_key_fn: Callable[[DeviceData], str]
-    native_value_fn: Callable[[DeviceData], str]
+    native_max_value_fn: Callable[[T], float]
+    native_min_value_fn: Callable[[T], float]
+    native_step_key_fn: Callable[[T], float]
+    native_value_fn: Callable[[T], float]
 
 
 @dataclass
@@ -128,7 +131,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         #    ],
         #    1,
         # )
-        return self.entity_description.native_step_key_fn(self.device)  # type: ignore [literal-required]
+        return self.entity_description.native_step_key_fn(self.device)
 
     @property
     def native_value(self) -> float:
@@ -136,7 +139,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         # return self.device[self.entity_description.key][  # type: ignore [literal-required]
         #    self.entity_description.native_value_key
         # ]
-        return self.entity_description.native_value_fn(self.device)  # type: ignore [literal-required]
+        return self.entity_description.native_value_fn(self.device)
 
     @property
     def native_min_value(self) -> float:

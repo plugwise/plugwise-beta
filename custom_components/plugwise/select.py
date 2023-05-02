@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, TypeVar
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
@@ -19,14 +19,16 @@ from .entity import PlugwiseEntity
 
 PARALLEL_UPDATES = 0
 
+T = TypeVar("T", bound=DeviceData)
+
 
 @dataclass
 class PlugwiseSelectDescriptionMixin:
     """Mixin values for Plugwise Select entities."""
 
     command: Callable[[Smile, str, str], Awaitable[Any]]
-    value_fn: Callable[[DeviceData], str]
-    values_fn: Callable[[DeviceData], list[str]]
+    value_fn: Callable[[T], str]
+    values_fn: Callable[[T], list[str]]
     current_option_key: str
     options_key: str
 
