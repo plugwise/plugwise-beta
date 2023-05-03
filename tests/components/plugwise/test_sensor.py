@@ -49,10 +49,9 @@ async def test_anna_as_smt_climate_sensor_entities(
     assert state
     assert float(state.state) == 29.1
 
-    # TODO
-    # state = hass.states.get("sensor.opentherm_dhw_setpoint")
-    # assert state
-    # assert float(state.state) == 60.0
+    state = hass.states.get("sensor.opentherm_dhw_setpoint")
+    assert state
+    assert float(state.state) == 60.0
 
     state = hass.states.get("sensor.opentherm_dhw_temperature")
     assert state
