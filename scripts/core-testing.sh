@@ -252,7 +252,7 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	)
 
 	# Hassfest already runs on Github
-	if [ -z "${GITHUB_ACTIONS}" ] ; then
+	if [ ! -z "${GITHUB_ACTIONS}" ] ; then
 		echo "Running hassfest for plugwise"
 		python3 -m script.hassfest --requirements --action validate 
 	fi
