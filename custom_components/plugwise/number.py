@@ -57,14 +57,14 @@ NUMBER_TYPES = (
         entity_category=EntityCategory.CONFIG,
         native_max_value_fn=lambda data: data["maximum_boiler_temperature"][
             "upper_bound"
-        ],
+        ],  # type: ignore [index]
         native_min_value_fn=lambda data: data["maximum_boiler_temperature"][
             "lower_bound"
-        ],
+        ],  # type: ignore [index]
         native_step_key_fn=lambda data: data["maximum_boiler_temperature"][
             "resolution"
-        ],
-        native_value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],
+        ],  # type: ignore [index]
+        native_value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],  # type: ignore [index]
         native_unit_of_measurement=TEMP_CELSIUS,
     ),
     PlugwiseNumberEntityDescription(
@@ -75,14 +75,14 @@ NUMBER_TYPES = (
         entity_category=EntityCategory.CONFIG,
         native_max_value_fn=lambda data: data["domestic_hot_water_setpoint"][
             "upper_bound"
-        ],
+        ],  # type: ignore [index]
         native_min_value_fn=lambda data: data["domestic_hot_water_setpoint"][
             "lower_bound"
-        ],
+        ],  # type: ignore [index]
         native_step_key_fn=lambda data: data["domestic_hot_water_setpoint"][
             "resolution"
-        ],
-        native_value_fn=lambda data: data["domestic_hot_water_setpoint"]["setpoint"],
+        ],  # type: ignore [index]
+        native_value_fn=lambda data: data["domestic_hot_water_setpoint"]["setpoint"],  # type: ignore [index]
         native_unit_of_measurement=TEMP_CELSIUS,
     ),
 )
