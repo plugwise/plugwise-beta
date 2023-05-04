@@ -70,6 +70,7 @@ repos:
     hooks:
       - id: prettier
         name: "Verifying/updating code with prettier"
+        exclude_types: [csv, json]
   - repo: https://github.com/cdce8p/python-typing-update
     rev: v0.5.1
     hooks:
