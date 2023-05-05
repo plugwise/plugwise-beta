@@ -50,9 +50,7 @@
     },
     "71e1944f2a944b26ad73323e399efef0": {
       "dev_class": "switching",
-      "members": [
-        "5ca521ac179d468e91d772eeeb8a2117"
-      ],
+      "members": ["5ca521ac179d468e91d772eeeb8a2117"],
       "model": "Switchgroup",
       "name": "Test",
       "switches": {
