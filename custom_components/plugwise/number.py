@@ -48,10 +48,10 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_fn=lambda data: data["maximum_boiler_temperature"]["upper_bound"] or 0.0,  # type: ignore [index]
-        native_min_value_fn=lambda data: data["maximum_boiler_temperature"]["lower_bound"] or 0.0,  # type: ignore [index]
-        native_step_key_fn=lambda data: data["maximum_boiler_temperature"]["resolution"] or 0.0,  # type: ignore [index]
-        native_value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"] or 0.0,  # type: ignore [index]
+        native_max_value_fn=lambda data: data["maximum_boiler_temperature"]["upper_bound"],  # type: ignore [index]
+        native_min_value_fn=lambda data: data["maximum_boiler_temperature"]["lower_bound"],  # type: ignore [index]
+        native_step_key_fn=lambda data: data["maximum_boiler_temperature"]["resolution"],  # type: ignore [index]
+        native_value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],  # type: ignore [index]
         native_unit_of_measurement=TEMP_CELSIUS,
     ),
     PlugwiseNumberEntityDescription(
@@ -60,10 +60,10 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_fn=lambda data: data["max_dhw_temperature"]["upper_bound"] or 0.0,  # type: ignore [index]
-        native_min_value_fn=lambda data: data["max_dhw_temperature"]["lower_bound"] or 0.0,  # type: ignore [index]
-        native_step_key_fn=lambda data: data["max_dhw_temperature"]["resolution"] or 0.0,  # type: ignore [index]
-        native_value_fn=lambda data: data["max_dhw_temperature"]["setpoint"] or 0.0,  # type: ignore [index]
+        native_max_value_fn=lambda data: data["max_dhw_temperature"]["upper_bound"],  # type: ignore [index]
+        native_min_value_fn=lambda data: data["max_dhw_temperature"]["lower_bound"],  # type: ignore [index]
+        native_step_key_fn=lambda data: data["max_dhw_temperature"]["resolution"],  # type: ignore [index]
+        native_value_fn=lambda data: data["max_dhw_temperature"]["setpoint"],  # type: ignore [index]
         native_unit_of_measurement=TEMP_CELSIUS,
     ),
 )
