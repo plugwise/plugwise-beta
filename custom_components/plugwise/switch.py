@@ -25,11 +25,14 @@ async def async_setup_entry(
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
     entities: list[PlugwiseSwitchEntity] = []
     for device_id, device in coordinator.data.devices.items():
+        if "switches" not in device:
+            continue
         for description in PW_SWITCH_TYPES:
-            if "switches" not in device or description.key not in device["switches"]:
+            if description.key not in device["switches"]:
                 continue
             entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
             LOGGER.debug("Add %s switch", description.key)
+
     async_add_entities(entities)
 
 
