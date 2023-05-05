@@ -58,5 +58,5 @@ async def test_adam_dhw_setpoint_change(
 
     assert mock_smile_adam_2.set_number_setpoint.call_count == 1
     mock_smile_adam_2.set_number_setpoint.assert_called_with(
-        "domestic_hot_water_setpoint", 55.0
+        "max_dhw_temperature", 55.0
     )
