@@ -212,6 +212,17 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	ruff tests/components/plugwise/*py || exit
 	echo "... black-ing ..."
 	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
+	echo "... Prepping strict without hassfest ... (for mypy)"
+	echo "homeassistant.components.plugwise.*" >> .strict-typing
+	echo "[mypy-homeassistant.components.plugwise.*]
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+warn_return_any = true
+warn_unreachable = true" >> mypy.ini
 	echo "... mypy ..."
 	script/run-in-env.sh mypy homeassistant/components/plugwise/*.py || exit
 	cd ..
@@ -239,8 +250,12 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	  # shellcheck disable=SC2090
 	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise/manifest.json
 	)
-	echo "Running hassfest for plugwise"
-	python3 -m script.hassfest --requirements --action validate
+
+	# Hassfest already runs on Github
+	if [ -n "${GITHUB_ACTIONS}" ] ; then
+		echo "Running hassfest for plugwise"
+		python3 -m script.hassfest --requirements --action validate 
+	fi
 fi
 
 # pylint was removed from 'quality' some time ago

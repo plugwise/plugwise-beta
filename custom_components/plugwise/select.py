@@ -10,7 +10,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise import Smile
+from plugwise import DeviceData, Smile
 
 from .const import COORDINATOR  # pw-beta
 from .const import DOMAIN, LOGGER
@@ -25,6 +25,8 @@ class PlugwiseSelectDescriptionMixin:
     """Mixin values for Plugwise Select entities."""
 
     command: Callable[[Smile, str, str], Awaitable[Any]]
+    value_fn: Callable[[DeviceData], str]
+    values_fn: Callable[[DeviceData], list[str]]
     current_option_key: str
     options_key: str
 
@@ -44,6 +46,8 @@ SELECT_TYPES = (
         command=lambda api, loc, opt: api.set_schedule_state(loc, opt, STATE_ON),
         current_option_key="selected_schedule",
         options_key="available_schedules",
+        value_fn=lambda data: data["selected_schedule"],
+        values_fn=lambda data: data["available_schedules"],
     ),
     PlugwiseSelectEntityDescription(
         key="select_regulation_mode",
@@ -53,6 +57,8 @@ SELECT_TYPES = (
         command=lambda api, loc, opt: api.set_regulation_mode(opt),
         current_option_key="regulation_mode",
         options_key="regulation_modes",
+        value_fn=lambda data: data["regulation_mode"],
+        values_fn=lambda data: data["regulation_modes"],
     ),
     PlugwiseSelectEntityDescription(
         key="select_dhw_mode",
@@ -62,6 +68,8 @@ SELECT_TYPES = (
         command=lambda api, loc, opt: api.set_dhw_mode(opt),
         current_option_key="dhw_mode",
         options_key="dhw_modes",
+        value_fn=lambda data: data["dhw_mode"],
+        values_fn=lambda data: data["dhw_modes"],
     ),
 )
 
@@ -81,7 +89,7 @@ async def async_setup_entry(
         for description in SELECT_TYPES:
             if (
                 description.options_key in device
-                and len(device[description.options_key]) > 1
+                and len(device[description.options_key]) > 1  # type: ignore [literal-required]
             ):
                 entities.append(
                     PlugwiseSelectEntity(coordinator, device_id, description)
@@ -110,12 +118,14 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     @property
     def current_option(self) -> str:
         """Return the selected entity option to represent the entity state."""
-        return self.device[self.entity_description.current_option_key]
+        # return self.device[self.entity_description.current_option_key]  # type: ignore [literal-required]
+        return self.entity_description.value_fn(self.device)
 
     @property
     def options(self) -> list[str]:
         """Return the selectable entity options."""
-        return self.device[self.entity_description.options_key]
+        # return self.device[self.entity_description.options_key]  # type: ignore [literal-required]
+        return self.entity_description.values_fn(self.device)
 
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""

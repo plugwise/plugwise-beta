@@ -19,13 +19,6 @@
   "config": {
     "step": {
       "user": {
-        "title": "Plugwise connection type",
-        "description": "Please select:",
-        "data": {
-          "flow_type": "Connection type"
-        }
-      },
-      "user_gateway": {
         "title": "Connect to the Plugwise Adam/Smile/Stretch",
         "description": "Please enter:",
         "data": {
@@ -33,18 +26,6 @@
           "username": "Username",
           "host": "IP-address",
           "port": "Port number"
-        }
-      },
-      "user_usb": {
-        "title": "Connect to Plugwise Stick",
-        "description": "Please enter:",
-        "data": {
-          "usb_path": "USB-path"
-        }
-      },
-      "manual_path": {
-        "data": {
-          "usb_path": "USB-path"
         }
       }
     },
@@ -94,7 +75,7 @@
       "maximum_boiler_temperature": {
         "name": "Maximum boiler temperature setpoint"
       },
-      "domestic_hot_water_setpoint": { "name": "Domestic hot water setpoint" }
+      "max_dhw_temperature": { "name": "Domestic hot water setpoint" }
     },
     "select": {
       "dhw_mode": {

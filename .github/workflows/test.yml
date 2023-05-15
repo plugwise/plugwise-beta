@@ -4,7 +4,7 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 1
+  CACHE_VERSION: 2
   DEFAULT_PYTHON: "3.11"
 
 on:
@@ -44,18 +44,21 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Create HA-core Python virtual environment
+      - name: Test through core (full, not split)
         run: |
-          scripts/core-testing.sh core_prep
-      - name: Prepare HA-core Python virtual environment
-        run: |
-          scripts/core-testing.sh pip_prep
-      - name: Test
-        run: |
-          scripts/core-testing.sh testing
-      - name: Quality
-        run: |
-          scripts/core-testing.sh quality
+          GITHUB_ACTIONS="" scripts/core-testing.sh
+  #      - name: Create HA-core Python virtual environment
+  #        run: |
+  #          scripts/core-testing.sh core_prep
+  #      - name: Prepare HA-core Python virtual environment
+  #        run: |
+  #          scripts/core-testing.sh pip_prep
+  #      - name: Test
+  #        run: |
+  #          scripts/core-testing.sh testing
+  #      - name: Quality
+  #        run: |
+  #          scripts/core-testing.sh quality
 
   shellcheck:
     name: Shellcheck

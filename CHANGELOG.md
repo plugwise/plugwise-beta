@@ -2,9 +2,11 @@
 
 ## Versions from 0.40 and up
 
-### Ongoing / Unreleased
+### 0.40.2
 
 - CI improvements
+- Implement strict typing, also via [plugwise v0.31.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.3)
+- Dynamic generated fixtures re-introduced
 
 ### 0.40.1
 

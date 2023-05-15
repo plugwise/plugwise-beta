@@ -25,13 +25,11 @@ async def async_setup_entry(
 
     entities: list[PlugwiseSensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
+        if "sensors" not in device:
+            continue
         for description in PW_SENSOR_TYPES:
-            if (
-                "sensors" not in device
-                or device["sensors"].get(description.key) is None
-            ):
+            if description.key not in device["sensors"]:
                 continue
-
             entities.append(
                 PlugwiseSensorEntity(
                     coordinator,
@@ -47,6 +45,8 @@ async def async_setup_entry(
 class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
     """Represent Plugwise Sensors."""
 
+    entity_description: PlugwiseSensorEntityDescription
+
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
@@ -59,6 +59,6 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
         self._attr_unique_id = f"{device_id}-{description.key}"
 
     @property
-    def native_value(self) -> int | float | None:
+    def native_value(self) -> int | float:
         """Return the value reported by the sensor."""
-        return self.device["sensors"].get(self.entity_description.key)
+        return self.entity_description.value_fn(self.device)

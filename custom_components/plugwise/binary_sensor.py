@@ -30,13 +30,11 @@ async def async_setup_entry(
 
     entities: list[PlugwiseBinarySensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
+        if "binary_sensors" not in device:
+            continue
         for description in PW_BINARY_SENSOR_TYPES:
-            if (
-                "binary_sensors" not in device
-                or description.key not in device["binary_sensors"]
-            ):
+            if description.key not in device["binary_sensors"]:
                 continue
-
             entities.append(
                 PlugwiseBinarySensorEntity(
                     coordinator,
@@ -45,6 +43,7 @@ async def async_setup_entry(
                 )
             )
             LOGGER.debug("Add %s binary sensor", description.key)
+
     async_add_entities(entities)
 
 
@@ -66,17 +65,17 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         self._notification: dict[str, str] = {}  # pw-beta
 
     @property
-    def is_on(self) -> bool | None:
+    def is_on(self) -> bool:
         """Return true if the binary sensor is on."""
-        if (
-            self._notification
-        ):  # pw-beta: show Plugwise notifications as HA persistent notifications
+        # pw-beta: show Plugwise notifications as HA persistent notifications
+        if self._notification:
             for notify_id, message in self._notification.items():
                 self.hass.components.persistent_notification.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self.device["binary_sensors"].get(self.entity_description.key)
+        # return self.device["binary_sensors"][self.entity_description.key]  # type: ignore [literal-required]
+        return self.entity_description.value_fn(self.device)
 
     @property
     def icon(self) -> str | None:

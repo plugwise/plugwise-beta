@@ -25,16 +25,21 @@ async def async_setup_entry(
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
     entities: list[PlugwiseSwitchEntity] = []
     for device_id, device in coordinator.data.devices.items():
+        if "switches" not in device:
+            continue
         for description in PW_SWITCH_TYPES:
-            if "switches" not in device or description.key not in device["switches"]:
+            if description.key not in device["switches"]:
                 continue
             entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
             LOGGER.debug("Add %s switch", description.key)
+
     async_add_entities(entities)
 
 
 class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
     """Representation of a Plugwise plug."""
+
+    entity_description: PlugwiseSwitchEntityDescription
 
     def __init__(
         self,
@@ -48,9 +53,9 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
         self._attr_unique_id = f"{device_id}-{description.key}"
 
     @property
-    def is_on(self) -> bool | None:
+    def is_on(self) -> bool:
         """Return True if entity is on."""
-        return self.device["switches"].get(self.entity_description.key)
+        return self.entity_description.value_fn(self.device)
 
     @plugwise_command
     async def async_turn_on(self, **kwargs: Any) -> None:

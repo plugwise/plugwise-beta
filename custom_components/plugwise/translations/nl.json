@@ -19,13 +19,6 @@
   "config": {
     "step": {
       "user": {
-        "title": "Plugwise connectie-type",
-        "description": "Selecteer aub:",
-        "data": {
-          "flow_type": "Connectie-type"
-        }
-      },
-      "user_gateway": {
         "title": "Verbinden met de Plugwise Adam/Smile/Stretch",
         "description": "Aub invoeren:",
         "data": {
@@ -33,18 +26,6 @@
           "username": "Gebruikersnaam",
           "host": "IP-adres",
           "port": "Poortnummer"
-        }
-      },
-      "user_usb": {
-        "title": "Verbinden met de Plugwise Stick",
-        "description": "Aub invoeren:",
-        "data": {
-          "usb_path": "USB-pad"
-        }
-      },
-      "manual_path": {
-        "data": {
-          "usb_path": "USB-pad"
         }
       }
     },
@@ -92,7 +73,7 @@
     },
     "number": {
       "maximum_boiler_temperature": { "name": "Max cv-ketel temperatuur" },
-      "domestic_hot_water_setpoint": {
+      "max_dhw_temperature": {
         "name": "Max huishoudelijk warm water temperatuur"
       }
     },
