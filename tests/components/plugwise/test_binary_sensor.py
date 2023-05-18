@@ -14,7 +14,7 @@ async def test_anna_climate_binary_sensor_entities(
     """Test creation of climate related binary_sensor entities."""
     state = hass.states.get("binary_sensor.opentherm_secondary_boiler_state")
     assert state
-    assert state.state == STATE_OFF  # TODO: adjusting tests which should never be done
+    assert state.state == STATE_OFF
 
     state = hass.states.get("binary_sensor.opentherm_dhw_state")
     assert state
