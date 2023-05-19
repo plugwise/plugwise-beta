@@ -3,12 +3,13 @@ from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Generic, TypeVar, cast
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise import DeviceData, Smile
 
@@ -19,23 +20,37 @@ from .entity import PlugwiseEntity
 
 PARALLEL_UPDATES = 0
 
+T = TypeVar("T", bound=DeviceData)
 
-@dataclass
-class PlugwiseSelectDescriptionMixin:
-    """Mixin values for Plugwise Select entities."""
+
+@dataclass(kw_only=True)
+class PlugwiseSelectMixin(EntityDescription, Generic[T]):
+    """Mixin for Plugwise select."""
 
     command: Callable[[Smile, str, str], Awaitable[Any]]
-    value_fn: Callable[[DeviceData], str]
-    values_fn: Callable[[DeviceData], list[str]]
-    current_option_key: str
-    options_key: str
+    pw_key: str = "selected_schedule"
+    pw_list_key: str = "available_schedules"
+
+    def pw_get_value(self, obj: T, ret: str = "") -> str:
+        """Return value from Plugwise device."""
+        if result := obj.get(self.pw_key):
+            return cast(str, result)
+        if result := obj.get(self.key):
+            return cast(str, result)
+        return ret
+
+    def pw_get_values(self, obj: T, ret: list[str] = []) -> list[str]:
+        """Return list of values from Plugwise device."""
+        if result := obj.get(self.pw_list_key):
+            return cast(list[str], result)
+        if result := obj.get(self.key):
+            return cast(list[str], result)
+        return ret
 
 
 @dataclass
-class PlugwiseSelectEntityDescription(
-    SelectEntityDescription, PlugwiseSelectDescriptionMixin
-):
-    """Class describing Plugwise Number entities."""
+class PlugwiseSelectEntityDescription(PlugwiseSelectMixin, SelectEntityDescription):
+    """Describes Plugwise select entity."""
 
 
 SELECT_TYPES = (
@@ -44,10 +59,8 @@ SELECT_TYPES = (
         translation_key="thermostat_schedule",
         icon="mdi:calendar-clock",
         command=lambda api, loc, opt: api.set_schedule_state(loc, opt, STATE_ON),
-        current_option_key="selected_schedule",
-        options_key="available_schedules",
-        value_fn=lambda data: data["selected_schedule"],
-        values_fn=lambda data: data["available_schedules"],
+        pw_key="selected_schedule",
+        pw_list_key="available_schedules",
     ),
     PlugwiseSelectEntityDescription(
         key="select_regulation_mode",
@@ -55,10 +68,8 @@ SELECT_TYPES = (
         icon="mdi:hvac",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_regulation_mode(opt),
-        current_option_key="regulation_mode",
-        options_key="regulation_modes",
-        value_fn=lambda data: data["regulation_mode"],
-        values_fn=lambda data: data["regulation_modes"],
+        pw_key="regulation_mode",
+        pw_list_key="regulation_modes",
     ),
     PlugwiseSelectEntityDescription(
         key="select_dhw_mode",
@@ -66,10 +77,8 @@ SELECT_TYPES = (
         icon="mdi:shower",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_dhw_mode(opt),
-        current_option_key="dhw_mode",
-        options_key="dhw_modes",
-        value_fn=lambda data: data["dhw_mode"],
-        values_fn=lambda data: data["dhw_modes"],
+        pw_key="dhw_mode",
+        pw_list_key="dhw_modes",
     ),
 )
 
@@ -88,8 +97,8 @@ async def async_setup_entry(
     for device_id, device in coordinator.data.devices.items():
         for description in SELECT_TYPES:
             if (
-                description.options_key in device
-                and len(device[description.options_key]) > 1  # type: ignore [literal-required]
+                description.pw_list_key in device
+                and len(device[description.pw_list_key]) > 1  # type: ignore [literal-required]
             ):
                 entities.append(
                     PlugwiseSelectEntity(coordinator, device_id, description)
@@ -118,14 +127,12 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     @property
     def current_option(self) -> str:
         """Return the selected entity option to represent the entity state."""
-        # return self.device[self.entity_description.current_option_key]  # type: ignore [literal-required]
-        return self.entity_description.value_fn(self.device)
+        return self.entity_description.pw_get_value(self.device)
 
     @property
     def options(self) -> list[str]:
         """Return the selectable entity options."""
-        # return self.device[self.entity_description.options_key]  # type: ignore [literal-required]
-        return self.entity_description.values_fn(self.device)
+        return self.entity_description.pw_get_values(self.device)
 
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
