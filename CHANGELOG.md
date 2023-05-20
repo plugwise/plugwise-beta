@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+### Ongoing
+
+- CI improvements, ruff over pylint, adhere to upstream ruff version
+
 ### 0.40.2
 
 - CI improvements
