@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
+from typing import Generic, TypeVar, cast
 
 from homeassistant.components.number import (
     NumberDeviceClass,
@@ -13,6 +14,7 @@ from homeassistant.components.number import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import TEMP_CELSIUS, EntityCategory
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise import DeviceData, Smile
 
@@ -21,21 +23,33 @@ from .const import DOMAIN, LOGGER
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 
+T = TypeVar("T", bound=DeviceData)
 
-@dataclass
-class PlugwiseNumberMixin:
-    """Mixin values for Plugwse entities."""
+
+@dataclass(kw_only=True)
+class PlugwiseNumberMixin(EntityDescription, Generic[T]):
+    """Mixin for Plugwise number."""
 
     command: Callable[[Smile, str, float], Awaitable[None]]
-    native_max_value_fn: Callable[[DeviceData], float]
-    native_min_value_fn: Callable[[DeviceData], float]
-    native_step_key_fn: Callable[[DeviceData], float]
-    native_value_fn: Callable[[DeviceData], float]
+    pw_lookup: str = "maximum_boiler_temperature"
+
+    def pw_get_value_by_key(
+        self, obj: T, value_key: str, ret: float | int = 0
+    ) -> float | int:
+        """Return value from Plugwise device."""
+        if result := obj[self.pw_lookup].get(value_key):  # type: ignore [literal-required]
+            return cast(float | int, result)
+        return ret
 
 
 @dataclass
-class PlugwiseNumberEntityDescription(NumberEntityDescription, PlugwiseNumberMixin):
-    """Class describing Plugwise Number entities."""
+class PlugwiseNumberEntityDescription(PlugwiseNumberMixin, NumberEntityDescription):
+    """Describes Plugwise number entity."""
+
+    max_value_key: str = "upper_bound"
+    min_value_key: str = "lower_bound"
+    step_key_value_key: str = "resolution"
+    value_key: str = "setpoint"
 
 
 NUMBER_TYPES = (
@@ -45,10 +59,7 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_fn=lambda data: data["maximum_boiler_temperature"]["upper_bound"],  # type: ignore [index]
-        native_min_value_fn=lambda data: data["maximum_boiler_temperature"]["lower_bound"],  # type: ignore [index]
-        native_step_key_fn=lambda data: data["maximum_boiler_temperature"]["resolution"],  # type: ignore [index]
-        native_value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],  # type: ignore [index]
+        pw_lookup="maximum_boiler_temperature",
         native_unit_of_measurement=TEMP_CELSIUS,
     ),
     PlugwiseNumberEntityDescription(
@@ -57,10 +68,7 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_fn=lambda data: data["max_dhw_temperature"]["upper_bound"],  # type: ignore [index]
-        native_min_value_fn=lambda data: data["max_dhw_temperature"]["lower_bound"],  # type: ignore [index]
-        native_step_key_fn=lambda data: data["max_dhw_temperature"]["resolution"],  # type: ignore [index]
-        native_value_fn=lambda data: data["max_dhw_temperature"]["setpoint"],  # type: ignore [index]
+        pw_lookup="max_dhw_temperature",
         native_unit_of_measurement=TEMP_CELSIUS,
     ),
 )
@@ -107,25 +115,36 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self._attr_mode = NumberMode.BOX
 
     @property
-    def native_step(self) -> float:
-        """Return the setpoint step value."""
-        # Fix unpractical resolution provided by Plugwise
-        return max(self.entity_description.native_step_key_fn(self.device), 0.5)
-
-    @property
-    def native_value(self) -> float:
-        """Return the present setpoint value."""
-        return self.entity_description.native_value_fn(self.device)
+    def native_max_value(self) -> float:
+        """Return the setpoint max. value."""
+        return self.entity_description.pw_get_value_by_key(
+            self.device, self.entity_description.max_value_key
+        )
 
     @property
     def native_min_value(self) -> float:
         """Return the setpoint min. value."""
-        return self.entity_description.native_min_value_fn(self.device)
+        return self.entity_description.pw_get_value_by_key(
+            self.device, self.entity_description.min_value_key
+        )
 
     @property
-    def native_max_value(self) -> float:
-        """Return the setpoint max. value."""
-        return self.entity_description.native_max_value_fn(self.device)
+    def native_step(self) -> float:
+        """Return the setpoint step value."""
+        # Fix unpractical resolution provided by Plugwise
+        return max(
+            self.entity_description.pw_get_value_by_key(
+                self.device, self.entity_description.step_key_value_key
+            ),
+            0.5,
+        )
+
+    @property
+    def native_value(self) -> float:
+        """Return the present setpoint value."""
+        return self.entity_description.pw_get_value_by_key(
+            self.device, self.entity_description.value_key
+        )
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
