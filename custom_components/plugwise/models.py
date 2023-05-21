@@ -23,7 +23,7 @@ from homeassistant.const import (
     UnitOfVolume,
     UnitOfVolumeFlowRate,
 )
-from plugwise import DeviceData
+from plugwise import DeviceData, SmileBinarySensors
 
 
 @dataclass
@@ -31,6 +31,13 @@ class PlugwiseSensorBaseMixin:
     """Mixin for required Plugwise sensor base description keys."""
 
     value_fn: Callable[[DeviceData], float | int]
+
+
+@dataclass
+class PlugwiseBoolBaseMixin:
+    """Mixin for required Plugwise boolean base description keys."""
+
+    value_fn: Callable[[SmileBinarySensors], bool]
 
 
 @dataclass
@@ -54,7 +61,7 @@ class PlugwiseSwitchEntityDescription(SwitchEntityDescription, PlugwiseSwitchBas
 
 @dataclass
 class PlugwiseBinarySensorEntityDescription(
-    BinarySensorEntityDescription, PlugwiseSwitchBaseMixin
+    BinarySensorEntityDescription, PlugwiseBoolBaseMixin
 ):
     """Describes Plugwise binary sensor entity."""
 
@@ -490,14 +497,14 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         icon="mdi:hvac",
         icon_off="mdi:hvac-off",
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda data: data["binary_sensors"]["compressor_state"],
+        value_fn=lambda data: data["compressor_state"],
     ),
     PlugwiseBinarySensorEntityDescription(
         key="cooling_enabled",
         translation_key="cooling_enabled",
         icon="mdi:snowflake-thermometer",
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda data: data["binary_sensors"]["cooling_enabled"],
+        value_fn=lambda data: data["cooling_enabled"],
     ),
     PlugwiseBinarySensorEntityDescription(
         key="dhw_state",
@@ -505,7 +512,7 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         icon="mdi:water-pump",
         icon_off="mdi:water-pump-off",
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda data: data["binary_sensors"]["dhw_state"],
+        value_fn=lambda data: data["dhw_state"],
     ),
     PlugwiseBinarySensorEntityDescription(
         key="flame_state",
@@ -513,7 +520,7 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         icon="mdi:fire",
         icon_off="mdi:fire-off",
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda data: data["binary_sensors"]["flame_state"],
+        value_fn=lambda data: data["flame_state"],
     ),
     PlugwiseBinarySensorEntityDescription(
         key="heating_state",
@@ -521,7 +528,7 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         icon="mdi:radiator",
         icon_off="mdi:radiator-off",
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda data: data["binary_sensors"]["heating_state"],
+        value_fn=lambda data: data["heating_state"],
     ),
     PlugwiseBinarySensorEntityDescription(
         key="cooling_state",
@@ -529,7 +536,7 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         icon="mdi:snowflake",
         icon_off="mdi:snowflake-off",
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda data: data["binary_sensors"]["cooling_state"],
+        value_fn=lambda data: data["cooling_state"],
     ),
     PlugwiseBinarySensorEntityDescription(
         key="slave_boiler_state",
@@ -537,7 +544,7 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         icon="mdi:fire",
         icon_off="mdi:circle-off-outline",
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda data: data["binary_sensors"]["slave_boiler_state"],
+        value_fn=lambda data: data["slave_boiler_state"],
     ),
     PlugwiseBinarySensorEntityDescription(
         key="plugwise_notification",
@@ -545,6 +552,6 @@ PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         icon="mdi:mailbox-up-outline",
         icon_off="mdi:mailbox-outline",
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda data: data["binary_sensors"]["plugwise_notification"],
+        value_fn=lambda data: data["plugwise_notification"],
     ),
 )
