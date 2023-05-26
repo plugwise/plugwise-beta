@@ -80,7 +80,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
         data: PlugwiseData = {"gateway": {}, "devices": {}}
-        
+
         try:
             if not self._connected:
                 await self._connect()
