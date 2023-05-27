@@ -49,12 +49,12 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         native_max_value_fn=lambda data: data["upper_bound"],
         native_min_value_fn=lambda data: data["lower_bound"],
         native_step_key_fn=lambda data: data["resolution"],
         native_value_fn=lambda data: data["setpoint"],
         actuator_fn=lambda data: data.get("maximum_boiler_temperature"),
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
     PlugwiseNumberEntityDescription(
         key="max_dhw_temperature",
@@ -62,12 +62,12 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         native_max_value_fn=lambda data: data["upper_bound"],
         native_min_value_fn=lambda data: data["lower_bound"],
         native_step_key_fn=lambda data: data["resolution"],
         native_value_fn=lambda data: data["setpoint"],
         actuator_fn=lambda data: data.get("max_dhw_temperature"),
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
 )
 
