@@ -11,7 +11,7 @@ from homeassistant.components.number import (
     NumberMode,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory
+from homeassistant.const import TEMP_CELSIUS, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise import ActuatorData, DeviceData, Smile
@@ -54,6 +54,7 @@ NUMBER_TYPES = (
         native_step_key_fn=lambda data: data["resolution"],
         native_value_fn=lambda data: data["setpoint"],
         actuator_fn=lambda data: data.get("maximum_boiler_temperature"),
+        native_unit_of_measurement=TEMP_CELSIUS,
     ),
     PlugwiseNumberEntityDescription(
         key="max_dhw_temperature",
@@ -66,6 +67,7 @@ NUMBER_TYPES = (
         native_step_key_fn=lambda data: data["resolution"],
         native_value_fn=lambda data: data["setpoint"],
         actuator_fn=lambda data: data.get("max_dhw_temperature"),
+        native_unit_of_measurement=TEMP_CELSIUS,
     ),
 )
 
