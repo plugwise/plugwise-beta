@@ -11,10 +11,10 @@ from homeassistant.components.number import (
     NumberMode,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import TEMP_CELSIUS, EntityCategory
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise import DeviceData, Smile
+from plugwise import ActuatorData, DeviceData, Smile
 
 from .const import COORDINATOR  # pw-beta
 from .const import DOMAIN, LOGGER
@@ -27,10 +27,11 @@ class PlugwiseNumberMixin:
     """Mixin values for Plugwse entities."""
 
     command: Callable[[Smile, str, float], Awaitable[None]]
-    native_max_value_fn: Callable[[DeviceData], float]
-    native_min_value_fn: Callable[[DeviceData], float]
-    native_step_key_fn: Callable[[DeviceData], float]
-    native_value_fn: Callable[[DeviceData], float]
+    native_max_value_fn: Callable[[ActuatorData], float]
+    native_min_value_fn: Callable[[ActuatorData], float]
+    native_step_key_fn: Callable[[ActuatorData], float]
+    native_value_fn: Callable[[ActuatorData], float]
+    actuator_fn: Callable[[DeviceData], ActuatorData | None]
 
 
 @dataclass
@@ -45,11 +46,11 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_fn=lambda data: data["maximum_boiler_temperature"]["upper_bound"],  # type: ignore [index]
-        native_min_value_fn=lambda data: data["maximum_boiler_temperature"]["lower_bound"],  # type: ignore [index]
-        native_step_key_fn=lambda data: data["maximum_boiler_temperature"]["resolution"],  # type: ignore [index]
-        native_value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],  # type: ignore [index]
-        native_unit_of_measurement=TEMP_CELSIUS,
+        native_max_value_fn=lambda data: data["upper_bound"],
+        native_min_value_fn=lambda data: data["lower_bound"],
+        native_step_key_fn=lambda data: data["resolution"],
+        native_value_fn=lambda data: data["setpoint"],
+        actuator_fn=lambda data: data.get("maximum_boiler_temperature"),
     ),
     PlugwiseNumberEntityDescription(
         key="max_dhw_temperature",
@@ -57,11 +58,11 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_fn=lambda data: data["max_dhw_temperature"]["upper_bound"],  # type: ignore [index]
-        native_min_value_fn=lambda data: data["max_dhw_temperature"]["lower_bound"],  # type: ignore [index]
-        native_step_key_fn=lambda data: data["max_dhw_temperature"]["resolution"],  # type: ignore [index]
-        native_value_fn=lambda data: data["max_dhw_temperature"]["setpoint"],  # type: ignore [index]
-        native_unit_of_measurement=TEMP_CELSIUS,
+        native_max_value_fn=lambda data: data["upper_bound"],
+        native_min_value_fn=lambda data: data["lower_bound"],
+        native_step_key_fn=lambda data: data["resolution"],
+        native_value_fn=lambda data: data["setpoint"],
+        actuator_fn=lambda data: data.get("max_dhw_temperature"),
     ),
 )
 
@@ -80,9 +81,9 @@ async def async_setup_entry(
     entities: list[PlugwiseNumberEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in NUMBER_TYPES:
-            if description.key in device and "setpoint" in device[description.key]:  # type: ignore [literal-required]
+            if (actuator := description.actuator_fn(device)) and "setpoint" in actuator:
                 entities.append(
-                    PlugwiseNumberEntity(coordinator, device_id, description)
+                    PlugwiseNumberEntity(actuator, coordinator, device_id, description)
                 )
                 LOGGER.debug("Add %s %s number", device["name"], description.name)
 
@@ -96,36 +97,37 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
 
     def __init__(
         self,
+        actuator: ActuatorData,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
         description: PlugwiseNumberEntityDescription,
     ) -> None:
         """Initiate Plugwise Number."""
         super().__init__(coordinator, device_id)
+        self.actuator = actuator
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_mode = NumberMode.BOX
 
     @property
-    def native_step(self) -> float:
-        """Return the setpoint step value."""
-        # Fix unpractical resolution provided by Plugwise
-        return max(self.entity_description.native_step_key_fn(self.device), 0.5)
-
-    @property
-    def native_value(self) -> float:
-        """Return the present setpoint value."""
-        return self.entity_description.native_value_fn(self.device)
+    def native_max_value(self) -> float:
+        """Return the setpoint max. value."""
+        return self.entity_description.native_max_value_fn(self.actuator)
 
     @property
     def native_min_value(self) -> float:
         """Return the setpoint min. value."""
-        return self.entity_description.native_min_value_fn(self.device)
+        return self.entity_description.native_min_value_fn(self.actuator)
 
     @property
-    def native_max_value(self) -> float:
-        """Return the setpoint max. value."""
-        return self.entity_description.native_max_value_fn(self.device)
+    def native_step(self) -> float:
+        """Return the setpoint step value."""
+        return max(self.entity_description.native_step_key_fn(self.actuator), 0.5)
+
+    @property
+    def native_value(self) -> float:
+        """Return the present setpoint value."""
+        return self.entity_description.native_value_fn(self.actuator)
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""

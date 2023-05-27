@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from typing import Any
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
@@ -24,11 +23,9 @@ PARALLEL_UPDATES = 0
 class PlugwiseSelectDescriptionMixin:
     """Mixin values for Plugwise Select entities."""
 
-    command: Callable[[Smile, str, str], Awaitable[Any]]
+    command: Callable[[Smile, str, str], Awaitable[None]]
     value_fn: Callable[[DeviceData], str]
-    values_fn: Callable[[DeviceData], list[str]]
-    current_option_key: str
-    options_key: str
+    options_fn: Callable[[DeviceData], list[str]]
 
 
 @dataclass
@@ -44,10 +41,8 @@ SELECT_TYPES = (
         translation_key="thermostat_schedule",
         icon="mdi:calendar-clock",
         command=lambda api, loc, opt: api.set_schedule_state(loc, opt, STATE_ON),
-        current_option_key="selected_schedule",
-        options_key="available_schedules",
         value_fn=lambda data: data["selected_schedule"],
-        values_fn=lambda data: data["available_schedules"],
+        options_fn=lambda data: data["available_schedules"],
     ),
     PlugwiseSelectEntityDescription(
         key="select_regulation_mode",
@@ -55,10 +50,8 @@ SELECT_TYPES = (
         icon="mdi:hvac",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_regulation_mode(opt),
-        current_option_key="regulation_mode",
-        options_key="regulation_modes",
         value_fn=lambda data: data["regulation_mode"],
-        values_fn=lambda data: data["regulation_modes"],
+        options_fn=lambda data: data["regulation_modes"],
     ),
     PlugwiseSelectEntityDescription(
         key="select_dhw_mode",
@@ -66,10 +59,8 @@ SELECT_TYPES = (
         icon="mdi:shower",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_dhw_mode(opt),
-        current_option_key="dhw_mode",
-        options_key="dhw_modes",
         value_fn=lambda data: data["dhw_mode"],
-        values_fn=lambda data: data["dhw_modes"],
+        options_fn=lambda data: data["dhw_modes"],
     ),
 )
 
@@ -87,10 +78,7 @@ async def async_setup_entry(
     entities: list[PlugwiseSelectEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in SELECT_TYPES:
-            if (
-                description.options_key in device
-                and len(device[description.options_key]) > 1  # type: ignore [literal-required]
-            ):
+            if (options := description.options_fn(device)) and len(options) > 1:
                 entities.append(
                     PlugwiseSelectEntity(coordinator, device_id, description)
                 )
@@ -125,7 +113,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     def options(self) -> list[str]:
         """Return the selectable entity options."""
         # return self.device[self.entity_description.options_key]  # type: ignore [literal-required]
-        return self.entity_description.values_fn(self.device)
+        return self.entity_description.options_fn(self.device)
 
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
