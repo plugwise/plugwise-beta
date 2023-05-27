@@ -25,10 +25,10 @@ async def async_setup_entry(
 
     entities: list[PlugwiseSensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
-        if "sensors" not in device:
+        if not (sensors := device.get("sensors")):
             continue
         for description in PW_SENSOR_TYPES:
-            if description.key not in device["sensors"]:
+            if description.key not in sensors:
                 continue
             entities.append(
                 PlugwiseSensorEntity(
