@@ -106,7 +106,7 @@
       "cooling_setpoint": { "name": "Instelling koelen" },
       "heating_setpoint": { "name": " Instelling verwarmen" },
       "temperature": { "name": "Temperatuur" },
-      "intended_boiler_temperature": { "name": "Boiler doel-temperature" },
+      "intended_boiler_temperature": { "name": "Boiler doel-temperatuur" },
       "temperature_difference": { "name": "Temperatuur verschil" },
       "outdoor_temperature": { "name": "Buiten temperatuur" },
       "outdoor_air_temperature": { "name": "Buitenlucht temperatuur" },
@@ -200,7 +200,7 @@
       }
     },
     "switch": {
-      "cooling_ena_switch": { "name": "Koelen" },
+      "cooling_ena_switch": { "name": "Koelfunctie" },
       "dhw_cm_switch": { "name": "Huishoudelijk warmwater comfort modus" },
       "lock": { "name": "Slot" },
       "relay": { "name": "Schakelaar" }
