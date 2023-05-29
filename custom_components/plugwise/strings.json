@@ -81,10 +81,10 @@
       "dhw_mode": {
         "name": "DHW mode",
         "state": {
-          "off": "Off",
           "auto": "Auto",
           "boost": "Boost",
-          "comfort": "Comfort"
+          "comfort": "Comfort",
+          "off": "Off"
         }
       },
       "regulation_mode": {
