@@ -17,7 +17,7 @@ set -e
 # Which packages to install (to prevent installing all test requirements)
 # actual package version ARE verified (i.e. grepped) from requirements_test_all
 # separate packages with |
-pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic"
+pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff"
 
 echo ""
 echo "Checking for necessary tools and preparing setup:"
@@ -179,8 +179,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise"
 	pip install --upgrade -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
-	echo " - ruff"
-	pip install --upgrade -q ruff
 	echo ""
 	module=$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
 	echo "Checking manifest for current python-plugwise to install: ${module}"
