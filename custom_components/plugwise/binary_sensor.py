@@ -11,9 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, LOGGER, SEVERITIES
-
-from .const import COORDINATOR, PW_TYPE  # pw-beta
+from .const import COORDINATOR, DOMAIN, LOGGER, SEVERITIES, PW_TYPE  # pw-beta
 
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity

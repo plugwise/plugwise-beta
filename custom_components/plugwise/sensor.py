@@ -7,7 +7,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, LOGGER
+from .const import COORDINATOR, DOMAIN, LOGGER
 
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
