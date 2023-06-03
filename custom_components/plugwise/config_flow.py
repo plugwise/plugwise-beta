@@ -32,7 +32,7 @@ from plugwise.exceptions import (
 )
 
 # pw-beta Note; the below are explicit through isort
-from plugwise.smile import Smile
+from plugwise import Smile
 
 from .const import (
     API,
