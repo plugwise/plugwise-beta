@@ -8,12 +8,10 @@ from homeassistant.components.plugwise.const import (
     API,
     CONF_HOMEKIT_EMULATION,
     CONF_REFRESH_INTERVAL,
-    CONF_USB_PATH,
     DEFAULT_PORT,
     DOMAIN,
     FLOW_NET,
     FLOW_TYPE,
-    FLOW_USB,
     PW_TYPE,
 )
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
