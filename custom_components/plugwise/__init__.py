@@ -26,7 +26,7 @@ from .const import CONF_REFRESH_INTERVAL  # pw-beta options
 from .coordinator import PlugwiseDataUpdateCoordinator
 
 
-async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Plugwise Smiles from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
@@ -96,7 +96,7 @@ async def _update_listener(
     await hass.config_entries.async_reload(entry.entry_id)
 
 
-async def async_unload_entry_gw(hass: HomeAssistant, entry: ConfigEntry):
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(
         entry, PLATFORMS_GATEWAY
