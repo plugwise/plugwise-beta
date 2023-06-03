@@ -15,7 +15,6 @@ from plugwise.exceptions import PlugwiseError
 from .const import (
     COORDINATOR,
     DOMAIN,
-    GATEWAY,
     LOGGER,
     PLATFORMS_GATEWAY,
     SERVICE_DELETE,
