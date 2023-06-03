@@ -1,6 +1,5 @@
 """DataUpdateCoordinator for Plugwise."""
 from datetime import timedelta
-from typing import NamedTuple, cast
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_USERNAME
@@ -10,8 +9,7 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from plugwise import Smile
-from plugwise.constants import DeviceData, GatewayData
+from plugwise import PlugwiseData, Smile
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -23,20 +21,17 @@ from plugwise.exceptions import (
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
 
 
-class PlugwiseData(NamedTuple):
-    """Plugwise data stored in the DataUpdateCoordinator."""
-
-    gateway: GatewayData
-    devices: dict[str, DeviceData]
-
-
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     """Class to manage fetching Plugwise data from single endpoint."""
 
     _connected: bool = False
 
     def __init__(
-        self, hass: HomeAssistant, entry: ConfigEntry, cooldown: float
+        self,
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        cooldown: float,
+        update_interval: timedelta = timedelta(seconds=60),
     ) -> None:  # pw-beta cooldown
         """Initialize the coordinator."""
         super().__init__(
@@ -44,7 +39,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             LOGGER,
             name=DOMAIN,
             # Core directly updates from const's DEFAULT_SCAN_INTERVAL
-            update_interval=timedelta(seconds=60),
+            update_interval=update_interval,
             # Don't refresh immediately, give the device time to process
             # the change in state before we query it.
             request_refresh_debouncer=Debouncer(
@@ -65,12 +60,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         )
         self._entry = entry
         self._unavailable_logged = False
+        self.update_interval = update_interval
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile."""
         self._connected = await self.api.connect()
         self.api.get_all_devices()
-        self.name = self.api.smile_name
 
         self.update_interval = DEFAULT_SCAN_INTERVAL.get(
             self.api.smile_type, timedelta(seconds=60)
@@ -84,13 +79,13 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
+        data = PlugwiseData(gateway={}, devices={})
+
         try:
             if not self._connected:
                 await self._connect()
             data = await self.api.async_update()
-            LOGGER.debug(
-                f"{self.api.smile_name} data: %s", PlugwiseData(data[0], data[1])
-            )
+            LOGGER.debug(f"{self.api.smile_name} data: %s", data)
             if self._unavailable_logged:
                 self._unavailable_logged = False
         except InvalidAuthentication as err:
@@ -112,7 +107,4 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
-        return PlugwiseData(
-            gateway=cast(GatewayData, data[0]),
-            devices=cast(dict[str, DeviceData], data[1]),
-        )
+        return data
