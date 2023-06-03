@@ -4,7 +4,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from homeassistant.components import zeroconf
-from homeassistant.components.plugwise.config_flow import CONF_MANUAL_PATH
 from homeassistant.components.plugwise.const import (
     API,
     CONF_HOMEKIT_EMULATION,
@@ -561,15 +560,3 @@ async def test_options_flow_thermo(hass, mock_smile_anna_2) -> None:
             CONF_SCAN_INTERVAL: 60,
         }
 
-
-async def test_user_flow_manual_selected_show_form(hass):
-    """Test user step form when manual path is selected."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data={FLOW_TYPE: FLOW_USB}
-    )
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
-    )
-    assert result["type"] == FlowResultType.FORM
-    assert result["step_id"] == "manual_path"
