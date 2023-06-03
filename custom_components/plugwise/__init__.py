@@ -18,7 +18,6 @@ from .const import (
     GATEWAY,
     LOGGER,
     PLATFORMS_GATEWAY,
-    PW_TYPE,
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
@@ -48,7 +47,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         COORDINATOR: coordinator,  # pw-beta
-        PW_TYPE: GATEWAY,  # pw-beta
         UNDO_UPDATE_LISTENER: undo_listener,  # pw-beta
     }
 
