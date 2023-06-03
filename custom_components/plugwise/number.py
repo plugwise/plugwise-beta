@@ -55,7 +55,7 @@ NUMBER_TYPES = (
         native_value_key="setpoint",
     ),
     PlugwiseNumberEntityDescription(
-        key="domestic_hot_water_setpoint",
+        key="max_dhw_setpoint",
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         name="Domestic hot water setpoint",
