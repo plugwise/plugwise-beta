@@ -188,7 +188,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             data["setpoint_low"] = kwargs[ATTR_TARGET_TEMP_LOW]
 
         for temperature in data.values():
-            if self._attr_max_temp >= temperature >= self._attr_min_temp:
+            if not (self._attr_min_temp <= temperature <= self._attr_max_temp):
                 raise ValueError("Invalid temperature change requested")
 
         await self.coordinator.api.set_temperature(self.device["location"], data)
