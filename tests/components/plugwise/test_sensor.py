@@ -4,7 +4,6 @@ from unittest.mock import MagicMock
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_registry import async_get
-
 from tests.common import MockConfigEntry
 
 

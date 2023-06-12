@@ -14,8 +14,6 @@ from homeassistant.components.climate import (
 )
 from homeassistant.components.climate.const import (
     PRESET_AWAY,  # pw-beta homekit emulation
-)
-from homeassistant.components.climate.const import (
     PRESET_HOME,  # pw-beta homekit emulation
 )
 from homeassistant.config_entries import ConfigEntry
@@ -24,9 +22,12 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import CONF_HOMEKIT_EMULATION  # pw-beta homekit emulation
-from .const import COORDINATOR  # pw-beta
-from .const import DOMAIN, MASTER_THERMOSTATS
+from .const import (
+    CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
+    COORDINATOR,  # pw-beta
+    DOMAIN,
+    MASTER_THERMOSTATS,
+)
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command

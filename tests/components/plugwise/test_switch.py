@@ -9,7 +9,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_registry import async_get
 from plugwise.exceptions import PlugwiseException
-
 from tests.common import MockConfigEntry
 
 
