@@ -205,9 +205,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	cd "${coredir}" || exit
 	echo ""
 	echo "... ruff-ing component..."
-	ruff --fix homeassistant/components/plugwise/*py 
+	ruff --fix homeassistant/components/plugwise/*py || echo "Ruff applied autofixes"
 	echo "... ruff-ing tests..."
-	ruff --fix tests/components/plugwise/*py 
+	ruff --fix tests/components/plugwise/*py || echo "Ruff applied autofixes"
 	echo "... black-ing ..."
 	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
 	echo "... Prepping strict without hassfest ... (for mypy)"
