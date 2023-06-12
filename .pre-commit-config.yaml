@@ -11,11 +11,6 @@ default_language_version:
 
 repos:
   # Run manually in CI skipping the branch checks
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        name: "Verifying/updating code using isort"
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

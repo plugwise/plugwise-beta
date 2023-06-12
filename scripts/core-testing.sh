@@ -269,7 +269,7 @@ fi
 
 # pylint was removed from 'quality' some time ago
 # this is a much better replacement for actually checking everything
-# including isort and mypy
+# including mypy
 if [ -z "${GITHUB_ACTIONS}" ] && [ -n "${COMMIT_CHECK}" ] ; then 
 	cd "${coredir}" || exit
 	echo ""
