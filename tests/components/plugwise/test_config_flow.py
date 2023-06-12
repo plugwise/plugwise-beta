@@ -30,7 +30,6 @@ from plugwise.exceptions import (
     InvalidXMLError,
     UnsupportedDeviceError,
 )
-
 from tests.common import MockConfigEntry
 
 TEST_HOST = "1.1.1.1"

@@ -13,6 +13,7 @@ from homeassistant.helpers import device_registry as dr, entity_registry as er
 from plugwise.exceptions import PlugwiseError
 
 from .const import (
+    CONF_REFRESH_INTERVAL,  # pw-beta options
     COORDINATOR,
     DOMAIN,
     LOGGER,
@@ -20,7 +21,6 @@ from .const import (
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
-from .const import CONF_REFRESH_INTERVAL  # pw-beta options
 from .coordinator import PlugwiseDataUpdateCoordinator
 
 

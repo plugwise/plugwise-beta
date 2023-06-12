@@ -11,11 +11,13 @@ default_language_version:
 
 repos:
   # Run manually in CI skipping the branch checks
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.272
     hooks:
-      - id: isort
-        name: "Verifying/updating code using isort"
+      - id: ruff
+        name: "Ruff-ing code"
+        args:
+          - --fix
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

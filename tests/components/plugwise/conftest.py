@@ -18,7 +18,6 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from plugwise import PlugwiseData
-
 from tests.common import MockConfigEntry, load_fixture
 
 

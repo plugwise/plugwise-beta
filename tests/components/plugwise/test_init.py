@@ -16,7 +16,6 @@ from plugwise.exceptions import (
     ResponseError,
     UnsupportedDeviceError,
 )
-
 from tests.common import MockConfigEntry
 
 HEATER_ID = "1cbf783bb11e4a7c8a6843dee3a86927"  # Opentherm device_id for migration

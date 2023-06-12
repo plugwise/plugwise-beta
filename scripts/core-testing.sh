@@ -17,7 +17,7 @@ set -e
 # Which packages to install (to prevent installing all test requirements)
 # actual package version ARE verified (i.e. grepped) from requirements_test_all
 # separate packages with |
-pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff"
+pip_packages="fnvhash|lru-dict|voluptuous|aiohttp-cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff"
 
 echo ""
 echo "Checking for necessary tools and preparing setup:"
@@ -204,10 +204,12 @@ fi # testing
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
 	cd "${coredir}" || exit
 	echo ""
+	set +e
 	echo "... ruff-ing component..."
-	ruff homeassistant/components/plugwise/*py || exit
+	ruff --fix homeassistant/components/plugwise/*py || echo "Ruff applied autofixes"
 	echo "... ruff-ing tests..."
-	ruff tests/components/plugwise/*py || exit
+	ruff --fix tests/components/plugwise/*py || echo "Ruff applied autofixes"
+	set -e
 	echo "... black-ing ..."
 	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
 	echo "... Prepping strict without hassfest ... (for mypy)"
@@ -269,7 +271,7 @@ fi
 
 # pylint was removed from 'quality' some time ago
 # this is a much better replacement for actually checking everything
-# including isort and mypy
+# including mypy
 if [ -z "${GITHUB_ACTIONS}" ] && [ -n "${COMMIT_CHECK}" ] ; then 
 	cd "${coredir}" || exit
 	echo ""

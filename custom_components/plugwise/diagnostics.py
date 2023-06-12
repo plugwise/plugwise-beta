@@ -6,8 +6,10 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .const import COORDINATOR  # pw-beta
-from .const import DOMAIN
+from .const import (
+    COORDINATOR,  # pw-beta
+    DOMAIN,
+)
 from .coordinator import PlugwiseDataUpdateCoordinator
 
 

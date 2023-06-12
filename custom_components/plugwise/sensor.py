@@ -6,8 +6,11 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import COORDINATOR  # pw-beta
-from .const import DOMAIN, LOGGER
+from .const import (
+    COORDINATOR,  # pw-beta
+    DOMAIN,
+    LOGGER,
+)
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
