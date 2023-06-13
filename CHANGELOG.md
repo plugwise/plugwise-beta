@@ -2,9 +2,13 @@
 
 ## Versions from 0.40 and up
 
-### Ongoing
+### v0.40.3
 
 - CI improvements, ruff over pylint, adhere to upstream ruff version
+- Fix Anna+Elga domestic_hot_water_setpoint-related bug via [plugwise v0.31.6](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.6)
+- Cooling-related fix/improvements via [plugwise v0.31.5](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.5)
+- Improvements via [plugwise v0.31.4](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.4)
+- Copy improvements in typing and code from Core Plugiwse PR's #91769, #93162, #93345, #93371, #93375, #93416
 
 ### 0.40.2
 

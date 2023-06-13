@@ -47,14 +47,30 @@
   },
   "entity": {
     "binary_sensor": {
-      "compressor_state": { "name": "Compressor status" },
-      "cooling_enabled": { "name": "Koelfunctie aan" },
-      "dhw_state": { "name": "DHW status" },
-      "flame_state": { "name": "Vlam status" },
-      "heating_state": { "name": "Verwarmen" },
-      "cooling_state": { "name": "Koelen" },
-      "slave_boiler_state": { "name": "Secundaire boiler status" },
-      "plugwise_notification": { "name": "Plugwise melding" }
+      "compressor_state": {
+        "name": "Compressor status"
+      },
+      "cooling_enabled": {
+        "name": "Koelfunctie aan"
+      },
+      "dhw_state": {
+        "name": "DHW status"
+      },
+      "flame_state": {
+        "name": "Vlam status"
+      },
+      "heating_state": {
+        "name": "Verwarmen"
+      },
+      "cooling_state": {
+        "name": "Koelen"
+      },
+      "slave_boiler_state": {
+        "name": "Secundaire boiler status"
+      },
+      "plugwise_notification": {
+        "name": "Plugwise melding"
+      }
     },
     "climate": {
       "plugwise": {
@@ -72,7 +88,9 @@
       }
     },
     "number": {
-      "maximum_boiler_temperature": { "name": "Max cv-ketel temperatuur" },
+      "maximum_boiler_temperature": {
+        "name": "Max cv-ketel temperatuur"
+      },
       "max_dhw_temperature": {
         "name": "Max huishoudelijk warm water temperatuur"
       }
@@ -102,20 +120,48 @@
       }
     },
     "sensor": {
-      "setpoint": { "name": "Instelling" },
-      "cooling_setpoint": { "name": "Instelling koelen" },
-      "heating_setpoint": { "name": " Instelling verwarmen" },
-      "temperature": { "name": "Temperatuur" },
-      "intended_boiler_temperature": { "name": "Boiler doel-temperature" },
-      "temperature_difference": { "name": "Temperatuur verschil" },
-      "outdoor_temperature": { "name": "Buiten temperatuur" },
-      "outdoor_air_temperature": { "name": "Buitenlucht temperatuur" },
-      "water_temperature": { "name": "Water temperatuur" },
-      "return_temperature": { "name": "Terugvoer temperatuur" },
-      "electricity_consumed": { "name": "Verbruikte electriciteit" },
-      "electricity_produced": { "name": "Teruggeleverde electriciteit" },
-      "electricity_consumed_point": { "name": "Electriciteitsgebruik" },
-      "electricity_produced_point": { "name": "Electriciteitsopwek" },
+      "setpoint": {
+        "name": "Instelling"
+      },
+      "cooling_setpoint": {
+        "name": "Instelling koelen"
+      },
+      "heating_setpoint": {
+        "name": " Instelling verwarmen"
+      },
+      "temperature": {
+        "name": "Temperatuur"
+      },
+      "intended_boiler_temperature": {
+        "name": "Boiler doel-temperatuur"
+      },
+      "temperature_difference": {
+        "name": "Temperatuur verschil"
+      },
+      "outdoor_temperature": {
+        "name": "Buiten temperatuur"
+      },
+      "outdoor_air_temperature": {
+        "name": "Buitenlucht temperatuur"
+      },
+      "water_temperature": {
+        "name": "Water temperatuur"
+      },
+      "return_temperature": {
+        "name": "Terugvoer temperatuur"
+      },
+      "electricity_consumed": {
+        "name": "Verbruikte electriciteit"
+      },
+      "electricity_produced": {
+        "name": "Teruggeleverde electriciteit"
+      },
+      "electricity_consumed_point": {
+        "name": "Electriciteitsgebruik"
+      },
+      "electricity_produced_point": {
+        "name": "Electriciteitsopwek"
+      },
       "electricity_consumed_interval": {
         "name": "Electriciteitsgebruik - interval"
       },
@@ -176,22 +222,48 @@
       "electricity_phase_three_produced": {
         "name": "Electriciteitsopwek fase drie"
       },
-      "voltage_phase_one": { "name": "Netspanning fase een" },
-      "voltage_phase_two": { "name": "Netspanning fase twee" },
-      "voltage_phase_three": { "name": "Netspanning fase drie" },
-      "gas_consumed_interval": { "name": "Gasverbruik - interval" },
-      "gas_consumed_cumulative": { "name": "Gasverbruik - cumulatief" },
-      "net_electricity_point": { "name": "Netto electriciteitsgebruik" },
+      "voltage_phase_one": {
+        "name": "Netspanning fase een"
+      },
+      "voltage_phase_two": {
+        "name": "Netspanning fase twee"
+      },
+      "voltage_phase_three": {
+        "name": "Netspanning fase drie"
+      },
+      "gas_consumed_interval": {
+        "name": "Gasverbruik - interval"
+      },
+      "gas_consumed_cumulative": {
+        "name": "Gasverbruik - cumulatief"
+      },
+      "net_electricity_point": {
+        "name": "Netto electriciteitsgebruik"
+      },
       "net_electricity_cumulative": {
         "name": "Netto electriciteitsgebruik - cumulatief"
       },
-      "battery": { "name": "Batterij" },
-      "illuminance": { "name": "Lichtsterkte" },
-      "modulation_level": { "name": "Modulatie" },
-      "valve_position": { "name": "Kleppositie" },
-      "water_pressure": { "name": "Waterdruk" },
-      "relative_humidity": { "name": "Relatieve luchtvochtigheid" },
-      "dhw_temperature": { "name": "Huishoudelijk warmwater temperatuur" },
+      "battery": {
+        "name": "Batterij"
+      },
+      "illuminance": {
+        "name": "Lichtsterkte"
+      },
+      "modulation_level": {
+        "name": "Modulatie"
+      },
+      "valve_position": {
+        "name": "Kleppositie"
+      },
+      "water_pressure": {
+        "name": "Waterdruk"
+      },
+      "relative_humidity": {
+        "name": "Relatieve luchtvochtigheid"
+      },
+      "dhw_temperature": {
+        "name": "Huishoudelijk warmwater temperatuur"
+      },
       "domestic_hot_water_setpoint": {
         "name": "Huishoudelijk warmwater instelling"
       },
@@ -200,10 +272,18 @@
       }
     },
     "switch": {
-      "cooling_ena_switch": { "name": "Koelen" },
-      "dhw_cm_switch": { "name": "Huishoudelijk warmwater comfort modus" },
-      "lock": { "name": "Slot" },
-      "relay": { "name": "Schakelaar" }
+      "cooling_ena_switch": {
+        "name": "Koelfunctie"
+      },
+      "dhw_cm_switch": {
+        "name": "Huishoudelijk warmwater comfort modus"
+      },
+      "lock": {
+        "name": "Slot"
+      },
+      "relay": {
+        "name": "Schakelaar"
+      }
     }
   }
 }
