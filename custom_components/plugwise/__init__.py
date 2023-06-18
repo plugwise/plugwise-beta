@@ -109,8 +109,11 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
 
     - Migrates unique ID from old relay switches to the new unique ID
     """
-    if entry.domain == SWITCH_DOMAIN and entry.unique_id.endswith("-plug"):
+    if entry.domain == SWITCH_DOMAIN and entry.unique_id.endswith("-"):
         return {"new_unique_id": entry.unique_id.replace("-plug", "-relay")}
+
+    if entry.domain == NUMBER_DOMAIN and entry.unique_id.endswith("-domestic_hot_water_setpoint"):
+        return {"new_unique_id": entry.unique_id.replace("-domestic_hot_water_setpoint", "-max_dhw_temperature")}
 
     # No migration needed
     return None
@@ -120,27 +123,18 @@ def migrate_sensor_entities(
     hass: HomeAssistant,
     coordinator: PlugwiseDataUpdateCoordinator,
 ) -> None:
-    """Migrate Numbers, Sensors if needed."""
+    """Migrate Sensors if needed."""
     ent_reg = er.async_get(hass)
 
-    # Migrate opentherm_outdoor_temperature to 
+    # Migrate opentherm_outdoor_temperature to  # pw-beta add to Core
     # opentherm_outdoor_air_temperature sensor
-    # Migrate opentherm_domestic_hot_water_setpoint
-    # to opentherm_max_dhw_temperature
     for device_id, device in coordinator.data.devices.items():
         if device["dev_class"] != "heater_central":  # pw-beta add to Core
             continue
 
-        old_unique_id_1 = f"{device_id}-outdoor_temperature"
+        old_unique_id = f"{device_id}-outdoor_temperature"
         if entity_id := ent_reg.async_get_entity_id(
-            Platform.SENSOR, DOMAIN, old_unique_id_1
+            Platform.SENSOR, DOMAIN, old_unique_id
         ):
-            new_unique_id_1 = f"{device_id}-outdoor_air_temperature"
-            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id_1)
-
-        old_unique_id_2 = f"{device_id}-domestic_hot_water_setpoint"
-        if entity_id := ent_reg.async_get_entity_id(
-            Platform.SENSOR, DOMAIN, old_unique_id_2
-        ):
-            new_unique_id_2 = f"{device_id}-max_dhw_temperature"
-            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id_2)
+            new_unique_id = f"{device_id}-outdoor_air_temperature"
+            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
