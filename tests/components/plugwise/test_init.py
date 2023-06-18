@@ -1,14 +1,6 @@
 """Tests for the Plugwise Climate integration."""
 from unittest.mock import MagicMock
 
-import pytest
-
-from homeassistant.components.plugwise.const import DOMAIN
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
-from homeassistant.config_entries import ConfigEntryState
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_registry import async_get
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -16,6 +8,16 @@ from plugwise.exceptions import (
     ResponseError,
     UnsupportedDeviceError,
 )
+import pytest
+
+from homeassistant.components.plugwise.const import DOMAIN
+from homeassistant.components.number import DOMAIN as NUMBER_DOMAIN
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.config_entries import ConfigEntryState
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_registry import async_get
+
 from tests.common import MockConfigEntry
 
 HEATER_ID = "1cbf783bb11e4a7c8a6843dee3a86927"  # Opentherm device_id for migration
@@ -83,6 +85,17 @@ async def test_gateway_config_entry_not_ready(
             },
             f"{HEATER_ID}-outdoor_temperature",
             f"{HEATER_ID}-outdoor_air_temperature",
+        ),
+        (
+            {
+                "domain": NUMBER_DOMAIN,
+                "platform": DOMAIN,
+                "unique_id": f"{HEATER_ID}-domestic_hot_water_setpoint",
+                "suggested_object_id": f"{HEATER_ID}-domestic_hot_water_setpoint",
+                "disabled_by": None,
+            },
+            f"{HEATER_ID}-domestic_hot_water_setpoint",
+            f"{HEATER_ID}-max_dhw_temperature",
         ),
     ],
 )
