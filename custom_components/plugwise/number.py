@@ -32,7 +32,7 @@ class PlugwiseNumberMixin:
     command: Callable[[Smile, str, float], Awaitable[None]]
     native_max_value_fn: Callable[[ActuatorData], float]
     native_min_value_fn: Callable[[ActuatorData], float]
-    native_step_key_fn: Callable[[ActuatorData], float]
+    native_step_fn: Callable[[ActuatorData], float]
     native_value_fn: Callable[[ActuatorData], float]
     actuator_fn: Callable[[DeviceData], ActuatorData | None]
 
@@ -52,7 +52,7 @@ NUMBER_TYPES = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         native_max_value_fn=lambda data: data["upper_bound"],
         native_min_value_fn=lambda data: data["lower_bound"],
-        native_step_key_fn=lambda data: data["resolution"],
+        native_step_fn=lambda data: data["resolution"],
         native_value_fn=lambda data: data["setpoint"],
         actuator_fn=lambda data: data.get("maximum_boiler_temperature"),
     ),
@@ -65,7 +65,7 @@ NUMBER_TYPES = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         native_max_value_fn=lambda data: data["upper_bound"],
         native_min_value_fn=lambda data: data["lower_bound"],
-        native_step_key_fn=lambda data: data["resolution"],
+        native_step_fn=lambda data: data["resolution"],
         native_value_fn=lambda data: data["setpoint"],
         actuator_fn=lambda data: data.get("max_dhw_temperature"),
     ),
@@ -127,7 +127,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     @property
     def native_step(self) -> float:
         """Return the setpoint step value."""
-        return max(self.entity_description.native_step_key_fn(self.actuator), 0.5)
+        return max(self.entity_description.native_step_fn(self.actuator), 0.5)
 
     @property
     def native_value(self) -> float:

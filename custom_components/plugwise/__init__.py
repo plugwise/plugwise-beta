@@ -120,18 +120,27 @@ def migrate_sensor_entities(
     hass: HomeAssistant,
     coordinator: PlugwiseDataUpdateCoordinator,
 ) -> None:
-    """Migrate Sensors if needed."""
+    """Migrate Numbers, Sensors if needed."""
     ent_reg = er.async_get(hass)
 
-    # Migrate opentherm_outdoor_temperature  # pw-beta add to Core
-    # to opentherm_outdoor_air_temperature sensor
+    # Migrate opentherm_outdoor_temperature to 
+    # opentherm_outdoor_air_temperature sensor
+    # Migrate opentherm_domestic_hot_water_setpoint
+    # to opentherm_max_dhw_temperature
     for device_id, device in coordinator.data.devices.items():
         if device["dev_class"] != "heater_central":  # pw-beta add to Core
             continue
 
-        old_unique_id = f"{device_id}-outdoor_temperature"
+        old_unique_id_1 = f"{device_id}-outdoor_temperature"
         if entity_id := ent_reg.async_get_entity_id(
-            Platform.SENSOR, DOMAIN, old_unique_id
+            Platform.SENSOR, DOMAIN, old_unique_id_1
         ):
-            new_unique_id = f"{device_id}-outdoor_air_temperature"
-            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+            new_unique_id_1 = f"{device_id}-outdoor_air_temperature"
+            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id_1)
+
+        old_unique_id_2 = f"{device_id}-domestic_hot_water_setpoint"
+        if entity_id := ent_reg.async_get_entity_id(
+            Platform.SENSOR, DOMAIN, old_unique_id_2
+        ):
+            new_unique_id_2 = f"{device_id}-max_dhw_temperature"
+            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id_2)
