@@ -11,8 +11,8 @@ default_language_version:
 
 repos:
   # Run manually in CI skipping the branch checks
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.275
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.276
     hooks:
       - id: ruff
         name: "Ruff-ing code"
@@ -28,7 +28,7 @@ repos:
         args:
           - --branch=main
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.7.0
+    rev: v3.8.0
     hooks:
       - id: pyupgrade
         name: "Checking pyupgrade"
