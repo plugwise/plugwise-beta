@@ -224,17 +224,6 @@ disallow_untyped_defs = true
 warn_return_any = true
 warn_unreachable = true" >> mypy.ini
 	echo "... mypy ..."
-	echo "Prepping strict without hassfest"
-	echo "homeassistant.components.plugwise.*" >> .strict-typing
-	echo "[mypy-homeassistant.components.plugwise.*]
-check_untyped_defs = true
-disallow_incomplete_defs = true
-disallow_subclassing_any = true
-disallow_untyped_calls = true
-disallow_untyped_decorators = true
-disallow_untyped_defs = true
-warn_return_any = true
-warn_unreachable = true" >> mypy.ini
 	script/run-in-env.sh mypy homeassistant/components/plugwise/*.py || exit
 	cd ..
 	echo "... markdownlint ..."
