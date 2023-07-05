@@ -183,6 +183,7 @@ def mock_smile_adam_4() -> Generator[None, MagicMock, None]:
 
         yield smile
 
+
 @pytest.fixture
 def mock_smile_anna() -> Generator[None, MagicMock, None]:
     """Create a Mock Anna environment for testing exceptions."""
