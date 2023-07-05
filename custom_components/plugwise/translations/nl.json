@@ -129,9 +129,6 @@
       "heating_setpoint": {
         "name": " Instelling verwarmen"
       },
-      "temperature": {
-        "name": "Temperatuur"
-      },
       "intended_boiler_temperature": {
         "name": "Boiler doel-temperatuur"
       },
@@ -246,9 +243,6 @@
       "battery": {
         "name": "Batterij"
       },
-      "illuminance": {
-        "name": "Lichtsterkte"
-      },
       "modulation_level": {
         "name": "Modulatie"
       },
@@ -257,9 +251,6 @@
       },
       "water_pressure": {
         "name": "Waterdruk"
-      },
-      "relative_humidity": {
-        "name": "Relatieve luchtvochtigheid"
       },
       "dhw_temperature": {
         "name": "Huishoudelijk warmwater temperatuur"
