@@ -443,14 +443,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         value_fn=lambda data: data["domestic_hot_water_setpoint"],
     ),
-    #    PlugwiseSensorEntityDescription(
-    #        key="maximum_boiler_temperature",
-    #        translation_key="maximum_boiler_temperature",
-    #        device_class=SensorDeviceClass.TEMPERATURE,
-    #        entity_category=EntityCategory.DIAGNOSTIC,
-    #        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-    #        value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],  # type: ignore [index]
-    #    ),
 )
 
 PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
