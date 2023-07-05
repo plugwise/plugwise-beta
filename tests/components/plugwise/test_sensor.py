@@ -2,6 +2,7 @@
 
 from unittest.mock import MagicMock
 
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_registry import async_get
 from tests.common import MockConfigEntry
@@ -43,6 +44,47 @@ async def test_adam_climate_sensor_entity_2(
     state = hass.states.get("sensor.woonkamer_humidity")
     assert state
     assert float(state.state) == 56.2
+
+
+async def test_unique_id_migration_humidity(
+    hass: HomeAssistant, mock_smile_adam_4: MagicMock, mock_config_entry: MockConfigEntry
+) -> None:
+    """Test unique ID migration of -relative_humidity to -humidity."""
+    mock_config_entry.add_to_hass(hass)
+
+    entity_registry = async_get(hass)
+    # Entry to migrate
+    entity_registry.async_get_or_create(
+        SENSOR_DOMAIN,
+        DOMAIN,
+        "f61f1a2535f54f52ad006a3d18e459ca-relative_humidity",
+        config_entry=mock_config_entry,
+        suggested_object_id="woonkamer",
+        disabled_by=None,
+    )
+    # Entry not needing migration
+    entity_registry.async_get_or_create(
+        SENSOR_DOMAIN,
+        DOMAIN,
+        "675416a629f343c495449970e2ca37b5-battery",
+        config_entry=mock_config_entry,
+        suggested_object_id="woonkamer",
+        disabled_by=None,
+    )
+
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert hass.states.get("sensor.woonkamer_humidity") is not None
+    assert hass.states.get("sensor.woonkamer_battery") is not None
+
+    entity_entry = entity_registry.async_get("sensor.woonkamer_humidity")
+    assert entity_entry
+    assert entity_entry.unique_id == "f61f1a2535f54f52ad006a3d18e459ca-humidity",
+
+    entity_entry = entity_registry.async_get("sensor.woonkamer_battery"")
+    assert entity_entry
+    assert entity_entry.unique_id == "675416a629f343c495449970e2ca37b5-battery"
 
 
 async def test_anna_as_smt_climate_sensor_entities(
