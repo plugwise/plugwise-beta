@@ -240,9 +240,6 @@
       "net_electricity_cumulative": {
         "name": "Net electricity cumulative"
       },
-      "battery": {
-        "name": "Battery"
-      },
       "modulation_level": {
         "name": "Modulation level"
       },
