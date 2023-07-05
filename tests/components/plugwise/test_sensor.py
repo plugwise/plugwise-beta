@@ -6,6 +6,7 @@ from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_registry import async_get
+
 from tests.common import MockConfigEntry
 
 
@@ -48,7 +49,9 @@ async def test_adam_climate_sensor_entity_2(
 
 
 async def test_unique_id_migration_humidity(
-    hass: HomeAssistant, mock_smile_adam_4: MagicMock, mock_config_entry: MockConfigEntry
+    hass: HomeAssistant,
+    mock_smile_adam_4: MagicMock,
+    mock_config_entry: MockConfigEntry,
 ) -> None:
     """Test unique ID migration of -relative_humidity to -humidity."""
     mock_config_entry.add_to_hass(hass)
