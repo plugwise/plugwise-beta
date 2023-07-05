@@ -60,7 +60,7 @@ async def test_unique_id_migration_humidity(
         DOMAIN,
         "f61f1a2535f54f52ad006a3d18e459ca-relative_humidity",
         config_entry=mock_config_entry,
-        suggested_object_id="woonkamer_hunidity",
+        suggested_object_id="woonkamer_humidity",
         disabled_by=None,
     )
     # Entry not needing migration
