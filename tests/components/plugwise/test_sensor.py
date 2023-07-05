@@ -67,7 +67,7 @@ async def test_unique_id_migration_humidity(
     entity_registry.async_get_or_create(
         SENSOR_DOMAIN,
         DOMAIN,
-        "675416a629f343c495449970e2ca37b5-battery",
+        "f61f1a2535f54f52ad006a3d18e459ca-battery",
         config_entry=mock_config_entry,
         suggested_object_id="woonkamer_battery",
         disabled_by=None,
@@ -85,7 +85,7 @@ async def test_unique_id_migration_humidity(
 
     entity_entry = entity_registry.async_get("sensor.woonkamer_battery")
     assert entity_entry
-    assert entity_entry.unique_id == "675416a629f343c495449970e2ca37b5-battery"
+    assert entity_entry.unique_id == "f61f1a2535f54f52ad006a3d18e459ca-battery"
 
 
 async def test_anna_as_smt_climate_sensor_entities(
