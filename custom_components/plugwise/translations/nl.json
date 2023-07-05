@@ -240,9 +240,6 @@
       "net_electricity_cumulative": {
         "name": "Netto electriciteitsgebruik - cumulatief"
       },
-      "battery": {
-        "name": "Batterij"
-      },
       "modulation_level": {
         "name": "Modulatie"
       },
