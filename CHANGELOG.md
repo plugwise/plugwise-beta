@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+### v0.40.4
+
+- Fix for [#417](https://github.com/plugwise/plugwise-beta/pull/424)
+
 ### v0.40.3
 
 - CI improvements, ruff over pylint, adhere to upstream ruff version
