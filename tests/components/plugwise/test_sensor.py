@@ -36,6 +36,15 @@ async def test_adam_climate_sensor_entities(
     assert int(state.state) == 34
 
 
+async def test_adam_climate_sensor_entity_2(
+    hass: HomeAssistant, mock_smile_adam_4: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test creation of climate related sensor entities."""
+    state = hass.states.get("sensor.woonkamer_humidity")
+    assert state
+    assert float(state.state) == 56.2
+
+
 async def test_anna_as_smt_climate_sensor_entities(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
