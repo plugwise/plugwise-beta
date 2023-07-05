@@ -5,6 +5,7 @@
 ### v0.40.4
 
 - Fix for [#417](https://github.com/plugwise/plugwise-beta/pull/424)
+- Rename Jip sensor `relative_humidity` to `humidity` and migrate the unique_id
 
 ### v0.40.3
 
