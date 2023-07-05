@@ -78,7 +78,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         value_fn=lambda data: data["setpoint"],
     ),
     PlugwiseSensorEntityDescription(
-        key="cooling_setpoint",
+        key="setpoint_high",
         translation_key="cooling_setpoint",
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -86,7 +86,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         value_fn=lambda data: data["setpoint_high"],
     ),
     PlugwiseSensorEntityDescription(
-        key="heating_setpoint",
+        key="setpoint_low",
         translation_key="heating_setpoint",
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -421,7 +421,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         value_fn=lambda data: data["water_pressure"],
     ),
     PlugwiseSensorEntityDescription(
-        key="relative_humidity",
+        key="humidity",
         translation_key="relative_humidity",
         device_class=SensorDeviceClass.HUMIDITY,
         native_unit_of_measurement=PERCENTAGE,
@@ -477,7 +477,7 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         value_fn=lambda data: data["relay"],
     ),
     PlugwiseSwitchEntityDescription(
-        key="cooling_enabled",
+        key="cooling_ena_switch",
         translation_key="cooling_enabled",
         icon="mdi:snowflake-thermometer",
         device_class=SwitchDeviceClass.SWITCH,
