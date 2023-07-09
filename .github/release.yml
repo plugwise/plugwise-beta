@@ -1,0 +1,50 @@
+# Release drafter
+
+template: |
+  **Discard appropriately**
+  # DO NOT INSTALL - unless you are requested to!
+  # DO NOT INSTALL - For internal testing
+  **/Discard appropriately**
+
+  ## What's Changed
+
+  $CHANGES
+
+changelog:
+  categories:
+    - title: Breaking Changes 🛠
+      labels:
+        - Semver-Major
+        - breaking-change
+    - title: Home Assistant Core related 🏠
+      labels:
+        - needs-upstreaming
+        - downstreaming
+    - title: Exciting New Features 🎉
+      labels:
+        - Semver-Minor
+        - "feature"
+        - "enhancement"
+        - "quality"
+        - "smile"
+        - "ideas"
+    - title: Bug Fixes 🐛
+      labels:
+        - "fix"
+        - "bugfix"
+        - "bug"
+    - title: Maintenance 🧰
+      labels:
+        - "chore"
+        - "dashboard"
+        - "auto-merge"
+        - "dependencies"
+        - "python"
+        - "documentation"
+        - "github-actions"
+        - "userdata"
+        - "pre-commit"
+        - "manual-merge"
+    - title: Other Changes
+      labels:
+        - "*"
