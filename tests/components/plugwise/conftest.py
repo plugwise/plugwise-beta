@@ -156,6 +156,35 @@ def mock_smile_adam_3() -> Generator[None, MagicMock, None]:
 
 
 @pytest.fixture
+def mock_smile_adam_4() -> Generator[None, MagicMock, None]:
+    """Create a 4th Mock Adam environment for testing exceptions."""
+    chosen_env = "adam_jip"
+
+    with patch(
+        "homeassistant.components.plugwise.coordinator.Smile", autospec=True
+    ) as smile_mock:
+        smile = smile_mock.return_value
+
+        smile.gateway_id = "b5c2386c6f6342669e50fe49dd05b188"
+        smile.heater_id = "e4684553153b44afbef2200885f379dc"
+        smile.smile_version = "3.2.8"
+        smile.smile_type = "thermostat"
+        smile.smile_hostname = "smile98765"
+        smile.smile_model = "Gateway"
+        smile.smile_name = "Adam"
+
+        smile.connect.return_value = True
+
+        smile.notifications = _read_json(chosen_env, "notifications")
+        all_data = _read_json(chosen_env, "all_data")
+        smile.async_update.return_value = PlugwiseData(
+            all_data["gateway"], all_data["devices"]
+        )
+
+        yield smile
+
+
+@pytest.fixture
 def mock_smile_anna() -> Generator[None, MagicMock, None]:
     """Create a Mock Anna environment for testing exceptions."""
     chosen_env = "anna_heatpump_heating"

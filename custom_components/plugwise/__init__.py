@@ -5,6 +5,7 @@ from typing import Any
 
 import voluptuous as vol
 
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
@@ -107,10 +108,14 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
     """Migrate Plugwise entity entries.
 
-    - Migrates unique ID from old relay switches to the new unique ID
+    - Migrates unique ID from old relay switches or relative_humidity sensor to the new unique ID
     """
     if entry.domain == SWITCH_DOMAIN and entry.unique_id.endswith("-plug"):
         return {"new_unique_id": entry.unique_id.replace("-plug", "-relay")}
+    if entry.domain == SENSOR_DOMAIN and entry.unique_id.endswith("-relative_humidity"):
+        return {
+            "new_unique_id": entry.unique_id.replace("-relative_humidity", "-humidity")
+        }
 
     # No migration needed
     return None

@@ -129,9 +129,6 @@
       "heating_setpoint": {
         "name": " Heating setpoint"
       },
-      "temperature": {
-        "name": "Temperature"
-      },
       "intended_boiler_temperature": {
         "name": "Intended boiler temperature"
       },
@@ -243,12 +240,6 @@
       "net_electricity_cumulative": {
         "name": "Net electricity cumulative"
       },
-      "battery": {
-        "name": "Battery"
-      },
-      "illuminance": {
-        "name": "Illuminance"
-      },
       "modulation_level": {
         "name": "Modulation level"
       },
@@ -257,9 +248,6 @@
       },
       "water_pressure": {
         "name": "Water pressure"
-      },
-      "relative_humidity": {
-        "name": "Relative humidity"
       },
       "dhw_temperature": {
         "name": "DHW temperature"
