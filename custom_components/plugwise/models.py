@@ -390,6 +390,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
         key="illuminance",
         device_class=SensorDeviceClass.ILLUMINANCE,
+        entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=LIGHT_LUX,
         value_fn=lambda data: data["illuminance"],
     ),
