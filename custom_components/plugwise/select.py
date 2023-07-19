@@ -83,7 +83,7 @@ async def async_setup_entry(
         for description in SELECT_TYPES:
             if (options := description.options_fn(device)) and len(options) > 1:
                 entities.append(
-                    PlugwiseSelectEntity(coordinator, device_id, description, options)
+                    PlugwiseSelectEntity(coordinator, device_id, description)
                 )
                 LOGGER.debug("Add %s %s selector", device["name"], description.name)
 
@@ -100,13 +100,12 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
         entity_description: PlugwiseSelectEntityDescription,
-        options: list[str],
     ) -> None:
         """Initialise the selector."""
         super().__init__(coordinator, device_id)
         self.entity_description = entity_description
         self._attr_unique_id = f"{device_id}-{entity_description.key}"
-        self._attr_options = options
+        self._attr_options = entity_description.options_fn(self.device)
 
     @property
     def current_option(self) -> str:
