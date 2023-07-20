@@ -28,6 +28,12 @@
       },
       "dev_class": "heater_central",
       "location": "a57efe5f145f498c9be62a9b63626fbf",
+      "max_dhw_temperature": {
+        "lower_bound": 35.0,
+        "resolution": 0.01,
+        "setpoint": 53.0,
+        "upper_bound": 60.0
+      },
       "maximum_boiler_temperature": {
         "lower_bound": 0.0,
         "resolution": 1.0,
@@ -38,7 +44,6 @@
       "name": "OpenTherm",
       "sensors": {
         "dhw_temperature": 46.3,
-        "domestic_hot_water_setpoint": 60.0,
         "intended_boiler_temperature": 35.0,
         "modulation_level": 52,
         "outdoor_air_temperature": 3.0,
