@@ -32,7 +32,7 @@ async def async_setup_entry(
         config_entry.entry_id
     ][COORDINATOR]
 
-    entities: list[PlugwiseBinarySensorEntity] = []
+    entities: list[BinarySensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
         if not (binary_sensors := device.get("binary_sensors")):
             continue
@@ -79,7 +79,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                 )
 
         # return self.device["binary_sensors"][self.entity_description.key]  # type: ignore [literal-required]
-        return self.entity_description.value_fn(self.device["binary_sensors"])
+        return self.device["binary_sensors"][self.entity_description.key]
 
     @property
     def icon(self) -> str | None:
