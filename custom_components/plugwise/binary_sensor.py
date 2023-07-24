@@ -32,7 +32,7 @@ async def async_setup_entry(
         config_entry.entry_id
     ][COORDINATOR]
 
-    entities: list[BinarySensorEntity] = []
+    entities: list[PlugwiseBinarySensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
         if not (binary_sensors := device.get("binary_sensors")):
             continue
