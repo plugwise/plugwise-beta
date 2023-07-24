@@ -79,7 +79,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                 )
 
         # return self.device["binary_sensors"][self.entity_description.key]  # type: ignore [literal-required]
-        return self.entity_description.value_fn(self.device["binary_sensors"])
+        return self.device["binary_sensors"][self.entity_description.key]
 
     @property
     def icon(self) -> str | None:

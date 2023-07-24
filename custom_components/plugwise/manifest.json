@@ -8,6 +8,6 @@
   "integration_type": "hub",
   "iot_class": "local_polling",
   "loggers": ["plugwise"],
-  "requirements": ["plugwise==0.31.6"],
-  "version": "0.40.4"
+  "requirements": ["plugwise==0.31.8"],
+  "version": "0.40.5"
 }

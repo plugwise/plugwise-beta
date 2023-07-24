@@ -105,7 +105,9 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = entity_description
         self._attr_unique_id = f"{device_id}-{entity_description.key}"
-        self._attr_options = entity_description.options_fn(self.device)
+        self._attr_options = []
+        if options := entity_description.options_fn(self.device):
+            self._attr_options = options
 
     @property
     def current_option(self) -> str:
