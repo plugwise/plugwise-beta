@@ -4,10 +4,11 @@
 
 ### v0.40.5
 
+- Backend improvements via [plugwise v0.31.8](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.8),
+  adapt to relevant changes as suggested in Core PR #[96915](https://github.com/home-assistant/core/pull/96915#discussion_r1269292691)
 - Backend improvements via [plugwise v0.31.7](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.7), adapt to relevant changes
-- Backend improvements via [plugwise v0.31.8](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.8), adapt to relevant changes
-- Improvements for upstreaming
-- Typing-related corrections
+- Implement improvements from PR's #93416, #96915
+- Update anna_heatpump_heating test-fixture, update related test-function
 
 ### v0.40.4
 
