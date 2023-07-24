@@ -2,9 +2,12 @@
 
 ## Versions from 0.40 and up
 
-### Ongoing
+### v0.40.5
 
+- Backend improvements via [plugwise v0.31.7](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.7), adapt to relevant changes
+- Backend improvements via [plugwise v0.31.8](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.8), adapt to relevant changes
 - Improvements for upstreaming
+- Typing-related corrections
 
 ### v0.40.4
 
