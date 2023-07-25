@@ -41,7 +41,7 @@ class PlugwiseNumberMixin:
 class PlugwiseNumberEntityDescription(NumberEntityDescription, PlugwiseNumberMixin):
     """Class describing Plugwise Number entities."""
 
-        key: NumberType
+    key: NumberType
 
 
 NUMBER_TYPES = (
