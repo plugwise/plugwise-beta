@@ -10,6 +10,7 @@ from homeassistant.const import STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise import DeviceData, Smile
+from plugwise.constants import SelectType
 
 from .const import (
     COORDINATOR,  # pw-beta
@@ -36,6 +37,8 @@ class PlugwiseSelectEntityDescription(
     SelectEntityDescription, PlugwiseSelectDescriptionMixin
 ):
     """Class describing Plugwise Number entities."""
+
+
 
 
 SELECT_TYPES = (

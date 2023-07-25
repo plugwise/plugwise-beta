@@ -15,6 +15,7 @@ from homeassistant.const import EntityCategory, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise import ActuatorData, Smile
+from plugwise.constants import NumberType
 
 from .const import (
     COORDINATOR,  # pw-beta
@@ -39,6 +40,8 @@ class PlugwiseNumberMixin:
 @dataclass
 class PlugwiseNumberEntityDescription(NumberEntityDescription, PlugwiseNumberMixin):
     """Class describing Plugwise Number entities."""
+
+        key: NumberType
 
 
 NUMBER_TYPES = (
@@ -105,7 +108,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     ) -> None:
         """Initiate Plugwise Number."""
         super().__init__(coordinator, device_id)
-        self.actuator = self.device[description.key]  # type: ignore [literal-required]
+        self.actuator = self.device[description.key]
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_mode = NumberMode.BOX
