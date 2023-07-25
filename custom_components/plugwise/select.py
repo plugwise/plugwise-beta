@@ -39,8 +39,6 @@ class PlugwiseSelectEntityDescription(
     """Class describing Plugwise Number entities."""
 
 
-
-
 SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
         key="select_schedule",
