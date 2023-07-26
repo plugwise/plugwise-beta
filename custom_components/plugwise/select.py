@@ -45,7 +45,7 @@ SELECT_TYPES = (
         translation_key="thermostat_schedule",
         icon="mdi:calendar-clock",
         command=lambda api, loc, opt: api.set_schedule_state(loc, opt, STATE_ON),
-        value_fn=lambda data: data["selected_schedule"],
+        value_fn=lambda data: data["select_schedule"],
         options_fn=lambda data: data.get("available_schedules"),
     ),
     PlugwiseSelectEntityDescription(
@@ -54,7 +54,7 @@ SELECT_TYPES = (
         icon="mdi:hvac",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_regulation_mode(opt),
-        value_fn=lambda data: data["regulation_mode"],
+        value_fn=lambda data: data["select_regulation_mode"],
         options_fn=lambda data: data.get("regulation_modes"),
     ),
     PlugwiseSelectEntityDescription(
@@ -63,7 +63,7 @@ SELECT_TYPES = (
         icon="mdi:shower",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_dhw_mode(opt),
-        value_fn=lambda data: data["dhw_mode"],
+        value_fn=lambda data: data["select_dhw_mode"],
         options_fn=lambda data: data.get("dhw_modes"),
     ),
 )
