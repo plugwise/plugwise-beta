@@ -28,7 +28,6 @@ class PlugwiseSelectDescriptionMixin:
     """Mixin values for Plugwise Select entities."""
 
     command: Callable[[Smile, str, str], Awaitable[None]]
-    value_fn: Callable[[DeviceData], str]
     options_fn: Callable[[DeviceData], list[str] | None]
 
 
@@ -38,6 +37,8 @@ class PlugwiseSelectEntityDescription(
 ):
     """Class describing Plugwise Number entities."""
 
+    key: SelectType
+
 
 SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
@@ -45,7 +46,6 @@ SELECT_TYPES = (
         translation_key="thermostat_schedule",
         icon="mdi:calendar-clock",
         command=lambda api, loc, opt: api.set_schedule_state(loc, opt, STATE_ON),
-        value_fn=lambda data: data["select_schedule"],
         options_fn=lambda data: data.get("available_schedules"),
     ),
     PlugwiseSelectEntityDescription(
@@ -54,7 +54,6 @@ SELECT_TYPES = (
         icon="mdi:hvac",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_regulation_mode(opt),
-        value_fn=lambda data: data["select_regulation_mode"],
         options_fn=lambda data: data.get("regulation_modes"),
     ),
     PlugwiseSelectEntityDescription(
@@ -63,7 +62,6 @@ SELECT_TYPES = (
         icon="mdi:shower",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_dhw_mode(opt),
-        value_fn=lambda data: data["select_dhw_mode"],
         options_fn=lambda data: data.get("dhw_modes"),
     ),
 )
@@ -113,8 +111,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     @property
     def current_option(self) -> str:
         """Return the selected entity option to represent the entity state."""
-        # return self.device[self.entity_description.current_option_key]  # type: ignore [literal-required]
-        return self.entity_description.value_fn(self.device)
+        return self.device[self.entity_description.key]
 
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
