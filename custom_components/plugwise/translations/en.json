@@ -273,5 +273,11 @@
         "name": "Relay"
       }
     }
+  },
+  "services": {
+    "delete_notification": {
+      "name": "Delete Plugwise notification",
+      "description": "Deletes a Plugwise Notification"
+    }
   }
 }

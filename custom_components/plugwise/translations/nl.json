@@ -273,5 +273,11 @@
         "name": "Schakelaar"
       }
     }
+  },
+  "services": {
+    "delete_notification": {
+      "name": "Verwijder Plugwise notificatie",
+      "description": "Verwijder een Plugwise Notificatie"
+    }
   }
 }
