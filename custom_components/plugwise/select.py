@@ -9,8 +9,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise import DeviceData, Smile
-from plugwise.constants import SelectType, SelectOptionsType
+from plugwise import Smile
+from plugwise.constants import SelectOptionsType, SelectType
 
 from .const import (
     COORDINATOR,  # pw-beta
