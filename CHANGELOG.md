@@ -4,7 +4,7 @@
 
 ### v0.40.6
 
-- Typing improvements via [plugwise v0.31.9]( https://github.com/plugwise/python-plugwise/releases/tag/v0.31.9)
+- Typing improvements via [plugwise v0.31.9](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.9)
 - Update fixtures and testfiles related to the updated plugwise backend version
 - Update and simplify number.py and select.py
 - Add services entry to strings.json and translation files
