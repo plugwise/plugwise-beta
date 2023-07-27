@@ -31,10 +31,6 @@ class PlugwiseNumberMixin:
     """Mixin values for Plugwse entities."""
 
     command: Callable[[Smile, str, float], Awaitable[None]]
-    native_max_value_fn: Callable[[ActuatorData], float]
-    native_min_value_fn: Callable[[ActuatorData], float]
-    native_step_fn: Callable[[ActuatorData], float]
-    native_value_fn: Callable[[ActuatorData], float]
 
 
 @dataclass
@@ -52,10 +48,6 @@ NUMBER_TYPES = (
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        native_max_value_fn=lambda data: data["upper_bound"],
-        native_min_value_fn=lambda data: data["lower_bound"],
-        native_step_fn=lambda data: data["resolution"],
-        native_value_fn=lambda data: data["setpoint"],
     ),
     PlugwiseNumberEntityDescription(
         key="max_dhw_temperature",
@@ -64,10 +56,6 @@ NUMBER_TYPES = (
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        native_max_value_fn=lambda data: data["upper_bound"],
-        native_min_value_fn=lambda data: data["lower_bound"],
-        native_step_fn=lambda data: data["resolution"],
-        native_value_fn=lambda data: data["setpoint"],
     ),
 )
 
@@ -112,26 +100,14 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_mode = NumberMode.BOX
-
-    @property
-    def native_max_value(self) -> float:
-        """Return the setpoint max. value."""
-        return self.entity_description.native_max_value_fn(self.actuator)
-
-    @property
-    def native_min_value(self) -> float:
-        """Return the setpoint min. value."""
-        return self.entity_description.native_min_value_fn(self.actuator)
-
-    @property
-    def native_step(self) -> float:
-        """Return the setpoint step value."""
-        return max(self.entity_description.native_step_fn(self.actuator), 0.5)
+        self._attr_native_max_value = self.device[description.key]["upper_bound"]
+        self._attr_native_min_value = self.device[description.key]["lower_bound"]
+        self._attr_native_step = max(self.device[description.key]["resolution"], 0.5)
 
     @property
     def native_value(self) -> float:
         """Return the present setpoint value."""
-        return self.entity_description.native_value_fn(self.actuator)
+        return self.device[self.entity_description.key]["setpoint"]
 
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
