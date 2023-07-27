@@ -14,7 +14,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise import ActuatorData, Smile
+from plugwise import Smile
 from plugwise.constants import NumberType
 
 from .const import (
