@@ -273,7 +273,7 @@
         "name": "Relay"
       }
     }
-  }
+  },
   "services": {
     "delete_notification": {
       "name": "Delete Plugwise notification",
