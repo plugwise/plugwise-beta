@@ -80,7 +80,7 @@ async def async_setup_entry(
     entities: list[PlugwiseSelectEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in SELECT_TYPES:
-            if (options := device[description.options_key]) and len(options) > 1:
+            if description.options_key in device:
                 entities.append(
                     PlugwiseSelectEntity(coordinator, device_id, description)
                 )
