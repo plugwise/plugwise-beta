@@ -28,6 +28,7 @@ class PlugwiseSelectDescriptionMixin:
     """Mixin values for Plugwise Select entities."""
 
     command: Callable[[Smile, str, str], Awaitable[None]]
+    options_key: SelectOptionsType
 
 
 @dataclass
@@ -37,7 +38,6 @@ class PlugwiseSelectEntityDescription(
     """Class describing Plugwise Number entities."""
 
     key: SelectType
-    options_key: SelectOptionsType
 
 
 SELECT_TYPES = (
