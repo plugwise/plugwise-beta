@@ -87,8 +87,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         key="temperature_difference",
         translation_key="temperature_difference",
         entity_category=EntityCategory.DIAGNOSTIC,
-        native_unit_of_measurement=UnitOfTemperature.KELVIN,
-        icon="mdi:temperature-kelvin",
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
     PlugwiseSensorEntityDescription(
         key="outdoor_temperature",
