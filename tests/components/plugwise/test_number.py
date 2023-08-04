@@ -49,7 +49,7 @@ async def test_adam_dhw_setpoint_change(
         NUMBER_DOMAIN,
         SERVICE_SET_VALUE,
         {
-            ATTR_ENTITY_ID: "number.opentherm_max_dhw_temperature",
+            ATTR_ENTITY_ID: "number.opentherm_domestic_hot_water_setpoint",
             ATTR_VALUE: 55,
         },
         blocking=True,
