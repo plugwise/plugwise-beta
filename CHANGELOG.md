@@ -2,6 +2,11 @@
 
 ## Versions from 0.40 and up
 
+### v0.41.0
+
+- New Feature: add a temperature_offset Number for devices that support this function, via [plugwise v0.32.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.32.0)
+- Correct the unit_of_measurement for the temperature_difference sensor
+
 ### v0.40.6
 
 - Typing improvements via [plugwise v0.31.9](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.9)
