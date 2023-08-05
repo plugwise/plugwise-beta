@@ -92,7 +92,8 @@
         "name": "Max cv-ketel temperatuur"
       },
       "max_dhw_temperature": {
-        "name": "Max huishoudelijk warm water temperatuur"      },
+        "name": "Max huishoudelijk warm water temperatuur"
+      },
       "temperature_offset": {
         "name": "Temperatuurcompensatie"
       }
