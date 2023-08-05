@@ -9,6 +9,7 @@ from homeassistant.components.select import (
 )
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
+
 from tests.common import MockConfigEntry
 
 
