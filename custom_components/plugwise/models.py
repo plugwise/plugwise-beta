@@ -8,7 +8,6 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.components.switch import SwitchDeviceClass, SwitchEntityDescription
 from homeassistant.const import (
     LIGHT_LUX,
     PERCENTAGE,
@@ -21,7 +20,7 @@ from homeassistant.const import (
     UnitOfVolume,
     UnitOfVolumeFlowRate,
 )
-from plugwise.constants import SensorType, SwitchType
+from plugwise.constants import SensorType
 
 
 @dataclass
@@ -30,13 +29,6 @@ class PlugwiseSensorEntityDescription(SensorEntityDescription):
 
     key: SensorType
     state_class: str | None = SensorStateClass.MEASUREMENT
-
-
-@dataclass
-class PlugwiseSwitchEntityDescription(SwitchEntityDescription):
-    """Describes Plugwise switch entity."""
-
-    key: SwitchType
 
 
 SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
@@ -360,34 +352,5 @@ SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-    ),
-)
-
-SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
-    PlugwiseSwitchEntityDescription(
-        key="dhw_cm_switch",
-        translation_key="dhw_cm_switch",
-        icon="mdi:water-plus",
-        device_class=SwitchDeviceClass.SWITCH,
-        entity_category=EntityCategory.CONFIG,
-    ),
-    PlugwiseSwitchEntityDescription(
-        key="lock",
-        translation_key="lock",
-        icon="mdi:lock",
-        device_class=SwitchDeviceClass.SWITCH,
-        entity_category=EntityCategory.CONFIG,
-    ),
-    PlugwiseSwitchEntityDescription(
-        key="relay",
-        translation_key="relay",
-        device_class=SwitchDeviceClass.SWITCH,
-    ),
-    PlugwiseSwitchEntityDescription(
-        key="cooling_ena_switch",
-        translation_key="cooling_enabled",
-        icon="mdi:snowflake-thermometer",
-        device_class=SwitchDeviceClass.SWITCH,
-        entity_category=EntityCategory.CONFIG,
     ),
 )

@@ -1,12 +1,19 @@
 """Plugwise Switch component for HomeAssistant."""
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any
 
-from homeassistant.components.switch import SwitchEntity
+from homeassistant.components.switch import (
+    SwitchDeviceClass,
+    SwitchEntity,
+    SwitchEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from plugwise.constants import SwitchType
 
 from .const import (
     COORDINATOR,  # pw-beta
@@ -15,8 +22,44 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .models import SWITCHES, PlugwiseSwitchEntityDescription
 from .util import plugwise_command
+
+
+@dataclass
+class PlugwiseSwitchEntityDescription(SwitchEntityDescription):
+    """Describes Plugwise switch entity."""
+
+    key: SwitchType
+
+
+SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
+    PlugwiseSwitchEntityDescription(
+        key="dhw_cm_switch",
+        translation_key="dhw_cm_switch",
+        icon="mdi:water-plus",
+        device_class=SwitchDeviceClass.SWITCH,
+        entity_category=EntityCategory.CONFIG,
+    ),
+    PlugwiseSwitchEntityDescription(
+        key="lock",
+        translation_key="lock",
+        icon="mdi:lock",
+        device_class=SwitchDeviceClass.SWITCH,
+        entity_category=EntityCategory.CONFIG,
+    ),
+    PlugwiseSwitchEntityDescription(
+        key="relay",
+        translation_key="relay",
+        device_class=SwitchDeviceClass.SWITCH,
+    ),
+    PlugwiseSwitchEntityDescription(
+        key="cooling_ena_switch",
+        translation_key="cooling_enabled",
+        icon="mdi:snowflake-thermometer",
+        device_class=SwitchDeviceClass.SWITCH,
+        entity_category=EntityCategory.CONFIG,
+    ),
+)
 
 
 async def async_setup_entry(
