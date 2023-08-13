@@ -77,7 +77,9 @@ async def async_setup_entry(
             if description.key not in switches:
                 continue
             entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
-            LOGGER.debug("Add %s switch", description.key)
+            LOGGER.debug(
+                "Add %s %s switch", device["name"], description.translation_key
+            )
 
     async_add_entities(entities)
 

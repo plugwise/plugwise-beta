@@ -92,7 +92,9 @@ async def async_setup_entry(
                 entities.append(
                     PlugwiseNumberEntity(coordinator, device_id, description)
                 )
-                LOGGER.debug("Add %s %s number", device["name"], description.name)
+                LOGGER.debug(
+                    "Add %s %s number", device["name"], description.translation_key
+                )
 
     async_add_entities(entities)
 

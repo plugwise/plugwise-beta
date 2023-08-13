@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+### Ongoing
+
+- Fix logging, line up for all platforms
+
 ### v0.41.1
 
 - Line up with the latest Core Plugwise code
