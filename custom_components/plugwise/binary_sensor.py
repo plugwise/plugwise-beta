@@ -2,12 +2,18 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from dataclasses import dataclass
 from typing import Any
 
-from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.components.binary_sensor import (
+    BinarySensorEntity,
+    BinarySensorEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from plugwise.constants import BinarySensorType
 
 from .const import (
     COORDINATOR,  # pw-beta
@@ -17,9 +23,75 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .models import BINARY_SENSORS, PlugwiseBinarySensorEntityDescription
 
 PARALLEL_UPDATES = 0
+
+
+@dataclass
+class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
+    """Describes Plugwise binary sensor entity."""
+
+    key: BinarySensorType
+    icon_off: str | None = None
+
+
+BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
+    PlugwiseBinarySensorEntityDescription(
+        key="compressor_state",
+        translation_key="compressor_state",
+        icon="mdi:hvac",
+        icon_off="mdi:hvac-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="cooling_enabled",
+        translation_key="cooling_enabled",
+        icon="mdi:snowflake-thermometer",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="dhw_state",
+        translation_key="dhw_state",
+        icon="mdi:water-pump",
+        icon_off="mdi:water-pump-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="flame_state",
+        translation_key="flame_state",
+        icon="mdi:fire",
+        icon_off="mdi:fire-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="heating_state",
+        translation_key="heating_state",
+        icon="mdi:radiator",
+        icon_off="mdi:radiator-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="cooling_state",
+        translation_key="cooling_state",
+        icon="mdi:snowflake",
+        icon_off="mdi:snowflake-off",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="slave_boiler_state",
+        translation_key="slave_boiler_state",
+        icon="mdi:fire",
+        icon_off="mdi:circle-off-outline",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="plugwise_notification",
+        translation_key="plugwise_notification",
+        icon="mdi:mailbox-up-outline",
+        icon_off="mdi:mailbox-outline",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+)
 
 
 async def async_setup_entry(

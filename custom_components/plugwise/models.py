@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from homeassistant.components.binary_sensor import BinarySensorEntityDescription
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntityDescription,
@@ -22,7 +21,7 @@ from homeassistant.const import (
     UnitOfVolume,
     UnitOfVolumeFlowRate,
 )
-from plugwise.constants import BinarySensorType, SensorType, SwitchType
+from plugwise.constants import SensorType, SwitchType
 
 
 @dataclass
@@ -31,14 +30,6 @@ class PlugwiseSensorEntityDescription(SensorEntityDescription):
 
     key: SensorType
     state_class: str | None = SensorStateClass.MEASUREMENT
-
-
-@dataclass
-class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
-    """Describes Plugwise binary sensor entity."""
-
-    key: BinarySensorType
-    icon_off: str | None = None
 
 
 @dataclass
@@ -398,63 +389,5 @@ SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         icon="mdi:snowflake-thermometer",
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
-    ),
-)
-
-BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
-    PlugwiseBinarySensorEntityDescription(
-        key="compressor_state",
-        translation_key="compressor_state",
-        icon="mdi:hvac",
-        icon_off="mdi:hvac-off",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    PlugwiseBinarySensorEntityDescription(
-        key="cooling_enabled",
-        translation_key="cooling_enabled",
-        icon="mdi:snowflake-thermometer",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    PlugwiseBinarySensorEntityDescription(
-        key="dhw_state",
-        translation_key="dhw_state",
-        icon="mdi:water-pump",
-        icon_off="mdi:water-pump-off",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    PlugwiseBinarySensorEntityDescription(
-        key="flame_state",
-        translation_key="flame_state",
-        icon="mdi:fire",
-        icon_off="mdi:fire-off",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    PlugwiseBinarySensorEntityDescription(
-        key="heating_state",
-        translation_key="heating_state",
-        icon="mdi:radiator",
-        icon_off="mdi:radiator-off",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    PlugwiseBinarySensorEntityDescription(
-        key="cooling_state",
-        translation_key="cooling_state",
-        icon="mdi:snowflake",
-        icon_off="mdi:snowflake-off",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    PlugwiseBinarySensorEntityDescription(
-        key="slave_boiler_state",
-        translation_key="slave_boiler_state",
-        icon="mdi:fire",
-        icon_off="mdi:circle-off-outline",
-        entity_category=EntityCategory.DIAGNOSTIC,
-    ),
-    PlugwiseBinarySensorEntityDescription(
-        key="plugwise_notification",
-        translation_key="plugwise_notification",
-        icon="mdi:mailbox-up-outline",
-        icon_off="mdi:mailbox-outline",
-        entity_category=EntityCategory.DIAGNOSTIC,
     ),
 )
