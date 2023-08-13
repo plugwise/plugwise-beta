@@ -48,7 +48,7 @@ class PlugwiseSwitchEntityDescription(SwitchEntityDescription):
     key: SwitchType
 
 
-PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
+SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
         key="setpoint",
         translation_key="setpoint",
@@ -372,7 +372,7 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
     ),
 )
 
-PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
+SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
         key="dhw_cm_switch",
         translation_key="dhw_cm_switch",
@@ -401,7 +401,7 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     ),
 )
 
-PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
+BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     PlugwiseBinarySensorEntityDescription(
         key="compressor_state",
         translation_key="compressor_state",

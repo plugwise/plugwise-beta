@@ -15,7 +15,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
+from .models import SWITCHES, PlugwiseSwitchEntityDescription
 from .util import plugwise_command
 
 
@@ -30,7 +30,7 @@ async def async_setup_entry(
     for device_id, device in coordinator.data.devices.items():
         if not (switches := device.get("switches")):
             continue
-        for description in PW_SWITCH_TYPES:
+        for description in SWITCHES:
             if description.key not in switches:
                 continue
             entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))

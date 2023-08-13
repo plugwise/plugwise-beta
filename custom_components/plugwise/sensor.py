@@ -13,7 +13,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
+from .models import SENSORS, PlugwiseSensorEntityDescription
 
 PARALLEL_UPDATES = 0
 
@@ -30,7 +30,7 @@ async def async_setup_entry(
     for device_id, device in coordinator.data.devices.items():
         if not (sensors := device.get("sensors")):
             continue
-        for description in PW_SENSOR_TYPES:
+        for description in SENSORS:
             if description.key not in sensors:
                 continue
             entities.append(

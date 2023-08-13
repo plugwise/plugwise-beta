@@ -17,7 +17,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
+from .models import BINARY_SENSORS, PlugwiseBinarySensorEntityDescription
 
 PARALLEL_UPDATES = 0
 
@@ -36,7 +36,7 @@ async def async_setup_entry(
     for device_id, device in coordinator.data.devices.items():
         if not (binary_sensors := device.get("binary_sensors")):
             continue
-        for description in PW_BINARY_SENSOR_TYPES:
+        for description in BINARY_SENSORS:
             if description.key not in binary_sensors:
                 continue
             entities.append(
