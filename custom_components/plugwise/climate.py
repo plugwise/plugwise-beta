@@ -60,6 +60,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     """Representation of an Plugwise thermostat."""
 
     _attr_has_entity_name = True
+    _attr_name = None
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_translation_key = DOMAIN
 
@@ -158,7 +159,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             return HVACAction.IDLE
 
         heater: str | None = self.coordinator.data.gateway["heater_id"]
-        if heater is not None:
+        if heater:
             heater_data = self.coordinator.data.devices[heater]
             if heater_data["binary_sensors"]["heating_state"]:
                 return HVACAction.HEATING
@@ -175,11 +176,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        if ATTR_HVAC_MODE in kwargs:  # pw-beta add to Core
-            await self.async_set_hvac_mode(
-                kwargs[ATTR_HVAC_MODE]
-            )  # pw-beta add to Core
-
         data: dict[str, Any] = {}
         if ATTR_TEMPERATURE in kwargs:
             data["setpoint"] = kwargs.get(ATTR_TEMPERATURE)
@@ -193,6 +189,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 self._attr_min_temp <= temperature <= self._attr_max_temp
             ):
                 raise ValueError("Invalid temperature change requested")
+
+        if mode := kwargs.get(ATTR_HVAC_MODE):
+            await self.async_set_hvac_mode(mode)
 
         await self.coordinator.api.set_temperature(self.device["location"], data)
 
