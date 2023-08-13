@@ -118,7 +118,9 @@ async def async_setup_entry(
                     description,
                 )
             )
-            LOGGER.debug("Add %s binary sensor", description.key)
+            LOGGER.debug(
+                "Add %s %s binary sensor", device["name"], description.translation_key
+            )
 
     async_add_entities(entities)
 
