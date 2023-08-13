@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+### v0.41.1
+
+- Line up with the latest Core Plugwise code
+
 ### v0.41.0
 
 - New Feature: add a temperature_offset Number for devices that support this function, via [plugwise v0.32.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.32.0)
