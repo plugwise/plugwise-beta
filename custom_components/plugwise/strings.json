@@ -99,7 +99,7 @@
       }
     },
     "select": {
-      "select_dhw_mode": {
+      "dhw_mode": {
         "name": "DHW mode",
         "state": {
           "auto": "Auto",
@@ -108,7 +108,7 @@
           "off": "Off"
         }
       },
-      "select_regulation_mode": {
+      "regulation_mode": {
         "name": "Regulation mode",
         "state": {
           "bleeding_cold": "Bleeding cold",
@@ -118,7 +118,7 @@
           "off": "Off"
         }
       },
-      "select_schedule": {
+      "thermostat_schedule": {
         "name": "Thermostat schedule"
       }
     },
