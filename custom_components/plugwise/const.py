@@ -36,7 +36,7 @@ DEFAULT_TIMEOUT: Final = 10
 DEFAULT_USERNAME: Final = "smile"
 
 # --- Const for Plugwise Smile and Stretch
-PLATFORMS_GATEWAY: Final[list[str]] = [
+PLATFORMS: Final[list[str]] = [
     Platform.BINARY_SENSOR,
     Platform.CLIMATE,
     Platform.NUMBER,
@@ -44,7 +44,6 @@ PLATFORMS_GATEWAY: Final[list[str]] = [
     Platform.SENSOR,
     Platform.SWITCH,
 ]
-SENSOR_PLATFORMS: Final[list[str]] = [Platform.SENSOR, Platform.SWITCH]
 SERVICE_DELETE: Final = "delete_notification"
 SEVERITIES: Final[list[str]] = ["other", "info", "message", "warning", "error"]
 
