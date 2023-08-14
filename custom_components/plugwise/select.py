@@ -35,7 +35,7 @@ class PlugwiseSelectDescriptionMixin:
 class PlugwiseSelectEntityDescription(
     SelectEntityDescription, PlugwiseSelectDescriptionMixin
 ):
-    """Class describing Plugwise Number entities."""
+    """Class describing Plugwise Select entities."""
 
     key: SelectType
 
@@ -43,14 +43,14 @@ class PlugwiseSelectEntityDescription(
 SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
         key="select_schedule",
-        translation_key="thermostat_schedule",
+        translation_key="select_schedule",
         icon="mdi:calendar-clock",
         command=lambda api, loc, opt: api.set_schedule_state(loc, opt, STATE_ON),
         options_key="available_schedules",
     ),
     PlugwiseSelectEntityDescription(
         key="select_regulation_mode",
-        translation_key="regulation_mode",
+        translation_key="select_regulation_mode",
         icon="mdi:hvac",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_regulation_mode(opt),
@@ -58,7 +58,7 @@ SELECT_TYPES = (
     ),
     PlugwiseSelectEntityDescription(
         key="select_dhw_mode",
-        translation_key="dhw_mode",
+        translation_key="select_dhw_mode",
         icon="mdi:shower",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_dhw_mode(opt),
