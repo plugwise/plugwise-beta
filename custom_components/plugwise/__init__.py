@@ -75,7 +75,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 coordinator.api.smile_name,
             )
 
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_GATEWAY)
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     for component in PLATFORMS:  # pw-beta
         if component == Platform.BINARY_SENSOR:
