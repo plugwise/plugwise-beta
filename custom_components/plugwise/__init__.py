@@ -5,8 +5,6 @@ from typing import Any
 
 import voluptuous as vol
 
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall, callback
@@ -18,7 +16,7 @@ from .const import (
     COORDINATOR,
     DOMAIN,
     LOGGER,
-    PLATFORMS_GATEWAY,
+    PLATFORMS,
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
 )
@@ -26,7 +24,7 @@ from .coordinator import PlugwiseDataUpdateCoordinator
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Plugwise Smiles from a config entry."""
+    """Set up Plugwise Device from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
     cooldown = 1.5  # pw-beta frontend refresh-interval
@@ -79,7 +77,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_GATEWAY)
 
-    for component in PLATFORMS_GATEWAY:  # pw-beta
+    for component in PLATFORMS:  # pw-beta
         if component == Platform.BINARY_SENSOR:
             hass.services.async_register(
                 DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
@@ -98,7 +96,7 @@ async def _update_listener(
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(
-        entry, PLATFORMS_GATEWAY
+        entry, PLATFORMS
     ):
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
@@ -110,9 +108,9 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
 
     - Migrates unique ID from old relay switches or relative_humidity sensor to the new unique ID
     """
-    if entry.domain == SWITCH_DOMAIN and entry.unique_id.endswith("-plug"):
+    if entry.domain == Platform.SWITCH and entry.unique_id.endswith("-plug"):
         return {"new_unique_id": entry.unique_id.replace("-plug", "-relay")}
-    if entry.domain == SENSOR_DOMAIN and entry.unique_id.endswith("-relative_humidity"):
+    if entry.domain == Platform.SENSOR and entry.unique_id.endswith("-relative_humidity"):
         return {
             "new_unique_id": entry.unique_id.replace("-relative_humidity", "-humidity")
         }
