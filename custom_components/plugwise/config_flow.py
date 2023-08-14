@@ -177,7 +177,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 },
                 "configuration_url": (
                     f"http://{discovery_info.host}:{discovery_info.port}"
-                ), 
+                ),
                 "product": _product,
             }
         )
