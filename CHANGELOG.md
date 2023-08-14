@@ -5,6 +5,7 @@
 ### Ongoing
 
 - Fix logging, line up for all platforms
+- More lining up with Core Plugwise
 
 ### v0.41.1
 
