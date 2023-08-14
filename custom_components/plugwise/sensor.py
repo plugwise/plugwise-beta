@@ -128,20 +128,6 @@ SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfPower.WATT,
         entity_registry_enabled_default=False,
     ),
-    # Does not exist in Core - related to P1v2
-    PlugwiseSensorEntityDescription(
-        key="electricity_consumed_point",
-        translation_key="electricity_consumed_point",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.WATT,
-    ),
-    # Does not exist in Core
-    PlugwiseSensorEntityDescription(
-        key="electricity_produced_point",
-        translation_key="electricity_produced_point",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.WATT,
-    ),
     PlugwiseSensorEntityDescription(
         key="electricity_consumed_interval",
         translation_key="electricity_consumed_interval",
@@ -180,6 +166,12 @@ SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
     ),
     PlugwiseSensorEntityDescription(
+        key="electricity_consumed_point",
+        translation_key="electricity_consumed_point",
+        device_class=SensorDeviceClass.POWER,
+        native_unit_of_measurement=UnitOfPower.WATT,
+    ),
+    PlugwiseSensorEntityDescription(
         key="electricity_consumed_off_peak_point",
         translation_key="electricity_consumed_off_peak_point",
         device_class=SensorDeviceClass.POWER,
@@ -204,6 +196,12 @@ SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    PlugwiseSensorEntityDescription(
+        key="electricity_produced_point",
+        translation_key="electricity_produced_point",
+        device_class=SensorDeviceClass.POWER,
+        native_unit_of_measurement=UnitOfPower.WATT,
     ),
     PlugwiseSensorEntityDescription(
         key="electricity_produced_off_peak_point",
