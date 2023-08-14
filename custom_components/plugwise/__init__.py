@@ -95,9 +95,7 @@ async def _update_listener(
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    if unload_ok := await hass.config_entries.async_unload_platforms(
-        entry, PLATFORMS
-    ):
+    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
 
@@ -110,7 +108,9 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
     """
     if entry.domain == Platform.SWITCH and entry.unique_id.endswith("-plug"):
         return {"new_unique_id": entry.unique_id.replace("-plug", "-relay")}
-    if entry.domain == Platform.SENSOR and entry.unique_id.endswith("-relative_humidity"):
+    if entry.domain == Platform.SENSOR and entry.unique_id.endswith(
+        "-relative_humidity"
+    ):
         return {
             "new_unique_id": entry.unique_id.replace("-relative_humidity", "-humidity")
         }
