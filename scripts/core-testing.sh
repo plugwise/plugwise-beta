@@ -105,10 +105,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		fi
 		cd "${coredir}" || exit
 		echo ""
-		echo " ** Resetting to dev **"
+		echo " ** Resetting to master **"
 		echo ""
 		git config pull.rebase true
-		git checkout dev
+		git checkout master
 		echo ""
 		echo " ** Running setup script from HA core **"
 		echo ""
@@ -133,10 +133,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo ""
 		echo " ** Resetting/rebasing core **"
 		echo ""
-		# Always start from dev, dropping any leftovers
+		# Always start from master, dropping any leftovers
 		git stash || echo " - Nothing to stash"
 		git stash drop -q || echo " - Nothing in stash"
-		git checkout dev || echo " - Already in dev-branch"
+		git checkout master || echo " - Already in master-branch"
 		git branch -D fake_branch || echo " - No fake_branch to delete"
 		# Force pull
 		git config pull.rebase true
