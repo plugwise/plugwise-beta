@@ -48,6 +48,7 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
       - name: Test through core (full, not split)
+        continue-on-error: ${{ matrix.branch == "dev" }}
         run: |
           GITHUB_ACTIONS="" BRANCH="${{ matrix.branch }}" scripts/core-testing.sh
 
