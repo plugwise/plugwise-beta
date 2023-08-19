@@ -122,7 +122,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo " ** Resetting to ${core_branch} **"
 		echo ""
 		git config pull.rebase true
-		git checkout ${core_branch}
+		git checkout "${core_branch}"
 		echo ""
 		echo " ** Running setup script from HA core **"
 		echo ""
@@ -150,7 +150,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		# Always start from ${core_branch}, dropping any leftovers
 		git stash || echo " - Nothing to stash"
 		git stash drop -q || echo " - Nothing in stash"
-		git checkout ${core_branch} || echo " - Already in ${core_branch}-branch"
+		git checkout "${core_branch}" || echo " - Already in ${core_branch}-branch"
 		git branch -D fake_branch || echo " - No fake_branch to delete"
 		# Force pull
 		git config pull.rebase true
