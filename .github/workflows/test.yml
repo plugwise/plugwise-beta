@@ -4,7 +4,7 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 8
+  CACHE_VERSION: 9
   DEFAULT_PYTHON: "3.11"
 
 on:
@@ -22,6 +22,7 @@ jobs:
     strategy:
       matrix:
         branch: ["master", "dev"]
+    continue-on-error: ${{ matrix.branch == 'dev' }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v3.5.3
@@ -48,7 +49,6 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
       - name: Test through core (full, not split)
-        continue-on-error: ${{ matrix.branch == 'dev' }}
         run: |
           GITHUB_ACTIONS="" BRANCH="${{ matrix.branch }}" scripts/core-testing.sh
 
