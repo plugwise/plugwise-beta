@@ -90,7 +90,7 @@ repos:
     hooks:
       - id: test-core-prep
         # yamllint disable-line rule:line-length
-        name: "Home Assistant Core Testing - Cloning/updating HA core#dev - patience!"
+        name: "Home Assistant Core Testing - Cloning/updating HA core#master - patience!"
         # yamllint disable-line rule:line-length
         entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh core_prep'
         language: script
