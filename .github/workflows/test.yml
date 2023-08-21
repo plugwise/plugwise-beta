@@ -4,7 +4,7 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 8
+  CACHE_VERSION: 9
   DEFAULT_PYTHON: "3.11"
 
 on:
@@ -19,6 +19,10 @@ jobs:
   ha-core-prepare:
     runs-on: ubuntu-latest
     name: Setup for HA-core
+    strategy:
+      matrix:
+        branch: ["master", "dev"]
+    continue-on-error: ${{ matrix.branch == 'dev' }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v3.5.3
@@ -46,19 +50,7 @@ jobs:
             ${{ env.CACHE_VERSION}}
       - name: Test through core (full, not split)
         run: |
-          GITHUB_ACTIONS="" scripts/core-testing.sh
-  #      - name: Create HA-core Python virtual environment
-  #        run: |
-  #          scripts/core-testing.sh core_prep
-  #      - name: Prepare HA-core Python virtual environment
-  #        run: |
-  #          scripts/core-testing.sh pip_prep
-  #      - name: Test
-  #        run: |
-  #          scripts/core-testing.sh testing
-  #      - name: Quality
-  #        run: |
-  #          scripts/core-testing.sh quality
+          GITHUB_ACTIONS="" BRANCH="${{ matrix.branch }}" scripts/core-testing.sh
 
   shellcheck:
     name: Shellcheck
