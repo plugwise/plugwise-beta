@@ -27,14 +27,16 @@ from .entity import PlugwiseEntity
 
 
 @dataclass
-class PlugwiseNumberMixin:
-    """Mixin values for Plugwse entities."""
+class PlugwiseEntityDescriptionMixin:
+    """Mixin values for Plugwise entities."""
 
     command: Callable[[Smile, str, str, float], Awaitable[None]]
 
 
 @dataclass
-class PlugwiseNumberEntityDescription(NumberEntityDescription, PlugwiseNumberMixin):
+class PlugwiseNumberEntityDescription(
+    NumberEntityDescription, PlugwiseEntityDescriptionMixin
+):
     """Class describing Plugwise Number entities."""
 
     key: NumberType

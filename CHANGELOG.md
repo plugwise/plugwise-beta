@@ -5,6 +5,8 @@
 ### Ongoing
 
 - Fix logging, line up for all platforms
+- More lining up with Core Plugwise, quality improvements
+- Test both versus core#dev- and core#master-branches
 
 ### v0.41.1
 

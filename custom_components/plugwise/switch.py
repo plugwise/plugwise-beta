@@ -54,7 +54,7 @@ SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     ),
     PlugwiseSwitchEntityDescription(
         key="cooling_ena_switch",
-        translation_key="cooling_enabled",
+        translation_key="cooling_ena_switch",
         icon="mdi:snowflake-thermometer",
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,

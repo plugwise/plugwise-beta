@@ -49,7 +49,7 @@ from .const import (
 )
 
 
-def _base_gw_schema(
+def _base_schema(
     discovery_info: ZeroconfServiceInfo | None,
     user_input: dict[str, Any] | None,
 ) -> vol.Schema:
@@ -80,10 +80,10 @@ def _base_gw_schema(
     return vol.Schema({vol.Required(CONF_PASSWORD): str})
 
 
-async def validate_gw_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
+async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
     """Validate whether the user input allows us to connect to the gateway.
 
-    Data has the keys from _base_gw_schema() with values provided by the user.
+    Data has the keys from _base_schema() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
@@ -116,7 +116,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         unique_id = discovery_info.hostname.split(".")[0].split("-")[0]
         if config_entry := await self.async_set_unique_id(unique_id):
             try:
-                await validate_gw_input(
+                await validate_input(
                     self.hass,
                     {
                         CONF_HOST: discovery_info.host,
@@ -175,7 +175,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     CONF_PORT: discovery_info.port,
                     CONF_USERNAME: self._username,
                 },
-                "configuration_url": f"http://{discovery_info.host}:{discovery_info.port}",
+                "configuration_url": (
+                    f"http://{discovery_info.host}:{discovery_info.port}"
+                ),
                 "product": _product,
             }
         )
@@ -190,7 +192,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if not user_input:
             return self.async_show_form(
                 step_id="user",
-                data_schema=_base_gw_schema(self.discovery_info, None),
+                data_schema=_base_schema(self.discovery_info, None),
                 errors=errors,
             )
 
@@ -199,7 +201,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
         try:
-            api = await validate_gw_input(self.hass, user_input)
+            api = await validate_input(self.hass, user_input)
         except ConnectionFailedError:
             errors[CONF_BASE] = "cannot_connect"
         except InvalidAuthentication:
@@ -216,7 +218,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if errors:
             return self.async_show_form(
                 step_id="user",
-                data_schema=_base_gw_schema(None, user_input),
+                data_schema=_base_schema(None, user_input),
                 errors=errors,
             )
 

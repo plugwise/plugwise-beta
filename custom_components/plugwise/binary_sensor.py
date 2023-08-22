@@ -29,7 +29,7 @@ PARALLEL_UPDATES = 0
 
 @dataclass
 class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
-    """Describes Plugwise binary sensor entity."""
+    """Describes a Plugwise binary sensor entity."""
 
     key: BinarySensorType
     icon_off: str | None = None
@@ -99,7 +99,7 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Plugwise binary sensor based on config_entry."""
+    """Set up the Plugwise binary sensor based on config_entry."""
     coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ][COORDINATOR]

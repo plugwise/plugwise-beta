@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
+# By default assumes running against 'master' branch of Core-HA
+# as requested by @bouwew for on-par development with the releases
+# version of HA
+#
+# Override by setting HABRANCH environment variable to run against
+# a different branch of core
+#
+# Github flows are run against both 'dev' and 'master'
+core_branch="master"
+if [ "x${BRANCH}" != "x" ]; then
+	core_branch="${BRANCH}"
+fi
+echo "Working on HA-core branch ${core_branch}"
+
 # If you want full pytest output run as
 # DEBUG=1 scripts/core-testing.sh
 
@@ -105,10 +119,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		fi
 		cd "${coredir}" || exit
 		echo ""
-		echo " ** Resetting to dev **"
+		echo " ** Resetting to ${core_branch} **"
 		echo ""
 		git config pull.rebase true
-		git checkout dev
+		git checkout "${core_branch}"
 		echo ""
 		echo " ** Running setup script from HA core **"
 		echo ""
@@ -133,10 +147,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo ""
 		echo " ** Resetting/rebasing core **"
 		echo ""
-		# Always start from dev, dropping any leftovers
+		# Always start from ${core_branch}, dropping any leftovers
 		git stash || echo " - Nothing to stash"
 		git stash drop -q || echo " - Nothing in stash"
-		git checkout dev || echo " - Already in dev-branch"
+		git checkout "${core_branch}" || echo " - Already in ${core_branch}-branch"
 		git branch -D fake_branch || echo " - No fake_branch to delete"
 		# Force pull
 		git config pull.rebase true
