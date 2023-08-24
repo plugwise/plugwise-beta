@@ -25,7 +25,7 @@ jobs:
     continue-on-error: ${{ matrix.branch == 'dev' }}
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v3.6.0
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v4
@@ -56,6 +56,6 @@ jobs:
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
