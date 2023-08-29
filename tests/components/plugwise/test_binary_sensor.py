@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
+
 from tests.common import MockConfigEntry
 
 
@@ -74,4 +75,3 @@ async def test_p1_v4_binary_sensor_entity(
     assert state.state == STATE_ON
     assert "warning_msg" in state.attributes
     assert "connected" in state.attributes["warning_msg"][0]
-
