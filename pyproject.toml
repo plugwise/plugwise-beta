@@ -3,7 +3,7 @@
 "Bug Reports" = "https://github.com/plugwise/plugwise-beta/issues"
 
 [tool.black]
-target-version = ["py39", "py310", "py311"]
+target-version = ["py310", "py311"]
 exclude = 'generated'
 
 [tool.ruff]
