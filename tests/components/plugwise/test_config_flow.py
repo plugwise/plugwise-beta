@@ -1,6 +1,13 @@
 """Test the Plugwise config flow."""
 from unittest.mock import AsyncMock, MagicMock, patch
 
+from plugwise.exceptions import (
+    ConnectionFailedError,
+    InvalidAuthentication,
+    InvalidSetupError,
+    InvalidXMLError,
+    UnsupportedDeviceError,
+)
 import pytest
 
 from homeassistant.components import zeroconf
@@ -23,13 +30,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
-from plugwise.exceptions import (
-    ConnectionFailedError,
-    InvalidAuthentication,
-    InvalidSetupError,
-    InvalidXMLError,
-    UnsupportedDeviceError,
-)
+
 from tests.common import MockConfigEntry
 
 TEST_HOST = "1.1.1.1"

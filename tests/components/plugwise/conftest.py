@@ -6,6 +6,7 @@ import json
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+from plugwise import PlugwiseData
 import pytest
 
 from homeassistant.components.plugwise.const import DOMAIN
@@ -17,7 +18,7 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
-from plugwise import PlugwiseData
+
 from tests.common import MockConfigEntry, load_fixture
 
 

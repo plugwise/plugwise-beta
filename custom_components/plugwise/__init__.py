@@ -3,13 +3,13 @@ from __future__ import annotations
 
 from typing import Any
 
+from plugwise.exceptions import PlugwiseError
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from plugwise.exceptions import PlugwiseError
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options

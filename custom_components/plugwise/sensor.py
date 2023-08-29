@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from plugwise.constants import SensorType
+
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -24,7 +26,6 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise.constants import SensorType
 
 from .const import (
     COORDINATOR,  # pw-beta

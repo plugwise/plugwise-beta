@@ -4,6 +4,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from plugwise.constants import SwitchType
+
 from homeassistant.components.switch import (
     SwitchDeviceClass,
     SwitchEntity,
@@ -13,7 +15,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise.constants import SwitchType
 
 from .const import (
     COORDINATOR,  # pw-beta

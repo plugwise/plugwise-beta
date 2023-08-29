@@ -1,6 +1,13 @@
 """Tests for the Plugwise Climate integration."""
 from unittest.mock import MagicMock
 
+from plugwise.exceptions import (
+    ConnectionFailedError,
+    InvalidAuthentication,
+    InvalidXMLError,
+    ResponseError,
+    UnsupportedDeviceError,
+)
 import pytest
 
 from homeassistant.components.plugwise.const import DOMAIN
@@ -9,13 +16,7 @@ from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_registry import async_get
-from plugwise.exceptions import (
-    ConnectionFailedError,
-    InvalidAuthentication,
-    InvalidXMLError,
-    ResponseError,
-    UnsupportedDeviceError,
-)
+
 from tests.common import MockConfigEntry
 
 HEATER_ID = "1cbf783bb11e4a7c8a6843dee3a86927"  # Opentherm device_id for migration
