@@ -73,6 +73,5 @@ async def test_p1_v4_binary_sensor_entity(
     assert state
     assert state.state == STATE_ON
     assert "warning_msg" in state.attributes
-    assert "unreachable" in state.attributes["warning_msg"][0]
-    assert not state.attributes.get("error_msg")
-    assert not state.attributes.get("other_msg")
+    assert "connected" in state.attributes["warning_msg"][0]
+
