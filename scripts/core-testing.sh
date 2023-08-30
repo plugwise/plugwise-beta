@@ -119,12 +119,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		fi
 		cd "${coredir}" || exit
 		echo ""
-		echo " ** Resetting to ${core_branch} **"
-		echo ""
-		git stash || echo " - Nothing to stash"
-		git stash drop -q || echo " - Nothing in stash"
 		git config pull.rebase true
-		git reset --hard || echo " - Nothing to reset to"
+		echo " ** Resetting to ${core_branch} (just cloned) **"
+		git reset --hard || echo " - Should have nothing to reset to after cloning"
 		git checkout "${core_branch}"
 		echo ""
 		echo " ** Running setup script from HA core **"
@@ -148,9 +145,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	else
 		cd "${coredir}" || exit
 		echo ""
-		echo " ** Resetting/rebasing core **"
+		echo " ** Resetting/rebasing core (re-using clone)**"
 		echo ""
 		# Always start from ${core_branch}, dropping any leftovers
+		git reset --hard || echo " - Nothing to reset from"
 		git stash || echo " - Nothing to stash"
 		git stash drop -q || echo " - Nothing in stash"
 		git checkout "${core_branch}" || echo " - Already in ${core_branch}-branch"
