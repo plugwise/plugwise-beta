@@ -2,8 +2,12 @@
 
 ## Versions from 0.40 and up
 
-### Ongoing
+### v0.41.2
 
+- Link to [plugwise v0.32.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.32.1)
+- Remove python3.9 compatibility: remove/replace all python3.9 references.
+- Implement Ruff sorting fixes - tnx @CoMPaTech for achieving the line-up with the Core Plugwise code.
+- Update p1v4_442_triple testfixture, adding a Plugwise notification for the Smile P1. Add a related testcase.
 - Fix logging, line up for all platforms
 - More lining up with Core Plugwise, quality improvements
 - Test both versus core#dev- and core#master-branches
