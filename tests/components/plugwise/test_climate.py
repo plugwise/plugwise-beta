@@ -2,12 +2,13 @@
 
 from unittest.mock import MagicMock
 
+from plugwise.exceptions import PlugwiseError
 import pytest
 
 from homeassistant.components.climate.const import HVACMode
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
-from plugwise.exceptions import PlugwiseError
+
 from tests.common import MockConfigEntry
 
 TEST_HOST = "1.1.1.1"

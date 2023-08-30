@@ -4,13 +4,14 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
+from plugwise import Smile
+from plugwise.constants import SelectOptionsType, SelectType
+
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise import Smile
-from plugwise.constants import SelectOptionsType, SelectType
 
 from .const import (
     COORDINATOR,  # pw-beta

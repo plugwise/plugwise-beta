@@ -4,6 +4,15 @@ from __future__ import annotations
 import datetime as dt  # pw-beta options
 from typing import Any
 
+from plugwise import Smile
+from plugwise.exceptions import (
+    ConnectionFailedError,
+    InvalidAuthentication,
+    InvalidSetupError,
+    InvalidXMLError,
+    ResponseError,
+    UnsupportedDeviceError,
+)
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -22,15 +31,6 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from plugwise import Smile
-from plugwise.exceptions import (
-    ConnectionFailedError,
-    InvalidAuthentication,
-    InvalidSetupError,
-    InvalidXMLError,
-    ResponseError,
-    UnsupportedDeviceError,
-)
 
 from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta option

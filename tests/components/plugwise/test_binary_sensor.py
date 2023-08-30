@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
+
 from tests.common import MockConfigEntry
 
 
@@ -63,3 +64,14 @@ async def test_adam_climate_binary_sensor_change(
     assert "unreachable" in state.attributes["warning_msg"][0]
     assert not state.attributes.get("error_msg")
     assert not state.attributes.get("other_msg")
+
+
+async def test_p1_v4_binary_sensor_entity(
+    hass: HomeAssistant, mock_smile_p1_2: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test change of climate related binary_sensor entities."""
+    state = hass.states.get("binary_sensor.smile_p1_plugwise_notification")
+    assert state
+    assert state.state == STATE_ON
+    assert "warning_msg" in state.attributes
+    assert "connected" in state.attributes["warning_msg"][0]

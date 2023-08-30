@@ -2,44 +2,48 @@
 
 ## Versions from 0.40 and up
 
-### Ongoing
+### v0.41.2
 
-- Fix logging, line up for all platforms
-- More lining up with Core Plugwise, quality improvements
-- Test both versus core#dev- and core#master-branches
+- Link to [plugwise v0.32.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.32.1)
+- Remove python3.9 compatibility: remove/replace all python3.9 references.
+- Implement Ruff sorting fixes - tnx @CoMPaTech for achieving the line-up with the Core Plugwise code.
+- Update p1v4_442_triple testfixture, adding a Plugwise notification for the Smile P1. Add a related testcase.
+- Fix logging, line up for all platforms.
+- More lining up with Core Plugwise, quality improvements.
+- Test both versus core#dev- and core#master-branches.
 
 ### v0.41.1
 
-- Line up with the latest Core Plugwise code
+- Line up with the latest Core Plugwise code.
 
 ### v0.41.0
 
 - New Feature: add a temperature_offset Number for devices that support this function, via [plugwise v0.32.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.32.0)
-- Correct the unit_of_measurement for the temperature_difference sensor
+- Correct the unit_of_measurement for the temperature_difference sensor.
 
 ### v0.40.6
 
 - Typing improvements via [plugwise v0.31.9](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.9)
-- Update fixtures and testfiles related to the updated plugwise backend version
+- Update fixtures and testfiles related to the updated plugwise backend version.
 - Update and simplify number.py and select.py
-- Add services entry to strings.json and translation files
+- Add services entry to strings.json and translation files.
 
 ### v0.40.5
 
 - Backend improvements via [plugwise v0.31.8](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.8),
   adapt to relevant changes as suggested in Core PR #[96915](https://github.com/home-assistant/core/pull/96915#discussion_r1269292691)
-- Backend improvements via [plugwise v0.31.7](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.7), adapt to relevant changes
+- Backend improvements via [plugwise v0.31.7](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.7), adapt to relevant changes.
 - Implement improvements from PR's #93416, #96915
-- Update anna_heatpump_heating test-fixture, update related test-function
+- Update anna_heatpump_heating test-fixture, update related test-function.
 
 ### v0.40.4
 
 - Fix for [#417](https://github.com/plugwise/plugwise-beta/pull/424)
-- Rename Jip sensor `relative_humidity` to `humidity` and migrate the unique_id
+- Rename Jip sensor `relative_humidity` to `humidity` and migrate the unique_id.
 
 ### v0.40.3
 
-- CI improvements, ruff over pylint, adhere to upstream ruff version
+- CI improvements, ruff over pylint, adhere to upstream ruff version.
 - Fix Anna+Elga domestic_hot_water_setpoint-related bug via [plugwise v0.31.6](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.6)
 - Cooling-related fix/improvements via [plugwise v0.31.5](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.5)
 - Improvements via [plugwise v0.31.4](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.4)
@@ -49,7 +53,7 @@
 
 - CI improvements
 - Implement strict typing, also via [plugwise v0.31.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.31.3)
-- Dynamic generated fixtures re-introduced
+- Dynamic generated fixtures re-introduced.
 
 ### 0.40.1
 
@@ -57,8 +61,8 @@
 
 ### 0.40.0
 
-- More formal Split between Networked and USB code
-- Refactoring where necessary
+- More formal Split between Networked and USB code.
+- Refactoring where necessary.
 
 ## Versions from 0.30 and up
 
@@ -77,10 +81,10 @@
 
 - Attempt to fix for reported Plugwise-Beta issue #347 - via plugwise [v0.27.8](https://github.com/plugwise/python-plugwise/releases/tag/v0.27.8)
 - Fix for #368 - via plugwise [v0.27.9](https://github.com/plugwise/python-plugwise/releases/tag/v0.27.0)
-- Fix for #369
-- Added pre-commit and additional linting (no or marginal code changes)
-- Added tagging in #361 to enable a path forward for upstreaming (mostly isort and tagging, no or marginal code changes)
-- Replaceing flake8 linting with ruff as per upstream
+- Fix for #369.
+- Added pre-commit and additional linting (no or marginal code changes).
+- Added tagging in #361 to enable a path forward for upstreaming (mostly isort and tagging, no or marginal code changes).
+- Replaceing flake8 linting with ruff as per upstream.
 
 ### FEB 2023 [0.34.7.1] Stick-bugfix, rename P1 gas-interval sensor, line up with Core Plugwise
 

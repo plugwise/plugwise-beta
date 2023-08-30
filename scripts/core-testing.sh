@@ -51,7 +51,7 @@ which jq || ( echo "You should have jq installed, exiting"; exit 1)
 # - quality
 
 
-pyversions=("3.11" "3.10" 3.9 dummy) 
+pyversions=("3.11" "3.10" dummy) 
 my_path=$(git rev-parse --show-toplevel)
 my_venv=${my_path}/venv
 
@@ -119,9 +119,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		fi
 		cd "${coredir}" || exit
 		echo ""
-		echo " ** Resetting to ${core_branch} **"
-		echo ""
 		git config pull.rebase true
+		echo " ** Resetting to ${core_branch} (just cloned) **"
+		git reset --hard || echo " - Should have nothing to reset to after cloning"
 		git checkout "${core_branch}"
 		echo ""
 		echo " ** Running setup script from HA core **"
@@ -145,11 +145,13 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	else
 		cd "${coredir}" || exit
 		echo ""
-		echo " ** Resetting/rebasing core **"
+		echo " ** Resetting/rebasing core (re-using clone)**"
 		echo ""
 		# Always start from ${core_branch}, dropping any leftovers
 		git stash || echo " - Nothing to stash"
-		git stash drop -q || echo " - Nothing in stash"
+		git stash drop -q || echo " - Nothing to stash drop"
+		git clean -nfd || echo " - Nothing to clean up (show/dry-run)"
+		git clean -fd || echo " - Nothing to clean up (clean)"
 		git checkout "${core_branch}" || echo " - Already in ${core_branch}-branch"
 		git branch -D fake_branch || echo " - No fake_branch to delete"
 		# Force pull
