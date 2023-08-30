@@ -114,8 +114,12 @@ fixture-parentheses = false
 
 [tool.ruff.isort]
 force-sort-within-sections = true
-known-first-party = [
+section-order = ["future", "standard-library", "first-party", "third-party", "local-folder"]
+known-third-party = [
     "homeassistant",
+]
+known-first-party = [
+    "plugwise",
 ]
 combine-as-imports = true
 split-on-trailing-comma = false
