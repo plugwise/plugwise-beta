@@ -116,7 +116,6 @@ fixture-parentheses = false
 force-sort-within-sections = true
 known-first-party = [
     "homeassistant",
-    "plugwise",
 ]
 combine-as-imports = true
 split-on-trailing-comma = false
