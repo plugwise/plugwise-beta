@@ -1,20 +1,21 @@
 """Tests for the diagnostics data provided by the Plugwise integration."""
 from unittest.mock import MagicMock
 
-from aiohttp import ClientSession
 from homeassistant.core import HomeAssistant
 
 from tests.common import MockConfigEntry
 from tests.components.diagnostics import get_diagnostics_for_config_entry
+from tests.typing import ClientSessionGenerator
 
 
 async def test_diagnostics(
     hass: HomeAssistant,
-    hass_client: ClientSession,
+    hass_client: ClientSessionGenerator,
     mock_smile_adam: MagicMock,
     init_integration: MockConfigEntry,
 ) -> None:
     """Test diagnostics."""
+
     assert await get_diagnostics_for_config_entry(
         hass, hass_client, init_integration
     ) == {
