@@ -2,7 +2,6 @@
 from unittest.mock import MagicMock
 
 from aiohttp import ClientSession
-
 from homeassistant.core import HomeAssistant
 
 from tests.common import MockConfigEntry

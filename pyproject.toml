@@ -117,9 +117,15 @@ force-sort-within-sections = true
 section-order = ["future", "standard-library", "first-party", "third-party", "local-folder"]
 known-third-party = [
     "homeassistant",
+    "tests",
 ]
 known-first-party = [
     "plugwise",
+    "voluptuous",
+    "pytest",
+]
+forced-separate = [
+    "tests",
 ]
 combine-as-imports = true
 split-on-trailing-comma = false
