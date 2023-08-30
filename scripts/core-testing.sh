@@ -122,6 +122,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo " ** Resetting to ${core_branch} **"
 		echo ""
 		git config pull.rebase true
+		git reset --hard || echo " - Nothing to reset to"
 		git checkout "${core_branch}"
 		echo ""
 		echo " ** Running setup script from HA core **"
