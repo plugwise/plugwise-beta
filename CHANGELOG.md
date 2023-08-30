@@ -4,7 +4,7 @@
 
 ### Ongoing
 
-- test_diagnostic.py: line up with Core
+- test_diagnostics.py: line up with Core
 
 ### v0.41.2
 
