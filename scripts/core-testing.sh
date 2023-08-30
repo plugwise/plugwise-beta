@@ -148,9 +148,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo " ** Resetting/rebasing core (re-using clone)**"
 		echo ""
 		# Always start from ${core_branch}, dropping any leftovers
-		git reset --hard || echo " - Nothing to reset from"
 		git stash || echo " - Nothing to stash"
-		git stash drop -q || echo " - Nothing in stash"
+		git stash drop -q || echo " - Nothing to stash drop"
+		git clean -nfd || echo " - Nothing to clean up (show/dry-run)"
+		git clean -fd || echo " - Nothing to clean up (clean)"
 		git checkout "${core_branch}" || echo " - Already in ${core_branch}-branch"
 		git branch -D fake_branch || echo " - No fake_branch to delete"
 		# Force pull
