@@ -112,6 +112,7 @@ async def test_diagnostics(
                     "setpoint": 14.0,
                     "temperature": 19.1,
                     "temperature_difference": -0.4,
+                    "uncorrected_temperature": 19.1,
                     "valve_position": 0.0,
                 },
                 "temperature_offset": {
@@ -218,6 +219,7 @@ async def test_diagnostics(
                     "setpoint": 13.0,
                     "temperature": 17.2,
                     "temperature_difference": -0.2,
+                    "uncorrected_temperature": 17.2,
                     "valve_position": 0.0,
                 },
                 "temperature_offset": {
@@ -241,6 +243,7 @@ async def test_diagnostics(
                     "setpoint": 21.5,
                     "temperature": 26.0,
                     "temperature_difference": 3.5,
+                    "uncorrected_temperature": 25.9,
                     "valve_position": 100,
                 },
                 "temperature_offset": {
@@ -318,6 +321,7 @@ async def test_diagnostics(
                     "setpoint": 15.0,
                     "temperature": 17.1,
                     "temperature_difference": 0.1,
+                    "uncorrected_temperature": 17.1,
                     "valve_position": 0.0,
                 },
                 "temperature_offset": {
@@ -390,6 +394,7 @@ async def test_diagnostics(
                     "setpoint": 5.5,
                     "temperature": 15.6,
                     "temperature_difference": 0.0,
+                    "uncorrected_temperature": 15.6,
                     "valve_position": 0.0,
                 },
                 "temperature_offset": {
