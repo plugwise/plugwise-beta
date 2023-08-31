@@ -38,6 +38,7 @@
         "battery": 99,
         "temperature": 21.6,
         "temperature_difference": 2.3,
+        "uncorrected_temperature": 21.6,
         "valve_position": 0.0
       },
       "temperature_offset": {

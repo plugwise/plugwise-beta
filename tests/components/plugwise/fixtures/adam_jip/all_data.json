@@ -47,6 +47,7 @@
         "setpoint": 13.0,
         "temperature": 28.8,
         "temperature_difference": 2.0,
+        "uncorrected_temperature": 28.8,
         "valve_position": 0.0
       },
       "temperature_offset": {
@@ -70,6 +71,7 @@
         "setpoint": 13.0,
         "temperature": 24.3,
         "temperature_difference": 1.7,
+        "uncorrected_temperature": 24.3,
         "valve_position": 0.0
       },
       "temperature_offset": {
@@ -144,6 +146,7 @@
         "setpoint": 9.0,
         "temperature": 24.0,
         "temperature_difference": 1.8,
+        "uncorrected_temperature": 24.0,
         "valve_position": 100
       },
       "temperature_offset": {
@@ -221,6 +224,7 @@
         "setpoint": 13.0,
         "temperature": 28.7,
         "temperature_difference": 1.9,
+        "uncorrected_temperature": 28.7,
         "valve_position": 0.0
       },
       "temperature_offset": {
