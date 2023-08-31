@@ -138,6 +138,9 @@
       "temperature_difference": {
         "name": "Temperatuur verschil"
       },
+      "uncorrected_temperature": {
+        "name": "Ongecorrigeerde temperatuur"
+      },
       "outdoor_temperature": {
         "name": "Buiten temperatuur"
       },

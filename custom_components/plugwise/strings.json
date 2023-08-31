@@ -138,6 +138,9 @@
       "temperature_difference": {
         "name": "Temperature difference"
       },
+      "uncorrected_temperature": {
+        "name": "Uncorrected temperature"
+      },
       "outdoor_temperature": {
         "name": "Outdoor temperature"
       },

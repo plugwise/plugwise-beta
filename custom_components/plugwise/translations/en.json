@@ -138,6 +138,9 @@
       "temperature_difference": {
         "name": "Temperature difference"
       },
+      "uncorrected_temperature": {
+        "name": "Uncorrected temperature"
+      },
       "outdoor_temperature": {
         "name": "Outdoor temperature"
       },
@@ -199,7 +202,7 @@
         "name": "Electricity produced peak point"
       },
       "electricity_produced_off_peak_cumulative": {
-        "name": "Electricity produced off peak_cumulative"
+        "name": "Electricity produced off peak cumulative"
       },
       "electricity_produced_peak_cumulative": {
         "name": "Electricity produced peak cumulative"

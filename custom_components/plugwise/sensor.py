@@ -88,6 +88,12 @@ SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
     PlugwiseSensorEntityDescription(
+        key="uncorrected_temperature",
+        translation_key="uncorrected_temperature",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    ),
+    PlugwiseSensorEntityDescription(
         key="outdoor_temperature",
         translation_key="outdoor_temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
