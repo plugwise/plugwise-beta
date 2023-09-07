@@ -53,7 +53,7 @@
     "gateway_id": "03e65b16e4b247a29ae0d75a78cb492e",
     "notifications": {
       "97a04c0c263049b29350a660b4cdd01e": {
-        "warning": "The Smile P1 does not seem to be connected to a smart meter."
+        "warning": "The Smile P1 is not connected to a smart meter."
       }
     },
     "smile_name": "Smile P1"

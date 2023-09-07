@@ -2,9 +2,11 @@
 
 ## Versions from 0.40 and up
 
-### Ongoing
+### v0.41.3
 
-- test_diagnostics.py: line up with Core
+- test_diagnostics.py: line up with Core.
+- Link to [plugwise v0.32.2](https://github.com/plugwise/python-plugwise/releases/tag/v0.32.2)
+- Correct the DeviceInfo import for Core 2023.9.0
 
 ### v0.41.2
 
