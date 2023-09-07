@@ -9,5 +9,5 @@
   "iot_class": "local_polling",
   "loggers": ["plugwise"],
   "requirements": ["plugwise==0.32.2"],
-  "version": "0.41.3a0"
+  "version": "0.41.3"
 }
