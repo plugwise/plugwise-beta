@@ -80,7 +80,7 @@
               "asleep": "Nacht",
               "away": "Afwezig",
               "home": "Thuis",
-              "no_frost": "Vorst-bescherming",
+              "no_frost": "Vorstbescherming",
               "vacation": "Vakantie"
             }
           }
@@ -92,10 +92,10 @@
         "name": "Max cv-ketel temperatuur"
       },
       "max_dhw_temperature": {
-        "name": "Max huishoudelijk warm water temperatuur"
+        "name": "Max huishoudelijk warmwater temperatuur"
       },
       "temperature_offset": {
-        "name": "Temperatuurcompensatie"
+        "name": "Temperatuur compensatie"
       }
     },
     "select": {
@@ -109,7 +109,7 @@
         }
       },
       "regulation_mode": {
-        "name": "Verwarmingsregeling",
+        "name": "Verwarmings regeling",
         "state": {
           "bleeding_cold": "Koud ontluchten",
           "bleeding_hot": "Warm ontluchten",
@@ -133,7 +133,7 @@
         "name": " Instelling verwarmen"
       },
       "intended_boiler_temperature": {
-        "name": "Boiler doel-temperatuur"
+        "name": "Boiler doeltemperatuur"
       },
       "temperature_difference": {
         "name": "Temperatuur verschil"
@@ -259,7 +259,7 @@
         "name": "Huishoudelijk warmwater instelling"
       },
       "maximum_boiler_temperature": {
-        "name": "Maximum boiler temperatuurinstelling"
+        "name": "Maximum boilertemperatuur instelling"
       }
     },
     "switch": {
@@ -280,7 +280,7 @@
   "services": {
     "delete_notification": {
       "name": "Verwijder Plugwise notificatie",
-      "description": "Verwijder een Plugwise Notificatie"
+      "description": "Verwijder een Plugwise notificatie"
     }
   }
 }
