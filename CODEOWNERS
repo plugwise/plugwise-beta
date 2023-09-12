@@ -2,11 +2,11 @@
 # Order is important. The last matching pattern has the most precedence.
 
 # Specific files
-hacs.json @plugwise/devs
+hacs.json @plugwise/plugwise-smile
 
 # Main code
-/custom_components/ @plugwise/devs
-/tests/ @plugwise/devs
+/custom_components/ @plugwise/plugwise-smile
+/tests/ @plugwise/plugwise-smile
 
 # Tests and development support
 /scripts/ @bouwew @compatech
