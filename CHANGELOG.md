@@ -5,6 +5,7 @@
 ### Ongoing
 
 - Improve NL-translations
+- Implement Core PR [#100008](https://github.com/home-assistant/core/pull/100008)
 
 ### v0.41.3
 
