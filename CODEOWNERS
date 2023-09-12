@@ -3,6 +3,7 @@
 
 # Specific files
 hacs.json @plugwise/plugwise-smile
+CODEOWNERS @plugwise/devs
 
 # Main code
 /custom_components/ @plugwise/plugwise-smile
@@ -11,3 +12,4 @@ hacs.json @plugwise/plugwise-smile
 # Tests and development support
 /scripts/ @bouwew @compatech
 
+/@plugwise/plugwise-smile
