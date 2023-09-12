@@ -3,7 +3,6 @@
 
 # Specific files
 hacs.json @plugwise/plugwise-smile
-CODEOWNERS @plugwise/devs
 
 # Main code
 /custom_components/ @plugwise/plugwise-smile
