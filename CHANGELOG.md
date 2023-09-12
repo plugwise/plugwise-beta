@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+### Ongoing
+
+- Improve NL-translations
+
 ### v0.41.3
 
 - test_diagnostics.py: line up with Core.
