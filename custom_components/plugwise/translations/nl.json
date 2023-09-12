@@ -48,16 +48,16 @@
   "entity": {
     "binary_sensor": {
       "compressor_state": {
-        "name": "Compressor status"
+        "name": "Compressorstatus"
       },
       "cooling_enabled": {
         "name": "Koelfunctie aan"
       },
       "dhw_state": {
-        "name": "DHW status"
+        "name": "Status huishoudelijk warmwater"
       },
       "flame_state": {
-        "name": "Vlam status"
+        "name": "Vlamstatus"
       },
       "heating_state": {
         "name": "Verwarmen"
@@ -66,7 +66,7 @@
         "name": "Koelen"
       },
       "slave_boiler_state": {
-        "name": "Secundaire boiler status"
+        "name": "Status secundaire boiler"
       },
       "plugwise_notification": {
         "name": "Plugwise melding"
@@ -89,18 +89,18 @@
     },
     "number": {
       "maximum_boiler_temperature": {
-        "name": "Max cv-ketel temperatuur"
+        "name": "Maximale cv-ketel temperatuur"
       },
       "max_dhw_temperature": {
-        "name": "Max huishoudelijk warmwater temperatuur"
+        "name": "Maximale huishoudelijk warmwatertemperatuur"
       },
       "temperature_offset": {
-        "name": "Temperatuur compensatie"
+        "name": "Temperatuurcompensatie"
       }
     },
     "select": {
       "dhw_mode": {
-        "name": "Huishoudelijk warmwater modus",
+        "name": "Modus huishoudelijk warmwater",
         "state": {
           "auto": "Auto",
           "boost": "Boost",
@@ -109,7 +109,7 @@
         }
       },
       "regulation_mode": {
-        "name": "Verwarmings regeling",
+        "name": "Regelmodus",
         "state": {
           "bleeding_cold": "Koud ontluchten",
           "bleeding_hot": "Warm ontluchten",
@@ -119,7 +119,7 @@
         }
       },
       "thermostat_schedule": {
-        "name": "Thermostaat schema"
+        "name": "Thermostaatschema"
       }
     },
     "sensor": {
@@ -133,22 +133,22 @@
         "name": " Instelling verwarmen"
       },
       "intended_boiler_temperature": {
-        "name": "Boiler doeltemperatuur"
+        "name": "Doeltemperatuur boiler"
       },
       "temperature_difference": {
-        "name": "Temperatuur verschil"
+        "name": "Temperatuurverschil"
       },
       "outdoor_temperature": {
-        "name": "Buiten temperatuur"
+        "name": "Buitentemperatuur"
       },
       "outdoor_air_temperature": {
-        "name": "Buitenlucht temperatuur"
+        "name": "Temperatuur buitenlucht"
       },
       "water_temperature": {
-        "name": "Water temperatuur"
+        "name": "Watertemperatuur"
       },
       "return_temperature": {
-        "name": "Terugvoer temperatuur"
+        "name": "Terugvoertemperatuur"
       },
       "electricity_consumed": {
         "name": "Verbruikte electriciteit"
@@ -235,13 +235,13 @@
         "name": "Gasverbruik - interval"
       },
       "gas_consumed_cumulative": {
-        "name": "Gasverbruik - cumulatief"
+        "name": "Cumulatief gasverbruik"
       },
       "net_electricity_point": {
         "name": "Netto electriciteitsgebruik"
       },
       "net_electricity_cumulative": {
-        "name": "Netto electriciteitsgebruik - cumulatief"
+        "name": "Netto cumulatief electriciteitsgebruik"
       },
       "modulation_level": {
         "name": "Modulatie"
@@ -253,13 +253,13 @@
         "name": "Waterdruk"
       },
       "dhw_temperature": {
-        "name": "Huishoudelijk warmwater temperatuur"
+        "name": "Huishoudelijk warmwatertemperatuur"
       },
       "domestic_hot_water_setpoint": {
-        "name": "Huishoudelijk warmwater instelling"
+        "name": "Instelling huishoudelijk warmwater"
       },
       "maximum_boiler_temperature": {
-        "name": "Maximum boilertemperatuur instelling"
+        "name": "Instelling maximale boilertemperatuur"
       }
     },
     "switch": {
@@ -267,7 +267,7 @@
         "name": "Koelfunctie"
       },
       "dhw_cm_switch": {
-        "name": "Huishoudelijk warmwater comfort modus"
+        "name": "Huishoudelijk warmwater comfortmodus"
       },
       "lock": {
         "name": "Slot"
