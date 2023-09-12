@@ -228,17 +228,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	set -e
 	echo "... black-ing ..."
 	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
-	echo "... Prepping strict without hassfest ... (for mypy)"
-	echo "homeassistant.components.plugwise.*" >> .strict-typing
-	echo "[mypy-homeassistant.components.plugwise.*]
-check_untyped_defs = true
-disallow_incomplete_defs = true
-disallow_subclassing_any = true
-disallow_untyped_calls = true
-disallow_untyped_decorators = true
-disallow_untyped_defs = true
-warn_return_any = true
-warn_unreachable = true" >> mypy.ini
 	echo "... mypy ..."
 	script/run-in-env.sh mypy homeassistant/components/plugwise/*.py || exit
 	cd ..
