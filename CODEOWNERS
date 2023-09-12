@@ -11,4 +11,4 @@ hacs.json @plugwise/plugwise-smile
 # Tests and development support
 /scripts/ @bouwew @compatech
 
-/@plugwise/plugwise-smile
+* @plugwise/plugwise-smile
