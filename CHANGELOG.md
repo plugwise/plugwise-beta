@@ -2,9 +2,10 @@
 
 ## Versions from 0.40 and up
 
-### Ongoing
+### v0.41.4
 
-- Improve NL-translations
+- Link to [plugwise to v0.32.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.32.3)
+- Improve NL-translations.
 - Implement Core PR [#100008](https://github.com/home-assistant/core/pull/100008)
 
 ### v0.41.3
