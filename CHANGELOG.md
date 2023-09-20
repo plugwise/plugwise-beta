@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Add number-tests, following Core PR [#100654](https://github.com/home-assistant/core/pull/100654)
+
 ### v0.41.4
 
 - Link to [plugwise to v0.32.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.32.3)
