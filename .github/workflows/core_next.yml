@@ -1,0 +1,64 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Validate plugwise-beta against HA-core dev
+
+env:
+  # Uses a different key/restore key than test.yml
+  CACHE_VERSION: 1
+  DEFAULT_PYTHON: "3.11"
+
+on:
+  # Only set to 'push' when testing/modifying
+  # otherwise this should be just scheduled runs!
+  # push:
+
+  # Schedule Weekly at 9
+  schedule:
+    - cron: "0 9 * * 3"
+
+jobs:
+  # Prepare default python version environment
+  ha-core-prepare:
+    runs-on: ubuntu-latest
+    name: Setup for HA-core (DEV)
+    steps:
+      - name: Check out committed code
+        uses: actions/checkout@v4.0.0
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        id: python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
+        id: cache-hacore
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-hacore
+        with:
+          path: ./
+          key: >-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-dev-${{
+            steps.python.outputs.python-version }}-${{
+            hashFiles('./custom_components/plugwise/manifest.json') }}-${{
+            hashFiles('./ha-core/.git/plugwise-tracking') }}
+          restore-keys: |
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-dev-${{ steps.python.outputs.python-version }}-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}
+            ${{ env.CACHE_VERSION}}
+      - name: Test against HA-core DEV (for active or upcoming RC/Beta)
+        run: |
+          GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
+      - name: Create failure issue as warning
+        if: failure()
+        uses: imjohnbo/issue-bot@v3
+        with:
+          # include any handles without @
+          # assignees: "plugwise/plugwise-smile"
+          labels: "core-dev-compat"
+          pinned: false
+          # closes existing issue if all labels match
+          close-previous: true
+          title: Next Home Assistant version incompatibility
+          body: "**Note: This does not affect users of the plugwise integration in Core nor Plugwise-Beta users on the latest version of Home Assistant.** For our beloved {{ assignees }}, please check action logs, it seems our current code is not compatible with the upcoming version (and/or Release Candidate (RC)/beta) of Home Assistant in a timely matter to conform before the next monthly release."
