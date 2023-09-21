@@ -53,7 +53,7 @@ jobs:
         uses: imjohnbo/issue-bot@v3
         with:
           # include any handles without @
-          assignees: "plugwise/plugwise-smile"
+          # assignees: "plugwise/plugwise-smile"
           labels: "core-dev-compat"
           pinned: false
           # closes existing issue if all labels match
