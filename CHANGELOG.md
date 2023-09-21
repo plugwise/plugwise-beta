@@ -2,8 +2,9 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.42.0
 
+- Bugfixes and adding daily full-updating via [plugwise v0.33.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.33.0)
 - Add number-tests, following Core PR [#100654](https://github.com/home-assistant/core/pull/100654)
 
 ### v0.41.4
