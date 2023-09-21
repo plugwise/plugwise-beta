@@ -9,11 +9,13 @@ env:
   DEFAULT_PYTHON: "3.11"
 
 on:
-  #  schedule:
-  #    - cron: '0 9 * * 3' # Weekly at 9
   # Only set to 'push' when testing/modifying
   # otherwise this should be just scheduled runs!
-  push:
+  # push:
+
+  # Schedule Weekly at 9
+  schedule:
+    - cron: "0 9 * * 3"
 
 jobs:
   # Prepare default python version environment
