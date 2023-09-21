@@ -19,7 +19,7 @@ jobs:
   # Prepare default python version environment
   ha-core-prepare:
     runs-on: ubuntu-latest
-    name: Setup for HA-core
+    name: Setup for HA-core (DEV)
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.0.0
@@ -45,7 +45,7 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Test through core (full, not split)
+      - name: Test against HA-core DEV (for active or upcoming RC/Beta)
         run: |
           GITHUB_ACTIONS="" BRANCH="master" scripts/core-testing.sh
       - name: Create failure issue as warning
