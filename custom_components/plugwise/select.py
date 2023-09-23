@@ -17,6 +17,7 @@ from .const import (
     COORDINATOR,  # pw-beta
     DOMAIN,
     LOGGER,
+    UNIQUE_IDS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -77,13 +78,18 @@ async def async_setup_entry(
     coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ][COORDINATOR]
+    current_unique_ids: set[tuple[str, str]] = hass.data[DOMAIN][config_entry.entry_id][
+        UNIQUE_IDS
+    ]
 
     entities: list[PlugwiseSelectEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in SELECT_TYPES:
             if description.options_key in device:
                 entities.append(
-                    PlugwiseSelectEntity(coordinator, device_id, description)
+                    PlugwiseSelectEntity(
+                        coordinator, current_unique_ids, device_id, description
+                    )
                 )
                 LOGGER.debug(
                     "Add %s %s selector", device["name"], description.translation_key
@@ -100,6 +106,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
+        current_unique_ids: set[tuple[str, str]],
         device_id: str,
         entity_description: PlugwiseSelectEntityDescription,
     ) -> None:
@@ -107,6 +114,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = entity_description
         self._attr_unique_id = f"{device_id}-{entity_description.key}"
+        current_unique_ids.add(("select", self._attr_unique_id))
         self._attr_options = self.device[entity_description.options_key]
 
     @property
