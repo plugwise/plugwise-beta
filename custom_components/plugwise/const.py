@@ -17,6 +17,7 @@ CONF_MANUAL_PATH: Final = "Enter Manually"
 SMILE: Final = "smile"
 STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
+UNIQUE_IDS: Final = "unique_ids"
 
 FLOW_NET: Final = "Network: Smile/Stretch"
 FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"

@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.entity_registry as er
 
-from .const import COORDINATOR, DOMAIN, LOGGER
+from .const import DOMAIN, LOGGER, UNIQUE_IDS
 from .entity import PlugwiseEntity
 
 _PlugwiseEntityT = TypeVar("_PlugwiseEntityT", bound=PlugwiseEntity)
@@ -46,7 +46,7 @@ def plugwise_command(
 def _async_cleanup_registry_entries(hass: HomeAssistant, entry_id: str) -> None:
     """Remove extra entities that are no longer part of the integration."""
     entity_registry = er.async_get(hass)
-    plugwise_data = hass.data[DOMAIN][entry_id][COORDINATOR]
+    current_unique_ids = hass.data[DOMAIN][entry_id][UNIQUE_IDS]
 
     existing_entries = er.async_entries_for_config_entry(entity_registry, entry_id)
     entities = {
@@ -54,7 +54,7 @@ def _async_cleanup_registry_entries(hass: HomeAssistant, entry_id: str) -> None:
         for entity in existing_entries
     }
 
-    extra_entities = set(entities.keys()).difference(plugwise_data.unique_ids)
+    extra_entities = set(entities.keys()).difference(current_unique_ids)
     LOGGER.debug("HOI existing_entries: %s", existing_entries)
     LOGGER.debug("HOI entities: %s", entities)
     if not extra_entities:

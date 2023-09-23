@@ -8,11 +8,12 @@ from typing import Any
 from plugwise.constants import BinarySensorType
 
 from homeassistant.components.binary_sensor import (
+    DOMAIN as BS_DOMAIN,
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory
+from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -21,6 +22,7 @@ from .const import (
     DOMAIN,
     LOGGER,
     SEVERITIES,
+    UNIQUE_IDS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -104,6 +106,9 @@ async def async_setup_entry(
     coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ][COORDINATOR]
+    current_unique_ids: set[tuple[Platform, str]] = hass.data[DOMAIN][
+        config_entry.entry_id
+    ][UNIQUE_IDS]
 
     entities: list[PlugwiseBinarySensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
@@ -115,6 +120,7 @@ async def async_setup_entry(
             entities.append(
                 PlugwiseBinarySensorEntity(
                     coordinator,
+                    current_unique_ids,
                     device_id,
                     description,
                 )
@@ -134,6 +140,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
+        current_unique_ids: set[tuple[Platform, str]],
         device_id: str,
         description: PlugwiseBinarySensorEntityDescription,
     ) -> None:
@@ -141,6 +148,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
+        current_unique_ids.add((BS_DOMAIN, self._attr_unique_id))
         self._notification: dict[str, str] = {}  # pw-beta
 
     @property
