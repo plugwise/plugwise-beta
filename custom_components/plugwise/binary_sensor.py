@@ -147,7 +147,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        current_unique_ids.add((Platform.BINARY_SENSOR, self._attr_unique_id))
+        current_unique_ids.add(("binary_sensor", self._attr_unique_id))
         self._notification: dict[str, str] = {}  # pw-beta
 
     @property
