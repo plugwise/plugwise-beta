@@ -105,7 +105,7 @@ async def async_setup_entry(
     coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ][COORDINATOR]
-    current_unique_ids: set[tuple[Platform, str]] = hass.data[DOMAIN][
+    current_unique_ids: set[tuple[str, str]] = hass.data[DOMAIN][
         config_entry.entry_id
     ][UNIQUE_IDS]
 

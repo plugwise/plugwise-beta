@@ -45,7 +45,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     undo_listener = entry.add_update_listener(_update_listener)  # pw-beta
 
-    current_unique_ids: set[tuple[Platform, str]] = {()}
+    current_unique_ids: set[tuple[str, str]] = {()}
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         COORDINATOR: coordinator,  # pw-beta
