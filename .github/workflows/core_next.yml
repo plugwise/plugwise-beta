@@ -24,7 +24,7 @@ jobs:
     name: Setup for HA-core (DEV)
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v4.0.0
+        uses: actions/checkout@v4.1.0
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v4
