@@ -55,8 +55,8 @@ def _async_cleanup_registry_entries(hass: HomeAssistant, entry_id: str) -> None:
     }
 
     extra_entities = set(entities.keys()).difference(current_unique_ids)
-    LOGGER.debug("HOI existing_entries: %s", existing_entries)
     LOGGER.debug("HOI entities: %s", entities)
+    LOGGER.debug("HOI current_unique_ids: %s", current_unique_ids)
     if not extra_entities:
         return
 
