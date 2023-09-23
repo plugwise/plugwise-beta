@@ -55,12 +55,14 @@ def _async_cleanup_registry_entries(hass: HomeAssistant, entry_id: str) -> None:
     }
 
     extra_entities = set(entities.keys()).difference(plugwise_data.unique_ids)
+    LOGGER.debug("HOI existing_entries: %s", existing_entries)
+    LOGGER.debug("HOI entities: %s", entities)
     if not extra_entities:
         return
 
-    for entity in extra_entities:
-        if entity_registry.async_is_registered(entities[entity]):
-            entity_registry.async_remove(entities[entity])
+    # for entity in extra_entities:
+    #     if entity_registry.async_is_registered(entities[entity]):
+    #         entity_registry.async_remove(entities[entity])
 
     LOGGER.debug(
         ("Clean-up of Plugwise entities: %s entities removed for config entry %s"),
