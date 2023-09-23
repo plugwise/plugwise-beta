@@ -12,7 +12,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory, Platform
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -105,9 +105,9 @@ async def async_setup_entry(
     coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ][COORDINATOR]
-    current_unique_ids: set[tuple[str, str]] = hass.data[DOMAIN][
-        config_entry.entry_id
-    ][UNIQUE_IDS]
+    current_unique_ids: set[tuple[str, str]] = hass.data[DOMAIN][config_entry.entry_id][
+        UNIQUE_IDS
+    ]
 
     entities: list[PlugwiseBinarySensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
@@ -139,7 +139,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        current_unique_ids: set[tuple[Platform, str]],
+        current_unique_ids: set[tuple[str, str]],
         device_id: str,
         description: PlugwiseBinarySensorEntityDescription,
     ) -> None:
