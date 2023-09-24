@@ -25,7 +25,7 @@ async def test_adam_climate_entity_attributes(
     assert state
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_modes"] == [
-        HVACMode.OFF,        
+        HVACMode.OFF,
         HVACMode.HEAT,
         HVACMode.AUTO,
     ]
@@ -47,7 +47,7 @@ async def test_adam_climate_entity_attributes(
     assert state
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_modes"] == [
-        HVACMode.OFF,        
+        HVACMode.OFF,
         HVACMode.HEAT,
         HVACMode.AUTO,
     ]
@@ -74,7 +74,7 @@ async def test_adam_2_climate_entity_attributes(
     assert state.state == HVACMode.HEAT
     assert state.attributes["hvac_action"] == "heating"
     assert state.attributes["hvac_modes"] == [
-        HVACMode.OFF,        
+        HVACMode.OFF,
         HVACMode.HEAT,
         HVACMode.AUTO,
     ]
@@ -84,7 +84,7 @@ async def test_adam_2_climate_entity_attributes(
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_action"] == "idle"
     assert state.attributes["hvac_modes"] == [
-        HVACMode.OFF,        
+        HVACMode.OFF,
         HVACMode.HEAT,
         HVACMode.AUTO,
     ]
@@ -100,7 +100,7 @@ async def test_adam_3_climate_entity_attributes(
     assert state.state == HVACMode.HEAT_COOL
     assert state.attributes["hvac_action"] == "cooling"
     assert state.attributes["hvac_modes"] == [
-        HVACMode.OFF,        
+        HVACMode.OFF,
         HVACMode.HEAT_COOL,
         HVACMode.AUTO,
     ]
@@ -202,7 +202,7 @@ async def test_anna_climate_entity_attributes(
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_action"] == "heating"
     assert state.attributes["hvac_modes"] == [
-        HVACMode.OFF,        
+        HVACMode.OFF,
         HVACMode.HEAT,
         HVACMode.AUTO,
     ]
@@ -230,7 +230,7 @@ async def test_anna_2_climate_entity_attributes(
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_action"] == "cooling"
     assert state.attributes["hvac_modes"] == [
-        HVACMode.OFF,        
+        HVACMode.OFF,
         HVACMode.HEAT_COOL,
         HVACMode.AUTO,
     ]
@@ -250,7 +250,7 @@ async def test_anna_3_climate_entity_attributes(
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_action"] == "idle"
     assert state.attributes["hvac_modes"] == [
-        HVACMode.OFF,        
+        HVACMode.OFF,
         HVACMode.HEAT_COOL,
         HVACMode.AUTO,
     ]
