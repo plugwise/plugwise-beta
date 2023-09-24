@@ -205,7 +205,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if hvac_mode not in self.hvac_modes:
             raise HomeAssistantError("Unsupported hvac_mode")
 
-        if self._present_hvac_mode == HVACMode.OFF:
+        if self._present_hvac_mode == HVACMode.OFF and not self._homekit_enabled:
             raise ValueError(
                 "Cannot change HVAC-mode when in OFF-mode, please use the regulation-mode Select to enable heating or cooling."
             )
