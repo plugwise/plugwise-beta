@@ -7,6 +7,7 @@ from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
     ATTR_TARGET_TEMP_HIGH,
     ATTR_TARGET_TEMP_LOW,
+    DOMAIN as CLIMATE_DOMAIN,
     ClimateEntity,
     ClimateEntityFeature,
     HVACAction,
@@ -80,7 +81,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
-        current_unique_ids.add(("climate", self._attr_unique_id))
+        current_unique_ids.add((CLIMATE_DOMAIN, self._attr_unique_id))
 
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
