@@ -165,16 +165,6 @@ async def test_entity_registry_cleanup(
     mock_config_entry.add_to_hass(hass)
 
     entity_registry = async_get(hass)
-    # entry_1 = entity_registry.async_get_or_create(
-    #     SENSOR_DOMAIN,
-    #     "outdoor_air_temperature",
-    #     f"{HEATER_ID}-outdoor_temperature",
-    # )
-    # entry_2 = entity_registry.async_get_or_create(
-    #     SENSOR_DOMAIN,
-    #     "dhw_temperature",
-    #     f"{HEATER_ID}-dhw_temperature",
-    # )
     assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
     LOGGER.debug("HOI entities: %s", entity_registry.entities)
