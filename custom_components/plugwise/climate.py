@@ -74,7 +74,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         super().__init__(coordinator, device_id)
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
-        self._present_hvac_mode: HVACMode = HVACMode.HEAT
         self._attr_unique_id = f"{device_id}-climate"
 
         # Determine supported features
@@ -202,7 +201,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if hvac_mode not in self.hvac_modes:
             raise HomeAssistantError("Unsupported hvac_mode")
 
-        if self._present_hvac_mode == HVACMode.OFF and not self._homekit_enabled:
+        if self.hvac_mode == HVACMode.OFF and not self._homekit_enabled:
             raise ValueError(
                 "Cannot change HVAC-mode when in OFF-mode, please use the regulation-mode Select to enable heating or cooling."
             )
@@ -212,7 +211,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self.device["last_used"],
             "on" if hvac_mode == HVACMode.AUTO else "off",
         )
-        self._present_hvac_mode = hvac_mode
 
         # pw-beta: feature request - mimic HomeKit behavior
         self._homekit_mode = hvac_mode
