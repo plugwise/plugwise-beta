@@ -174,5 +174,8 @@ async def test_entity_registry_cleanup(
         "{HEATER_ID}-indoor_temperature",
     )
     LOGGER.debug("HOI entities: %s", entity_registry.entities)
+    assert len(entity_registry.entities) == 25
 
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
     assert len(entity_registry.entities) == 24
