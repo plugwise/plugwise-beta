@@ -88,9 +88,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_preset_modes = presets
 
         # Determine hvac modes and current hvac mode
-        self._attr_hvac_modes = [HVACMode.HEAT]
+        self._attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT]
         if self.coordinator.data.gateway["cooling_present"]:
-            self._attr_hvac_modes = [HVACMode.HEAT_COOL]
+            self._attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT_COOL]
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
         if self._homekit_enabled:  # pw-beta homekit emulation
