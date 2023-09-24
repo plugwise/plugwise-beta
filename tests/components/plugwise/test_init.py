@@ -1,4 +1,5 @@
 """Tests for the Plugwise Climate integration."""
+import logging
 from unittest.mock import MagicMock
 
 from plugwise.exceptions import (
@@ -18,6 +19,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_registry import async_get
 
 from tests.common import MockConfigEntry
+
+LOGGER = logging.getLogger(__package__)
 
 HEATER_ID = "1cbf783bb11e4a7c8a6843dee3a86927"  # Opentherm device_id for migration
 PLUG_ID = "cd0ddb54ef694e11ac18ed1cbce5dbbd"  # VCR device_id for migration
@@ -151,3 +154,29 @@ async def test_migrate_unique_id_relay(
     entity_migrated = entity_registry.async_get(entity.entity_id)
     assert entity_migrated
     assert entity_migrated.unique_id == new_unique_id
+
+
+async def test_entity_registry_cleanup(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_smile_anna: MagicMock,
+) -> None:
+    """Test a clean-up of the entity_registry."""
+    mock_config_entry.add_to_hass(hass)
+
+    entity_registry = async_get(hass)
+    # entry_1 = entity_registry.async_get_or_create(
+    #     SENSOR_DOMAIN,
+    #     "outdoor_air_temperature",
+    #     f"{HEATER_ID}-outdoor_temperature",
+    # )
+    # entry_2 = entity_registry.async_get_or_create(
+    #     SENSOR_DOMAIN,
+    #     "dhw_temperature",
+    #     f"{HEATER_ID}-dhw_temperature",
+    # )
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+    LOGGER.debug("HOI entities: %s", entity_registry.entities)
+
+    assert len(entity_registry.entities) == 24
