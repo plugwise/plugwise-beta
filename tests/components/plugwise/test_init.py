@@ -167,6 +167,12 @@ async def test_entity_registry_cleanup(
     entity_registry = async_get(hass)
     assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
+    # Add a extra mock-entry
+    mock_entry = entity_registry.async_get_or_create(
+        SENSOR_DOMAIN,
+        "indoor_temperature",
+        "{HEATER_ID}-indoor_temperature",
+    )
     LOGGER.debug("HOI entities: %s", entity_registry.entities)
 
     assert len(entity_registry.entities) == 24
