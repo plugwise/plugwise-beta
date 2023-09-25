@@ -74,6 +74,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         super().__init__(coordinator, device_id)
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
+        self._attr_max_temp = self.device["thermostat"]["upper_bound"]
+        self._attr_min_temp = self.device["thermostat"]["lower_bound"]
+        # Ensure we don't drop below 0.1
+        self._attr_target_temperature_step = max(
+            self.device["thermostat"]["resolution"], 0.1
+        )
         self._attr_unique_id = f"{device_id}-climate"
 
         # Determine supported features
@@ -86,7 +92,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
 
-        # Determine hvac modes and current hvac mode
+        # Determine hvac modes
         self._attr_hvac_modes = []
         if self._homekit_enabled or "mode" in self.device:  # pw-beta homekit emulation
             self._attr_hvac_modes.append(HVACMode.OFF)  # pragma: no cover
@@ -96,13 +102,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_hvac_modes.append(HVACMode.HEAT_COOL)
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
-
-        self._attr_min_temp = self.device["thermostat"]["lower_bound"]
-        self._attr_max_temp = self.device["thermostat"]["upper_bound"]
-        # Fix unpractical resolution provided by Plugwise
-        self._attr_target_temperature_step = max(
-            self.device["thermostat"]["resolution"], 0.5
-        )
 
     @property
     def current_temperature(self) -> float:
