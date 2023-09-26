@@ -165,7 +165,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Return the current preset mode."""
         return self.device["active_preset"]
 
-@property
+    @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return the previous hvac_mode before being switched to hvac_mode off."""
         previous_mode: str = "off"
