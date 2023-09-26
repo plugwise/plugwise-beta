@@ -209,10 +209,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if hvac_mode not in self.hvac_modes:
             raise HomeAssistantError("Unsupported hvac_mode")
 
-        if self.hvac_mode == HVACMode.OFF and not self._homekit_enabled:
-            raise ValueError(
-                "Cannot change HVAC-mode when in OFF-mode, please use the regulation-mode Select to enable heating or cooling."
-            )
+        if hvac_mode == self.hvac_mode:
+            return
 
         await self.coordinator.api.set_schedule_state(
             self.device["location"],
@@ -220,13 +218,23 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             "on" if hvac_mode == HVACMode.AUTO else "off",
         )
 
+        if not self._homekit_enabled:
+            if hvac_mode == HVACMode.OFF:
+                self.coordinator.api.set_regulation_mode("off")
+                return
+
+            if self.hvac_mode == HVACMode.OFF and hvac_mode != HVACMode.OFF:
+                option = self.extra_state_attributes["previous_mode"]
+                self.coordinator.api.set_regulation_mode(option)
+                return
+
         # pw-beta: feature request - mimic HomeKit behavior
-        self._homekit_mode = hvac_mode
-        if self._homekit_enabled:
+        else:
+            self._homekit_mode = hvac_mode
             if self._homekit_mode == HVACMode.OFF:  # pragma: no cover
                 await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
             if (
-                self._homekit_mode in [HVACMode.HEAT, HVACMode.COOL, HVACMode.HEAT_COOL]
+                self._homekit_mode in [HVACMode.HEAT, HVACMode.HEAT_COOL]
                 and self.device["active_preset"] == PRESET_AWAY
             ):  # pragma: no cover
                 await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
