@@ -174,7 +174,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return self.device["active_preset"]
 
 @property
-    def extra_state_attributes(self) -> Mapping[str, str] | None:
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return the previous hvac_mode before being switched to hvac_mode off."""
         previous_mode: str = "off"
         gateway = self.coordinator.data.gateway["gateway_id"]
