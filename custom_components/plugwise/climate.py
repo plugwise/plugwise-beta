@@ -174,11 +174,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if self.hvac_mode != HVACMode.OFF:
             previous_mode = "heating"
             if (
-                self.hvac_mode == HVACMode.HEAT_COOL 
+                self.hvac_mode == HVACMode.HEAT_COOL
                 and gateway_data["select_regulation_mode"] == "cooling"
             ):
                 previous_mode = "cooling"
-        
+
         return {"previous_mode": previous_mode}
 
     @plugwise_command
