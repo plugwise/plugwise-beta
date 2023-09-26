@@ -23,11 +23,13 @@ from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 
 from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     COORDINATOR,  # pw-beta
     DOMAIN,
+    LOGGER,
     MASTER_THERMOSTATS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
@@ -58,7 +60,7 @@ async def async_setup_entry(
     )
 
 
-class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
+class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     """Representation of a Plugwise thermostat."""
 
     _attr_has_entity_name = True
@@ -76,6 +78,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         super().__init__(coordinator, device_id)
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
+        self._previous_mode: str | None = None
         self._attr_max_temp = self.device["thermostat"]["upper_bound"]
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         # Ensure we don't drop below 0.1
@@ -157,7 +160,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if heater_data["binary_sensors"]["heating_state"]:
                 return HVACAction.HEATING
             if heater_data["binary_sensors"].get("cooling_state", False):
-                return HVACAction.COOLINGf
+                return HVACAction.COOLING
 
         return HVACAction.IDLE
 
@@ -167,22 +170,20 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return self.device["active_preset"]
 
     @property
-    def extra_state_attributes(self) -> Mapping[str, Any] | None:
+    def extra_state_attributes(self) -> Mapping[str, str | None]:
         """Return the previous hvac_mode before being switched to hvac_mode off."""
-        previous_mode: str | None = (
-            None  # How to restore the last value after a HA restart?
-        )
-        gateway = self.coordinator.data.gateway["gateway_id"]
-        gateway_data = self.coordinator.data.devices[gateway]
-        if self.hvac_mode != HVACMode.OFF:
-            previous_mode = "heating"
-            if (
-                self.hvac_mode == HVACMode.HEAT_COOL
-                and gateway_data["select_regulation_mode"] == "cooling"
-            ):
-                previous_mode = "cooling"
+        gateway: str | None = self.coordinator.data.gateway["gateway_id"]
+        if gateway:
+            gateway_data = self.coordinator.data.devices[gateway]
+            if self.hvac_mode != HVACMode.OFF:
+                self._previous_mode = "heating"
+                if (
+                    self.hvac_mode == HVACMode.HEAT_COOL
+                    and gateway_data["select_regulation_mode"] == "cooling"
+                ):
+                    self._previous_mode = "cooling"
 
-        return {"previous_mode": previous_mode}
+        return {"previous_mode": self._previous_mode}
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
@@ -207,7 +208,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         await self.coordinator.api.set_temperature(self.device["location"], data)
 
     @plugwise_command
-    async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
+    async def async_set_hvac_mode(self, hvac_mode: str) -> None:
         """Set the hvac mode."""
         if hvac_mode not in self.hvac_modes:
             raise HomeAssistantError("Unsupported hvac_mode")
@@ -223,13 +224,15 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         if not self._homekit_enabled:
             if hvac_mode == HVACMode.OFF:
-                self.coordinator.api.set_regulation_mode("off")
+                await self.coordinator.api.set_regulation_mode("off")
                 return
 
-            if self.hvac_mode == HVACMode.OFF and hvac_mode != HVACMode.OFF:
-                option = self.extra_state_attributes["previous_mode"]
-                self.coordinator.api.set_regulation_mode(option)
-                return
+            if hvac_mode != HVACMode.OFF and self.hvac_mode == HVACMode.OFF:
+                if self.extra_state_attributes:
+                    option = self.extra_state_attributes.get("previous_mode")
+                    if option:
+                        await self.coordinator.api.set_regulation_mode(option)
+                        return
 
         # pw-beta: feature request - mimic HomeKit behavior
         else:
@@ -246,3 +249,18 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode."""
         await self.coordinator.api.set_preset(self.device["location"], preset_mode)
+
+    async def async_added_to_hass(self) -> None:
+        """Run when entity is about to be added."""
+        await super().async_added_to_hass()
+
+        LOGGER.debug("Startup _previous_mode is %s", self._previous_mode)
+        if self._previous_mode is not None:
+            return
+
+        prev_state = await self.async_get_last_state()
+        if (
+            prev_state is not None
+            and prev_state.extra_state_attributes.get("previous_mode") is not None
+        ):
+            self._previous_mode = prev_state.extra_state_attributes.get("previous_mode")
