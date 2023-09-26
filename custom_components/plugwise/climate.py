@@ -179,7 +179,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return the previous hvac_mode before being switched to hvac_mode off."""
-        previous_mode: str = "off"
+        previous_mode: str | None = None  # How to restore the last value after a HA restart?
         gateway = self.coordinator.data.gateway["gateway_id"]
         gateway_data = self.coordinator.data.devices[gateway]
         if self.hvac_mode != HVACMode.OFF:
