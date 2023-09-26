@@ -30,7 +30,8 @@ select = [
     "N805", # First argument of a method should be named self
     "N815", # Variable {name} in class scope should not be mixedCase
     "PGH001", # No builtin eval() allowed
-    "PGH004",  # Use specific rule codes when using noqa
+    "PGH004", # Use specific rule codes when using noqa
+    "PL", # https://github.com/astral-sh/ruff/issues/7491#issuecomment-1730008111
     "PLC0414", # Useless import alias. Import alias does not rename original package.
     "PLC", # pylint
     "PLE", # pylint
@@ -82,7 +83,6 @@ ignore = [
     "D407",  # Section name underlining
     "E501",  # line too long
     "E731",  # do not assign a lambda expression, use a def
-    "PLC1901", # Lots of false positives
     # False positives https://github.com/astral-sh/ruff/issues/5386
     "PLC0208", # Use a sequence type instead of a `set` when iterating over values
     "PLR0911", # Too many return statements ({returns} > {max_returns})
