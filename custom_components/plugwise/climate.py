@@ -171,7 +171,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if heater_data["binary_sensors"]["heating_state"]:
                 return HVACAction.HEATING
             if heater_data["binary_sensors"].get("cooling_state", False):
-                return HVACAction.COOLING
+                return HVACAction.COOLINGf
 
         return HVACAction.IDLE
 
@@ -191,6 +191,22 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def preset_mode(self) -> str | None:
         """Return the current preset mode."""
         return self.device["active_preset"]
+
+@property
+    def extra_state_attributes(self) -> Mapping[str, str] | None:
+        """Return the previous hvac_mode before being switched to hvac_mode off."""
+        previous_mode: str = "off"
+        gateway = self.coordinator.data.gateway["gateway_id"]
+        gateway_data = self.coordinator.data.devices[gateway]
+        if self.hvac_mode != HVACMode.OFF:
+            previous_mode = "heating"
+            if (
+                self.hvac_mode == HVACMode.HEAT_COOL 
+                and gateway_data["select_regulation_mode"] == "cooling"
+            ):
+                previous_mode = "cooling"
+        
+        return {"previous_mode": previous_mode}
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
