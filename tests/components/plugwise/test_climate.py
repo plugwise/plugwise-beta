@@ -209,7 +209,7 @@ async def test_adam_climate_off_mode_change(
     state = hass.states.get("climate.slaapkamer")
     assert state
     assert state.state == HVACMode.OFF
-    state_2 = hass.states.get("select.slaapkamer_schedule")
+    state_2 = hass.states.get("select.slaapkamer_thermostat_schedule")
     assert state_2
     assert state_2.state == "None"
 
