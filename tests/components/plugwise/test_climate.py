@@ -318,6 +318,7 @@ async def test_anna_climate_entity_climate_changes(
         "c784ee9fdab44e1395b8dee7d7a497d5", "on"
     )
 
+    # hvac_mode is auto, setting to auto should do nothing.
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
