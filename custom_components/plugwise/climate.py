@@ -164,13 +164,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         if control_state == "off":
             return HVACAction.IDLE
 
-        heater: str | None = self.coordinator.data.gateway["heater_id"]
-        if heater:
-            heater_data = self.coordinator.data.devices[heater]
-            if heater_data["binary_sensors"]["heating_state"]:
-                return HVACAction.HEATING
-            if heater_data["binary_sensors"].get("cooling_state", False):
-                return HVACAction.COOLING
+        heater: str = self.coordinator.data.gateway["heater_id"]
+        heater_data = self.coordinator.data.devices[heater]
+        if heater_data["binary_sensors"]["heating_state"]:
+            return HVACAction.HEATING
+        if heater_data["binary_sensors"].get("cooling_state", False):
+            return HVACAction.COOLING
 
         return HVACAction.IDLE
 
@@ -182,16 +181,15 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     @property
     def extra_state_attributes(self) -> Mapping[str, str | None]:
         """Return the previous hvac_mode before being switched to hvac_mode off."""
-        gateway: str | None = self.coordinator.data.gateway["gateway_id"]
-        if gateway:
-            gateway_data = self.coordinator.data.devices[gateway]
-            if self.hvac_mode != HVACMode.OFF:
-                self._previous_mode = "heating"
-                if (
-                    self.hvac_mode == HVACMode.HEAT_COOL
-                    and gateway_data["select_regulation_mode"] == "cooling"
-                ):
-                    self._previous_mode = "cooling"
+        gateway: str = self.coordinator.data.gateway["gateway_id"]
+        gateway_data = self.coordinator.data.devices[gateway]
+        if self.hvac_mode != HVACMode.OFF:
+            self._previous_mode = "heating"
+            if (
+                self.hvac_mode == HVACMode.HEAT_COOL
+                and gateway_data["select_regulation_mode"] == "cooling"
+            ):
+                self._previous_mode = "cooling"
 
         return {"previous_mode": self._previous_mode}
 
@@ -239,8 +237,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
             if hvac_mode != HVACMode.OFF and self.hvac_mode == HVACMode.OFF:
                 if self.extra_state_attributes:
-                    option = self.extra_state_attributes.get("previous_mode")
-                    if option:
+                    if option := self.extra_state_attributes.get("previous_mode"):
                         await self.coordinator.api.set_regulation_mode(option)
                         return
 
