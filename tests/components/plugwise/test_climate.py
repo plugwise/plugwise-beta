@@ -289,7 +289,6 @@ async def test_anna_climate_entity_climate_changes(
         {"entity_id": "climate.anna", "target_temp_high": 25, "target_temp_low": 20},
         blocking=True,
     )
-
     assert mock_smile_anna.set_temperature.call_count == 1
     mock_smile_anna.set_temperature.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5",
@@ -302,7 +301,6 @@ async def test_anna_climate_entity_climate_changes(
         {"entity_id": "climate.anna", "preset_mode": "away"},
         blocking=True,
     )
-
     assert mock_smile_anna.set_preset.call_count == 1
     mock_smile_anna.set_preset.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5", "away"
@@ -320,14 +318,11 @@ async def test_anna_climate_entity_climate_changes(
         "c784ee9fdab44e1395b8dee7d7a497d5", "standaard", "off"
     )
 
+    # hvac_mode is auto, setting to auto should do nothing.
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
         {"entity_id": "climate.anna", "hvac_mode": "auto"},
         blocking=True,
     )
-
-    assert mock_smile_anna.set_schedule_state.call_count == 2
-    mock_smile_anna.set_schedule_state.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", "standaard", "on"
-    )
+    assert mock_smile_anna.set_schedule_state.call_count == 1
