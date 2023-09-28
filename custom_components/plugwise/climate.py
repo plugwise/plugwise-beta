@@ -238,10 +238,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
                 return
 
             if hvac_mode != HVACMode.OFF and self.hvac_mode == HVACMode.OFF:
-                if self.extra_state_attributes:
-                    if option := self.extra_state_attributes.get("previous_mode"):
-                        await self.coordinator.api.set_regulation_mode(option)
-                        return
+                await self.coordinator.api.set_regulation_mode(self._previous_mode)
+                return
 
         # pw-beta: feature request - mimic HomeKit behavior
         else:
