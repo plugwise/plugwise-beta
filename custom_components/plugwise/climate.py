@@ -254,7 +254,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             return
 
         prev_state = await self.async_get_last_state()
-        if prev_state is not None and prev_state.attributes["hvac_action"] != HVACAction.OFF:
+        if prev_state is not None and prev_state.attributes["hvac_action"] != HVACAction.IDLE:
             self._previous_mode = prev_state.attributes["hvac_action"] 
             LOGGER.debug("previous_mode restored to %s", self._previous_mode)
         else:
