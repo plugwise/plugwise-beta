@@ -6,9 +6,10 @@ from typing import Any, Concatenate, ParamSpec, TypeVar
 
 from plugwise.exceptions import PlugwiseException
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
-import homeassistant.helpers.entity_registry as er
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 
 from .const import DOMAIN, LOGGER, UNIQUE_IDS
 from .entity import PlugwiseEntity
@@ -43,9 +44,14 @@ def plugwise_command(
 
 
 @callback
-def _async_cleanup_registry_entries(hass: HomeAssistant, entry_id: str) -> None:
+def _async_cleanup_registry_entries(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    entry_id: str
+) -> None:
     """Remove extra entities that are no longer part of the integration."""
     entity_registry = er.async_get(hass)
+    dev_registry = dr.async_get(hass)
     current_unique_ids = hass.data[DOMAIN][entry_id][UNIQUE_IDS]
 
     existing_entries = er.async_entries_for_config_entry(entity_registry, entry_id)
@@ -64,6 +70,13 @@ def _async_cleanup_registry_entries(hass: HomeAssistant, entry_id: str) -> None:
     for entity in extra_entities:
         if entity_registry.async_is_registered(entities[entity]):
             entity_registry.async_remove(entities[entity])
+            device = dev_registry.async_get_device(
+                identifiers={(DOMAIN, entities[entity].device_id)}
+            )
+            if device:
+                dev_registry.async_update_device(
+                    device.id, remove_config_entry_id=entry.entry_id
+                )
 
     LOGGER.debug(
         ("Clean-up of Plugwise entities: %s entities removed for config entry %s"),
