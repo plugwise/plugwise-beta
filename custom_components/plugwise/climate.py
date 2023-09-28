@@ -1,7 +1,6 @@
 """Plugwise Climate component for Home Assistant."""
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import Any
 
 from homeassistant.components.climate import (
