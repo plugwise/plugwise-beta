@@ -244,7 +244,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         # pw-beta: feature request - mimic HomeKit behavior
         else:
-            self._homekit_mode = hvac_mode
+            self._homekit_mode = hvac_mode  # pragma: no cover
             if self._homekit_mode == HVACMode.OFF:  # pragma: no cover
                 await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
             if (
