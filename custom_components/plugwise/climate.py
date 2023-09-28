@@ -176,21 +176,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         """Return the current preset mode."""
         return self.device["active_preset"]
 
-    @property
-    def extra_state_attributes(self) -> Mapping[str, str | None]:
-        """Return the previous hvac_mode before being switched to hvac_mode off."""
-        gateway: str = self.coordinator.data.gateway["gateway_id"]
-        gateway_data = self.coordinator.data.devices[gateway]
-        if self.hvac_mode != HVACMode.OFF:
-            self._previous_mode = "heating"
-            if (
-                self.hvac_mode == HVACMode.HEAT_COOL
-                and gateway_data["select_regulation_mode"] == "cooling"
-            ):
-                self._previous_mode = "cooling"
-
-        return {"previous_mode": self._previous_mode}
-
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
@@ -264,7 +249,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             return
 
         prev_state = await self.async_get_last_state()
-        if prev_state is not None and prev_state.extra_state_attributes:
-            self._previous_mode = prev_state.extra_state_attributes.get("previous_mode")
+        if prev_state is not None and prev_state.state != HVACMode.OFF:
+            self._previous_mode = prev_state.state
         else:
             self._previous_mode = str(self.hvac_mode)
