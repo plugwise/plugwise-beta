@@ -65,8 +65,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _attr_name = None
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_translation_key = DOMAIN
+    
+    _homekit_enabled = homekit_enabled  # pw-beta homekit emulation
+    _homekit_mode: str | None = None  # pw-beta homekit emulation
     _present_mode: str = "heating"
     _previous_mode: str = "cooling"
+    coordinator: PlugwiseDataUpdateCoordinator
 
     def __init__(
         self,
@@ -85,13 +89,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         self._attr_unique_id = f"{device_id}-climate"
         coordinator.current_unique_ids.add((CLIMATE_DOMAIN, self._attr_unique_id))
 
-        self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
-        self._homekit_mode: str | None = None  # pw-beta homekit emulation
-        self.coordinator = coordinator
-
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
-        if self.coordinator.data.gateway["cooling_present"]:
+        if coordinator.data.gateway["cooling_present"]:
             self._attr_supported_features = (
                 ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
             )
@@ -101,7 +101,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         # Determine hvac modes
         self._attr_hvac_modes = [HVACMode.HEAT]
-        if self.coordinator.data.gateway["cooling_present"]:
+        if coordinator.data.gateway["cooling_present"]:
             self._attr_hvac_modes.remove(HVACMode.HEAT)
             self._attr_hvac_modes.append(HVACMode.HEAT_COOL)
         if (
