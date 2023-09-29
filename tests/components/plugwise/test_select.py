@@ -46,7 +46,7 @@ async def test_adam_select_regulation_mode(
     hass: HomeAssistant, mock_smile_adam_3: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test a regulation_mode select.
-    
+
     Also tests a change in climate _previous mode.
     """
     state = hass.states.get("select.adam_regulation_mode")
