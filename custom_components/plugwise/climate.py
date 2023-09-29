@@ -28,7 +28,6 @@ from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     COORDINATOR,  # pw-beta
     DOMAIN,
-    LOGGER,
     MASTER_THERMOSTATS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
@@ -109,7 +108,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             self._attr_hvac_modes.insert(0, HVACMode.OFF)
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
-
 
     gateway: str = self.coordinator.data.gateway["gateway_id"]
     gateway_data = self.coordinator.data.devices[gateway]
