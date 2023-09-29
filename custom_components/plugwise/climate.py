@@ -77,7 +77,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         super().__init__(coordinator, device_id)
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
-        self._previous_mode: str | None = None
+        self._present_mode: str = "heating"
+        self._previous_mode: str = "cooling"
         self._attr_max_temp = self.device["thermostat"]["upper_bound"]
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         # Ensure we don't drop below 0.1
@@ -108,6 +109,18 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             self._attr_hvac_modes.insert(0, HVACMode.OFF)
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
+
+
+    gateway: str = self.coordinator.data.gateway["gateway_id"]
+    gateway_data = self.coordinator.data.devices[gateway]
+    if (
+        "regulation_modes" in gateway_data
+        and "cooling" in gateway_data["regulation_modes"]
+    ):
+        mode := gateway_data["select_regulation_mode"]
+        if mode != self._present_mode:
+            self._previous_mode == self._present_mode
+            self._present_mode = mode
 
     @property
     def current_temperature(self) -> float:
@@ -222,12 +235,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
                 return
 
             if hvac_mode != HVACMode.OFF and self.hvac_mode == HVACMode.OFF:
-                if self._previous_mode:
-                    mode = self._previous_mode
-                    if self._previous_mode != "off":
-                        mode = f"{self._previous_mode}ing"
-                    await self.coordinator.api.set_regulation_mode(mode)
-                    return
+                await self.coordinator.api.set_regulation_mode(self._previous_mode)
+                return
 
         # pw-beta: feature request - mimic HomeKit behavior
         else:
@@ -244,22 +253,3 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode."""
         await self.coordinator.api.set_preset(self.device["location"], preset_mode)
-
-    async def async_added_to_hass(self) -> None:
-        """Run when entity is about to be added."""
-        await super().async_added_to_hass()
-
-        LOGGER.debug("After startup previous_mode is %s", self._previous_mode)
-        if self._previous_mode is not None:
-            return
-
-        prev_state = await self.async_get_last_state()
-        if (
-            prev_state is not None
-            and prev_state.attributes["hvac_action"] != HVACAction.IDLE
-        ):
-            self._previous_mode = prev_state.attributes["hvac_action"]
-            LOGGER.debug("previous_mode restored to %s", self._previous_mode)
-        else:
-            self._previous_mode = str(self.hvac_mode)
-            LOGGER.debug("Can't restore, previous_mode set to %s", self._previous_mode)
