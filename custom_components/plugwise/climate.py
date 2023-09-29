@@ -110,13 +110,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
-
-    def _previous_action_mode(
-        self,
-        coordinator: PlugwiseDataUpdateCoordinator
-    ) -> None:
+    def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
         """Return the previous action-mode.
-        
+
         Helper for set_hvac_mode().
         """
         gateway: str = coordinator.data.gateway["gateway_id"]
@@ -126,10 +122,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             and "cooling" in gateway_data["regulation_modes"]
         ):
             mode = gateway_data["select_regulation_mode"]
-            if (
-                mode in ("cooling", "heating")
-                and mode != self._present_mode
-            ):
+            if mode in ("cooling", "heating") and mode != self._present_mode:
                 self._previous_mode == self._present_mode
                 self._present_mode = mode
 
