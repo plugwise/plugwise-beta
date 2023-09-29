@@ -7,6 +7,7 @@ from typing import Any
 from plugwise.constants import SwitchType
 
 from homeassistant.components.switch import (
+    DOMAIN as SWITCH_DOMAIN,
     SwitchDeviceClass,
     SwitchEntity,
     SwitchEntityDescription,
@@ -70,6 +71,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up the Smile switches from a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+
     entities: list[PlugwiseSwitchEntity] = []
     for device_id, device in coordinator.data.devices.items():
         if not (switches := device.get("switches")):
@@ -100,6 +102,7 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
+        coordinator.current_unique_ids.add((SWITCH_DOMAIN, self._attr_unique_id))
 
     @property
     def is_on(self) -> bool:
