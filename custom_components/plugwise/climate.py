@@ -64,7 +64,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _attr_name = None
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_translation_key = DOMAIN
-    
+
     _homekit_mode: str | None = None  # pw-beta homekit emulation
     _present_mode: str = "heating"
     _previous_mode: str = "cooling"
