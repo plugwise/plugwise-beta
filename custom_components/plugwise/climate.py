@@ -22,7 +22,6 @@ from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.restore_state import RestoreEntity
 
 from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
@@ -58,7 +57,7 @@ async def async_setup_entry(
     )
 
 
-class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
+class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     """Representation of a Plugwise thermostat."""
 
     _attr_has_entity_name = True
