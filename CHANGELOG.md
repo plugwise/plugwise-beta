@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Clean entity_registry when a Plugwise entity is removed / becomes orphaned
+
 ## v0.42.0
 
 - Bugfixes and adding daily full-updating via [plugwise v0.33.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.33.0)
