@@ -66,12 +66,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_translation_key = DOMAIN
     
-    _homekit_enabled = homekit_enabled  # pw-beta homekit emulation
     _homekit_mode: str | None = None  # pw-beta homekit emulation
     _present_mode: str = "heating"
     _previous_mode: str = "cooling"
-    coordinator: PlugwiseDataUpdateCoordinator
-
+    
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
@@ -129,6 +127,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
     gateway: str = self.coordinator.data.gateway["gateway_id"]
     gateway_data = self.coordinator.data.devices[gateway]
+    self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
     if (
         "regulation_modes" in gateway_data
         and "cooling" in gateway_data["regulation_modes"]
