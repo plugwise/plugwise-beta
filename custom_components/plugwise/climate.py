@@ -111,7 +111,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
 
-    def _previous_action_mode(self, coordinator)
+    def _previous_action_mode(
+        self,
+        coordinator: PlugwiseDataUpdateCoordinator
+    ) -> None:
         """Return the previous action-mode.
         
         Helper for set_hvac_mode().
