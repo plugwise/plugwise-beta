@@ -174,6 +174,7 @@ async def test_entity_registry_cleanup(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     mock_smile_anna: MagicMock,
+    entitydata: dict,
 ) -> None:
     """Test a clean-up of the entity_registry."""
     mock_config_entry.add_to_hass(hass)
