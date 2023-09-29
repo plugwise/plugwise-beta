@@ -188,4 +188,4 @@ async def test_entity_registry_cleanup(
     await hass.async_block_till_done()
     LOGGER.debug("HOI 1 entities: %s", entity_registry.entities)
 
-    assert len(entity_registry.entities) == 25
+    assert len(entity_registry.entities) == 24
