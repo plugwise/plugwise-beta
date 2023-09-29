@@ -88,7 +88,7 @@
       "mac_address": "012345670001",
       "model": "Gateway",
       "name": "Adam",
-      "regulation_mode": "cooling",
+      "select_regulation_mode": "cooling",
       "regulation_modes": [
         "heating",
         "off",
@@ -96,7 +96,6 @@
         "bleeding_hot",
         "cooling"
       ],
-      "select_regulation_mode": "heating",
       "sensors": {
         "outdoor_temperature": 29.65
       },
