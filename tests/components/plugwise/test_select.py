@@ -58,7 +58,7 @@ async def test_adam_select_regulation_mode(
         },
         blocking=True,
     )
-    assert mock_smile_adam3.set_regulation_mode.call_count == 1
-    mock_smile_adam3.set_regulation_mode.assert_called_with(
+    assert mock_smile_adam_3.set_regulation_mode.call_count == 1
+    mock_smile_adam_3.set_regulation_mode.assert_called_with(
         "bc93488efab249e5bc54fd7e175a6f91", "off"
     )
