@@ -86,6 +86,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         )
         self._attr_unique_id = f"{device_id}-climate"
         coordinator.current_unique_ids.add((CLIMATE_DOMAIN, self._attr_unique_id))
+        self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
 
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
@@ -170,6 +171,17 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     @property
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, heat, heat_cool, or off mode."""
+        gateway: str = self.coordinator.data.gateway["gateway_id"]
+        gateway_data = self.coordinator.data.devices[gateway]
+        if (
+            "regulation_modes" in gateway_data
+            and "cooling" in gateway_data["regulation_modes"]
+        ):
+            mode = gateway_data["select_regulation_mode"]
+            if mode != self._present_mode:
+                self._previous_mode == self._present_mode
+                self._present_mode = mode
+
         if (
             mode := self.device["mode"]
         ) is None or mode not in self.hvac_modes:  # pw-beta add to Core
