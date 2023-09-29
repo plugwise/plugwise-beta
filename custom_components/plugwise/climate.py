@@ -74,10 +74,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
-        self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
-        self._homekit_mode: str | None = None  # pw-beta homekit emulation
-        self._present_mode: str = "heating"
-        self._previous_mode: str = "cooling"
         self._attr_max_temp = self.device["thermostat"]["upper_bound"]
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         # Ensure we don't drop below 0.1
@@ -86,6 +82,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         )
         self._attr_unique_id = f"{device_id}-climate"
         coordinator.current_unique_ids.add((CLIMATE_DOMAIN, self._attr_unique_id))
+
+        self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
+        self._homekit_mode: str | None = None  # pw-beta homekit emulation
+        self._previous_mode: str = "cooling"
+        _present_mode: str = "heating"
 
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
@@ -132,9 +133,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         and "cooling" in gateway_data["regulation_modes"]
     ):
         mode = gateway_data["select_regulation_mode"]
-        if mode != self._present_mode:
-            self._previous_mode == self._present_mode
-            self._present_mode = mode
+        if mode != _present_mode:
+            self._previous_mode == _present_mode
+            _present_mode = mode
 
     @property
     def current_temperature(self) -> float:
