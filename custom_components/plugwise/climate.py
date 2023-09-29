@@ -68,7 +68,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _present_mode: str = "heating"
     _previous_mode: str = "cooling"
 
-
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
