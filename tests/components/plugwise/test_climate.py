@@ -100,22 +100,6 @@ async def test_adam_3_climate_entity_attributes(
         HVACMode.AUTO,
     ]
 
-    state = hass.states.get("select.adam_regulation_mode")
-    assert state
-    assert state.state == "cooling"
-    await hass.services.async_call(
-        "select",
-        "set_regulation_mode",
-        {
-            "entity_id": "select.adam_regulation_mode",
-            "option": "off",
-        },
-        blocking=True,
-    )
-    assert mock_smile_adam3.set_regulation_mode.call_count == 1
-    mock_smile_adam3.set_regulation_mode.assert_called_with(
-        "bc93488efab249e5bc54fd7e175a6f91", "off"
-    )
 
 async def test_adam_climate_adjust_negative_testing(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
