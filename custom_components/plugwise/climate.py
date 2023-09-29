@@ -66,12 +66,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_translation_key = DOMAIN
     
-    _homekit_enabled = homekit_enabled  # pw-beta homekit emulation
     _homekit_mode: str | None = None  # pw-beta homekit emulation
     _present_mode: str = "heating"
     _previous_mode: str = "cooling"
-    coordinator: PlugwiseDataUpdateCoordinator
-
+    
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
@@ -111,6 +109,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
+    self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
     gateway: str = coordinator.data.gateway["gateway_id"]
     gateway_data = coordinator.data.devices[gateway]
     if (
