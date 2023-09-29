@@ -224,7 +224,7 @@ async def test_adam_climate_off_mode_change(
         },
         blocking=True,
     )
-   assert mock_smile_adam_4.set_schedule_state.call_count == 1
+    assert mock_smile_adam_4.set_schedule_state.call_count == 1
     assert mock_smile_adam_4.set_regulation_mode.call_count == 2
     mock_smile_adam_4.set_regulation_mode.assert_called_with("off")
 
