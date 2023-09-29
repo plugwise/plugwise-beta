@@ -115,7 +115,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         "regulation_modes" in gateway_data
         and "cooling" in gateway_data["regulation_modes"]
     ):
-        mode := gateway_data["select_regulation_mode"]
+        mode = gateway_data["select_regulation_mode"]
         if mode != self._present_mode:
             self._previous_mode == self._present_mode
             self._present_mode = mode
