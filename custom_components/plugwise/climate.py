@@ -68,7 +68,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _homekit_mode: str | None = None  # pw-beta homekit emulation
     _present_mode: str = "heating"
     _previous_mode: str = "cooling"
-    
+
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
