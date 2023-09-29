@@ -179,7 +179,8 @@ async def test_entity_registry_cleanup(
 
     entity_registry = async_get(hass)
     entity_registry.async_get_or_create(
-        **entitydata, config_entry=mock_config_entry,
+        **entitydata,
+        config_entry=mock_config_entry,
     )
     assert len(entity_registry.entities) == 1
 

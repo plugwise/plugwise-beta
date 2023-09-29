@@ -9,7 +9,7 @@ from plugwise.exceptions import PlugwiseException
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers import entity_registry as er
 
 from .const import DOMAIN, LOGGER, UNIQUE_IDS
 from .entity import PlugwiseEntity
@@ -45,9 +45,7 @@ def plugwise_command(
 
 @callback
 def _async_cleanup_registry_entries(
-    hass: HomeAssistant,
-    entry: ConfigEntry,
-    entry_id: str
+    hass: HomeAssistant, entry: ConfigEntry, entry_id: str
 ) -> None:
     """Remove extra entities that are no longer part of the integration."""
     entity_registry = er.async_get(hass)
