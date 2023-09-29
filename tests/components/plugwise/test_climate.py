@@ -207,13 +207,13 @@ async def test_adam_climate_off_mode_change(
         "set_hvac_mode",
         {
             "entity_id": "climate.slaapkamer",
-            "hvac_mode": "heat_cool",
+            "hvac_mode": "heat",
         },
         blocking=True,
     )
     assert mock_smile_adam_4.set_schedule_state.call_count == 1
     assert mock_smile_adam_4.set_regulation_mode.call_count == 1
-    mock_smile_adam_4.set_regulation_mode.assert_called_with("cooling")
+    mock_smile_adam_4.set_regulation_mode.assert_called_with("heating")
 
     await hass.services.async_call(
         "climate",
