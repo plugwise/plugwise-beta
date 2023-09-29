@@ -54,11 +54,10 @@ async def test_adam_select_regulation_mode(
         SERVICE_SELECT_OPTION,
         {
             "entity_id": "select.adam_regulation_mode",
-            "option": "off",
+            "option": "heating",
         },
         blocking=True,
     )
     assert mock_smile_adam_3.set_regulation_mode.call_count == 1
-    mock_smile_adam_3.set_regulation_mode.assert_called_with(
-        "bc93488efab249e5bc54fd7e175a6f91", "off"
+    mock_smile_adam_3.set_regulation_mode.assert_called_with("heating")
     )
