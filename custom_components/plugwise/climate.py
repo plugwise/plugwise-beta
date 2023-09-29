@@ -110,6 +110,26 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
+
+    def _previous_action_mode(self, coordinator)
+        """Return the previous action-mode.
+        
+        Helper for set_hvac_mode().
+        """
+        gateway: str = coordinator.data.gateway["gateway_id"]
+        gateway_data = coordinator.data.devices[gateway]
+        if (
+            "regulation_modes" in gateway_data
+            and "cooling" in gateway_data["regulation_modes"]
+        ):
+            mode = gateway_data["select_regulation_mode"]
+            if (
+                mode in ("cooling", "heating")
+                and mode != self._present_mode
+            ):
+                self._previous_mode == self._present_mode
+                self._present_mode = mode
+
     @property
     def current_temperature(self) -> float:
         """Return the current temperature."""
@@ -143,17 +163,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     @property
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, heat, heat_cool, or off mode."""
-        gateway: str = self.coordinator.data.gateway["gateway_id"]
-        gateway_data = self.coordinator.data.devices[gateway]
-        if (
-            "regulation_modes" in gateway_data
-            and "cooling" in gateway_data["regulation_modes"]
-        ):
-            mode = gateway_data["select_regulation_mode"]
-            if mode != self._present_mode:
-                self._previous_mode == self._present_mode
-                self._present_mode = mode
-
         if (
             mode := self.device["mode"]
         ) is None or mode not in self.hvac_modes:  # pw-beta add to Core
@@ -167,6 +176,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     @property
     def hvac_action(self) -> HVACAction:  # pw-beta add to Core
         """Return the current running hvac operation if supported."""
+        # Keep track of the previous action-mode
+        self._previous_action_mode(self.coordinator)
         # When control_state is present, prefer this data
         if (control_state := self.device.get("control_state")) == "cooling":
             return HVACAction.COOLING
