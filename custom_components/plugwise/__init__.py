@@ -19,7 +19,6 @@ from .const import (
     PLATFORMS,
     SERVICE_DELETE,
     UNDO_UPDATE_LISTENER,
-    UNIQUE_IDS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .util import _async_cleanup_registry_entries
@@ -45,12 +44,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     undo_listener = entry.add_update_listener(_update_listener)  # pw-beta
 
-    current_unique_ids: set[tuple[str, str]] = {("dummy", "dummy_id")}
-
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         COORDINATOR: coordinator,  # pw-beta
         UNDO_UPDATE_LISTENER: undo_listener,  # pw-beta
-        UNIQUE_IDS: current_unique_ids,  # pw-beta
     }
 
     device_registry = dr.async_get(hass)

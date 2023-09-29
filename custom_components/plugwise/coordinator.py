@@ -66,6 +66,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         )
         self._entry = entry
         self._unavailable_logged = False
+        self.current_unique_ids: set[tuple[str, str]] = {("dummy", "dummy_id")}
         self.update_interval = update_interval
 
     async def _connect(self) -> None:

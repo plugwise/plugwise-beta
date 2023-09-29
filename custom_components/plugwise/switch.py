@@ -21,7 +21,6 @@ from .const import (
     COORDINATOR,  # pw-beta
     DOMAIN,
     LOGGER,
-    UNIQUE_IDS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -72,9 +71,6 @@ async def async_setup_entry(
 ) -> None:
     """Set up the Smile switches from a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
-    current_unique_ids: set[tuple[str, str]] = hass.data[DOMAIN][config_entry.entry_id][
-        UNIQUE_IDS
-    ]
 
     entities: list[PlugwiseSwitchEntity] = []
     for device_id, device in coordinator.data.devices.items():
@@ -83,11 +79,7 @@ async def async_setup_entry(
         for description in SWITCHES:
             if description.key not in switches:
                 continue
-            entities.append(
-                PlugwiseSwitchEntity(
-                    coordinator, current_unique_ids, device_id, description
-                )
-            )
+            entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
             LOGGER.debug(
                 "Add %s %s switch", device["name"], description.translation_key
             )
@@ -103,7 +95,6 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        current_unique_ids: set[tuple[str, str]],
         device_id: str,
         description: PlugwiseSwitchEntityDescription,
     ) -> None:
@@ -111,7 +102,7 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        current_unique_ids.add((SWITCH_DOMAIN, self._attr_unique_id))
+        coordinator.current_unique_ids.add((SWITCH_DOMAIN, self._attr_unique_id))
 
     @property
     def is_on(self) -> bool:

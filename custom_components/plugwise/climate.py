@@ -28,7 +28,6 @@ from .const import (
     COORDINATOR,  # pw-beta
     DOMAIN,
     MASTER_THERMOSTATS,
-    UNIQUE_IDS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -44,9 +43,6 @@ async def async_setup_entry(
     coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ][COORDINATOR]
-    current_unique_ids: set[tuple[str, str]] = hass.data[DOMAIN][config_entry.entry_id][
-        UNIQUE_IDS
-    ]
 
     homekit_enabled: bool = config_entry.options.get(
         CONF_HOMEKIT_EMULATION, False
@@ -54,7 +50,7 @@ async def async_setup_entry(
 
     async_add_entities(
         PlugwiseClimateEntity(
-            coordinator, current_unique_ids, device_id, homekit_enabled
+            coordinator, device_id, homekit_enabled
         )  # pw-beta homekit emulation
         for device_id, device in coordinator.data.devices.items()
         if device["dev_class"] in MASTER_THERMOSTATS
@@ -72,7 +68,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        current_unique_ids: set[tuple[str, str]],
         device_id: str,
         homekit_enabled: bool,  # pw-beta homekit emulation
     ) -> None:
@@ -81,7 +76,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._homekit_mode: str | None = None  # pw-beta homekit emulation
         self._attr_unique_id = f"{device_id}-climate"
-        current_unique_ids.add((CLIMATE_DOMAIN, self._attr_unique_id))
+        coordinator.current_unique_ids.add((CLIMATE_DOMAIN, self._attr_unique_id))
 
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE

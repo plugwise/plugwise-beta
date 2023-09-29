@@ -23,7 +23,6 @@ from .const import (
     COORDINATOR,  # pw-beta
     DOMAIN,
     LOGGER,
-    UNIQUE_IDS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -89,18 +88,13 @@ async def async_setup_entry(
     coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ][COORDINATOR]
-    current_unique_ids: set[tuple[str, str]] = hass.data[DOMAIN][config_entry.entry_id][
-        UNIQUE_IDS
-    ]
 
     entities: list[PlugwiseNumberEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in NUMBER_TYPES:
             if description.key in device:
                 entities.append(
-                    PlugwiseNumberEntity(
-                        coordinator, current_unique_ids, device_id, description
-                    )
+                    PlugwiseNumberEntity(coordinator, device_id, description)
                 )
                 LOGGER.debug(
                     "Add %s %s number", device["name"], description.translation_key
@@ -117,7 +111,6 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        current_unique_ids: set[tuple[str, str]],
         device_id: str,
         description: PlugwiseNumberEntityDescription,
     ) -> None:
@@ -127,7 +120,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self.device_id = device_id
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        current_unique_ids.add((NUMBER_DOMAIN, self._attr_unique_id))
+        coordinator.current_unique_ids.add((NUMBER_DOMAIN, self._attr_unique_id))
         self._attr_mode = NumberMode.BOX
         self._attr_native_max_value = self.device[description.key]["upper_bound"]
         self._attr_native_min_value = self.device[description.key]["lower_bound"]

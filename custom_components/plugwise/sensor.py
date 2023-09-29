@@ -32,7 +32,6 @@ from .const import (
     COORDINATOR,  # pw-beta
     DOMAIN,
     LOGGER,
-    UNIQUE_IDS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -378,9 +377,6 @@ async def async_setup_entry(
 ) -> None:
     """Set up the Smile sensors from a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
-    current_unique_ids: set[tuple[str, str]] = hass.data[DOMAIN][config_entry.entry_id][
-        UNIQUE_IDS
-    ]
 
     entities: list[PlugwiseSensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
@@ -392,7 +388,6 @@ async def async_setup_entry(
             entities.append(
                 PlugwiseSensorEntity(
                     coordinator,
-                    current_unique_ids,
                     device_id,
                     description,
                 )
@@ -412,7 +407,6 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        current_unique_ids: set[tuple[str, str]],
         device_id: str,
         description: PlugwiseSensorEntityDescription,
     ) -> None:
@@ -420,7 +414,7 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        current_unique_ids.add((SENSOR_DOMAIN, self._attr_unique_id))
+        coordinator.current_unique_ids.add((SENSOR_DOMAIN, self._attr_unique_id))
 
     @property
     def native_value(self) -> int | float:
