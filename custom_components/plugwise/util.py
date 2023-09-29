@@ -70,13 +70,13 @@ def _async_cleanup_registry_entries(
     for entity in extra_entities:
         if entity_registry.async_is_registered(entities[entity]):
             entity_registry.async_remove(entities[entity])
-            device = dev_registry.async_get_device(
-                identifiers={(DOMAIN, entities[entity].device_id)}
-            )
-            if device:
-                dev_registry.async_update_device(
-                    device.id, remove_config_entry_id=entry.entry_id
-                )
+            # device = dev_registry.async_get_device(
+            #     identifiers={(DOMAIN, entities[entity].device_id)}
+            # )
+            # if device:
+            #     dev_registry.async_update_device(
+            #        device.id, remove_config_entry_id=entry.entry_id
+            #    )
 
     LOGGER.debug(
         ("Clean-up of Plugwise entities: %s entities removed for config entry %s"),
