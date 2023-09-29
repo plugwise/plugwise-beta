@@ -108,7 +108,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
-
     @property
     def current_temperature(self) -> float:
         """Return the current temperature."""
