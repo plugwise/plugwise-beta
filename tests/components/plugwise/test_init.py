@@ -181,11 +181,9 @@ async def test_entity_registry_cleanup(
     entity_registry.async_get_or_create(
         **entitydata, config_entry=mock_config_entry,
     )
-    LOGGER.debug("HOI 0 entities: %s", entity_registry.entities)
     assert len(entity_registry.entities) == 1
 
     assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
-    LOGGER.debug("HOI 1 entities: %s", entity_registry.entities)
 
     assert len(entity_registry.entities) == 24
