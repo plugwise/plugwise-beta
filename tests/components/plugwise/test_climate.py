@@ -215,6 +215,9 @@ async def test_adam_climate_off_mode_change(
     assert mock_smile_adam_4.set_regulation_mode.call_count == 1
     mock_smile_adam_4.set_regulation_mode.assert_called_with("heating")
 
+    state = hass.states.get("climate.kinderkamer")
+    assert state
+    assert state.state == HVACMode.HEAT
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
@@ -228,6 +231,9 @@ async def test_adam_climate_off_mode_change(
     assert mock_smile_adam_4.set_regulation_mode.call_count == 2
     mock_smile_adam_4.set_regulation_mode.assert_called_with("off")
 
+    state = hass.states.get("climate.logeerkamer")
+    assert state
+    assert state.state == HVACMode.HEAT
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
@@ -237,7 +243,7 @@ async def test_adam_climate_off_mode_change(
         },
         blocking=True,
     )
-    assert mock_smile_adam_4.set_schedule_state.call_count == 2
+    assert mock_smile_adam_4.set_schedule_state.call_count == 1
     assert mock_smile_adam_4.set_regulation_mode.call_count == 2
 
 
