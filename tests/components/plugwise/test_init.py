@@ -159,15 +159,13 @@ async def test_migrate_unique_id_relay(
 @pytest.mark.parametrize(
     ("entitydata"),
     [
-        (
-            {
-                "domain": SENSOR_DOMAIN,
-                "platform": DOMAIN,
-                "unique_id": f"{HEATER_ID}-indoor_temperature",
-                "suggested_object_id": "opentherm_indoor_temperature",
-                "disabled_by": None,
-            },
-        ),
+        {
+            "domain": SENSOR_DOMAIN,
+            "platform": DOMAIN,
+            "unique_id": f"{HEATER_ID}-indoor_temperature",
+            "suggested_object_id": "opentherm_indoor_temperature",
+            "disabled_by": None,
+        },
     ],
 )
 async def test_entity_registry_cleanup(
