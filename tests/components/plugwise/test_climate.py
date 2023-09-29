@@ -100,14 +100,14 @@ async def test_adam_3_climate_entity_attributes(
         HVACMode.AUTO,
     ]
 
-    state = hass.states.get("select.gateway_regulation_mode")
+    state = hass.states.get("select.adam_regulation_mode")
     assert state
     assert state.state == "cooling"
     await hass.services.async_call(
         "select",
         "set_regulation_mode",
         {
-            "entity_id": "select.gateway_regulation_mode",
+            "entity_id": "select.adam_regulation_mode",
             "option": "off",
         },
         blocking=True,
