@@ -219,11 +219,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         if hvac_mode == self.hvac_mode:
             return
 
-        await self.coordinator.api.set_schedule_state(
-            self.device["location"],
-            self.device["last_used"],
-            "on" if hvac_mode == HVACMode.AUTO else "off",
-        )
+        if hvac_mode != HVACMode.OFF:
+            await self.coordinator.api.set_schedule_state(
+                self.device["location"],
+                self.device["last_used"],
+                "on" if hvac_mode == HVACMode.AUTO else "off",
+            )
 
         if not self._homekit_enabled:
             if hvac_mode == HVACMode.OFF:
