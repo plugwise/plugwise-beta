@@ -57,7 +57,7 @@
       "dev_class": "thermostat",
       "last_used": "Weekschema",
       "location": "f2bf9048bef64cc5b6d5110154e33c81",
-      "mode": "heat_cool",
+      "mode": "cool",
       "model": "ThermoTouch",
       "name": "Anna",
       "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
@@ -69,7 +69,6 @@
       },
       "thermostat": {
         "lower_bound": 1.0,
-        "mode": "cool",
         "resolution": 0.01,
         "setpoint": 23.5,
         "upper_bound": 35.0
