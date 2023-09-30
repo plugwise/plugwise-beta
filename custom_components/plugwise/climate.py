@@ -76,6 +76,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
+        gateway = coordinator.data.gateway
         self._attr_max_temp = self.device["thermostat"]["upper_bound"]
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         # Ensure we don't drop below 0.1
@@ -88,7 +89,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
-        if coordinator.data.gateway["cooling_present"]:
+        if gateway["cooling_present"] and gateway["smile_name"] != "Adam":
             self._attr_supported_features = (
                 ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
             )
@@ -98,8 +99,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine hvac modes
         self._attr_hvac_modes = [HVACMode.HEAT]
-        if coordinator.data.gateway["cooling_present"]:
-            if coordinator.data.gateway["smile_name"] == "Adam":
+        if gateway["cooling_present"]:
+            if gateway["smile_name"] == "Adam":
                 self._attr_hvac_modes.append(HVACMode.COOL)
             else:
                 self._attr_hvac_modes.remove(HVACMode.HEAT)
