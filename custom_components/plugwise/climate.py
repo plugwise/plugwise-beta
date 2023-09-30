@@ -109,8 +109,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
     def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
-        """Return the previous action-mode when the regulation-mode
-        is different from heating or cooling.
+        """Return the previous action-mode when the regulation-mode is not heating or cooling.
 
         Helper for set_hvac_mode().
         """
