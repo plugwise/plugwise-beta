@@ -91,7 +91,6 @@
       "mac_address": "012345670001",
       "model": "Gateway",
       "name": "Adam",
-      "regulation_mode": "heating",
       "regulation_modes": ["heating", "off", "bleeding_cold", "bleeding_hot"],
       "select_regulation_mode": "heating",
       "sensors": {
