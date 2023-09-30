@@ -66,7 +66,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     _attr_translation_key = DOMAIN
 
     _homekit_mode: str | None = None  # pw-beta homekit emulation
-    _present_mode: str = "heating"
     _previous_mode: str = "heating"
 
     def __init__(
@@ -110,20 +109,21 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_hvac_modes.append(HVACMode.AUTO)
 
     def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
-        """Return the previous action-mode.
+        """Return the previous action-mode when the regulation-mode
+        is different from heating or cooling.
 
         Helper for set_hvac_mode().
         """
         gateway: str = coordinator.data.gateway["gateway_id"]
         gateway_data = coordinator.data.devices[gateway]
+        # When no cooling available, _previous_mode is always heating
         if (
             "regulation_modes" in gateway_data
             and "cooling" in gateway_data["regulation_modes"]
         ):
             mode = gateway_data["select_regulation_mode"]
-            if mode in ("cooling", "heating") and mode != self._present_mode:
-                self._previous_mode == self._present_mode
-                self._present_mode = mode
+            if mode in ("cooling", "heating"):
+                self._previous_mode == mode
 
     @property
     def current_temperature(self) -> float:
