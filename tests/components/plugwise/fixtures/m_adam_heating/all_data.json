@@ -74,6 +74,7 @@
       },
       "thermostat": {
         "lower_bound": 1.0,
+        "mode": "heat",
         "resolution": 0.01,
         "setpoint": 20.0,
         "upper_bound": 35.0
