@@ -99,8 +99,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Determine hvac modes
         self._attr_hvac_modes = [HVACMode.HEAT]
         if coordinator.data.gateway["cooling_present"]:
-            self._attr_hvac_modes.remove(HVACMode.HEAT)
-            self._attr_hvac_modes.append(HVACMode.HEAT_COOL)
+            if coordinator.data.gateway["smile_name"] == "Adam":
+                self._attr_hvac_modes.append(HVACMode.COOL)
+            else:
+                self._attr_hvac_modes.remove(HVACMode.HEAT)
+                self._attr_hvac_modes.append(HVACMode.HEAT_COOL)
         if (
             self._homekit_enabled or "control_state" in self.device
         ):  # pw-beta homekit emulation
