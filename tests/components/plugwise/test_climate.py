@@ -92,11 +92,12 @@ async def test_adam_3_climate_entity_attributes(
     """Test creation of adam climate device environment."""
     state = hass.states.get("climate.anna")
     assert state
-    assert state.state == HVACMode.HEAT_COOL
+    assert state.state == HVACMode.COOL
     assert state.attributes["hvac_action"] == "cooling"
     assert state.attributes["hvac_modes"] == [
         HVACMode.OFF,
-        HVACMode.HEAT_COOL,
+        HVACMode.HEAT
+        HVACMode.COOL,
         HVACMode.AUTO,
     ]
 
