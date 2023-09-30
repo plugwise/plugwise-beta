@@ -76,7 +76,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
-        gateway = coordinator.data.gateway
+
+        cdr_gateway = coordinator.data.gateway
+        gateway_id: str = coordinator.data.gateway["gateway_id"]
+        gateway_data = coordinator.data.devices[gateway_id]
+
         self._attr_max_temp = self.device["thermostat"]["upper_bound"]
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         # Ensure we don't drop below 0.1
@@ -89,7 +93,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
-        if gateway["cooling_present"] and gateway["smile_name"] != "Adam":
+        if cdr_gateway["cooling_present"] and cdr_gateway["smile_name"] != "Adam":
             self._attr_supported_features = (
                 ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
             )
@@ -99,15 +103,16 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine hvac modes
         self._attr_hvac_modes = [HVACMode.HEAT]
-        if gateway["cooling_present"]:
-            if gateway["smile_name"] == "Adam":
+        if cdr_gateway["cooling_present"]:
+            self._attr_hvac_modes.remove(HVACMode.HEAT)
+            if (
+                "regulation_modes" in gateway_data
+                and gateway_data["self_regulation_mode"] == "cooling":
+            ):
                 self._attr_hvac_modes.append(HVACMode.COOL)
             else:
-                self._attr_hvac_modes.remove(HVACMode.HEAT)
                 self._attr_hvac_modes.append(HVACMode.HEAT_COOL)
-        if (
-            self._homekit_enabled or "control_state" in self.device
-        ):  # pw-beta homekit emulation
+        if self._homekit_enabled or "regulation_modes" in gateway_data:  # pw-beta homekit emulation
             self._attr_hvac_modes.insert(0, HVACMode.OFF)
         if self.device["available_schedules"] != ["None"]:
             self._attr_hvac_modes.append(HVACMode.AUTO)
