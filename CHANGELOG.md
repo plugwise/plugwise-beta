@@ -2,8 +2,9 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.42.1
 
+- Implement HA Core 2023.10.0 zeroconf-change
 - Clean entity_registry when a Plugwise entity is removed / becomes orphaned
 
 ## v0.42.0
