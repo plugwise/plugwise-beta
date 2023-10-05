@@ -42,8 +42,8 @@ TEST_USERNAME = "smile"
 TEST_USERNAME2 = "stretch"
 
 TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
-    host=TEST_HOST,
-    addresses=[TEST_HOST],
+    ip_address=TEST_HOST,
+    ip_addresses=[TEST_HOST],
     # The added `-2` is to simulate mDNS collision
     hostname=f"{TEST_HOSTNAME}-2.local.",
     name="mock_name",
@@ -56,8 +56,8 @@ TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
     type="mock_type",
 )
 TEST_DISCOVERY2 = zeroconf.ZeroconfServiceInfo(
-    host=TEST_HOST,
-    addresses=[TEST_HOST],
+    ip_address=TEST_HOST,
+    ip_addresses=[TEST_HOST],
     hostname=f"{TEST_HOSTNAME2}.local.",
     name="mock_name",
     port=DEFAULT_PORT,
@@ -70,8 +70,8 @@ TEST_DISCOVERY2 = zeroconf.ZeroconfServiceInfo(
 )
 
 TEST_DISCOVERY_ANNA = ZeroconfServiceInfo(
-    host=TEST_HOST,
-    addresses=[TEST_HOST],
+    ip_address=TEST_HOST,
+    ip_addresses=[TEST_HOST],
     hostname=f"{TEST_HOSTNAME}.local.",
     name="mock_name",
     port=DEFAULT_PORT,
@@ -84,8 +84,8 @@ TEST_DISCOVERY_ANNA = ZeroconfServiceInfo(
 )
 
 TEST_DISCOVERY_ADAM = ZeroconfServiceInfo(
-    host=TEST_HOST,
-    addresses=[TEST_HOST],
+    ip_address=TEST_HOST,
+    ip_addresses=[TEST_HOST],
     hostname=f"{TEST_HOSTNAME2}.local.",
     name="mock_name",
     port=DEFAULT_PORT,

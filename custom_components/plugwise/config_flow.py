@@ -119,7 +119,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 await validate_input(
                     self.hass,
                     {
-                        CONF_HOST: discovery_info.host,
+                        CONF_HOST: discovery_info.ip_address,
                         CONF_PORT: discovery_info.port,
                         CONF_USERNAME: config_entry.data[CONF_USERNAME],
                         CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
@@ -130,7 +130,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             else:
                 self._abort_if_unique_id_configured(
                     {
-                        CONF_HOST: discovery_info.host,
+                        CONF_HOST: discovery_info.ip_address,
                         CONF_PORT: discovery_info.port,
                     }
                 )
@@ -170,13 +170,13 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self.context.update(
             {
                 "title_placeholders": {
-                    CONF_HOST: discovery_info.host,
+                    CONF_HOST: discovery_info.ip_address,
                     CONF_NAME: _name,
                     CONF_PORT: discovery_info.port,
                     CONF_USERNAME: self._username,
                 },
                 "configuration_url": (
-                    f"http://{discovery_info.host}:{discovery_info.port}"
+                    f"http://{discovery_info.ip_address}:{discovery_info.port}"
                 ),
                 "product": _product,
             }
@@ -197,7 +197,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             )
 
         if self.discovery_info:
-            user_input[CONF_HOST] = self.discovery_info.host
+            user_input[CONF_HOST] = self.discovery_info.ip_address
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
         try:
