@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.42.2
+
+- Revert incorrect zeroconf-changes
+
 ## v0.42.1
 
 - Implement HA Core 2023.10.0 zeroconf-change
