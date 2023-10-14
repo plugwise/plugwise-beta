@@ -107,7 +107,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_hvac_modes.remove(HVACMode.HEAT)
             if (
                 "regulation_modes" in gateway_data
-                and gateway_data["self_regulation_mode"] == "cooling":
+                and gateway_data["self_regulation_mode"] == "cooling"
             ):
                 self._attr_hvac_modes.append(HVACMode.COOL)
             else:
