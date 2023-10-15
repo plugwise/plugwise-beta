@@ -93,7 +93,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
-        if cdr_gateway["cooling_present"] and cdr_gateway["smile_name"] != "Adam":
+        if (
+            self.cdr_gateway["cooling_present"]
+            and self.cdr_gateway["smile_name"] != "Adam"
+        ):
             self._attr_supported_features = (
                 ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
             )
@@ -103,7 +106,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Set the default hvac modes
         if (
-            self._homekit_enabled or "regulation_modes" in gateway_data
+            self._homekit_enabled or "regulation_modes" in self.gateway_data
         ):  # pw-beta homekit emulation
             self._attr_hvac_modes.append(HVACMode.OFF)
 
