@@ -174,7 +174,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 hvac_modes.append(HVACMode.COOL)
             else:
                 hvac_modes.append(HVACMode.HEAT_COOL)
-        
+
         if (
             self._homekit_enabled or "regulation_modes" in self.gateway_data
         ):  # pw-beta homekit emulation
