@@ -88,15 +88,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
 
-        # Determine hvac modes and current hvac mode
-        self._attr_hvac_modes = [HVACMode.HEAT]
-        if self.coordinator.data.gateway["cooling_present"]:
-            self._attr_hvac_modes = [HVACMode.HEAT_COOL]
-        if self.device["available_schedules"] != ["None"]:
-            self._attr_hvac_modes.append(HVACMode.AUTO)
-        if self._homekit_enabled:  # pw-beta homekit emulation
-            self._attr_hvac_modes.append(HVACMode.OFF)  # pragma: no cover
-
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         self._attr_max_temp = self.device["thermostat"]["upper_bound"]
         # Fix unpractical resolution provided by Plugwise
@@ -135,6 +126,19 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return self.device["thermostat"]["setpoint_low"]
 
     @property
+    def hvac_action(self) -> HVACAction:  # pw-beta add to Core
+        """Return the current running hvac operation if supported."""
+        heater: str | None = self.coordinator.data.gateway["heater_id"]
+        if heater:
+            heater_data = self.coordinator.data.devices[heater]
+            if heater_data["binary_sensors"]["heating_state"]:
+                return HVACAction.HEATING
+            if heater_data["binary_sensors"].get("cooling_state", False):
+                return HVACAction.COOLING
+
+        return HVACAction.IDLE
+
+    @property
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, heat, heat_cool, or off mode."""
         if (
@@ -148,17 +152,21 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return HVACMode(mode)
 
     @property
-    def hvac_action(self) -> HVACAction:  # pw-beta add to Core
-        """Return the current running hvac operation if supported."""
-        heater: str | None = self.coordinator.data.gateway["heater_id"]
-        if heater:
-            heater_data = self.coordinator.data.devices[heater]
-            if heater_data["binary_sensors"]["heating_state"]:
-                return HVACAction.HEATING
-            if heater_data["binary_sensors"].get("cooling_state", False):
-                return HVACAction.COOLING
+    def hvac_modes(self) -> list[HVACMode]:
+        """Return the list of available HVACModes."""
+        hvac_modes = [HVACMode.HEAT]
+        if self.coordinator.data.gateway["cooling_present"]:
+            hvac_modes = [HVACMode.HEAT_COOL]
 
-        return HVACAction.IDLE
+        if self.device["available_schedules"] != ["None"]:
+            hvac_modes.append(HVACMode.AUTO)
+        elif HVACMode.AUTO in self.hvac_modes:
+            hvac_modes.remove(HVACMode.AUTO)
+
+        if self._homekit_enabled:  # pw-beta homekit emulation
+            self._attr_hvac_modes.insert(0, HVACMode.OFF)  # pragma: no cover
+
+        return hvac_modes
 
     @property
     def preset_mode(self) -> str | None:
