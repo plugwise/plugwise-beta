@@ -77,9 +77,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
 
-        cdr_gateway = coordinator.data.gateway
+        self.cdr_gateway = coordinator.data.gateway
         gateway_id: str = coordinator.data.gateway["gateway_id"]
-        gateway_data = coordinator.data.devices[gateway_id]
+        self.gateway_data = coordinator.data.devices[gateway_id]
 
         self._attr_max_temp = self.device["thermostat"]["upper_bound"]
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
@@ -101,23 +101,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
 
-        # Determine hvac modes
-        self._attr_hvac_modes = [HVACMode.HEAT]
-        if cdr_gateway["cooling_present"]:
-            self._attr_hvac_modes.remove(HVACMode.HEAT)
-            if (
-                "regulation_modes" in gateway_data
-                and gateway_data["select_regulation_mode"] == "cooling"
-            ):
-                self._attr_hvac_modes.append(HVACMode.COOL)
-            else:
-                self._attr_hvac_modes.append(HVACMode.HEAT_COOL)
+        # Set the default hvac modes
         if (
             self._homekit_enabled or "regulation_modes" in gateway_data
         ):  # pw-beta homekit emulation
-            self._attr_hvac_modes.insert(0, HVACMode.OFF)
-        if self.device["available_schedules"] != ["None"]:
-            self._attr_hvac_modes.append(HVACMode.AUTO)
+            self._attr_hvac_modes.append(HVACMode.OFF)
 
     def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
         """Return the previous action-mode when the regulation-mode is not heating or cooling.
@@ -167,7 +155,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
     @property
     def hvac_mode(self) -> HVACMode:
-        """Return HVAC operation ie. auto, heat, heat_cool, or off mode."""
+        """Return HVAC operation ie. auto, cool, heat, heat_cool, or off mode."""
         if (
             mode := self.device["mode"]
         ) is None or mode not in self.hvac_modes:  # pw-beta add to Core
@@ -177,6 +165,27 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             mode = HVACMode.OFF  # pragma: no cover
 
         return HVACMode(mode)
+
+    @property
+    def hvac_modes(self) -> list[HVACMode]:
+        """Return a list of available HVACModes."""
+        hvac_modes = [HVACMode.HEAT]
+        if self.cdr_gateway["cooling_present"]:
+            hvac_modes.remove(HVACMode.HEAT)
+            if (
+                "regulation_modes" in self.gateway_data
+                and self.gateway_data["select_regulation_mode"] == "cooling"
+            ):
+                hvac_modes.append(HVACMode.COOL)
+            else:
+                hvac_modes.append(HVACMode.HEAT_COOL)
+        
+        self.hvac_modes.append(hvac_modes)
+
+        if self.device["available_schedules"] != ["None"]:
+            self.hvac_modes.append(HVACMode.AUTO)
+        elif HVACMode.AUTO in self.hvac_modes:
+            self.hvac_modes.remove(HVACMode.AUTO)
 
     @property
     def hvac_action(self) -> HVACAction:  # pw-beta add to Core
