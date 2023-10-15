@@ -109,14 +109,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Helper for set_hvac_mode().
         """
-        gateway: str = coordinator.data.gateway["gateway_id"]
-        gateway_data = coordinator.data.devices[gateway]
         # When no cooling available, _previous_mode is always heating
         if (
-            "regulation_modes" in gateway_data
-            and "cooling" in gateway_data["regulation_modes"]
+            "regulation_modes" in self.gateway_data
+            and "cooling" in self.gateway_data["regulation_modes"]
         ):
-            mode = gateway_data["select_regulation_mode"]
+            mode = self.gateway_data["select_regulation_mode"]
             if mode in ("cooling", "heating"):
                 self._previous_mode == mode
 
@@ -194,15 +192,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Return the current running hvac operation if supported."""
         # Keep track of the previous action-mode
         self._previous_action_mode(self.coordinator)
-        # When control_state is present, prefer this data
-        if (control_state := self.device.get("control_state")) == "cooling":
-            return HVACAction.COOLING
-        # Support preheating state as heating,
-        # until preheating is added as a separate state
-        if control_state in ["heating", "preheating"]:
-            return HVACAction.HEATING
-        if control_state == "off":
-            return HVACAction.IDLE
 
         heater: str = self.coordinator.data.gateway["heater_id"]
         heater_data = self.coordinator.data.devices[heater]
