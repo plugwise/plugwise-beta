@@ -239,7 +239,9 @@ async def test_anna_3_climate_entity_attributes(
 
 
 async def test_anna_climate_entity_climate_changes(
-    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant,
+    mock_smile_anna: MagicMock,
+    init_integration: MockConfigEntry,
 ) -> None:
     """Test handling of user requests in anna climate device environment."""
     await hass.services.async_call(
@@ -273,7 +275,11 @@ async def test_anna_climate_entity_climate_changes(
         {"entity_id": "climate.anna", "hvac_mode": "heat"},
         blocking=True,
     )
-
+    state = hass.states.get("climate.anna")
+    assert state.state == HVACMode.HEAT
+    assert state.attributes["hvac_modes"] == [
+        HVACMode.HEAT,
+    ]
     assert mock_smile_anna.set_temperature.call_count == 1
     assert mock_smile_anna.set_schedule_state.call_count == 1
     mock_smile_anna.set_schedule_state.assert_called_with(
