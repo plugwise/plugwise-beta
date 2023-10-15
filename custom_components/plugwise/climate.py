@@ -125,7 +125,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """
         return self.device["thermostat"]["setpoint_low"]
 
-
     @property
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, heat, heat_cool, or off mode."""
