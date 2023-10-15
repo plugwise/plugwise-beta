@@ -164,7 +164,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             hvac_modes.remove(HVACMode.AUTO)
 
         if self._homekit_enabled:  # pw-beta homekit emulation
-            self._attr_hvac_modes.insert(0, HVACMode.OFF)  # pragma: no cover
+            hvac_modes.insert(0, HVACMode.OFF)  # pragma: no cover
 
         return hvac_modes
 
