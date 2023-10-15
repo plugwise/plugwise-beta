@@ -104,12 +104,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
 
-        # Set the default hvac modes
-        if (
-            self._homekit_enabled or "regulation_modes" in self.gateway_data
-        ):  # pw-beta homekit emulation
-            self._attr_hvac_modes.append(HVACMode.OFF)
-
     def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
         """Return the previous action-mode when the regulation-mode is not heating or cooling.
 
@@ -183,12 +177,17 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             else:
                 hvac_modes.append(HVACMode.HEAT_COOL)
         
-        self.hvac_modes.append(hvac_modes)
+        if (
+            self._homekit_enabled or "regulation_modes" in self.gateway_data
+        ):  # pw-beta homekit emulation
+            hvac_modes.insert(0, HVACMode.OFF)
 
         if self.device["available_schedules"] != ["None"]:
-            self.hvac_modes.append(HVACMode.AUTO)
+            hvac_modes.append(HVACMode.AUTO)
         elif HVACMode.AUTO in self.hvac_modes:
-            self.hvac_modes.remove(HVACMode.AUTO)
+            hvac_modes.remove(HVACMode.AUTO)
+
+        return hvac_modes
 
     @property
     def hvac_action(self) -> HVACAction:  # pw-beta add to Core
