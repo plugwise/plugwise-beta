@@ -177,11 +177,14 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 "regulation_modes" in self.gateway_data
                 and self.gateway_data["select_regulation_mode"] == "cooling"
             ):
-                hvac_modes.append(HVACMode.COOL)
+                if HVACMode.COOL not in hvac_modes:
+                    hvac_modes.append(HVACMode.COOL)
             else:
-                hvac_modes.append(HVACMode.HEAT_COOL)
+                if HVACMode.HEAT_COOL not in hvac_modes:
+                    hvac_modes.append(HVACMode.HEAT_COOL)
         else:
-            hvac_modes.append(HVACMode.HEAT)
+            if HVACMode.HEAT not in hvac_modes:
+                hvac_modes.append(HVACMode.HEAT)
 
         if self.device["available_schedules"] != ["None"]:
             if HVACMode.AUTO not in hvac_modes:
