@@ -111,7 +111,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         ):  # pw-beta homekit emulation
             self._hvac_modes: list[HVACMode] = [HVACMode.OFF]
 
-
     def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
         """Return the previous action-mode when the regulation-mode is not heating or cooling.
 
