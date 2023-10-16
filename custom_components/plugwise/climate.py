@@ -95,6 +95,14 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self.device["thermostat"]["resolution"], 0.5
         )
 
+        # Determine stable hvac_modes
+        self._hvac_modes: list[HVACMode] = [HVACMode.HEAT]
+        if self.coordinator.data.gateway["cooling_present"]:
+            self._hvac_modes = [HVACMode.HEAT_COOL]
+
+        if self._homekit_enabled:  # pw-beta homekit emulation
+            self._hvac_modes.insert(0, HVACMode.OFF)  # pragma: no cover
+
     @property
     def current_temperature(self) -> float:
         """Return the current temperature."""
@@ -154,17 +162,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def hvac_modes(self) -> list[HVACMode]:
         """Return the list of available HVACModes."""
-        hvac_modes = [HVACMode.HEAT]
-        if self.coordinator.data.gateway["cooling_present"]:
-            hvac_modes = [HVACMode.HEAT_COOL]
-
+        hvac_modes = self._hvac_modes
         if self.device["available_schedules"] != ["None"]:
-            hvac_modes.append(HVACMode.AUTO)
-        elif HVACMode.AUTO in self.hvac_modes:
+            if HVACMode.AUTO not in hvac_modes:
+                hvac_modes.append(HVACMode.AUTO)
+        elif HVACMode.AUTO in hvac_modes:
             hvac_modes.remove(HVACMode.AUTO)
-
-        if self._homekit_enabled:  # pw-beta homekit emulation
-            hvac_modes.insert(0, HVACMode.OFF)  # pragma: no cover
 
         return hvac_modes
 
