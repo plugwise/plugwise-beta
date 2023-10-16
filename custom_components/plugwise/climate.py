@@ -99,7 +99,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if presets := self.device.get("preset_modes"):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
-   
+
         # Determine stable hvac_modes
         gateway_id: str = coordinator.data.gateway["gateway_id"]
         self.gateway_data = coordinator.data.devices[gateway_id]
@@ -110,7 +110,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._hvac_modes = [HVACMode.OFF]
 
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
- 
+
     def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
         """Return the previous action-mode when the regulation-mode is not heating or cooling.
 
