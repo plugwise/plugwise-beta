@@ -109,7 +109,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if (
             self._homekit_enabled or "regulation_modes" in self.gateway_data
         ):  # pw-beta homekit emulation
-            self._hvac_modes: list[HVACMode] = [HVACMode.OFF]
+            self._hvac_modes = [HVACMode.OFF]
 
     def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
         """Return the previous action-mode when the regulation-mode is not heating or cooling.
@@ -179,12 +179,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             ):
                 if HVACMode.COOL not in hvac_modes:
                     hvac_modes.append(HVACMode.COOL)
-            else:
-                if HVACMode.HEAT_COOL not in hvac_modes:
-                    hvac_modes.append(HVACMode.HEAT_COOL)
-        else:
-            if HVACMode.HEAT not in hvac_modes:
-                hvac_modes.append(HVACMode.HEAT)
+            elif HVACMode.HEAT_COOL not in hvac_modes:
+                hvac_modes.append(HVACMode.HEAT_COOL)
+        elif HVACMode.HEAT not in hvac_modes:
+            hvac_modes.append(HVACMode.HEAT)
 
         if self.device["available_schedules"] != ["None"]:
             if HVACMode.AUTO not in hvac_modes:
