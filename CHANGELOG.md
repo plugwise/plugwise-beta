@@ -4,6 +4,7 @@
 
 ## v0.42.3
 
+- Fix for #501
 - Fix HA Core Issue #102204 via [plugwise v0.33.2](https://github.com/plugwise/python-plugwise/releases/tag/v0.33.2)
 - Remove use of control_state xml-key, via [plugwise v0.33.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.33.1)
 
