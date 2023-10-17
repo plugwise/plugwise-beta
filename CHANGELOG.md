@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Remove use of control_state xml-key, via [plugwise v0.33.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.33.1)
+
 ## v0.42.2
 
 - Revert incorrect zeroconf-changes
