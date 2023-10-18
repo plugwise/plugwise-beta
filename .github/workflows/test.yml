@@ -19,7 +19,7 @@ jobs:
     name: Setup for HA-core (release)
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4.1.1
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v4
@@ -50,6 +50,6 @@ jobs:
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.0
+      - uses: actions/checkout@v4.1.1
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
