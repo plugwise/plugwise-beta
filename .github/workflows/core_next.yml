@@ -5,7 +5,7 @@ name: Validate plugwise-beta against HA-core dev
 
 env:
   # Uses a different key/restore key than test.yml
-  CACHE_VERSION: 101
+  CACHE_VERSION: 1001
   DEFAULT_PYTHON: "3.11"
 
 on:
