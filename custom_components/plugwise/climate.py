@@ -122,7 +122,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         ):
             mode = self.gateway_data["select_regulation_mode"]
             if mode in ("cooling", "heating"):
-                self._previous_mode == mode
+                self._previous_mode = mode
 
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         self._attr_max_temp = self.device["thermostat"]["upper_bound"]
