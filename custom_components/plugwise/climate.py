@@ -248,7 +248,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 "on" if hvac_mode == HVACMode.AUTO else "off",
             )
 
-        if not self._homekit_enabled:  # pw-beta: feature request - mimic HomeKit behavior
+        if (
+            not self._homekit_enabled
+        ):  # pw-beta: feature request - mimic HomeKit behavior
             if hvac_mode == HVACMode.OFF:
                 await self.coordinator.api.set_regulation_mode(hvac_mode)
             elif self.hvac_mode == HVACMode.OFF:
