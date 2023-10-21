@@ -177,7 +177,7 @@ async def test_adam_climate_entity_climate_changes(
 
     assert mock_smile_adam.set_schedule_state.call_count == 2
     mock_smile_adam.set_schedule_state.assert_called_with(
-        "c50f167537524366a5af7aa3942feb1e", "GF7  Woonkamer", "off"
+        "c50f167537524366a5af7aa3942feb1e", "off"
     )
 
     with pytest.raises(HomeAssistantError):
@@ -342,7 +342,7 @@ async def test_anna_climate_entity_climate_changes(
 
     assert mock_smile_anna.set_schedule_state.call_count == 1
     mock_smile_anna.set_schedule_state.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", "standaard", "off"
+        "c784ee9fdab44e1395b8dee7d7a497d5", "off"
     )
 
     # hvac_mode is auto, setting to auto should do nothing.
