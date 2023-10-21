@@ -122,7 +122,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         ):
             mode = self.gateway_data["select_regulation_mode"]
             if mode in ("cooling", "heating"):
-                self._previous_mode == mode
+                self._previous_mode = mode
 
     @property
     def current_temperature(self) -> float:
