@@ -246,37 +246,6 @@ async def test_anna_climate_entity_climate_changes(
     init_integration: MockConfigEntry,
 ) -> None:
     """Test handling of user requests in anna climate device environment."""
-    state = hass.states.get("climate.anna")
-    assert state
-    assert state.state == HVACMode.AUTO
-    assert state.attributes["hvac_modes"] == [
-            HVACMode.HEAT,
-            HVACMode.AUTO,
-        ]
-
-    await hass.services.async_call(
-        "climate",
-        "set_hvac_mode",
-        {"entity_id": "climate.anna", "hvac_mode": "heat"},
-        blocking=True,
-    )
-    assert mock_smile_anna.set_schedule_state.call_count == 1
-    mock_smile_anna.set_schedule_state.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", "off"
-    )
-
-    data = mock_smile_anna.async_update.return_value
-    data.devices["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = ["None"]
-    with patch(
-        "homeassistant.components.plugwise.coordinator.Smile.async_update",
-        return_value=data,
-    ):
-        async_fire_time_changed(hass, utcnow() + timedelta(hours=2))
-        await hass.async_block_till_done()
-        state = hass.states.get("climate.anna")
-        assert state.state == HVACMode.HEAT
-        assert state.attributes["hvac_modes"] == [HVACMode.HEAT]
-
     await hass.services.async_call(
         "climate",
         "set_temperature",
@@ -313,3 +282,34 @@ async def test_anna_climate_entity_climate_changes(
     mock_smile_anna.set_schedule_state.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5", "on"
     )
+
+    state = hass.states.get("climate.anna")
+    assert state
+    assert state.state == HVACMode.AUTO
+    assert state.attributes["hvac_modes"] == [
+            HVACMode.HEAT,
+            HVACMode.AUTO,
+        ]
+
+    await hass.services.async_call(
+        "climate",
+        "set_hvac_mode",
+        {"entity_id": "climate.anna", "hvac_mode": "heat"},
+        blocking=True,
+    )
+    assert mock_smile_anna.set_schedule_state.call_count == 2
+    mock_smile_anna.set_schedule_state.assert_called_with(
+        "c784ee9fdab44e1395b8dee7d7a497d5", "off"
+    )
+
+    data = mock_smile_anna.async_update.return_value
+    data.devices["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = ["None"]
+    with patch(
+        "homeassistant.components.plugwise.coordinator.Smile.async_update",
+        return_value=data,
+    ):
+        async_fire_time_changed(hass, utcnow() + timedelta(hours=2))
+        await hass.async_block_till_done()
+        state = hass.states.get("climate.anna")
+        assert state.state == HVACMode.HEAT
+        assert state.attributes["hvac_modes"] == [HVACMode.HEAT]
