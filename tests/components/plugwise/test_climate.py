@@ -287,9 +287,9 @@ async def test_anna_climate_entity_climate_changes(
     assert state
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_modes"] == [
-            HVACMode.HEAT,
-            HVACMode.AUTO,
-        ]
+        HVACMode.HEAT,
+        HVACMode.AUTO,
+    ]
 
     await hass.services.async_call(
         "climate",
