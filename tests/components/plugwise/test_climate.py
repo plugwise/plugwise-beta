@@ -106,6 +106,23 @@ async def test_adam_3_climate_entity_attributes(
         HVACMode.COOL,
         HVACMode.AUTO,
     ]
+    data = mock_smile_anna.async_update.return_value
+    data.devices["da224107914542988a88561b4452b0f6"]["select_regulation_mode"] = "heating"
+    with patch(
+        "homeassistant.components.plugwise.coordinator.Smile.async_update",
+        return_value=data,
+    ):
+        async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
+        await hass.async_block_till_done()
+    state = hass.states.get("climate.anna")
+    assert state
+    assert state.state == HVACMode.HEAT
+    assert state.attributes["hvac_action"] == "heating"
+    assert state.attributes["hvac_modes"] == [
+        HVACMode.OFF,
+        HVACMode.AUTO,
+        HVACMode.HEAT,
+    ]   
 
 
 async def test_adam_climate_adjust_negative_testing(
