@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.42.4
+
+- Fix for [#501](https://github.com/plugwise/plugwise-beta/issues/501)
+
 ## v0.42.3
 
 - Fix HA Core Issue #102204 via [plugwise v0.33.2](https://github.com/plugwise/python-plugwise/releases/tag/v0.33.2)

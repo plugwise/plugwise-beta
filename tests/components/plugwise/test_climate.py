@@ -1,6 +1,7 @@
 """Tests for the Plugwise Climate integration."""
 
-from unittest.mock import MagicMock
+from datetime import timedelta
+from unittest.mock import MagicMock, patch
 
 from plugwise.exceptions import PlugwiseError
 import pytest
@@ -8,8 +9,9 @@ import pytest
 from homeassistant.components.climate.const import HVACMode
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.util.dt import utcnow
 
-from tests.common import MockConfigEntry
+from tests.common import MockConfigEntry, async_fire_time_changed
 
 TEST_HOST = "1.1.1.1"
 TEST_PASSWORD = "test_password"
@@ -112,7 +114,6 @@ async def test_adam_climate_entity_climate_changes(
         {"entity_id": "climate.zone_lisa_wk", "temperature": 25},
         blocking=True,
     )
-
     assert mock_smile_adam.set_temperature.call_count == 1
     mock_smile_adam.set_temperature.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", {"setpoint": 25.0}
@@ -128,7 +129,6 @@ async def test_adam_climate_entity_climate_changes(
         },
         blocking=True,
     )
-
     assert mock_smile_adam.set_temperature.call_count == 2
     mock_smile_adam.set_temperature.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", {"setpoint": 25.0}
@@ -148,7 +148,6 @@ async def test_adam_climate_entity_climate_changes(
         {"entity_id": "climate.zone_lisa_wk", "preset_mode": "away"},
         blocking=True,
     )
-
     assert mock_smile_adam.set_preset.call_count == 1
     mock_smile_adam.set_preset.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", "away"
@@ -160,7 +159,6 @@ async def test_adam_climate_entity_climate_changes(
         {"entity_id": "climate.zone_lisa_wk", "hvac_mode": "heat"},
         blocking=True,
     )
-
     assert mock_smile_adam.set_schedule_state.call_count == 2
     mock_smile_adam.set_schedule_state.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", "off"
@@ -239,7 +237,9 @@ async def test_anna_3_climate_entity_attributes(
 
 
 async def test_anna_climate_entity_climate_changes(
-    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant,
+    mock_smile_anna: MagicMock,
+    init_integration: MockConfigEntry,
 ) -> None:
     """Test handling of user requests in anna climate device environment."""
     await hass.services.async_call(
@@ -248,7 +248,6 @@ async def test_anna_climate_entity_climate_changes(
         {"entity_id": "climate.anna", "target_temp_high": 25, "target_temp_low": 20},
         blocking=True,
     )
-
     assert mock_smile_anna.set_temperature.call_count == 1
     mock_smile_anna.set_temperature.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5",
@@ -261,7 +260,6 @@ async def test_anna_climate_entity_climate_changes(
         {"entity_id": "climate.anna", "preset_mode": "away"},
         blocking=True,
     )
-
     assert mock_smile_anna.set_preset.call_count == 1
     mock_smile_anna.set_preset.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5", "away"
@@ -270,24 +268,32 @@ async def test_anna_climate_entity_climate_changes(
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
-        {"entity_id": "climate.anna", "hvac_mode": "heat"},
+        {"entity_id": "climate.anna", "hvac_mode": "auto"},
         blocking=True,
     )
-
-    assert mock_smile_anna.set_temperature.call_count == 1
     assert mock_smile_anna.set_schedule_state.call_count == 1
     mock_smile_anna.set_schedule_state.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", "off"
+        "c784ee9fdab44e1395b8dee7d7a497d5", "on"
     )
 
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
-        {"entity_id": "climate.anna", "hvac_mode": "auto"},
+        {"entity_id": "climate.anna", "hvac_mode": "heat"},
         blocking=True,
     )
-
     assert mock_smile_anna.set_schedule_state.call_count == 2
     mock_smile_anna.set_schedule_state.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", "on"
+        "c784ee9fdab44e1395b8dee7d7a497d5", "off"
     )
+    data = mock_smile_anna.async_update.return_value
+    data.devices["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = ["None"]
+    with patch(
+        "homeassistant.components.plugwise.coordinator.Smile.async_update",
+        return_value=data,
+    ):
+        async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
+        await hass.async_block_till_done()
+        state = hass.states.get("climate.anna")
+        assert state.state == HVACMode.HEAT
+        assert state.attributes["hvac_modes"] == [HVACMode.HEAT]
