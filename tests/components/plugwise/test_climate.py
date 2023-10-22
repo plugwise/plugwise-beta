@@ -346,13 +346,11 @@ async def test_anna_climate_entity_climate_changes(
         {"entity_id": "climate.anna", "hvac_mode": "auto"},
         blocking=True,
     )
-
     assert mock_smile_anna.set_schedule_state.call_count == 1
     mock_smile_anna.set_schedule_state.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5", "on"
     )
 
-    # hvac_mode is auto, setting to auto should do nothing.
     await hass.services.async_call(
         "climate",
         "set_hvac_mode",
