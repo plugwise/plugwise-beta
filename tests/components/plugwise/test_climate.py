@@ -106,7 +106,7 @@ async def test_adam_3_climate_entity_attributes(
         HVACMode.COOL,
         HVACMode.AUTO,
     ]
-    data = mock_smile_anna.async_update.return_value
+    data = mock_smile_adam_3.async_update.return_value
     data.devices["da224107914542988a88561b4452b0f6"]["select_regulation_mode"] = "heating"
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile.async_update",
