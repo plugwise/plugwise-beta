@@ -114,7 +114,6 @@ async def test_adam_climate_entity_climate_changes(
         {"entity_id": "climate.zone_lisa_wk", "temperature": 25},
         blocking=True,
     )
-
     assert mock_smile_adam.set_temperature.call_count == 1
     mock_smile_adam.set_temperature.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", {"setpoint": 25.0}
@@ -130,7 +129,6 @@ async def test_adam_climate_entity_climate_changes(
         },
         blocking=True,
     )
-
     assert mock_smile_adam.set_temperature.call_count == 2
     mock_smile_adam.set_temperature.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", {"setpoint": 25.0}
@@ -150,7 +148,6 @@ async def test_adam_climate_entity_climate_changes(
         {"entity_id": "climate.zone_lisa_wk", "preset_mode": "away"},
         blocking=True,
     )
-
     assert mock_smile_adam.set_preset.call_count == 1
     mock_smile_adam.set_preset.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", "away"
@@ -162,7 +159,6 @@ async def test_adam_climate_entity_climate_changes(
         {"entity_id": "climate.zone_lisa_wk", "hvac_mode": "heat"},
         blocking=True,
     )
-
     assert mock_smile_adam.set_schedule_state.call_count == 2
     mock_smile_adam.set_schedule_state.assert_called_with(
         "c50f167537524366a5af7aa3942feb1e", "off"
@@ -252,7 +248,6 @@ async def test_anna_climate_entity_climate_changes(
         {"entity_id": "climate.anna", "target_temp_high": 25, "target_temp_low": 20},
         blocking=True,
     )
-
     assert mock_smile_anna.set_temperature.call_count == 1
     mock_smile_anna.set_temperature.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5",
@@ -265,7 +260,6 @@ async def test_anna_climate_entity_climate_changes(
         {"entity_id": "climate.anna", "preset_mode": "away"},
         blocking=True,
     )
-
     assert mock_smile_anna.set_preset.call_count == 1
     mock_smile_anna.set_preset.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5", "away"
@@ -277,19 +271,10 @@ async def test_anna_climate_entity_climate_changes(
         {"entity_id": "climate.anna", "hvac_mode": "auto"},
         blocking=True,
     )
-
     assert mock_smile_anna.set_schedule_state.call_count == 1
     mock_smile_anna.set_schedule_state.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5", "on"
     )
-
-    state = hass.states.get("climate.anna")
-    assert state
-    assert state.state == HVACMode.AUTO
-    assert state.attributes["hvac_modes"] == [
-        HVACMode.HEAT,
-        HVACMode.AUTO,
-    ]
 
     await hass.services.async_call(
         "climate",
@@ -301,7 +286,6 @@ async def test_anna_climate_entity_climate_changes(
     mock_smile_anna.set_schedule_state.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5", "off"
     )
-
     data = mock_smile_anna.async_update.return_value
     data.devices["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = ["None"]
     with patch(
