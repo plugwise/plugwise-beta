@@ -308,7 +308,7 @@ async def test_anna_climate_entity_climate_changes(
         "homeassistant.components.plugwise.coordinator.Smile.async_update",
         return_value=data,
     ):
-        async_fire_time_changed(hass, utcnow() + timedelta(hours=2))
+        async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
         await hass.async_block_till_done()
         state = hass.states.get("climate.anna")
         assert state.state == HVACMode.HEAT
