@@ -1,6 +1,7 @@
 """Tests for the Plugwise Climate integration."""
 
-from unittest.mock import MagicMock
+from datetime import timedelta
+from unittest.mock import MagicMock, patch
 
 from plugwise.exceptions import PlugwiseError
 import pytest
@@ -8,8 +9,9 @@ import pytest
 from homeassistant.components.climate.const import HVACMode
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.util.dt import utcnow
 
-from tests.common import MockConfigEntry
+from tests.common import MockConfigEntry, async_fire_time_changed
 
 TEST_HOST = "1.1.1.1"
 TEST_PASSWORD = "test_password"
@@ -244,6 +246,36 @@ async def test_anna_climate_entity_climate_changes(
     init_integration: MockConfigEntry,
 ) -> None:
     """Test handling of user requests in anna climate device environment."""
+    state = hass.states.get("climate.anna")
+    assert state
+    assert state.state == HVACMode.AUTO
+
+    await hass.services.async_call(
+        "climate",
+        "set_hvac_mode",
+        {"entity_id": "climate.anna", "hvac_mode": "heat"},
+        blocking=True,
+    )
+    assert mock_smile_anna.set_schedule_state.call_count == 1
+    mock_smile_anna.set_schedule_state.assert_called_with(
+        "c784ee9fdab44e1395b8dee7d7a497d5", "off"
+    )
+
+    data = mock_smile_anna.async_update.return_value
+    data.devices["3cb70739631c4d17a86b8b12e8a5161b"]["mode"] = "heat"
+    with patch(
+        "homeassistant.components.plugwise.coordinator.Smile.async_update",
+        return_value=data,
+    ):
+        async_fire_time_changed(hass, utcnow() + timedelta(hours=2))
+        await hass.async_block_till_done()
+        state = hass.states.get("climate.anna")
+        assert state.state == HVACMode.HEAT
+        assert state.attributes["hvac_modes"] == [
+            HVACMode.HEAT,
+            HVACMode.AUTO,
+        ]
+
     await hass.services.async_call(
         "climate",
         "set_temperature",
@@ -267,23 +299,6 @@ async def test_anna_climate_entity_climate_changes(
     assert mock_smile_anna.set_preset.call_count == 1
     mock_smile_anna.set_preset.assert_called_with(
         "c784ee9fdab44e1395b8dee7d7a497d5", "away"
-    )
-
-    await hass.services.async_call(
-        "climate",
-        "set_hvac_mode",
-        {"entity_id": "climate.anna", "hvac_mode": "heat"},
-        blocking=True,
-    )
-    state = hass.states.get("climate.anna")
-    assert state.state == HVACMode.HEAT
-    assert state.attributes["hvac_modes"] == [
-        HVACMode.HEAT,
-    ]
-    assert mock_smile_anna.set_temperature.call_count == 1
-    assert mock_smile_anna.set_schedule_state.call_count == 1
-    mock_smile_anna.set_schedule_state.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", "off"
     )
 
     await hass.services.async_call(
