@@ -101,9 +101,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_preset_modes = presets
 
         # Determine stable hvac_modes
+        self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         gateway_id: str = coordinator.data.gateway["gateway_id"]
         self.gateway_data = coordinator.data.devices[gateway_id]
-        self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
         self._hvac_modes: list[HVACMode] = []
         if (
             self._homekit_enabled or "regulation_modes" in self.gateway_data
@@ -124,33 +124,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if mode in ("cooling", "heating"):
                 self._previous_mode = mode
 
-        self._attr_min_temp = self.device["thermostat"]["lower_bound"]
-        self._attr_max_temp = self.device["thermostat"]["upper_bound"]
-        # Fix unpractical resolution provided by Plugwise
-        self._attr_target_temperature_step = max(
-            self.device["thermostat"]["resolution"], 0.5
-        )
-
-        # Determine stable hvac_modes
-        self._hvac_modes: list[HVACMode] = [HVACMode.HEAT]
-        if self.coordinator.data.gateway["cooling_present"]:
-            self._hvac_modes = [HVACMode.HEAT_COOL]
-
-        if self._homekit_enabled:  # pw-beta homekit emulation
-            self._hvac_modes.insert(0, HVACMode.OFF)  # pragma: no cover
-
-
-    gateway: str = self.coordinator.data.gateway["gateway_id"]
-    gateway_data = self.coordinator.data.devices[gateway]
-    self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
-    if (
-        "regulation_modes" in gateway_data
-        and "cooling" in gateway_data["regulation_modes"]
-    ):
-        mode = gateway_data["select_regulation_mode"]
-        if mode != _present_mode:
-            _previous_mode == _present_mode
-            _present_mode = mode
 
     @property
     def current_temperature(self) -> float:
