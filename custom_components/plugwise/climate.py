@@ -173,12 +173,17 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Return a list of available HVACModes."""
         hvac_modes = self._hvac_modes
         if self.cdr_gateway["cooling_present"]:
-            if (
-                "regulation_modes" in self.gateway_data
-                and self.gateway_data["select_regulation_mode"] == "cooling"
-            ):
-                if HVACMode.COOL not in hvac_modes:
-                    hvac_modes.append(HVACMode.COOL)
+            if "regulation_modes" in self.gateway_data:
+                if self.gateway_data["select_regulation_mode"] == "cooling":
+                    if HVACMode.COOL not in hvac_modes:
+                        hvac_modes.append(HVACMode.COOL)
+                    if HVACMode.HEAT in hvac_modes:
+                        hvac_modes.remove(HVACMode.HEAT)
+                if self.gateway_data["select_regulation_mode"] == "heating":
+                    if HVACMode.HEAT not in hvac_modes:
+                        hvac_modes.append(HVACMode.HEAT)
+                    if HVACMode.COOL in hvac_modes:
+                        hvac_modes.remove(HVACMode.COOL)
             elif HVACMode.HEAT_COOL not in hvac_modes:
                 hvac_modes.append(HVACMode.HEAT_COOL)
         elif HVACMode.HEAT not in hvac_modes:
