@@ -215,18 +215,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return HVACAction.IDLE
 
     @property
-    def hvac_modes(self) -> list[HVACMode]:
-        """Return the list of available HVACModes."""
-        hvac_modes = self._hvac_modes
-        if self.device["available_schedules"] != ["None"]:
-            if HVACMode.AUTO not in hvac_modes:
-                hvac_modes.append(HVACMode.AUTO)
-        elif HVACMode.AUTO in hvac_modes:
-            hvac_modes.remove(HVACMode.AUTO)
-
-        return hvac_modes
-
-    @property
     def preset_mode(self) -> str | None:
         """Return the current preset mode."""
         return self.device["active_preset"]
