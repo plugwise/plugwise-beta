@@ -62,7 +62,6 @@ def _async_cleanup_registry_entries(
         return
 
     for entity in extra_entities:
-        LOGGER.debug("HOI entity: %s", entities[entity])
         if entity_registry.async_is_registered(entities[entity]):
             entity_registry.async_remove(entities[entity])
 
