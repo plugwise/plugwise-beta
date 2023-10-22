@@ -266,7 +266,7 @@ async def test_anna_climate_entity_climate_changes(
     )
 
     data = mock_smile_anna.async_update.return_value
-    data.devices["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = "None"
+    data.devices["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = ["None"]
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile.async_update",
         return_value=data,
@@ -275,9 +275,7 @@ async def test_anna_climate_entity_climate_changes(
         await hass.async_block_till_done()
         state = hass.states.get("climate.anna")
         assert state.state == HVACMode.HEAT
-        assert state.attributes["hvac_modes"] == [
-            HVACMode.HEAT,
-        ]
+        assert state.attributes["hvac_modes"] == [HVACMode.HEAT]
 
     await hass.services.async_call(
         "climate",
