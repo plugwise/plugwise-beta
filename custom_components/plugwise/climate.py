@@ -27,6 +27,7 @@ from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     COORDINATOR,  # pw-beta
     DOMAIN,
+    LOGGER,
     MASTER_THERMOSTATS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
@@ -195,6 +196,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         elif HVACMode.AUTO in hvac_modes:
             hvac_modes.remove(HVACMode.AUTO)
 
+        LOGGER.debug("HOI hvac-modes: %s", hvac_modes)
         return hvac_modes
 
     @property
