@@ -1,8 +1,8 @@
 """Tests for the Plugwise Climate integration."""
 
 from datetime import timedelta
-from unittest.mock import MagicMock, patch
 import math
+from unittest.mock import MagicMock, patch
 
 from plugwise.exceptions import PlugwiseError
 import pytest

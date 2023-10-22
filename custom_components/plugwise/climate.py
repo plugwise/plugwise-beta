@@ -125,7 +125,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             if mode in ("cooling", "heating"):
                 self._previous_mode = mode
 
-
     @property
     def current_temperature(self) -> float:
         """Return the current temperature."""
@@ -196,7 +195,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         elif HVACMode.AUTO in hvac_modes:
             hvac_modes.remove(HVACMode.AUTO)
 
-        LOGGER.debug("HOI hvac-modes: %s", hvac_modes)
         return hvac_modes
 
     @property
