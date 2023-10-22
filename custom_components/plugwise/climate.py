@@ -27,7 +27,6 @@ from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     COORDINATOR,  # pw-beta
     DOMAIN,
-    LOGGER,
     MASTER_THERMOSTATS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
