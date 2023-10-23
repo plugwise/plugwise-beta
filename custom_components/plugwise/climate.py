@@ -171,6 +171,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def hvac_modes(self) -> list[HVACMode]:
         """Return a list of available HVACModes."""
         hvac_modes = self._hvac_modes
+        if self.device["available_schedules"] != ["None"]:
+            if HVACMode.AUTO not in hvac_modes:
+                hvac_modes.append(HVACMode.AUTO)
+        elif HVACMode.AUTO in hvac_modes:
+            hvac_modes.remove(HVACMode.AUTO)
+
         if self.cdr_gateway["cooling_present"]:
             if "regulation_modes" in self.gateway_data:
                 if self.gateway_data["select_regulation_mode"] == "cooling":
@@ -187,12 +193,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 hvac_modes.append(HVACMode.HEAT_COOL)
         elif HVACMode.HEAT not in hvac_modes:
             hvac_modes.append(HVACMode.HEAT)
-
-        if self.device["available_schedules"] != ["None"]:
-            if HVACMode.AUTO not in hvac_modes:
-                hvac_modes.append(HVACMode.AUTO)
-        elif HVACMode.AUTO in hvac_modes:
-            hvac_modes.remove(HVACMode.AUTO)
 
         return hvac_modes
 
