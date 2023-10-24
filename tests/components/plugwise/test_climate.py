@@ -14,7 +14,9 @@ from homeassistant.util.dt import utcnow
 
 from tests.common import MockConfigEntry, async_fire_time_changed
 
-HA_PLUGWISE_SMILE_ASYNC_UPDATE = "homeassistant.components.plugwise.coordinator.Smile.async_update"
+HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
+    "homeassistant.components.plugwise.coordinator.Smile.async_update"
+)
 TEST_HOST = "1.1.1.1"
 TEST_PASSWORD = "test_password"
 
