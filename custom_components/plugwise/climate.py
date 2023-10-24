@@ -171,7 +171,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._homekit_enabled  # pw-beta homekit emulation
             or "regulation_modes" in self.gateway_data
         ):
-            hvac_modes = [HVACMode.OFF]
+            hvac_modes.append(HVACMode.OFF)
 
         if self.device["available_schedules"] != ["None"]:
             hvac_modes.append(HVACMode.AUTO)
@@ -182,8 +182,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                     hvac_modes.append(HVACMode.COOL)
                 if self.gateway_data["select_regulation_mode"] == "heating":
                     hvac_modes.append(HVACMode.HEAT)
-            elif hvac_modes.append(HVACMode.HEAT_COOL)
-        elif hvac_modes.append(HVACMode.HEAT)
+            else:
+                hvac_modes.append(HVACMode.HEAT_COOL)
+        else:
+            hvac_modes.append(HVACMode.HEAT)
 
         return hvac_modes
 
