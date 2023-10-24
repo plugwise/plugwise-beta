@@ -105,10 +105,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         gateway_id: str = coordinator.data.gateway["gateway_id"]
         self.gateway_data = coordinator.data.devices[gateway_id]
         self._hvac_modes: list[HVACMode] = []
-        if (
-            self._homekit_enabled or "regulation_modes" in self.gateway_data
-        ):  # pw-beta homekit emulation
-            self._hvac_modes = [HVACMode.OFF]
 
     def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
         """Return the previous action-mode when the regulation-mode is not heating or cooling.
@@ -170,29 +166,24 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def hvac_modes(self) -> list[HVACMode]:
         """Return a list of available HVACModes."""
-        hvac_modes = self._hvac_modes
+        hvac_modes: list[HVACMode] = []
+        if (
+            self._homekit_enabled  # pw-beta homekit emulation
+            or "regulation_modes" in self.gateway_data
+        ):
+            hvac_modes = [HVACMode.OFF]
+
         if self.device["available_schedules"] != ["None"]:
-            if HVACMode.AUTO not in hvac_modes:
-                hvac_modes.append(HVACMode.AUTO)
-        elif HVACMode.AUTO in hvac_modes:
-            hvac_modes.remove(HVACMode.AUTO)
+            hvac_modes.append(HVACMode.AUTO)
 
         if self.cdr_gateway["cooling_present"]:
             if "regulation_modes" in self.gateway_data:
                 if self.gateway_data["select_regulation_mode"] == "cooling":
-                    if HVACMode.COOL not in hvac_modes:
-                        hvac_modes.append(HVACMode.COOL)
-                    if HVACMode.HEAT in hvac_modes:
-                        hvac_modes.remove(HVACMode.HEAT)
+                    hvac_modes.append(HVACMode.COOL)
                 if self.gateway_data["select_regulation_mode"] == "heating":
-                    if HVACMode.HEAT not in hvac_modes:
-                        hvac_modes.append(HVACMode.HEAT)
-                    if HVACMode.COOL in hvac_modes:
-                        hvac_modes.remove(HVACMode.COOL)
-            elif HVACMode.HEAT_COOL not in hvac_modes:
-                hvac_modes.append(HVACMode.HEAT_COOL)
-        elif HVACMode.HEAT not in hvac_modes:
-            hvac_modes.append(HVACMode.HEAT)
+                    hvac_modes.append(HVACMode.HEAT)
+            elif hvac_modes.append(HVACMode.HEAT_COOL)
+        elif hvac_modes.append(HVACMode.HEAT)
 
         return hvac_modes
 
