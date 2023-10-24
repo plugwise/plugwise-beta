@@ -14,6 +14,7 @@ from homeassistant.util.dt import utcnow
 
 from tests.common import MockConfigEntry, async_fire_time_changed
 
+HA_PLUGWISE_SMILE_ASYNC_UPDATE = "homeassistant.components.plugwise.coordinator.Smile.async_update"
 TEST_HOST = "1.1.1.1"
 TEST_PASSWORD = "test_password"
 
@@ -117,10 +118,7 @@ async def test_adam_3_climate_entity_attributes(
     data.devices["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
         "heating_state"
     ] = True
-    with patch(
-        "homeassistant.components.plugwise.coordinator.Smile.async_update",
-        return_value=data,
-    ):
+    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
         await hass.async_block_till_done()
     state = hass.states.get("climate.anna")
@@ -143,10 +141,7 @@ async def test_adam_3_climate_entity_attributes(
     data.devices["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
         "heating_state"
     ] = False
-    with patch(
-        "homeassistant.components.plugwise.coordinator.Smile.async_update",
-        return_value=data,
-    ):
+    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
         await hass.async_block_till_done()
     state = hass.states.get("climate.anna")
@@ -413,10 +408,7 @@ async def test_anna_climate_entity_climate_changes(
     )
     data = mock_smile_anna.async_update.return_value
     data.devices["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = ["None"]
-    with patch(
-        "homeassistant.components.plugwise.coordinator.Smile.async_update",
-        return_value=data,
-    ):
+    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
         await hass.async_block_till_done()
         state = hass.states.get("climate.anna")
