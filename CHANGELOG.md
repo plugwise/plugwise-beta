@@ -4,8 +4,8 @@
 
 ## v0.43.0
 
-- New feature: for Adam, provide mode = off, related to the regulation_mode = off, next to the existing modes cool,
-  heat and auto. Also, for Adam, return to providing a single setpoint for both heating and cooling.
+- New feature: for Adam, provide hvac_mode = off, related to the regulation_mode = off, next to the existing hvac_modes cool,
+  heat and auto. Also, for Adam, return to providing a single setpoint for the heating and cooling modes.
   Implemented via [plugwise v0.34.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.34.0)
 
 ## v0.42.4
