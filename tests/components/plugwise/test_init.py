@@ -187,4 +187,4 @@ async def test_entity_registry_cleanup(
     assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
 
-    assert len(entity_registry.entities) == 24
+    assert len(entity_registry.entities) == 26
