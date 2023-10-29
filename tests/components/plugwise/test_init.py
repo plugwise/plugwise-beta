@@ -80,6 +80,30 @@ async def test_gateway_config_entry_not_ready(
     assert mock_config_entry.state is entry_state
 
 
+async def check_migration(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    entitydata: dict,
+    old_unique_id: str,
+    new_unique_id: str,
+) -> None:
+    """Helper-function for checking a unique_id migration."""
+    mock_config_entry.add_to_hass(hass)
+
+    entity_registry = er.async_get(hass)
+    entity: entity_registry.RegistryEntry = entity_registry.async_get_or_create(
+        **entitydata,
+        config_entry=mock_config_entry,
+    )
+    assert entity.unique_id == old_unique_id
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    entity_migrated = entity_registry.async_get(entity.entity_id)
+    assert entity_migrated
+    assert entity_migrated.unique_id == new_unique_id
+
+
 @pytest.mark.parametrize(
     ("entitydata", "old_unique_id", "new_unique_id"),
     [
@@ -99,26 +123,15 @@ async def test_gateway_config_entry_not_ready(
 async def test_migrate_unique_id_temperature(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_smile_anna: MagicMock,
     entitydata: dict,
     old_unique_id: str,
     new_unique_id: str,
+    mock_smile_anna: MagicMock,
 ) -> None:
     """Test migration of unique_id."""
-    mock_config_entry.add_to_hass(hass)
-
-    entity_registry = er.async_get(hass)
-    entity: entity_registry.RegistryEntry = entity_registry.async_get_or_create(
-        **entitydata,
-        config_entry=mock_config_entry,
+    await check_migration(
+        hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
-    assert entity.unique_id == old_unique_id
-    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
-    await hass.async_block_till_done()
-
-    entity_migrated = entity_registry.async_get(entity.entity_id)
-    assert entity_migrated
-    assert entity_migrated.unique_id == new_unique_id
 
 
 @pytest.mark.parametrize(
@@ -140,26 +153,15 @@ async def test_migrate_unique_id_temperature(
 async def test_migrate_unique_id_relay(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_smile_adam: MagicMock,
     entitydata: dict,
     old_unique_id: str,
     new_unique_id: str,
+    mock_smile_adam: MagicMock,
 ) -> None:
     """Test migration of unique_id."""
-    mock_config_entry.add_to_hass(hass)
-
-    entity_registry = er.async_get(hass)
-    entity: entity_registry.RegistryEntry = entity_registry.async_get_or_create(
-        **entitydata,
-        config_entry=mock_config_entry,
+    await check_migration(
+        hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
-    assert entity.unique_id == old_unique_id
-    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
-    await hass.async_block_till_done()
-
-    entity_migrated = entity_registry.async_get(entity.entity_id)
-    assert entity_migrated
-    assert entity_migrated.unique_id == new_unique_id
 
 
 @pytest.mark.parametrize(
