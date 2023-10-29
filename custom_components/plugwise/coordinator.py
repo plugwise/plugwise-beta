@@ -83,6 +83,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             timeout=30,
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
+        self.hass = hass
         self._entry = entry
         self._unavailable_logged = False
         self.current_unique_ids: set[tuple[str, str]] = {("dummy", "dummy_id")}
@@ -134,6 +135,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 raise UpdateFailed("Failed to connect") from err
 
         # Clean-up removed devices
-        cleanup_device_registry(hass, self.api)
+        cleanup_device_registry(self.hass, self.api)
 
         return data
