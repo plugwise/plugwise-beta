@@ -16,7 +16,7 @@ from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_registry import async_get
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 
 from tests.common import MockConfigEntry
 
@@ -101,7 +101,7 @@ async def test_migrate_unique_id_temperature(
     """Test migration of unique_id."""
     mock_config_entry.add_to_hass(hass)
 
-    entity_registry = async_get(hass)
+    entity_registry = er.async_get(hass)
     entity: entity_registry.RegistryEntry = entity_registry.async_get_or_create(
         **entitydata,
         config_entry=mock_config_entry,
@@ -142,7 +142,7 @@ async def test_migrate_unique_id_relay(
     """Test migration of unique_id."""
     mock_config_entry.add_to_hass(hass)
 
-    entity_registry = async_get(hass)
+    entity_registry = er.async_get(hass)
     entity: entity_registry.RegistryEntry = entity_registry.async_get_or_create(
         **entitydata,
         config_entry=mock_config_entry,
@@ -177,7 +177,7 @@ async def test_entity_registry_cleanup(
     """Test a clean-up of the entity_registry."""
     mock_config_entry.add_to_hass(hass)
 
-    entity_registry = async_get(hass)
+    entity_registry = er.async_get(hass)
     entity_registry.async_get_or_create(
         **entitydata,
         config_entry=mock_config_entry,
