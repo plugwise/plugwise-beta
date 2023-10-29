@@ -188,3 +188,19 @@ async def test_entity_registry_cleanup(
     await hass.async_block_till_done()
 
     assert len(entity_registry.entities) == 26
+
+async def test_device_removal(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_smile_adam_2: MagicMock,
+) -> None:
+    """Test a clean-up of the device_registry."""
+    mock_config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    # dev_reg = dr.async_get(hass)
+    # devices = dr.async_entries_for_config_entry(dev_reg, mock_config_entry.entry_id)
+    # assert len(devices) == 3
+    # assert devices[0].identifiers == {(DOMAIN, "015ae9ea3f964e668e490fa39da3870b")}
+    # assert devices[0].name == "Smile Anna"
