@@ -1,6 +1,7 @@
 """Tests for the Plugwise Climate integration."""
+from datetime import timedelta
 import logging
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from plugwise.exceptions import (
     ConnectionFailedError,
@@ -17,11 +18,16 @@ from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.util.dt import utcnow
 
-from tests.common import MockConfigEntry
+from tests.common import MockConfigEntry, async_fire_time_changed
 
 LOGGER = logging.getLogger(__package__)
 
+HA_PLUGWISE_SMILE = "homeassistant.components.plugwise.coordinator.Smile"
+HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
+    "homeassistant.components.plugwise.coordinator.Smile.async_update"
+)
 HEATER_ID = "1cbf783bb11e4a7c8a6843dee3a86927"  # Opentherm device_id for migration
 PLUG_ID = "cd0ddb54ef694e11ac18ed1cbce5dbbd"  # VCR device_id for migration
 
@@ -194,14 +200,49 @@ async def test_device_removal(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     mock_smile_adam_2: MagicMock,
+    init_integration: MockConfigEntry,
 ) -> None:
     """Test a clean-up of the device_registry."""
-    mock_config_entry.add_to_hass(hass)
-    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
-    await hass.async_block_till_done()
-
     dev_reg = dr.async_get(hass)
     devices = dr.async_entries_for_config_entry(dev_reg, mock_config_entry.entry_id)
-    assert len(devices) == 3
-    assert devices[0].identifiers == {(DOMAIN, "015ae9ea3f964e668e490fa39da3870b")}
-    assert devices[0].name == "Smile Anna"
+    assert len(devices) == 6
+
+    data = mock_smile_adam_2.async_update.return_value
+    # Replace a Tom/Floor
+    data.devices.pop("1772a4ea304041adb83f357b751341ff")
+    data.devices.update(
+        {
+            "01234567890abcdefghijklmnopqrstu": {
+                "available": True,
+                "dev_class": "thermo_sensor",
+                "firmware": "2020-11-04T01:00:00+01:00",
+                "hardware": "1",
+                "location": "f871b8c4d63549319221e294e4f88074",
+                "model": "Tom/Floor",
+                "name": "Tom Badkamer",
+                "sensors": {
+                    "battery": 99,
+                    "temperature": 18.6,
+                    "temperature_difference": 2.3,
+                    "valve_position": 0.0,
+                },
+                "temperature_offset": {
+                    "lower_bound": -2.0,
+                    "resolution": 0.1,
+                    "setpoint": 0.1,
+                    "upper_bound": 2.0,
+                },
+                "vendor": "Plugwise",
+                "zigbee_mac_address": "ABCD012345670A01",
+            },
+        }
+    )
+    device_list = mock_smile_adam_2.device_list
+    device_list.remove("1772a4ea304041adb83f357b751341ff")
+    device_list.append("01234567890abcdefghijklmnopqrstu")
+    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data), patch(
+        HA_PLUGWISE_SMILE, side_effect=device_list
+    ):
+        async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
+        await hass.config_entries.async_reload(mock_config_entry.entry_id)
+        await hass.async_block_till_done()
