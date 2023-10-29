@@ -33,6 +33,7 @@ def cleanup_device_registry(
     api: Smile,
 ) -> None:
     """Remove deleted devices from device-registry."""
+    LOGGER.debug("HOI cleaning devices")
     device_registry = dr.async_get(hass)
     for dev_id, device_entry in list(device_registry.devices.items()):
         for item in device_entry.identifiers:
