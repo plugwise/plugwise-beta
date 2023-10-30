@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v.0.43.1
+
+- Anna + Elga improvements via [plugwise v0.34.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.34.3)
+
 ## v0.43.0
 
 - New feature: for Adam, provide hvac_mode = off, related to the regulation_mode = off, next to the existing hvac_modes cool,
