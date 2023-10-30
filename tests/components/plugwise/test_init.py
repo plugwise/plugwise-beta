@@ -24,12 +24,37 @@ from tests.common import MockConfigEntry, async_fire_time_changed
 
 LOGGER = logging.getLogger(__package__)
 
-HA_PLUGWISE_SMILE = "homeassistant.components.plugwise.coordinator.Smile"
+HA_PLUGWISE_SMILE: "homeassistant.components.plugwise.coordinator.Smile"
 HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
     "homeassistant.components.plugwise.coordinator.Smile.async_update"
 )
 HEATER_ID = "1cbf783bb11e4a7c8a6843dee3a86927"  # Opentherm device_id for migration
 PLUG_ID = "cd0ddb54ef694e11ac18ed1cbce5dbbd"  # VCR device_id for migration
+TOM = {
+    "01234567890abcdefghijklmnopqrstu": {
+        "available": True,
+        "dev_class": "thermo_sensor",
+        "firmware": "2020-11-04T01:00:00+01:00",
+        "hardware": "1",
+        "location": "f871b8c4d63549319221e294e4f88074",
+        "model": "Tom/Floor",
+        "name": "Tom Badkamer",
+        "sensors": {
+            "battery": 99,
+            "temperature": 18.6,
+            "temperature_difference": 2.3,
+            "valve_position": 0.0,
+        },
+        "temperature_offset": {
+            "lower_bound": -2.0,
+            "resolution": 0.1,
+            "setpoint": 0.1,
+            "upper_bound": 2.0,
+        },
+        "vendor": "Plugwise",
+        "zigbee_mac_address": "ABCD012345670A01",
+    },
+}
 
 
 async def test_load_unload_config_entry(
@@ -183,33 +208,7 @@ async def test_device_removal(
     data = mock_smile_adam_2.async_update.return_value
     # Replace a Tom/Floor
     data.devices.pop("1772a4ea304041adb83f357b751341ff")
-    data.devices.update(
-        {
-            "01234567890abcdefghijklmnopqrstu": {
-                "available": True,
-                "dev_class": "thermo_sensor",
-                "firmware": "2020-11-04T01:00:00+01:00",
-                "hardware": "1",
-                "location": "f871b8c4d63549319221e294e4f88074",
-                "model": "Tom/Floor",
-                "name": "Tom Badkamer",
-                "sensors": {
-                    "battery": 99,
-                    "temperature": 18.6,
-                    "temperature_difference": 2.3,
-                    "valve_position": 0.0,
-                },
-                "temperature_offset": {
-                    "lower_bound": -2.0,
-                    "resolution": 0.1,
-                    "setpoint": 0.1,
-                    "upper_bound": 2.0,
-                },
-                "vendor": "Plugwise",
-                "zigbee_mac_address": "ABCD012345670A01",
-            },
-        }
-    )
+    data.devices.update(TOM)
     device_list = mock_smile_adam_2.device_list
     device_list.remove("1772a4ea304041adb83f357b751341ff")
     device_list.append("01234567890abcdefghijklmnopqrstu")
