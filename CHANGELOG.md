@@ -2,9 +2,9 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.44.0
 
-- Implement device_registry cleaning, solution to [Core Issue #102926](https://github.com/home-assistant/core/issues/102926)
+- New Feature: implement device_registry cleaning, solution to [Core Issue #102926](https://github.com/home-assistant/core/issues/102926)
 - Revert entity_registry cleaning, not approved in Core
 
 ## v.0.43.1
