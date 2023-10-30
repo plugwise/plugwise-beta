@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from plugwise.constants import SensorType
 
 from homeassistant.components.sensor import (
-    DOMAIN as SENSOR_DOMAIN,
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
@@ -414,7 +413,6 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        coordinator.current_unique_ids.add((SENSOR_DOMAIN, self._attr_unique_id))
 
     @property
     def native_value(self) -> int | float:
