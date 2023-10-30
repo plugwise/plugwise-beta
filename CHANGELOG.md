@@ -4,7 +4,7 @@
 
 ## v.0.43.1
 
-- Anna + Elga improvements via [plugwise v0.34.1a0](https://github.com/plugwise/python-plugwise/releases/tag/v0.34.1.a0)
+- Anna + Elga improvements via [plugwise v0.34.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.34.3)
 
 ## v0.43.0
 
