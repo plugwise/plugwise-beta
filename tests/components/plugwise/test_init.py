@@ -208,6 +208,11 @@ async def test_device_removal(
     dev_reg = dr.async_get(hass)
     devices = dr.async_entries_for_config_entry(dev_reg, mock_config_entry.entry_id)
     assert len(devices) == 6
+    item_list: list[str] = []
+    for device_entry in list(dev_reg.devices.values()):
+        for item in device_entry.identifiers:
+            item_list.append(item[1])
+    assert "1772a4ea304041adb83f357b751341ff" in item_list
 
     data = mock_smile_adam_2.async_update.return_value
     # Replace a Tom/Floor
@@ -248,3 +253,10 @@ async def test_device_removal(
         async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
         await hass.config_entries.async_reload(mock_config_entry.entry_id)
         await hass.async_block_till_done()
+
+    devices = dr.async_entries_for_config_entry(dev_reg, mock_config_entry.entry_id)
+    item_list = []
+    for device_entry in list(dev_reg.devices.values()):
+        for item in device_entry.identifiers:
+            item_list.append(item[1])
+    assert "1772a4ea304041adb83f357b751341ff" not in item_list
