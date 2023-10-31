@@ -43,7 +43,7 @@ def cleanup_device_registry(
     # Process the devices connected to the active Gateway
     for via_id in via_id_list:
         if via_id[1] != api.gateway_id:
-            continue
+            continue  # pragma: no cover 
 
         for dev_id, device_entry in list(device_registry.devices.items()):
             if device_entry.via_device_id == via_id[0]:
