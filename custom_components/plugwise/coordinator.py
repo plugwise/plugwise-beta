@@ -39,19 +39,22 @@ def cleanup_device_registry(
     for device_entry in list(device_registry.devices.values()):
         if device_entry.manufacturer == "Plugwise" and device_entry.model == "Gateway":
             via_id_list.append([device_entry.id, api.gateway_id])
+    LOGGER.debug("HOI via-id-list: %s", via_id_list)
 
     # Process the devices connected to the active Gateway
     for via_id in via_id_list:
+        LOGGER.debug("HOI via_id(1), gateway_id: %s, &s", via_id[1], api.gateway_id)
         if via_id[1] != api.gateway_id:
             continue  # pragma: no cover
 
         for dev_id, device_entry in list(device_registry.devices.items()):
+            LOGGER.debug("HOI dev_id: %s", dev_id)
             if device_entry.via_device_id == via_id[0]:
                 for item in device_entry.identifiers:
                     if item[0] == DOMAIN and item[1] in api.device_list:
                         continue
 
-                    device_registry.async_remove_device(dev_id)
+                    #device_registry.async_remove_device(dev_id)
                     LOGGER.debug(
                         "Removed device %s %s %s from device_registry",
                         DOMAIN,
