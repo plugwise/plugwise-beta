@@ -54,7 +54,7 @@ def cleanup_device_registry(
                     if item[0] == DOMAIN and item[1] in api.device_list:
                         continue
 
-                    #device_registry.async_remove_device(dev_id)
+                    # device_registry.async_remove_device(dev_id)
                     LOGGER.debug(
                         "Removed device %s %s %s from device_registry",
                         DOMAIN,
