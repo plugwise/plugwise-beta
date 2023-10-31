@@ -33,18 +33,31 @@ def cleanup_device_registry(
     api: Smile,
 ) -> None:
     """Remove deleted devices from device-registry."""
-    LOGGER.debug("HOI cleaning devices")
     device_registry = dr.async_get(hass)
+    via_id_list: list[list[str, str]] = []
+    # Find the device_entry-id's of the available Plugwise Gateway's
     for dev_id, device_entry in list(device_registry.devices.items()):
-        for item in device_entry.identifiers:
-            if item[0] == DOMAIN and item[1] not in api.device_list:
-                device_registry.async_remove_device(dev_id)
-                LOGGER.debug(
-                    "Removed device %s %s %s from device_registry",
-                    DOMAIN,
-                    device_entry.model,
-                    dev_id,
-                )
+        if device_entry.manufacturer == "Plugwise" and device_entry.model == "Gateway":
+            via_id_list.append([device_entry.id, api.gateway_id])
+    
+    # Process the devices connected to the active Gateway
+    for via_id in via_id_list:
+        if via_id[1] != api.gateway_id:
+            continue
+
+        for dev_id, device_entry in list(device_registry.devices.items()):
+            if device_entry.via_device_id == via_id[0]:
+                for item in device_entry.identifiers:
+                    if item[0] == DOMAIN and item[1] in api.device_list:
+                        continue
+
+                    device_registry.async_remove_device(dev_id)
+                    LOGGER.debug(
+                        "Removed device %s %s %s from device_registry",
+                        DOMAIN,
+                        device_entry.model,
+                        dev_id,
+                    )
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
