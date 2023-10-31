@@ -2,6 +2,11 @@
 
 ## Versions from 0.40 and up
 
+## v0.44.0
+
+- New Feature: implement device_registry cleaning, solution to [Core Issue #102926](https://github.com/home-assistant/core/issues/102926)
+- Revert entity_registry cleaning, not approved in Core
+
 ## v.0.43.1
 
 - Anna + Elga improvements via [plugwise v0.34.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.34.3)

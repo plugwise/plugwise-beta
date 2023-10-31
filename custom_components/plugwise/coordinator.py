@@ -20,11 +20,31 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
+
+
+def cleanup_device_registry(
+    hass: HomeAssistant,
+    api: Smile,
+) -> None:
+    """Remove deleted devices from device-registry."""
+    LOGGER.debug("HOI cleaning devices")
+    device_registry = dr.async_get(hass)
+    for dev_id, device_entry in list(device_registry.devices.items()):
+        for item in device_entry.identifiers:
+            if item[0] == DOMAIN and item[1] not in api.device_list:
+                device_registry.async_remove_device(dev_id)
+                LOGGER.debug(
+                    "Removed device %s %s %s from device_registry",
+                    DOMAIN,
+                    device_entry.model,
+                    dev_id,
+                )
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -64,6 +84,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             timeout=30,
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
+        self.hass = hass
         self._entry = entry
         self._unavailable_logged = False
         self.current_unique_ids: set[tuple[str, str]] = {("dummy", "dummy_id")}
@@ -113,5 +134,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
+
+        # Clean-up removed devices
+        cleanup_device_registry(self.hass, self.api)
 
         return data

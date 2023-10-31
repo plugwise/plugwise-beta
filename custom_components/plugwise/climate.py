@@ -7,7 +7,6 @@ from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
     ATTR_TARGET_TEMP_HIGH,
     ATTR_TARGET_TEMP_LOW,
-    DOMAIN as CLIMATE_DOMAIN,
     ClimateEntity,
     ClimateEntityFeature,
     HVACAction,
@@ -84,7 +83,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self.device["thermostat"]["resolution"], 0.1
         )
         self._attr_unique_id = f"{device_id}-climate"
-        coordinator.current_unique_ids.add((CLIMATE_DOMAIN, self._attr_unique_id))
 
         # Determine supported features
         self.cdr_gateway = coordinator.data.gateway
