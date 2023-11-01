@@ -30,27 +30,23 @@ from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN
 
 def remove_stale_devices(
     api: Smile,
-    via_id_list: list[list[str]],
     device_registry: dr.DeviceRegistry,
+    via_id: str,
 ) -> None:
     """Process the Plugwise devices present in the device_registry connected to a specific Gateway."""
-    for via_id in via_id_list:
-        if via_id[0] != api.gateway_id:
-            continue  # pragma: no cover
+    for dev_id, device_entry in list(device_registry.devices.items()):
+        if device_entry.via_device_id == via_id:
+            for item in device_entry.identifiers:
+                if item[0] == DOMAIN and item[1] in api.device_list:
+                    continue
 
-        for dev_id, device_entry in list(device_registry.devices.items()):
-            if device_entry.via_device_id == via_id[1]:
-                for item in device_entry.identifiers:
-                    if item[0] == DOMAIN and item[1] in api.device_list:
-                        continue
-
-                    device_registry.async_remove_device(dev_id)
-                    LOGGER.debug(
-                        "Removed device %s %s %s from device_registry",
-                        DOMAIN,
-                        device_entry.model,
-                        dev_id,
-                    )
+                device_registry.async_remove_device(dev_id)
+                LOGGER.debug(
+                    "Removed device %s %s %s from device_registry",
+                    DOMAIN,
+                    device_entry.model,
+                    dev_id,
+                )
 
 
 def cleanup_device_registry(
@@ -66,7 +62,11 @@ def cleanup_device_registry(
             for item in device_entry.identifiers:
                 via_id_list.append([item[1], device_entry.id])
 
-    remove_stale_devices(api, via_id_list, device_registry)
+    for via_id in via_id_list:
+        if via_id[0] != api.gateway_id:
+            continue  # pragma: no cover
+
+        remove_stale_devices(api, device_registry, via_id[1])
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
