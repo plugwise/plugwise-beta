@@ -35,19 +35,20 @@ def cleanup_device_registry(
     """Remove deleted devices from device-registry."""
     device_registry = dr.async_get(hass)
     via_id_list: list[list[str]] = []
-    # Find the device_entry-id's of the available Plugwise Gateway's
+    # Collect the required data of the Plugwise Gateway's 
     for device_entry in list(device_registry.devices.values()):
         if device_entry.manufacturer == "Plugwise" and device_entry.model == "Gateway":
             for item in device_entry.identifiers:
-                via_id_list.append([device_entry.id, item[1]])
+                via_id_list.append([item[1], device_entry.id])
 
-    # Process the devices connected to the active Gateway
+    # Process the Plugwise devices present in the device_registry,
+    # connected to a specific Gateway
     for via_id in via_id_list:
-        if via_id[1] != api.gateway_id:
+        if via_id[0] != api.gateway_id:
             continue  # pragma: no cover
 
         for dev_id, device_entry in list(device_registry.devices.items()):
-            if device_entry.via_device_id == via_id[0]:
+            if device_entry.via_device_id == via_id[1]:
                 for item in device_entry.identifiers:
                     if item[0] == DOMAIN and item[1] in api.device_list:
                         continue
