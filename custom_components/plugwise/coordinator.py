@@ -28,16 +28,18 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
 
 
-def cleanup_device_registry(
-    hass: HomeAssistant,
+def remove_stale_devices(
     api: Smile,
+    device_registry: dr.DeviceRegistry,
+    via_id: str,
 ) -> None:
-    """Remove deleted devices from device-registry."""
-    LOGGER.debug("HOI cleaning devices")
-    device_registry = dr.async_get(hass)
+    """Process the Plugwise devices present in the device_registry connected to a specific Gateway."""
     for dev_id, device_entry in list(device_registry.devices.items()):
-        for item in device_entry.identifiers:
-            if item[0] == DOMAIN and item[1] not in api.device_list:
+        if device_entry.via_device_id == via_id:
+            for item in device_entry.identifiers:
+                if item[0] == DOMAIN and item[1] in api.device_list:
+                    continue
+
                 device_registry.async_remove_device(dev_id)
                 LOGGER.debug(
                     "Removed device %s %s %s from device_registry",
@@ -45,6 +47,26 @@ def cleanup_device_registry(
                     device_entry.model,
                     dev_id,
                 )
+
+
+def cleanup_device_registry(
+    hass: HomeAssistant,
+    api: Smile,
+) -> None:
+    """Remove deleted devices from device-registry."""
+    device_registry = dr.async_get(hass)
+    via_id_list: list[list[str]] = []
+    # Collect the required data of the Plugwise Gateway's
+    for device_entry in list(device_registry.devices.values()):
+        if device_entry.manufacturer == "Plugwise" and device_entry.model == "Gateway":
+            for item in device_entry.identifiers:
+                via_id_list.append([item[1], device_entry.id])
+
+    for via_id in via_id_list:
+        if via_id[0] != api.gateway_id:
+            continue  # pragma: no cover
+
+        remove_stale_devices(api, device_registry, via_id[1])
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
