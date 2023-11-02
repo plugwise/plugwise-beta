@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.44.1
+
+- Bugfix: ensure selecting schedule works correctly
+
 ## v0.44.0
 
 - New Feature: implement device_registry cleaning, solution to [Core Issue #102926](https://github.com/home-assistant/core/issues/102926)
