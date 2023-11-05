@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.44.2
+
+- Adam: return use of control_state, implement HAVCAction.PREHEATING. Fixing [Core Issue #103386](https://github.com/home-assistant/core/issues/103386)
+
 ## v0.44.1
 
 - Bugfix: ensure selecting schedule works correctly
