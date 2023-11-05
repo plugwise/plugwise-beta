@@ -198,7 +198,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             return HVACAction.COOLING
         if control_state == "heating":
             return HVACAction.HEATING
-        if control_state =="preheating":
+        if control_state == "preheating":
             return HVACAction.PREHEATING
         if control_state == "off":
             return HVACAction.IDLE
