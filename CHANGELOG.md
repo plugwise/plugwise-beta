@@ -2,6 +2,12 @@
 
 ## Versions from 0.40 and up
 
+## v0.45.0
+
+- New feature: add an Off-option for the Thermostat-schedule Select, this option disables the schedule for the related thermostat.
+- Fix not being able to turn a schedule off.
+  Both updates implemented via [plugwise v0.35.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.35.0)
+
 ## v0.44.2
 
 - Adam: return use of control_state, implement HAVCAction.PREHEATING. Fixing [Core Issue #103386](https://github.com/home-assistant/core/issues/103386)
