@@ -119,7 +119,10 @@
         }
       },
       "thermostat_schedule": {
-        "name": "Thermostaatschema"
+        "name": "Thermostaatschema",
+        "state": {
+            "Off": "Uit"
+        }
       }
     },
     "sensor": {

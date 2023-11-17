@@ -119,7 +119,10 @@
         }
       },
       "thermostat_schedule": {
-        "name": "Thermostat schedule"
+        "name": "Thermostat schedule",
+        "state": {
+            "Off": "Off"
+        }
       }
     },
     "sensor": {
