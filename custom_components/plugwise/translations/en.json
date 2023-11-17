@@ -121,7 +121,7 @@
       "thermostat_schedule": {
         "name": "Thermostat schedule",
         "state": {
-          "Off": "Off"
+          "off": "Off"
         }
       }
     },

@@ -121,7 +121,7 @@
       "thermostat_schedule": {
         "name": "Thermostaatschema",
         "state": {
-          "Off": "Uit"
+          "off": "Uit"
         }
       }
     },
