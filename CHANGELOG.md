@@ -6,7 +6,7 @@
 
 - New feature: add an Off-option for the Thermostat-schedule Select, this option disables the schedule for the related thermostat.
 - Fix not being able to turn a schedule off.
-  Both updates implemented via [plugwise v0.35.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.35.0)
+  Both updates implemented via [plugwise v0.35.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.35.1)
 
 ## v0.44.2
 
