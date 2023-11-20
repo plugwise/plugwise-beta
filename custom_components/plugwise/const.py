@@ -63,3 +63,16 @@ ZEROCONF_MAP: Final[dict[str, str]] = {
     "smile_open_therm": "Adam",
     "stretch": "Stretch",
 }
+
+SelectType = Literal[
+    "active_preset",
+    "select_dhw_mode",
+    "select_regulation_mode",
+    "select_schedule",
+]
+SelectOptionsType = Literal[
+    "dhw_modes",
+    "preset_modes",
+    "regulation_modes",
+    "available_schedules",
+]
