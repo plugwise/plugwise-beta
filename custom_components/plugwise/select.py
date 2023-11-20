@@ -5,7 +5,6 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
 from plugwise import Smile
-from plugwise.constants import SelectOptionsType, SelectType
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
@@ -17,6 +16,8 @@ from .const import (
     COORDINATOR,  # pw-beta
     DOMAIN,
     LOGGER,
+    SelectOptionsType,
+    SelectType,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity

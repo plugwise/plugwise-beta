@@ -1,7 +1,7 @@
 """Constants for Plugwise component."""
 from datetime import timedelta
 import logging
-from typing import Final
+from typing import Final, Literal
 
 from homeassistant.const import Platform
 
@@ -63,3 +63,20 @@ ZEROCONF_MAP: Final[dict[str, str]] = {
     "smile_open_therm": "Adam",
     "stretch": "Stretch",
 }
+
+NumberType = Literal[
+    "maximum_boiler_temperature",
+    "max_dhw_temperature",
+    "temperature_offset",
+]
+
+SelectType = Literal[
+    "select_dhw_mode",
+    "select_regulation_mode",
+    "select_schedule",
+]
+SelectOptionsType = Literal[
+    "dhw_modes",
+    "regulation_modes",
+    "available_schedules",
+]

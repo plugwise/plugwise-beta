@@ -5,7 +5,6 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
 from plugwise import Smile
-from plugwise.constants import NumberType
 
 from homeassistant.components.number import (
     NumberDeviceClass,
@@ -22,6 +21,7 @@ from .const import (
     COORDINATOR,  # pw-beta
     DOMAIN,
     LOGGER,
+    NumberType,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
