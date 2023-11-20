@@ -1,7 +1,7 @@
 """Constants for Plugwise component."""
 from datetime import timedelta
 import logging
-from typing import Final
+from typing import Final, Literal
 
 from homeassistant.const import Platform
 
