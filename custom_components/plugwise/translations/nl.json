@@ -123,6 +123,16 @@
         "state": {
           "off": "Uit"
         }
+      },
+      "thermostat_preset": {
+        "name": "Thermostat preset",
+        "state": {
+          "asleep": "Nacht",
+          "away": "Afwezig",
+          "home": "Thuis",
+          "no_frost": "Vorstbescherming",
+          "vacation": "Vakantie"
+        }
       }
     },
     "sensor": {

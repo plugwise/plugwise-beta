@@ -123,6 +123,16 @@
         "state": {
           "off": "Off"
         }
+      },
+      "thermostat_preset": {
+        "name": "Thermostat preset",
+        "state": {
+          "asleep": "Night",
+          "away": "Away",
+          "home": "Home",
+          "no_frost": "Anti-frost",
+          "vacation": "Vacation"
+        }
       }
     },
     "sensor": {
