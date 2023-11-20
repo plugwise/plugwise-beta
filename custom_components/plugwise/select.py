@@ -16,7 +16,7 @@ from .const import (
     COORDINATOR,  # pw-beta
     DOMAIN,
     LOGGER,
-    SelectOptionsType, 
+    SelectOptionsType,
     SelectType,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
@@ -115,7 +115,9 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = entity_description
         self._attr_unique_id = f"{device_id}-{entity_description.key}"
-        self._attr_options = self.device[entity_description.options_key]
+        self._attr_options = []
+        if (options := self.device[entity_description.options_key]) is not None:
+            self._attr_options = options
 
     @property
     def current_option(self) -> str | None:
