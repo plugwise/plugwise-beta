@@ -50,6 +50,13 @@ SELECT_TYPES = (
         options_key="available_schedules",
     ),
     PlugwiseSelectEntityDescription(
+        key="active_preset",
+        translation_key="thermostat_preset",
+        icon="mdi:room_preferences",
+        command=lambda api, loc, opt: api.set_preset(loc, opt),
+        options_key="preset_modes",
+    ),
+    PlugwiseSelectEntityDescription(
         key="select_regulation_mode",
         translation_key="regulation_mode",
         icon="mdi:hvac",
