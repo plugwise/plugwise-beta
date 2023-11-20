@@ -89,7 +89,9 @@ async def async_setup_entry(
     entities: list[PlugwiseSelectEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in SELECT_TYPES:
+            LOGGER.debug("HOI device: %s", device)
             if description.options_key in device:
+                LOGGER.debug("HOI options_key: %s", description.options_key)
                 entities.append(
                     PlugwiseSelectEntity(coordinator, device_id, description)
                 )
