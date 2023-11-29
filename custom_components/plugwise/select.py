@@ -51,6 +51,14 @@ SELECT_TYPES = (
         options_key="regulation_modes",
     ),
     PlugwiseSelectEntityDescription(
+        key="select_gateway_mode",
+        translation_key="gateway_mode",
+        icon="mdi:pause",
+        entity_category=EntityCategory.CONFIG,
+        command=lambda api, loc, opt: api.set_gateway_mode(opt),
+        options_key="gateway_modes",
+    ),
+    PlugwiseSelectEntityDescription(
         key="select_dhw_mode",
         translation_key="dhw_mode",
         icon="mdi:shower",
