@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Implement [Core PR #104004](https://github.com/home-assistant/core/pull/104004)
+
 ## v0.45.0
 
 - New feature: add an Off-option for the Thermostat-schedule Select, this option disables the schedule for the related thermostat.
