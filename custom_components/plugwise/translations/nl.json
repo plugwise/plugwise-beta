@@ -121,8 +121,8 @@
       "gateway_mode": {
         "name": "Gateway mode",
         "state": {
-          "away": "Afwezig",
-          "full": "Pauze",
+          "away": "Pauze",
+          "full": "Normaal",
           "vacation": "Vakantie"
         }
       },
