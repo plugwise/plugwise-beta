@@ -5,6 +5,7 @@
 ## Ongoing
 
 - Implement [Core PR #104004](https://github.com/home-assistant/core/pull/104004)
+- Implement [Core PR #104324](https://github.com/home-assistant/core/pull/104324)
 
 ## v0.45.0
 
