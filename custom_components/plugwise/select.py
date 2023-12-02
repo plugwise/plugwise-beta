@@ -53,7 +53,7 @@ SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
         key="select_gateway_mode",
         translation_key="gateway_mode",
-        icon="mdi:settings",
+        icon="mdi:cog-outline",
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_gateway_mode(opt),
         options_key="gateway_modes",
