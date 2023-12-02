@@ -76,7 +76,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
 
-        self._attr_max_temp = self.device["thermostat"]["upper_bound"]
+        self._attr_max_temp = min(self.device["thermostat"]["upper_bound"], 35.0)
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         # Ensure we don't drop below 0.1
         self._attr_target_temperature_step = max(
