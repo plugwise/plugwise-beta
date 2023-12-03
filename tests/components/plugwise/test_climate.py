@@ -43,7 +43,7 @@ async def test_adam_climate_entity_attributes(
     assert state.attributes["supported_features"] == 17
     assert state.attributes["temperature"] == 21.5
     assert state.attributes["min_temp"] == 0.0
-    assert state.attributes["max_temp"] == 99.9
+    assert state.attributes["max_temp"] == 35
     assert math.isclose(
         state.attributes["target_temp_step"], 0.1, rel_tol=1e-09, abs_tol=1e-09
     )
@@ -65,7 +65,7 @@ async def test_adam_climate_entity_attributes(
     assert state.attributes["preset_mode"] == "asleep"
     assert state.attributes["temperature"] == 15.0
     assert state.attributes["min_temp"] == 0.0
-    assert state.attributes["max_temp"] == 99.9
+    assert state.attributes["max_temp"] == 35
     assert math.isclose(
         state.attributes["target_temp_step"], 0.1, rel_tol=1e-09, abs_tol=1e-09
     )
