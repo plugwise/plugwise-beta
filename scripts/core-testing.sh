@@ -218,22 +218,14 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
-	cd "${my_path}" || exit
-	echo ""
-	echo "... Pre-assuring our pre-commit hooks..."
-	pre-commit install-hooks
 	cd "${coredir}" || exit
 	echo ""
-	echo "... re-assuring core pre-commit hooks..."
-	pre-commit install-hooks
 	set +e
 	echo "... ruff-ing component..."
 	ruff --fix homeassistant/components/plugwise/*py || echo "Ruff applied autofixes"
 	echo "... ruff-ing tests..."
 	ruff --fix tests/components/plugwise/*py || echo "Ruff applied autofixes"
 	set -e
-	echo "... black-ing ..."
-	black homeassistant/components/plugwise/*py tests/components/plugwise/*py || exit
 	echo "... mypy ..."
 	script/run-in-env.sh mypy homeassistant/components/plugwise/*.py || exit
 	cd ..
