@@ -220,6 +220,8 @@ fi # testing
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
 	cd "${coredir}" || exit
 	echo ""
+	echo "... re-assuring pre-commit hooks..."
+	pre-commit install-hooks
 	set +e
 	echo "... ruff-ing component..."
 	ruff --fix homeassistant/components/plugwise/*py || echo "Ruff applied autofixes"
