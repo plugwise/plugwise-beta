@@ -218,9 +218,13 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
+	cd "${my_path}" || exit
+	echo ""
+	echo "... Pre-assuring our pre-commit hooks..."
+	pre-commit install-hooks
 	cd "${coredir}" || exit
 	echo ""
-	echo "... re-assuring pre-commit hooks..."
+	echo "... re-assuring core pre-commit hooks..."
 	pre-commit install-hooks
 	set +e
 	echo "... ruff-ing component..."
