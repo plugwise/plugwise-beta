@@ -202,6 +202,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo "Checking manifest for current python-plugwise to install: ${module}"
 	echo ""
 	pip install --upgrade -q --disable-pip-version-check "${module}"
+	echo "Install pre-commit install-hooks"
+	echo ""
+        pre-commit install-hooks
 fi # pip_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then 
