@@ -2,8 +2,9 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.46.0
 
+- New Feature: for Adam, add the gateway_mode Select. This allows the user to set the Gateway Mode, options: Normal, Pause, Vacation.
 - Implement [Core PR #104004](https://github.com/home-assistant/core/pull/104004)
 - Implement [Core PR #104324](https://github.com/home-assistant/core/pull/104324)
 
