@@ -118,6 +118,14 @@
           "off": "Uit"
         }
       },
+      "gateway_mode": {
+        "name": "Gateway mode",
+        "state": {
+          "away": "Pauze",
+          "full": "Normaal",
+          "vacation": "Vakantie"
+        }
+      },
       "thermostat_schedule": {
         "name": "Thermostaatschema",
         "state": {

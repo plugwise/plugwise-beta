@@ -2,8 +2,12 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.46.0
 
+- New Feature: for Adam, add the gateway_mode Select. This allows the user to set the Gateway Mode, options: Normal, Pause, Vacation.
+  Implemented via [plugwise v0.36.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.36.1)
+- Remove support for Adam with fw 2.x and Anna with fw 3.x, via [plugwise v0.35.4](https://github.com/plugwise/python-plugwise/releases/tag/v0.35.4).
+- Fix [Core Issue #104433](https://github.com/home-assistant/core/issues/104433) via [plugwise v0.35.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.35.3)
 - Implement [Core PR #104004](https://github.com/home-assistant/core/pull/104004)
 - Implement [Core PR #104324](https://github.com/home-assistant/core/pull/104324)
 
