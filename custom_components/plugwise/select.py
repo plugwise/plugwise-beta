@@ -25,7 +25,7 @@ from .entity import PlugwiseEntity
 PARALLEL_UPDATES = 0
 
 
-@dataclass(kw_only=True)
+@dataclass(frozen=True, kw_only=True)
 class PlugwiseSelectEntityDescription(SelectEntityDescription):
     """Class describing Plugwise Select entities."""
 
