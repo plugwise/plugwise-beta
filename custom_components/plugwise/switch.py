@@ -26,7 +26,7 @@ from .entity import PlugwiseEntity
 from .util import plugwise_command
 
 
-@dataclass
+@dataclass(frozen=True)
 class PlugwiseSwitchEntityDescription(SwitchEntityDescription):
     """Describes Plugwise switch entity."""
 

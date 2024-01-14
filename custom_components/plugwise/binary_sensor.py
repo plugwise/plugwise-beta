@@ -28,7 +28,7 @@ from .entity import PlugwiseEntity
 PARALLEL_UPDATES = 0
 
 
-@dataclass
+@dataclass(frozen=True)
 class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
     """Describes a Plugwise binary sensor entity."""
 
