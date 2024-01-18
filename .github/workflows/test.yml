@@ -27,7 +27,7 @@ jobs:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
         id: cache-hacore
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: cache-hacore
         with:
