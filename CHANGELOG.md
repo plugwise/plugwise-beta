@@ -2,6 +2,14 @@
 
 ## Versions from 0.40 and up
 
+## v0.46.2
+
+- Backend gateway_mode-related bugfixes via [plugwise v0.36.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.36.3).
+
+## v0.46.1
+
+- Improve support for Anna+Elga systems that do not support cooling via [plugwise v0.36.2](https://github.com/plugwise/python-plugwise/releases/tag/v0.36.2).
+
 ## v0.46.0
 
 - New Feature: for Adam, add the gateway_mode Select. This allows the user to set the Gateway Mode, options: Normal, Pause, Vacation.
