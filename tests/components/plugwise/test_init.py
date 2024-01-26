@@ -209,7 +209,7 @@ async def test_device_removal(
     # Replace a Tom/Floor
     data.devices.pop("1772a4ea304041adb83f357b751341ff")
     data.devices.update(TOM)
-    device_list = mock_smile_adam_2.device_list
+    device_list = list(data.devices.keys())
     device_list.remove("1772a4ea304041adb83f357b751341ff")
     device_list.append("01234567890abcdefghijklmnopqrstu")
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data), patch(
