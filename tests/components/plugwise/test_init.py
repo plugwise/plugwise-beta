@@ -210,8 +210,6 @@ async def test_device_removal(
     data.devices.pop("1772a4ea304041adb83f357b751341ff")
     data.devices.update(TOM)
     device_list = list(data.devices.keys())
-    device_list.remove("1772a4ea304041adb83f357b751341ff")
-    device_list.append("01234567890abcdefghijklmnopqrstu")
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data), patch(
         HA_PLUGWISE_SMILE, side_effect=device_list
     ):
