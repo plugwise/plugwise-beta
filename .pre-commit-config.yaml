@@ -108,7 +108,7 @@ repos:
         language: script
         pass_filenames: false
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.38.0
+    rev: v0.39.0
     hooks:
       - id: markdownlint
         name: "Linting Markdown"
