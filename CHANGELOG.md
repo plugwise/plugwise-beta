@@ -4,7 +4,7 @@
 
 ## v0.47.1
 
-- Implement Core PR's #108498 and #109464
+- Implement Core PR's [#108498](https://github.com/home-assistant/core/pull/108498) and [#109464](https://github.com/home-assistant/core/pull/109464)
 - Set minimum Core version to 2024.2.0
 
 ## v0.47.0
