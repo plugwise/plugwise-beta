@@ -63,6 +63,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     _attr_name = None
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_translation_key = DOMAIN
+    _enable_turn_on_off_backwards_compatibility = False
 
     _homekit_mode: str | None = None  # pw-beta homekit emulation
     _previous_mode: str = "heating"
@@ -87,6 +88,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Determine supported features
         self.cdr_gateway = coordinator.data.gateway
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
+        if HVACMode.OFF in self.hvac_modes:
+            self._attr_supported_features |= (
+                ClimateEntityFeature.TURN_OFF | ClimateEntityFeature.TURN_ON
+            )
+
         if (
             self.cdr_gateway["cooling_present"]
             and self.cdr_gateway["smile_name"] != "Adam"
