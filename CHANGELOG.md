@@ -2,7 +2,7 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.46.3
 
 - Don't use `api.devive-list`, create the list from the incoming PlugwiseData devices-dict.
 - Remove the related `device_list.json` files.
