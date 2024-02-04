@@ -2,6 +2,12 @@
 
 ## Versions from 0.40 and up
 
+## v0.46.3
+
+- Don't use `api.devive-list`, create the list from the incoming PlugwiseData devices-dict.
+- Remove the related `device_list.json` files.
+- Remove the `notifications.json` files, the same data is present in the `all_data.json` files.
+
 ## v0.46.2
 
 - Backend gateway_mode-related bugfixes via [plugwise v0.36.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.36.3).
