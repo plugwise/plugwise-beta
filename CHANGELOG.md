@@ -2,6 +2,17 @@
 
 ## Versions from 0.40 and up
 
+## v0.47.1
+
+- Implement Core PR's #108498 and #109464
+- Set minimum Core version to 2024.2.0
+
+## v0.47.0
+
+- Implement plugwise v0.37.0:
+  - The backend-code for actual and legacy Plugwise devices has been separated.
+  - For actual devices xml-data is now only collected from /core/domain_objects.
+
 ## v0.46.3
 
 - Don't use `api.devive-list`, create the list from the incoming PlugwiseData devices-dict.
