@@ -9,7 +9,7 @@ set -e
 # a different branch of core
 #
 # Github flows are run against both 'dev' and 'master'
-core_branch="dev"
+core_branch="master"
 if [ "x${BRANCH}" != "x" ]; then
 	core_branch="${BRANCH}"
 fi
