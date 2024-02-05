@@ -77,6 +77,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
 
+        self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
+        gateway_id: str = coordinator.data.gateway["gateway_id"]
+        self.gateway_data = coordinator.data.devices[gateway_id]
+
         self._attr_max_temp = min(self.device["thermostat"]["upper_bound"], 35.0)
         self._attr_min_temp = self.device["thermostat"]["lower_bound"]
         # Ensure we don't drop below 0.1
@@ -88,11 +92,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Determine supported features
         self.cdr_gateway = coordinator.data.gateway
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
-        if HVACMode.OFF in self.hvac_modes:
-            self._attr_supported_features |= (
-                ClimateEntityFeature.TURN_OFF | ClimateEntityFeature.TURN_ON
-            )
-
         if (
             self.cdr_gateway["cooling_present"]
             and self.cdr_gateway["smile_name"] != "Adam"
@@ -100,15 +99,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features = (
                 ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
             )
+        if HVACMode.OFF in self.hvac_modes:
+            self._attr_supported_features |= (
+                ClimateEntityFeature.TURN_OFF | ClimateEntityFeature.TURN_ON
+            )
         if presets := self.device.get("preset_modes"):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
-
-        # Determine stable hvac_modes
-        self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
-        gateway_id: str = coordinator.data.gateway["gateway_id"]
-        self.gateway_data = coordinator.data.devices[gateway_id]
-        self._hvac_modes: list[HVACMode] = []
 
     def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
         """Return the previous action-mode when the regulation-mode is not heating or cooling.
