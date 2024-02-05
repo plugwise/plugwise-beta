@@ -43,7 +43,6 @@ class PlugwiseSensorEntityDescription(SensorEntityDescription):
     """Describes Plugwise sensor entity."""
 
     key: SensorType
-    state_class: str | None = SensorStateClass.MEASUREMENT
 
 
 SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
