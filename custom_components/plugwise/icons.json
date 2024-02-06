@@ -76,7 +76,7 @@
       "gateway_mode": {
         "default": "mdi:cog-outline",
         "state": {
-          "away": "mdi:account-arrow-right",
+          "away": "mdi:pause",
           "full": "mdi:home",
           "vacation": "mdi:beach"
         }
