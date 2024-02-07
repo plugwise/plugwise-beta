@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.47.2
+
+- Add icons for the options of the Selects DHW mode, Gateway mode and Regulation mode.
+
 ## v0.47.1
 
 - Implement Core PR's [#108498](https://github.com/home-assistant/core/pull/108498) and [#109464](https://github.com/home-assistant/core/pull/109464)
