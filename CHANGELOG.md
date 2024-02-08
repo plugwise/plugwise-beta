@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.47.3
+
+- Add off-icon for thermostat schedules.
+
 ## v0.47.2
 
 - Add icons for the options of the Selects DHW mode, Gateway mode and Regulation mode.

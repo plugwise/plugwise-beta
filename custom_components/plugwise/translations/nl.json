@@ -126,7 +126,7 @@
           "vacation": "Vakantie"
         }
       },
-      "thermostat_schedule": {
+      "select_schedule": {
         "name": "Thermostaatschema",
         "state": {
           "off": "Uit"

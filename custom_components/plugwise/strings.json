@@ -126,7 +126,7 @@
           "vacation": "Vacation"
         }
       },
-      "thermostat_schedule": {
+      "select_schedule": {
         "name": "Thermostat schedule",
         "state": {
           "off": "Off"

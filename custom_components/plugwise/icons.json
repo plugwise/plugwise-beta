@@ -92,7 +92,10 @@
         }
       },
       "select_schedule": {
-        "default": "mdi:calendar-clock"
+        "default": "mdi:calendar-clock",
+        "state": {
+          "off": "mdi:circle-off-outline"
+        }
       }
     },
     "sensor": {
