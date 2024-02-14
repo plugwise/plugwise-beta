@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.47.4
+
+- Link to plugwise v0.37.1 via [plugwise v0.37.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.1)
+
 ## v0.47.3
 
 - Add off-icon for thermostat schedules.
@@ -17,7 +21,7 @@
 
 ## v0.47.0
 
-- Implement plugwise v0.37.0:
+- Implement [plugwise v0.37.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.0)
   - The backend-code for actual and legacy Plugwise devices has been separated.
   - For actual devices xml-data is now only collected from /core/domain_objects.
 
