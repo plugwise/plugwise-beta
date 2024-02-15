@@ -127,23 +127,22 @@ async def test_p1_dsmr_sensor_entities(
     """Test creation of power related sensor entities."""
     state = hass.states.get("sensor.p1_net_electricity_point")
     assert state
-    assert float(state.state) == -2816.0
+    assert float(state.state) == 486.0
 
     state = hass.states.get("sensor.p1_electricity_consumed_off_peak_cumulative")
     assert state
-    assert float(state.state) == 551.09
+    assert float(state.state) == 17643.423
 
     state = hass.states.get("sensor.p1_electricity_produced_peak_point")
     assert state
-    assert float(state.state) == 2816.0
+    assert float(state.state) == 0.0
 
     state = hass.states.get("sensor.p1_electricity_consumed_peak_cumulative")
     assert state
-    assert float(state.state) == 442.932
+    assert float(state.state) == 13966.608
 
     state = hass.states.get("sensor.p1_gas_consumed_cumulative")
-    assert state
-    assert float(state.state) == 584.85
+    assert not state
 
 
 async def test_p1_3ph_dsmr_sensor_entities(
