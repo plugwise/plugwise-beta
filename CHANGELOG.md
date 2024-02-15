@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Replace outdated test-fixture, update related test-case.
+
 ## v0.47.4
 
 - Link to plugwise v0.37.1 via [plugwise v0.37.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.1)
