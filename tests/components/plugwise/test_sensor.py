@@ -135,7 +135,7 @@ async def test_p1_dsmr_sensor_entities(
 
     state = hass.states.get("sensor.p1_electricity_produced_peak_point")
     assert state
-    assert state.state) == 0
+    assert int(state.state) == 0
 
     state = hass.states.get("sensor.p1_electricity_consumed_peak_cumulative")
     assert state
