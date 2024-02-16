@@ -54,7 +54,7 @@ repos:
           - --configfile=tests/bandit.yaml
         files: ^(custom_components|tests)/.+\.py$
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.34.0
+    rev: v1.35.0
     hooks:
       - id: yamllint
         name: "Linting yaml"
