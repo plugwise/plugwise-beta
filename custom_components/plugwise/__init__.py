@@ -98,7 +98,9 @@ def cleanup_device_registry(
     plugwise_device_list = list(data.devices.keys())
     for dev_id, device_entry in list(device_registry.devices.items()):
         for item in device_entry.identifiers:
-            if item[0] == DOMAIN and item[1] in plugwise_device_list:
+            if item[0] == DOMAIN and (
+                len(plugwise_device_list) > 1 and item[1] in plugwise_device_list
+            ):
                 continue
 
             device_registry.async_remove_device(dev_id)
