@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from plugwise import PlugwiseData
 from plugwise.exceptions import PlugwiseError
 import voluptuous as vol
 
@@ -48,6 +49,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         UNDO_UPDATE_LISTENER: undo_listener,  # pw-beta
     }
 
+    # Clean-up removed devices
+    cleanup_device_registry(hass, coordinator.data)
+
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
@@ -85,6 +89,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     return True
 
+def cleanup_device_registry(
+    hass: HomeAssistant,
+    data: PlugwiseData,
+) -> None:
+    """Remove deleted devices from device-registry."""
+    device_registry = dr.async_get(hass)
+    plugwise_device_list = list(data.devices.keys())
+    for dev_id, device_entry in list(device_registry.devices.items()):
+        for item in device_entry.identifiers:
+            if item[0] == DOMAIN and item[1] in plugwise_device_list:
+                continue
+
+            device_registry.async_remove_device(dev_id)
+            LOGGER.debug(
+                "Removed device %s %s %s from device_registry",
+                DOMAIN,
+                device_entry.model,
+                dev_id,
+            )
 
 async def _update_listener(
     hass: HomeAssistant, entry: ConfigEntry
