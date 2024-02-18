@@ -36,7 +36,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     LOGGER.debug("DUC cooldown interval: %s", cooldown)
 
     coordinator = PlugwiseDataUpdateCoordinator(
-        hass, entry, cooldown
+        hass, cooldown
     )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
     # Migrate a changed sensor unique_id
