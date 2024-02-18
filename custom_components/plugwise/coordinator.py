@@ -20,33 +20,11 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
-from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
-
-
-def cleanup_device_registry(
-    hass: HomeAssistant,
-    data: PlugwiseData,
-) -> None:
-    """Remove deleted devices from device-registry."""
-    device_registry = dr.async_get(hass)
-    plugwise_device_list = list(data.devices.keys())
-    for dev_id, device_entry in list(device_registry.devices.items()):
-        for item in device_entry.identifiers:
-            if item[0] == DOMAIN and item[1] in plugwise_device_list:
-                continue
-
-            device_registry.async_remove_device(dev_id)
-            LOGGER.debug(
-                "Removed device %s %s %s from device_registry",
-                DOMAIN,
-                device_entry.model,
-                dev_id,
-            )
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -136,8 +114,5 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
-
-        # Clean-up removed devices
-        cleanup_device_registry(self.hass, data)
 
         return data
