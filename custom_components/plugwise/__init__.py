@@ -118,13 +118,22 @@ async def _update_listener(
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
 
-
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
 
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, config_entry: ConfigEntry, device_entry: dr.DeviceEntry
+) -> bool:
+    """Remove no longer present Plugwise device from config/device_registry."""
+    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+    return not any(
+        identifier
+        for identifier in device_entry.identifiers
+        if identifier[0] == DOMAIN and coordinator.data.devices[identifier[1]]
+    )
 
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
@@ -143,7 +152,6 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
 
     # No migration needed
     return None
-
 
 def migrate_sensor_entities(
     hass: HomeAssistant,
