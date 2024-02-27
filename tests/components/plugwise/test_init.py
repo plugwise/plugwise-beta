@@ -237,7 +237,7 @@ async def test_device_remove_device(
 
     mock_config_entry.add_to_hass(hass)
 
-    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
 
     device_entry = device_registry.async_get_device(
