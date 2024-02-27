@@ -211,7 +211,7 @@ async def test_device_removal(
     # Replace a Tom/Floor
     data.devices.pop("1772a4ea304041adb83f357b751341ff")
     data.devices.update(TOM)
-    data.gateway.update({"config_changed": "01234567890abcdefghijklmnopqrstu"})
+    data.gateway.update({"config_changed": ["01234567890abcdefghijklmnopqrstu"]})
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
         await hass.config_entries.async_reload(mock_config_entry.entry_id)
