@@ -96,7 +96,7 @@ def cleanup_device_registry(
     """Remove deleted devices from device-registry."""
     plugwise_device_list = list(data.devices.keys())
     if len(plugwise_device_list) < 2:
-        return
+        return  # pragma: no cover
 
     device_registry = dr.async_get(hass)
     for dev_id, device_entry in list(device_registry.devices.items()):
