@@ -221,24 +221,8 @@ async def test_device_removal(
     for device_entry in list(dev_reg.devices.values()):
         for item in device_entry.identifiers:
             item_list.append(item[1])
-    assert "1772a4ea304041adb83f357b751341ff" not in item_list
     assert "01234567890abcdefghijklmnopqrstu" in item_list
-
-
-async def remove_device(
-    ws_client: MockHAClientWebSocket, device_id: str, config_entry_id: str
-) -> bool:
-    """Remove config entry from a device."""
-    await ws_client.send_json(
-        {
-            "id": 1,
-            "type": "config/device_registry/remove_config_entry",
-            "config_entry_id": config_entry_id,
-            "device_id": device_id,
-        }
-    )
-    response = await ws_client.receive_json()
-    return response["success"]
+    assert "1772a4ea304041adb83f357b751341ff" not in item_list
 
 
 async def test_device_remove_device(
@@ -253,7 +237,7 @@ async def test_device_remove_device(
 
     mock_config_entry.add_to_hass(hass)
 
-    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
 
     device_entry = device_registry.async_get_device(
@@ -280,3 +264,18 @@ async def test_device_remove_device(
         )
         is True
     )
+
+async def remove_device(
+    ws_client: MockHAClientWebSocket, device_id: str, config_entry_id: str
+) -> bool:
+    """Remove config entry from a device."""
+    await ws_client.send_json(
+        {
+            "id": 5,
+            "type": "config/device_registry/remove_config_entry",
+            "config_entry_id": config_entry_id,
+            "device_id": device_id,
+        }
+    )
+    response = await ws_client.receive_json()
+    return response["success"]
