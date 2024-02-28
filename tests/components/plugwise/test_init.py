@@ -214,7 +214,7 @@ async def test_device_removal(
     data.gateway.update({"config_changed": ["01234567890abcdefghijklmnopqrstu"]})
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
-        await hass.config_entries.async_reload(mock_config_entry.entry_id)
+        # await hass.config_entries.async_reload(mock_config_entry.entry_id)
         await hass.async_block_till_done()
 
     devices = dr.async_entries_for_config_entry(dev_reg, mock_config_entry.entry_id)
