@@ -114,8 +114,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 raise UpdateFailed("Failed to connect") from err
 
         # Reload when the configuration has changed
-        if "config_changed" in data.gateway:
-            LOGGER.debug("HOI config has changed")
+        if "new_devices" in data.gateway:
+            LOGGER.debug("New Plugwise device(s) found, reloading...")
             await self.hass.config_entries.async_reload(self.config_entry.entry_id)
 
         return data
