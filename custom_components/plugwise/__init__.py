@@ -106,7 +106,7 @@ def cleanup_device_registry(
 
             device_registry.async_remove_device(dev_id)
             LOGGER.debug(
-                "Removed %s device %s %s from device_registry",
+                "Removed %s %s %s from device_registry",
                 DOMAIN,
                 device_entry.model,
                 item[1],
