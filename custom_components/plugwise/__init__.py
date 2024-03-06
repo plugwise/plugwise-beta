@@ -99,13 +99,18 @@ def cleanup_device_registry(
     for dev_id, device_entry in list(device_registry.devices.items()):
         item = list(device_entry.identifiers)[0]
         item = list(item)
+        if item[0] != DOMAIN:
+            continue
+
         # The first device is always the gateway
-        if device_entry.via_device_id is None:
+        if (
+            item[1] == data.gateway["gateway_id"]
+            and device_entry.via_device_id is None
+        ):
             via_device = dev_id
         elif not (
-            device_entry.via_device_id == via_device
-            and item[0] == DOMAIN
-            and item[1] in plugwise_device_list
+            item[1] in plugwise_device_list
+            and device_entry.via_device_id == via_device
         ):
             # device_registry.async_remove_device(dev_id)
             LOGGER.debug(
