@@ -105,6 +105,7 @@ def cleanup_device_registry(
         if item[1] == data.gateway["gateway_id"]:
             via_device = dev_id
 
+    LOGGER.debug("HOI via_device: %s", via_device)
     # Find and remove the orphaned device(s) connected to the via_device
     for dev_id, device_entry in dev_reg_list:
         item = list(list(device_entry.identifiers)[0])
