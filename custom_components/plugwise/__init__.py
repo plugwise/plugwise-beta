@@ -94,7 +94,8 @@ def cleanup_device_registry(
     data: PlugwiseData,
 ) -> None:
     """Remove deleted devices from device-registry."""
-    plugwise_device_list = list(data.devices.keys())
+    gateway_id = data.gateway["gateway_id"]
+    plugwise_device_list = list(data.devices.keys()).remove(gateway_id)
     device_registry = dr.async_get(hass)
     dev_reg_list = list(device_registry.devices.items())
     # First find the Plugwise via_device_id   
@@ -102,30 +103,24 @@ def cleanup_device_registry(
         item = list(list(device_entry.identifiers)[0])
         if item[0] != DOMAIN:
             continue
-        if item[1] == data.gateway["gateway_id"]:
+        if item[1] == gateway_id
             via_device = dev_id
 
     # Find and remove the orphaned device(s) connected to the via_device
     for dev_id, device_entry in dev_reg_list:
         item = list(list(device_entry.identifiers)[0])
-        LOGGER.debug("HOI device_entry: %s", device_entry)
-        if (
+        if not(
             item[0] == DOMAIN
             and item[1] in plugwise_device_list
-            and (
-                device_entry.via_device_id == via_device
-                or device_entry.via_device_id is None
-            )
+            and device_entry.via_device_id == via_device
         ):
-            continue
-
-        # device_registry.async_remove_device(dev_id)
-        LOGGER.debug(
-            "HOI found orphaned device: %s %s %s in device_registry",
-            DOMAIN,
-            device_entry.model,
-            item[1],
-        )
+            # device_registry.async_remove_device(dev_id)
+            LOGGER.debug(
+                "HOI found orphaned device: %s %s %s in device_registry",
+                DOMAIN,
+                device_entry.model,
+                item[1],
+            )
 
 async def _update_listener(
     hass: HomeAssistant, entry: ConfigEntry
