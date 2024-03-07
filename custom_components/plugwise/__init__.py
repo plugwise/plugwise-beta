@@ -111,7 +111,7 @@ def cleanup_device_registry(
     for dev_id, device_entry in dev_reg_list:
         if not (
             item[0] == DOMAIN
-            item[1] in plugwise_device_list
+            and item[1] in plugwise_device_list
             and device_entry.via_device_id == via_device
         ):
             # device_registry.async_remove_device(dev_id)
