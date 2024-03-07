@@ -112,7 +112,10 @@ def cleanup_device_registry(
         if (
             item[0] == DOMAIN
             and item[1] in plugwise_device_list
-            and device_entry.via_device_id == via_device
+            and (
+                device_entry.via_device_id == via_device
+                or device_entry.via_device_id is None
+            )
         ):
             continue
 
