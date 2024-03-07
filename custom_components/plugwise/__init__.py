@@ -108,6 +108,7 @@ def cleanup_device_registry(
     # Find and remove the orphaned device(s) connected to the via_device
     for dev_id, device_entry in dev_reg_list:
         item = list(list(device_entry.identifiers)[0])
+        LOGGER.debug("HOI device_entry: %s", device_entry)
         if item[0] != DOMAIN:
             continue
         elif not (
