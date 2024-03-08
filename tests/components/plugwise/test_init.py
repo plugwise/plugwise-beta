@@ -191,7 +191,7 @@ async def test_migrate_unique_id_relay(
     )
 
 
-async def test_device_removal(
+async def test_device_registry_cleanup(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     mock_smile_adam_2: MagicMock,
@@ -225,7 +225,7 @@ async def test_device_removal(
     assert "1772a4ea304041adb83f357b751341ff" not in item_list
 
 
-async def test_device_remove_device(
+async def test_remove_config_entry_device(
     hass: HomeAssistant,
     hass_ws_client: WebSocketGenerator,
     mock_config_entry: MockConfigEntry,
