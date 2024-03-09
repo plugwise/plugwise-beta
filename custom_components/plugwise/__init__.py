@@ -94,7 +94,6 @@ def cleanup_device_registry(
     data: PlugwiseData,
 ) -> None:
     """Remove deleted devices from device-registry."""
-    plugwise_device_list: list[str] = list(data.devices.keys())
     device_registry = dr.async_get(hass)
     dev_reg_list = list(device_registry.devices.items())
     # First find the Plugwise via_device_id
@@ -103,7 +102,7 @@ def cleanup_device_registry(
             continue
 
         item = list(list(device_entry.identifiers)[0])
-        if item[0] == DOMAIN and item[1] == gateway_id:
+        if item[0] == DOMAIN and item[1] == data.gateway["gateway_id"]:
             via_device = dev_id
 
     # Find and remove the orphaned device(s) connected to the via_device
@@ -115,7 +114,7 @@ def cleanup_device_registry(
         if (
             item[0] == DOMAIN
             and device_entry.via_device_id == via_device
-            and item[1] not in plugwise_device_list
+            and item[1] not in list(data.devices.keys())
         ):
             device_registry.async_remove_device(dev_id)
             LOGGER.debug(
