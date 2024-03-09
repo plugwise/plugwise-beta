@@ -98,9 +98,13 @@ def cleanup_device_registry(
     device_registry = dr.async_get(hass)
     dev_reg_list = list(device_registry.devices.items())
     # First find the Plugwise via_device_id
-    for _, device_entry in dev_reg_list:
-        if device_entry.manufacturer == "Plugwise" and device_entry.model == "Gateway":
-            via_device = device_entry.id
+    for dev_id, device_entry in dev_reg_list:
+        if not device_entry.identifiers:
+            continue
+
+        item = list(list(device_entry.identifiers)[0])
+        if item[0] == DOMAIN and item[1] == gateway_id:
+            via_device = dev_id
 
     # Find and remove the orphaned device(s) connected to the via_device
     for dev_id, device_entry in dev_reg_list:
