@@ -117,7 +117,7 @@ def cleanup_device_registry(
             device_entry.via_device_id == via_device
             and item[1] not in list(data.devices.keys())
         ):
-            device_registry.async_remove_device(dev_id)
+            device_registry.async_remove_device(device_entry.id)
             LOGGER.debug(
                 "Removed %s device %s %s from device_registry",
                 DOMAIN,
