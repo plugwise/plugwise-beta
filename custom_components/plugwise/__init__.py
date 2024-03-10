@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from typing import Any
 
-from plugwise import PlugwiseData
 from plugwise.exceptions import PlugwiseError
 import voluptuous as vol
 
@@ -22,6 +21,7 @@ from .const import (
     UNDO_UPDATE_LISTENER,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .util import cleanup_device_registry
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -88,42 +88,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             )
 
     return True
-
-def cleanup_device_registry(
-    hass: HomeAssistant,
-    data: PlugwiseData,
-    entry: ConfigEntry,
-) -> None:
-    """Remove deleted devices from device-registry."""
-    device_registry = dr.async_get(hass)
-    device_entries = dr.async_entries_for_config_entry(
-        device_registry, entry.entry_id
-    )
-    # via_device cannot be None, this will result in the deletion
-    # of other Plugwise Gateways when present!
-    via_device: str = ""
-    for device_entry in device_entries:
-        if not device_entry.identifiers:
-            continue  # pragma: no cover
-
-        item = list(list(device_entry.identifiers)[0])
-        if item[0] != DOMAIN:
-            continue  # pragma: no cover
-
-        # First find the Plugwise via_device, this is always the first device
-        if item[1] == data.gateway["gateway_id"]:
-            via_device = device_entry.id
-        elif ( # then remove the connected orphaned device(s)
-            device_entry.via_device_id == via_device
-            and item[1] not in list(data.devices.keys())
-        ):
-            device_registry.async_remove_device(device_entry.id)
-            LOGGER.debug(
-                "Removed %s device %s %s from device_registry",
-                DOMAIN,
-                device_entry.model,
-                item[1],
-            )
 
 async def _update_listener(
     hass: HomeAssistant, entry: ConfigEntry
