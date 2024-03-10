@@ -2,8 +2,10 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.48.0
 
+- Add a delete-button per device, enables the user to manually delete a removed Plugwise device
+- Add automatic deletion of removed Plugwise devices after a HA restart
 - Replace outdated test-fixture, update related test-case.
 
 ## v0.47.4
