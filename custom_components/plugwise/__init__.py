@@ -21,6 +21,7 @@ from .const import (
     UNDO_UPDATE_LISTENER,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .util import cleanup_device_registry
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -35,7 +36,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     LOGGER.debug("DUC cooldown interval: %s", cooldown)
 
     coordinator = PlugwiseDataUpdateCoordinator(
-        hass, entry, cooldown
+        hass, cooldown
     )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
     # Migrate a changed sensor unique_id
@@ -47,6 +48,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         COORDINATOR: coordinator,  # pw-beta
         UNDO_UPDATE_LISTENER: undo_listener,  # pw-beta
     }
+
+    # Clean-up removed devices
+    cleanup_device_registry(hass, coordinator.data, entry)
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
@@ -85,13 +89,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     return True
 
-
 async def _update_listener(
     hass: HomeAssistant, entry: ConfigEntry
 ) -> None:  # pragma: no cover  # pw-beta
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
-
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
@@ -99,6 +101,16 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
 
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, config_entry: ConfigEntry, device_entry: dr.DeviceEntry
+) -> bool:
+    """Remove no longer present Plugwise device from config/device_registry."""
+    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+    return not any(
+        identifier
+        for identifier in device_entry.identifiers
+        if identifier[0] == DOMAIN and (identifier[1] in coordinator.data.devices)
+    )
 
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
@@ -117,7 +129,6 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
 
     # No migration needed
     return None
-
 
 def migrate_sensor_entities(
     hass: HomeAssistant,

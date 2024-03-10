@@ -18,9 +18,11 @@ from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.setup import async_setup_component
 from homeassistant.util.dt import utcnow
 
 from tests.common import MockConfigEntry, async_fire_time_changed
+from tests.typing import MockHAClientWebSocket, WebSocketGenerator
 
 LOGGER = logging.getLogger(__package__)
 
@@ -189,7 +191,7 @@ async def test_migrate_unique_id_relay(
     )
 
 
-async def test_device_removal(
+async def test_device_registry_cleanup(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     mock_smile_adam_2: MagicMock,
@@ -209,17 +211,71 @@ async def test_device_removal(
     # Replace a Tom/Floor
     data.devices.pop("1772a4ea304041adb83f357b751341ff")
     data.devices.update(TOM)
-    device_list = list(data.devices.keys())
-    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data), patch(
-        HA_PLUGWISE_SMILE, side_effect=device_list
-    ):
+    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
         await hass.config_entries.async_reload(mock_config_entry.entry_id)
         await hass.async_block_till_done()
 
-    devices = dr.async_entries_for_config_entry(dev_reg, mock_config_entry.entry_id)
+    dev_reg = dr.async_get(hass)
     item_list = []
     for device_entry in list(dev_reg.devices.values()):
         for item in device_entry.identifiers:
             item_list.append(item[1])
+    assert "01234567890abcdefghijklmnopqrstu" in item_list
     assert "1772a4ea304041adb83f357b751341ff" not in item_list
+
+
+async def test_remove_config_entry_device(
+    hass: HomeAssistant,
+    hass_ws_client: WebSocketGenerator,
+    mock_config_entry: MockConfigEntry,
+    mock_smile_adam_2: MagicMock,
+    device_registry: dr.DeviceRegistry,
+) -> None:
+    """Test we can only remove a device that no longer exists."""
+    assert await async_setup_component(hass, "config", {})
+
+    mock_config_entry.add_to_hass(hass)
+
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    device_entry = device_registry.async_get_device(
+        identifiers={
+            (
+                DOMAIN,
+                "1772a4ea304041adb83f357b751341ff",
+            )
+        },
+    )
+    assert (
+        await remove_device(
+            await hass_ws_client(hass), device_entry.id, mock_config_entry.entry_id
+        )
+        is False
+    )
+    old_device_entry = device_registry.async_get_or_create(
+        config_entry_id=mock_config_entry.entry_id,
+        identifiers={(DOMAIN, "01234567890abcdefghijklmnopqrstu")},
+    )
+    assert (
+        await remove_device(
+            await hass_ws_client(hass), old_device_entry.id, mock_config_entry.entry_id
+        )
+        is True
+    )
+
+async def remove_device(
+    ws_client: MockHAClientWebSocket, device_id: str, config_entry_id: str
+) -> bool:
+    """Remove config entry from a device."""
+    await ws_client.send_json(
+        {
+            "id": 5,
+            "type": "config/device_registry/remove_config_entry",
+            "config_entry_id": config_entry_id,
+            "device_id": device_id,
+        }
+    )
+    response = await ws_client.receive_json()
+    return response["success"]

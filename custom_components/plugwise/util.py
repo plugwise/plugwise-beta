@@ -4,10 +4,15 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable, Coroutine
 from typing import Any, Concatenate, ParamSpec, TypeVar
 
+from plugwise import PlugwiseData
 from plugwise.exceptions import PlugwiseException
 
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import device_registry as dr
 
+from .const import DOMAIN, LOGGER
 from .entity import PlugwiseEntity
 
 _PlugwiseEntityT = TypeVar("_PlugwiseEntityT", bound=PlugwiseEntity)
@@ -37,3 +42,39 @@ def plugwise_command(
             await self.coordinator.async_request_refresh()
 
     return handler
+
+def cleanup_device_registry(
+    hass: HomeAssistant,
+    data: PlugwiseData,
+    entry: ConfigEntry,
+) -> None:
+    """Remove deleted devices from device-registry."""
+    device_registry = dr.async_get(hass)
+    device_entries = dr.async_entries_for_config_entry(
+        device_registry, entry.entry_id
+    )
+    # via_device cannot be None, this will result in the deletion
+    # of other Plugwise Gateways when present!
+    via_device: str = ""
+    for device_entry in device_entries:
+        if not device_entry.identifiers:
+            continue  # pragma: no cover
+
+        item = list(list(device_entry.identifiers)[0])
+        if item[0] != DOMAIN:
+            continue  # pragma: no cover
+
+        # First find the Plugwise via_device, this is always the first device
+        if item[1] == data.gateway["gateway_id"]:
+            via_device = device_entry.id
+        elif ( # then remove the connected orphaned device(s)
+            device_entry.via_device_id == via_device
+            and item[1] not in list(data.devices.keys())
+        ):
+            device_registry.async_remove_device(device_entry.id)
+            LOGGER.debug(
+                "Removed %s device %s %s from device_registry",
+                DOMAIN,
+                device_entry.model,
+                item[1],
+            )

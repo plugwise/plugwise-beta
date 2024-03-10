@@ -20,7 +20,6 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
-from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -28,57 +27,16 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
 
 
-def remove_stale_devices(
-    data: PlugwiseData,
-    device_registry: dr.DeviceRegistry,
-    via_id: str,
-) -> None:
-    """Process the Plugwise devices present in the device_registry connected to a specific Gateway."""
-    device_list = list(data.devices.keys())
-    for dev_id, device_entry in list(device_registry.devices.items()):
-        if device_entry.via_device_id == via_id:
-            for item in device_entry.identifiers:
-                if item[0] == DOMAIN and item[1] in device_list:
-                    continue
-
-                device_registry.async_remove_device(dev_id)
-                LOGGER.debug(
-                    "Removed device %s %s %s from device_registry",
-                    DOMAIN,
-                    device_entry.model,
-                    dev_id,
-                )
-
-
-def cleanup_device_registry(
-    hass: HomeAssistant,
-    data: PlugwiseData,
-) -> None:
-    """Remove deleted devices from device-registry."""
-    device_registry = dr.async_get(hass)
-    via_id_list: list[list[str]] = []
-    # Collect the required data of the Plugwise Gateway's
-    for device_entry in list(device_registry.devices.values()):
-        if device_entry.manufacturer == "Plugwise" and device_entry.model == "Gateway":
-            for item in device_entry.identifiers:
-                via_id_list.append([item[1], device_entry.id])
-
-    for via_id in via_id_list:
-        if via_id[0] != data.gateway["gateway_id"]:
-            continue  # pragma: no cover
-
-        remove_stale_devices(data, device_registry, via_id[1])
-
-
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     """Class to manage fetching Plugwise data from single endpoint."""
 
     _connected: bool = False
 
+    config_entry: ConfigEntry
+
     def __init__(
         self,
         hass: HomeAssistant,
-        entry: ConfigEntry,
         cooldown: float,
         update_interval: timedelta = timedelta(seconds=60),
     ) -> None:  # pw-beta cooldown
@@ -100,17 +58,14 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         )
 
         self.api = Smile(
-            host=entry.data[CONF_HOST],
-            username=entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
-            password=entry.data[CONF_PASSWORD],
-            port=entry.data.get(CONF_PORT, DEFAULT_PORT),
+            host=self.config_entry.data[CONF_HOST],
+            username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
+            password=self.config_entry.data[CONF_PASSWORD],
+            port=self.config_entry.data.get(CONF_PORT, DEFAULT_PORT),
             timeout=30,
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        self.hass = hass
-        self._entry = entry
         self._unavailable_logged = False
-        self.current_unique_ids: set[tuple[str, str]] = {("dummy", "dummy_id")}
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -121,7 +76,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self.update_interval = DEFAULT_SCAN_INTERVAL.get(
             self.api.smile_type, timedelta(seconds=60)
         )  # pw-beta options scan-interval
-        if (custom_time := self._entry.options.get(CONF_SCAN_INTERVAL)) is not None:
+        if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
             self.update_interval = timedelta(
                 seconds=int(custom_time)
             )  # pragma: no cover  # pw-beta options
@@ -157,8 +112,5 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
-
-        # Clean-up removed devices
-        cleanup_device_registry(self.hass, data)
 
         return data
