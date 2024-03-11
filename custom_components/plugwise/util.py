@@ -43,7 +43,7 @@ def plugwise_command(
 
     return handler
 
-def cleanup_device_registry(
+async def cleanup_device_registry(
     hass: HomeAssistant,
     data: PlugwiseData,
     entry: ConfigEntry,
