@@ -50,7 +50,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     }
 
     # Clean-up removed devices
-    cleanup_device_registry(hass, coordinator.data, entry)
+    await cleanup_device_registry(hass, coordinator.data, entry)
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
