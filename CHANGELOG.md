@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.48.1
+
+- Redact sensitive data in the diagnostics-download
+
 ## v0.48.0
 
 - Add a delete-button per device, enables the user to manually delete a removed Plugwise device

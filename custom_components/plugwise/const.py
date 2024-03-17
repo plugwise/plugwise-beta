@@ -10,14 +10,20 @@ DOMAIN: Final = "plugwise"
 LOGGER = logging.getLogger(__package__)
 
 API: Final = "api"
+AVAILABLE_SCHEDULES: Final = "available_schedules"
 COORDINATOR: Final = "coordinator"
 CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta options
 CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta options
 CONF_MANUAL_PATH: Final = "Enter Manually"
+DEVICES: Final = "devices"
+GATEWAY: Final = "gateway"
+MAC_ADDRESS: Final = "mac_address"
+SELECT_SCHEDULE: Final = "select_schedule"
 SMILE: Final = "smile"
 STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
 UNIQUE_IDS: Final = "unique_ids"
+ZIGBEE_MAC_ADDRESS: Final = "zigbee_mac_address"
 
 FLOW_NET: Final = "Network: Smile/Stretch"
 FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
