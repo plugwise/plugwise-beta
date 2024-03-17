@@ -10,43 +10,47 @@ DOMAIN: Final = "plugwise"
 LOGGER = logging.getLogger(__package__)
 
 API: Final = "api"
-AVAILABLE_SCHEDULES: Final = "available_schedules"
 COORDINATOR: Final = "coordinator"
 CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta options
 CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta options
 CONF_MANUAL_PATH: Final = "Enter Manually"
 DEVICES: Final = "devices"
-DHW_MODE: Final = "dhw_mode"
-DHW_MODES: Final = "dhw_modes"
-GATEWAY: Final = "gateway"
-GATEWAY_MODE: Final = "gateway_mode"
-GATEWAY_MODES: Final = "gateway_modes"
 LOCATION: Final = "location"
-LOWER_BOUND: Final = "lower_bound"
 MAC_ADDRESS: Final = "mac_address"
-MAX_BOILER_TEMP: Final = "maximum_boiler_temperature",
-MAX_DHW_TEMP: Final = "max_dhw_temperature",
-REGULATION_MODE: Final = "regulation_mode"
-REGULATION_MODES: Final = "regulation_modes"
-RESOLUTION: Final = "resolution"
-SELECT_DHW_MODE: Final = "select_dhw_mode"
-SELECT_GATEWAY_MODE: Final = "select_gateway_mode"
-SELECT_REGULATION_MODE: Final = "select_regulation_mode"
-SELECT_SCHEDULE: Final = "select_schedule"
 SMILE: Final = "smile"
 STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
-TEMPERATURE_OFFSET: Final = "temperature_offset",
+UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 UNIQUE_IDS: Final = "unique_ids"
-UPPER_BOUND: Final = "upper_bound"
 ZIGBEE_MAC_ADDRESS: Final = "zigbee_mac_address"
 
+# Config_flow constants
 FLOW_NET: Final = "Network: Smile/Stretch"
 FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
 FLOW_STRETCH: Final = "Stretch (Stretch)"
 FLOW_TYPE: Final = "flow_type"
 
-UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
+# Number constants
+MAX_BOILER_TEMP: Final = "maximum_boiler_temperature"
+MAX_DHW_TEMP: Final = "max_dhw_temperature"
+LOWER_BOUND: Final = "lower_bound"
+RESOLUTION: Final = "resolution"
+TEMPERATURE_OFFSET: Final = "temperature_offset"
+UPPER_BOUND: Final = "upper_bound"
+
+# Select constants
+AVAILABLE_SCHEDULES: Final = "available_schedules"
+DHW_MODE: Final = "dhw_mode"
+DHW_MODES: Final = "dhw_modes"
+GATEWAY: Final = "gateway"
+GATEWAY_MODE: Final = "gateway_mode"
+GATEWAY_MODES: Final = "gateway_modes"
+REGULATION_MODE: Final = "regulation_mode"
+REGULATION_MODES: Final = "regulation_modes"
+SELECT_DHW_MODE: Final = "select_dhw_mode"
+SELECT_GATEWAY_MODE: Final = "select_gateway_mode"
+SELECT_REGULATION_MODE: Final = "select_regulation_mode"
+SELECT_SCHEDULE: Final = "select_schedule"
 
 # Default directives
 DEFAULT_PORT: Final = 80
