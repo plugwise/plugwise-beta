@@ -4,21 +4,28 @@ from __future__ import annotations
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
+rom homeassistant.const import ATTR_NAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.redact import async_redact_data
 
 from .const import (
+    AVAILABLE_SCHEDULES,
     COORDINATOR,  # pw-beta
+    DEVICES,
     DOMAIN,
+    GATEWAY,
+    MAC_ADDRESS,
+    SELECT_SCHEDULE,
+    ZIGBEE_MAC_ADDRESS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 
 KEYS_TO_REDACT = {
-    "available_schedules",
-    "mac_address",
-    "name",
-    "select_schedule",
-    "zigbee_mac_address"
+    ATTR_NAME,
+    AVAILABLE_SCHEDULES,
+    MAC_ADDRESS,
+    SELECT_SCHEDULE,
+    ZIGBEE_MAC_ADDRESS
 }
 
 async def async_get_config_entry_diagnostics(
@@ -31,4 +38,4 @@ async def async_get_config_entry_diagnostics(
 
     data = async_redact_data(coordinator.data.devices, KEYS_TO_REDACT)
 
-    return {"gateway": coordinator.data.gateway, "devices": data}
+    return {GATEWAY: coordinator.data.gateway, DEVICES: data}
