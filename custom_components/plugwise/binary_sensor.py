@@ -45,7 +45,7 @@ class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
     key: BinarySensorType
 
 
-BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
+PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     PlugwiseBinarySensorEntityDescription(
         key=COMPRESSOR_STATE,
         translation_key=COMPRESSOR_STATE,
@@ -103,7 +103,7 @@ async def async_setup_entry(
     for device_id, device in coordinator.data.devices.items():
         if not (binary_sensors := device.get(BINARY_SENSORS)):
             continue
-        for description in BINARY_SENSORS:
+        for description in PLUGWISE_BINARY_SENSORS:
             if description.key not in binary_sensors:
                 continue
             entities.append(
