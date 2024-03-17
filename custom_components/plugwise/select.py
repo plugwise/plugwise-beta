@@ -8,7 +8,7 @@ from plugwise import Smile
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import STATE_ON, EntityCategory
+from homeassistant.const import ATTR_NAME, STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -20,6 +20,7 @@ from .const import (
     DOMAIN,
     GATEWAY_MODE,
     GATEWAY_MODES,
+    LOCATION,
     LOGGER,
     REGULATION_MODE,
     REGULATION_MODES,
@@ -94,7 +95,7 @@ async def async_setup_entry(
                     PlugwiseSelectEntity(coordinator, device_id, description)
                 )
                 LOGGER.debug(
-                    "Add %s %s selector", device["name"], description.translation_key
+                    "Add %s %s selector", device[ATTR_NAME], description.translation_key
                 )
 
     async_add_entities(entities)
@@ -125,7 +126,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
         await self.entity_description.command(
-            self.coordinator.api, self.device["location"], option
+            self.coordinator.api, self.device[LOCATION], option
         )
         LOGGER.debug(
             "Set %s to %s was successful.",

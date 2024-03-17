@@ -21,6 +21,7 @@ DHW_MODES: Final = "dhw_modes"
 GATEWAY: Final = "gateway"
 GATEWAY_MODE: Final = "gateway_mode"
 GATEWAY_MODES: Final = "gateway_modes"
+LOCATION: Final = "location"
 LOWER_BOUND: Final = "lower_bound"
 MAC_ADDRESS: Final = "mac_address"
 MAX_BOILER_TEMP: Final = "maximum_boiler_temperature",
