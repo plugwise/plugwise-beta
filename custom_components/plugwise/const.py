@@ -24,6 +24,18 @@ UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 UNIQUE_IDS: Final = "unique_ids"
 ZIGBEE_MAC_ADDRESS: Final = "zigbee_mac_address"
 
+# Binary Sensor constants
+BINARY_SENSORS: Final = "binary_sensors"
+COMPRESSOR_STATE: Final = "compressor_state"
+COOLING_ENABLED: Final = "cooling_enabled"
+COOLING_STATE: Final = "cooling_state"
+DHW_STATE: Final = "dhw_state"
+FLAME_STATE: Final = "flame_state"
+HEATING_STATE: Final = "heating_state"
+NOTIFICATIONS: Final ="notifications"
+PLUGWISE_NOTIFICATION: Final = "plugwise_notification"
+SLAVE_BOILER_STATE: Final = "slave_boiler_state"
+
 # Config_flow constants
 FLOW_NET: Final = "Network: Smile/Stretch"
 FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
