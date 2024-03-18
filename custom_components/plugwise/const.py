@@ -64,6 +64,14 @@ SELECT_GATEWAY_MODE: Final = "select_gateway_mode"
 SELECT_REGULATION_MODE: Final = "select_regulation_mode"
 SELECT_SCHEDULE: Final = "select_schedule"
 
+# Switch constants
+DHW_CM_SWITCH: Final = "dhw_cm_switch"
+LOCK: Final = "lock"
+MEMBERS: Final ="members"
+RELAY: Final = "relay"
+COOLING_ENA_SWITCH: Final ="cooling_ena_switch"
+SWITCHES: Final = "switches"
+
 # Default directives
 DEFAULT_PORT: Final = 80
 DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
