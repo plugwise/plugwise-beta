@@ -43,6 +43,15 @@ FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
 FLOW_STRETCH: Final = "Stretch (Stretch)"
 FLOW_TYPE: Final = "flow_type"
 
+# Entity constants
+AVAILABLE: Final = "available"
+FIRMWARE: Final = "firmware"
+GATEWAY_ID: Final = "gateway_id"
+HARDWARE: Final = "hardware"
+MODEL: Final = "model"
+SMILE_NAME: Final = "smile_name"
+VENDOR: Final = "vendor"
+
 # Number constants
 MAX_BOILER_TEMP: Final = "maximum_boiler_temperature"
 MAX_DHW_TEMP: Final = "max_dhw_temperature"
