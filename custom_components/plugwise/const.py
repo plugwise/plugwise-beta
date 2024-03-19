@@ -49,6 +49,18 @@ SETPOINT_HIGH: Final = "setpoint_high"
 SETPOINT_LOW: Final = "setpoint_low"
 THERMOSTAT: Final = "thermostat"
 
+# Climate constants
+ACTIVE_PRESET: Final = "active_preset"
+CONTROL_STATE: Final = "control_state"
+COOLING_PRESENT: Final ="cooling_present"
+DEV_CLASS: Final = "dev_class"
+NONE : Final = "None"
+MODE: Final = "mode"
+SETPOINT: Final = "setpoint"
+SETPOINT_HIGH: Final = "setpoint_high"
+SETPOINT_LOW: Final = "setpoint_low"
+THERMOSTAT: Final = "thermostat"
+
 # Config_flow constants
 FLOW_NET: Final = "Network: Smile/Stretch"
 FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
