@@ -37,6 +37,18 @@ NOTIFICATIONS: Final ="notifications"
 PLUGWISE_NOTIFICATION: Final = "plugwise_notification"
 SECONDARY_BOILER_STATE: Final = "secondary_boiler_state"
 
+# Climate constants
+ACTIVE_PRESET: Final = "active_preset"
+CONTROL_STATE: Final = "control_state"
+COOLING_PRESENT: Final ="cooling_present"
+DEV_CLASS: Final = "dev_class"
+NONE : Final = "None"
+MODE: Final = "mode"
+SETPOINT: Final = "setpoint"
+SETPOINT_HIGH: Final = "setpoint_high"
+SETPOINT_LOW: Final = "setpoint_low"
+THERMOSTAT: Final = "thermostat"
+
 # Config_flow constants
 FLOW_NET: Final = "Network: Smile/Stretch"
 FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
@@ -59,6 +71,9 @@ LOWER_BOUND: Final = "lower_bound"
 RESOLUTION: Final = "resolution"
 TEMPERATURE_OFFSET: Final = "temperature_offset"
 UPPER_BOUND: Final = "upper_bound"
+
+# Sensor constants
+SENSORS: Final = "sensors"
 
 # Select constants
 AVAILABLE_SCHEDULES: Final = "available_schedules"
