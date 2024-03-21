@@ -62,10 +62,18 @@ SETPOINT_LOW: Final = "setpoint_low"
 THERMOSTAT: Final = "thermostat"
 
 # Config_flow constants
+ANNA_WITH_ADAM: Final = "anna_with_adam"
+CONTEXT: Final = "context"
+FLOW_ID: Final = "flow_id"
 FLOW_NET: Final = "Network: Smile/Stretch"
 FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
 FLOW_STRETCH: Final = "Stretch (Stretch)"
 FLOW_TYPE: Final = "flow_type"
+INIT: Final = "init"
+PRODUCT: Final = "product"
+SMILE_OPEN_THERM: Final = "smile_open_therm"
+SMILE_THERMO: Final = "smile_thermo"
+VERSION: Final = "version"
 
 # Entity constants
 AVAILABLE: Final = "available"
