@@ -14,6 +14,7 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_NAME,
+    ATTR_TEMPERATURE,
     LIGHT_LUX,
     PERCENTAGE,
     EntityCategory,
@@ -68,10 +69,8 @@ from .const import (
     OUTDOOR_AIR_TEMP,
     OUTDOOR_TEMP,
     RETURN_TEMP,
-    SENSORS,
-    SETPOINT_HIGH,
-    SETPOINT_LOW,
-    TARGET_TEMP,
+    TARGET_TEMP_HIGH,
+    TARGET_TEMP_LOW,
     TEMP_DIFF,
     V_PHASE_ONE,
     V_PHASE_THREE,
@@ -95,15 +94,15 @@ class PlugwiseSensorEntityDescription(SensorEntityDescription):
 
 PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
-        key=TARGET_TEMP,
-        translation_key=TARGET_TEMP,
+        key=ATTR_TEMPERATURE,
+        translation_key=ATTR_TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseSensorEntityDescription(
-        key=SETPOINT_HIGH,
+        key=TARGET_TEMP_HIGH,
         translation_key="cooling_setpoint",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
@@ -111,7 +110,7 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseSensorEntityDescription(
-        key=SETPOINT_LOW,
+        key=TARGET_TEMP_LOW,
         translation_key="heating_setpoint",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
