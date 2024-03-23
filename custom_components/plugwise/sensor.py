@@ -69,6 +69,7 @@ from .const import (
     OUTDOOR_AIR_TEMP,
     OUTDOOR_TEMP,
     RETURN_TEMP,
+    SENSORS,
     TARGET_TEMP_HIGH,
     TARGET_TEMP_LOW,
     TEMP_DIFF,
