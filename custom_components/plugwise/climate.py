@@ -47,7 +47,6 @@ from .const import (
     SENSORS,
     SMILE_NAME,
     TARGET_TEMP,
-    TARGET_TEMP_LOW,
     TARGET_TEMP_HIGH,
     TARGET_TEMP_LOW,
     THERMOSTAT,
