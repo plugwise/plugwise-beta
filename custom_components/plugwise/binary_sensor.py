@@ -30,7 +30,7 @@ from .const import (
     NOTIFICATIONS,
     PLUGWISE_NOTIFICATION,
     SEVERITIES,
-    SLAVE_BOILER_STATE,
+    SECONDARY_BOILER_STATE,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -77,8 +77,8 @@ PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
-        key=SLAVE_BOILER_STATE,
-        translation_key=SLAVE_BOILER_STATE,
+        key=SECONDARY_BOILER_STATE,
+        translation_key=SECONDARY_BOILER_STATE,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(

@@ -35,7 +35,7 @@ FLAME_STATE: Final = "flame_state"
 HEATING_STATE: Final = "heating_state"
 NOTIFICATIONS: Final ="notifications"
 PLUGWISE_NOTIFICATION: Final = "plugwise_notification"
-SLAVE_BOILER_STATE: Final = "slave_boiler_state"
+SECONDARY_BOILER_STATE: Final = "secondary_boiler_state"
 
 # Config_flow constants
 FLOW_NET: Final = "Network: Smile/Stretch"
