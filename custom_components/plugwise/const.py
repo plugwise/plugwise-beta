@@ -160,13 +160,13 @@ COOLING_ENA_SWITCH: Final ="cooling_ena_switch"
 SWITCHES: Final = "switches"
 
 # Default directives
-DEFAULT_PORT: Final = 80
+DEFAULT_PORT: Final[int] = 80
 DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
     "power": timedelta(seconds=10),
     "stretch": timedelta(seconds=60),
     "thermostat": timedelta(seconds=60),
 }
-DEFAULT_TIMEOUT: Final = 10
+DEFAULT_TIMEOUT: Final[int] = 10
 DEFAULT_USERNAME: Final = "smile"
 
 # --- Const for Plugwise Smile and Stretch
