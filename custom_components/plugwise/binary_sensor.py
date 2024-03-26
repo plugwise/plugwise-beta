@@ -29,8 +29,8 @@ from .const import (
     LOGGER,
     NOTIFICATIONS,
     PLUGWISE_NOTIFICATION,
-    SEVERITIES,
     SECONDARY_BOILER_STATE,
+    SEVERITIES,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
