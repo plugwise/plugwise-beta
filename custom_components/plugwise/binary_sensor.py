@@ -12,14 +12,24 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory
+from homeassistant.const import ATTR_NAME, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
+    BINARY_SENSORS,
+    COMPRESSOR_STATE,
+    COOLING_ENABLED,
+    COOLING_STATE,
     COORDINATOR,  # pw-beta
+    DHW_STATE,
     DOMAIN,
+    FLAME_STATE,
+    HEATING_STATE,
     LOGGER,
+    NOTIFICATIONS,
+    PLUGWISE_NOTIFICATION,
+    SECONDARY_BOILER_STATE,
     SEVERITIES,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
@@ -35,45 +45,45 @@ class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
     key: BinarySensorType
 
 
-BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
+PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     PlugwiseBinarySensorEntityDescription(
-        key="compressor_state",
-        translation_key="compressor_state",
+        key=COMPRESSOR_STATE,
+        translation_key=COMPRESSOR_STATE,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
-        key="cooling_enabled",
-        translation_key="cooling_enabled",
+        key=COOLING_ENABLED,
+        translation_key=COOLING_ENABLED,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
-        key="dhw_state",
-        translation_key="dhw_state",
+        key=DHW_STATE,
+        translation_key=DHW_STATE,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
-        key="flame_state",
-        translation_key="flame_state",
+        key=FLAME_STATE,
+        translation_key=FLAME_STATE,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
-        key="heating_state",
-        translation_key="heating_state",
+        key=HEATING_STATE,
+        translation_key=HEATING_STATE,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
-        key="cooling_state",
-        translation_key="cooling_state",
+        key=COOLING_STATE,
+        translation_key=COOLING_STATE,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
-        key="slave_boiler_state",
-        translation_key="slave_boiler_state",
+        key=SECONDARY_BOILER_STATE,
+        translation_key=SECONDARY_BOILER_STATE,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
-        key="plugwise_notification",
-        translation_key="plugwise_notification",
+        key=PLUGWISE_NOTIFICATION,
+        translation_key=PLUGWISE_NOTIFICATION,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
 )
@@ -91,9 +101,9 @@ async def async_setup_entry(
 
     entities: list[PlugwiseBinarySensorEntity] = []
     for device_id, device in coordinator.data.devices.items():
-        if not (binary_sensors := device.get("binary_sensors")):
+        if not (binary_sensors := device.get(BINARY_SENSORS)):
             continue
-        for description in BINARY_SENSORS:
+        for description in PLUGWISE_BINARY_SENSORS:
             if description.key not in binary_sensors:
                 continue
             entities.append(
@@ -104,7 +114,7 @@ async def async_setup_entry(
                 )
             )
             LOGGER.debug(
-                "Add %s %s binary sensor", device["name"], description.translation_key
+                "Add %s %s binary sensor", device[ATTR_NAME], description.translation_key
             )
 
     async_add_entities(entities)
@@ -143,14 +153,14 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
     @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return entity specific state attributes."""
-        if self.entity_description.key != "plugwise_notification":
+        if self.entity_description.key != PLUGWISE_NOTIFICATION:
             return None
 
         # pw-beta adjustment with attrs is to only represent severities *with* content
         # not all severities including those without content as empty lists
         attrs: dict[str, list[str]] = {}  # pw-beta Re-evaluate against Core
         self._notification = {}  # pw-beta
-        if notify := self.coordinator.data.gateway["notifications"]:
+        if notify := self.coordinator.data.gateway[NOTIFICATIONS]:
             for notify_id, details in notify.items():  # pw-beta uses notify_id
                 for msg_type, msg in details.items():
                     msg_type = msg_type.lower()

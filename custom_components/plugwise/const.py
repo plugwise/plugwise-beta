@@ -10,27 +10,59 @@ DOMAIN: Final = "plugwise"
 LOGGER = logging.getLogger(__package__)
 
 API: Final = "api"
-AVAILABLE_SCHEDULES: Final = "available_schedules"
 COORDINATOR: Final = "coordinator"
 CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta options
 CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta options
 CONF_MANUAL_PATH: Final = "Enter Manually"
 DEVICES: Final = "devices"
 GATEWAY: Final = "gateway"
+LOCATION: Final = "location"
 MAC_ADDRESS: Final = "mac_address"
-SELECT_SCHEDULE: Final = "select_schedule"
 SMILE: Final = "smile"
 STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
+UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 UNIQUE_IDS: Final = "unique_ids"
 ZIGBEE_MAC_ADDRESS: Final = "zigbee_mac_address"
 
+# Binary Sensor constants
+BINARY_SENSORS: Final = "binary_sensors"
+COMPRESSOR_STATE: Final = "compressor_state"
+COOLING_ENABLED: Final = "cooling_enabled"
+COOLING_STATE: Final = "cooling_state"
+DHW_STATE: Final = "dhw_state"
+FLAME_STATE: Final = "flame_state"
+HEATING_STATE: Final = "heating_state"
+NOTIFICATIONS: Final ="notifications"
+PLUGWISE_NOTIFICATION: Final = "plugwise_notification"
+SECONDARY_BOILER_STATE: Final = "secondary_boiler_state"
+
+# Config_flow constants
 FLOW_NET: Final = "Network: Smile/Stretch"
 FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
 FLOW_STRETCH: Final = "Stretch (Stretch)"
 FLOW_TYPE: Final = "flow_type"
 
-UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
+# Number constants
+MAX_BOILER_TEMP: Final = "maximum_boiler_temperature"
+MAX_DHW_TEMP: Final = "max_dhw_temperature"
+LOWER_BOUND: Final = "lower_bound"
+RESOLUTION: Final = "resolution"
+TEMPERATURE_OFFSET: Final = "temperature_offset"
+UPPER_BOUND: Final = "upper_bound"
+
+# Select constants
+AVAILABLE_SCHEDULES: Final = "available_schedules"
+DHW_MODE: Final = "dhw_mode"
+DHW_MODES: Final = "dhw_modes"
+GATEWAY_MODE: Final = "gateway_mode"
+GATEWAY_MODES: Final = "gateway_modes"
+REGULATION_MODE: Final = "regulation_mode"
+REGULATION_MODES: Final = "regulation_modes"
+SELECT_DHW_MODE: Final = "select_dhw_mode"
+SELECT_GATEWAY_MODE: Final = "select_gateway_mode"
+SELECT_REGULATION_MODE: Final = "select_regulation_mode"
+SELECT_SCHEDULE: Final = "select_schedule"
 
 # Default directives
 DEFAULT_PORT: Final = 80

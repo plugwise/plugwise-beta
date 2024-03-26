@@ -8,14 +8,26 @@ from plugwise import Smile
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import STATE_ON, EntityCategory
+from homeassistant.const import ATTR_NAME, STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
+    AVAILABLE_SCHEDULES,
     COORDINATOR,  # pw-beta
+    DHW_MODE,
+    DHW_MODES,
     DOMAIN,
+    GATEWAY_MODE,
+    GATEWAY_MODES,
+    LOCATION,
     LOGGER,
+    REGULATION_MODE,
+    REGULATION_MODES,
+    SELECT_DHW_MODE,
+    SELECT_GATEWAY_MODE,
+    SELECT_REGULATION_MODE,
+    SELECT_SCHEDULE,
     SelectOptionsType,
     SelectType,
 )
@@ -36,31 +48,31 @@ class PlugwiseSelectEntityDescription(SelectEntityDescription):
 
 SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
-        key="select_schedule",
-        translation_key="select_schedule",
+        key=SELECT_SCHEDULE,
+        translation_key=SELECT_SCHEDULE,
         command=lambda api, loc, opt: api.set_schedule_state(loc, STATE_ON, opt),
-        options_key="available_schedules",
+        options_key=AVAILABLE_SCHEDULES,
     ),
     PlugwiseSelectEntityDescription(
-        key="select_regulation_mode",
-        translation_key="regulation_mode",
+        key=SELECT_REGULATION_MODE,
+        translation_key=REGULATION_MODE,
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_regulation_mode(opt),
-        options_key="regulation_modes",
+        options_key=REGULATION_MODES,
     ),
     PlugwiseSelectEntityDescription(
-        key="select_dhw_mode",
-        translation_key="dhw_mode",
+        key=SELECT_DHW_MODE,
+        translation_key=DHW_MODE,
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_dhw_mode(opt),
-        options_key="dhw_modes",
+        options_key=DHW_MODES,
     ),
     PlugwiseSelectEntityDescription(
-        key="select_gateway_mode",
-        translation_key="gateway_mode",
+        key=SELECT_GATEWAY_MODE,
+        translation_key=GATEWAY_MODE,
         entity_category=EntityCategory.CONFIG,
         command=lambda api, loc, opt: api.set_gateway_mode(opt),
-        options_key="gateway_modes",
+        options_key=GATEWAY_MODES,
     ),
 )
 
@@ -83,7 +95,7 @@ async def async_setup_entry(
                     PlugwiseSelectEntity(coordinator, device_id, description)
                 )
                 LOGGER.debug(
-                    "Add %s %s selector", device["name"], description.translation_key
+                    "Add %s %s selector", device[ATTR_NAME], description.translation_key
                 )
 
     async_add_entities(entities)
@@ -114,7 +126,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
         await self.entity_description.command(
-            self.coordinator.api, self.device["location"], option
+            self.coordinator.api, self.device[LOCATION], option
         )
         LOGGER.debug(
             "Set %s to %s was successful.",

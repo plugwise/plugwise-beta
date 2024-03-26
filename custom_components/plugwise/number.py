@@ -13,7 +13,7 @@ from homeassistant.components.number import (
     NumberMode,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory, UnitOfTemperature
+from homeassistant.const import ATTR_NAME, EntityCategory, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -21,6 +21,12 @@ from .const import (
     COORDINATOR,  # pw-beta
     DOMAIN,
     LOGGER,
+    LOWER_BOUND,
+    MAX_BOILER_TEMP,
+    MAX_DHW_TEMP,
+    RESOLUTION,
+    TEMPERATURE_OFFSET,
+    UPPER_BOUND,
     NumberType,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
@@ -37,8 +43,8 @@ class PlugwiseNumberEntityDescription(NumberEntityDescription):
 
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
-        key="maximum_boiler_temperature",
-        translation_key="maximum_boiler_temperature",
+        key=MAX_BOILER_TEMP,
+        translation_key=MAX_BOILER_TEMP,
         command=lambda api, number, dev_id, value: api.set_number_setpoint(
             number, dev_id, value
         ),
@@ -47,8 +53,8 @@ NUMBER_TYPES = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
     PlugwiseNumberEntityDescription(
-        key="max_dhw_temperature",
-        translation_key="max_dhw_temperature",
+        key=MAX_DHW_TEMP,
+        translation_key=MAX_DHW_TEMP,
         command=lambda api, number, dev_id, value: api.set_number_setpoint(
             number, dev_id, value
         ),
@@ -57,8 +63,8 @@ NUMBER_TYPES = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
     PlugwiseNumberEntityDescription(
-        key="temperature_offset",
-        translation_key="temperature_offset",
+        key=TEMPERATURE_OFFSET,
+        translation_key=TEMPERATURE_OFFSET,
         command=lambda api, number, dev_id, value: api.set_temperature_offset(
             number, dev_id, value
         ),
@@ -88,7 +94,7 @@ async def async_setup_entry(
                     PlugwiseNumberEntity(coordinator, device_id, description)
                 )
                 LOGGER.debug(
-                    "Add %s %s number", device["name"], description.translation_key
+                    "Add %s %s number", device[ATTR_NAME], description.translation_key
                 )
 
     async_add_entities(entities)
@@ -112,11 +118,11 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_mode = NumberMode.BOX
-        self._attr_native_max_value = self.device[description.key]["upper_bound"]
-        self._attr_native_min_value = self.device[description.key]["lower_bound"]
+        self._attr_native_max_value = self.device[description.key][UPPER_BOUND]
+        self._attr_native_min_value = self.device[description.key][LOWER_BOUND]
 
-        native_step = self.device[description.key]["resolution"]
-        if description.key != "temperature_offset":
+        native_step = self.device[description.key][RESOLUTION]
+        if description.key != TEMPERATURE_OFFSET:
             native_step = max(native_step, 0.5)
         self._attr_native_step = native_step
 
