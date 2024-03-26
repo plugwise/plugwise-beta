@@ -65,7 +65,7 @@
       "cooling_state": {
         "name": "Koelen"
       },
-      "slave_boiler_state": {
+      "secondary_boiler_state": {
         "name": "Status secundaire boiler"
       },
       "plugwise_notification": {
