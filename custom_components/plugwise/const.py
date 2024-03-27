@@ -37,11 +37,32 @@ NOTIFICATIONS: Final ="notifications"
 PLUGWISE_NOTIFICATION: Final = "plugwise_notification"
 SECONDARY_BOILER_STATE: Final = "secondary_boiler_state"
 
+# Climate constants
+ACTIVE_PRESET: Final = "active_preset"
+CONTROL_STATE: Final = "control_state"
+COOLING_PRESENT: Final ="cooling_present"
+DEV_CLASS: Final = "dev_class"
+NONE : Final = "None"
+MODE: Final = "mode"
+SETPOINT: Final = "setpoint"
+SETPOINT_HIGH: Final = "setpoint_high"
+SETPOINT_LOW: Final = "setpoint_low"
+THERMOSTAT: Final = "thermostat"
+
 # Config_flow constants
 FLOW_NET: Final = "Network: Smile/Stretch"
 FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
 FLOW_STRETCH: Final = "Stretch (Stretch)"
 FLOW_TYPE: Final = "flow_type"
+
+# Entity constants
+AVAILABLE: Final = "available"
+FIRMWARE: Final = "firmware"
+GATEWAY_ID: Final = "gateway_id"
+HARDWARE: Final = "hardware"
+MODEL: Final = "model"
+SMILE_NAME: Final = "smile_name"
+VENDOR: Final = "vendor"
 
 # Number constants
 MAX_BOILER_TEMP: Final = "maximum_boiler_temperature"
@@ -50,6 +71,9 @@ LOWER_BOUND: Final = "lower_bound"
 RESOLUTION: Final = "resolution"
 TEMPERATURE_OFFSET: Final = "temperature_offset"
 UPPER_BOUND: Final = "upper_bound"
+
+# Sensor constants
+SENSORS: Final = "sensors"
 
 # Select constants
 AVAILABLE_SCHEDULES: Final = "available_schedules"
@@ -63,6 +87,14 @@ SELECT_DHW_MODE: Final = "select_dhw_mode"
 SELECT_GATEWAY_MODE: Final = "select_gateway_mode"
 SELECT_REGULATION_MODE: Final = "select_regulation_mode"
 SELECT_SCHEDULE: Final = "select_schedule"
+
+# Switch constants
+DHW_CM_SWITCH: Final = "dhw_cm_switch"
+LOCK: Final = "lock"
+MEMBERS: Final ="members"
+RELAY: Final = "relay"
+COOLING_ENA_SWITCH: Final ="cooling_ena_switch"
+SWITCHES: Final = "switches"
 
 # Default directives
 DEFAULT_PORT: Final = 80

@@ -12,14 +12,20 @@ from homeassistant.components.switch import (
     SwitchEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory
+from homeassistant.const import ATTR_NAME, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
+    COOLING_ENA_SWITCH,
     COORDINATOR,  # pw-beta
+    DHW_CM_SWITCH,
     DOMAIN,
+    LOCK,
     LOGGER,
+    MEMBERS,
+    RELAY,
+    SWITCHES,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -33,27 +39,27 @@ class PlugwiseSwitchEntityDescription(SwitchEntityDescription):
     key: SwitchType
 
 
-SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
+PLUGWISE_SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
-        key="dhw_cm_switch",
-        translation_key="dhw_cm_switch",
+        key=DHW_CM_SWITCH,
+        translation_key=DHW_CM_SWITCH,
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
     ),
     PlugwiseSwitchEntityDescription(
-        key="lock",
-        translation_key="lock",
+        key=LOCK,
+        translation_key=LOCK,
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
     ),
     PlugwiseSwitchEntityDescription(
-        key="relay",
-        translation_key="relay",
+        key=RELAY,
+        translation_key=RELAY,
         device_class=SwitchDeviceClass.SWITCH,
     ),
     PlugwiseSwitchEntityDescription(
-        key="cooling_ena_switch",
-        translation_key="cooling_ena_switch",
+        key=COOLING_ENA_SWITCH,
+        translation_key=COOLING_ENA_SWITCH,
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
     ),
@@ -70,14 +76,14 @@ async def async_setup_entry(
 
     entities: list[PlugwiseSwitchEntity] = []
     for device_id, device in coordinator.data.devices.items():
-        if not (switches := device.get("switches")):
+        if not (switches := device.get(SWITCHES)):
             continue
-        for description in SWITCHES:
+        for description in PLUGWISE_SWITCHES:
             if description.key not in switches:
                 continue
             entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
             LOGGER.debug(
-                "Add %s %s switch", device["name"], description.translation_key
+                "Add %s %s switch", device[ATTR_NAME], description.translation_key
             )
 
     async_add_entities(entities)
@@ -102,14 +108,14 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
     @property
     def is_on(self) -> bool:
         """Return True if entity is on."""
-        return self.device["switches"][self.entity_description.key]
+        return self.device[SWITCHES][self.entity_description.key]
 
     @plugwise_command
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the device on."""
         await self.coordinator.api.set_switch_state(
             self._dev_id,
-            self.device.get("members"),
+            self.device.get(MEMBERS),
             self.entity_description.key,
             "on",
         )
@@ -119,7 +125,7 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
         """Turn the device off."""
         await self.coordinator.api.set_switch_state(
             self._dev_id,
-            self.device.get("members"),
+            self.device.get(MEMBERS),
             self.entity_description.key,
             "off",
         )
