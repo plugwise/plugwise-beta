@@ -31,7 +31,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
     COORDINATOR,  # pw-beta
-    CURRENT_TEMP,
     DHW_SETPOINT,
     DHW_TEMP,
     DOMAIN,
@@ -70,6 +69,7 @@ from .const import (
     OUTDOOR_TEMP,
     RETURN_TEMP,
     SENSORS,
+    TARGET_TEMP,
     TARGET_TEMP_HIGH,
     TARGET_TEMP_LOW,
     TEMP_DIFF,
@@ -95,8 +95,8 @@ class PlugwiseSensorEntityDescription(SensorEntityDescription):
 
 PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
-        key=ATTR_TEMPERATURE,
-        translation_key=ATTR_TEMPERATURE,
+        key=TARGET_TEMP,
+        translation_key=TARGET_TEMP,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -119,7 +119,7 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseSensorEntityDescription(
-        key=CURRENT_TEMP,
+        key=ATTR_TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.DIAGNOSTIC,
