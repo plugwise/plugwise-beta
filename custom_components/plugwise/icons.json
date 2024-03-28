@@ -120,5 +120,8 @@
         "default": "mdi:lock"
       }
     }
+  },
+  "services": {
+    "delete_notification": "mdi:trash-can"
   }
 }

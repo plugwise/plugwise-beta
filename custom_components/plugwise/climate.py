@@ -45,10 +45,10 @@ from .const import (
     RESOLUTION,
     SELECT_REGULATION_MODE,
     SENSORS,
-    SETPOINT,
-    SETPOINT_HIGH,
-    SETPOINT_LOW,
     SMILE_NAME,
+    TARGET_TEMP,
+    TARGET_TEMP_HIGH,
+    TARGET_TEMP_LOW,
     THERMOSTAT,
     UPPER_BOUND,
 )
@@ -157,7 +157,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         Connected to the HVACMode combination of AUTO-HEAT.
         """
 
-        return self.device[THERMOSTAT][SETPOINT]
+        return self.device[THERMOSTAT][TARGET_TEMP]
 
     @property
     def target_temperature_high(self) -> float:
@@ -165,7 +165,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACMode combination of AUTO-HEAT_COOL.
         """
-        return self.device[THERMOSTAT][SETPOINT_HIGH]
+        return self.device[THERMOSTAT][TARGET_TEMP_HIGH]
 
     @property
     def target_temperature_low(self) -> float:
@@ -173,7 +173,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACMode combination AUTO-HEAT_COOL.
         """
-        return self.device[THERMOSTAT][SETPOINT_LOW]
+        return self.device[THERMOSTAT][TARGET_TEMP_LOW]
 
     @property
     def hvac_mode(self) -> HVACMode:
@@ -250,11 +250,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Set new target temperature."""
         data: dict[str, Any] = {}
         if ATTR_TEMPERATURE in kwargs:
-            data[SETPOINT] = kwargs.get(ATTR_TEMPERATURE)
+            data[TARGET_TEMP] = kwargs.get(ATTR_TEMPERATURE)
         if ATTR_TARGET_TEMP_HIGH in kwargs:
-            data[SETPOINT_HIGH] = kwargs.get(ATTR_TARGET_TEMP_HIGH)
+            data[TARGET_TEMP_HIGH] = kwargs.get(ATTR_TARGET_TEMP_HIGH)
         if ATTR_TARGET_TEMP_LOW in kwargs:
-            data[SETPOINT_LOW] = kwargs.get(ATTR_TARGET_TEMP_LOW)
+            data[TARGET_TEMP_LOW] = kwargs.get(ATTR_TARGET_TEMP_LOW)
 
         for temperature in data.values():
             if temperature is None or not (
