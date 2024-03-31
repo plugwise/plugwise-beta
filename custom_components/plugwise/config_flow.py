@@ -17,7 +17,7 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
-from homeassistant.config_entries import ConfigEntry, ConfigFlow
+from homeassistant.config_entries import SOURCE_USER, ConfigEntry, ConfigFlow
 from homeassistant.const import (
     CONF_BASE,
     CONF_HOST,
@@ -33,18 +33,27 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
+    ANNA_WITH_ADAM,
     CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_REFRESH_INTERVAL,  # pw-beta option
+    CONTEXT,
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,  # pw-beta option
     DEFAULT_USERNAME,
     DOMAIN,
+    FLOW_ID,
     FLOW_SMILE,
     FLOW_STRETCH,
+    INIT,
+    PRODUCT,
     SMILE,
+    SMILE_OPEN_THERM,
+    SMILE_THERMO,
     STRETCH,
     STRETCH_USERNAME,
+    THERMOSTAT,
+    VERSION,
     ZEROCONF_MAP,
 )
 
@@ -137,14 +146,14 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if DEFAULT_USERNAME not in unique_id:
             self._username = STRETCH_USERNAME
-        _product = _properties.get("product", None)
-        _version = _properties.get("version", "n/a")
+        _product = _properties.get(PRODUCT, None)
+        _version = _properties.get(VERSION, "n/a")
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
 
         # This is an Anna, but we already have config entries.
         # Assuming that the user has already configured Adam, aborting discovery.
-        if self._async_current_entries() and _product == "smile_thermo":
-            return self.async_abort(reason="anna_with_adam")
+        if self._async_current_entries() and _product == SMILE_THERMO:
+            return self.async_abort(reason=ANNA_WITH_ADAM)
 
         # If we have discovered an Adam or Anna, both might be on the network.
         # In that case, we need to cancel the Anna flow, as the Adam should
@@ -152,20 +161,20 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         for flow in self._async_in_progress():
             # This is an Anna, and there is already an Adam flow in progress
             if (
-                _product == "smile_thermo"
-                and "context" in flow
-                and flow["context"].get("product") == "smile_open_therm"
+                _product == SMILE_THERMO
+                and CONTEXT in flow
+                and flow[CONTEXT].get(PRODUCT) == SMILE_OPEN_THERM
             ):
-                return self.async_abort(reason="anna_with_adam")
+                return self.async_abort(reason=ANNA_WITH_ADAM)
 
             # This is an Adam, and there is already an Anna flow in progress
             if (
-                _product == "smile_open_therm"
-                and "context" in flow
-                and flow["context"].get("product") == "smile_thermo"
-                and "flow_id" in flow
+                _product == SMILE_OPEN_THERM
+                and CONTEXT in flow
+                and flow[CONTEXT].get(PRODUCT) == SMILE_THERMO
+                and FLOW_ID in flow
             ):
-                self.hass.config_entries.flow.async_abort(flow["flow_id"])
+                self.hass.config_entries.flow.async_abort(flow[FLOW_ID])
 
         self.context.update(
             {
@@ -178,7 +187,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 "configuration_url": (
                     f"http://{discovery_info.host}:{discovery_info.port}"
                 ),
-                "product": _product,
+                PRODUCT: _product,
             }
         )
         return await self.async_step_user()
@@ -191,7 +200,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if not user_input:
             return self.async_show_form(
-                step_id="user",
+                step_id=SOURCE_USER,
                 data_schema=_base_schema(self.discovery_info, None),
                 errors=errors,
             )
@@ -217,7 +226,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if errors:
             return self.async_show_form(
-                step_id="user",
+                step_id=SOURCE_USER,
                 data_schema=_base_schema(None, user_input),
                 errors=errors,
             )
@@ -282,8 +291,8 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
             ): vol.All(cv.positive_int, vol.Clamp(min=10)),
         }  # pw-beta
 
-        if coordinator.api.smile_type != "thermostat":
-            return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
+        if coordinator.api.smile_type != THERMOSTAT:
+            return self.async_show_form(step_id=INIT, data_schema=vol.Schema(data))
 
         data.update(
             {
@@ -300,4 +309,4 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
             }
         )  # pw-beta
 
-        return self.async_show_form(step_id="init", data_schema=vol.Schema(data))
+        return self.async_show_form(step_id=INIT, data_schema=vol.Schema(data))

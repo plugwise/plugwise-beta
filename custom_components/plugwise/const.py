@@ -44,16 +44,24 @@ COOLING_PRESENT: Final ="cooling_present"
 DEV_CLASS: Final = "dev_class"
 NONE : Final = "None"
 MODE: Final = "mode"
-SETPOINT: Final = "setpoint"
-SETPOINT_HIGH: Final = "setpoint_high"
-SETPOINT_LOW: Final = "setpoint_low"
+TARGET_TEMP: Final = "setpoint"
+TARGET_TEMP_HIGH: Final = "setpoint_high"
+TARGET_TEMP_LOW: Final = "setpoint_low"
 THERMOSTAT: Final = "thermostat"
 
 # Config_flow constants
+ANNA_WITH_ADAM: Final = "anna_with_adam"
+CONTEXT: Final = "context"
+FLOW_ID: Final = "flow_id"
 FLOW_NET: Final = "Network: Smile/Stretch"
 FLOW_SMILE: Final = "Smile (Adam/Anna/P1)"
 FLOW_STRETCH: Final = "Stretch (Stretch)"
 FLOW_TYPE: Final = "flow_type"
+INIT: Final = "init"
+PRODUCT: Final = "product"
+SMILE_OPEN_THERM: Final = "smile_open_therm"
+SMILE_THERMO: Final = "smile_thermo"
+VERSION: Final = "version"
 
 # Entity constants
 AVAILABLE: Final = "available"
@@ -73,7 +81,50 @@ TEMPERATURE_OFFSET: Final = "temperature_offset"
 UPPER_BOUND: Final = "upper_bound"
 
 # Sensor constants
+DHW_TEMP: Final = "dhw_temperature"
+DHW_SETPOINT: Final = "domestic_hot_water_setpoint"
+EL_CONSUMED: Final = "electricity_consumed"
+EL_CONS_INTERVAL: Final = "electricity_consumed_interval"
+EL_CONS_OP_CUMULATIVE: Final = "electricity_consumed_off_peak_cumulative"
+EL_CONS_OP_INTERVAL: Final = "electricity_consumed_off_peak_interval"
+EL_CONS_OP_POINT: Final = "electricity_consumed_off_peak_point"
+EL_CONS_P_CUMULATIVE: Final = "electricity_consumed_peak_cumulative"
+EL_CONS_P_INTERVAL: Final = "electricity_consumed_peak_interval"
+EL_CONS_P_POINT: Final = "electricity_consumed_peak_point"
+EL_CONS_POINT: Final = "electricity_consumed_point"
+EL_PH1_CONSUMED: Final = "electricity_phase_one_consumed"
+EL_PH2_CONSUMED: Final = "electricity_phase_two_consumed"
+EL_PH3_CONSUMED: Final = "electricity_phase_three_consumed"
+EL_PH1_PRODUCED: Final = "electricity_phase_one_produced"
+EL_PH2_PRODUCED: Final = "electricity_phase_two_produced"
+EL_PH3_PRODUCED: Final = "electricity_phase_three_produced"
+EL_PRODUCED: Final = "electricity_produced"
+EL_PROD_INTERVAL: Final = "electricity_produced_interval"
+EL_PROD_OP_CUMULATIVE: Final = "electricity_produced_off_peak_cumulative"
+EL_PROD_OP_INTERVAL: Final = "electricity_produced_off_peak_interval"
+EL_PROD_OP_POINT: Final = "electricity_produced_off_peak_point"
+EL_PROD_P_CUMULATIVE: Final = "electricity_produced_peak_cumulative"
+EL_PROD_P_INTERVAL: Final = "electricity_produced_peak_interval"
+EL_PROD_P_POINT: Final = "electricity_produced_peak_point"
+EL_PROD_POINT: Final = "electricity_produced_point"
+GAS_CONS_CUMULATIVE: Final = "gas_consumed_cumulative"
+GAS_CONS_INTERVAL: Final = "gas_consumed_interval"
+INTENDED_BOILER_TEMP: Final = "intended_boiler_temperature"
+MOD_LEVEL: Final = "modulation_level"
+NET_EL_POINT: Final = "net_electricity_point"
+NET_EL_CUMULATIVE: Final = "net_electricity_cumulative"
+OUTDOOR_AIR_TEMP: Final = "outdoor_air_temperature"
+OUTDOOR_TEMP: Final = "outdoor_temperature"
+RETURN_TEMP: Final = "return_temperature"
 SENSORS: Final = "sensors"
+SETPOINT: Final = "setpoint"
+TEMP_DIFF: Final = "temperature_difference"
+VALVE_POS: Final = "valve_position"
+V_PH1: Final = "voltage_phase_one"
+V_PH2: Final = "voltage_phase_two"
+V_PH3: Final = "voltage_phase_three"
+WATER_TEMP: Final = "water_temperature"
+WATER_PRESSURE: Final = "water_pressure"
 
 # Select constants
 AVAILABLE_SCHEDULES: Final = "available_schedules"
@@ -97,13 +148,13 @@ COOLING_ENA_SWITCH: Final ="cooling_ena_switch"
 SWITCHES: Final = "switches"
 
 # Default directives
-DEFAULT_PORT: Final = 80
+DEFAULT_PORT: Final[int] = 80
 DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
     "power": timedelta(seconds=10),
     "stretch": timedelta(seconds=60),
     "thermostat": timedelta(seconds=60),
 }
-DEFAULT_TIMEOUT: Final = 10
+DEFAULT_TIMEOUT: Final[int] = 10
 DEFAULT_USERNAME: Final = "smile"
 
 # --- Const for Plugwise Smile and Stretch
