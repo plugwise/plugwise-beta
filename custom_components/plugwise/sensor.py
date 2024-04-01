@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from plugwise.constants import SensorType
 
-rom homeassistant.components.number import (
+from homeassistant.components.number import (
     BATTERY,
     HUMIDITY,
     ILLUMINANCE,
