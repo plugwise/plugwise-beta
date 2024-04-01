@@ -87,18 +87,12 @@ async def async_setup_entry(
         config_entry.entry_id
     ][COORDINATOR]
 
-    entities: list[PlugwiseSelectEntity] = []
-    for device_id, device in coordinator.data.devices.items():
-        for description in SELECT_TYPES:
-            if description.options_key in device:
-                entities.append(
-                    PlugwiseSelectEntity(coordinator, device_id, description)
-                )
-                LOGGER.debug(
-                    "Add %s %s selector", device[ATTR_NAME], description.translation_key
-                )
-
-    async_add_entities(entities)
+    async_add_entities(
+        PlugwiseSelectEntity(coordinator, device_id, description)
+        for device_id, device in coordinator.data.devices.items()
+        for description in SELECT_TYPES
+        if description.options_key in device
+    )
 
 
 class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
