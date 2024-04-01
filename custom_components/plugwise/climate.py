@@ -14,6 +14,7 @@ from homeassistant.components.climate import (
     HVACMode,
 )
 from homeassistant.components.climate.const import (
+    ATTR_PRESET_MODES,
     PRESET_AWAY,  # pw-beta homekit emulation
     PRESET_HOME,  # pw-beta homekit emulation
 )
@@ -127,7 +128,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= (
                 ClimateEntityFeature.TURN_OFF | ClimateEntityFeature.TURN_ON
             )
-        if presets := self.device.get("preset_modes"):
+        if presets := self.device.get(ATTR_PRESET_MODES):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
 
