@@ -61,6 +61,7 @@ INIT: Final = "init"
 PRODUCT: Final = "product"
 SMILE_OPEN_THERM: Final = "smile_open_therm"
 SMILE_THERMO: Final = "smile_thermo"
+TITLE_PLACEHOLDERS: Final = "title_placeholders"
 VERSION: Final = "version"
 
 # Entity constants
