@@ -125,7 +125,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             )
         if presets := self.device["preset_modes"]:
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
-            self._attr_preset_modes = presets
+        self._attr_preset_modes = presets
 
     def _previous_action_mode(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
         """Return the previous action-mode when the regulation-mode is not heating or cooling.
