@@ -3,23 +3,18 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components.climate import (
+from homeassistant.components.climate import ClimateEntity, ClimateEntityFeature
+from homeassistant.components.climate.const import (
     ATTR_HVAC_MODE,
     ATTR_TARGET_TEMP_HIGH,
     ATTR_TARGET_TEMP_LOW,
-    ATTR_TEMPERATURE,
-    ClimateEntity,
-    ClimateEntityFeature,
+    PRESET_AWAY,  # pw-beta homekit emulation
+    PRESET_HOME,  # pw-beta homekit emulation
     HVACAction,
     HVACMode,
 )
-from homeassistant.components.climate.const import (
-    ATTR_PRESET_MODES,
-    PRESET_AWAY,  # pw-beta homekit emulation
-    PRESET_HOME,  # pw-beta homekit emulation
-)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import STATE_OFF, STATE_ON, UnitOfTemperature
+from homeassistant.const import ATTR_TEMPERATURE, STATE_OFF, STATE_ON, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -128,8 +123,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= (
                 ClimateEntityFeature.TURN_OFF | ClimateEntityFeature.TURN_ON
             )
-        self._attr_preset_modes = None
-        if presets := self.device.get(ATTR_PRESET_MODES):
+        if presets := self.device["preset_modes"]:
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = presets
 
