@@ -5,6 +5,11 @@ from dataclasses import dataclass
 
 from plugwise.constants import SensorType
 
+rom homeassistant.components.number import (
+    BATTERY,
+    HUMIDITY,
+    ILLUMINANCE,
+)
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -395,14 +400,14 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
-        key="battery",
+        key=BATTERY,
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.BATTERY,
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
-        key="illuminance",
+        key=ILLUMINANCE,
         native_unit_of_measurement=LIGHT_LUX,
         device_class=SensorDeviceClass.ILLUMINANCE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -431,7 +436,7 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
-        key="humidity",
+        key=HUMIDITY,
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.HUMIDITY,
         state_class=SensorStateClass.MEASUREMENT,
