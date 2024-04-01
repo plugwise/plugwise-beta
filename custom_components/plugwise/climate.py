@@ -3,13 +3,14 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components.climate import ClimateEntity, ClimateEntityFeature
+from homeassistant.components.climate import ClimateEntity 
 from homeassistant.components.climate.const import (
     ATTR_HVAC_MODE,
     ATTR_TARGET_TEMP_HIGH,
     ATTR_TARGET_TEMP_LOW,
     PRESET_AWAY,  # pw-beta homekit emulation
     PRESET_HOME,  # pw-beta homekit emulation
+    ClimateEntityFeature,
     HVACAction,
     HVACMode,
 )
