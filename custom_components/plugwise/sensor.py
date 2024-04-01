@@ -5,11 +5,6 @@ from dataclasses import dataclass
 
 from plugwise.constants import SensorType
 
-from homeassistant.components.number import (
-    BATTERY,
-    HUMIDITY,
-    ILLUMINANCE,
-)
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -35,6 +30,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
+    BATTERY,
     COORDINATOR,  # pw-beta
     DHW_SETPOINT,
     DHW_TEMP,
@@ -65,6 +61,8 @@ from .const import (
     EL_PRODUCED,
     GAS_CONS_CUMULATIVE,
     GAS_CONS_INTERVAL,
+    HUMIDITY,
+    ILLUMINANCE,
     INTENDED_BOILER_TEMP,
     LOGGER,
     MOD_LEVEL,
@@ -78,10 +76,10 @@ from .const import (
     TARGET_TEMP_HIGH,
     TARGET_TEMP_LOW,
     TEMP_DIFF,
-    V_PH1,
-    V_PH2,
-    V_PH3,
     VALVE_POS,
+    VOLTAGE_PH1,
+    VOLTAGE_PH2,
+    VOLTAGE_PH3,
     WATER_PRESSURE,
     WATER_TEMP,
 )
@@ -349,24 +347,24 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
-        key=V_PH1,
-        translation_key=V_PH1,
+        key=VOLTAGE_PH1,
+        translation_key=VOLTAGE_PH1,
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
-        key=V_PH2,
-        translation_key=V_PH2,
+        key=VOLTAGE_PH2,
+        translation_key=VOLTAGE_PH2,
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
-        key=V_PH3,
-        translation_key=V_PH3,
+        key=VOLTAGE_PH3,
+        translation_key=VOLTAGE_PH3,
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
