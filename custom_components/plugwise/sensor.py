@@ -30,7 +30,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
-    BATTERY,
     COORDINATOR,  # pw-beta
     DHW_SETPOINT,
     DHW_TEMP,
@@ -61,8 +60,6 @@ from .const import (
     EL_PRODUCED,
     GAS_CONS_CUMULATIVE,
     GAS_CONS_INTERVAL,
-    HUMIDITY,
-    ILLUMINANCE,
     INTENDED_BOILER_TEMP,
     LOGGER,
     MOD_LEVEL,
@@ -398,14 +395,14 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL,
     ),
     PlugwiseSensorEntityDescription(
-        key=BATTERY,
+        key="battery",
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.BATTERY,
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
-        key=ILLUMINANCE,
+        key="illuminance",
         native_unit_of_measurement=LIGHT_LUX,
         device_class=SensorDeviceClass.ILLUMINANCE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -434,7 +431,7 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
-        key=HUMIDITY,
+        key="humidity",
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.HUMIDITY,
         state_class=SensorStateClass.MEASUREMENT,
