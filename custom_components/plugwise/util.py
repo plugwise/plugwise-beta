@@ -12,7 +12,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import device_registry as dr
 
-from .const import DOMAIN, LOGGER
+from .const import DOMAIN, GATEWAY_ID, LOGGER
 from .entity import PlugwiseEntity
 
 _PlugwiseEntityT = TypeVar("_PlugwiseEntityT", bound=PlugwiseEntity)
@@ -65,7 +65,7 @@ async def cleanup_device_registry(
             continue  # pragma: no cover
 
         # First find the Plugwise via_device, this is always the first device
-        if item[1] == data.gateway["gateway_id"]:
+        if item[1] == data.gateway[GATEWAY_ID]:
             via_device = device_entry.id
         elif ( # then remove the connected orphaned device(s)
             device_entry.via_device_id == via_device

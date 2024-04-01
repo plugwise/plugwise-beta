@@ -19,6 +19,7 @@ from homeassistant import config_entries
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
 from homeassistant.config_entries import SOURCE_USER, ConfigEntry, ConfigFlow
 from homeassistant.const import (
+    ATTR_CONFIGURATION_URL,
     CONF_BASE,
     CONF_HOST,
     CONF_NAME,
@@ -53,6 +54,7 @@ from .const import (
     STRETCH,
     STRETCH_USERNAME,
     THERMOSTAT,
+    TITLE_PLACEHOLDERS,
     VERSION,
     ZEROCONF_MAP,
 )
@@ -178,13 +180,13 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         self.context.update(
             {
-                "title_placeholders": {
+                TITLE_PLACEHOLDERS: {
                     CONF_HOST: discovery_info.host,
                     CONF_NAME: _name,
                     CONF_PORT: discovery_info.port,
                     CONF_USERNAME: self._username,
                 },
-                "configuration_url": (
+                ATTR_CONFIGURATION_URL: (
                     f"http://{discovery_info.host}:{discovery_info.port}"
                 ),
                 PRODUCT: _product,
