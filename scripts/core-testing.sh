@@ -57,12 +57,12 @@ my_venv=${my_path}/venv
 
 if [ -z "${GITHUB_ACTIONS}" ] ; then 
 	# Ensures a python virtualenv is available at the highest available python3 version
-	for pv in "${pyversions[@]};"; do
+	for pv in "${pyversions[@]}"; do
 	    if [ "$(which "python$pv")" ]; then
 		# If not (yet) available instantiate python virtualenv
 		if [ ! -d "${my_venv}" ]; then
-		    "python${pv}" -m venv "${my_venv}"
-		    # Ensure wheel is installed (preventing local issues)
+		    "python${pv}" -m pip install uv
+                    uv venv -p "${pv}" "${my_venv}"
 		    # shellcheck disable=SC1091
 		    . "${my_venv}/bin/activate"
 		fi
@@ -131,9 +131,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 			. "${my_path}/venv/bin/activate"
 			python3 -m venv venv
 		fi
-		python3 -m pip install --upgrade pip 
-		# Not a typo, core setup script resets back to pip 20.3
-		script/setup || python3 -m pip install --upgrade pip 
 		if [ -z "${GITHUB_ACTIONS}" ] ; then 
 			# shellcheck source=/dev/null
 			. venv/bin/activate
@@ -141,7 +138,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo ""
 		echo " ** Installing test requirements **"
 		echo ""
-		pip install --upgrade -r requirements_test.txt
+		uv pip install --upgrade -r requirements_test.txt
 	else
 		cd "${coredir}" || exit
 		echo ""
@@ -178,30 +175,32 @@ fi # core_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then 
 	cd "${coredir}" || exit
-	if [ -z "${GITHUB_ACTIONS}" ] ; then 
+	#if [ -z "${GITHUB_ACTIONS}" ] ; then 
 		echo "Activating venv and installing selected test modules (zeroconf, etc)"
 		echo ""
 		# shellcheck source=/dev/null
 		. venv/bin/activate
 		echo ""
-	fi
-	python3 -m pip install -q --upgrade pip
+	#fi
 	mkdir -p ./tmp
 	echo ""
-	echo "Installing pip modules"
+	echo "Ensure uv is there"
+	echo ""
+	python3 -m pip install pip uv
+	echo "Installing pip modules (using uv)"
 	echo ""
 	echo " - HA requirements (core and test)"
-	pip install --upgrade -q --disable-pip-version-check -r requirements.txt -r requirements_test.txt
+	uv pip install --upgrade -r requirements.txt -r requirements_test.txt
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise"
-	pip install --upgrade -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
+	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
 	echo ""
 	# When using test.py prettier makes multi-line, so use jq
 	module=$(jq '.requirements[]' ../custom_components/plugwise/manifest.json | tr -d '"')
 	#module=$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
 	echo "Checking manifest for current python-plugwise to install: ${module}"
 	echo ""
-	pip install --upgrade -q --disable-pip-version-check "${module}"
+	uv pip install --upgrade "${module}"
 fi # pip_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then 
