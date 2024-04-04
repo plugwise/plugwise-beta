@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## ongoing
+
+- Require python 3.12 (as Core 2024.2 already does)
+
 ## v0.48.1
 
 - Redact sensitive data in the diagnostics-download
