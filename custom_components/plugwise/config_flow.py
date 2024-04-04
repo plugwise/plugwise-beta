@@ -17,7 +17,12 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
-from homeassistant.config_entries import SOURCE_USER, ConfigEntry, ConfigFlowResult
+from homeassistant.config_entries import (
+    SOURCE_USER,
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+)
 from homeassistant.const import (
     ATTR_CONFIGURATION_URL,
     CONF_BASE,
