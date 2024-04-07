@@ -17,7 +17,12 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
-from homeassistant.config_entries import SOURCE_USER, ConfigEntry, ConfigFlow
+from homeassistant.config_entries import (
+    SOURCE_USER,
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+)
 from homeassistant.const import (
     ATTR_CONFIGURATION_URL,
     CONF_BASE,
@@ -29,7 +34,6 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
@@ -119,7 +123,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_zeroconf(
         self, discovery_info: ZeroconfServiceInfo
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
         _properties = discovery_info.properties
@@ -196,7 +200,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle the initial step when using network/gateway setups."""
         errors: dict[str, str] = {}
 
@@ -261,7 +265,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
 
     async def async_step_none(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:  # pragma: no cover
+    ) -> ConfigFlowResult:  # pragma: no cover
         """No options available."""
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
@@ -271,7 +275,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:  # pragma: no cover
+    ) -> ConfigFlowResult:  # pragma: no cover
         """Manage the Plugwise options."""
         if not self.config_entry.data.get(CONF_HOST):
             return await self.async_step_none(user_input)

@@ -6,3 +6,4 @@ venv
 *.swp
 *.rej
 *.orig
+node_modules
