@@ -53,10 +53,13 @@ which jq || ( echo "You should have jq installed, exiting"; exit 1)
 
 my_path=$(git rev-parse --show-toplevel)
 
+# Ensure environment is set-up
+source "${my_path}/scripts/setup.sh"
 # shellcheck disable=SC1091
 source "${my_path}/scripts/python-venv.sh"
 
 # i.e. args used for functions, not directions 
+set +u
 if [ -z "${GITHUB_ACTIONS}" ] ; then
 	# Handle variables
 	subject=""
@@ -110,18 +113,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo " ** Resetting to ${core_branch} (just cloned) **"
 		git reset --hard || echo " - Should have nothing to reset to after cloning"
 		git checkout "${core_branch}"
-		echo ""
-		echo " ** Running setup script from HA core **"
-		echo ""
-		if [ -z "${GITHUB_ACTIONS}" ] ; then 
-			# shellcheck source=/dev/null
-			. "${my_path}/venv/bin/activate"
-			python3 -m venv venv
-		fi
-		if [ -z "${GITHUB_ACTIONS}" ] ; then 
-			# shellcheck source=/dev/null
-			. venv/bin/activate
-		fi
 	else
 		cd "${coredir}" || exit
 		echo ""
@@ -146,7 +137,13 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	git checkout -b fake_branch
 
 	echo ""
-	echo "Bootstrap pre-commit parts of HA-core"
+	echo "Ensure HA-core venv"
+	# shellcheck disable=SC1091
+	source "${my_path}/scripts/python-venv.sh"
+        # shellcheck disable=SC1091
+	source ./venv/bin/activate
+
+	echo ""
 	echo "Bootstrap pip parts of HA-core"
 	grep -v "^#" "${coredir}/script/bootstrap" | grep "pip install" | sed 's/python3 -m pip install/uv pip install/g' | sh
 	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
@@ -163,15 +160,13 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	echo ""
 fi # core_prep
 
+set +u
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then 
 	cd "${coredir}" || exit
-	#if [ -z "${GITHUB_ACTIONS}" ] ; then 
-	#	echo "Activating venv and installing selected test modules (zeroconf, etc)"
-	#	echo ""
-	#	# shellcheck source=/dev/null
-	#	. venv/bin/activate
-	#	echo ""
-	#fi
+	echo ""
+	echo "Ensure HA-core venv"
+        # shellcheck disable=SC1091
+        source "./venv/bin/activate"
 	mkdir -p ./tmp
 	echo ""
 	echo "Ensure translations are there"
@@ -204,6 +199,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 	set +u
 	cd "${coredir}" || exit
 	echo ""
+	echo "Ensure HA-core venv"
+        # shellcheck disable=SC1091
+        source "./venv/bin/activate"
+	echo ""
 	echo "Test commencing ..."
 	echo ""
         debug_params=""
@@ -216,6 +215,10 @@ fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
 	cd "${coredir}" || exit
+	echo ""
+	echo "Ensure HA-core venv"
+        # shellcheck disable=SC1091
+        source "./venv/bin/activate"
 	echo ""
 	set +e
 	echo "... ruff-ing component..."
@@ -234,6 +237,10 @@ fi # quality
 # hassfest is another action
 if [ -z "${GITHUB_ACTIONS}" ]; then
 	cd "${coredir}" || exit
+	echo ""
+	echo "Ensure HA-core venv"
+        # shellcheck disable=SC1091
+        source "./venv/bin/activate"
 	echo ""
 	echo "Copy back modified files ..."
 	echo ""
