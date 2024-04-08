@@ -57,12 +57,12 @@ my_venv=${my_path}/venv
 
 if [ -z "${GITHUB_ACTIONS}" ] ; then 
 	# Ensures a python virtualenv is available at the highest available python3 version
-	for pv in "${pyversions[@]};"; do
+	for pv in "${pyversions[@]}"; do
 	    if [ "$(which "python$pv")" ]; then
 		# If not (yet) available instantiate python virtualenv
 		if [ ! -d "${my_venv}" ]; then
-		    "python${pv}" -m venv "${my_venv}"
-		    # Ensure wheel is installed (preventing local issues)
+		    "python${pv}" -m pip install uv
+                    uv venv -p "${pv}" "${my_venv}"
 		    # shellcheck disable=SC1091
 		    . "${my_venv}/bin/activate"
 		fi
@@ -100,15 +100,31 @@ fi
 
 # Ensure ha-core exists
 coredir="${my_path}/ha-core/"
+manualdir="${my_path}/manual_clone_ha/"
 mkdir -p "${coredir}"
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then 
 	# If only dir exists, but not cloned yet
 	if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
+	  if [ -d "${manualdir}" ]; then
+		echo ""
+		echo " ** Re-using copy, rebasing and copy to HA core**"
+		echo ""
+		cd "${manualdir}" || exit
+		echo ""
+		git config pull.rebase true
+		echo " ** Resetting to ${core_branch} (just cloned) **"
+		git reset --hard || echo " - Should have nothing to reset to after cloning"
+		git checkout "${core_branch}"
+		echo ""
+		cp -a "${manualdir}." "${coredir}"
+	  else
 		echo ""
 		echo " ** Cloning HA core **"
 		echo ""
 		git clone https://github.com/home-assistant/core.git "${coredir}"
+		cp -a "${coredir}." "${manualdir}"
+	  fi
 		if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
 			echo ""
 			echo "Cloning failed .. make sure ${coredir} exists and is an empty directory"
@@ -131,17 +147,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 			. "${my_path}/venv/bin/activate"
 			python3 -m venv venv
 		fi
-		python3 -m pip install --upgrade pip 
-		# Not a typo, core setup script resets back to pip 20.3
-		script/setup || python3 -m pip install --upgrade pip 
 		if [ -z "${GITHUB_ACTIONS}" ] ; then 
 			# shellcheck source=/dev/null
 			. venv/bin/activate
 		fi
-		echo ""
-		echo " ** Installing test requirements **"
-		echo ""
-		pip install --upgrade -r requirements_test.txt
 	else
 		cd "${coredir}" || exit
 		echo ""
@@ -159,15 +168,22 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		git reset --hard
 		git pull
 	fi
+	cd "${coredir}" || exit
 	# Add tracker
 	git log -1 | head -1 > "${coredir}/.git/plugwise-tracking"
 	# Fake branch
 	git checkout -b fake_branch
 
 	echo ""
+	echo "Bootstrap pre-commit parts of HA-core"
+	echo "Bootstrap pip parts of HA-core"
+	grep -v "^#" "${coredir}/script/bootstrap" | grep "pip install" | sed 's/python3 -m pip install/uv pip install/g' | sh
+	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
+
+	echo ""
 	echo "Cleaning existing plugwise from HA core"
 	echo ""
-	rm -r homeassistant/components/plugwise tests/components/plugwise
+	rm -r homeassistant/components/plugwise tests/components/plugwise || echo "already clean"
 	echo ""
 	echo "Overwriting with plugwise-beta"
 	echo ""
@@ -178,30 +194,37 @@ fi # core_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then 
 	cd "${coredir}" || exit
-	if [ -z "${GITHUB_ACTIONS}" ] ; then 
+	#if [ -z "${GITHUB_ACTIONS}" ] ; then 
 		echo "Activating venv and installing selected test modules (zeroconf, etc)"
 		echo ""
 		# shellcheck source=/dev/null
 		. venv/bin/activate
 		echo ""
-	fi
-	python3 -m pip install -q --upgrade pip
+	#fi
 	mkdir -p ./tmp
 	echo ""
-	echo "Installing pip modules"
+	echo "Ensure translations are there"
+	echo ""
+	python3 -m script.translations develop --all
+	echo ""
+	echo "Ensure uv is there"
+	echo ""
+	python3 -m pip install pip uv
+	echo "Installing pip modules (using uv)"
 	echo ""
 	echo " - HA requirements (core and test)"
-	pip install --upgrade -q --disable-pip-version-check -r requirements.txt -r requirements_test.txt
+	uv pip install --upgrade -r requirements.txt -r requirements_test.txt
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise"
-	pip install --upgrade -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
+	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
+	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 	echo ""
 	# When using test.py prettier makes multi-line, so use jq
 	module=$(jq '.requirements[]' ../custom_components/plugwise/manifest.json | tr -d '"')
 	#module=$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
 	echo "Checking manifest for current python-plugwise to install: ${module}"
 	echo ""
-	pip install --upgrade -q --disable-pip-version-check "${module}"
+	uv pip install --upgrade "${module}"
 fi # pip_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then 

@@ -7,3 +7,4 @@ venv
 *.rej
 *.orig
 node_modules
+manual_clone_ha
