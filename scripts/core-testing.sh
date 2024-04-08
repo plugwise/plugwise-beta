@@ -31,7 +31,7 @@ echo "Working on HA-core branch ${core_branch}"
 # Which packages to install (to prevent installing all test requirements)
 # actual package version ARE verified (i.e. grepped) from requirements_test_all
 # separate packages with |
-pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff|ffmpeg"
+pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff|ffmpeg|hassil"
 
 echo ""
 echo "Checking for necessary tools and preparing setup:"
@@ -55,7 +55,7 @@ pyversions=("3.12" dummy)
 my_path=$(git rev-parse --show-toplevel)
 my_venv=${my_path}/venv
 
-if [ -z "${GITHUB_ACTIONS}" ] ; then 
+if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then 
 	# Ensures a python virtualenv is available at the highest available python3 version
 	for pv in "${pyversions[@]}"; do
 	    if [ "$(which "python$pv")" ]; then
@@ -106,25 +106,25 @@ mkdir -p "${coredir}"
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then 
 	# If only dir exists, but not cloned yet
 	if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
-	  if [ -d "${manualdir}" ]; then
-		echo ""
-		echo " ** Re-using copy, rebasing and copy to HA core**"
-		echo ""
-		cd "${manualdir}" || exit
-		echo ""
-		git config pull.rebase true
-		echo " ** Resetting to ${core_branch} (just cloned) **"
-		git reset --hard || echo " - Should have nothing to reset to after cloning"
-		git checkout "${core_branch}"
-		echo ""
-		cp -a "${manualdir}." "${coredir}"
-	  else
-		echo ""
-		echo " ** Cloning HA core **"
-		echo ""
-		git clone https://github.com/home-assistant/core.git "${coredir}"
-		cp -a "${coredir}." "${manualdir}"
-	  fi
+		if [ -d "${manualdir}" ]; then
+			echo ""
+			echo " ** Re-using copy, rebasing and copy to HA core**"
+			echo ""
+			cd "${manualdir}" || exit
+			echo ""
+			git config pull.rebase true
+			echo " ** Resetting to ${core_branch} (just cloned) **"
+			git reset --hard || echo " - Should have nothing to reset to after cloning"
+			git checkout "${core_branch}"
+			echo ""
+			cp -a "${manualdir}." "${coredir}"
+		else
+			echo ""
+			echo " ** Cloning HA core **"
+			echo ""
+			git clone https://github.com/home-assistant/core.git "${coredir}"
+			cp -a "${coredir}." "${manualdir}"
+		fi
 		if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
 			echo ""
 			echo "Cloning failed .. make sure ${coredir} exists and is an empty directory"
@@ -205,7 +205,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo ""
 	echo "Ensure translations are there"
 	echo ""
-	python3 -m script.translations develop --all
+	python3 -m script.translations develop --all > /dev/null 2>&1
 	echo ""
 	echo "Ensure uv is there"
 	echo ""
