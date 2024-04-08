@@ -54,6 +54,7 @@ which jq || ( echo "You should have jq installed, exiting"; exit 1)
 my_path=$(git rev-parse --show-toplevel)
 
 # Ensure environment is set-up
+# shellcheck disable=SC1091
 source "${my_path}/scripts/setup.sh"
 # shellcheck disable=SC1091
 source "${my_path}/scripts/python-venv.sh"
