@@ -100,15 +100,31 @@ fi
 
 # Ensure ha-core exists
 coredir="${my_path}/ha-core/"
+manualdir="${my_path}/manual_clone_ha/"
 mkdir -p "${coredir}"
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then 
 	# If only dir exists, but not cloned yet
 	if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
+	  if [ -d "${manualdir}" ]; then
+		echo ""
+		echo " ** Re-using copy, rebasing and copy to HA core**"
+		echo ""
+		cd "${manualdir}" || exit
+		echo ""
+		git config pull.rebase true
+		echo " ** Resetting to ${core_branch} (just cloned) **"
+		git reset --hard || echo " - Should have nothing to reset to after cloning"
+		git checkout "${core_branch}"
+		echo ""
+		cp -a "${manualdir}." "${coredir}"
+	  else
 		echo ""
 		echo " ** Cloning HA core **"
 		echo ""
 		git clone https://github.com/home-assistant/core.git "${coredir}"
+		cp -a "${coredir}." "${manualdir}"
+	  fi
 		if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
 			echo ""
 			echo "Cloning failed .. make sure ${coredir} exists and is an empty directory"
@@ -135,10 +151,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 			# shellcheck source=/dev/null
 			. venv/bin/activate
 		fi
-		echo ""
-		echo " ** Installing test requirements **"
-		echo ""
-		uv pip install --upgrade -r requirements_test.txt
 	else
 		cd "${coredir}" || exit
 		echo ""
@@ -156,15 +168,23 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		git reset --hard
 		git pull
 	fi
+	cd "${coredir}" || exit
 	# Add tracker
 	git log -1 | head -1 > "${coredir}/.git/plugwise-tracking"
 	# Fake branch
 	git checkout -b fake_branch
 
 	echo ""
+	echo "Bootstrap pre-commit parts of HA-core"
+	pre-commit install
+	echo "Bootstrap pip parts of HA-core"
+	grep -v "^#" "${coredir}/script/bootstrap" | grep "pip install" | sed 's/python3 -m pip install/uv pip install/g' | sh
+	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
+
+	echo ""
 	echo "Cleaning existing plugwise from HA core"
 	echo ""
-	rm -r homeassistant/components/plugwise tests/components/plugwise
+	rm -r homeassistant/components/plugwise tests/components/plugwise || echo "already clean"
 	echo ""
 	echo "Overwriting with plugwise-beta"
 	echo ""
@@ -184,6 +204,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	#fi
 	mkdir -p ./tmp
 	echo ""
+	echo "Ensure translations are there"
+	echo ""
+	python3 -m script.translations develop --all
+	echo ""
 	echo "Ensure uv is there"
 	echo ""
 	python3 -m pip install pip uv
@@ -194,6 +218,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise"
 	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
+	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 	echo ""
 	# When using test.py prettier makes multi-line, so use jq
 	module=$(jq '.requirements[]' ../custom_components/plugwise/manifest.json | tr -d '"')
