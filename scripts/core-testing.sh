@@ -176,7 +176,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 
 	echo ""
 	echo "Bootstrap pre-commit parts of HA-core"
-	pre-commit install
 	echo "Bootstrap pip parts of HA-core"
 	grep -v "^#" "${coredir}/script/bootstrap" | grep "pip install" | sed 's/python3 -m pip install/uv pip install/g' | sh
 	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
