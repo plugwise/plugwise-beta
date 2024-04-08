@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -x
 set -e
 
 # By default assumes running against 'master' branch of Core-HA
@@ -55,36 +55,9 @@ pyversions=("3.12" dummy)
 my_path=$(git rev-parse --show-toplevel)
 my_venv=${my_path}/venv
 
-if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then 
-	# Ensures a python virtualenv is available at the highest available python3 version
-	for pv in "${pyversions[@]}"; do
-	    if [ "$(which "python$pv")" ]; then
-		# If not (yet) available instantiate python virtualenv
-		if [ ! -d "${my_venv}" ]; then
-		    "python${pv}" -m pip install uv
-                    uv venv -p "${pv}" "${my_venv}"
-		    # shellcheck disable=SC1091
-		    . "${my_venv}/bin/activate"
-		fi
-		break
-	    fi
-	done
+# shellcheck disable=SC1091
+source "${my_path}/scripts/python-venv.sh"
 
-	# shellcheck source=/dev/null
-	. "${my_venv}/bin/activate"
-	# shellcheck disable=2145
-	which python3 || ( echo "You should have python3 (${pyversions[@]}) installed, or change the script yourself, exiting"; exit 1)
-	python3 --version
-
-	# Failsafe
-	if [ ! -d "${my_venv}" ]; then
-	    echo "Unable to instantiate venv, check your base python3 version and if you have python3-venv installed"
-	    exit 1
-	fi
-	# /Cloned code
-fi
-
-# Skip targeting for github
 # i.e. args used for functions, not directions 
 if [ -z "${GITHUB_ACTIONS}" ] ; then
 	# Handle variables
@@ -195,11 +168,11 @@ fi # core_prep
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then 
 	cd "${coredir}" || exit
 	#if [ -z "${GITHUB_ACTIONS}" ] ; then 
-		echo "Activating venv and installing selected test modules (zeroconf, etc)"
-		echo ""
-		# shellcheck source=/dev/null
-		. venv/bin/activate
-		echo ""
+	#	echo "Activating venv and installing selected test modules (zeroconf, etc)"
+	#	echo ""
+	#	# shellcheck source=/dev/null
+	#	. venv/bin/activate
+	#	echo ""
 	#fi
 	mkdir -p ./tmp
 	echo ""
@@ -210,6 +183,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo "Ensure uv is there"
 	echo ""
 	python3 -m pip install pip uv
+	echo ""
 	echo "Installing pip modules (using uv)"
 	echo ""
 	echo " - HA requirements (core and test)"
@@ -217,6 +191,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise"
 	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
+	echo " - home assistant basics"
 	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 	echo ""
 	# When using test.py prettier makes multi-line, so use jq
@@ -228,6 +203,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 fi # pip_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then 
+	set +u
 	cd "${coredir}" || exit
 	echo ""
 	echo "Test commencing ..."
