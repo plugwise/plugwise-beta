@@ -9,6 +9,7 @@ env:
   DEFAULT_PYTHON: "3.12"
 
 on:
+  workflow_dispatch:
   # Only set to 'push' when testing/modifying
   # otherwise this should be just scheduled runs!
   # push:
