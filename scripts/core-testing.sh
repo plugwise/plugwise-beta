@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -x
+#!/usr/bin/env bash
 set -e
 
 # By default assumes running against 'master' branch of Core-HA
@@ -51,9 +51,7 @@ which jq || ( echo "You should have jq installed, exiting"; exit 1)
 # - quality
 
 
-pyversions=("3.12" dummy) 
 my_path=$(git rev-parse --show-toplevel)
-my_venv=${my_path}/venv
 
 # shellcheck disable=SC1091
 source "${my_path}/scripts/python-venv.sh"
