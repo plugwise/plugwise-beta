@@ -31,7 +31,7 @@ echo "Working on HA-core branch ${core_branch}"
 # Which packages to install (to prevent installing all test requirements)
 # actual package version ARE verified (i.e. grepped) from requirements_test_all
 # separate packages with |
-pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff|ffmpeg"
+pip_packages="fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff|ffmpeg|hassil|home-assistant-intents"
 
 echo ""
 echo "Checking for necessary tools and preparing setup:"
@@ -51,41 +51,16 @@ which jq || ( echo "You should have jq installed, exiting"; exit 1)
 # - quality
 
 
-pyversions=("3.12" dummy) 
 my_path=$(git rev-parse --show-toplevel)
-my_venv=${my_path}/venv
 
-if [ -z "${GITHUB_ACTIONS}" ] ; then 
-	# Ensures a python virtualenv is available at the highest available python3 version
-	for pv in "${pyversions[@]}"; do
-	    if [ "$(which "python$pv")" ]; then
-		# If not (yet) available instantiate python virtualenv
-		if [ ! -d "${my_venv}" ]; then
-		    "python${pv}" -m pip install uv
-                    uv venv -p "${pv}" "${my_venv}"
-		    # shellcheck disable=SC1091
-		    . "${my_venv}/bin/activate"
-		fi
-		break
-	    fi
-	done
+# Ensure environment is set-up
+# shellcheck disable=SC1091
+source "${my_path}/scripts/setup.sh"
+# shellcheck disable=SC1091
+source "${my_path}/scripts/python-venv.sh"
 
-	# shellcheck source=/dev/null
-	. "${my_venv}/bin/activate"
-	# shellcheck disable=2145
-	which python3 || ( echo "You should have python3 (${pyversions[@]}) installed, or change the script yourself, exiting"; exit 1)
-	python3 --version
-
-	# Failsafe
-	if [ ! -d "${my_venv}" ]; then
-	    echo "Unable to instantiate venv, check your base python3 version and if you have python3-venv installed"
-	    exit 1
-	fi
-	# /Cloned code
-fi
-
-# Skip targeting for github
 # i.e. args used for functions, not directions 
+set +u
 if [ -z "${GITHUB_ACTIONS}" ] ; then
 	# Handle variables
 	subject=""
@@ -106,25 +81,25 @@ mkdir -p "${coredir}"
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then 
 	# If only dir exists, but not cloned yet
 	if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
-	  if [ -d "${manualdir}" ]; then
-		echo ""
-		echo " ** Re-using copy, rebasing and copy to HA core**"
-		echo ""
-		cd "${manualdir}" || exit
-		echo ""
-		git config pull.rebase true
-		echo " ** Resetting to ${core_branch} (just cloned) **"
-		git reset --hard || echo " - Should have nothing to reset to after cloning"
-		git checkout "${core_branch}"
-		echo ""
-		cp -a "${manualdir}." "${coredir}"
-	  else
-		echo ""
-		echo " ** Cloning HA core **"
-		echo ""
-		git clone https://github.com/home-assistant/core.git "${coredir}"
-		cp -a "${coredir}." "${manualdir}"
-	  fi
+		if [ -d "${manualdir}" ]; then
+			echo ""
+			echo " ** Re-using copy, rebasing and copy to HA core**"
+			echo ""
+			cd "${manualdir}" || exit
+			echo ""
+			git config pull.rebase true
+			echo " ** Resetting to ${core_branch} (just cloned) **"
+			git reset --hard || echo " - Should have nothing to reset to after cloning"
+			git checkout "${core_branch}"
+			echo ""
+			cp -a "${manualdir}." "${coredir}"
+		else
+			echo ""
+			echo " ** Cloning HA core **"
+			echo ""
+			git clone https://github.com/home-assistant/core.git "${coredir}"
+			cp -a "${coredir}." "${manualdir}"
+		fi
 		if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
 			echo ""
 			echo "Cloning failed .. make sure ${coredir} exists and is an empty directory"
@@ -139,18 +114,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		echo " ** Resetting to ${core_branch} (just cloned) **"
 		git reset --hard || echo " - Should have nothing to reset to after cloning"
 		git checkout "${core_branch}"
-		echo ""
-		echo " ** Running setup script from HA core **"
-		echo ""
-		if [ -z "${GITHUB_ACTIONS}" ] ; then 
-			# shellcheck source=/dev/null
-			. "${my_path}/venv/bin/activate"
-			python3 -m venv venv
-		fi
-		if [ -z "${GITHUB_ACTIONS}" ] ; then 
-			# shellcheck source=/dev/null
-			. venv/bin/activate
-		fi
 	else
 		cd "${coredir}" || exit
 		echo ""
@@ -175,7 +138,13 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	git checkout -b fake_branch
 
 	echo ""
-	echo "Bootstrap pre-commit parts of HA-core"
+	echo "Ensure HA-core venv"
+	# shellcheck disable=SC1091
+	source "${my_path}/scripts/python-venv.sh"
+        # shellcheck disable=SC1091
+	source ./venv/bin/activate
+
+	echo ""
 	echo "Bootstrap pip parts of HA-core"
 	grep -v "^#" "${coredir}/script/bootstrap" | grep "pip install" | sed 's/python3 -m pip install/uv pip install/g' | sh
 	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
@@ -192,24 +161,23 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	echo ""
 fi # core_prep
 
+set +u
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then 
 	cd "${coredir}" || exit
-	#if [ -z "${GITHUB_ACTIONS}" ] ; then 
-		echo "Activating venv and installing selected test modules (zeroconf, etc)"
-		echo ""
-		# shellcheck source=/dev/null
-		. venv/bin/activate
-		echo ""
-	#fi
+	echo ""
+	echo "Ensure HA-core venv"
+        # shellcheck disable=SC1091
+        source "./venv/bin/activate"
 	mkdir -p ./tmp
 	echo ""
 	echo "Ensure translations are there"
 	echo ""
-	python3 -m script.translations develop --all
+	python3 -m script.translations develop --all > /dev/null 2>&1
 	echo ""
 	echo "Ensure uv is there"
 	echo ""
 	python3 -m pip install pip uv
+	echo ""
 	echo "Installing pip modules (using uv)"
 	echo ""
 	echo " - HA requirements (core and test)"
@@ -217,6 +185,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise"
 	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
+	echo " - home assistant basics"
 	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 	echo ""
 	# When using test.py prettier makes multi-line, so use jq
@@ -228,7 +197,12 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 fi # pip_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then 
+	set +u
 	cd "${coredir}" || exit
+	echo ""
+	echo "Ensure HA-core venv"
+        # shellcheck disable=SC1091
+        source "./venv/bin/activate"
 	echo ""
 	echo "Test commencing ..."
 	echo ""
@@ -242,6 +216,10 @@ fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
 	cd "${coredir}" || exit
+	echo ""
+	echo "Ensure HA-core venv"
+        # shellcheck disable=SC1091
+        source "./venv/bin/activate"
 	echo ""
 	set +e
 	echo "... ruff-ing component..."
@@ -260,6 +238,10 @@ fi # quality
 # hassfest is another action
 if [ -z "${GITHUB_ACTIONS}" ]; then
 	cd "${coredir}" || exit
+	echo ""
+	echo "Ensure HA-core venv"
+        # shellcheck disable=SC1091
+        source "./venv/bin/activate"
 	echo ""
 	echo "Copy back modified files ..."
 	echo ""
