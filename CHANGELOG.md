@@ -2,9 +2,12 @@
 
 ## Versions from 0.40 and up
 
-## ongoing
+## v0.48.2
 
+- Bugfix for #620 via [plugwise v0.37.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.3)
 - Require python 3.12 (as Core 2024.2 already does)
+- Link to plugwise v0.37.2 via [plugwise v0.37.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.2)
+- Replace many recurring text-strings by CONSTANTS.
 
 ## v0.48.1
 
