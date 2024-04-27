@@ -14,7 +14,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
     AVAILABLE_SCHEDULES,
-    COORDINATOR,  # pw-beta
     DHW_MODE,
     DHW_MODES,
     DOMAIN,
@@ -33,6 +32,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
+from .util import get_coordinator
 
 PARALLEL_UPDATES = 0
 
@@ -83,22 +83,30 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile selector from a config entry."""
-    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
-        config_entry.entry_id
-    ][COORDINATOR]
+    coordinator = get_coordinator(hass, config_entry.entry_id)
 
-    entities: list[PlugwiseSelectEntity] = []
-    for device_id, device in coordinator.data.devices.items():
-        for description in SELECT_TYPES:
-            if description.options_key in device:
-                entities.append(
-                    PlugwiseSelectEntity(coordinator, device_id, description)
-                )
-                LOGGER.debug(
-                    "Add %s %s selector", device[ATTR_NAME], description.translation_key
-                )
+    @callback
+    def _add_entities() -> None:
+        """Add Entities."""
+        if not coordinator.new_devices:
+            return
 
-    async_add_entities(entities)
+        entities: list[PlugwiseSelectEntity] = []
+        for device_id, device in coordinator.data.devices.items():
+            for description in SELECT_TYPES:
+                if description.options_key in device:
+                    entities.append(
+                        PlugwiseSelectEntity(coordinator, device_id, description)
+                    )
+                    LOGGER.debug(
+                        "Add %s %s selector", device[ATTR_NAME], description.translation_key
+                    )
+
+        async_add_entities(entities)
+
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
+
+    _add_entities()
 
 
 class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
