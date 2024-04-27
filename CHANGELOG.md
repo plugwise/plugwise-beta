@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.50.0
+
+- Change to automatic deletion of removed Plugwise devices at runtime.
+
 ## v0.49.0
 
 - Add new Plugwise devices at runtime.
