@@ -16,7 +16,7 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, STATE_OFF, STATE_ON, UnitOfTemperature
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -51,7 +51,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .util import plugwise_command
+from .util import get_coordinator, plugwise_command
 
 
 async def async_setup_entry(
@@ -60,21 +60,28 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile Thermostats from a config entry."""
-    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
-        config_entry.entry_id
-    ][COORDINATOR]
-
+    coordinator = get_coordinator(hass, config_entry.entry_id)
     homekit_enabled: bool = config_entry.options.get(
         CONF_HOMEKIT_EMULATION, False
     )  # pw-beta homekit emulation
 
-    async_add_entities(
-        PlugwiseClimateEntity(
-            coordinator, device_id, homekit_enabled
-        )  # pw-beta homekit emulation
-        for device_id, device in coordinator.data.devices.items()
-        if device[DEV_CLASS] in MASTER_THERMOSTATS
+    @callback
+    def _add_entities() -> None:
+        """Add devices."""
+        if not coordinator.new_devices:
+            return
+
+        async_add_entities(
+            PlugwiseClimateEntity(
+                coordinator, device_id, homekit_enabled
+            )  # pw-beta homekit emulation
+            for device_id, device in coordinator.data.devices.items()
+            if device[DEV_CLASS] in MASTER_THERMOSTATS
     )
+
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
+
+    _add_entities()
 
 
 class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
