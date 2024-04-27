@@ -24,8 +24,16 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
+from .const import COORDINATOR, DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
 from .util import cleanup_device_registry
+
+
+def get_coordinator(
+    hass: HomeAssistant, config_entry_id: str
+) -> PlugwiseDataUpdateCoordinator:
+    """Get coordinator for given config entry id."""
+    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][config_entry_id][COORDINATOR]
+    return coordinator
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):

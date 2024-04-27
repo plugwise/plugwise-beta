@@ -48,9 +48,9 @@ from .const import (
     THERMOSTAT,
     UPPER_BOUND,
 )
-from .coordinator import PlugwiseDataUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator, get_coordinator
 from .entity import PlugwiseEntity
-from .util import get_coordinator, plugwise_command
+from .util import plugwise_command
 
 
 async def async_setup_entry(

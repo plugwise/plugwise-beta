@@ -78,9 +78,8 @@ from .const import (
     WATER_PRESSURE,
     WATER_TEMP,
 )
-from .coordinator import PlugwiseDataUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator, get_coordinator
 from .entity import PlugwiseEntity
-from .util import get_coordinator
 
 PARALLEL_UPDATES = 0
 

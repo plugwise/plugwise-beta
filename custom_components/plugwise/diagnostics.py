@@ -17,8 +17,7 @@ from .const import (
     SELECT_SCHEDULE,
     ZIGBEE_MAC_ADDRESS,
 )
-from .coordinator import PlugwiseDataUpdateCoordinator
-from .util import get_coordinator
+from .coordinator import PlugwiseDataUpdateCoordinator, get_coordinator
 
 KEYS_TO_REDACT = {
     ATTR_NAME,

@@ -27,9 +27,8 @@ from .const import (
     UPPER_BOUND,
     NumberType,
 )
-from .coordinator import PlugwiseDataUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator, get_coordinator
 from .entity import PlugwiseEntity
-from .util import get_coordinator
 
 
 @dataclass(frozen=True, kw_only=True)

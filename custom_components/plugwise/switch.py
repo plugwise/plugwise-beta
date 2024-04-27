@@ -25,9 +25,9 @@ from .const import (
     RELAY,
     SWITCHES,
 )
-from .coordinator import PlugwiseDataUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator, get_coordinator
 from .entity import PlugwiseEntity
-from .util import get_coordinator, plugwise_command
+from .util import plugwise_command
 
 
 @dataclass(frozen=True)
