@@ -9,15 +9,13 @@ from plugwise import Smile
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, STATE_ON, EntityCategory
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
     AVAILABLE_SCHEDULES,
-    COORDINATOR,  # pw-beta
     DHW_MODE,
     DHW_MODES,
-    DOMAIN,
     GATEWAY_MODE,
     GATEWAY_MODES,
     LOCATION,
@@ -33,6 +31,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
+from .util import get_coordinator
 
 PARALLEL_UPDATES = 0
 
@@ -79,26 +78,34 @@ SELECT_TYPES = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Smile selector from a config entry."""
-    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
-        config_entry.entry_id
-    ][COORDINATOR]
+    """Set up the Smile selector from a ConfigEntry."""
+    coordinator = get_coordinator(hass, entry.entry_id)
 
-    entities: list[PlugwiseSelectEntity] = []
-    for device_id, device in coordinator.data.devices.items():
-        for description in SELECT_TYPES:
-            if description.options_key in device:
-                entities.append(
-                    PlugwiseSelectEntity(coordinator, device_id, description)
-                )
-                LOGGER.debug(
-                    "Add %s %s selector", device[ATTR_NAME], description.translation_key
-                )
+    @callback
+    def _add_entities() -> None:
+        """Add Entities."""
+        if not coordinator.new_devices:
+            return
 
-    async_add_entities(entities)
+        entities: list[PlugwiseSelectEntity] = []
+        for device_id, device in coordinator.data.devices.items():
+            for description in SELECT_TYPES:
+                if description.options_key in device:
+                    entities.append(
+                        PlugwiseSelectEntity(coordinator, device_id, description)
+                    )
+                    LOGGER.debug(
+                        "Add %s %s selector", device[ATTR_NAME], description.translation_key
+                    )
+
+        async_add_entities(entities)
+
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
+
+    _add_entities()
 
 
 class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):

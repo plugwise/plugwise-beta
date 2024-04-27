@@ -66,6 +66,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._unavailable_logged = False
+        self.data = PlugwiseData(gateway={}, devices={})
+        self.new_devices: set[str] = set()
+        self.removed_devices: list[str] = []
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -85,13 +88,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
-        data = PlugwiseData(gateway={}, devices={})
-
         try:
             if not self._connected:
                 await self._connect()
             data = await self.api.async_update()
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
+
             if self._unavailable_logged:
                 self._unavailable_logged = False
         except InvalidAuthentication as err:
@@ -112,5 +114,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
+
+        self.new_devices = data.devices.keys() - self.data.devices.keys()
 
         return data

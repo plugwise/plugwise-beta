@@ -12,13 +12,21 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import device_registry as dr
 
-from .const import DOMAIN, GATEWAY_ID, LOGGER
+from .const import COORDINATOR, DOMAIN, GATEWAY_ID, LOGGER
+from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 
 _PlugwiseEntityT = TypeVar("_PlugwiseEntityT", bound=PlugwiseEntity)
 _R = TypeVar("_R")
 _P = ParamSpec("_P")
 
+
+def get_coordinator(
+    hass: HomeAssistant, config_entry_id: str
+) -> PlugwiseDataUpdateCoordinator:
+    """Get coordinator for given config entry id."""
+    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][config_entry_id][COORDINATOR]
+    return coordinator
 
 def plugwise_command(
     func: Callable[Concatenate[_PlugwiseEntityT, _P], Awaitable[_R]]

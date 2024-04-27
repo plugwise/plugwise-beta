@@ -13,14 +13,12 @@ from homeassistant.components.switch import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, EntityCategory
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
     COOLING_ENA_SWITCH,
-    COORDINATOR,  # pw-beta
     DHW_CM_SWITCH,
-    DOMAIN,
     LOCK,
     LOGGER,
     MEMBERS,
@@ -29,7 +27,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .util import plugwise_command
+from .util import get_coordinator, plugwise_command
 
 
 @dataclass(frozen=True)
@@ -68,25 +66,35 @@ PLUGWISE_SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Smile switches from a config entry."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+    """Set up the Smile switches from a ConfigEntry."""
+    coordinator = get_coordinator(hass, entry.entry_id)
 
-    entities: list[PlugwiseSwitchEntity] = []
-    for device_id, device in coordinator.data.devices.items():
-        if not (switches := device.get(SWITCHES)):
-            continue
-        for description in PLUGWISE_SWITCHES:
-            if description.key not in switches:
+    @callback
+    def _add_entities() -> None:
+        """Add Entities."""
+        if not coordinator.new_devices:
+            return
+
+        entities: list[PlugwiseSwitchEntity] = []
+        for device_id, device in coordinator.data.devices.items():
+            if not (switches := device.get(SWITCHES)):
                 continue
-            entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
-            LOGGER.debug(
-                "Add %s %s switch", device[ATTR_NAME], description.translation_key
-            )
+            for description in PLUGWISE_SWITCHES:
+                if description.key not in switches:
+                    continue
+                entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
+                LOGGER.debug(
+                    "Add %s %s switch", device[ATTR_NAME], description.translation_key
+                )
 
-    async_add_entities(entities)
+        async_add_entities(entities)
+
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
+
+    _add_entities()
 
 
 class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):

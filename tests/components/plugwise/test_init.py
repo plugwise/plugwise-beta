@@ -203,8 +203,8 @@ async def test_device_registry_cleanup(
     assert len(devices) == 6
     item_list: list[str] = []
     for device_entry in list(dev_reg.devices.values()):
-        for item in device_entry.identifiers:
-            item_list.append(item[1])
+        item_list.extend(x[1] for x in device_entry.identifiers)
+
     assert "1772a4ea304041adb83f357b751341ff" in item_list
 
     data = mock_smile_adam_2.async_update.return_value
@@ -219,8 +219,7 @@ async def test_device_registry_cleanup(
     dev_reg = dr.async_get(hass)
     item_list = []
     for device_entry in list(dev_reg.devices.values()):
-        for item in device_entry.identifiers:
-            item_list.append(item[1])
+        item_list.extend(x[1] for x in device_entry.identifiers)
     assert "01234567890abcdefghijklmnopqrstu" in item_list
     assert "1772a4ea304041adb83f357b751341ff" not in item_list
 
