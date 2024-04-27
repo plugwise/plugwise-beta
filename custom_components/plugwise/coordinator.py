@@ -66,7 +66,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._unavailable_logged = False
-        self.new_devices: list[str] = []
+        self.new_devices: list[str] = ["dummy"]
         self.removed_devices: list[str] = []
         self.update_interval = update_interval
 
