@@ -26,11 +26,10 @@ from homeassistant.const import (
     UnitOfVolume,
     UnitOfVolumeFlowRate,
 )
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
-    COORDINATOR,  # pw-beta
     DHW_SETPOINT,
     DHW_TEMP,
     DOMAIN,
@@ -82,6 +81,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
+from .util import get_coordinator
 
 PARALLEL_UPDATES = 0
 
@@ -461,27 +461,35 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile sensors from a config entry."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+    coordinator = get_coordinator(hass, entry.entry_id)
 
-    entities: list[PlugwiseSensorEntity] = []
-    for device_id, device in coordinator.data.devices.items():
-        if not (sensors := device.get(SENSORS)):
-            continue
-        for description in PLUGWISE_SENSORS:
-            if description.key not in sensors:
+    @callback
+    def _add_entities() -> None:
+        """Add Entities."""
+        if not coordinator.new_devices:
+            return
+
+        entities: list[PlugwiseSensorEntity] = []
+        for device_id, device in coordinator.data.devices.items():
+            if not (sensors := device.get(SENSORS)):
                 continue
-            entities.append(
-                PlugwiseSensorEntity(
-                    coordinator,
-                    device_id,
-                    description,
+            for description in PLUGWISE_SENSORS:
+                if description.key not in sensors:
+                    continue
+                entities.append(
+                    PlugwiseSensorEntity(
+                        coordinator,
+                        device_id,
+                        description,
+                    )
                 )
-            )
-            LOGGER.debug(
-                "Add %s %s sensor", device[ATTR_NAME], description.translation_key or description.key
-            )
+                LOGGER.debug(
+                    "Add %s %s sensor", device[ATTR_NAME], description.translation_key or description.key
+                )
 
-    async_add_entities(entities)
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
+
+    _add_entities()
 
 
 class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
