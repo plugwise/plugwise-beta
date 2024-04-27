@@ -18,7 +18,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
-    COORDINATOR,  # pw-beta
     DOMAIN,
     LOGGER,
     LOWER_BOUND,
@@ -31,6 +30,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
+from .util import get_coordinator
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -81,23 +81,30 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Plugwise number platform."""
+    coordinator = get_coordinator(hass, config_entry.entry_id)
 
-    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
-        config_entry.entry_id
-    ][COORDINATOR]
+    @callback
+    def _add_entities() -> None:
+        """Add Entities."""
+        if not coordinator.new_devices:
+            return
 
-    entities: list[PlugwiseNumberEntity] = []
-    for device_id, device in coordinator.data.devices.items():
-        for description in NUMBER_TYPES:
-            if description.key in device:
-                entities.append(
-                    PlugwiseNumberEntity(coordinator, device_id, description)
-                )
-                LOGGER.debug(
-                    "Add %s %s number", device[ATTR_NAME], description.translation_key
-                )
+        entities: list[PlugwiseNumberEntity] = []
+        for device_id, device in coordinator.data.devices.items():
+            for description in NUMBER_TYPES:
+                if description.key in device:
+                    entities.append(
+                        PlugwiseNumberEntity(coordinator, device_id, description)
+                    )
+                    LOGGER.debug(
+                        "Add %s %s number", device[ATTR_NAME], description.translation_key
+                    )
 
-    async_add_entities(entities)
+        async_add_entities(entities)
+
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
+
+    _add_entities()
 
 
 class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
