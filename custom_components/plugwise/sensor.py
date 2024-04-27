@@ -32,7 +32,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
     DHW_SETPOINT,
     DHW_TEMP,
-    DOMAIN,
     EL_CONS_INTERVAL,
     EL_CONS_OP_CUMULATIVE,
     EL_CONS_OP_INTERVAL,

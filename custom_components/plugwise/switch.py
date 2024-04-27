@@ -19,7 +19,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
     COOLING_ENA_SWITCH,
     DHW_CM_SWITCH,
-    DOMAIN,
     LOCK,
     LOGGER,
     MEMBERS,

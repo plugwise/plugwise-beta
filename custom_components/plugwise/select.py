@@ -16,7 +16,6 @@ from .const import (
     AVAILABLE_SCHEDULES,
     DHW_MODE,
     DHW_MODES,
-    DOMAIN,
     GATEWAY_MODE,
     GATEWAY_MODES,
     LOCATION,

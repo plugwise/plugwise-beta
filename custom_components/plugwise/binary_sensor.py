@@ -21,7 +21,6 @@ from .const import (
     COMPRESSOR_STATE,
     COOLING_ENABLED,
     COOLING_STATE,
-    COORDINATOR,  # pw-beta
     DHW_STATE,
     DOMAIN,
     FLAME_STATE,
@@ -100,7 +99,7 @@ async def async_setup_entry(
 
     @callback
     def _add_entities() -> None:
-        "Add Entities."
+        """Add Entities."""
         if not coordinator.new_devices:
             return
 
@@ -121,7 +120,7 @@ async def async_setup_entry(
                 LOGGER.debug(
                     "Add %s %s binary sensor", device[ATTR_NAME], description.translation_key
                 )
-        
+
         async_add_entities(entities)
 
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))

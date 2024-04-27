@@ -28,7 +28,6 @@ from .const import (
     CONTROL_STATE,
     COOLING_PRESENT,
     COOLING_STATE,
-    COORDINATOR,  # pw-beta
     DEV_CLASS,
     DOMAIN,
     GATEWAY_ID,
