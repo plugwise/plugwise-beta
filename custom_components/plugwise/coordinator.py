@@ -116,5 +116,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 raise UpdateFailed("Failed to connect") from err
 
         self.new_devices = data.devices.keys() - self.data.devices.keys()
+        if self.data:  # Don't delete all devices at init!
+            self.removed_devices = self.devices.keys() - data.devices.keys()
 
         return data
