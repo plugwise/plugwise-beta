@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.49.0
+
+- Add new Plugwise devices at runtime.
+
 ## v0.48.2
 
 - Bugfix for #620 via [plugwise v0.37.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.3)
