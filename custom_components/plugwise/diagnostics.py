@@ -10,7 +10,6 @@ from homeassistant.helpers.redact import async_redact_data
 
 from .const import (
     AVAILABLE_SCHEDULES,
-    COORDINATOR,  # pw-beta
     DEVICES,
     DOMAIN,
     GATEWAY,
@@ -19,6 +18,7 @@ from .const import (
     ZIGBEE_MAC_ADDRESS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .util import get_coordinator
 
 KEYS_TO_REDACT = {
     ATTR_NAME,
@@ -32,9 +32,7 @@ async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, entry: ConfigEntry
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
-    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][
-        COORDINATOR
-    ]
+    coordinator = get_coordinator(hass, entry.entry_id)
 
     data = async_redact_data(coordinator.data.devices, KEYS_TO_REDACT)
 
