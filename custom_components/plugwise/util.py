@@ -13,7 +13,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import device_registry as dr
 
 from .const import COORDINATOR, DOMAIN, GATEWAY_ID, LOGGER
-from .coordinator import PlugwiseDataUpdateCoordinatorDataUpdateCoordinator
+from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 
 _PlugwiseEntityT = TypeVar("_PlugwiseEntityT", bound=PlugwiseEntity)
