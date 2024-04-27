@@ -67,10 +67,10 @@ PLUGWISE_SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Smile switches from a config entry."""
+    """Set up the Smile switches from a ConfigEntry."""
     coordinator = get_coordinator(hass, entry.entry_id)
 
     @callback

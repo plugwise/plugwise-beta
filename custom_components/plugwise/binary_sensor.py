@@ -92,11 +92,11 @@ PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise binary sensor based on config_entry."""
-    coordinator = get_coordinator(hass, config_entry.entry_id)
+    """Set up the Plugwise binary_sensors from a ConfigEntry."""
+    coordinator = get_coordinator(hass, entry.entry_id)
 
     @callback
     def _add_entities() -> None:

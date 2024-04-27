@@ -56,12 +56,12 @@ from .util import get_coordinator, plugwise_command
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Smile Thermostats from a config entry."""
-    coordinator = get_coordinator(hass, config_entry.entry_id)
-    homekit_enabled: bool = config_entry.options.get(
+    """Set up the Smile Thermostats from a ConfigEntry."""
+    coordinator = get_coordinator(hass, entry.entry_id)
+    homekit_enabled: bool = entry.options.get(
         CONF_HOMEKIT_EMULATION, False
     )  # pw-beta homekit emulation
 

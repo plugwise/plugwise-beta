@@ -457,10 +457,10 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Smile sensors from a config entry."""
+    """Set up the Smile sensors from a ConfigEntry."""
     coordinator = get_coordinator(hass, entry.entry_id)
 
     @callback

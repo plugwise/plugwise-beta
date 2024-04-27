@@ -77,11 +77,11 @@ NUMBER_TYPES = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Plugwise number platform."""
-    coordinator = get_coordinator(hass, config_entry.entry_id)
+    """Set up the Plugwise numbers from a ConfigEntry."""
+    coordinator = get_coordinator(hass, entry.entry_id)
 
     @callback
     def _add_entities() -> None:
