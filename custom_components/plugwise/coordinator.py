@@ -120,6 +120,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         if self.data:  # Don't delete all devices at init!
             self.removed_devices = self.devices.keys() - data.devices.keys()
 
+        LOGGER.debug("Devices removed: %s", self.removed_devices)
         if self.removed_devices:
             await cleanup_device_registry(hass, data, entry)
 
