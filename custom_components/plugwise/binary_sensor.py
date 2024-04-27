@@ -121,6 +121,8 @@ async def async_setup_entry(
                 LOGGER.debug(
                     "Add %s %s binary sensor", device[ATTR_NAME], description.translation_key
                 )
+        
+        async_add_entities(entities)
 
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 

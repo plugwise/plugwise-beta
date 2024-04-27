@@ -67,7 +67,7 @@ async def async_setup_entry(
 
     @callback
     def _add_entities() -> None:
-        """Add devices."""
+        """Add Entities."""
         if not coordinator.new_devices:
             return
 
@@ -77,7 +77,7 @@ async def async_setup_entry(
             )  # pw-beta homekit emulation
             for device_id, device in coordinator.data.devices.items()
             if device[DEV_CLASS] in MASTER_THERMOSTATS
-    )
+        )
 
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 

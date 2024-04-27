@@ -487,6 +487,8 @@ async def async_setup_entry(
                     "Add %s %s sensor", device[ATTR_NAME], description.translation_key or description.key
                 )
 
+        async_add_entities(entities)
+
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
     _add_entities()
