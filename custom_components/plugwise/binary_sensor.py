@@ -13,7 +13,7 @@ from homeassistant.components.binary_sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, EntityCategory
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
@@ -34,6 +34,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
+from .util import get_coordinator
 
 PARALLEL_UPDATES = 0
 
@@ -95,29 +96,35 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Plugwise binary sensor based on config_entry."""
-    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][
-        config_entry.entry_id
-    ][COORDINATOR]
+    coordinator = get_coordinator(hass, config_entry.entry_id)
 
-    entities: list[PlugwiseBinarySensorEntity] = []
-    for device_id, device in coordinator.data.devices.items():
-        if not (binary_sensors := device.get(BINARY_SENSORS)):
-            continue
-        for description in PLUGWISE_BINARY_SENSORS:
-            if description.key not in binary_sensors:
+    @callback
+    def _add_entities() -> None:
+        "Add Entities."
+        if not coordinator.new_devices:
+            return
+
+        entities: list[PlugwiseBinarySensorEntity] = []
+        for device_id, device in coordinator.data.devices.items():
+            if not (binary_sensors := device.get(BINARY_SENSORS)):
                 continue
-            entities.append(
-                PlugwiseBinarySensorEntity(
-                    coordinator,
-                    device_id,
-                    description,
+            for description in PLUGWISE_BINARY_SENSORS:
+                if description.key not in binary_sensors:
+                    continue
+                entities.append(
+                    PlugwiseBinarySensorEntity(
+                        coordinator,
+                        device_id,
+                        description,
+                    )
                 )
-            )
-            LOGGER.debug(
-                "Add %s %s binary sensor", device[ATTR_NAME], description.translation_key
-            )
+                LOGGER.debug(
+                    "Add %s %s binary sensor", device[ATTR_NAME], description.translation_key
+                )
 
-    async_add_entities(entities)
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
+
+    _add_entities()
 
 
 class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
