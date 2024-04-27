@@ -66,7 +66,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._unavailable_logged = False
-        self.new_devices: list[str] = ["dummy"]
+        self.data = PlugwiseData(gateway={}, devices={})
+        self.new_devices: set[str] = set()
         self.removed_devices: list[str] = []
         self.update_interval = update_interval
 
@@ -87,8 +88,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
-        data = PlugwiseData(gateway={}, devices={})
-
         try:
             if not self._connected:
                 await self._connect()
@@ -116,7 +115,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
-        self.new_devices = data.gateway["new"] if "new" in data.gateway else []
+        self.new_devices = data.devices.keys() - self.data.devices.keys()
         self.removed_devices = data.gateway["removed"] if "removed" in data.gateway else []
 
         return data
