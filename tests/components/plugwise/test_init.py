@@ -204,7 +204,6 @@ async def test_device_registry_cleanup(
     item_list: list[str] = []
     for device_entry in list(dev_reg.devices.values()):
         item_list.extend(x[1] for x in device_entry.identifiers)
-
     assert "1772a4ea304041adb83f357b751341ff" in item_list
 
     data = mock_smile_adam_2.async_update.return_value
