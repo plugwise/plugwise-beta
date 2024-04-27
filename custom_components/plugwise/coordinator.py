@@ -116,7 +116,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
-        self.new_devices = data.gateway["new"] if "new" in data.gateway
-        self.removed_devices = data.gateway["removed"] if "removed" in data.gateway
+        self.new_devices = data.gateway["new"] if "new" in data.gateway else []
+        self.removed_devices = data.gateway["removed"] if "removed" in data.gateway else []
 
         return data
