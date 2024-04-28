@@ -12,6 +12,7 @@ from homeassistant.const import ATTR_NAME, STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .common import get_coordinator
 from .const import (
     AVAILABLE_SCHEDULES,
     DHW_MODE,
@@ -31,7 +32,6 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .util import get_coordinator
 
 PARALLEL_UPDATES = 0
 
