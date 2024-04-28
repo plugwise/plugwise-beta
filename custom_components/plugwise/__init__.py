@@ -97,17 +97,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
 
-async def async_remove_config_entry_device(
-    hass: HomeAssistant, config_entry: ConfigEntry, device_entry: dr.DeviceEntry
-) -> bool:
-    """Remove no longer present Plugwise device from config/device_registry."""
-    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
-    return not any(
-        identifier
-        for identifier in device_entry.identifiers
-        if identifier[0] == DOMAIN and (identifier[1] in coordinator.data.devices)
-    )
-
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
     """Migrate Plugwise entity entries.
