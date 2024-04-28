@@ -227,6 +227,7 @@ async def test_device_registry_cleanup(
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
         await hass.async_block_till_done()
+        await hass.async_block_till_done()
 
     dev_reg = dr.async_get(hass)
     item_list = []
