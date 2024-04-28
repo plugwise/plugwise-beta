@@ -29,6 +29,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .common import get_coordinator
 from .const import (
     DHW_SETPOINT,
     DHW_TEMP,
@@ -80,7 +81,6 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .util import get_coordinator
 
 PARALLEL_UPDATES = 0
 
