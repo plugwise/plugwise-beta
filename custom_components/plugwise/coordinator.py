@@ -165,7 +165,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             LOGGER.debug("HOI removed device(s) found")
             await cleanup_device_registry(self.hass, data, self.config_entry)
 
-        if (self.new_devices := (data.devices.keys() - self.data.devices.keys())):
+        self.new_devices = set()
+        if new_devices := (data.devices.keys() - self.data.devices.keys()):
+            self.new_devices = new_devices
             LOGGER.debug("HOI new device(s) found")
 
         return data
