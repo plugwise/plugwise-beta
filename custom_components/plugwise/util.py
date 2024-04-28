@@ -9,9 +9,8 @@ from plugwise.exceptions import PlugwiseException
 
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import device_registry as dr
 
-from .const import DOMAIN, GATEWAY_ID, LOGGER
+from .const import DOMAIN
 from .entity import PlugwiseEntity
 
 _PlugwiseEntityT = TypeVar("_PlugwiseEntityT", bound=PlugwiseEntity)
