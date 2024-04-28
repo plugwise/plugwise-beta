@@ -20,7 +20,6 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .common import get_coordinator
 from .const import (
     ACTIVE_PRESET,
     AVAILABLE_SCHEDULES,
@@ -50,7 +49,7 @@ from .const import (
     UPPER_BOUND,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity
+from .entity import PlugwiseEntity, get_coordinator
 from .util import plugwise_command
 
 

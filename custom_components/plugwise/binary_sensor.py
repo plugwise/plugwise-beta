@@ -16,7 +16,6 @@ from homeassistant.const import ATTR_NAME, EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .common import get_coordinator
 from .const import (
     BINARY_SENSORS,
     COMPRESSOR_STATE,
@@ -33,7 +32,7 @@ from .const import (
     SEVERITIES,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity
+from .entity import PlugwiseEntity, get_coordinator
 
 PARALLEL_UPDATES = 0
 
