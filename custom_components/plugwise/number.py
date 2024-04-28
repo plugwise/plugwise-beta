@@ -17,7 +17,6 @@ from homeassistant.const import ATTR_NAME, EntityCategory, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .common import get_coordinator
 from .const import (
     LOGGER,
     LOWER_BOUND,
@@ -29,7 +28,7 @@ from .const import (
     NumberType,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity
+from .entity import PlugwiseEntity, get_coordinator
 
 
 @dataclass(frozen=True, kw_only=True)
