@@ -162,8 +162,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 raise UpdateFailed("Failed to connect") from err
 
         if self.data and (self.data.devices.keys() - data.devices.keys()):
+            LOGGER.debug("HOI removed device(s) found")
             await cleanup_device_registry(self.hass, data, self.config_entry)
 
-        self.new_devices = data.devices.keys() - self.data.devices.keys()
+        if self.new_devices := (data.devices.keys() - self.data.devices.keys()):
+            LOGGER.debug("HOI new device(s) found")
 
         return data
