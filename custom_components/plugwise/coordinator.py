@@ -25,6 +25,7 @@ from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
+from .util import cleanup_device_registry
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -67,6 +68,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         )
         self._unavailable_logged = False
         self.data = PlugwiseData(gateway={}, devices={})
+        self.hass = hass
         self.new_devices: set[str] = set()
         self.removed_devices: list[str] = []
         self.update_interval = update_interval
@@ -118,5 +120,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self.new_devices = data.devices.keys() - self.data.devices.keys()
         if self.data:  # Don't delete all devices at init!
             self.removed_devices = self.devices.keys() - data.devices.keys()
+
+        if self.removed_devices:
+            await cleanup_device_registry(self.hass, data, self.config_entry)
 
         return data
