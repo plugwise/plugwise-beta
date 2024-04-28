@@ -59,7 +59,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         manufacturer="Plugwise",
         model=coordinator.api.smile_model,
         name=coordinator.api.smile_name,
-        sw_version=coordinator.api.smile_version[0],
+        sw_version=coordinator.api.smile_version,
     )
 
     async def delete_notification(
