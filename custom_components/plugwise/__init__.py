@@ -21,7 +21,6 @@ from .const import (
     UNDO_UPDATE_LISTENER,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .util import cleanup_device_registry
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -48,9 +47,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         COORDINATOR: coordinator,  # pw-beta
         UNDO_UPDATE_LISTENER: undo_listener,  # pw-beta
     }
-
-    # Clean-up removed devices
-    await cleanup_device_registry(hass, coordinator.data, entry)
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
