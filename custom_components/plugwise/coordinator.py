@@ -33,7 +33,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     _connected: bool = False
 
-    config_entry: ConfigEntry
+    entry: ConfigEntry
 
     def __init__(
         self,
@@ -59,10 +59,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         )
 
         self.api = Smile(
-            host=self.config_entry.data[CONF_HOST],
-            username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
-            password=self.config_entry.data[CONF_PASSWORD],
-            port=self.config_entry.data.get(CONF_PORT, DEFAULT_PORT),
+            host=self.entry.data[CONF_HOST],
+            username=self.entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
+            password=self.entry.data[CONF_PASSWORD],
+            port=self.entry.data.get(CONF_PORT, DEFAULT_PORT),
             timeout=30,
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
@@ -81,7 +81,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self.update_interval = DEFAULT_SCAN_INTERVAL.get(
             self.api.smile_type, timedelta(seconds=60)
         )  # pw-beta options scan-interval
-        if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
+        if (custom_time := self.entry.options.get(CONF_SCAN_INTERVAL)) is not None:
             self.update_interval = timedelta(
                 seconds=int(custom_time)
             )  # pragma: no cover  # pw-beta options
@@ -122,6 +122,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             self.removed_devices = self.devices.keys() - data.devices.keys()
 
         if self.removed_devices:
-            await cleanup_device_registry(self.hass, data, self.config_entry)
+            await cleanup_device_registry(self.hass, data, self.entry)
 
         return data
