@@ -20,6 +20,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .common import get_coordinator
 from .const import (
     ACTIVE_PRESET,
     AVAILABLE_SCHEDULES,
@@ -50,7 +51,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
-from .util import get_coordinator, plugwise_command
+from .util import plugwise_command
 
 
 async def async_setup_entry(
