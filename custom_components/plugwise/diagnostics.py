@@ -42,12 +42,7 @@ async def async_get_config_entry_diagnostics(
     for device in data:
         if (key := SELECT_SCHEDULE) in data[device]:
             if (value := data[device][key]) not in (OFF, NONE):
-                i = 0
-                for item in data[device][AVAILABLE_SCHEDULES]:
-                    if item == value:
-                        break
-                    i += 1
-
+                i = data[device][AVAILABLE_SCHEDULES].index(value)
                 data[device][key] = f"**REDACTED_{i}**"
 
             value = data[device][AVAILABLE_SCHEDULES]
