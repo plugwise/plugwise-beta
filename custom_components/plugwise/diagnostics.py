@@ -40,21 +40,21 @@ async def async_get_config_entry_diagnostics(
     data = async_redact_data(coordinator.data.devices, KEYS_TO_REDACT)
 
     for device in data:
-        for key, value in data[device].items():
-            if key == AVAILABLE_SCHEDULES:
-                for i in range(len(value)):
-                    if value[i] not in (OFF, NONE):
-                        value[i] = f"**REDACTED_{i}**"
-
-                data[device][key] = value
-
-            if key == SELECT_SCHEDULE and value not in (OFF, NONE):
-                j = 0
+        if (key := SELECT_SCHEDULE) in data[device]:
+            if (value := data[device][key]) not in (OFF, NONE):
+                i = 0
                 for item in data[device][AVAILABLE_SCHEDULES]:
-                    if item == data[device][key]:
+                    if item == value:
                         break
-                    j += 1
+                    i += 1
 
-                data[device][key] = f"**REDACTED_{j}**"
+                data[device][key] = f"**REDACTED_{i}**"
+        
+            value = data[device][AVAILABLE_SCHEDULES]
+            for j in range(len(value)):
+                if value[j] not in (OFF, NONE):
+                    value[j] = f"**REDACTED_{j}**"
+
+            data[device][AVAILABLE_SCHEDULES] = value
 
     return {GATEWAY: coordinator.data.gateway, DEVICES: data}
