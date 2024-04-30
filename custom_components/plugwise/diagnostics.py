@@ -49,7 +49,7 @@ async def async_get_config_entry_diagnostics(
                     i += 1
 
                 data[device][key] = f"**REDACTED_{i}**"
-        
+
             value = data[device][AVAILABLE_SCHEDULES]
             for j in range(len(value)):
                 if value[j] not in (OFF, NONE):

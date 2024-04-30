@@ -131,7 +131,7 @@
           'vacation',
           'no_frost',
         ]),
-        'select_schedule': '**REDACTED_6**',
+        'select_schedule': '**REDACTED_4**',
         'sensors': dict({
           'battery': 37,
           'setpoint': 15.0,
@@ -277,7 +277,7 @@
           'vacation',
           'no_frost',
         ]),
-        'select_schedule': '**REDACTED_6**',
+        'select_schedule': '**REDACTED_2**',
         'sensors': dict({
           'battery': 34,
           'setpoint': 21.5,
@@ -461,7 +461,7 @@
           'vacation',
           'no_frost',
         ]),
-        'select_schedule': '**REDACTED_6**',
+        'select_schedule': '**REDACTED_3**',
         'sensors': dict({
           'battery': 92,
           'setpoint': 14.0,
