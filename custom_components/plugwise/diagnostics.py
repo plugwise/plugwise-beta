@@ -40,7 +40,8 @@ async def async_get_config_entry_diagnostics(
                 data[device][key] = "**REDACTED**"
             if key == "available_schedules":
                 for i in range(len(value)):
-                    value[i] = "**REDACTED**"
+                    if value[i] not in ("off", "None"):
+                        value[i] = f"**REDACTED_1{i}**"
                 data[device][key] = value
 
     return {GATEWAY: coordinator.data.gateway, DEVICES: data}
