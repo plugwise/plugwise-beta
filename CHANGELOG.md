@@ -2,6 +2,11 @@
 
 ## Versions from 0.40 and up
 
+## v0.49.1
+
+- Improve redacting in diagnostics
+- Fix for #629
+
 ## v0.49.0
 
 - Add new Plugwise devices at runtime.

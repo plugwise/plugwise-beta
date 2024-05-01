@@ -15,6 +15,7 @@ from .const import (
     DOMAIN,
     GATEWAY,
     MAC_ADDRESS,
+    NONE,
     SELECT_SCHEDULE,
     ZIGBEE_MAC_ADDRESS,
 )
@@ -22,11 +23,11 @@ from .coordinator import PlugwiseDataUpdateCoordinator
 
 KEYS_TO_REDACT = {
     ATTR_NAME,
-    AVAILABLE_SCHEDULES,
     MAC_ADDRESS,
-    SELECT_SCHEDULE,
     ZIGBEE_MAC_ADDRESS
 }
+
+OFF = "off"
 
 async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, entry: ConfigEntry
@@ -37,5 +38,18 @@ async def async_get_config_entry_diagnostics(
     ]
 
     data = async_redact_data(coordinator.data.devices, KEYS_TO_REDACT)
+
+    for device in data:
+        if (key := SELECT_SCHEDULE) in data[device]:
+            if (value := data[device][key]) not in (OFF, NONE):
+                i = data[device][AVAILABLE_SCHEDULES].index(value)
+                data[device][key] = f"**REDACTED_{i}**"
+
+            value = data[device][AVAILABLE_SCHEDULES]
+            for j in range(len(value)):
+                if value[j] not in (OFF, NONE):
+                    value[j] = f"**REDACTED_{j}**"
+
+            data[device][AVAILABLE_SCHEDULES] = value
 
     return {GATEWAY: coordinator.data.gateway, DEVICES: data}
