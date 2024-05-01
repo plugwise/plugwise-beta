@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Follow backend fixture updates
+
 ## v0.49.1
 
 - Improve redacting in diagnostics
