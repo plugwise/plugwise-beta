@@ -42,13 +42,12 @@ async def cleanup_device_registry(
 ) -> None:
     """Remove deleted devices from device-registry."""
     device_registry = dr.async_get(hass)
-    device_entries = dr.async_entries_for_config_entry(
-        device_registry, entry.entry_id
-    )
     # via_device cannot be None, this will result in the deletion
     # of other Plugwise Gateways when present!
     via_device: str = ""
-    for device_entry in device_entries:
+    for device_entry in dr.async_entries_for_config_entry(
+        device_registry, entry.entry_id
+    ):
         if not device_entry.identifiers:
             continue  # pragma: no cover
 
@@ -63,7 +62,9 @@ async def cleanup_device_registry(
             device_entry.via_device_id == via_device
             and item[1] not in list(data.devices.keys())
         ):
-            device_registry.async_remove_device(device_entry.id)
+            device_registry.async_update_device(
+                device_entry.id, remove_config_entry_id=entry.entry_id
+            )
             LOGGER.debug(
                 "Removed %s device %s %s from device_registry",
                 DOMAIN,
