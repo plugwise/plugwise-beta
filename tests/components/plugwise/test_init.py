@@ -223,10 +223,6 @@ async def test_update_device(
         len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
         == 6
     )
-    item_list: list[str] = []
-    for device_entry in list(device_registry.devices.values()):
-        item_list.extend(x[1] for x in device_entry.identifiers)
-    assert "1772a4ea304041adb83f357b751341ff" in item_list
 
     data = mock_smile_adam_2.async_update.return_value
     # Add a Tom/Floor
@@ -248,3 +244,46 @@ async def test_update_device(
         for device_entry in list(device_registry.devices.values()):
             item_list.extend(x[1] for x in device_entry.identifiers)
         assert "01234567890abcdefghijklmnopqrstu" in item_list
+
+
+async def test_remove_device(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_smile_adam_2: MagicMock,
+    device_registry: dr.DeviceRegistry,
+    entity_registry: er.EntityRegistry,
+) -> None:
+    """Test a clean-up of the device_registry."""
+    mock_config_entry.add_to_hass(hass)
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+
+    assert (
+        len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
+        == 33
+    )
+    assert (
+        len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
+        == 7
+    )
+
+    data = mock_smile_adam_2.async_update.return_value
+    # Add a Tom/Floor
+    data.devices.pop("01234567890abcdefghijklmnopqrstu")
+    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
+        async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
+        await hass.config_entries.async_reload(mock_config_entry.entry_id)
+        await hass.async_block_till_done()
+
+        assert (
+            len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
+            == 28
+        )
+        assert (
+            len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
+            == 6
+        )
+        item_list: list[str] = []
+        for device_entry in list(device_registry.devices.values()):
+            item_list.extend(x[1] for x in device_entry.identifiers)
+        assert "01234567890abcdefghijklmnopqrstu" not in item_list
