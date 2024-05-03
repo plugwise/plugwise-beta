@@ -224,7 +224,7 @@ async def test_device_registry_cleanup(
     data.devices.update(TOM)
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         async_fire_time_changed(hass, utcnow() + timedelta(minutes=2))
-        await hass.async_block_till_done()
+        await hass.config_entries.async_reload(mock_config_entry.entry_id)
         await hass.async_block_till_done()
 
     dev_reg = dr.async_get(hass)
