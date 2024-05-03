@@ -20,7 +20,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
-from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -35,18 +35,19 @@ from .const import (
 )
 
 
-async def cleanup_device_registry(
+async def cleanup_device_and_entity_registry(
     hass: HomeAssistant,
     data: PlugwiseData,
     entry: ConfigEntry,
 ) -> None:
-    """Remove deleted devices from device-registry."""
-    device_registry = dr.async_get(hass)
+    """Remove deleted devices from device- and entity-registry."""
+    device_reg = dr.async_get(hass)
     # via_device cannot be None, this will result in the deletion
     # of other Plugwise Gateways when present!
     via_device: str = ""
+    removed_device_ids: list[str] = []
     for device_entry in dr.async_entries_for_config_entry(
-        device_registry, entry.entry_id
+        device_reg, entry.entry_id
     ):
         if not device_entry.identifiers:
             continue  # pragma: no cover
@@ -62,15 +63,26 @@ async def cleanup_device_registry(
             device_entry.via_device_id == via_device
             and item[1] not in list(data.devices.keys())
         ):
-            device_registry.async_update_device(
+            device_reg.async_update_device(
                 device_entry.id, remove_config_entry_id=entry.entry_id
             )
+            # Keep track of removed device_entry.id
+            # used to help clean the entity-registry
+            removed_device_ids.append(device_entry.id)
             LOGGER.debug(
                 "Removed %s device %s %s from device_registry",
                 DOMAIN,
                 device_entry.model,
                 item[1],
             )
+
+    entity_reg = er.async_get(hass)
+    for entity in er.async_entries_for_config_entry(
+        entity_reg, entry.entry_id
+    ):
+        if entity.device_id in removed_device_ids and entity.unique_id.split("_")[0] not in list(data.devices.keys()):
+            LOGGER.debug("Removing obsolete entity entry %s", entity.entity_id)
+            entity_reg.async_remove(entity.entity_id)
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -164,7 +176,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
         if self.data and (self.data.devices.keys() - data.devices.keys()):
             LOGGER.debug("HOI removed device(s) found")
-            await cleanup_device_registry(self.hass, data, self.config_entry)
+            await cleanup_device_and_entity_registry(self.hass, data, self.config_entry)
 
         self.new_devices = set()
         if new_devices := (data.devices.keys() - self.data.devices.keys()):
