@@ -202,7 +202,7 @@ async def test_migrate_unique_id_relay(
     )
 
 
-async def test_device_registry_cleanup(
+async def test_update_device(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     mock_smile_adam_2: MagicMock,
