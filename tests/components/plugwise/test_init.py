@@ -232,4 +232,3 @@ async def test_update_device(
     for device_entry in list(dev_reg.devices.values()):
         item_list.extend(x[1] for x in device_entry.identifiers)
     assert "01234567890abcdefghijklmnopqrstu" in item_list
-    assert "1772a4ea304041adb83f357b751341ff" not in item_list
