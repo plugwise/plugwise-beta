@@ -46,8 +46,8 @@ async def async_get_config_entry_diagnostics(
                 data[device][key] = f"**REDACTED_{i}**"
 
             value = data[device][AVAILABLE_SCHEDULES]
-            for j in range(len(value)):
-                if value[j] not in (OFF, NONE):
+            for j, item in enumerate(value):
+                if item not in (OFF, NONE):
                     value[j] = f"**REDACTED_{j}**"
 
             data[device][AVAILABLE_SCHEDULES] = value
