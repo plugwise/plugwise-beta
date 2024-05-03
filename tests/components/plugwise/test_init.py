@@ -277,11 +277,11 @@ async def test_remove_device(
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-            == 28
+            == 23
         )
         assert (
             len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
-            == 6
+            == 5
         )
         item_list: list[str] = []
         for device_entry in list(device_registry.devices.values()):
