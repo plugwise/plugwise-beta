@@ -183,4 +183,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             self.new_devices = new_devices
             LOGGER.debug("HOI new device(s) found")
 
+        self.data = data
+
         return data
