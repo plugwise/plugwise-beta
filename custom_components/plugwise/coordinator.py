@@ -174,6 +174,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
+        LOGGER.debug("HOI self.data: %s", self.data)
         if self.data and (self.data.devices.keys() - data.devices.keys()):
             LOGGER.debug("HOI removed device(s) found")
             await cleanup_device_and_entity_registry(self.hass, data, self.config_entry)
