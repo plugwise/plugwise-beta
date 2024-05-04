@@ -259,10 +259,7 @@ async def test_remove_device(
     mock_config_entry.add_to_hass(hass)
     data = mock_smile_adam_2.async_update.return_value
     utcnow = dt_util.utcnow()
-    with (
-        freeze_time(utcnow),
-        patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE) as mock_update
-    ):
+    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE) as mock_update:
         mock_update.return_value = data
         assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
         # assert await async_setup_component(hass, DOMAIN, {})
