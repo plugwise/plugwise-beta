@@ -279,6 +279,7 @@ async def test_remove_device(
         mock_update.return_value = data
         LOGGER.debug("HOI removing TOM 1772a4ea304041adb83f357b751341ff")
         async_fire_time_changed(hass, utcnow + timedelta(seconds=65))
+        LOGGER.debug("HOI waiting 65 secs...")
         # await hass.config_entries.async_reload(mock_config_entry.entry_id)
         await hass.async_block_till_done()
         LOGGER.debug("HOI 65 secs later...")
