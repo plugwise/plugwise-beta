@@ -258,6 +258,7 @@ async def test_remove_device(
     """Test a clean-up of the device_registry."""
     mock_config_entry.add_to_hass(hass)
     data = mock_smile_adam_2.async_update.return_value
+    LOGGER.debug(f"HOI xdatabefore {data}")
     utcnow = dt_util.utcnow()
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE) as mock_update:
         mock_update.return_value = data
