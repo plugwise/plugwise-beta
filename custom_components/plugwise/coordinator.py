@@ -34,6 +34,8 @@ from .const import (
     LOGGER,
 )
 
+EMPTY_DATA = PlugwiseData(gateway={}, devices={})
+
 
 async def cleanup_device_and_entity_registry(
     hass: HomeAssistant,
@@ -124,10 +126,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._unavailable_logged = False
-        self.data = PlugwiseData(gateway={}, devices={})
+        self.data = EMPTY_DATA
         self.hass = hass
         self.new_devices: set[str] = set()
-        self.removed_devices: list[str] = []
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -147,11 +148,14 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
+        LOGGER.debug("HOI 0 self.data: %s", self.data)
         try:
             if not self._connected:
                 await self._connect()
-            data = await self.api.async_update()
-            LOGGER.debug(f"{self.api.smile_name} data: %s", data)
+            fresh_data = await self.api.async_update()
+            LOGGER.debug(f"{self.api.smile_name} data: %s", fresh_data)
+            LOGGER.debug("HOI 1 self.data: %s", self.data)
+            LOGGER.debug("HOI 1 bool(self.data): %s", bool(self.data != EMPTY_DATA))
 
             if self._unavailable_logged:
                 self._unavailable_logged = False
@@ -174,16 +178,15 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
-        LOGGER.debug("HOI self.data: %s", self.data)
-        if self.data and (self.data.devices.keys() - data.devices.keys()):
+        if (self.data != EMPTY_DATA) and (self.data.devices.keys() - fresh_data.devices.keys()):
             LOGGER.debug("HOI removed device(s) found")
-            await cleanup_device_and_entity_registry(self.hass, data, self.config_entry)
+            await cleanup_device_and_entity_registry(self.hass, fresh_data, self.config_entry)
 
         self.new_devices = set()
-        if new_devices := (data.devices.keys() - self.data.devices.keys()):
+        if new_devices := (fresh_data.devices.keys() - self.data.devices.keys()):
             self.new_devices = new_devices
             LOGGER.debug("HOI new device(s) found")
 
-        self.data = data
+        self.data = fresh_data
 
-        return data
+        return self.data

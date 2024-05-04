@@ -3,6 +3,8 @@ from datetime import timedelta
 import logging
 from unittest.mock import MagicMock, patch
 
+from freezegun import freeze_time
+
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -18,7 +20,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.setup import async_setup_component
-from homeassistant.util.dt import utcnow
+from homeassistant.util import dt as dt_util
 
 from tests.common import MockConfigEntry, async_fire_time_changed
 
@@ -224,11 +226,12 @@ async def test_update_device(
         == 6
     )
 
+    utcnow = dt_util.utcnow()
     data = mock_smile_adam_2.async_update.return_value
     # Add a 2nd Tom/Floor
     data.devices.update(TOM)
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
-        async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
+        async_fire_time_changed(hass, utcnow + timedelta(minutes=1))
         await hass.config_entries.async_reload(mock_config_entry.entry_id)
         await hass.async_block_till_done()
 
@@ -255,25 +258,34 @@ async def test_remove_device(
 ) -> None:
     """Test a clean-up of the device_registry."""
     mock_config_entry.add_to_hass(hass)
-    assert await async_setup_component(hass, DOMAIN, {})
-    await hass.async_block_till_done()
-
-    assert (
-        len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-        == 28
-    )
-    assert (
-        len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
-        == 6
-    )
-
     data = mock_smile_adam_2.async_update.return_value
-    # Remove the Tom/Floor
-    data.devices.pop("1772a4ea304041adb83f357b751341ff")
-    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
-        async_fire_time_changed(hass, utcnow() + timedelta(minutes=1))
-        await hass.config_entries.async_reload(mock_config_entry.entry_id)
+    utcnow = dt_util.utcnow()
+    with (
+        freeze_time(utcnow),
+        patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE) as mock_update
+    ):
+        mock_update.return_value = data
+        assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+        # assert await async_setup_component(hass, DOMAIN, {})
         await hass.async_block_till_done()
+
+        assert (
+            len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
+            == 28
+        )
+        assert (
+            len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
+            == 6
+        )
+
+        # Remove the Tom/Floor
+        data.devices.pop("1772a4ea304041adb83f357b751341ff")
+        mock_update.return_value = data
+        LOGGER.debug("HOI removing TOM 1772a4ea304041adb83f357b751341ff")
+        async_fire_time_changed(hass, utcnow + timedelta(seconds=65))
+        # await hass.config_entries.async_reload(mock_config_entry.entry_id)
+        await hass.async_block_till_done()
+        LOGGER.debug("HOI 65 secs later...")
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
