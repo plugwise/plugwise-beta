@@ -12,7 +12,6 @@ from plugwise.exceptions import (
 )
 import pytest
 
-from freezegun import freeze_time
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import Platform
