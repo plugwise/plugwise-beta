@@ -178,12 +178,16 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
-        if (self.data != EMPTY_DATA) and (self.data.devices.keys() - fresh_data.devices.keys()):
+        device_reg = dr.async_get(self.hass)
+        device_list = dr.async_entries_for_config_entry(
+            device_reg, config_entry.entry_id
+        )
+        if (set(device_list) - fresh_data.devices.keys()):
             LOGGER.debug("HOI removed device(s) found")
             await cleanup_device_and_entity_registry(self.hass, fresh_data, self.config_entry)
 
         self.new_devices = set()
-        if new_devices := (fresh_data.devices.keys() - self.data.devices.keys()):
+        if new_devices := (fresh_data.devices.keys() - set(device_list)):
             self.new_devices = new_devices
             LOGGER.debug("HOI new device(s) found")
 
