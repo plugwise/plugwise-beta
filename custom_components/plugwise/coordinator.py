@@ -180,7 +180,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(
-            device_reg, config_entry.entry_id
+            device_reg, self.config_entry.entry_id
         )
         if (set(device_list) - fresh_data.devices.keys()):
             LOGGER.debug("HOI removed device(s) found")
