@@ -150,7 +150,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
-        LOGGER.debug("HOI 0 self.data: %s", self.data)
         try:
             if not self._connected:
                 await self._connect()
