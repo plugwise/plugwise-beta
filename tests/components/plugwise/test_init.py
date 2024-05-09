@@ -257,12 +257,11 @@ async def test_remove_device(
     """Test a clean-up of the device_registry."""
     mock_config_entry.add_to_hass(hass)
     data = mock_smile_adam_2.async_update.return_value
-    LOGGER.debug(f"HOI xdatabefore {data}")
     utcnow = dt_util.utcnow()
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE) as mock_update:
         mock_update.return_value = data
-        assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
-        # assert await async_setup_component(hass, DOMAIN, {})
+        # assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+        assert await async_setup_component(hass, DOMAIN, {})
         await hass.async_block_till_done()
 
         assert (
@@ -279,10 +278,7 @@ async def test_remove_device(
         mock_update.return_value = data
         LOGGER.debug("HOI removing TOM 1772a4ea304041adb83f357b751341ff")
         async_fire_time_changed(hass, utcnow + timedelta(seconds=65))
-        LOGGER.debug("HOI waiting 65 secs...")
-        # await hass.config_entries.async_reload(mock_config_entry.entry_id)
         await hass.async_block_till_done()
-        LOGGER.debug("HOI 65 secs later...")
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
