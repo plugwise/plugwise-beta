@@ -44,15 +44,15 @@ async def cleanup_device_and_entity_registry(
     entry: ConfigEntry,
 ) -> None:
     """Remove deleted devices from device- and entity-registry."""
-    device_reg = dr.async_get(self.hass)
+    device_reg = dr.async_get(hass)
     device_list = dr.async_entries_for_config_entry(
-        device_reg, self.config_entry.entry_id
+        device_reg, entry.entry_id
     )
     if not (
         self_data != EMPTY_DATA  # don't clean-up at init
-        and len(device_list) - len(fresh_data.devices.keys()) > 0
+        and len(device_list) - len(data.devices.keys()) > 0
     ):
-        continue
+        return
 
     # via_device cannot be None, this will result in the deletion
     # of other Plugwise Gateways when present!
