@@ -187,7 +187,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             await cleanup_device_and_entity_registry(self.hass, fresh_data, self.config_entry)
 
         self.new_devices = set()
-        if new_devices := (len(fresh_data.devices.keys()) - len(device_list) > 0):
+        if new_devices := (fresh_data.devices.keys() - self.data.devices.keys()):
             self.new_devices = new_devices
             LOGGER.debug("HOI new device(s) found")
 
