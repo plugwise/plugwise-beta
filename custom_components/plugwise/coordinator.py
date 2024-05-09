@@ -182,14 +182,13 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         device_list = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
-        if (self.data != EMPTY_DATA) and (len(device_list) - len(fresh_data.devices.keys()) > 0):
-            LOGGER.debug("HOI removed device(s) found")
+        if (
+            self.data != EMPTY_DATA  # don't clean-up at init
+            and len(device_list) - len(fresh_data.devices.keys()) > 0
+        ):
             await cleanup_device_and_entity_registry(self.hass, fresh_data, self.config_entry)
 
-        self.new_devices = set()
-        if new_devices := (fresh_data.devices.keys() - self.data.devices.keys()):
-            self.new_devices = new_devices
-            LOGGER.debug("HOI new device(s) found")
+        self.new_devices = (fresh_data.devices.keys() - self.data.devices.keys())
 
         self.data = fresh_data
 
