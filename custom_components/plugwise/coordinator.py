@@ -78,17 +78,6 @@ async def cleanup_device_and_entity_registry(
                 item[1],
             )
 
-    entity_reg = er.async_get(hass)
-    LOGGER.debug("HOI device-list: %s", list(data.devices.keys()))
-    LOGGER.debug("HOI removed_device_ids: %s", removed_device_ids)
-    for entity in er.async_entries_for_config_entry(
-        entity_reg, entry.entry_id
-    ):
-        LOGGER.debug("HOI entity: %s", entity)
-        if entity.device_id in removed_device_ids and entity.unique_id.split("_")[0] not in list(data.devices.keys()):
-            LOGGER.debug("Removing obsolete entity entry %s", entity.entity_id)
-            entity_reg.async_remove(entity.entity_id)
-
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     """Class to manage fetching Plugwise data from single endpoint."""
