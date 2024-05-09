@@ -45,7 +45,7 @@ async def test_anna_climate_binary_sensor_change(
     assert state
     assert state.state == STATE_ON
 
-    await async_update_entity("binary_sensor.opentherm_dhw_state")
+    await async_update_entity(hass, "binary_sensor.opentherm_dhw_state")
 
     state = hass.states.get("binary_sensor.opentherm_dhw_state")
     assert state

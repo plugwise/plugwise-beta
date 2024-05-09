@@ -5,7 +5,14 @@ from plugwise.exceptions import PlugwiseException
 import pytest
 
 from homeassistant.components.plugwise.const import DOMAIN
-from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.const import (
+    SERVICE_TOGGLE,
+    SERVICE_TURN_OFF,
+    SERVICE_TURN_ON,
+    STATE_OFF,
+    STATE_ON,
+    Platform,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_registry import async_get
@@ -19,11 +26,11 @@ async def test_adam_climate_switch_entities(
     """Test creation of climate related switch entities."""
     state = hass.states.get("switch.cv_pomp_relay")
     assert state
-    assert state.state == "on"
+    assert state.state == STATE_ON
 
     state = hass.states.get("switch.fibaro_hc2_relay")
     assert state
-    assert state.state == "on"
+    assert state.state == STATE_ON
 
 
 async def test_adam_climate_switch_negative_testing(
@@ -34,28 +41,28 @@ async def test_adam_climate_switch_negative_testing(
 
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
-            "switch",
-            "turn_off",
+            Platform.SWITCH,
+            SERVICE_TURN_OFF,
             {"entity_id": "switch.cv_pomp_relay"},
             blocking=True,
         )
 
     assert mock_smile_adam.set_switch_state.call_count == 1
     mock_smile_adam.set_switch_state.assert_called_with(
-        "78d1126fc4c743db81b61c20e88342a7", None, "relay", "off"
+        "78d1126fc4c743db81b61c20e88342a7", None, "relay", STATE_OFF
     )
 
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
-            "switch",
-            "turn_on",
+            Platform.SWITCH,
+            SERVICE_TURN_ON,
             {"entity_id": "switch.fibaro_hc2_relay"},
             blocking=True,
         )
 
     assert mock_smile_adam.set_switch_state.call_count == 2
     mock_smile_adam.set_switch_state.assert_called_with(
-        "a28f588dc4a049a483fd03a30361ad3a", None, "relay", "on"
+        "a28f588dc4a049a483fd03a30361ad3a", None, "relay", STATE_ON
     )
 
 
@@ -64,39 +71,39 @@ async def test_adam_climate_switch_changes(
 ) -> None:
     """Test changing of climate related switch entities."""
     await hass.services.async_call(
-        "switch",
-        "turn_off",
+        Platform.SWITCH,
+        SERVICE_TURN_OFF,
         {"entity_id": "switch.cv_pomp_relay"},
         blocking=True,
     )
 
     assert mock_smile_adam.set_switch_state.call_count == 1
     mock_smile_adam.set_switch_state.assert_called_with(
-        "78d1126fc4c743db81b61c20e88342a7", None, "relay", "off"
+        "78d1126fc4c743db81b61c20e88342a7", None, "relay", STATE_OFF
     )
 
     await hass.services.async_call(
-        "switch",
-        "toggle",
+        Platform.SWITCH,
+        SERVICE_TOGGLE,
         {"entity_id": "switch.fibaro_hc2_relay"},
         blocking=True,
     )
 
     assert mock_smile_adam.set_switch_state.call_count == 2
     mock_smile_adam.set_switch_state.assert_called_with(
-        "a28f588dc4a049a483fd03a30361ad3a", None, "relay", "off"
+        "a28f588dc4a049a483fd03a30361ad3a", None, "relay", STATE_OFF
     )
 
     await hass.services.async_call(
-        "switch",
-        "turn_on",
+        Platform.SWITCH,
+        SERVICE_TURN_ON,
         {"entity_id": "switch.fibaro_hc2_relay"},
         blocking=True,
     )
 
     assert mock_smile_adam.set_switch_state.call_count == 3
     mock_smile_adam.set_switch_state.assert_called_with(
-        "a28f588dc4a049a483fd03a30361ad3a", None, "relay", "on"
+        "a28f588dc4a049a483fd03a30361ad3a", None, "relay", STATE_ON
     )
 
 
@@ -106,11 +113,11 @@ async def test_stretch_switch_entities(
     """Test creation of climate related switch entities."""
     state = hass.states.get("switch.boiler_1eb31_relay")
     assert state
-    assert state.state == "on"
+    assert state.state == STATE_ON
 
     state = hass.states.get("switch.droger_52559_relay")
     assert state
-    assert state.state == "on"
+    assert state.state == STATE_ON
 
 
 async def test_stretch_switch_changes(
@@ -118,36 +125,36 @@ async def test_stretch_switch_changes(
 ) -> None:
     """Test changing of power related switch entities."""
     await hass.services.async_call(
-        "switch",
-        "turn_off",
+        Platform.SWITCH,
+        SERVICE_TURN_OFF,
         {"entity_id": "switch.boiler_1eb31_relay"},
         blocking=True,
     )
     assert mock_stretch.set_switch_state.call_count == 1
     mock_stretch.set_switch_state.assert_called_with(
-        "5871317346d045bc9f6b987ef25ee638", None, "relay", "off"
+        "5871317346d045bc9f6b987ef25ee638", None, "relay", STATE_OFF
     )
 
     await hass.services.async_call(
-        "switch",
-        "toggle",
+        Platform.SWITCH,
+        SERVICE_TOGGLE,
         {"entity_id": "switch.droger_52559_relay"},
         blocking=True,
     )
     assert mock_stretch.set_switch_state.call_count == 2
     mock_stretch.set_switch_state.assert_called_with(
-        "cfe95cf3de1948c0b8955125bf754614", None, "relay", "off"
+        "cfe95cf3de1948c0b8955125bf754614", None, "relay", STATE_OFF
     )
 
     await hass.services.async_call(
-        "switch",
-        "turn_on",
+        Platform.SWITCH,
+        SERVICE_TURN_ON,
         {"entity_id": "switch.droger_52559_relay"},
         blocking=True,
     )
     assert mock_stretch.set_switch_state.call_count == 3
     mock_stretch.set_switch_state.assert_called_with(
-        "cfe95cf3de1948c0b8955125bf754614", None, "relay", "on"
+        "cfe95cf3de1948c0b8955125bf754614", None, "relay", STATE_ON
     )
 
 
@@ -160,7 +167,7 @@ async def test_unique_id_migration_plug_relay(
     entity_registry = async_get(hass)
     # Entry to migrate
     entity_registry.async_get_or_create(
-        SWITCH_DOMAIN,
+        Platform.SWITCH,
         DOMAIN,
         "21f2b542c49845e6bb416884c55778d6-plug",
         config_entry=mock_config_entry,
@@ -169,7 +176,7 @@ async def test_unique_id_migration_plug_relay(
     )
     # Entry not needing migration
     entity_registry.async_get_or_create(
-        SWITCH_DOMAIN,
+        Platform.SWITCH,
         DOMAIN,
         "675416a629f343c495449970e2ca37b5-relay",
         config_entry=mock_config_entry,
