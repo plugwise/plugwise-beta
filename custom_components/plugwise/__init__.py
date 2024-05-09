@@ -116,15 +116,26 @@ async def async_remove_config_entry_device(
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
     """Migrate Plugwise entity entries.
 
-    - Migrates unique ID from old relay switches or relative_humidity sensor to the new unique ID
+    - Migrates old unique ID's from old binary_sensors and switches to the new unique ID's
     """
-    if entry.domain == Platform.BINARY_SENSOR and entry.unique_id.endswith("-slave_boiler_state"):
-        return {"new_unique_id": entry.unique_id.replace("-slave_boiler_state", "-secondary_boiler_state")}
+    if entry.domain == Platform.BINARY_SENSOR and entry.unique_id.endswith(
+        "-slave_boiler_state"
+    ):
+        return {
+            "new_unique_id": entry.unique_id.replace(
+                "-slave_boiler_state", "-secondary_boiler_state"
+            )
+        }
+    if entry.domain == Platform.SENSOR and entry.unique_id.endswith(
+        "-relative_humidity"
+    ):
+        return {
+            "new_unique_id": entry.unique_id.replace(
+                "-relative_humidity", "-humidity"
+            )
+        }
     if entry.domain == Platform.SWITCH and entry.unique_id.endswith("-plug"):
         return {"new_unique_id": entry.unique_id.replace("-plug", "-relay")}
-    if entry.domain == Platform.SENSOR and entry.unique_id.endswith("-relative_humidity"):
-        return {"new_unique_id": entry.unique_id.replace("-relative_humidity", "-humidity")}
-
     # No migration needed
     return None
 

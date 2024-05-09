@@ -5,6 +5,7 @@
 ## Ongoing
 
 - Follow backend fixture updates
+- Implement test for migration to secondary_boiler_state
 
 ## v0.49.1
 
