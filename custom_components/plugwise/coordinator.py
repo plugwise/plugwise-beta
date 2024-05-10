@@ -57,7 +57,6 @@ async def cleanup_device_and_entity_registry(
     # via_device cannot be None, this will result in the deletion
     # of other Plugwise Gateways when present!
     via_device: str = ""
-    removed_device_ids: list[str] = []
     for device_entry in dr.async_entries_for_config_entry(
         device_reg, entry.entry_id
     ):
@@ -78,9 +77,6 @@ async def cleanup_device_and_entity_registry(
             device_reg.async_update_device(
                 device_entry.id, remove_config_entry_id=entry.entry_id
             )
-            # Keep track of removed device_entry.id
-            # used to help clean the entity-registry
-            removed_device_ids.append(device_entry.id)
             LOGGER.debug(
                 "Removed %s device %s %s from device_registry",
                 DOMAIN,
