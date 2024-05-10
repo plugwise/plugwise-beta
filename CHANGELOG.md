@@ -2,14 +2,15 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.50.0
 
-- Follow backend fixture updates
-- Implement test for migration to secondary_boiler_state
+- Delete removed Plugwise devices at runtime. 
+- Follow backend fixture updates.
+- Implement test for migration to secondary_boiler_state.
 
 ## v0.49.1
 
-- Improve redacting in diagnostics
+- Improve redacting in diagnostics.
 - Fix for #629
 
 ## v0.49.0
