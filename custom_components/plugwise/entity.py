@@ -4,6 +4,7 @@ from __future__ import annotations
 from plugwise.constants import DeviceData
 
 from homeassistant.const import ATTR_NAME, ATTR_VIA_DEVICE, CONF_HOST
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import (
     CONNECTION_NETWORK_MAC,
     CONNECTION_ZIGBEE,
@@ -13,6 +14,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     AVAILABLE,
+    COORDINATOR,
     DOMAIN,
     FIRMWARE,
     GATEWAY_ID,
@@ -24,6 +26,17 @@ from .const import (
     ZIGBEE_MAC_ADDRESS,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
+
+
+def get_coordinator(
+    hass: HomeAssistant, config_entry_id: str
+) -> PlugwiseDataUpdateCoordinator:
+    """Get coordinator for given config entry id."""
+    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][config_entry_id][
+        COORDINATOR
+    ]
+
+    return coordinator
 
 
 class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):

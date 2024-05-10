@@ -21,7 +21,6 @@ from .const import (
     UNDO_UPDATE_LISTENER,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .util import cleanup_device_registry
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -48,9 +47,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         COORDINATOR: coordinator,  # pw-beta
         UNDO_UPDATE_LISTENER: undo_listener,  # pw-beta
     }
-
-    # Clean-up removed devices
-    await cleanup_device_registry(hass, coordinator.data, entry)
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
@@ -100,17 +96,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
-
-async def async_remove_config_entry_device(
-    hass: HomeAssistant, config_entry: ConfigEntry, device_entry: dr.DeviceEntry
-) -> bool:
-    """Remove no longer present Plugwise device from config/device_registry."""
-    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
-    return not any(
-        identifier
-        for identifier in device_entry.identifiers
-        if identifier[0] == DOMAIN and (identifier[1] in coordinator.data.devices)
-    )
 
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:

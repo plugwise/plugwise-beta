@@ -20,11 +20,69 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
+from .const import (
+    DEFAULT_PORT,
+    DEFAULT_SCAN_INTERVAL,
+    DEFAULT_USERNAME,
+    DOMAIN,
+    GATEWAY_ID,
+    LOGGER,
+)
+
+EMPTY_DATA = PlugwiseData(gateway={}, devices={})
+
+
+async def cleanup_device_and_entity_registry(
+    hass: HomeAssistant,
+    data: PlugwiseData,
+    self_data: PlugwiseData,
+    entry: ConfigEntry,
+) -> None:
+    """Remove deleted devices from device- and entity-registry."""
+    device_reg = dr.async_get(hass)
+    device_list = dr.async_entries_for_config_entry(
+        device_reg, entry.entry_id
+    )
+    if not (
+        self_data != EMPTY_DATA  # don't clean-up at init
+        and len(device_list) - len(data.devices.keys()) > 0
+    ):
+        return
+
+    # via_device cannot be None, this will result in the deletion
+    # of other Plugwise Gateways when present!
+    via_device: str = ""
+    for device_entry in dr.async_entries_for_config_entry(
+        device_reg, entry.entry_id
+    ):
+        if not device_entry.identifiers:
+            continue  # pragma: no cover
+
+        item = list(list(device_entry.identifiers)[0])
+        if item[0] != DOMAIN:
+            continue  # pragma: no cover
+
+        # First find the Plugwise via_device, this is always the first device
+        if item[1] == data.gateway[GATEWAY_ID]:
+            via_device = device_entry.id
+        elif ( # then remove the connected orphaned device(s)
+            device_entry.via_device_id == via_device
+            and item[1] not in list(data.devices.keys())
+        ):
+            device_reg.async_update_device(
+                device_entry.id, remove_config_entry_id=entry.entry_id
+            )
+            LOGGER.debug(
+                "Removed %s device %s %s from device_registry",
+                DOMAIN,
+                device_entry.model,
+                item[1],
+            )
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -66,9 +124,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._unavailable_logged = False
-        self.data = PlugwiseData(gateway={}, devices={})
+        self.data = EMPTY_DATA
+        self.hass = hass
         self.new_devices: set[str] = set()
-        self.removed_devices: list[str] = []
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -91,8 +149,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         try:
             if not self._connected:
                 await self._connect()
-            data = await self.api.async_update()
-            LOGGER.debug(f"{self.api.smile_name} data: %s", data)
+            fresh_data = await self.api.async_update()
 
             if self._unavailable_logged:
                 self._unavailable_logged = False
@@ -115,6 +172,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
-        self.new_devices = data.devices.keys() - self.data.devices.keys()
+        await cleanup_device_and_entity_registry(self.hass, fresh_data, self.data, self.config_entry)
 
-        return data
+        self.new_devices = (fresh_data.devices.keys() - self.data.devices.keys())
+
+        self.data = fresh_data
+
+        return self.data

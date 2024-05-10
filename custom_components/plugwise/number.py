@@ -28,8 +28,7 @@ from .const import (
     NumberType,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity
-from .util import get_coordinator
+from .entity import PlugwiseEntity, get_coordinator
 
 
 @dataclass(frozen=True, kw_only=True)

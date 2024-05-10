@@ -49,8 +49,8 @@ from .const import (
     UPPER_BOUND,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity
-from .util import get_coordinator, plugwise_command
+from .entity import PlugwiseEntity, get_coordinator
+from .util import plugwise_command
 
 
 async def async_setup_entry(

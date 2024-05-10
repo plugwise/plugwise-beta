@@ -30,8 +30,7 @@ from .const import (
     SelectType,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity
-from .util import get_coordinator
+from .entity import PlugwiseEntity, get_coordinator
 
 PARALLEL_UPDATES = 0
 
