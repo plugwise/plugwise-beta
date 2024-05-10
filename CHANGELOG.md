@@ -4,7 +4,7 @@
 
 ## v0.50.0
 
-- Delete removed Plugwise devices at runtime. 
+- Delete removed Plugwise devices at runtime.
 - Follow backend fixture updates.
 - Implement test for migration to secondary_boiler_state.
 
