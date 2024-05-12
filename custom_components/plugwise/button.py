@@ -1,18 +1,34 @@
 """Plugwise Button component for Home Assistant."""
 from __future__ import annotations
 
-"""Implement POST /core/gateways;@reboot"""
+from collections.abc import Awaitable, Callable
+from dataclasses import dataclass
+
+from plugwise import Smile
+
+from homeassistant.components.button import (
+    ButtonDeviceClass,
+    ButtonEntity,
+    ButtonEntityDescription,
+)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import ATTR_NAME, EntityCategory, UnitOfTemperature
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+from .const import GATEWAY_ID, LOGGER
+from .coordinator import PlugwiseDataUpdateCoordinator
+from .entity import get_coordinator
 
 
-
-PLUGWISE_BUTTONS: Final[list[ShellyButtonDescription[Any]]] = [
-    ShellyButtonDescription[ShellyBlockCoordinator | ShellyRpcCoordinator](
+BUTTON_TYPES: tuple[ButtonEntityDescription, ...] = (
+    ButtonEntityDescription(
         key="reboot",
-        name="Reboot",
+        translation_key="reboot"
         device_class=ButtonDeviceClass.RESTART,
         entity_category=EntityCategory.CONFIG,
-        press_action=lambda coordinator: coordinator.device.trigger_reboot(),
-    ),
+    )
+)
 
 
  async def async_setup_entry(
@@ -20,7 +36,7 @@ PLUGWISE_BUTTONS: Final[list[ShellyButtonDescription[Any]]] = [
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Smile sensors from a ConfigEntry."""
+    """Set up the Plugwise buttons from a ConfigEntry."""
     coordinator = get_coordinator(hass, entry.entry_id)
 
     @callback
@@ -29,22 +45,19 @@ PLUGWISE_BUTTONS: Final[list[ShellyButtonDescription[Any]]] = [
         if not coordinator.new_devices:
             return
 
-        entities: list[PlugwiseSensorEntity] = []
+        entities: list[PlugwiseButtonEntity] = []
         for device_id, device in coordinator.data.devices.items():
-            if not (sensors := device.get(SENSORS)):
-                continue
-            for description in PLUGWISE_SENSORS:
-                if description.key not in sensors:
-                    continue
-                entities.append(
-                    PlugwiseSensorEntity(
-                        coordinator,
-                        device_id,
-                        description,
-                    )
+            if device_id == coordinator.data.gateway[GATEWAY_ID]:
+                for description in BUTTON_TYPES:
+                    entities.append(
+                        PlugwiseButtonEntity(
+                            coordinator,
+                            device_id,
+                            description,
+                        )
                 )
                 LOGGER.debug(
-                    "Add %s %s sensor", device[ATTR_NAME], description.translation_key or description.key
+                    "Add %s %s button", device[ATTR_NAME], description.key
                 )
 
         async_add_entities(entities)
@@ -54,10 +67,10 @@ PLUGWISE_BUTTONS: Final[list[ShellyButtonDescription[Any]]] = [
     _add_entities()
 
 
-class PlugwiseButton(..., ButtonEntity):
+class PlugwiseButton(ButtonEntity):
     """Defines a Plugwise button."""
 
-    entity_description: PlugwiseButtonEntityDescription
+    entity_description: ButtonEntityDescription
 
     def __init__(
         self,
@@ -67,36 +80,11 @@ class PlugwiseButton(..., ButtonEntity):
     ) -> None:
         """Initialize the button."""
         super().__init__(coordinator, device_id)
-        self.entity_description = description
-
-        self._attr_name = f"{coordinator.device.name} {description.name}"
-        self._attr_unique_id = f"{coordinator.mac}_{description.key}"
-        self._attr_device_info = DeviceInfo(
-            connections={(CONNECTION_NETWORK_MAC, coordinator.mac)}
-        )
-
-    async def async_press(self) -> None:
-        """Triggers the Shelly button press service."""
-        await self.entity_description.press_action(self.coordinator)
-
-
-class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
-    """Represent Plugwise Sensors."""
-
-    entity_description: PlugwiseSensorEntityDescription
-
-    def __init__(
-        self,
-        coordinator: PlugwiseDataUpdateCoordinator,
-        device_id: str,
-        description: PlugwiseSensorEntityDescription,
-    ) -> None:
-        """Initialise the sensor."""
-        super().__init__(coordinator, device_id)
+        self.device_id = device_id
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
 
-    @property
-    def native_value(self) -> int | float:
-        """Return the value reported by the sensor."""
-        return self.device[SENSORS][self.entity_description.key]   
+    @plugwise_command
+    async def async_press(self) -> None:
+        """Triggers the Shelly button press service."""
+        await self.coordinator.api.reboot_gateway()
