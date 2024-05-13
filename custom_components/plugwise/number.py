@@ -29,13 +29,13 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity, get_coordinator
+from .util import plugwise_command
 
 
 @dataclass(frozen=True, kw_only=True)
 class PlugwiseNumberEntityDescription(NumberEntityDescription):
     """Class describing Plugwise Number entities."""
 
-    command: Callable[[Smile, str, str, float], Awaitable[None]]
     key: NumberType
 
 
@@ -136,12 +136,10 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         """Return the present setpoint value."""
         return self.device[self.entity_description.key]["setpoint"]
 
+    @plugwise_command
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.entity_description.command(
-            self.coordinator.api, self.entity_description.key, self.device_id, value
-        )
+        await self.coordinator.api.set_number(self.entity_description.key, value, self.device_id)
         LOGGER.debug(
-            "Setting %s to %s was successful", self.entity_description.name, value
+            "Setting %s to %s was successful", self.entity_description.key, value
         )
-        await self.coordinator.async_request_refresh()
