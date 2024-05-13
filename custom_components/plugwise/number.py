@@ -43,9 +43,6 @@ NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key=MAX_BOILER_TEMP,
         translation_key=MAX_BOILER_TEMP,
-        command=lambda api, number, dev_id, value: api.set_number_setpoint(
-            number, dev_id, value
-        ),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
@@ -53,9 +50,6 @@ NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key=MAX_DHW_TEMP,
         translation_key=MAX_DHW_TEMP,
-        command=lambda api, number, dev_id, value: api.set_number_setpoint(
-            number, dev_id, value
-        ),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
@@ -63,9 +57,6 @@ NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key=TEMPERATURE_OFFSET,
         translation_key=TEMPERATURE_OFFSET,
-        command=lambda api, number, dev_id, value: api.set_temperature_offset(
-            number, dev_id, value
-        ),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
@@ -139,7 +130,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     @plugwise_command
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.coordinator.api.set_number(self.entity_description.key, value, self.device_id)
+        await self.coordinator.api.set_number(self.device_id, self.entity_description.key, value)
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.key, value
         )
