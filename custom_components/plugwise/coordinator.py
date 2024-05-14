@@ -126,6 +126,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self._unavailable_logged = False
         self.data = EMPTY_DATA
         self.hass = hass
+        self.device_list = []
         self.new_devices: set[str] = set()
         self.update_interval = update_interval
 
@@ -178,11 +179,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         device_list = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
-        self.new_devices = len(fresh_data.devices.keys()) - len(device_list) > 0
+        self.new_devices = len(fresh_data.devices.keys()) - len(self.device_list) > 0
         LOGGER.debug("HOI fresh-data: %s", fresh_data.devices.keys())
         LOGGER.debug("HOI device-list: %s", device_list)
         # self.new_devices = (fresh_data.devices.keys() - self.data.devices.keys())
 
         self.data = fresh_data
+        self.device_list = device_list
 
         return self.data
