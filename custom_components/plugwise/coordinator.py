@@ -174,7 +174,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
         await cleanup_device_and_entity_registry(self.hass, fresh_data, self.data, self.config_entry)
 
-        self.new_devices = (fresh_data.devices.keys() - self.data.devices.keys())
+        device_reg = dr.async_get(self.hass)
+        device_list = dr.async_entries_for_config_entry(
+            device_reg, self.config_entry.entry_id
+        )
+        self.new_devices = len(fresh_data.devices.keys()) - len(device_list) > 0
+        # self.new_devices = (fresh_data.devices.keys() - self.data.devices.keys())
 
         self.data = fresh_data
 
