@@ -178,7 +178,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         device_list = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
-        if len(device_list) > 0:
+        if len(device_list) == 0:
             self.new_devices = len(fresh_data.devices.keys()) - len(device_list) > 0
         # self.new_devices = (fresh_data.devices.keys() - self.data.devices.keys())
 
