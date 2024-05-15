@@ -41,9 +41,9 @@ EMPTY_DATA = PlugwiseData(gateway={}, devices={})
 async def cleanup_device_and_entity_registry(
     hass: HomeAssistant,
     data: PlugwiseData,
+    self_data: PlugwiseData,
     device_reg: DeviceEntry | None,
     device_list: list[DeviceEntry],
-    self_data: PlugwiseData,
     entry: ConfigEntry,
 ) -> None:
     """Remove deleted devices from device- and entity-registry."""
@@ -177,10 +177,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
         await cleanup_device_and_entity_registry(
             self.hass,
-            device_reg,
-            device_list,
             fresh_data,
             self.data,
+            device_reg,
+            device_list,
             self.config_entry
         )
 
