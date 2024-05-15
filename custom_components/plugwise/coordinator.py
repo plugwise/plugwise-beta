@@ -35,7 +35,7 @@ from .const import (
     LOGGER,
 )
 
-EMPTY_DATA = PlugwiseData(gateway={}, devices={})
+EMPTY_PLUGWISE_DATA = PlugwiseData(gateway={}, devices={})
 
 
 async def cleanup_device_and_entity_registry(
@@ -48,7 +48,7 @@ async def cleanup_device_and_entity_registry(
 ) -> None:
     """Remove deleted devices from device- and entity-registry."""
     if not (
-        self_data != EMPTY_DATA  # don't clean-up at init
+        self_data != EMPTY_PLUGWISE_DATA  # don't clean-up at init
         and len(device_list) - len(data.devices.keys()) > 0
     ):
         return
@@ -121,7 +121,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._unavailable_logged = False
-        self.data = EMPTY_DATA
+        self.data = EMPTY_PLUGWISE_DATA
         self.hass = hass
         self.device_list: list[DeviceEntry] = []
         self.new_devices: bool = False
@@ -147,7 +147,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         try:
             if not self._connected:
                 await self._connect()
-            fresh_data = await self.api.async_update()
+            data = await self.api.async_update()
 
             if self._unavailable_logged:
                 self._unavailable_logged = False
@@ -177,7 +177,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
         await cleanup_device_and_entity_registry(
             self.hass,
-            fresh_data,
+            data,
             self.data,
             device_reg,
             device_list,
@@ -186,7 +186,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
         self.new_devices = len(fresh_data.devices.keys()) - len(self.device_list) > 0
 
-        self.data = fresh_data
+        self.data = data
         self.device_list = device_list
 
         return self.data
