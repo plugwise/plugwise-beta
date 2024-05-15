@@ -35,8 +35,6 @@ from .const import (
     LOGGER,
 )
 
-EMPTY_PLUGWISE_DATA = PlugwiseData(gateway={}, devices={})
-
 
 async def cleanup_device_and_entity_registry(
     hass: HomeAssistant,
