@@ -23,6 +23,7 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
+from homeassistant.helpers.device_registry import DeviceEntry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -126,8 +127,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self._unavailable_logged = False
         self.data = EMPTY_DATA
         self.hass = hass
-        self.device_list = []
-        self.new_devices: set[str] = set()
+        self.device_list: list[DeviceEntry] = []
+        self.new_devices: bool = False
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -180,9 +181,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             device_reg, self.config_entry.entry_id
         )
         self.new_devices = len(fresh_data.devices.keys()) - len(self.device_list) > 0
-        LOGGER.debug("HOI fresh-data: %s", fresh_data.devices.keys())
-        LOGGER.debug("HOI device-list: %s", device_list)
-        # self.new_devices = (fresh_data.devices.keys() - self.data.devices.keys())
 
         self.data = fresh_data
         self.device_list = device_list
