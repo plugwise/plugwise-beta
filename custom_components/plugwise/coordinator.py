@@ -41,14 +41,12 @@ EMPTY_DATA = PlugwiseData(gateway={}, devices={})
 async def cleanup_device_and_entity_registry(
     hass: HomeAssistant,
     data: PlugwiseData,
+    device_reg: DeviceEntry | None,
+    device_list: list[DeviceEntry],
     self_data: PlugwiseData,
     entry: ConfigEntry,
 ) -> None:
     """Remove deleted devices from device- and entity-registry."""
-    device_reg = dr.async_get(hass)
-    device_list = dr.async_entries_for_config_entry(
-        device_reg, entry.entry_id
-    )
     if not (
         self_data != EMPTY_DATA  # don't clean-up at init
         and len(device_list) - len(data.devices.keys()) > 0
@@ -58,9 +56,7 @@ async def cleanup_device_and_entity_registry(
     # via_device cannot be None, this will result in the deletion
     # of other Plugwise Gateways when present!
     via_device: str = ""
-    for device_entry in dr.async_entries_for_config_entry(
-        device_reg, entry.entry_id
-    ):
+    for device_entry in device_list:
         if not device_entry.identifiers:
             continue  # pragma: no cover
 
@@ -174,12 +170,20 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
-        await cleanup_device_and_entity_registry(self.hass, fresh_data, self.data, self.config_entry)
-
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
+
+        await cleanup_device_and_entity_registry(
+            self.hass,
+            device_reg,
+            device_list,
+            fresh_data,
+            self.data,
+            self.config_entry
+        )
+
         self.new_devices = len(fresh_data.devices.keys()) - len(self.device_list) > 0
 
         self.data = fresh_data

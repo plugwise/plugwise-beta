@@ -257,7 +257,7 @@ async def test_remove_device(
     """Test a clean-up of the device_registry."""
     utcnow = dt_util.utcnow()
     data = mock_smile_adam_2.async_update.return_value
-    
+
     mock_config_entry.add_to_hass(hass)
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
