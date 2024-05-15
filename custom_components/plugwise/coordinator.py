@@ -23,7 +23,7 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
-from homeassistant.helpers.device_registry import DeviceEntry
+from homeassistant.helpers.device_registry import DeviceEntry, DeviceRegistry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -42,7 +42,7 @@ async def cleanup_device_and_entity_registry(
     hass: HomeAssistant,
     data: PlugwiseData,
     self_data: PlugwiseData,
-    device_reg: DeviceEntry | None,
+    device_reg: DeviceRegistry,
     device_list: list[DeviceEntry],
     entry: ConfigEntry,
 ) -> None:
