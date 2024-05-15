@@ -48,8 +48,7 @@ async def cleanup_device_and_entity_registry(
 ) -> None:
     """Remove deleted devices from device- and entity-registry."""
     if not (
-        self_data != EMPTY_PLUGWISE_DATA  # don't clean-up at init
-        and len(device_list) - len(data.devices.keys()) > 0
+        len(device_list) - len(data.devices.keys()) > 0
     ):
         return
 
