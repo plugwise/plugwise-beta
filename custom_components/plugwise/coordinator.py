@@ -37,14 +37,13 @@ from .const import (
 
 
 async def cleanup_device_and_entity_registry(
-    hass: HomeAssistant,
     data: PlugwiseData,
     device_reg: DeviceRegistry,
     device_list: list[DeviceEntry],
     entry: ConfigEntry,
 ) -> None:
     """Remove deleted devices from device- and entity-registry."""
-    if not (len(device_list) - len(data.devices.keys()) > 0):
+    if len(device_list) - len(data.devices.keys()) <= 0:
         return
 
     # via_device cannot be None, this will result in the deletion
@@ -169,7 +168,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         )
 
         await cleanup_device_and_entity_registry(
-            self.hass,
             data,
             device_reg,
             device_list,
