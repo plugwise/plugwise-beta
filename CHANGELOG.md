@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.50.1
+
+- Code improvements via #640 and #641
+
 ## v0.50.0
 
 - Delete removed Plugwise devices at runtime.

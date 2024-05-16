@@ -23,6 +23,7 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
+from homeassistant.helpers.device_registry import DeviceEntry, DeviceRegistry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -34,32 +35,21 @@ from .const import (
     LOGGER,
 )
 
-EMPTY_DATA = PlugwiseData(gateway={}, devices={})
-
 
 async def cleanup_device_and_entity_registry(
-    hass: HomeAssistant,
     data: PlugwiseData,
-    self_data: PlugwiseData,
+    device_reg: DeviceRegistry,
+    device_list: list[DeviceEntry],
     entry: ConfigEntry,
 ) -> None:
     """Remove deleted devices from device- and entity-registry."""
-    device_reg = dr.async_get(hass)
-    device_list = dr.async_entries_for_config_entry(
-        device_reg, entry.entry_id
-    )
-    if not (
-        self_data != EMPTY_DATA  # don't clean-up at init
-        and len(device_list) - len(data.devices.keys()) > 0
-    ):
+    if len(device_list) - len(data.devices.keys()) <= 0:
         return
 
     # via_device cannot be None, this will result in the deletion
     # of other Plugwise Gateways when present!
     via_device: str = ""
-    for device_entry in dr.async_entries_for_config_entry(
-        device_reg, entry.entry_id
-    ):
+    for device_entry in device_list:
         if not device_entry.identifiers:
             continue  # pragma: no cover
 
@@ -124,9 +114,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._unavailable_logged = False
-        self.data = EMPTY_DATA
         self.hass = hass
-        self.new_devices: set[str] = set()
+        self.device_list: list[DeviceEntry] = []
+        self.new_devices: bool = False
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -149,7 +139,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         try:
             if not self._connected:
                 await self._connect()
-            fresh_data = await self.api.async_update()
+            data = await self.api.async_update()
 
             if self._unavailable_logged:
                 self._unavailable_logged = False
@@ -172,10 +162,20 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
 
-        await cleanup_device_and_entity_registry(self.hass, fresh_data, self.data, self.config_entry)
+        device_reg = dr.async_get(self.hass)
+        device_list = dr.async_entries_for_config_entry(
+            device_reg, self.config_entry.entry_id
+        )
 
-        self.new_devices = (fresh_data.devices.keys() - self.data.devices.keys())
+        await cleanup_device_and_entity_registry(
+            data,
+            device_reg,
+            device_list,
+            self.config_entry
+        )
 
-        self.data = fresh_data
+        self.new_devices = len(data.devices.keys()) - len(self.device_list) > 0
 
-        return self.data
+        self.device_list = device_list
+
+        return data
