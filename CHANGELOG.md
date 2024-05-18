@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.50.2
+
+- Fix for Core Issue [#117542](https://github.com/home-assistant/core/issues/117542)
+
 ## v0.50.1
 
 - Code improvements via #640 and #641
