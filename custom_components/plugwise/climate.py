@@ -201,7 +201,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         ):
             hvac_modes.append(HVACMode.OFF)
 
-        if self.device[AVAILABLE_SCHEDULES] != [NONE]:
+        if AVAILABLE_SCHEDULES in self.device:
             hvac_modes.append(HVACMode.AUTO)
 
         if self.cdr_gateway[COOLING_PRESENT]:
