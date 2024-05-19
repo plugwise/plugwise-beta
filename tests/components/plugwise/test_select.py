@@ -17,6 +17,7 @@ async def test_adam_select_entities(
     assert state
     assert state.state == "GF7  Woonkamer"
 
+    assert not hass.states.get("select.cv_kraan_garage_thermostat_schedule")
 
 async def test_adam_change_select_entity(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
