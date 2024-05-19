@@ -36,7 +36,6 @@ from .const import (
     LOWER_BOUND,
     MASTER_THERMOSTATS,
     MODE,
-    NONE,
     REGULATION_MODES,
     RESOLUTION,
     SELECT_REGULATION_MODE,
