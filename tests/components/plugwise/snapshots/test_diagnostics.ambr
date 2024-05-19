@@ -391,14 +391,6 @@
       'e7693eb9582644e5b865dba8d4447cf1': dict({
         'active_preset': 'no_frost',
         'available': True,
-        'available_schedules': list([
-          '**REDACTED_0**',
-          '**REDACTED_1**',
-          '**REDACTED_2**',
-          '**REDACTED_3**',
-          '**REDACTED_4**',
-          'off',
-        ]),
         'dev_class': 'thermostatic_radiator_valve',
         'firmware': '2019-03-27T01:00:00+01:00',
         'hardware': '1',
@@ -413,7 +405,6 @@
           'vacation',
           'no_frost',
         ]),
-        'select_schedule': 'off',
         'sensors': dict({
           'battery': 68,
           'setpoint': 5.5,
