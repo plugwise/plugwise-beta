@@ -371,14 +371,6 @@
     "e7693eb9582644e5b865dba8d4447cf1": {
       "active_preset": "no_frost",
       "available": true,
-      "available_schedules": [
-        "CV Roan",
-        "Bios Schema met Film Avond",
-        "GF7  Woonkamer",
-        "Badkamer Schema",
-        "CV Jessie",
-        "off"
-      ],
       "dev_class": "thermostatic_radiator_valve",
       "firmware": "2019-03-27T01:00:00+01:00",
       "hardware": "1",
@@ -387,7 +379,6 @@
       "model": "Tom/Floor",
       "name": "CV Kraan Garage",
       "preset_modes": ["home", "asleep", "away", "vacation", "no_frost"],
-      "select_schedule": "off",
       "sensors": {
         "battery": 68,
         "setpoint": 5.5,
