@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.50.4
+
+- Implement @plugwise_command for the Select platform.
+
 ## v0.50.3
 
 - Thermostat-schedule (Select) improvements via [plugwise v0.37.7](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.7)
@@ -12,7 +16,7 @@
 
 ## v0.50.1
 
-- Code improvements via #640 and #641
+- Code improvements via #640 (implement @plugwise_command for the Number platform) and #641
 
 ## v0.50.0
 
