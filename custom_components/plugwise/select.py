@@ -129,7 +129,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     @plugwise_command
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option.
-        
+
         self.device[LOCATION] and STATE_ON are only required when setting the thermostat-schedule select.
         """
         await self.coordinator.api.set_select(
