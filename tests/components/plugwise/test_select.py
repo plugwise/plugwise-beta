@@ -68,6 +68,7 @@ async def test_adam_select_regulation_mode(
     mock_smile_adam_3.set_select.assert_called_with(
         "select_regulation_mode",
         "bc93488efab249e5bc54fd7e175a6f91",
+        "on",
         "heating",
     )
 
