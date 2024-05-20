@@ -130,7 +130,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
         await self.coordinator.api.set_select(
-            self.entity_description.key, self.device[LOCATION], STATE_ON, option
+            self.entity_description.key, self.device[LOCATION], option, STATE_ON
         )
         LOGGER.debug(
             "Set %s to %s was successful.",
