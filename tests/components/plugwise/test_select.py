@@ -35,7 +35,7 @@ async def test_adam_change_select_entity(
 
     assert mock_smile_adam.set_select.call_count == 1
     mock_smile_adam.set_select.assert_called_with(
-        "select_schedule"
+        "select_schedule",
         "c50f167537524366a5af7aa3942feb1e",
         "on",
         "Badkamer Schema",
