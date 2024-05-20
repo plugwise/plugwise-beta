@@ -36,7 +36,6 @@ from .const import (
     LOWER_BOUND,
     MASTER_THERMOSTATS,
     MODE,
-    NONE,
     REGULATION_MODES,
     RESOLUTION,
     SELECT_REGULATION_MODE,
@@ -201,7 +200,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         ):
             hvac_modes.append(HVACMode.OFF)
 
-        if self.device[AVAILABLE_SCHEDULES] != [NONE]:
+        if AVAILABLE_SCHEDULES in self.device:
             hvac_modes.append(HVACMode.AUTO)
 
         if self.cdr_gateway[COOLING_PRESENT]:
