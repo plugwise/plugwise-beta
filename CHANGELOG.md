@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.50.3
+
+- Thermostat-schedule (Select) improvements via [plugwise v0.37.7](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.7)
+
 ## v0.50.2
 
 - Fix for Core Issue [#117542](https://github.com/home-assistant/core/issues/117542)
