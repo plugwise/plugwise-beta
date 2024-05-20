@@ -1,10 +1,7 @@
 """Plugwise Select component for Home Assistant."""
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-
-from plugwise import Smile
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
@@ -31,6 +28,7 @@ from .const import (
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity, get_coordinator
+from .util import plugwise_command
 
 PARALLEL_UPDATES = 0
 
@@ -39,7 +37,6 @@ PARALLEL_UPDATES = 0
 class PlugwiseSelectEntityDescription(SelectEntityDescription):
     """Class describing Plugwise Select entities."""
 
-    command: Callable[[Smile, str, str], Awaitable[None]]
     key: SelectType
     options_key: SelectOptionsType
 
@@ -48,28 +45,24 @@ SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
         key=SELECT_SCHEDULE,
         translation_key=SELECT_SCHEDULE,
-        command=lambda api, loc, opt: api.set_schedule_state(loc, STATE_ON, opt),
         options_key=AVAILABLE_SCHEDULES,
     ),
     PlugwiseSelectEntityDescription(
         key=SELECT_REGULATION_MODE,
         translation_key=REGULATION_MODE,
         entity_category=EntityCategory.CONFIG,
-        command=lambda api, loc, opt: api.set_regulation_mode(opt),
         options_key=REGULATION_MODES,
     ),
     PlugwiseSelectEntityDescription(
         key=SELECT_DHW_MODE,
         translation_key=DHW_MODE,
         entity_category=EntityCategory.CONFIG,
-        command=lambda api, loc, opt: api.set_dhw_mode(opt),
         options_key=DHW_MODES,
     ),
     PlugwiseSelectEntityDescription(
         key=SELECT_GATEWAY_MODE,
         translation_key=GATEWAY_MODE,
         entity_category=EntityCategory.CONFIG,
-        command=lambda api, loc, opt: api.set_gateway_mode(opt),
         options_key=GATEWAY_MODES,
     ),
 )
@@ -133,14 +126,17 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         """Return the available select-options."""
         return self.device[self.entity_description.options_key]
 
+    @plugwise_command
     async def async_select_option(self, option: str) -> None:
-        """Change to the selected entity option."""
-        await self.entity_description.command(
-            self.coordinator.api, self.device[LOCATION], option
+        """Change to the selected entity option.
+
+        self.device[LOCATION] and STATE_ON are required for the thermostat-schedule select.
+        """
+        await self.coordinator.api.set_select(
+            self.entity_description.key, self.device[LOCATION], STATE_ON, option
         )
         LOGGER.debug(
             "Set %s to %s was successful.",
-            self.entity_description.name,
+            self.entity_description.key,
             option,
         )
-        await self.coordinator.async_request_refresh()
