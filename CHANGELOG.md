@@ -4,7 +4,7 @@
 
 ## v0.50.4
 
-- Implement @plugwise_command for the Select platform via [plugwise v0.37.8](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.8)
+- Implement @plugwise_command for the Select platform via [plugwise v0.37.8](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.8) and [plugwise v0.37.9](https://github.com/plugwise/python-plugwise/releases/tag/v0.37.9)
 
 ## v0.50.3
 
