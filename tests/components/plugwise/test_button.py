@@ -13,7 +13,7 @@ async def test_adam_reboot_button(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test creation of button entities."""
-    state = hass.states.get("button.adam_restart")
+    state = hass.states.get("button.adam_reboot")
     assert state
     assert state.state == STATE_UNKNOWN
     assert state.attributes.get(ATTR_DEVICE_CLASS) == ButtonDeviceClass.RESTART
