@@ -160,6 +160,7 @@ DEFAULT_USERNAME: Final = "smile"
 # --- Const for Plugwise Smile and Stretch
 PLATFORMS: Final[list[str]] = [
     Platform.BINARY_SENSOR,
+    Platform.BUTTON,
     Platform.CLIMATE,
     Platform.NUMBER,
     Platform.SELECT,
