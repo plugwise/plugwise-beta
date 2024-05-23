@@ -50,9 +50,9 @@ async def async_setup_entry(
                             device_id,
                             description,
                         )
-                )
-                LOGGER.debug(
-                    "Add %s %s button", device[ATTR_NAME], description.key
+                    LOGGER.debug(
+                        "Add %s %s button", device[ATTR_NAME], description.key
+                    )
                 )
 
         async_add_entities(entities)
