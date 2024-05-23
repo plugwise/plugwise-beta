@@ -65,7 +65,7 @@ async def async_setup_entry(
     _add_entities()
 
 
-class PlugwiseButton(PlugwiseEntity, ButtonEntity):
+class PlugwiseButtonEntity(PlugwiseEntity, ButtonEntity):
     """Defines a Plugwise button."""
 
     entity_description: ButtonEntityDescription
