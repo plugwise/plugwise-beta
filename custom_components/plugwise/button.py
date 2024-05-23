@@ -16,6 +16,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import GATEWAY_ID, LOGGER
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import get_coordinator
+from .util import plugwise_command
 
 
 BUTTON_TYPES: tuple[ButtonEntityDescription, ...] = (
