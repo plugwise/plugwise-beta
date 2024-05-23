@@ -140,7 +140,18 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._connected:
                 await self._connect()
             data = await self.api.async_update()
-
+            device_reg = dr.async_get(self.hass)
+            device_list = dr.async_entries_for_config_entry(
+                device_reg, self.config_entry.entry_id
+            )
+            await cleanup_device_and_entity_registry(
+                data,
+                device_reg,
+                device_list,
+                self.config_entry
+            )
+            self.new_devices = len(data.devices.keys()) - len(self.device_list) > 0
+            self.device_list = device_list
             if self._unavailable_logged:
                 self._unavailable_logged = False
         except InvalidAuthentication as err:
@@ -161,21 +172,5 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
-
-        device_reg = dr.async_get(self.hass)
-        device_list = dr.async_entries_for_config_entry(
-            device_reg, self.config_entry.entry_id
-        )
-
-        await cleanup_device_and_entity_registry(
-            data,
-            device_reg,
-            device_list,
-            self.config_entry
-        )
-
-        self.new_devices = len(data.devices.keys()) - len(self.device_list) > 0
-
-        self.device_list = device_list
 
         return data
