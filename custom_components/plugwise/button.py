@@ -1,15 +1,13 @@
 """Plugwise Button component for Home Assistant."""
 from __future__ import annotations
 
-from plugwise import Smile
-
 from homeassistant.components.button import (
     ButtonDeviceClass,
     ButtonEntity,
     ButtonEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME, EntityCategory, UnitOfTemperature
+from homeassistant.const import ATTR_NAME, EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -17,7 +15,6 @@ from .const import GATEWAY_ID, LOGGER
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity, get_coordinator
 from .util import plugwise_command
-
 
 BUTTON_TYPES: tuple[ButtonEntityDescription, ...] = (
     ButtonEntityDescription(
