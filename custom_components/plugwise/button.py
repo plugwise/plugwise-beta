@@ -15,7 +15,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import GATEWAY_ID, LOGGER
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import get_coordinator
+from .entity import PlugwiseEntity, get_coordinator
 from .util import plugwise_command
 
 
@@ -25,7 +25,7 @@ BUTTON_TYPES: tuple[ButtonEntityDescription, ...] = (
         translation_key="reboot",
         device_class=ButtonDeviceClass.RESTART,
         entity_category=EntityCategory.CONFIG,
-    )
+    ),
 )
 
 
@@ -65,7 +65,7 @@ async def async_setup_entry(
     _add_entities()
 
 
-class PlugwiseButton(ButtonEntity):
+class PlugwiseButton(PlugwiseEntity, ButtonEntity):
     """Defines a Plugwise button."""
 
     entity_description: ButtonEntityDescription
@@ -74,7 +74,7 @@ class PlugwiseButton(ButtonEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
-        description: PlugwiseButtonEntityDescription,
+        description: ButtonEntityDescription,
     ) -> None:
         """Initialize the button."""
         super().__init__(coordinator, device_id)
