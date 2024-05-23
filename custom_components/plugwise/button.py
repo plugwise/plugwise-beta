@@ -21,7 +21,7 @@ from .entity import get_coordinator
 BUTTON_TYPES: tuple[ButtonEntityDescription, ...] = (
     ButtonEntityDescription(
         key="reboot",
-        translation_key="reboot"
+        translation_key="reboot",
         device_class=ButtonDeviceClass.RESTART,
         entity_category=EntityCategory.CONFIG,
     )
