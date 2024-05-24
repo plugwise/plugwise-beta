@@ -242,7 +242,7 @@
 - Fix for #369.
 - Added pre-commit and additional linting (no or marginal code changes).
 - Added tagging in #361 to enable a path forward for upstreaming (mostly isort and tagging, no or marginal code changes).
-- Replaceing flake8 linting with ruff as per upstream.
+- Replacing flake8 linting with ruff as per upstream.
 
 ### FEB 2023 [0.34.7.1] Stick-bugfix, rename P1 gas-interval sensor, line up with Core Plugwise
 
