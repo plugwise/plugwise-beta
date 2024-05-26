@@ -140,6 +140,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._connected:
                 await self._connect()
             data = await self.api.async_update()
+            LOGGER.debug(f"{self.api.smile_name} data: %s", data)
             device_reg = dr.async_get(self.hass)
             device_list = dr.async_entries_for_config_entry(
                 device_reg, self.config_entry.entry_id
