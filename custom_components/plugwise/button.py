@@ -41,11 +41,9 @@ async def async_setup_entry(
             return
 
         entities: list[PlugwiseButtonEntity] = []
+        gateway = coordinator.data.gateway
         for device_id, device in coordinator.data.devices.items():
-            if (
-                device_id == coordinator.data.gateway[GATEWAY_ID]
-                and REBOOT in coordinator.data.gateway
-            ):
+            if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
                 for description in BUTTON_TYPES:
                     entities.append(
                         PlugwiseButtonEntity(
