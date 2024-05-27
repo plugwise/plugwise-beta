@@ -11,15 +11,15 @@ from homeassistant.const import ATTR_NAME, EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import GATEWAY_ID, LOGGER
+from .const import GATEWAY_ID, LOGGER, REBOOT
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity, get_coordinator
 from .util import plugwise_command
 
 BUTTON_TYPES: tuple[ButtonEntityDescription, ...] = (
     ButtonEntityDescription(
-        key="reboot",
-        translation_key="reboot",
+        key=REBOOT,
+        translation_key=REBOOT,
         device_class=ButtonDeviceClass.RESTART,
         entity_category=EntityCategory.CONFIG,
     ),
@@ -42,7 +42,10 @@ async def async_setup_entry(
 
         entities: list[PlugwiseButtonEntity] = []
         for device_id, device in coordinator.data.devices.items():
-            if device_id == coordinator.data.gateway[GATEWAY_ID]:
+            if (
+                device_id == coordinator.data.gateway[GATEWAY_ID]
+                and REBOOT in coordinator.data.gateway
+            ):
                 for description in BUTTON_TYPES:
                     entities.append(
                         PlugwiseButtonEntity(
