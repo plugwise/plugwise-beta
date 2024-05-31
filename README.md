@@ -16,7 +16,9 @@ A fully asynchronous approach to supporting Plugwise devices in Home-Assistant. 
 [![HASSfest](https://github.com/plugwise/plugwise-beta/workflows/Validate%20with%20hassfest/badge.svg)](https://github.com/plugwise/plugwise-beta/actions)
 [![HA-Core](https://github.com/plugwise/plugwise-beta/workflows/Test%20with%20HA-core/badge.svg)](https://github.com/plugwise/plugwise-beta/actions)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/plugwise/plugwise-beta/main.svg)](https://results.pre-commit.ci/latest/github/plugwise/plugwise-beta/main)
+
 [![renovate maintained](https://img.shields.io/badge/maintained%20with-renovate-blue?logo=renovatebot)](https://github.com/plugwise/plugwise-beta/issues/382)
+[![CodeRabbit.ai is Awesome](https://img.shields.io/badge/AI-orange?label=CodeRabbit&color=orange&link=https%3A%2F%2Fcoderabbit.ai)](https://coderabbit.ai)
 
 [![CodeFactor](https://www.codefactor.io/repository/github/plugwise/plugwise-beta/badge)](https://www.codefactor.io/repository/github/plugwise/plugwise-beta)
 
