@@ -30,7 +30,7 @@ If you don't mind a bug now and then and are interested in helping us test new f
 
 ## Required python module (status)
 
-Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python module accompanies both the native and the `custom_component`. It's status is is:
+Our [`python-plugwise`](https://github.com/plugwise/python-plugwise) python module accompanies both the native and the `custom_component`. Its status is is:
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/plugwise)
 [![PyPI version fury.io](https://badge.fury.io/py/plugwise.svg)](https://pypi.python.org/pypi/plugwise/)
@@ -59,13 +59,13 @@ Our [Changelog](CHANGELOG.MD) is available as a [separate file](CHANGELOG.md) in
   - Smile P1 (firmware 2.x, 3.x and 4.x)
   - Stretch (firmware 2.x and 3.x, legacy Circle's and Stealth's)
 
-Additional to the **Core** component we support Homekit emulation, notifications and changing some timing. This will not be upstreamed and is code that remained in our codebase (i.e. denied upstreaming by the Core Team for acceptable reasons though we have some people already using that (mostly by them requested) functionality).
+Additional to the **Core** component we support Homekit emulation, notifications and changing some timing. This will not be upstreamed and is code that remained in our codebase (i.e. denied upstreaming by the Core Team for acceptable reasons, though we have some people already using that (mostly by them requested) functionality).
 
 #### USB notes
 
-Up to spring of 2023 this `custom_component` supported both Networked and USB Plugwise products, as of that time we have split both the backend (python module) and the frontend into separate instances as per recent discussion with the Core team. The `plugwise` integration in HA Core (and therefore `plugwise-beta`) will remain supporting networked Plugwise products under an envisioned `plugwise_bv` Brand umbrella. This paves the way for the upcoming `plugwise_usb-beta` `custom_integration` to refactor and again upstream to HA Core (which was originally planned but there was no branding umbrella in Core back then).
+Up to spring of 2023 this `custom_component` supported both Networked and USB Plugwise products, as of that time we have split both the backend (python module) and the frontend into separate instances as per recent discussion with the Core team. The `plugwise` integration in HA Core (and therefore `plugwise-beta`) will remain supporting networked Plugwise products under an envisioned `plugwise_bv` Brand umbrella. This paves the way for the upcoming `plugwise_usb-beta` `custom_integration` to refactor and again upstream to HA Core (which was originally planned, but there was no branding umbrella in Core back then).
 
-As such we ask USB users, who are tied in with the `custom_component` as there is no Core integration available yet, for a little patience so we can split and refactor all repositories without loss of functionality for the end users. For our USB users that will however mean some **breaking changes** or customizing under the hood as the `custom_component` name will change and the appropriate naming in HA will do so accordingly. It is for the best though as this will ensure a way forward to HA Core integration, which has been our goal since starting to write Plugwise supporting code for Home Assistant.
+As such we ask USB users, who are tied in with the `custom_component` as there is no Core integration available yet, for a little patience so we can split and refactor all repositories without loss of functionality for the end users. For our USB users, that will, however mean some **breaking changes** or customizing under the hood as the `custom_component` name will change and the appropriate naming in HA will do so accordingly. It is for the best, though, as this will ensure a way forward to HA Core integration, which has been our goal since starting to write Plugwise supporting code for Home Assistant.
 
 ### What can I expect in HA Core from this component
 
@@ -84,7 +84,7 @@ As such we ask USB users, who are tied in with the `custom_component` as there i
 
 #### How to add the integration to HA Core
 
-For each Plugwise Smile (i.e. gateway) you will have to add it as an integration. For instance if you have an Adam and a Smile P1, you have to add them individually. If you have an Anna and an Adam, **do not add the Anna**, only add the Adam.
+For each Plugwise Smile (i.e. gateway) you will have to add it as an integration. For instance, if you have an Adam and a Smile P1, you have to add them individually. If you have an Anna and an Adam, **do not add the Anna**, only add the Adam.
 
 - [ ] In Home Assistant click on `Configuration`
 - [ ] Click on `Integrations`
@@ -119,7 +119,7 @@ Please note that you can also click the cogwheel right top corner to rename all 
 
 ### It doesn't work
 
-If you notice issues please create an issue in the appropriate repository, while we are on Discord and on the [Community forums](https://community.home-assistant.io/t/plugwise-core-and-custom-component/236250) this is not where we are actively checking for support requests.
+If you notice issues, please create an issue in the appropriate repository, while we are on Discord and on the [Community forums](https://community.home-assistant.io/t/plugwise-core-and-custom-component/236250) this is not where we are actively checking for support requests.
 
 - [plugwise-beta](https://github.com/plugwise/plugwise-beta/issues/new/choose) - the beta `custom_component` for HA Core we use for testing (also required for USB as Plugwise USB support is not available in Home Assistant Core yet).
 - [python-plugwise](https://github.com/plugwise/python-plugwise/issues/new/choose) - the python module interfacing with the plugwise Smile or USB-stick
@@ -140,9 +140,9 @@ Results of our tests are checked by GitHub Actions against Home Assistant (dev-b
 
 **The former 'anna' support was replaced by the new Plugwise component, based on this beta-version.**
 
-From the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech for Anna. Right after that @bouwew joined to improve and help maintain the code - as a result also Adam and P1 became supported. As of 2020 @brefra joined for the USB part(s) so we have a full range of Plugwise products supported.
+From the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech for Anna. Right after that @bouwew joined to improve and help maintain the code - as a result also Adam and P1 became supported. As of 2020, @brefra joined for the USB part(s) so we have a full range of Plugwise products supported.
 
-As things like async were in high demand from HA Core, desired by the original author and a great challenge for us we rewrote it largely. The Plugwise Beta repository (accompanying the Plugwise python module) is intended for development purposes, just as `anna-ha` was for `haanna` (respectively the original before upstreaming and original python module). Note that 'Plugwise-Smile' existed for a while before @brefra joined.
+As things like async were in high demand from HA Core, desired by the original author and a great challenge for us, we rewrote it largely. The Plugwise Beta repository (accompanying the Plugwise python module) is intended for development purposes, just as `anna-ha` was for `haanna` (respectively the original before upstreaming and original python module). Note that 'Plugwise-Smile' existed for a while before @brefra joined.
 
 With the three combined forces we now support, maintain and improve on:
 
