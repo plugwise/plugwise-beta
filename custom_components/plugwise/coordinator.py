@@ -4,9 +4,9 @@ from datetime import timedelta
 from plugwise import PlugwiseData, Smile
 from plugwise.exceptions import (
     ConnectionFailedError,
-    DataMissingError,
     InvalidAuthentication,
     InvalidXMLError,
+    PlugwiseError,
     ResponseError,
     UnsupportedDeviceError,
 )
@@ -175,7 +175,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
-        except DataMissingError as err:
+        except PlugwiseError as err:
             if not self._unavailable_logged:  # pw-beta add to Core
                 self._unavailable_logged = True
                 raise UpdateFailed("Data incomplete or missing") from err
