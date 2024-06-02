@@ -141,33 +141,20 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             if not self._connected:
                 await self._connect()
             data = await self.api.async_update()
-            LOGGER.debug(f"{self.api.smile_name} data: %s", data)
         except InvalidAuthentication as err:
-            if not self._unavailable_logged:  # pw-beta add to Core
-                self._unavailable_logged = True
                 raise ConfigEntryError("Authentication failed") from err
         except (InvalidXMLError, ResponseError) as err:
-            if not self._unavailable_logged:  # pw-beta add to Core
-                self._unavailable_logged = True
                 raise UpdateFailed(
                     "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
                 ) from err
         except UnsupportedDeviceError as err:
-            if not self._unavailable_logged:  # pw-beta add to Core
-                self._unavailable_logged = True
                 raise ConfigEntryError("Device with unsupported firmware") from err
         except ConnectionFailedError as err:
-            if not self._unavailable_logged:  # pw-beta add to Core
-                self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
         except PlugwiseError as err:
-            if not self._unavailable_logged:  # pw-beta add to Core
-                self._unavailable_logged = True
                 raise UpdateFailed("Data incomplete or missing") from err
         else:
-            if self._unavailable_logged:
-                self._unavailable_logged = False
-
+            LOGGER.debug(f"{self.api.smile_name} data: %s", data)
             device_reg = dr.async_get(self.hass)
             device_list = dr.async_entries_for_config_entry(
                 device_reg, self.config_entry.entry_id
