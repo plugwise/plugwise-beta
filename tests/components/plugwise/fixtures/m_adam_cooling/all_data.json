@@ -165,6 +165,7 @@
     "heater_id": "056ee145a816487eaa69243c3280f8bf",
     "item_count": 147,
     "notifications": {},
+    "reboot": true,
     "smile_name": "Adam"
   }
 }

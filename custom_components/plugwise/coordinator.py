@@ -6,6 +6,7 @@ from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
     InvalidXMLError,
+    PlugwiseError,
     ResponseError,
     UnsupportedDeviceError,
 )
@@ -114,7 +115,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._unavailable_logged = False
-        self.hass = hass
         self.device_list: list[DeviceEntry] = []
         self.new_devices: bool = False
         self.update_interval = update_interval
@@ -136,46 +136,36 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
+        data = PlugwiseData({}, {})
         try:
             if not self._connected:
                 await self._connect()
             data = await self.api.async_update()
-
-            if self._unavailable_logged:
-                self._unavailable_logged = False
         except InvalidAuthentication as err:
-            if not self._unavailable_logged:  # pw-beta add to Core
-                self._unavailable_logged = True
                 raise ConfigEntryError("Authentication failed") from err
         except (InvalidXMLError, ResponseError) as err:
-            if not self._unavailable_logged:  # pw-beta add to Core
-                self._unavailable_logged = True
                 raise UpdateFailed(
                     "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
                 ) from err
         except UnsupportedDeviceError as err:
-            if not self._unavailable_logged:  # pw-beta add to Core
-                self._unavailable_logged = True
                 raise ConfigEntryError("Device with unsupported firmware") from err
         except ConnectionFailedError as err:
-            if not self._unavailable_logged:  # pw-beta add to Core
-                self._unavailable_logged = True
                 raise UpdateFailed("Failed to connect") from err
-
-        device_reg = dr.async_get(self.hass)
-        device_list = dr.async_entries_for_config_entry(
-            device_reg, self.config_entry.entry_id
-        )
-
-        await cleanup_device_and_entity_registry(
-            data,
-            device_reg,
-            device_list,
-            self.config_entry
-        )
-
-        self.new_devices = len(data.devices.keys()) - len(self.device_list) > 0
-
-        self.device_list = device_list
+        except PlugwiseError as err:
+                raise UpdateFailed("Data incomplete or missing") from err
+        else:
+            LOGGER.debug(f"{self.api.smile_name} data: %s", data)
+            device_reg = dr.async_get(self.hass)
+            device_list = dr.async_entries_for_config_entry(
+                device_reg, self.config_entry.entry_id
+            )
+            await cleanup_device_and_entity_registry(
+                data,
+                device_reg,
+                device_list,
+                self.config_entry
+            )
+            self.new_devices = len(data.devices.keys()) - len(self.device_list) > 0
+            self.device_list = device_list
 
         return data

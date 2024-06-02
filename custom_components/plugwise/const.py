@@ -18,6 +18,7 @@ DEVICES: Final = "devices"
 GATEWAY: Final = "gateway"
 LOCATION: Final = "location"
 MAC_ADDRESS: Final = "mac_address"
+REBOOT: Final = "reboot"
 SMILE: Final = "smile"
 STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
@@ -160,6 +161,7 @@ DEFAULT_USERNAME: Final = "smile"
 # --- Const for Plugwise Smile and Stretch
 PLATFORMS: Final[list[str]] = [
     Platform.BINARY_SENSOR,
+    Platform.BUTTON,
     Platform.CLIMATE,
     Platform.NUMBER,
     Platform.SELECT,
