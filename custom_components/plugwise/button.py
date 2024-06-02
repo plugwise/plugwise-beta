@@ -82,5 +82,5 @@ class PlugwiseButtonEntity(PlugwiseEntity, ButtonEntity):
 
     @plugwise_command
     async def async_press(self) -> None:
-        """Triggers the Shelly button press service."""
+        """Triggers the Plugwise button press service."""
         await self.coordinator.api.reboot_gateway()
