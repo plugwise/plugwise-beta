@@ -140,7 +140,7 @@ Results of our tests are checked by GitHub Actions against Home Assistant (dev-b
 
 **The former 'anna' support was replaced by the new Plugwise component, based on this beta-version.**
 
-From the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech for Anna. Right after that @bouwew joined to improve and help maintain the code - as a result also Adam and P1 became supported. As of 2020, @brefra joined for the USB part(s) so we have a full range of Plugwise products supported.
+From the original sources by @laetificat it was improved upon and upstreamed by @CoMPaTech for Anna. Right after that @bouwew joined to improve and help maintain the code - as a result, also Adam and P1 became supported. As of 2020, @brefra joined for the USB part(s) so we have a full range of Plugwise products supported.
 
 As things like async were in high demand from HA Core, desired by the original author and a great challenge for us, we rewrote it largely. The Plugwise Beta repository (accompanying the Plugwise python module) is intended for development purposes, just as `anna-ha` was for `haanna` (respectively the original before upstreaming and original python module). Note that 'Plugwise-Smile' existed for a while before @brefra joined.
 
