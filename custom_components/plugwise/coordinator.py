@@ -181,4 +181,4 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             self.new_devices = len(data.devices.keys()) - len(self.device_list) > 0
             self.device_list = device_list
 
-            return data
+        return data
