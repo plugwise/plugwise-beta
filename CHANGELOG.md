@@ -4,7 +4,8 @@
 
 ## v0.51.0
 
-- New Feature: implement a Reboot button as requested in #604
+- New Feature: Implemented a Reboot button to allow users to restart devices directly from Home Assistant, as requested in #604.
+- Reverted the redacting of diagnostics output, as it was not accepted in HA Core.
 - Revert redacting of diagnostics output, not accepted in HA Core.
 
 ## v0.50.4
