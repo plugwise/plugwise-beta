@@ -2,8 +2,9 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.51.0
 
+- New Feature: implement a Reboot button as requested in #604
 - Revert redacting of diagnostics output, not accepted in HA Core.
 
 ## v0.50.4
