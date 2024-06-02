@@ -72,10 +72,10 @@
         "name": "Plugwise notification"
       }
     },
-    "button":{
-        "reboot":{
-            "name": "Reboot"
-        }
+    "button": {
+      "reboot": {
+        "name": "Reboot"
+      }
     },
     "climate": {
       "plugwise": {
