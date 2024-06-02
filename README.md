@@ -59,7 +59,7 @@ Our [Changelog](CHANGELOG.MD) is available as a [separate file](CHANGELOG.md) in
   - Smile P1 (firmware 2.x, 3.x and 4.x)
   - Stretch (firmware 2.x and 3.x, legacy Circle's and Stealth's)
 
-Additional to the **Core** component we support Homekit emulation, notifications and changing some timing. This will not be upstreamed and is code that remained in our codebase (i.e. denied upstreaming by the Core Team for acceptable reasons, though we have some people already using that (mostly by them requested) functionality).
+Additional to the **Core** component, we support Homekit emulation, notifications and changing some timing. This will not be upstreamed and is code that remained in our codebase (i.e. denied upstreaming by the Core Team for acceptable reasons, though we have some people already using that (mostly by them requested) functionality).
 
 #### USB notes
 
