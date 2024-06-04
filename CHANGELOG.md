@@ -2,9 +2,14 @@
 
 ## Versions from 0.40 and up
 
+## v0.51.1
+
+- Bump plugwise to [v0.38.1](https://github.com/plugwise/python-plugwise/releases/tag/v0.38.1)
+
 ## v0.51.0
 
 - New Feature: Implemented a Reboot button to allow users to restart devices directly from Home Assistant, as requested in #604.
+  Implemented via [plugwise v0.38.0](https://github.com/plugwise/python-plugwise/releases/tag/v0.38.0)
 - Reverted the redacting of diagnostics output, as it was not accepted in HA Core.
 
 ## v0.50.4
