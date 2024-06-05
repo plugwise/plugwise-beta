@@ -2,7 +2,7 @@
 
 ## Versions from 0.40 and up
 
-# v0.51.2
+## v0.51.2
 
 - Bump plugwise to [v0.38.2](https://github.com/plugwise/python-plugwise/releases/tag/v0.38.2)
 
