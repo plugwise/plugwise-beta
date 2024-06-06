@@ -144,10 +144,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
         # shellcheck disable=SC1091
 	source ./venv/bin/activate
 
-	echo "Temp (june '24) fix unavailable mypy"
-	echo ""
-	sed -ie 's/mypy-dev==1.10.0a3/mypy-dev==1.11.0a3/g' requirements_test.txt
-	echo ""
 	echo "Bootstrap pip parts of HA-core"
 	grep -v "^#" "${coredir}/script/bootstrap" | grep "pip install" | sed 's/python3 -m pip install/uv pip install/g' | sh
 	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
@@ -180,10 +176,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo "Ensure uv is there"
 	echo ""
 	python3 -m pip install pip uv
-	echo ""
-	echo "Temp (june '24) fix unavailable mypy"
-	echo ""
-	sed -ie 's/mypy-dev==1.10.0a3/mypy-dev==1.11.0a3/g' requirements_test.txt
 	echo "Installing pip modules (using uv)"
 	echo ""
 	echo " - HA requirements (core and test)"
