@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v051.3
+
+- Implement fix for Core Issue #119686 via plugwise [v0.38.3](https://github.com/plugwise/python-plugwise/releases/tag/v0.38.3)
+
 ## v0.51.2
 
 - Bump plugwise to [v0.38.2](https://github.com/plugwise/python-plugwise/releases/tag/v0.38.2)
