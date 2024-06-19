@@ -28,17 +28,6 @@ from .const import (
 from .coordinator import PlugwiseDataUpdateCoordinator
 
 
-def get_coordinator(
-    hass: HomeAssistant, config_entry_id: str
-) -> PlugwiseDataUpdateCoordinator:
-    """Get coordinator for given config entry id."""
-    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][config_entry_id][
-        COORDINATOR
-    ]
-
-    return coordinator
-
-
 class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
     """Represent a PlugWise Entity."""
 
