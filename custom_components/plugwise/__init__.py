@@ -43,10 +43,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     # Migrate a changed sensor unique_id
     migrate_sensor_entities(hass, coordinator)
 
-    undo_listener = entry.add_update_listener(_update_listener)  # pw-beta
-
-    entry.runtime_data[COORDINATOR] = coordinator  # pw-beta
-    entry.runtime_data[UNDO_UPDATE_LISTENER] = undo_listener  # pw-beta
+    entry.runtime_data = coordinator  # pw-beta
+    entry.async_on_unload(
+        entry.add_update_listener(async_options_updated)  # pw-beta
+    )
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
@@ -85,15 +85,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
 
     return True
 
-async def _update_listener(
-    hass: HomeAssistant, entry: ConfigEntry
-) -> None:  # pragma: no cover  # pw-beta
-    """Handle options update."""
-    await hass.config_entries.async_reload(entry.entry_id)
-
 async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
     """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+async def async_options_updated(
+    hass: HomeAssistant, entry: PlugwiseConfigEntry
+) -> None:
+    """Triggered by config entry options updates."""
+    coordinator = entry.runtime_data
+    if coordinator.event_unsub:
+        coordinator.event_unsub()
+    await coordinator.async_request_refresh()
 
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
