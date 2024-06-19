@@ -10,16 +10,14 @@ from .const import (
     COORDINATOR,  # pw-beta
     DOMAIN,
 )
-from .coordinator import PlugwiseDataUpdateCoordinator
+from . import PlugwiseConfigEntry
 
 
 async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, entry: ConfigEntry
+    hass: HomeAssistant, entry: PlugwiseConfigEntry
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
-    coordinator: PlugwiseDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][
-        COORDINATOR
-    ]
+    coordinator = entry.runtime_data[COORDINATOR]
     return {
         "gateway": coordinator.data.gateway,
         "devices": coordinator.data.devices,

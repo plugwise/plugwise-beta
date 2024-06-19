@@ -29,7 +29,9 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from . import PlugwiseConfigEntry
 from .const import (
+    COORDINATOR,
     DHW_SETPOINT,
     DHW_TEMP,
     EL_CONS_INTERVAL,
@@ -79,7 +81,7 @@ from .const import (
     WATER_TEMP,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity, get_coordinator
+from .entity import PlugwiseEntity
 
 PARALLEL_UPDATES = 0
 
@@ -455,11 +457,11 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile sensors from a ConfigEntry."""
-    coordinator = get_coordinator(hass, entry.entry_id)
+    coordinator = entry.runtime_data[COORDINATOR]
 
     @callback
     def _add_entities() -> None:

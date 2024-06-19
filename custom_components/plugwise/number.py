@@ -14,7 +14,9 @@ from homeassistant.const import ATTR_NAME, EntityCategory, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from . import PlugwiseConfigEntry
 from .const import (
+    COORDINATOR,
     LOGGER,
     LOWER_BOUND,
     MAX_BOILER_TEMP,
@@ -25,7 +27,7 @@ from .const import (
     NumberType,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity, get_coordinator
+from .entity import PlugwiseEntity
 from .util import plugwise_command
 
 
@@ -63,11 +65,11 @@ NUMBER_TYPES = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Plugwise numbers from a ConfigEntry."""
-    coordinator = get_coordinator(hass, entry.entry_id)
+    coordinator = entry.runtime_data[COORDINATOR]
 
     @callback
     def _add_entities() -> None:
