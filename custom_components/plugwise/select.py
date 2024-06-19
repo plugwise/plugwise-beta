@@ -12,7 +12,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from . import PlugwiseConfigEntry
 from .const import (
     AVAILABLE_SCHEDULES,
-    COORDINATOR,
     DHW_MODE,
     DHW_MODES,
     GATEWAY_MODE,
@@ -76,7 +75,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile selector from a ConfigEntry."""
-    coordinator = entry.runtime_data[COORDINATOR]
+    coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:

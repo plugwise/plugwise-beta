@@ -31,7 +31,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import PlugwiseConfigEntry
 from .const import (
-    COORDINATOR,
     DHW_SETPOINT,
     DHW_TEMP,
     EL_CONS_INTERVAL,
@@ -461,7 +460,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile sensors from a ConfigEntry."""
-    coordinator = entry.runtime_data[COORDINATOR]
+    coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:

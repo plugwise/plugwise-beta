@@ -12,7 +12,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import PlugwiseConfigEntry
-from .const import COORDINATOR, GATEWAY_ID, LOGGER, REBOOT
+from .const import GATEWAY_ID, LOGGER, REBOOT
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
@@ -33,7 +33,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Plugwise buttons from a ConfigEntry."""
-    coordinator = entry.runtime_data[COORDINATOR]
+    coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:

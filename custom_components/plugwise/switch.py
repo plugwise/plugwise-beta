@@ -19,7 +19,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from . import PlugwiseConfigEntry
 from .const import (
     COOLING_ENA_SWITCH,
-    COORDINATOR,
     DHW_CM_SWITCH,
     LOCK,
     LOGGER,
@@ -28,7 +27,7 @@ from .const import (
     SWITCHES,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity, get_coordinator
+from .entity import PlugwiseEntity
 from .util import plugwise_command
 
 
@@ -72,7 +71,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile switches from a ConfigEntry."""
-    coordinator = entry.runtime_data[COORDINATOR]
+    coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:

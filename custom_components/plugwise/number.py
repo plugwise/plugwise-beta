@@ -16,7 +16,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import PlugwiseConfigEntry
 from .const import (
-    COORDINATOR,
     LOGGER,
     LOWER_BOUND,
     MAX_BOILER_TEMP,
@@ -69,7 +68,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Plugwise numbers from a ConfigEntry."""
-    coordinator = entry.runtime_data[COORDINATOR]
+    coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:

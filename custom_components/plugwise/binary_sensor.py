@@ -22,7 +22,6 @@ from .const import (
     COMPRESSOR_STATE,
     COOLING_ENABLED,
     COOLING_STATE,
-    COORDINATOR,
     DHW_STATE,
     DOMAIN,
     FLAME_STATE,
@@ -96,7 +95,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Plugwise binary_sensors from a ConfigEntry."""
-    coordinator = entry.runtime_data[COORDINATOR]
+    coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:

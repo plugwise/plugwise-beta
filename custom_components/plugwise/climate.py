@@ -29,7 +29,6 @@ from .const import (
     CONTROL_STATE,
     COOLING_PRESENT,
     COOLING_STATE,
-    COORDINATOR,
     DEV_CLASS,
     DOMAIN,
     GATEWAY_ID,
@@ -60,7 +59,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile Thermostats from a ConfigEntry."""
-    coordinator = entry.runtime_data[COORDINATOR]
+    coordinator = entry.runtime_data
     homekit_enabled: bool = entry.options.get(
         CONF_HOMEKIT_EMULATION, False
     )  # pw-beta homekit emulation

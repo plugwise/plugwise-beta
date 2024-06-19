@@ -13,12 +13,10 @@ from homeassistant.helpers import device_registry as dr, entity_registry as er
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
-    COORDINATOR,
     DOMAIN,
     LOGGER,
     PLATFORMS,
     SERVICE_DELETE,
-    UNDO_UPDATE_LISTENER,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 
