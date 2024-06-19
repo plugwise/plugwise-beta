@@ -95,7 +95,9 @@ async def _update_listener(
 
 async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
     """Unload a config entry."""
-    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
+        hass.data[DOMAIN].pop(entry.entry_id)
+    return unload_ok
 
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
