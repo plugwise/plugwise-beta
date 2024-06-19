@@ -4,7 +4,6 @@ from __future__ import annotations
 from plugwise.constants import DeviceData
 
 from homeassistant.const import ATTR_NAME, ATTR_VIA_DEVICE, CONF_HOST
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import (
     CONNECTION_NETWORK_MAC,
     CONNECTION_ZIGBEE,
@@ -14,7 +13,6 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     AVAILABLE,
-    COORDINATOR,
     DOMAIN,
     FIRMWARE,
     GATEWAY_ID,
