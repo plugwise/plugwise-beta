@@ -86,7 +86,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     return True
 
 async def _update_listener(
-    hass: HomeAssistant, entry: PlugwiseConfigEntry
+    hass: HomeAssistant, entry: ConfigEntry
 ) -> None:  # pragma: no cover  # pw-beta
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
