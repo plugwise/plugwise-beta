@@ -158,7 +158,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self._async_add_remove_devices(data)
         return data
 
-    def _async_add_remove_devices(self) -> None:
+    def _async_add_remove_devices(self, data:PlugwiseData) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new devices
         self._new_devices = set(data.devices) - self._current_devices
