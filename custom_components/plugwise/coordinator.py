@@ -114,9 +114,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             timeout=30,
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        self._unavailable_logged = False
-        self.device_list: list[DeviceEntry] = []
-        self.new_devices: bool = False
+        self._current_devices: set[str] = set()
+        self._new_devices: set[str] = set()
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -155,17 +154,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 raise ConfigEntryError("Device with unsupported firmware") from err
         else:
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
-            device_reg = dr.async_get(self.hass)
-            device_list = dr.async_entries_for_config_entry(
-                device_reg, self.config_entry.entry_id
-            )
-            await cleanup_device_and_entity_registry(
-                data,
-                device_reg,
-                device_list,
-                self.config_entry
-            )
-            self.new_devices = len(data.devices.keys()) - len(self.device_list) > 0
-            self.device_list = device_list
+            self._new_devices = set(data.devices) - self._current_devices
+            self._current_devices = set(data.devices)
 
         return data
