@@ -22,7 +22,6 @@ REBOOT: Final = "reboot"
 SMILE: Final = "smile"
 STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
-UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 UNIQUE_IDS: Final = "unique_ids"
 ZIGBEE_MAC_ADDRESS: Final = "zigbee_mac_address"
 

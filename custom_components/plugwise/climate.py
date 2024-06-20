@@ -14,12 +14,12 @@ from homeassistant.components.climate.const import (
     HVACAction,
     HVACMode,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, STATE_OFF, STATE_ON, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from . import PlugwiseConfigEntry
 from .const import (
     ACTIVE_PRESET,
     AVAILABLE_SCHEDULES,
@@ -48,17 +48,17 @@ from .const import (
     UPPER_BOUND,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity, get_coordinator
+from .entity import PlugwiseEntity
 from .util import plugwise_command
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile Thermostats from a ConfigEntry."""
-    coordinator = get_coordinator(hass, entry.entry_id)
+    coordinator = entry.runtime_data
     homekit_enabled: bool = entry.options.get(
         CONF_HOMEKIT_EMULATION, False
     )  # pw-beta homekit emulation

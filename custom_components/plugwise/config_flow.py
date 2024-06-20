@@ -15,13 +15,14 @@ from plugwise.exceptions import (
 )
 import voluptuous as vol
 
-from homeassistant import config_entries
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
 from homeassistant.config_entries import (
     SOURCE_USER,
     ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
+    OptionsFlow,
+    OptionsFlowWithConfigEntry,
 )
 from homeassistant.const import (
     ATTR_CONFIGURATION_URL,
@@ -140,7 +141,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                         CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
                     },
                 )
-            except Exception:  # pylint: disable=broad-except
+            except Exception:  # noqa: BLE001
                 self._abort_if_unique_id_configured()
             else:
                 self._abort_if_unique_id_configured(
@@ -227,7 +228,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             errors[CONF_BASE] = "response_error"
         except UnsupportedDeviceError:
             errors[CONF_BASE] = "unsupported"
-        except Exception:  # pylint: disable=broad-except
+        except Exception:  # noqa: BLE001
             errors[CONF_BASE] = "unknown"
 
         if errors:
@@ -248,7 +249,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(
         config_entry: ConfigEntry,
-    ) -> config_entries.OptionsFlow:  # pw-beta options
+    ) -> OptionsFlow:  # pw-beta options
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
 
@@ -256,12 +257,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 # pw-beta - change the scan-interval via CONFIGURE
 # pw-beta - add homekit emulation via CONFIGURE
 # pw-beta - change the frontend refresh interval via CONFIGURE
-class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
+class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
     """Plugwise option flow."""
-
-    def __init__(self, config_entry: ConfigEntry) -> None:  # pragma: no cover
-        """Initialize options flow."""
-        self.config_entry = config_entry
 
     async def async_step_none(
         self, user_input: dict[str, Any] | None = None
@@ -269,7 +266,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
         """No options available."""
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
-            return self.async_create_entry(title="", data=self.config_entry.options)
+            return self.async_create_entry(title="", data=self._options)
 
         return self.async_show_form(step_id="none")
 
@@ -291,7 +288,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
         data = {
             vol.Optional(
                 CONF_SCAN_INTERVAL,
-                default=self.config_entry.options.get(
+                default=self._options.get(
                     CONF_SCAN_INTERVAL, interval.seconds
                 ),
             ): vol.All(cv.positive_int, vol.Clamp(min=10)),
@@ -304,13 +301,13 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
             {
                 vol.Optional(
                     CONF_HOMEKIT_EMULATION,
-                    default=self.config_entry.options.get(
+                    default=self._options.get(
                         CONF_HOMEKIT_EMULATION, False
                     ),
                 ): cv.boolean,
                 vol.Optional(
                     CONF_REFRESH_INTERVAL,
-                    default=self.config_entry.options.get(CONF_REFRESH_INTERVAL, 1.5),
+                    default=self._options.get(CONF_REFRESH_INTERVAL, 1.5),
                 ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=10.0)),
             }
         )  # pw-beta

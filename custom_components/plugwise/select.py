@@ -4,11 +4,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from . import PlugwiseConfigEntry
 from .const import (
     AVAILABLE_SCHEDULES,
     DHW_MODE,
@@ -27,7 +27,7 @@ from .const import (
     SelectType,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity, get_coordinator
+from .entity import PlugwiseEntity
 from .util import plugwise_command
 
 PARALLEL_UPDATES = 0
@@ -70,11 +70,11 @@ SELECT_TYPES = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Smile selector from a ConfigEntry."""
-    coordinator = get_coordinator(hass, entry.entry_id)
+    coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:

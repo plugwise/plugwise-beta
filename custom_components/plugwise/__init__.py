@@ -13,17 +13,17 @@ from homeassistant.helpers import device_registry as dr, entity_registry as er
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
-    COORDINATOR,
     DOMAIN,
     LOGGER,
     PLATFORMS,
     SERVICE_DELETE,
-    UNDO_UPDATE_LISTENER,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 
+type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+
+async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
     """Set up the Plugwise Device from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
@@ -41,12 +41,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Migrate a changed sensor unique_id
     migrate_sensor_entities(hass, coordinator)
 
-    undo_listener = entry.add_update_listener(_update_listener)  # pw-beta
-
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
-        COORDINATOR: coordinator,  # pw-beta
-        UNDO_UPDATE_LISTENER: undo_listener,  # pw-beta
-    }
+    entry.runtime_data = coordinator  # pw-beta
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
@@ -76,6 +71,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    entry.async_on_unload(entry.add_update_listener(update_listener))
 
     for component in PLATFORMS:  # pw-beta
         if component == Platform.BINARY_SENSOR:
@@ -85,17 +81,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     return True
 
-async def _update_listener(
-    hass: HomeAssistant, entry: ConfigEntry
+async def update_listener(
+    hass: HomeAssistant, entry: PlugwiseConfigEntry
 ) -> None:  # pragma: no cover  # pw-beta
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
     """Unload a config entry."""
-    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        hass.data[DOMAIN].pop(entry.entry_id)
-    return unload_ok
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:

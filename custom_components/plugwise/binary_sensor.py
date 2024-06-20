@@ -11,11 +11,11 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from . import PlugwiseConfigEntry
 from .const import (
     BINARY_SENSORS,
     COMPRESSOR_STATE,
@@ -32,7 +32,7 @@ from .const import (
     SEVERITIES,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .entity import PlugwiseEntity, get_coordinator
+from .entity import PlugwiseEntity
 
 PARALLEL_UPDATES = 0
 
@@ -90,11 +90,11 @@ PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Plugwise binary_sensors from a ConfigEntry."""
-    coordinator = get_coordinator(hass, entry.entry_id)
+    coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:
