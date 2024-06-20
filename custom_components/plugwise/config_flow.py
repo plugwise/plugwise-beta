@@ -19,6 +19,7 @@ from homeassistant import config_entries
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
 from homeassistant.config_entries import (
     SOURCE_USER,
+    ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
     OptionsFlow,
@@ -38,7 +39,6 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from . import PlugwiseConfigEntry
 from .const import (
     ANNA_WITH_ADAM,
     CONF_HOMEKIT_EMULATION,  # pw-beta option
@@ -249,7 +249,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry: PlugwiseConfigEntry,
+        config_entry: ConfigEntry,
     ) -> OptionsFlow:  # pw-beta options
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
