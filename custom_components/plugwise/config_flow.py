@@ -256,12 +256,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 # pw-beta - change the scan-interval via CONFIGURE
 # pw-beta - add homekit emulation via CONFIGURE
 # pw-beta - change the frontend refresh interval via CONFIGURE
-class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
+class PlugwiseOptionsFlowHandler(config_entries.OptionsFlowWithConfigEntry):  # pw-beta options
     """Plugwise option flow."""
-
-    def __init__(self, config_entry: ConfigEntry) -> None:  # pragma: no cover
-        """Initialize options flow."""
-        self.config_entry = config_entry
 
     async def async_step_none(
         self, user_input: dict[str, Any] | None = None
@@ -283,7 +279,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):  # pw-beta options
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][COORDINATOR]
+        coordinator = self.config_entry.runtime_data
         interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[
             coordinator.api.smile_type
         ]  # pw-beta options
