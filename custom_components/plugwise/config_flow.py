@@ -267,7 +267,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
         """No options available."""
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
-            return self.async_create_entry(title="", data=self.config_entry.options)
+            return self.async_create_entry(title="", data=self._options)
 
         return self.async_show_form(step_id="none")
 
@@ -289,7 +289,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
         data = {
             vol.Optional(
                 CONF_SCAN_INTERVAL,
-                default=self.config_entry.options.get(
+                default=self._options.get(
                     CONF_SCAN_INTERVAL, interval.seconds
                 ),
             ): vol.All(cv.positive_int, vol.Clamp(min=10)),
@@ -302,13 +302,13 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
             {
                 vol.Optional(
                     CONF_HOMEKIT_EMULATION,
-                    default=self.config_entry.options.get(
+                    default=self._options.get(
                         CONF_HOMEKIT_EMULATION, False
                     ),
                 ): cv.boolean,
                 vol.Optional(
                     CONF_REFRESH_INTERVAL,
-                    default=self.config_entry.options.get(CONF_REFRESH_INTERVAL, 1.5),
+                    default=self._options.get(CONF_REFRESH_INTERVAL, 1.5),
                 ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=10.0)),
             }
         )  # pw-beta
