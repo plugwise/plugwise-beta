@@ -158,3 +158,5 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                             device_entry.model,
                             item[1],
                         )
+
+        self._current_devices = set(data.devices)
