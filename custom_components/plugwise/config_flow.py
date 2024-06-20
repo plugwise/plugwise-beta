@@ -15,7 +15,6 @@ from plugwise.exceptions import (
 )
 import voluptuous as vol
 
-from homeassistant import config_entries
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
 from homeassistant.config_entries import (
     SOURCE_USER,
