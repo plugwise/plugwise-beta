@@ -160,38 +160,38 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     def _async_add_remove_devices(self) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
-            # Check for new devices
-            self._new_devices = set(data.devices) - self._current_devices
+        # Check for new devices
+        self._new_devices = set(data.devices) - self._current_devices
 
-            # Check for removed devices
-            if not self._current_devices - set(data.devices):
-                return
+        # Check for removed devices
+        if not self._current_devices - set(data.devices):
+            return
 
-            # Clean device_registry when removed devices found 
-            device_reg = dr.async_get(self.hass)
-            device_list = dr.async_entries_for_config_entry(
-                device_reg, self.config_entry.entry_id
-            )
-            # via_device cannot be None, this will result in the deletion
-            # of other Plugwise Gateways when present!
-            via_device: str = ""
-            for device_entry in device_list:
-                if device_entry.identifiers:
-                    item = list(list(device_entry.identifiers)[0])
-                    if item[0] == DOMAIN:
-                        # First find the Plugwise via_device, this is always the first device
-                        if item[1] == data.gateway[GATEWAY_ID]:
-                            via_device = device_entry.id
-                        elif ( # then remove the connected orphaned device(s)
-                            device_entry.via_device_id == via_device
-                            and item[1] not in list(data.devices.keys())
-                        ):
-                            device_reg.async_update_device(
-                                device_entry.id, remove_config_entry_id=entry.entry_id
-                            )
-                            LOGGER.debug(
-                                "Removed %s device %s %s from device_registry",
-                                DOMAIN,
-                                device_entry.model,
-                                item[1],
-                            )
+        # Clean device_registry when removed devices found 
+        device_reg = dr.async_get(self.hass)
+        device_list = dr.async_entries_for_config_entry(
+            device_reg, self.config_entry.entry_id
+        )
+        # via_device cannot be None, this will result in the deletion
+        # of other Plugwise Gateways when present!
+        via_device: str = ""
+        for device_entry in device_list:
+            if device_entry.identifiers:
+                item = list(list(device_entry.identifiers)[0])
+                if item[0] == DOMAIN:
+                    # First find the Plugwise via_device, this is always the first device
+                    if item[1] == data.gateway[GATEWAY_ID]:
+                        via_device = device_entry.id
+                    elif ( # then remove the connected orphaned device(s)
+                        device_entry.via_device_id == via_device
+                        and item[1] not in list(data.devices.keys())
+                    ):
+                        device_reg.async_update_device(
+                            device_entry.id, remove_config_entry_id=entry.entry_id
+                        )
+                        LOGGER.debug(
+                            "Removed %s device %s %s from device_registry",
+                            DOMAIN,
+                            device_entry.model,
+                            item[1],
+                        )
