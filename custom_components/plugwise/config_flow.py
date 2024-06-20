@@ -22,6 +22,8 @@ from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
+    OptionsFlow,
+    OptionsFlowWithConfigEntry,
 )
 from homeassistant.const import (
     ATTR_CONFIGURATION_URL,
@@ -248,7 +250,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(
         config_entry: ConfigEntry,
-    ) -> config_entries.OptionsFlow:  # pw-beta options
+    ) -> OptionsFlow:  # pw-beta options
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
 
@@ -256,7 +258,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 # pw-beta - change the scan-interval via CONFIGURE
 # pw-beta - add homekit emulation via CONFIGURE
 # pw-beta - change the frontend refresh interval via CONFIGURE
-class PlugwiseOptionsFlowHandler(config_entries.OptionsFlowWithConfigEntry):  # pw-beta options
+class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
     """Plugwise option flow."""
 
     async def async_step_none(
