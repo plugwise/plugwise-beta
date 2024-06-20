@@ -17,7 +17,6 @@ from .const import (
     LOGGER,
     PLATFORMS,
     SERVICE_DELETE,
-    UNDO_UPDATE_LISTENER,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 
@@ -43,12 +42,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     migrate_sensor_entities(hass, coordinator)
 
     entry.runtime_data = coordinator  # pw-beta
-
-    undo_listener = entry.add_update_listener(_update_listener)  # pw-beta
-
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
-        UNDO_UPDATE_LISTENER: undo_listener,  # pw-beta
-    }
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
@@ -78,6 +71,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
             )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    entry.async_on_unload(entry.add_update_listener(update_listener))
 
     for component in PLATFORMS:  # pw-beta
         if component == Platform.BINARY_SENSOR:
@@ -87,7 +81,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
 
     return True
 
-async def _update_listener(
+async def update_listener(
     hass: HomeAssistant, entry: PlugwiseConfigEntry
 ) -> None:  # pragma: no cover  # pw-beta
     """Handle options update."""
@@ -95,9 +89,7 @@ async def _update_listener(
 
 async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
     """Unload a config entry."""
-    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        hass.data[DOMAIN].pop(entry.entry_id)
-    return unload_ok
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
