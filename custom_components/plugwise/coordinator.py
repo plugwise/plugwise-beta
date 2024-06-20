@@ -155,10 +155,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         else:
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
 
-        self._async_add_remove_devices(data)
+        self._async_add_remove_devices(data, self.config_entry)
         return data
 
-    def _async_add_remove_devices(self, data:PlugwiseData) -> None:
+    def _async_add_remove_devices(self, data:PlugwiseData, entry: ConfigEntry,) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new devices
         self._new_devices = set(data.devices) - self._current_devices
