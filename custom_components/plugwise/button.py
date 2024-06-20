@@ -34,33 +34,41 @@ async def async_setup_entry(
     """Set up the Plugwise buttons from a ConfigEntry."""
     coordinator = entry.runtime_data
 
-    @callback
-    def _add_entities() -> None:
-        """Add Entities."""
-        if not coordinator.new_devices:
-            return
-
-        entities: list[PlugwiseButtonEntity] = []
-        gateway = coordinator.data.gateway
-        for device_id, device in coordinator.data.devices.items():
-            if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
-                for description in BUTTON_TYPES:
-                    entities.append(
-                        PlugwiseButtonEntity(
-                            coordinator,
-                            device_id,
-                            description,
-                        )
+    entities: list[PlugwiseButtonEntity] = []
+    gateway = coordinator.data.gateway
+    for device_id, device in coordinator.data.devices.items():
+        if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
+            for description in BUTTON_TYPES:
+                entities.append(
+                    PlugwiseButtonEntity(
+                        coordinator,
+                        device_id,
+                        description,
                     )
-                    LOGGER.debug(
-                        "Add %s %s button", device[ATTR_NAME], description.key
+                )
+                LOGGER.debug(
+                    "Add %s %s button", device[ATTR_NAME], description.key
+            )
+
+    async_add_entities(entities)
+
+    def _async_add_new_device(device_id: str) -> None:
+        """Add new detected device during runtime."""
+        device = coordinator.data.devices[device_id]
+        entities: list[PlugwiseBinarySensorEntity] = []
+        gateway = coordinator.data.gateway
+        if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
+            for description in BUTTON_TYPES:
+                entities.append(
+                    PlugwiseButtonEntity(coordinator, device_id, description)
+                )
+                LOGGER.debug(
+                    "Add %s %s button", device[ATTR_NAME], description.translation_key
                 )
 
         async_add_entities(entities)
 
-    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
-
-    _add_entities()
+    coordinator.new_devices_callbacks.append(_async_add_new_device)
 
 
 class PlugwiseButtonEntity(PlugwiseEntity, ButtonEntity):

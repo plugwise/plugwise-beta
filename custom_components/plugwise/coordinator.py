@@ -1,4 +1,6 @@
 """DataUpdateCoordinator for Plugwise."""
+
+from collections.abc import Callable
 from datetime import timedelta
 
 from plugwise import PlugwiseData, Smile
@@ -114,8 +116,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             timeout=30,
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        self._unavailable_logged = False
+        self._devices_last_update: set[str] = set()
         self.device_list: list[DeviceEntry] = []
+        self.new_devices_callbacks: list[Callable[[str], None]] = []
         self.new_devices: bool = False
         self.update_interval = update_interval
 
@@ -159,13 +162,46 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             device_list = dr.async_entries_for_config_entry(
                 device_reg, self.config_entry.entry_id
             )
-            await cleanup_device_and_entity_registry(
-                data,
-                device_reg,
-                device_list,
-                self.config_entry
-            )
+            # await cleanup_device_and_entity_registry(
+            #     data,
+            #     device_reg,
+            #     device_list,
+            #     self.config_entry
+            # )
             self.new_devices = len(data.devices.keys()) - len(self.device_list) > 0
             self.device_list = device_list
 
+        self._async_add_remove_devices(data)
         return data
+
+    def _async_add_remove_devices(self, data: PlugwiseData) -> None:
+        """Add new locks, remove non-existing locks."""
+        if not self._devices_last_update:
+            self._devices_last_update = set(data.devices)
+
+        if (
+            current_devices := set(data.devices)
+        ) == self._devices_last_update:
+            return
+
+        # remove old devices
+        # if removed_devices := self._locks_last_update - current_locks:
+        #     LOGGER.debug("Removed devices: %s", ", ".join(map(str, removed_locks)))
+        #     device_registry = dr.async_get(self.hass)
+        #     for device_id in removed_devices:
+        #         if device := device_registry.async_get_device(
+        #             identifiers={(DOMAIN, str(device_id))}
+        #         ):
+        #             device_registry.async_update_device(
+        #                 device_id=device.id,
+        #                 remove_config_entry_id=self.config_entry.entry_id,
+        #             )
+
+        # add new devices
+        if new_devices := current_devices - self._devices_last_update:
+            LOGGER.debug("New Plugwise devices found: %s", new_devices)
+            for device_id in new_devices:
+                for callback in self.new_devices_callbacks:
+                    callback(device_id)
+
+        self._devices_last_update = current_devices
