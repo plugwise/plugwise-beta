@@ -279,9 +279,12 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
             return await self.async_step_none(user_input)
 
         if user_input is not None:
+            self.hass.config_entries.async_update_entry(
+                self._config_entry, data=user_input
+            )
             return self.async_create_entry(title="", data=user_input)
 
-        coordinator = self.config_entry.runtime_data
+        coordinator = self._config_entry.runtime_data
         interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[
             coordinator.api.smile_type
         ]  # pw-beta options
