@@ -42,7 +42,7 @@ TOM = {
         "hardware": "1",
         "location": "f871b8c4d63549319221e294e4f88074",
         "model": "Tom/Floor",
-        "name": "Tom Badkamer",
+        "name": "Tom Zolder",
         "sensors": {
             "battery": 99,
             "temperature": 18.6,
