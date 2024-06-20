@@ -124,6 +124,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         # Check for new devices
         self._new_devices = set(data.devices) - self._current_devices
         LOGGER.debug("HOI new devices: %s", self._new_devices)
+        self._current_devices = set(data.devices)
 
         # Check for removed devices
         if not (removed_devices := self._current_devices - set(data.devices)):
@@ -158,5 +159,3 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                             device_entry.model,
                             item[1],
                         )
-
-        self._current_devices = set(data.devices)
