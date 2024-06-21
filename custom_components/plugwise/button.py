@@ -36,7 +36,7 @@ async def async_setup_entry(
 
     @callback
     def _add_entities() -> None:
-        """Add Entities."""
+        """Add Entities during init and runtime."""
         if not coordinator.new_devices:
             return
 

@@ -458,12 +458,12 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Smile sensors from a ConfigEntry."""
+    """Set up the Plugwise sensors from a ConfigEntry."""
     coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:
-        """Add Entities."""
+        """Add Entities during init and runtime."""
         if not coordinator.new_devices:
             return
 

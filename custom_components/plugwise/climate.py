@@ -64,7 +64,7 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Smile Thermostats from a ConfigEntry."""
+    """Set up the Plugwise thermostats from a ConfigEntry."""
     coordinator = entry.runtime_data
     homekit_enabled: bool = entry.options.get(
         CONF_HOMEKIT_EMULATION, False
@@ -72,7 +72,7 @@ async def async_setup_entry(
 
     @callback
     def _add_entities() -> None:
-        """Add Entities."""
+        """Add Entities during init and runtime."""
         if not coordinator.new_devices:
             return
 
