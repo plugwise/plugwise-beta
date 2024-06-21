@@ -1,6 +1,4 @@
 """DataUpdateCoordinator for Plugwise."""
-
-from collections.abc import Callable
 from datetime import timedelta
 
 from plugwise import PlugwiseData, Smile
@@ -26,7 +24,6 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
-from homeassistant.helpers.device_registry import DeviceEntry, DeviceRegistry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -37,45 +34,6 @@ from .const import (
     GATEWAY_ID,
     LOGGER,
 )
-
-
-async def cleanup_device_and_entity_registry(
-    data: PlugwiseData,
-    device_reg: DeviceRegistry,
-    device_list: list[DeviceEntry],
-    entry: ConfigEntry,
-) -> None:
-    """Remove deleted devices from device- and entity-registry."""
-    if len(device_list) - len(data.devices.keys()) <= 0:
-        return
-
-    # via_device cannot be None, this will result in the deletion
-    # of other Plugwise Gateways when present!
-    via_device: str = ""
-    for device_entry in device_list:
-        if not device_entry.identifiers:
-            continue  # pragma: no cover
-
-        item = list(list(device_entry.identifiers)[0])
-        if item[0] != DOMAIN:
-            continue  # pragma: no cover
-
-        # First find the Plugwise via_device, this is always the first device
-        if item[1] == data.gateway[GATEWAY_ID]:
-            via_device = device_entry.id
-        elif ( # then remove the connected orphaned device(s)
-            device_entry.via_device_id == via_device
-            and item[1] not in list(data.devices.keys())
-        ):
-            device_reg.async_update_device(
-                device_entry.id, remove_config_entry_id=entry.entry_id
-            )
-            LOGGER.debug(
-                "Removed %s device %s %s from device_registry",
-                DOMAIN,
-                device_entry.model,
-                item[1],
-            )
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -116,10 +74,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             timeout=30,
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        self._devices_last_update: set[str] = set()
-        self.device_list: list[DeviceEntry] = []
-        self.new_devices_callbacks: list[Callable[[str], None]] = []
-        self.new_devices: bool = False
+        self._current_devices: set[str] = set()
+        self.new_devices: set[str] = set()
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -158,50 +114,44 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 raise ConfigEntryError("Device with unsupported firmware") from err
         else:
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
-            device_reg = dr.async_get(self.hass)
-            device_list = dr.async_entries_for_config_entry(
-                device_reg, self.config_entry.entry_id
-            )
-            # await cleanup_device_and_entity_registry(
-            #     data,
-            #     device_reg,
-            #     device_list,
-            #     self.config_entry
-            # )
-            self.new_devices = len(data.devices.keys()) - len(self.device_list) > 0
-            self.device_list = device_list
+            self._async_add_remove_devices(data, self.config_entry)
 
-        self._async_add_remove_devices(data)
         return data
 
-    def _async_add_remove_devices(self, data: PlugwiseData) -> None:
-        """Add new locks, remove non-existing locks."""
-        if not self._devices_last_update:
-            self._devices_last_update = set(data.devices)
-
-        if (
-            current_devices := set(data.devices)
-        ) == self._devices_last_update:
+    def _async_add_remove_devices(self, data:PlugwiseData, entry: ConfigEntry,) -> None:
+        """Add new Plugwise devices, remove non-existing devices."""
+        # Check for new or removed devices
+        self.new_devices = set(data.devices) - self._current_devices
+        removed_devices = self._current_devices - set(data.devices)
+        self._current_devices = set(data.devices)
+        if not removed_devices:
             return
 
-        # remove old devices
-        # if removed_devices := self._locks_last_update - current_locks:
-        #     LOGGER.debug("Removed devices: %s", ", ".join(map(str, removed_locks)))
-        #     device_registry = dr.async_get(self.hass)
-        #     for device_id in removed_devices:
-        #         if device := device_registry.async_get_device(
-        #             identifiers={(DOMAIN, str(device_id))}
-        #         ):
-        #             device_registry.async_update_device(
-        #                 device_id=device.id,
-        #                 remove_config_entry_id=self.config_entry.entry_id,
-        #             )
-
-        # add new devices
-        if new_devices := current_devices - self._devices_last_update:
-            LOGGER.debug("New Plugwise devices found: %s", new_devices)
-            for device_id in new_devices:
-                for callback in self.new_devices_callbacks:
-                    callback(device_id)
-
-        self._devices_last_update = current_devices
+        # Clean device_registry when removed devices found
+        device_reg = dr.async_get(self.hass)
+        device_list = dr.async_entries_for_config_entry(
+            device_reg, self.config_entry.entry_id
+        )
+        # via_device cannot be None, this will result in the deletion
+        # of other Plugwise Gateways when present!
+        via_device: str = ""
+        for device_entry in device_list:
+            if device_entry.identifiers:
+                item = list(list(device_entry.identifiers)[0])
+                if item[0] == DOMAIN:
+                    # First find the Plugwise via_device, this is always the first device
+                    if item[1] == data.gateway[GATEWAY_ID]:
+                        via_device = device_entry.id
+                    elif ( # then remove the connected orphaned device(s)
+                        device_entry.via_device_id == via_device
+                        and item[1] not in list(data.devices.keys())
+                    ):
+                        device_reg.async_update_device(
+                            device_entry.id, remove_config_entry_id=entry.entry_id
+                        )
+                        LOGGER.debug(
+                            "Removed %s device %s %s from device_registry",
+                            DOMAIN,
+                            device_entry.model,
+                            item[1],
+                        )
