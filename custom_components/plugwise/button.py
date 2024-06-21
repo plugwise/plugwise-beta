@@ -55,7 +55,7 @@ async def async_setup_entry(
     def _async_add_new_device(device_id: str) -> None:
         """Add new detected device during runtime."""
         device = coordinator.data.devices[device_id]
-        entities: list[PlugwiseBinarySensorEntity] = []
+        entities: list[PlugwiseButtonEntity] = []
         gateway = coordinator.data.gateway
         if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
             for description in BUTTON_TYPES:
