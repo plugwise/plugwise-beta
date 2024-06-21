@@ -79,11 +79,12 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator._new_devices:
+        if not coordinator.new_devices:
             return
 
         entities: list[PlugwiseSelectEntity] = []
-        for device_id, device in coordinator.data.devices.items():
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
             for description in SELECT_TYPES:
                 if description.options_key in device:
                     entities.append(
