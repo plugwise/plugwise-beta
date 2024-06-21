@@ -1,4 +1,6 @@
 """DataUpdateCoordinator for Plugwise."""
+
+from typing import Callable
 from datetime import timedelta
 
 from plugwise import PlugwiseData, Smile
