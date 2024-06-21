@@ -12,7 +12,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntityDescription,
 )
 from homeassistant.const import ATTR_NAME, EntityCategory
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import PlugwiseConfigEntry
@@ -96,6 +96,7 @@ async def async_setup_entry(
     """Set up the Plugwise binary_sensors from a ConfigEntry."""
     coordinator = entry.runtime_data
 
+    @callback
     def _async_add_new_device(device_id: str) -> None:
         """Add new detected device during runtime."""
         device = coordinator.data.devices[device_id]
@@ -115,7 +116,11 @@ async def async_setup_entry(
 
         async_add_entities(entities)
 
-    coordinator.new_devices_callbacks.append(_async_add_new_device)
+    if coordinator.new_devices:
+        for device_id in coordinator.new_devices:
+            _async_add_new_device(device_id)
+    else:
+        coordinator.new_devices_callbacks.append(_async_add_new_device)
 
 
 class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
