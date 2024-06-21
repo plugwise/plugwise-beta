@@ -93,9 +93,8 @@ async def async_setup_entry(
 
         async_add_entities(entities)
 
-    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
-
     _add_entities()
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
 
 class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
