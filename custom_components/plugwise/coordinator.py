@@ -121,16 +121,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     def _async_add_remove_devices(self, data:PlugwiseData, entry: ConfigEntry,) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
-        # Check for new devices
+        # Check for new or removed devices
         self._new_devices = set(data.devices) - self._current_devices
-        LOGGER.debug("HOI new devices: %s", self._new_devices)
-        self._current_devices = set(data.devices)
-
-        # Check for removed devices
         removed_devices = self._current_devices - set(data.devices)
+        LOGGER.debug("HOI new devices: %s", self._new_devices)
         LOGGER.debug("HOI removed devices: %s", removed_devices)
-        LOGGER.debug("HOI current devices: %s", self._current_devices)
-        LOGGER.debug("HOI obtained devices: %s", set(data.devices))
+        self._current_devices = set(data.devices)
         if not removed_devices:
             return
 
