@@ -103,7 +103,8 @@ async def async_setup_entry(
             return
 
         entities: list[PlugwiseBinarySensorEntity] = []
-        for device_id, device in coordinator.data.devices.items():
+        for device_id in coordinator._new_devices:
+            device = coordinator.data.devices[device_id]
             if not (binary_sensors := device.get(BINARY_SENSORS)):
                 continue
             for description in PLUGWISE_BINARY_SENSORS:
