@@ -14,7 +14,13 @@ from homeassistant.components.climate.const import (
     HVACAction,
     HVACMode,
 )
-from homeassistant.const import ATTR_TEMPERATURE, STATE_OFF, STATE_ON, UnitOfTemperature
+from homeassistant.const import (
+    ATTR_NAME,
+    ATTR_TEMPERATURE,
+    STATE_OFF,
+    STATE_ON,
+    UnitOfTemperature,
+)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -33,6 +39,7 @@ from .const import (
     GATEWAY_ID,
     HEATING_STATE,
     LOCATION,
+    LOGGER,
     LOWER_BOUND,
     MASTER_THERMOSTATS,
     MODE,
@@ -69,15 +76,18 @@ async def async_setup_entry(
         if not coordinator.new_devices:
             return
 
-        entities: list[PlugwiseBinarySensorEntity] = []
+        entities: list[PlugwiseClimateEntity] = []
         for device_id in coordinator.new_devices:
             device = coordinator.data.devices[device_id]
             if device[DEV_CLASS] in MASTER_THERMOSTATS:
-                async_add_entities(
+                entities.append(
                     PlugwiseClimateEntity(
                         coordinator, device_id, homekit_enabled
                     )  # pw-beta homekit emulation
                 )
+                LOGGER.debug("Add climate %s", device[ATTR_NAME])
+
+        async_add_entities(entities)
 
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
