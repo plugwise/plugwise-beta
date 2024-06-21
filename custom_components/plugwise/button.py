@@ -37,12 +37,13 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator._new_devices:
+        if not coordinator.new_devices:
             return
 
         entities: list[PlugwiseButtonEntity] = []
         gateway = coordinator.data.gateway
-        for device_id, device in coordinator.data.devices.items():
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
             if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
                 for description in BUTTON_TYPES:
                     entities.append(
