@@ -475,13 +475,7 @@ async def async_setup_entry(
             for description in PLUGWISE_SENSORS:
                 if description.key not in sensors:
                     continue
-                entities.append(
-                    PlugwiseSensorEntity(
-                        coordinator,
-                        device_id,
-                        description,
-                    )
-                )
+                entities.append(PlugwiseSensorEntity(coordinator, device_id, description))
                 LOGGER.debug(
                     "Add %s %s sensor", device[ATTR_NAME], description.translation_key or description.key
                 )
