@@ -75,7 +75,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._current_devices: set[str] = set()
-        self.new_devices: set[str] = set()
+        self.new_devices_callbacks: list[Callable[[str], None]] = []
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -121,7 +121,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     def _async_add_remove_devices(self, data:PlugwiseData, entry: ConfigEntry,) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new or removed devices
-        self.new_devices = set(data.devices) - self._current_devices
+        if new_devices := set(data.devices) - self._current_devices:
+            LOGGER.debug("New Plugwise devices found: %s", new_devices)
+            for device_id in new_devices:
+                for callback in self.new_devices_callbacks:
+                    callback(device_id)
+
         removed_devices = self._current_devices - set(data.devices)
         self._current_devices = set(data.devices)
         if not removed_devices:
