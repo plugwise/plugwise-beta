@@ -72,12 +72,12 @@ async def async_setup_entry(
         entities: list[PlugwiseBinarySensorEntity] = []
         for device_id in coordinator.new_devices:
             device = coordinator.data.devices[device_id]
-            async_add_entities(
-                PlugwiseClimateEntity(
-                    coordinator, device_id, homekit_enabled
-                )  # pw-beta homekit emulation
-                if device[DEV_CLASS] in MASTER_THERMOSTATS
-        )
+            if device[DEV_CLASS] in MASTER_THERMOSTATS:
+                async_add_entities(
+                    PlugwiseClimateEntity(
+                        coordinator, device_id, homekit_enabled
+                    )  # pw-beta homekit emulation
+                )
 
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
