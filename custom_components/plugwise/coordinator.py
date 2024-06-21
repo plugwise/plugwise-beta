@@ -127,10 +127,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self._current_devices = set(data.devices)
 
         # Check for removed devices
-        if not (removed_devices := self._current_devices - set(data.devices)):
+        removed_devices = self._current_devices - set(data.devices)
+        LOGGER.debug("HOI removed devices: %s", removed_devices)
+        if not removed_devices:
             return
 
-        LOGGER.debug("HOI removed devices: %s", removed_devices)
         # Clean device_registry when removed devices found 
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(
