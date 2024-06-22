@@ -98,33 +98,27 @@ async def async_setup_entry(
 
     @callback
     def _add_entities() -> None:
-        """Add Entities."""
+        """Add Entities during init and runtime."""
         if not coordinator.new_devices:
             return
 
         entities: list[PlugwiseBinarySensorEntity] = []
-        for device_id, device in coordinator.data.devices.items():
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
             if not (binary_sensors := device.get(BINARY_SENSORS)):
                 continue
             for description in PLUGWISE_BINARY_SENSORS:
                 if description.key not in binary_sensors:
                     continue
-                entities.append(
-                    PlugwiseBinarySensorEntity(
-                        coordinator,
-                        device_id,
-                        description,
-                    )
-                )
+                entities.append(PlugwiseBinarySensorEntity(coordinator, device_id, description))
                 LOGGER.debug(
                     "Add %s %s binary sensor", device[ATTR_NAME], description.translation_key
                 )
 
         async_add_entities(entities)
 
-    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
-
     _add_entities()
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
 
 class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):

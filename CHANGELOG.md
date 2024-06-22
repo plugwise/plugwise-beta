@@ -2,8 +2,9 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.51.4
 
+- Refactor runtime-update/remove related code.
 - Implement various new Core features.
 
 ## v0.51.3

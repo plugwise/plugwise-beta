@@ -458,38 +458,32 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Smile sensors from a ConfigEntry."""
+    """Set up the Plugwise sensors from a ConfigEntry."""
     coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:
-        """Add Entities."""
+        """Add Entities during init and runtime."""
         if not coordinator.new_devices:
             return
 
         entities: list[PlugwiseSensorEntity] = []
-        for device_id, device in coordinator.data.devices.items():
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
             if not (sensors := device.get(SENSORS)):
                 continue
             for description in PLUGWISE_SENSORS:
                 if description.key not in sensors:
                     continue
-                entities.append(
-                    PlugwiseSensorEntity(
-                        coordinator,
-                        device_id,
-                        description,
-                    )
-                )
+                entities.append(PlugwiseSensorEntity(coordinator, device_id, description))
                 LOGGER.debug(
                     "Add %s %s sensor", device[ATTR_NAME], description.translation_key or description.key
                 )
 
         async_add_entities(entities)
 
-    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
-
     _add_entities()
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
 
 class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):

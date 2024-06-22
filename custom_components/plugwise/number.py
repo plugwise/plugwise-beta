@@ -71,12 +71,13 @@ async def async_setup_entry(
 
     @callback
     def _add_entities() -> None:
-        """Add Entities."""
+        """Add Entities during init and runtime."""
         if not coordinator.new_devices:
             return
 
         entities: list[PlugwiseNumberEntity] = []
-        for device_id, device in coordinator.data.devices.items():
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
             for description in NUMBER_TYPES:
                 if description.key in device:
                     entities.append(
@@ -88,9 +89,8 @@ async def async_setup_entry(
 
         async_add_entities(entities)
 
-    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
-
     _add_entities()
+    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
 
 class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
