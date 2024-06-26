@@ -44,7 +44,7 @@ class PlugwiseButtonEntity(PlugwiseEntity, ButtonEntity):
     ) -> None:
         """Initialize the button."""
         super().__init__(coordinator, device_id)
-        self._attr_translation_key = "reboot"
+        self._attr_translation_key = REBOOT
         self._attr_unique_id = f"{device_id}-reboot"
 
     @plugwise_command
