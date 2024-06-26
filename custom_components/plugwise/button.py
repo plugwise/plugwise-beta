@@ -1,7 +1,7 @@
 """Plugwise Button component for Home Assistant."""
 from __future__ import annotations
 
-from plugwise import GatewayData
+from plugwise.constants import GatewayData
 
 from homeassistant.components.button import ButtonDeviceClass, ButtonEntity
 from homeassistant.const import ATTR_NAME, EntityCategory
