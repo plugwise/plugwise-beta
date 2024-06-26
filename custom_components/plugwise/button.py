@@ -21,24 +21,14 @@ async def async_setup_entry(
     """Set up the Plugwise buttons from a ConfigEntry."""
     coordinator = entry.runtime_data
 
-    @callback
-    def _add_entities() -> None:
-        """Add Entities during init and runtime."""
-        if not coordinator.new_devices:
-            return
+    entities: list[PlugwiseButtonEntity] = []
+    gateway = coordinator.data.gateway
+    for device_id, device in coordinator.data.devices.items():
+        if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
+            entities.append(PlugwiseButtonEntity(coordinator, device_id))
+            LOGGER.debug("Add %s reboot button", device[ATTR_NAME])
 
-        entities: list[PlugwiseButtonEntity] = []
-        gateway = coordinator.data.gateway
-        for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
-            if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
-                entities.append(PlugwiseButtonEntity(coordinator, device_id))
-                LOGGER.debug("Add %s reboot button", device[ATTR_NAME])
-
-        async_add_entities(entities)
-
-    _add_entities()
-    entry.async_on_unload(coordinator.async_add_listener(_add_entities))
+    async_add_entities(entities)
 
 
 class PlugwiseButtonEntity(PlugwiseEntity, ButtonEntity):
