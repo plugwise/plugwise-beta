@@ -1,6 +1,8 @@
 """Plugwise Button component for Home Assistant."""
 from __future__ import annotations
 
+from plugwise import GatewayData
+
 from homeassistant.components.button import ButtonDeviceClass, ButtonEntity
 from homeassistant.const import ATTR_NAME, EntityCategory
 from homeassistant.core import HomeAssistant, callback
@@ -25,7 +27,7 @@ async def async_setup_entry(
     gateway = coordinator.data.gateway
     for device_id, device in coordinator.data.devices.items():
         if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
-            entities.append(PlugwiseButtonEntity(coordinator, device_id))
+            entities.append(PlugwiseButtonEntity(coordinator, device_id, gateway))
             LOGGER.debug("Add %s reboot button", device[ATTR_NAME])
 
     async_add_entities(entities)
@@ -35,15 +37,17 @@ class PlugwiseButtonEntity(PlugwiseEntity, ButtonEntity):
     """Defines a Plugwise button."""
 
     _attr_device_class: ButtonDeviceClass.RESTART
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
+        gateway: GatewaData,
     ) -> None:
         """Initialize the button."""
         super().__init__(coordinator, device_id)
-        self.device_id = device_id
+        self._attr_name = f"{gateway[ATTR_NAME]} Reboot"
         self._attr_unique_id = f"{device_id}-reboot"
 
     @plugwise_command
