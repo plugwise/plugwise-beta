@@ -34,7 +34,7 @@ async def async_setup_entry(
 class PlugwiseButtonEntity(PlugwiseEntity, ButtonEntity):
     """Defines a Plugwise button."""
 
-    _attr_device_class: ButtonDeviceClass.RESTART
+    _attr_device_class = ButtonDeviceClass.RESTART
     _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(
