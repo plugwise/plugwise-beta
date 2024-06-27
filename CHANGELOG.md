@@ -4,6 +4,7 @@
 
 ## Ongoing
 
+- Implement small coordinator-improvement from Core
 - Follow button-rework from Core.
 
 ## v0.51.4
