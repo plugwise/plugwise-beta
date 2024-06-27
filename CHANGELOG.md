@@ -2,9 +2,9 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.51.5
 
-- Implement small coordinator-improvement from Core
+- Implement small coordinator-improvement from Core.
 - Follow button-rework from Core.
 
 ## v0.51.4
