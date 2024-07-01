@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.51.6
+
+- Implement fix for [#677](https://github.com/plugwise/plugwise-beta/issues/677)
+
 ## v0.51.5
 
 - Implement small coordinator-improvement from Core.
