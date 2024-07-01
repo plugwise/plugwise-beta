@@ -64,6 +64,8 @@ from .const import (
     ZEROCONF_MAP,
 )
 
+type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
+
 
 def _base_schema(
     discovery_info: ZeroconfServiceInfo | None,
@@ -248,7 +250,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry: ConfigEntry,
+        config_entry: PlugwiseConfigEntry,
     ) -> OptionsFlow:  # pw-beta options
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
@@ -280,7 +282,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][COORDINATOR]
+        coordinator = self.config_entry.runtime_data
         interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[
             coordinator.api.smile_type
         ]  # pw-beta options
