@@ -63,6 +63,7 @@ from .const import (
     VERSION,
     ZEROCONF_MAP,
 )
+from .coordinator import PlugwiseDataUpdateCoordinator
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
