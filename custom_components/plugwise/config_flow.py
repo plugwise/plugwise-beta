@@ -43,7 +43,6 @@ from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_REFRESH_INTERVAL,  # pw-beta option
     CONTEXT,
-    COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,  # pw-beta option
     DEFAULT_USERNAME,
