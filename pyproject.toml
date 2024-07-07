@@ -1,3 +1,19 @@
+[project]
+name = "Plugwise-beta"
+version = "0.51.6"
+description = "Plugwise Smile/Stretch custom_component (BETA)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {file = "LICENSE"}
+keywords = ["Plugwise", "Adam", "Anna", "P1", "Stretch", "Smile"]
+authors = [{name = "@bouwew"}, {name = "@compatech"}]
+maintainers = [{name = "@bouwew"}, {name = "@compatech"}]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+dependencies = ["homeassistant", "plugwise"]
+
 [project.urls]
 "Source Code" = "https://github.com/plugwise/plugwise-beta"
 "Bug Reports" = "https://github.com/plugwise/plugwise-beta/issues"
