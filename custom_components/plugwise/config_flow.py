@@ -306,7 +306,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
                     default=self._options.get(
                         CONF_HOMEKIT_EMULATION, False
                     ),
-                ): cv.boolean,
+                ): vol.All(cv.boolean),
                 vol.Optional(
                     CONF_REFRESH_INTERVAL,
                     default=self._options.get(CONF_REFRESH_INTERVAL, 1.5),
