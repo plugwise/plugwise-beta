@@ -61,8 +61,8 @@ repos:
   - repo: https://github.com/biomejs/pre-commit
     rev: v0.4.0
     hooks:
-      - id: biome-check
-        additional_dependencies: ["@biomejs/biome@1.4.1"]
+      - id: biome-lint
+        additional_dependencies: ["@biomejs/biome@1.8.3"]
         name: "Verifying/updating code with biome (improved prettier)"
   - repo: https://github.com/cdce8p/python-typing-update
     rev: v0.6.0
