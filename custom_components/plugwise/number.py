@@ -1,4 +1,5 @@
 """Number platform for Plugwise integration."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -9,7 +10,7 @@ from homeassistant.components.number import (
     NumberEntityDescription,
     NumberMode,
 )
-from homeassistant.const import ATTR_NAME, EntityCategory, UnitOfTemperature
+from homeassistant.const import EntityCategory, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -24,9 +25,13 @@ from .const import (
     UPPER_BOUND,
     NumberType,
 )
+
+# Upstream consts
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
+
+PARALLEL_UPDATES = 0  # Upstream
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -66,28 +71,22 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise numbers from a ConfigEntry."""
+    """Set up the Plugwise number platform from a configentry."""
+    # Upstream above to adhere to standard used
     coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:
-        """Add Entities during init and runtime."""
+        """Add Entities."""
         if not coordinator.new_devices:
             return
 
-        entities: list[PlugwiseNumberEntity] = []
-        for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
-            for description in NUMBER_TYPES:
-                if description.key in device:
-                    entities.append(
-                        PlugwiseNumberEntity(coordinator, device_id, description)
-                    )
-                    LOGGER.debug(
-                        "Add %s %s number", device[ATTR_NAME], description.translation_key
-                    )
-
-        async_add_entities(entities)
+        async_add_entities(
+            PlugwiseNumberEntity(coordinator, device_id, description)
+            for device_id in coordinator.new_devices
+            for description in NUMBER_TYPES
+            if description.key in coordinator.data.devices[device_id]
+        )
 
     _add_entities()
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
@@ -106,16 +105,16 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     ) -> None:
         """Initiate Plugwise Number."""
         super().__init__(coordinator, device_id)
-        self.actuator = self.device[description.key]
+        self.actuator = self.device[description.key]  # Upstream
         self.device_id = device_id
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_mode = NumberMode.BOX
-        self._attr_native_max_value = self.device[description.key][UPPER_BOUND]
-        self._attr_native_min_value = self.device[description.key][LOWER_BOUND]
+        self._attr_native_max_value = self.device[description.key][UPPER_BOUND]  # Upstream const
+        self._attr_native_min_value = self.device[description.key][LOWER_BOUND]  # Upstream const
 
-        native_step = self.device[description.key][RESOLUTION]
-        if description.key != TEMPERATURE_OFFSET:
+        native_step = self.device[description.key][RESOLUTION]  # Upstream const
+        if description.key != TEMPERATURE_OFFSET:  # Upstream const
             native_step = max(native_step, 0.5)
         self._attr_native_step = native_step
 

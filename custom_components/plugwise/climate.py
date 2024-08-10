@@ -1,4 +1,5 @@
 """Plugwise Climate component for Home Assistant."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -57,6 +58,8 @@ from .const import (
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
+
+PARALLEL_UPDATES = 0  # Upstream
 
 
 async def async_setup_entry(

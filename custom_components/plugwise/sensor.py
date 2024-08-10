@@ -1,4 +1,5 @@
 """Plugwise Sensor component for Home Assistant."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -12,8 +13,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import (
-    ATTR_NAME,
-    ATTR_TEMPERATURE,
+    ATTR_TEMPERATURE,  # Upstream
     LIGHT_LUX,
     PERCENTAGE,
     EntityCategory,
@@ -59,7 +59,6 @@ from .const import (
     GAS_CONS_CUMULATIVE,
     GAS_CONS_INTERVAL,
     INTENDED_BOILER_TEMP,
-    LOGGER,
     MOD_LEVEL,
     NET_EL_CUMULATIVE,
     NET_EL_POINT,
@@ -78,6 +77,8 @@ from .const import (
     WATER_PRESSURE,
     WATER_TEMP,
 )
+
+# Upstream consts
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 
@@ -91,6 +92,7 @@ class PlugwiseSensorEntityDescription(SensorEntityDescription):
     key: SensorType
 
 
+# Upstream consts
 PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
         key=TARGET_TEMP,
@@ -458,29 +460,23 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise sensors from a ConfigEntry."""
+    """Set up the Plugwise sensors from a config entry."""
+    # Upstream as Plugwise not Smile
     coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:
-        """Add Entities during init and runtime."""
+        """Add Entities."""
         if not coordinator.new_devices:
             return
 
-        entities: list[PlugwiseSensorEntity] = []
-        for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
-            if not (sensors := device.get(SENSORS)):
-                continue
-            for description in PLUGWISE_SENSORS:
-                if description.key not in sensors:
-                    continue
-                entities.append(PlugwiseSensorEntity(coordinator, device_id, description))
-                LOGGER.debug(
-                    "Add %s %s sensor", device[ATTR_NAME], description.translation_key or description.key
-                )
-
-        async_add_entities(entities)
+        async_add_entities(
+            PlugwiseSensorEntity(coordinator, device_id, description)
+            for device_id in coordinator.new_devices
+            if (sensors := coordinator.data.devices[device_id].get(SENSORS))
+            for description in PLUGWISE_SENSORS
+            if description.key in sensors
+        )  # Upstream consts
 
     _add_entities()
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
@@ -505,4 +501,4 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
     @property
     def native_value(self) -> int | float:
         """Return the value reported by the sensor."""
-        return self.device[SENSORS][self.entity_description.key]
+        return self.device[SENSORS][self.entity_description.key]  # Upstream consts

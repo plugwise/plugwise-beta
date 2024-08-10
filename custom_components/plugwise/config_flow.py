@@ -1,4 +1,5 @@
 """Config flow for Plugwise integration."""
+
 from __future__ import annotations
 
 import datetime as dt  # pw-beta options
@@ -24,6 +25,8 @@ from homeassistant.config_entries import (
     OptionsFlow,
     OptionsFlowWithConfigEntry,
 )
+
+# Upstream
 from homeassistant.const import (
     ATTR_CONFIGURATION_URL,
     CONF_BASE,
@@ -34,6 +37,8 @@ from homeassistant.const import (
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
 )
+
+# Upstream
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -62,9 +67,13 @@ from .const import (
     VERSION,
     ZEROCONF_MAP,
 )
+
+# Upstream
 from .coordinator import PlugwiseDataUpdateCoordinator
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
+
+# Upstream basically the whole file (excluding the pw-beta options)
 
 
 def _base_schema(

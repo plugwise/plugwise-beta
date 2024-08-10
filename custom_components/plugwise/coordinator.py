@@ -1,4 +1,5 @@
 """DataUpdateCoordinator for Plugwise."""
+
 from datetime import timedelta
 
 from plugwise import PlugwiseData, Smile
@@ -55,6 +56,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             LOGGER,
             name=DOMAIN,
             # Core directly updates from const's DEFAULT_SCAN_INTERVAL
+            # Upstream check correct progress for adjusting
             update_interval=update_interval,
             # Don't refresh immediately, give the device time to process
             # the change in state before we query it.
@@ -90,7 +92,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             self.update_interval = timedelta(
                 seconds=int(custom_time)
             )  # pragma: no cover  # pw-beta options
-
         LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
 
     async def _async_update_data(self) -> PlugwiseData:
@@ -101,17 +102,17 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 await self._connect()
             data = await self.api.async_update()
         except ConnectionFailedError as err:
-                raise UpdateFailed("Failed to connect") from err
+            raise UpdateFailed("Failed to connect") from err
         except InvalidAuthentication as err:
-                raise ConfigEntryError("Authentication failed") from err
+            raise ConfigEntryError("Authentication failed") from err
         except (InvalidXMLError, ResponseError) as err:
-                raise UpdateFailed(
-                    "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
-                ) from err
+            raise UpdateFailed(
+                "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
+            ) from err
         except PlugwiseError as err:
-                raise UpdateFailed("Data incomplete or missing") from err
+            raise UpdateFailed("Data incomplete or missing") from err
         except UnsupportedDeviceError as err:
-                raise ConfigEntryError("Device with unsupported firmware") from err
+            raise ConfigEntryError("Device with unsupported firmware") from err
         else:
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
             self._async_add_remove_devices(data, self.config_entry)
@@ -144,7 +145,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                     # First find the Plugwise via_device, this is always the first device
                     if item[1] == data.gateway[GATEWAY_ID]:
                         via_device = device_entry.id
-                    elif ( # then remove the connected orphaned device(s)
+                    elif (  # then remove the connected orphaned device(s)
                         device_entry.via_device_id == via_device
                         and item[1] not in data.devices
                     ):

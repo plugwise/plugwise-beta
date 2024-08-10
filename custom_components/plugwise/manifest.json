@@ -1,7 +1,6 @@
 {
   "domain": "plugwise",
-  "name": "Plugwise Smile/Stretch Beta",
-  "after_dependencies": ["zeroconf"],
+  "name": "Plugwise Beta",
   "codeowners": ["@CoMPaTech", "@bouwew"],
   "config_flow": true,
   "documentation": "https://github.com/plugwise/plugwise-beta",

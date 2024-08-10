@@ -1,9 +1,12 @@
 """Constants for Plugwise component."""
+
 from datetime import timedelta
 import logging
 from typing import Final, Literal
 
 from homeassistant.const import Platform
+
+# Upstream basically the whole file excluding pw-beta options
 
 DOMAIN: Final = "plugwise"
 
