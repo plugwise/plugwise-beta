@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Fix climate-test error: implement homeassistant.exceptions.ServiceValidationError
+
 ## v0.51.6
 
 - Implement fix for [#677](https://github.com/plugwise/plugwise-beta/issues/677)
