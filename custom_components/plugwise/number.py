@@ -41,6 +41,7 @@ class PlugwiseNumberEntityDescription(NumberEntityDescription):
     key: NumberType
 
 
+# Upstream + is there a reason we didn't rename this one prefixed?
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key=MAX_BOILER_TEMP,
