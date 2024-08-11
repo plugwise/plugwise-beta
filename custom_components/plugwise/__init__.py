@@ -29,7 +29,7 @@ type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
-    """Set up the Plugwise components from a config entry."""
+    """Set up Plugwise components from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
     cooldown = 1.5  # pw-beta frontend refresh-interval
