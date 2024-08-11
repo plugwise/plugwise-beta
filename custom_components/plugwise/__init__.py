@@ -77,7 +77,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    entry.async_on_unload(entry.add_update_listener(update_listener))  # pw-beta delete_notification
+    entry.async_on_unload(entry.add_update_listener(update_listener))  # pw-beta options_flow
     for component in PLATFORMS:  # pw-beta delete_notification
         if component == Platform.BINARY_SENSOR:
             hass.services.async_register(
