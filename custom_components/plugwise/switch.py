@@ -75,7 +75,7 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise switches from a config entry."""
+    """Set up Plugwise switches from a config entry."""
     coordinator = entry.runtime_data
 
     @callback

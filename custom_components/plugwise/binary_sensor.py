@@ -105,7 +105,7 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise binary_sensors from a config entry."""
+    """Set up Plugwise binary_sensors from a config entry."""
     coordinator = entry.runtime_data
 
     @callback
@@ -147,7 +147,7 @@ async def async_setup_entry(
 
 
 class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
-    """Represent Plugwise binary_sensors from a config entry."""
+    """Set up Plugwise binary_sensors from a config entry."""
 
     entity_description: PlugwiseBinarySensorEntityDescription
 

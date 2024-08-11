@@ -461,7 +461,7 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise sensors from a config entry."""
+    """Set up Plugwise sensors from a config entry."""
     # Upstream as Plugwise not Smile
     coordinator = entry.runtime_data
 

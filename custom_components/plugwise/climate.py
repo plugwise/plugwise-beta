@@ -15,13 +15,7 @@ from homeassistant.components.climate.const import (
     HVACAction,
     HVACMode,
 )
-from homeassistant.const import (
-    ATTR_NAME,
-    ATTR_TEMPERATURE,
-    STATE_OFF,
-    STATE_ON,
-    UnitOfTemperature,
-)
+from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, STATE_ON, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -67,7 +61,7 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise thermostats from a ConfigEntry."""
+    """Set up Plugwise thermostats from a config entry."""
     coordinator = entry.runtime_data
     homekit_enabled: bool = entry.options.get(
         CONF_HOMEKIT_EMULATION, False
@@ -237,13 +231,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._previous_action_mode(self.coordinator)
 
         # Adam provides the hvac_action for each thermostat
-        if (control_state := self.device.get(CONTROL_STATE)) == HVACAction.COOLING:
-            return HVACAction.COOLING
-        if control_state == HVACAction.HEATING:
-            return HVACAction.HEATING
-        if control_state == HVACAction.PREHEATING:
-            return HVACAction.PREHEATING
-        if control_state == STATE_OFF:
+        if (control_state := self.device.get(CONTROL_STATE)) in (HVACAction.COOLING, HVACAction.HEATING, HVACAction.PREHEATING):
+            return control_state
+        if control_state == HVACMode.OFF:
             return HVACAction.IDLE
 
         # Anna
@@ -295,7 +285,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if hvac_mode != HVACMode.OFF:
             await self.coordinator.api.set_schedule_state(
                 self.device[LOCATION],
-                STATE_ON if hvac_mode == HVACMode.AUTO else STATE_OFF,
+                STATE_ON if hvac_mode == HVACMode.AUTO else HVACMode.OFF,
             )
 
         if (
