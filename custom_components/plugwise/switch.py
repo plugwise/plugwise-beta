@@ -17,7 +17,15 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import PlugwiseConfigEntry
-from .const import COOLING_ENA_SWITCH, DHW_CM_SWITCH, LOCK, MEMBERS, RELAY, SWITCHES
+from .const import (
+    COOLING_ENA_SWITCH,
+    DHW_CM_SWITCH,
+    LOCK,
+    LOGGER,  # pw-beta
+    MEMBERS,
+    RELAY,
+    SWITCHES,
+)
 
 # Upstream consts
 from .coordinator import PlugwiseDataUpdateCoordinator
@@ -76,13 +84,28 @@ async def async_setup_entry(
         if not coordinator.new_devices:
             return
 
-        async_add_entities(
-            PlugwiseSwitchEntity(coordinator, device_id, description)
-            for device_id in coordinator.new_devices
-            if (switches := coordinator.data.devices[device_id].get(SWITCHES))
-            for description in PLUGWISE_SWITCHES
-            if description.key in switches
-        )
+        # Upstream consts
+        # async_add_entities(
+        #     PlugwiseSwitchEntity(coordinator, device_id, description)
+        #     for device_id in coordinator.new_devices
+        #     if (switches := coordinator.data.devices[device_id].get(SWITCHES))
+        #     for description in PLUGWISE_SWITCHES
+        #     if description.key in switches
+        # )
+        # pw-beta alternative for debugging
+        entities: list[PlugwiseSwitchEntity] = []
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
+            if not (switches := device.get(SWITCHES)):
+                continue
+            for description in PLUGWISE_SWITCHES:
+                if description.key not in switches:
+                    continue
+                entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
+                LOGGER.debug(
+                    "Add %s %s switch", device["name"], description.translation_key
+                )
+        async_add_entities(entities)
 
     _add_entities()
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))

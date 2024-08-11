@@ -59,6 +59,7 @@ from .const import (
     GAS_CONS_CUMULATIVE,
     GAS_CONS_INTERVAL,
     INTENDED_BOILER_TEMP,
+    LOGGER,  # pw-beta
     MOD_LEVEL,
     NET_EL_CUMULATIVE,
     NET_EL_POINT,
@@ -470,13 +471,28 @@ async def async_setup_entry(
         if not coordinator.new_devices:
             return
 
-        async_add_entities(
-            PlugwiseSensorEntity(coordinator, device_id, description)
-            for device_id in coordinator.new_devices
-            if (sensors := coordinator.data.devices[device_id].get(SENSORS))
-            for description in PLUGWISE_SENSORS
-            if description.key in sensors
-        )  # Upstream consts
+        # Upstream consts
+        # async_add_entities(
+        #     PlugwiseSensorEntity(coordinator, device_id, description)
+        #     for device_id in coordinator.new_devices
+        #     if (sensors := coordinator.data.devices[device_id].get(SENSORS))
+        #     for description in PLUGWISE_SENSORS
+        #     if description.key in sensors
+        # )
+        # pw-beta alternative for debugging
+        entities: list[PlugwiseSensorEntity] = []
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
+            if not (sensors := device.get(SENSORS)):
+                continue
+            for description in PLUGWISE_SENSORS:
+                if description.key not in sensors:
+                    continue
+                entities.append(PlugwiseSensorEntity(coordinator, device_id, description))
+                LOGGER.debug(
+                    "Add %s %s sensor", device["name"], description.translation_key or description.key
+                )
+        async_add_entities(entities)
 
     _add_entities()
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))

@@ -82,12 +82,28 @@ async def async_setup_entry(
         if not coordinator.new_devices:
             return
 
-        async_add_entities(
-            PlugwiseNumberEntity(coordinator, device_id, description)
-            for device_id in coordinator.new_devices
-            for description in NUMBER_TYPES
-            if description.key in coordinator.data.devices[device_id]
-        )
+        # Upstream consts
+        # async_add_entities(
+        #     PlugwiseNumberEntity(coordinator, device_id, description)
+        #     for device_id in coordinator.new_devices
+        #     for description in NUMBER_TYPES
+        #     if description.key in coordinator.data.devices[device_id]
+        # )
+
+        # pw-beta alternative for debugging
+        entities: list[PlugwiseNumberEntity] = []
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
+            for description in NUMBER_TYPES:
+                if description.key in device:
+                    entities.append(
+                        PlugwiseNumberEntity(coordinator, device_id, description)
+                    )
+                    LOGGER.debug(
+                        "Add %s %s number", device["name"], description.translation_key
+                    )
+
+        async_add_entities(entities)
 
     _add_entities()
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))

@@ -28,6 +28,7 @@ from .const import (
     DOMAIN,
     FLAME_STATE,
     HEATING_STATE,
+    LOGGER,  # pw-beta
     NOTIFICATIONS,
     PLUGWISE_NOTIFICATION,
     SECONDARY_BOILER_STATE,
@@ -113,17 +114,33 @@ async def async_setup_entry(
         if not coordinator.new_devices:
             return
 
-        async_add_entities(
-            PlugwiseBinarySensorEntity(coordinator, device_id, description)
-            for device_id in coordinator.new_devices
-            if (
-                binary_sensors := coordinator.data.devices[device_id].get(
-                    BINARY_SENSORS  # upstream to const
+        # Upstream consts to HA
+        # async_add_entities(
+        #     PlugwiseBinarySensorEntity(coordinator, device_id, description)
+        #     for device_id in coordinator.new_devices
+        #     if (
+        #         binary_sensors := coordinator.data.devices[device_id].get(
+        #             BINARY_SENSORS
+        #         )
+        #     )
+        #     for description in PLUGWISE_BINARY_SENSORS  # upstream from const
+        #     if description.key in binary_sensors
+        # )
+
+        # pw-beta alternative for debugging
+        entities: list[PlugwiseBinarySensorEntity] = []
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
+            if not (binary_sensors := device.get(BINARY_SENSORS)):
+                continue
+            for description in PLUGWISE_BINARY_SENSORS:
+                if description.key not in binary_sensors:
+                    continue
+                entities.append(PlugwiseBinarySensorEntity(coordinator, device_id, description))
+                LOGGER.debug(
+                    "Add %s %s binary sensor", device["name"], description.translation_key
                 )
-            )
-            for description in PLUGWISE_BINARY_SENSORS  # upstream from const
-            if description.key in binary_sensors
-        )
+        async_add_entities(entities)
 
     _add_entities()
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
