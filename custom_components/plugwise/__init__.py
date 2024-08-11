@@ -9,9 +9,9 @@ import voluptuous as vol  # pw-beta delete_notification
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import (  # ServiceCall for delete_notification
+from homeassistant.core import (
     HomeAssistant,
-    ServiceCall,
+    ServiceCall,  # pw-beta delete_notification
     callback,
 )
 from homeassistant.helpers import device_registry as dr, entity_registry as er
@@ -46,7 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
 
     migrate_sensor_entities(hass, coordinator)
 
-    entry.runtime_data = coordinator  # pw-beta
+    entry.runtime_data = coordinator
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
@@ -114,12 +114,11 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
         "-relative_humidity"
     ):
         return {
-            "new_unique_id": entry.unique_id.replace(
-                "-relative_humidity", "-humidity"
-            )
+            "new_unique_id": entry.unique_id.replace("-relative_humidity", "-humidity")
         }
     if entry.domain == Platform.SWITCH and entry.unique_id.endswith("-plug"):
         return {"new_unique_id": entry.unique_id.replace("-plug", "-relay")}
+
     # No migration needed
     return None
 
