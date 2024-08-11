@@ -35,11 +35,11 @@ from .const import (
     SEVERITIES,
 )
 
-# upstream
+# Upstream
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 
-PARALLEL_UPDATES = 0  # upstream
+PARALLEL_UPDATES = 0  # Upstream
 
 
 @dataclass(frozen=True)
@@ -123,7 +123,7 @@ async def async_setup_entry(
         #             BINARY_SENSORS
         #         )
         #     )
-        #     for description in PLUGWISE_BINARY_SENSORS  # upstream from const
+        #     for description in PLUGWISE_BINARY_SENSORS
         #     if description.key in binary_sensors
         # )
 
