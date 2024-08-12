@@ -15,7 +15,13 @@ from homeassistant.components.climate.const import (
     HVACAction,
     HVACMode,
 )
-from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, STATE_ON, UnitOfTemperature
+from homeassistant.const import (
+    ATTR_NAME,
+    ATTR_TEMPERATURE,
+    STATE_OFF,
+    STATE_ON,
+    UnitOfTemperature,
+)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -285,7 +291,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if hvac_mode != HVACMode.OFF:
             await self.coordinator.api.set_schedule_state(
                 self.device[LOCATION],
-                STATE_ON if hvac_mode == HVACMode.AUTO else HVACMode.OFF,
+                STATE_ON if hvac_mode == HVACMode.AUTO else STATE_OFF,
             )
 
         if (

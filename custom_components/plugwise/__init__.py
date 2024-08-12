@@ -29,7 +29,7 @@ type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
-    """Set up Plugwise components from a config entry."""
+    """Set up Plugwise from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
     cooldown = 1.5  # pw-beta frontend refresh-interval
@@ -93,7 +93,7 @@ async def update_listener(
     await hass.config_entries.async_reload(entry.entry_id)
 
 async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
-    """Unload the Plugwise components."""
+    """Unload Plugwise."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 @callback
@@ -140,10 +140,5 @@ def migrate_sensor_entities(
             Platform.SENSOR, DOMAIN, old_unique_id
         ):
             new_unique_id = f"{device_id}-outdoor_air_temperature"
-            LOGGER.debug(
-                "Migrating entity %s from old unique ID '%s' to new unique ID '%s'",
-                entity_id,
-                old_unique_id,
-                new_unique_id,
-            )
+            # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
