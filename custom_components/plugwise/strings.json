@@ -48,7 +48,7 @@
   "entity": {
     "binary_sensor": {
       "battery_state": {
-        "name": "Battery"
+        "name": "Low Battery"
       },
       "compressor_state": {
         "name": "Compressor state"
