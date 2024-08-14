@@ -48,7 +48,7 @@
   "entity": {
     "binary_sensor": {
       "battery_state": {
-        "name": "Batterij bijna leeg"
+        "name": "Batterij status"
       },
       "compressor_state": {
         "name": "Compressorstatus"
