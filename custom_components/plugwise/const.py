@@ -27,6 +27,7 @@ ZIGBEE_MAC_ADDRESS: Final = "zigbee_mac_address"
 
 # Binary Sensor constants
 BINARY_SENSORS: Final = "binary_sensors"
+BATTERY_STATE: Final = "battery_state"
 COMPRESSOR_STATE: Final = "compressor_state"
 COOLING_ENABLED: Final = "cooling_enabled"
 COOLING_STATE: Final = "cooling_state"
