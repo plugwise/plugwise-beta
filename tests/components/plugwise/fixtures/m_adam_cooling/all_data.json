@@ -28,6 +28,9 @@
     },
     "1772a4ea304041adb83f357b751341ff": {
       "available": true,
+      "binary_sensors": {
+        "battery_state": false
+      },
       "dev_class": "thermo_sensor",
       "firmware": "2020-11-04T01:00:00+01:00",
       "hardware": "1",
@@ -116,6 +119,9 @@
         "Weekschema",
         "off"
       ],
+      "binary_sensors": {
+        "battery_state": true
+      },
       "control_state": "preheating",
       "dev_class": "zone_thermostat",
       "firmware": "2016-10-10T02:00:00+02:00",
@@ -127,7 +133,7 @@
       "preset_modes": ["no_frost", "asleep", "vacation", "home", "away"],
       "select_schedule": "Badkamer",
       "sensors": {
-        "battery": 38,
+        "battery": 14,
         "setpoint": 23.5,
         "temperature": 23.9
       },
@@ -163,7 +169,7 @@
     "cooling_present": true,
     "gateway_id": "da224107914542988a88561b4452b0f6",
     "heater_id": "056ee145a816487eaa69243c3280f8bf",
-    "item_count": 147,
+    "item_count": 149,
     "notifications": {},
     "reboot": true,
     "smile_name": "Adam"

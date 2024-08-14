@@ -82,6 +82,9 @@
     },
     "680423ff840043738f42cc7f1ff97a36": {
       "available": true,
+      "binary_sensors": {
+        "battery_state": false
+      },
       "dev_class": "thermo_sensor",
       "firmware": "2019-03-27T01:00:00+01:00",
       "hardware": "1",
@@ -115,6 +118,9 @@
         "CV Jessie",
         "off"
       ],
+      "binary_sensors": {
+        "battery_state": false
+      },
       "dev_class": "zone_thermostat",
       "firmware": "2016-10-27T02:00:00+02:00",
       "hardware": "255",
@@ -199,6 +205,9 @@
     },
     "a2c3583e0a6349358998b760cea82d2a": {
       "available": true,
+      "binary_sensors": {
+        "battery_state": false
+      },
       "dev_class": "thermo_sensor",
       "firmware": "2019-03-27T01:00:00+01:00",
       "hardware": "1",
@@ -255,6 +264,9 @@
         "CV Jessie",
         "off"
       ],
+      "binary_sensors": {
+        "battery_state": false
+      },
       "dev_class": "zone_thermostat",
       "firmware": "2016-08-02T02:00:00+02:00",
       "hardware": "255",
@@ -306,6 +318,9 @@
     },
     "d3da73bde12a47d5a6b8f9dad971f2ec": {
       "available": true,
+      "binary_sensors": {
+        "battery_state": false
+      },
       "dev_class": "thermo_sensor",
       "firmware": "2019-03-27T01:00:00+01:00",
       "hardware": "1",
@@ -339,6 +354,9 @@
         "CV Jessie",
         "off"
       ],
+      "binary_sensors": {
+        "battery_state": false
+      },
       "dev_class": "zone_thermostat",
       "firmware": "2016-10-27T02:00:00+02:00",
       "hardware": "255",
@@ -371,6 +389,9 @@
     "e7693eb9582644e5b865dba8d4447cf1": {
       "active_preset": "no_frost",
       "available": true,
+      "binary_sensors": {
+        "battery_state": false
+      },
       "dev_class": "thermostatic_radiator_valve",
       "firmware": "2019-03-27T01:00:00+01:00",
       "hardware": "1",
@@ -412,6 +433,9 @@
         "CV Jessie",
         "off"
       ],
+      "binary_sensors": {
+        "battery_state": false
+      },
       "dev_class": "zone_thermostat",
       "firmware": "2016-10-27T02:00:00+02:00",
       "hardware": "255",
@@ -464,7 +488,7 @@
     "cooling_present": false,
     "gateway_id": "fe799307f1624099878210aa0b9f1475",
     "heater_id": "90986d591dcd426cae3ec3e8111ff730",
-    "item_count": 315,
+    "item_count": 323,
     "notifications": {
       "af82e4ccf9c548528166d38e560662a4": {
         "warning": "Node Plug (with MAC address 000D6F000D13CB01, in room 'n.a.') has been unreachable since 23:03 2020-01-18. Please check the connection and restart the device."
