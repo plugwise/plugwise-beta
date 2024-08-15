@@ -4,7 +4,7 @@
       "active_preset": "no_frost",
       "available": true,
       "binary_sensors": {
-        "battery_state": false
+        "low_battery": false
       },
       "control_state": "off",
       "dev_class": "zone_thermostat",
@@ -101,7 +101,7 @@
       "active_preset": "home",
       "available": true,
       "binary_sensors": {
-        "battery_state": false
+        "low_battery": false
       },
       "control_state": "off",
       "dev_class": "zone_thermostat",
@@ -159,7 +159,7 @@
       "active_preset": "home",
       "available": true,
       "binary_sensors": {
-        "battery_state": false
+        "low_battery": false
       },
       "control_state": "off",
       "dev_class": "zone_thermostat",
@@ -273,7 +273,7 @@
       "active_preset": "home",
       "available": true,
       "binary_sensors": {
-        "battery_state": false
+        "low_battery": false
       },
       "control_state": "off",
       "dev_class": "zone_thermometer",

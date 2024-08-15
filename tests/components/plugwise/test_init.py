@@ -44,7 +44,7 @@ TOM = {
         "model": "Tom/Floor",
         "name": "Tom Zolder",
         "binary_sensors": {
-            "battery_state": False,
+            "low_battery": False,
         },
         "sensors": {
             "battery": 99,

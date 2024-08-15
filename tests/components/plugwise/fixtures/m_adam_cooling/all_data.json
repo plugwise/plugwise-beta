@@ -29,7 +29,7 @@
     "1772a4ea304041adb83f357b751341ff": {
       "available": true,
       "binary_sensors": {
-        "battery_state": false
+        "low_battery": false
       },
       "dev_class": "thermo_sensor",
       "firmware": "2020-11-04T01:00:00+01:00",
@@ -120,7 +120,7 @@
         "off"
       ],
       "binary_sensors": {
-        "battery_state": true
+        "low_battery": true
       },
       "control_state": "preheating",
       "dev_class": "zone_thermostat",
