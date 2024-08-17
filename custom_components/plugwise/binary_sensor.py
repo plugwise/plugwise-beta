@@ -8,6 +8,7 @@ from typing import Any
 from plugwise.constants import BinarySensorType
 
 from homeassistant.components.binary_sensor import (
+    BinarySensorDeviceClass,
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
@@ -17,6 +18,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import PlugwiseConfigEntry
 from .const import (
+    BATTERY_STATE,
     BINARY_SENSORS,
     COMPRESSOR_STATE,
     COOLING_ENABLED,
@@ -45,6 +47,12 @@ class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
 
 
 PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
+    PlugwiseBinarySensorEntityDescription(
+        key=BATTERY_STATE,
+        translation_key=BATTERY_STATE,
+        device_class=BinarySensorDeviceClass.BATTERY,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
     PlugwiseBinarySensorEntityDescription(
         key=COMPRESSOR_STATE,
         translation_key=COMPRESSOR_STATE,

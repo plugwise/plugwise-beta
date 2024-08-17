@@ -43,6 +43,9 @@ TOM = {
         "location": "f871b8c4d63549319221e294e4f88074",
         "model": "Tom/Floor",
         "name": "Tom Zolder",
+        "binary_sensors": {
+            "low_battery": False,
+        },
         "sensors": {
             "battery": 99,
             "temperature": 18.6,
@@ -222,7 +225,7 @@ async def test_update_device(
 
     assert (
         len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-        == 29
+        == 31
     )
     assert (
         len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
@@ -237,7 +240,7 @@ async def test_update_device(
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-            == 34
+            == 37
         )
         assert (
             len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
@@ -256,7 +259,7 @@ async def test_update_device(
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-            == 29
+            == 31
         )
         assert (
             len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
