@@ -4,7 +4,9 @@
 
 ## Ongoing
 
-- Downstream Core changes
+- Downstream the latest Core Plugwise updates.
+- Document code-differences vs Core Plugwise - parts for future upstreaming and parts that will not be downstreamed.
+- Code improvements.
 
 ## v0.52.0
 
