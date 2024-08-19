@@ -2,11 +2,14 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Downstream Core changes
+
 ## v0.52.0
 
 - Add battery-state binary_sensors for battery-powered devices.
 - Fix climate-test error: implement homeassistant.exceptions.ServiceValidationError
-- Downstream Core changes
 
 ## v0.51.6
 
