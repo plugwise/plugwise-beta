@@ -2,7 +2,7 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.52.1
 
 - Downstream the latest Core Plugwise updates.
 - Document code-differences vs Core Plugwise - parts for future upstreaming and parts that will not be downstreamed.
