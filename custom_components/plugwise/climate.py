@@ -268,6 +268,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if ATTR_TARGET_TEMP_LOW in kwargs:
             data[TARGET_TEMP_LOW] = kwargs.get(ATTR_TARGET_TEMP_LOW)
 
+        # Upstream removed input-valid check
+
         if mode := kwargs.get(ATTR_HVAC_MODE):
             await self.async_set_hvac_mode(mode)
 
