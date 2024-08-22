@@ -1,4 +1,5 @@
 """Generic Plugwise Entity Class."""
+
 from __future__ import annotations
 
 from plugwise.constants import DeviceData
@@ -23,6 +24,8 @@ from .const import (
     VENDOR,
     ZIGBEE_MAC_ADDRESS,
 )
+
+# Upstream consts
 from .coordinator import PlugwiseDataUpdateCoordinator
 
 
@@ -77,9 +80,9 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
     def available(self) -> bool:
         """Return if entity is available."""
         return (
+            # Upstream: Do not change the AVAILABLE line below: some Plugwise devices
+            # Upstream: do not provide their availability-status!
             self._dev_id in self.coordinator.data.devices
-            # Do not change the below line: some Plugwise devices
-            # do not provide their availability-status!
             and (AVAILABLE not in self.device or self.device[AVAILABLE] is True)
             and super().available
         )

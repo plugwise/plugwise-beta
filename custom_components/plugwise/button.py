@@ -3,15 +3,21 @@
 from __future__ import annotations
 
 from homeassistant.components.button import ButtonDeviceClass, ButtonEntity
-from homeassistant.const import ATTR_NAME, EntityCategory
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import PlugwiseConfigEntry
-from .const import GATEWAY_ID, LOGGER, REBOOT
+from .const import (
+    GATEWAY_ID,
+    LOGGER,  # pw-betea
+    REBOOT,
+)
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
+
+PARALLEL_UPDATES = 0  # Upstream
 
 
 async def async_setup_entry(
@@ -19,16 +25,21 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise buttons from a ConfigEntry."""
+    """Set up Plugwise buttons from a config entry."""
     coordinator = entry.runtime_data
 
-    entities: list[PlugwiseButtonEntity] = []
     gateway = coordinator.data.gateway
+    # async_add_entities(
+    #     PlugwiseButtonEntity(coordinator, device_id)
+    #     for device_id in coordinator.data.devices
+    #     if device_id == gateway[GATEWAY_ID] and REBOOT in gateway
+    # )
+    # pw-beta alternative for debugging
+    entities: list[PlugwiseButtonEntity] = []
     for device_id, device in coordinator.data.devices.items():
         if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
             entities.append(PlugwiseButtonEntity(coordinator, device_id))
-            LOGGER.debug("Add %s reboot button", device[ATTR_NAME])
-
+            LOGGER.debug("Add %s reboot button", device["name"])
     async_add_entities(entities)
 
 

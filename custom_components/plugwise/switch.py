@@ -1,4 +1,5 @@
 """Plugwise Switch component for HomeAssistant."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -11,7 +12,7 @@ from homeassistant.components.switch import (
     SwitchEntity,
     SwitchEntityDescription,
 )
-from homeassistant.const import ATTR_NAME, EntityCategory
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -20,14 +21,18 @@ from .const import (
     COOLING_ENA_SWITCH,
     DHW_CM_SWITCH,
     LOCK,
-    LOGGER,
+    LOGGER,  # pw-beta
     MEMBERS,
     RELAY,
     SWITCHES,
 )
+
+# Upstream consts
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
+
+PARALLEL_UPDATES = 0  # Upstream
 
 
 @dataclass(frozen=True)
@@ -37,6 +42,7 @@ class PlugwiseSwitchEntityDescription(SwitchEntityDescription):
     key: SwitchType
 
 
+# Upstream consts
 PLUGWISE_SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
         key=DHW_CM_SWITCH,
@@ -69,15 +75,24 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise switches from a ConfigEntry."""
+    """Set up Plugwise switches from a config entry."""
     coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:
-        """Add Entities during init and runtime."""
+        """Add Entities."""
         if not coordinator.new_devices:
             return
 
+        # Upstream consts
+        # async_add_entities(
+        #     PlugwiseSwitchEntity(coordinator, device_id, description)
+        #     for device_id in coordinator.new_devices
+        #     if (switches := coordinator.data.devices[device_id].get(SWITCHES))
+        #     for description in PLUGWISE_SWITCHES
+        #     if description.key in switches
+        # )
+        # pw-beta alternative for debugging
         entities: list[PlugwiseSwitchEntity] = []
         for device_id in coordinator.new_devices:
             device = coordinator.data.devices[device_id]
@@ -88,9 +103,8 @@ async def async_setup_entry(
                     continue
                 entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
                 LOGGER.debug(
-                    "Add %s %s switch", device[ATTR_NAME], description.translation_key
+                    "Add %s %s switch", device["name"], description.translation_key
                 )
-
         async_add_entities(entities)
 
     _add_entities()
@@ -116,7 +130,7 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
     @property
     def is_on(self) -> bool:
         """Return True if entity is on."""
-        return self.device[SWITCHES][self.entity_description.key]
+        return self.device[SWITCHES][self.entity_description.key]  # Upstream const
 
     @plugwise_command
     async def async_turn_on(self, **kwargs: Any) -> None:
@@ -126,7 +140,7 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
             self.device.get(MEMBERS),
             self.entity_description.key,
             "on",
-        )
+        )  # Upstream const
 
     @plugwise_command
     async def async_turn_off(self, **kwargs: Any) -> None:
@@ -136,4 +150,4 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
             self.device.get(MEMBERS),
             self.entity_description.key,
             "off",
-        )
+        )  # Upstream const

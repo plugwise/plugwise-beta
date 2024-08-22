@@ -1,14 +1,19 @@
 """Plugwise platform for Home Assistant Core."""
+
 from __future__ import annotations
 
 from typing import Any
 
 from plugwise.exceptions import PlugwiseError
-import voluptuous as vol
+import voluptuous as vol  # pw-beta delete_notification
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant, ServiceCall, callback
+from homeassistant.core import (
+    HomeAssistant,
+    ServiceCall,  # pw-beta delete_notification
+    callback,
+)
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 
 from .const import (
@@ -16,7 +21,7 @@ from .const import (
     DOMAIN,
     LOGGER,
     PLATFORMS,
-    SERVICE_DELETE,
+    SERVICE_DELETE,  # pw-beta delete_notifications
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 
@@ -24,7 +29,7 @@ type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
-    """Set up the Plugwise Device from a config entry."""
+    """Set up Plugwise from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
     cooldown = 1.5  # pw-beta frontend refresh-interval
@@ -38,10 +43,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
         hass, cooldown
     )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
-    # Migrate a changed sensor unique_id
+
     migrate_sensor_entities(hass, coordinator)
 
-    entry.runtime_data = coordinator  # pw-beta
+    entry.runtime_data = coordinator
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
@@ -71,9 +76,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
             )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    entry.async_on_unload(entry.add_update_listener(update_listener))
 
-    for component in PLATFORMS:  # pw-beta
+    entry.async_on_unload(entry.add_update_listener(update_listener))  # pw-beta options_flow
+    for component in PLATFORMS:  # pw-beta delete_notification
         if component == Platform.BINARY_SENSOR:
             hass.services.async_register(
                 DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
@@ -88,7 +93,7 @@ async def update_listener(
     await hass.config_entries.async_reload(entry.entry_id)
 
 async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
-    """Unload a config entry."""
+    """Unload Plugwise."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 @callback
@@ -109,12 +114,11 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
         "-relative_humidity"
     ):
         return {
-            "new_unique_id": entry.unique_id.replace(
-                "-relative_humidity", "-humidity"
-            )
+            "new_unique_id": entry.unique_id.replace("-relative_humidity", "-humidity")
         }
     if entry.domain == Platform.SWITCH and entry.unique_id.endswith("-plug"):
         return {"new_unique_id": entry.unique_id.replace("-plug", "-relay")}
+
     # No migration needed
     return None
 
@@ -125,10 +129,10 @@ def migrate_sensor_entities(
     """Migrate Sensors if needed."""
     ent_reg = er.async_get(hass)
 
-    # Migrate opentherm_outdoor_temperature  # pw-beta add to Core
+    # Migrate opentherm_outdoor_temperature
     # to opentherm_outdoor_air_temperature sensor
     for device_id, device in coordinator.data.devices.items():
-        if device["dev_class"] != "heater_central":  # pw-beta add to Core
+        if device["dev_class"] != "heater_central":
             continue
 
         old_unique_id = f"{device_id}-outdoor_temperature"
@@ -136,4 +140,5 @@ def migrate_sensor_entities(
             Platform.SENSOR, DOMAIN, old_unique_id
         ):
             new_unique_id = f"{device_id}-outdoor_air_temperature"
+            # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)

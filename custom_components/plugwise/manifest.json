@@ -1,7 +1,6 @@
 {
   "domain": "plugwise",
-  "name": "Plugwise Smile/Stretch Beta",
-  "after_dependencies": ["zeroconf"],
+  "name": "Plugwise Beta",
   "codeowners": ["@CoMPaTech", "@bouwew"],
   "config_flow": true,
   "documentation": "https://github.com/plugwise/plugwise-beta",
@@ -9,5 +8,6 @@
   "iot_class": "local_polling",
   "loggers": ["plugwise"],
   "requirements": ["plugwise==1.1.0"],
-  "version": "0.52.0"
+  "version": "0.52.1",
+  "zeroconf": ["_plugwise._tcp.local."]
 }

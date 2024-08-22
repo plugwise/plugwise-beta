@@ -1,10 +1,11 @@
 """Plugwise Select component for Home Assistant."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
-from homeassistant.const import ATTR_NAME, STATE_ON, EntityCategory
+from homeassistant.const import STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -26,11 +27,13 @@ from .const import (
     SelectOptionsType,
     SelectType,
 )
+
+# Upstream consts
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 
-PARALLEL_UPDATES = 0
+PARALLEL_UPDATES = 0  # Upstream
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -41,6 +44,7 @@ class PlugwiseSelectEntityDescription(SelectEntityDescription):
     options_key: SelectOptionsType
 
 
+# Upstream + is there a reason we didn't rename this one prefixed?
 SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
         key=SELECT_SCHEDULE,
@@ -73,15 +77,23 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise selectors from a ConfigEntry."""
+    """Set up Plugwise selector from a config entry."""
     coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:
-        """Add Entities during init and runtime."""
+        """Add Entities."""
         if not coordinator.new_devices:
             return
 
+        # Upstream consts
+        # async_add_entities(
+        #     PlugwiseSelectEntity(coordinator, device_id, description)
+        #     for device_id in coordinator.new_devices
+        #     for description in SELECT_TYPES
+        #     if description.options_key in coordinator.data.devices[device_id]
+        # )
+        # pw-beta alternative for debugging
         entities: list[PlugwiseSelectEntity] = []
         for device_id in coordinator.new_devices:
             device = coordinator.data.devices[device_id]
@@ -91,9 +103,8 @@ async def async_setup_entry(
                         PlugwiseSelectEntity(coordinator, device_id, description)
                     )
                     LOGGER.debug(
-                        "Add %s %s selector", device[ATTR_NAME], description.translation_key
+                        "Add %s %s selector", device["name"], description.translation_key
                     )
-
         async_add_entities(entities)
 
     _add_entities()

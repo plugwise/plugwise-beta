@@ -2,6 +2,12 @@
 
 ## Versions from 0.40 and up
 
+## v0.52.1
+
+- Downstream the latest Core Plugwise updates.
+- Document code-differences vs Core Plugwise - parts for future upstreaming and parts that will not be downstreamed.
+- Code improvements.
+
 ## v0.52.0
 
 - Add battery-state binary_sensors for battery-powered devices.

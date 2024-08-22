@@ -1,4 +1,5 @@
 """Plugwise Binary Sensor component for Home Assistant."""
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -12,7 +13,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.const import ATTR_NAME, EntityCategory
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -27,16 +28,18 @@ from .const import (
     DOMAIN,
     FLAME_STATE,
     HEATING_STATE,
-    LOGGER,
+    LOGGER,  # pw-beta
     NOTIFICATIONS,
     PLUGWISE_NOTIFICATION,
     SECONDARY_BOILER_STATE,
     SEVERITIES,
 )
+
+# Upstream
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 
-PARALLEL_UPDATES = 0
+PARALLEL_UPDATES = 0  # Upstream
 
 
 @dataclass(frozen=True)
@@ -46,6 +49,7 @@ class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
     key: BinarySensorType
 
 
+# Upstream PLUGWISE_BINARY_SENSORS
 PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     PlugwiseBinarySensorEntityDescription(
         key=BATTERY_STATE,
@@ -101,15 +105,29 @@ async def async_setup_entry(
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise binary_sensors from a ConfigEntry."""
+    """Set up Plugwise binary_sensors from a config entry."""
     coordinator = entry.runtime_data
 
     @callback
     def _add_entities() -> None:
-        """Add Entities during init and runtime."""
+        """Add Entities."""
         if not coordinator.new_devices:
             return
 
+        # Upstream consts to HA
+        # async_add_entities(
+        #     PlugwiseBinarySensorEntity(coordinator, device_id, description)
+        #     for device_id in coordinator.new_devices
+        #     if (
+        #         binary_sensors := coordinator.data.devices[device_id].get(
+        #             BINARY_SENSORS
+        #         )
+        #     )
+        #     for description in PLUGWISE_BINARY_SENSORS
+        #     if description.key in binary_sensors
+        # )
+
+        # pw-beta alternative for debugging
         entities: list[PlugwiseBinarySensorEntity] = []
         for device_id in coordinator.new_devices:
             device = coordinator.data.devices[device_id]
@@ -120,9 +138,8 @@ async def async_setup_entry(
                     continue
                 entities.append(PlugwiseBinarySensorEntity(coordinator, device_id, description))
                 LOGGER.debug(
-                    "Add %s %s binary sensor", device[ATTR_NAME], description.translation_key
+                    "Add %s %s binary sensor", device["name"], description.translation_key
                 )
-
         async_add_entities(entities)
 
     _add_entities()
@@ -130,7 +147,7 @@ async def async_setup_entry(
 
 
 class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
-    """Represent Smile Binary Sensors."""
+    """Set up Plugwise binary_sensors from a config entry."""
 
     entity_description: PlugwiseBinarySensorEntityDescription
 
@@ -162,7 +179,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
     @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return entity specific state attributes."""
-        if self.entity_description.key != PLUGWISE_NOTIFICATION:
+        if self.entity_description.key != PLUGWISE_NOTIFICATION:  # Upstream const
             return None
 
         # pw-beta adjustment with attrs is to only represent severities *with* content

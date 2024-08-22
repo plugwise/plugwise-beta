@@ -1,4 +1,5 @@
 """Plugwise Climate component for Home Assistant."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -58,13 +59,15 @@ from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 
+PARALLEL_UPDATES = 0  # Upstream
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: PlugwiseConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Plugwise thermostats from a ConfigEntry."""
+    """Set up Plugwise thermostats from a config entry."""
     coordinator = entry.runtime_data
     homekit_enabled: bool = entry.options.get(
         CONF_HOMEKIT_EMULATION, False
@@ -102,8 +105,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     _attr_translation_key = DOMAIN
     _enable_turn_on_off_backwards_compatibility = False
 
-    _homekit_mode: str | None = None  # pw-beta homekit emulation
-    _previous_mode: str = HVACAction.HEATING
+    _previous_mode: str = HVACAction.HEATING  # Upstream
+    _homekit_mode: str | None = None  # pw-beta homekit emulation + intentional unsort
 
     def __init__(
         self,
@@ -234,13 +237,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._previous_action_mode(self.coordinator)
 
         # Adam provides the hvac_action for each thermostat
-        if (control_state := self.device.get(CONTROL_STATE)) == HVACAction.COOLING:
-            return HVACAction.COOLING
-        if control_state == HVACAction.HEATING:
-            return HVACAction.HEATING
-        if control_state == HVACAction.PREHEATING:
-            return HVACAction.PREHEATING
-        if control_state == STATE_OFF:
+        if (control_state := self.device.get(CONTROL_STATE)) in (HVACAction.COOLING, HVACAction.HEATING, HVACAction.PREHEATING):
+            return control_state
+        if control_state == HVACMode.OFF:
             return HVACAction.IDLE
 
         # Anna
@@ -269,11 +268,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if ATTR_TARGET_TEMP_LOW in kwargs:
             data[TARGET_TEMP_LOW] = kwargs.get(ATTR_TARGET_TEMP_LOW)
 
-        for temperature in data.values():
-            if temperature is None or not (
-                self._attr_min_temp <= temperature <= self._attr_max_temp
-            ):
-                raise ValueError("Invalid temperature change requested")
+        # Upstream removed input-valid check
 
         if mode := kwargs.get(ATTR_HVAC_MODE):
             await self.async_set_hvac_mode(mode)
