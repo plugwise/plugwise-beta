@@ -1,13 +1,14 @@
 {
-  "name": "Plugwise Smile/Stretch beta",
+  "name": "Plugwise beta",
   "domains": [
     "binary_sensor",
+    "button",
     "climate",
     "number",
     "select",
     "sensor",
     "switch"
   ],
-  "homeassistant": "2024.2.0",
+  "homeassistant": "2024.8.0",
   "render_readme": true
 }
