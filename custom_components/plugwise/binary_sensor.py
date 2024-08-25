@@ -13,6 +13,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
+import homeassistant.components.persistent_notification as pn
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -169,7 +170,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         # pw-beta: show Plugwise notifications as HA persistent notifications
         if self._notification:
             for notify_id, message in self._notification.items():
-                self.hass.components.persistent_notification.async_create(
+                pn.async_create(
                     message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
