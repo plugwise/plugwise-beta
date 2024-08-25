@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Fix for `integration 'plugwise' accesses hass.components.persistent_notification`.
+
 ## v0.52.1
 
 - Downstream the latest Core Plugwise updates.
