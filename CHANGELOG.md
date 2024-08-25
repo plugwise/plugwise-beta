@@ -4,7 +4,7 @@
 
 ## Ongoing
 
-- Fix for `integration 'plugwise' accesses hass.components.persistent_notification`.
+- Resolve depreciated use of accessing `hass.components.persistent_notification`.
 
 ## v0.52.1
 
