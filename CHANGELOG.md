@@ -2,8 +2,9 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.52.2
 
+- Battery-state binary_sensors improvements via plugwise [v1.2.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.2.0)
 - Resolve depreciated use of accessing `hass.components.persistent_notification`.
 
 ## v0.52.1
@@ -14,7 +15,7 @@
 
 ## v0.52.0
 
-- Add battery-state binary_sensors for battery-powered devices.
+- Add battery-state binary_sensors for battery-powered devices via plugwise [v1.1.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.1.0)
 - Fix climate-test error: implement homeassistant.exceptions.ServiceValidationError
 
 ## v0.51.6
