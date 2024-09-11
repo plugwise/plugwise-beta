@@ -14,7 +14,7 @@ from homeassistant.core import (
     ServiceCall,  # pw-beta delete_notification
     callback,
 )
-from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers import entity_registry as er
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
