@@ -48,16 +48,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
 
     entry.runtime_data = coordinator
 
-    device_registry = dr.async_get(hass)
-    device_registry.async_get_or_create(
-        config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, str(coordinator.api.gateway_id))},
-        manufacturer="Plugwise",
-        model=coordinator.api.smile_model,
-        name=coordinator.api.smile_name,
-        sw_version=coordinator.api.smile_version,
-    )
-
     async def delete_notification(
         call: ServiceCall,
     ) -> None:  # pragma: no cover  # pw-beta: HA service - delete_notification
