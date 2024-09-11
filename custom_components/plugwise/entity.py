@@ -60,6 +60,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
             connections=connections,
             manufacturer=data.get(VENDOR),
             model=data.get(MODEL),
+            model_id=data.get(MODEL_ID),
             name=coordinator.data.gateway[SMILE_NAME],
             sw_version=data.get(FIRMWARE),
             hw_version=data.get(HARDWARE),
