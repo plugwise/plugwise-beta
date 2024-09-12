@@ -74,6 +74,7 @@ FIRMWARE: Final = "firmware"
 GATEWAY_ID: Final = "gateway_id"
 HARDWARE: Final = "hardware"
 MODEL: Final = "model"
+MODEL_ID: Final = "model_id"
 SMILE_NAME: Final = "smile_name"
 VENDOR: Final = "vendor"
 

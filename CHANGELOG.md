@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## v0.53.0
+
+- New Feature: show model_id's of all devices (Adam, Anna, and P1, not for legacy gateways).
+
 ## v0.52.2
 
 - Battery-state binary_sensors improvements via plugwise [v1.2.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.2.0)
