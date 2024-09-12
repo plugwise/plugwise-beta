@@ -174,7 +174,6 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                     self.hass, message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        # return self.device["binary_sensors"][self.entity_description.key]  # type: ignore [literal-required]
         return self.device["binary_sensors"][self.entity_description.key]
 
     @property
