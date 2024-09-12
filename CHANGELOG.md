@@ -4,7 +4,7 @@
 
 ## v0.53.0
 
-- New Feature: show model_id's of all devices (Adam, Anna, and P1, not for legacy gateways).
+- New Feature: show model_id's of all devices (Adam, Anna, not for legacy gateways).
 
 ## v0.52.2
 
