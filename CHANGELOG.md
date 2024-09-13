@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Add comment, small improvement.
+
 ## v0.53.0
 
 - New Feature: show model_id's of all devices (Adam, Anna, not for legacy gateways).
