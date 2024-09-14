@@ -341,6 +341,7 @@ def mock_smile_legacy_anna() -> Generator[None, MagicMock, None]:
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = None
         smile.smile_name = "Smile Anna"
 
         smile.connect.return_value = True
@@ -368,6 +369,7 @@ def mock_stretch() -> Generator[None, MagicMock, None]:
         smile.smile_type = "stretch"
         smile.smile_hostname = "stretch98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = None
         smile.smile_name = "Stretch"
 
         smile.connect.return_value = True
