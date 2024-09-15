@@ -257,7 +257,7 @@ async def test_update_device(
     # Add a 2nd Tom/Floor
     data.devices.update(TOM)
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
-        async_fire_time_changed(hass, utcnow + timedelta(minutes=1))
+        async_fire_time_changed(hass, utcnow + timedelta(minutes=2))
         await hass.async_block_till_done()
 
         assert (
@@ -276,7 +276,7 @@ async def test_update_device(
     # Remove the existing Tom/Floor
     data.devices.pop("1772a4ea304041adb83f357b751341ff")
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
-        async_fire_time_changed(hass, utcnow + timedelta(minutes=1))
+        async_fire_time_changed(hass, utcnow + timedelta(minutes=2))
         await hass.async_block_till_done()
 
         assert (
