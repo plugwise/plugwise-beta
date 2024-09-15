@@ -113,6 +113,28 @@ async def test_gateway_config_entry_not_ready(
     assert mock_config_entry.state is entry_state
 
 
+async def test_device_in_dr(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_smile_p1: MagicMock,
+    device_registry: dr.DeviceRegistry,
+) -> None:
+    """Test Gateway device registry data."""
+    mock_config_entry.add_to_hass(hass)
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+
+    device_entry = device_registry.async_get_device(
+        identifiers={(DOMAIN, "a455b61e52394b2db5081ce025a430f3")}
+    )
+    assert device_entry.hw_version == "AME Smile 2.0 board"
+    assert device_entry.manufacturer == "Plugwise"
+    assert device_entry.model == "Gateway"
+    assert device_entry.model_id == "smile"
+    assert device_entry.name == "Smile P1"
+    assert device_entry.sw_version == "4.4.2"
+
+
 async def check_migration(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
@@ -235,7 +257,7 @@ async def test_update_device(
     # Add a 2nd Tom/Floor
     data.devices.update(TOM)
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
-        async_fire_time_changed(hass, utcnow + timedelta(minutes=1))
+        async_fire_time_changed(hass, utcnow + timedelta(minutes=2))
         await hass.async_block_till_done()
 
         assert (
@@ -254,7 +276,7 @@ async def test_update_device(
     # Remove the existing Tom/Floor
     data.devices.pop("1772a4ea304041adb83f357b751341ff")
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
-        async_fire_time_changed(hass, utcnow + timedelta(minutes=1))
+        async_fire_time_changed(hass, utcnow + timedelta(minutes=2))
         await hass.async_block_till_done()
 
         assert (

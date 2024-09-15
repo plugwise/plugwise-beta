@@ -64,6 +64,7 @@ def mock_smile_config_flow() -> Generator[None, MagicMock, None]:
         smile = smile_mock.return_value
         smile.smile_hostname = "smile12345"
         smile.smile_model = "Test Model"
+        smile.smile_model_id = "Test Model ID"
         smile.smile_name = "Test Smile Name"
         smile.connect.return_value = True
         yield smile
@@ -85,6 +86,7 @@ def mock_smile_adam() -> Generator[None, MagicMock, None]:
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = "smile_open_therm"
         smile.smile_name = "Adam"
 
         smile.connect.return_value = True
@@ -113,6 +115,7 @@ def mock_smile_adam_2() -> Generator[None, MagicMock, None]:
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = "smile_open_therm"
         smile.smile_name = "Adam"
 
         smile.connect.return_value = True
@@ -141,6 +144,7 @@ def mock_smile_adam_3() -> Generator[None, MagicMock, None]:
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = "smile_open_therm"
         smile.smile_name = "Adam"
 
         smile.connect.return_value = True
@@ -169,6 +173,7 @@ def mock_smile_adam_4() -> Generator[None, MagicMock, None]:
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = "smile_open_therm"
         smile.smile_name = "Adam"
 
         smile.connect.return_value = True
@@ -196,6 +201,7 @@ def mock_smile_anna() -> Generator[None, MagicMock, None]:
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = "smile_thermo"
         smile.smile_name = "Smile Anna"
 
         smile.connect.return_value = True
@@ -223,6 +229,7 @@ def mock_smile_anna_2() -> Generator[None, MagicMock, None]:
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = "smile_thermo"
         smile.smile_name = "Smile Anna"
 
         smile.connect.return_value = True
@@ -250,6 +257,7 @@ def mock_smile_anna_3() -> Generator[None, MagicMock, None]:
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = "smile_thermo"
         smile.smile_name = "Smile Anna"
 
         smile.connect.return_value = True
@@ -277,6 +285,7 @@ def mock_smile_p1() -> Generator[None, MagicMock, None]:
         smile.smile_type = "power"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = "smile"
         smile.smile_name = "Smile P1"
 
         smile.connect.return_value = True
@@ -304,6 +313,7 @@ def mock_smile_p1_2() -> Generator[None, MagicMock, None]:
         smile.smile_type = "power"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = "smile"
         smile.smile_name = "Smile P1"
 
         smile.connect.return_value = True
@@ -331,6 +341,7 @@ def mock_smile_legacy_anna() -> Generator[None, MagicMock, None]:
         smile.smile_type = "thermostat"
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = None
         smile.smile_name = "Smile Anna"
 
         smile.connect.return_value = True
@@ -358,6 +369,7 @@ def mock_stretch() -> Generator[None, MagicMock, None]:
         smile.smile_type = "stretch"
         smile.smile_hostname = "stretch98765"
         smile.smile_model = "Gateway"
+        smile.smile_model_id = None
         smile.smile_name = "Stretch"
 
         smile.connect.return_value = True

@@ -2,13 +2,16 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.53.1
 
+- Show model_id for P1 gateway as well.
+- Bump plugwise to [v1.4.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.4.0)
 - Add comment, small improvement.
 
 ## v0.53.0
 
 - New Feature: show model_id's of all devices (Adam, Anna, not for legacy gateways).
+- Bump plugwise to [v1.3.1](https://github.com/plugwise/python-plugwise/releases/tag/v1.3.1)
 
 ## v0.52.2
 
