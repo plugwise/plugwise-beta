@@ -4,10 +4,10 @@ from datetime import timedelta
 import math
 from unittest.mock import MagicMock, patch
 
-from freezegun.api import FrozenDateTimeFactory
 from plugwise.exceptions import PlugwiseError
 import pytest
 
+from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.climate.const import HVACMode
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
