@@ -140,12 +140,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         via_device: str = ""
 
         # First find the Plugwise via_device
-        for device_entry in device_list:
-            for identifier in device_entry.identifiers:
-                if identifier[0] != DOMAIN or identifier[1] != data.gateway[GATEWAY_ID]:
-                    continue
-                via_device = device_entry.id
-                break
+        via_device_device = device_reg.async_get_device(identifiers={(DOMAIN, data.gateway[GATEWAY_ID])})
+        if via_device_device is not None:
+            via_device = via_device_device.id
 
         # Then remove the connected orphaned device(s)
         for device_entry in device_list:
