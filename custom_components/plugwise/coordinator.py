@@ -115,11 +115,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             raise ConfigEntryError("Device with unsupported firmware") from err
         else:
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
-            self._add_remove_devices(data, self.config_entry)
+            self._async_add_remove_devices(data, self.config_entry)
 
         return data
 
-    def _add_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
+    def _async_add_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new or removed devices
         self.new_devices = set(data.devices) - self._current_devices
@@ -127,9 +127,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self._current_devices = set(data.devices)
 
         if removed_devices:
-            self._remove_devices(data, entry)
+            self._async_remove_devices(data, entry)
 
-    def _remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
+    def _async_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
         """Clean registries when removed devices found."""
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(
