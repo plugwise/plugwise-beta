@@ -2,7 +2,7 @@
 
 ## Versions from 0.40 and up
 
-##  Ongoing
+## Ongoing
 
 - Climate-test: implement freezer.tick constructs.
 - Implement Core PR [#126212](https://github.com/home-assistant/core/pull/126212)
