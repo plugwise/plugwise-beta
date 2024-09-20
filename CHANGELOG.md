@@ -2,6 +2,11 @@
 
 ## Versions from 0.40 and up
 
+## v0.53.2
+
+- Climate-test: implement freezer.tick constructs.
+- Implement Core PR [#126212](https://github.com/home-assistant/core/pull/126212)
+
 ## v0.53.1
 
 - Show model_id for P1 gateway as well.
