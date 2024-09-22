@@ -89,13 +89,13 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
 		if [ -d "${manualdir}" ]; then
 			echo ""
-			echo -e "${CINFO} ** Re-using copy, rebasing and copy to HA core**${norm}"
+			echo -e "${CINFO} ** Re-using copy, rebasing and copy to HA core**${CNORM}"
 			echo ""
 			cd "${manualdir}" || exit
 			echo ""
 			git config pull.rebase true
-			echo -e "${CINFO} ** Resetting to ${core_branch} (just cloned) **${norm}"
-			git reset --hard || echo -e "${CWARN} - Should have nothing to reset to after cloning${norm}"
+			echo -e "${CINFO} ** Resetting to ${core_branch} (just cloned) **${CNORM}"
+			git reset --hard || echo -e "${CWARN} - Should have nothing to reset to after cloning${CNORM}"
 			git checkout "${core_branch}"
 			echo ""
 			cp -a "${manualdir}." "${coredir}"
