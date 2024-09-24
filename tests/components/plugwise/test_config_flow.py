@@ -1,7 +1,7 @@
 """Test the Plugwise config flow."""
+from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from collections.abc import Generator
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
