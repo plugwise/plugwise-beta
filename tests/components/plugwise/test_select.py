@@ -2,8 +2,12 @@
 
 from unittest.mock import MagicMock
 
-from homeassistant.components.select import ATTR_OPTION, SERVICE_SELECT_OPTION
-from homeassistant.const import ATTR_ENTITY_ID, Platform
+from homeassistant.components.select import (
+    ATTR_OPTION,
+    DOMAIN as SELECT_DOMAIN,
+    SERVICE_SELECT_OPTION,
+)
+from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
 from tests.common import MockConfigEntry
@@ -24,7 +28,7 @@ async def test_adam_change_select_entity(
 ) -> None:
     """Test changing of select entities."""
     await hass.services.async_call(
-        Platform.SELECT,
+        SELECT_DOMAIN,
         SERVICE_SELECT_OPTION,
         {
             ATTR_ENTITY_ID: "select.zone_lisa_wk_thermostat_schedule",
@@ -56,7 +60,7 @@ async def test_adam_select_regulation_mode(
     assert state
     assert state.state == "cooling"
     await hass.services.async_call(
-        Platform.SELECT,
+        SELECT_DOMAIN,
         SERVICE_SELECT_OPTION,
         {
             "entity_id": "select.adam_regulation_mode",
@@ -74,7 +78,7 @@ async def test_adam_select_regulation_mode(
 
 
 async def test_legacy_anna_select_entities(
-    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant, mock_smile_legacy_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test a legacy thermostat select."""
+    """Test not creating a select-entity for a legacy Anna without a thermostat-schedule."""
     assert not hass.states.get("select.anna_thermostat_schedule")
