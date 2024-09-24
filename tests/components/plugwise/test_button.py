@@ -3,15 +3,11 @@
 from unittest.mock import MagicMock
 
 from homeassistant.components.button import (
-    ButtonDeviceClass,
     DOMAIN as BUTTON_DOMAIN,
     SERVICE_PRESS,
+    ButtonDeviceClass,
 )
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ENTITY_ID,
-    STATE_UNKNOWN,
-)
+from homeassistant.const import ATTR_DEVICE_CLASS, ATTR_ENTITY_ID, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 

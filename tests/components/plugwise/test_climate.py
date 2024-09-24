@@ -10,10 +10,10 @@ import pytest
 from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.climate import (
     DOMAIN as CLIMATE_DOMAIN,
-    HVACMode,
     SERVICE_SET_HVAC_MODE,
     SERVICE_SET_PRESET_MODE,
     SERVICE_SET_TEMPERATURE,
+    HVACMode,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
