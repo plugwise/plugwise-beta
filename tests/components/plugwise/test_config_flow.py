@@ -388,39 +388,6 @@ async def test_flow_errors(
     assert len(mock_smile_config_flow.connect.mock_calls) == 2
 
 
-@pytest.mark.parametrize(
-    ("side_effect", "reason"),
-    [
-        (ConnectionFailedError, "cannot_connect"),
-        (InvalidAuthentication, "invalid_auth"),
-        (InvalidSetupError, "invalid_setup"),
-        (TimeoutError, "unknown"),
-    ],
-)
-async def test_form_invalid_setup(
-    hass: HomeAssistant,
-    mock_smile: MagicMock,
-    side_effect: Exception,
-    reason: str,
-) -> None:
-    """Test we handle various invalid manual inputs."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN,
-        context={CONF_SOURCE: SOURCE_USER},
-    )
-
-    mock_smile.connect.side_effect = side_effect
-    mock_smile.gateway_id = "0a636a4fc1704ab4a24e4f7e37fb187a"
-
-    result2 = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
-    )
-
-    assert result2["type"] == FlowResultType.FORM
-    assert result2["errors"] == {"base": reason}
-
-
 async def test_form_cannot_connect_port(
     hass: HomeAssistant, mock_smile: MagicMock
 ) -> None:
