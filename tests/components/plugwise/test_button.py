@@ -9,7 +9,7 @@ from homeassistant.components.button import (
 )
 from homeassistant.const import ATTR_DEVICE_CLASS, ATTR_ENTITY_ID, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
+import homeassistant.helpers.entity_registry as er
 
 from tests.common import MockConfigEntry
 
