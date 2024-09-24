@@ -446,7 +446,9 @@ async def test_form_cannot_connect_port(
     assert result2["errors"] == {"base": "cannot_connect"}
 
 
-async def test_options_flow_thermo(hass, mock_smile_anna_2) -> None:
+async def test_options_flow_thermo(
+    hass: HomeAssistant, mock_smile_anna_2: MagicMock
+) -> None:
     """Test config flow options for thermostatic environments."""
     entry = MockConfigEntry(
         domain=DOMAIN,
