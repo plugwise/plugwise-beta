@@ -126,7 +126,7 @@ async def test_stretch_switch_changes(
 ) -> None:
     """Test changing of power related switch entities."""
     await hass.services.async_call(
-        SWITCH_DOMAIN
+        SWITCH_DOMAIN,
         SERVICE_TURN_OFF,
         {"entity_id": "switch.boiler_1eb31_relay"},
         blocking=True,
@@ -137,7 +137,7 @@ async def test_stretch_switch_changes(
     )
 
     await hass.services.async_call(
-        SWITCH_DOMAIN
+        SWITCH_DOMAIN,
         SERVICE_TOGGLE,
         {"entity_id": "switch.droger_52559_relay"},
         blocking=True,
