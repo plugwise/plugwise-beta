@@ -335,7 +335,7 @@ async def test_zercoconf_discovery_update_configuration(
         (InvalidAuthentication, "invalid_auth"),
         (InvalidSetupError, "invalid_setup"),
         (InvalidXMLError, "response_error"),
-        (RuntimeError, "unknown"),
+        (TimeoutError, "unknown"),
         (UnsupportedDeviceError, "unsupported"),
     ],
 )
