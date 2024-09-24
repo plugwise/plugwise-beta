@@ -2,12 +2,15 @@
 
 from unittest.mock import MagicMock
 
-from homeassistant.components.button import ButtonDeviceClass
+from homeassistant.components.button import (
+    ButtonDeviceClass,
+    DOMAIN as BUTTON_DOMAIN,
+    SERVICE_PRESS,
+)
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_ENTITY_ID,
     STATE_UNKNOWN,
-    Platform,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
@@ -30,8 +33,8 @@ async def test_adam_reboot_button(
     assert entry.unique_id == "fe799307f1624099878210aa0b9f1475-reboot"
 
     await hass.services.async_call(
-        Platform.BUTTON,
-        "press",
+        BUTTON_DOMAIN,
+        SERVICE_PRESS,
         {ATTR_ENTITY_ID: "button.adam_reboot"},
         blocking=True,
     )

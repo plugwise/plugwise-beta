@@ -8,7 +8,13 @@ from plugwise.exceptions import PlugwiseError
 import pytest
 
 from freezegun.api import FrozenDateTimeFactory
-from homeassistant.components.climate.const import HVACMode
+from homeassistant.components.climate import (
+    DOMAIN as CLIMATE_DOMAIN,
+    HVACMode,
+    SERVICE_SET_HVAC_MODE,
+    SERVICE_SET_PRESET_MODE,
+    SERVICE_SET_TEMPERATURE,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 
@@ -174,8 +180,8 @@ async def test_adam_climate_adjust_negative_testing(
 
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
-            "climate",
-            "set_temperature",
+            CLIMATE_DOMAIN,
+            SERVICE_SET_TEMPERATURE,
             {"entity_id": "climate.zone_lisa_wk", "temperature": 25},
             blocking=True,
         )
@@ -186,8 +192,8 @@ async def test_adam_climate_entity_climate_changes(
 ) -> None:
     """Test handling of user requests in adam climate device environment."""
     await hass.services.async_call(
-        "climate",
-        "set_temperature",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_TEMPERATURE,
         {"entity_id": "climate.zone_lisa_wk", "temperature": 25},
         blocking=True,
     )
@@ -197,8 +203,8 @@ async def test_adam_climate_entity_climate_changes(
     )
 
     await hass.services.async_call(
-        "climate",
-        "set_temperature",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_TEMPERATURE,
         {
             "entity_id": "climate.zone_lisa_wk",
             "hvac_mode": "heat",
@@ -213,15 +219,15 @@ async def test_adam_climate_entity_climate_changes(
 
     with pytest.raises(ServiceValidationError):
         await hass.services.async_call(
-            "climate",
-            "set_temperature",
+            CLIMATE_DOMAIN,
+            SERVICE_SET_TEMPERATURE,
             {"entity_id": "climate.zone_lisa_wk", "temperature": 150},
             blocking=True,
         )
 
     await hass.services.async_call(
-        "climate",
-        "set_preset_mode",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_PRESET_MODE,
         {"entity_id": "climate.zone_lisa_wk", "preset_mode": "away"},
         blocking=True,
     )
@@ -231,8 +237,8 @@ async def test_adam_climate_entity_climate_changes(
     )
 
     await hass.services.async_call(
-        "climate",
-        "set_hvac_mode",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_HVAC_MODE,
         {"entity_id": "climate.zone_lisa_wk", "hvac_mode": "heat"},
         blocking=True,
     )
@@ -243,8 +249,8 @@ async def test_adam_climate_entity_climate_changes(
 
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
-            "climate",
-            "set_hvac_mode",
+            CLIMATE_DOMAIN,
+            SERVICE_SET_HVAC_MODE,
             {
                 "entity_id": "climate.zone_thermostat_jessie",
                 "hvac_mode": "dry",
@@ -263,8 +269,8 @@ async def test_adam_climate_off_mode_change(
     assert state
     assert state.state == HVACMode.OFF
     await hass.services.async_call(
-        "climate",
-        "set_hvac_mode",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_HVAC_MODE,
         {
             "entity_id": "climate.slaapkamer",
             "hvac_mode": "heat",
@@ -279,8 +285,8 @@ async def test_adam_climate_off_mode_change(
     assert state
     assert state.state == HVACMode.HEAT
     await hass.services.async_call(
-        "climate",
-        "set_hvac_mode",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_HVAC_MODE,
         {
             "entity_id": "climate.kinderkamer",
             "hvac_mode": "off",
@@ -295,8 +301,8 @@ async def test_adam_climate_off_mode_change(
     assert state
     assert state.state == HVACMode.HEAT
     await hass.services.async_call(
-        "climate",
-        "set_hvac_mode",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_HVAC_MODE,
         {
             "entity_id": "climate.logeerkamer",
             "hvac_mode": "heat",
@@ -378,8 +384,8 @@ async def test_anna_climate_entity_climate_changes(
 ) -> None:
     """Test handling of user requests in anna climate device environment."""
     await hass.services.async_call(
-        "climate",
-        "set_temperature",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_TEMPERATURE,
         {"entity_id": "climate.anna", "target_temp_high": 30, "target_temp_low": 20},
         blocking=True,
     )
@@ -390,8 +396,8 @@ async def test_anna_climate_entity_climate_changes(
     )
 
     await hass.services.async_call(
-        "climate",
-        "set_preset_mode",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_PRESET_MODE,
         {"entity_id": "climate.anna", "preset_mode": "away"},
         blocking=True,
     )
@@ -401,8 +407,8 @@ async def test_anna_climate_entity_climate_changes(
     )
 
     await hass.services.async_call(
-        "climate",
-        "set_hvac_mode",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_HVAC_MODE,
         {"entity_id": "climate.anna", "hvac_mode": "auto"},
         blocking=True,
     )
@@ -410,8 +416,8 @@ async def test_anna_climate_entity_climate_changes(
     # hvac_mode is already auto so not called.
 
     await hass.services.async_call(
-        "climate",
-        "set_hvac_mode",
+        CLIMATE_DOMAIN,
+        SERVICE_SET_HVAC_MODE,
         {"entity_id": "climate.anna", "hvac_mode": "heat_cool"},
         blocking=True,
     )
