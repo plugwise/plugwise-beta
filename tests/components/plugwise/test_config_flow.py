@@ -346,7 +346,7 @@ async def test_flow_errors(
     side_effect: Exception,
     reason: str,
 ) -> None:
-    """Test we handle invalid auth."""
+    """Test various type of possible errorcases."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={CONF_SOURCE: SOURCE_USER},
@@ -370,14 +370,14 @@ async def test_flow_errors(
     assert len(mock_smile_config_flow.connect.mock_calls) == 1
 
     mock_smile_config_flow.connect.side_effect = None
-    result4 = await hass.config_entries.flow.async_configure(
+    result3 = await hass.config_entries.flow.async_configure(
         result2["flow_id"],
         user_input={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
     )
 
-    assert result4.get("type") == FlowResultType.CREATE_ENTRY
-    assert result4.get("title") == "Test Smile Name"
-    assert result4.get("data") == {
+    assert result3.get("type") == FlowResultType.CREATE_ENTRY
+    assert result3.get("title") == "Test Smile Name"
+    assert result3.get("data") == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
@@ -391,7 +391,7 @@ async def test_flow_errors(
 async def test_form_cannot_connect_port(
     hass: HomeAssistant, mock_smile: MagicMock
 ) -> None:
-    """Test we handle cannot connect to port error."""
+    """Test a connect-failure to an incorrect port."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={CONF_SOURCE: SOURCE_USER},
