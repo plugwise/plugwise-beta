@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (
+from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
     ATTR_TARGET_TEMP_HIGH,
     ATTR_TARGET_TEMP_LOW,
     PRESET_AWAY,  # pw-beta homekit emulation
     PRESET_HOME,  # pw-beta homekit emulation
+    ClimateEntity,
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
@@ -276,7 +276,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         await self.coordinator.api.set_temperature(self.device[LOCATION], data)
 
     @plugwise_command
-    async def async_set_hvac_mode(self, hvac_mode: str) -> None:
+    async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set the hvac mode."""
         if hvac_mode not in self.hvac_modes:
             raise HomeAssistantError("Unsupported hvac_mode")

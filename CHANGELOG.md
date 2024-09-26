@@ -5,6 +5,7 @@
 ## Ongoing
 
 - Test-code improvements.
+- Fix errors showing after Core 2023.9.3 release.
 
 ## v0.53.2
 
