@@ -154,7 +154,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                         CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
                         CONF_PORT: discovery_info.port,
                         CONF_USERNAME: config_entry.data[CONF_USERNAME],
-                        CONF_TIMEOUT: DEFAULT_TIMEOUT,
+                        CONF_TIMEOUT: self._timeout,
                     },
                 )
             except Exception:  # noqa: BLE001
@@ -173,9 +173,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         _version = _properties.get(VERSION, "n/a")
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
 
-        self._timeout = 10
-        if version.parse(_version) < version.parse("3.2.0"):
-            self._timeout = 30
+        if version.parse(_version) >= version.parse("3.2.0"):
+            self._timeout = 10
 
         # This is an Anna, but we already have config entries.
         # Assuming that the user has already configured Adam, aborting discovery.
