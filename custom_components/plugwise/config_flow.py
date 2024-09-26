@@ -150,9 +150,10 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     self.hass,
                     {
                         CONF_HOST: discovery_info.host,
+                        CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
                         CONF_PORT: discovery_info.port,
                         CONF_USERNAME: config_entry.data[CONF_USERNAME],
-                        CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
+                        CONF_TIMEOUT: DEFAULT_TIMEOUT,
                     },
                 )
             except Exception:  # noqa: BLE001
