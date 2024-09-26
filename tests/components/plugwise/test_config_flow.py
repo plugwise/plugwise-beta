@@ -148,7 +148,7 @@ async def test_form(
         CONF_USERNAME: TEST_USERNAME,
     }
     assert data
-    assert data.data[CONF_TIMEOUT] == TEST_TIMEOUT_LEGACY
+    assert data.data[CONF_TIMEOUT] == TEST_TIMEOUT
 
     assert len(mock_setup_entry.mock_calls) == 1
     assert len(mock_smile_config_flow.connect.mock_calls) == 1
