@@ -141,15 +141,13 @@ async def test_form(
 
     assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
-    data = result2.get("data")
-    assert data == {
+    assert result2.get("data") == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
         CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
-    assert data[CONF_TIMEOUT] == TEST_TIMEOUT_LEGACY
 
     assert len(mock_setup_entry.mock_calls) == 1
     assert len(mock_smile_config_flow.connect.mock_calls) == 1
