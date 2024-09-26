@@ -173,7 +173,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
 
         self._timeout = 10
-        if version.parse(_version) < version_parse("3.2.0"):
+        if version.parse(_version) < version.parse("3.2.0"):
             self._timeout = 30
 
         # This is an Anna, but we already have config entries.
