@@ -1,6 +1,5 @@
 """Test the Plugwise config flow."""
 
-import logging
 from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -36,8 +35,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 
 from tests.common import MockConfigEntry
-
-_LOGGER = logging.getLogger(__name__)
 
 TEST_HOST = "1.1.1.1"
 TEST_HOSTNAME = "smileabcdef"
@@ -142,7 +139,6 @@ async def test_form(
     )
     await hass.async_block_till_done()
 
-    _LOGGER.debug("HOI type: %s", result2.get("type"))
     assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
     data = result2.get("data")
@@ -193,7 +189,6 @@ async def test_zeroconf_form(
     assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
     username, timeout = parameters
-    _LOGGER.debug("HOI data: %s", result2.get("data"))
     assert result2.get("data") == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
@@ -340,7 +335,6 @@ async def test_zercoconf_discovery_update_configuration(
 
     assert result.get("type") == FlowResultType.ABORT
     assert result.get("reason") == "already_configured"
-    _LOGGER.debug("HOI2 entry data: %s", entry.data)
     assert entry.data[CONF_HOST] == "1.1.1.1"
 
 
