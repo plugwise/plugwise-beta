@@ -6,6 +6,7 @@
 
 - Test-code improvements.
 - Fix errors showing after Core 2023.9.3 release.
+- Set the connection-timeout based on the device discovered, legacy devices require a 30s timeout.
 
 ## v0.53.2
 
