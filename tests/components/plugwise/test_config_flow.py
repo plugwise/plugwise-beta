@@ -153,10 +153,10 @@ async def test_form(
 
 
 @pytest.mark.parametrize(
-    ("discovery", "username", "timeout"),
+    ("discovery", "result",),
     [
-        (TEST_DISCOVERY, TEST_USERNAME, TEST_TIMEOUT),
-        (TEST_DISCOVERY2, TEST_USERNAME2, TEST_TIMEOUT_LEGACY),
+        (TEST_DISCOVERY, (TEST_USERNAME, TEST_TIMEOUT)),
+        (TEST_DISCOVERY2, (TEST_USERNAME2, TEST_TIMEOUT_LEGACY)),
     ],
 )
 async def test_zeroconf_form(
@@ -189,8 +189,8 @@ async def test_zeroconf_form(
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
-        CONF_TIMEOUT: timeout,
-        CONF_USERNAME: username,
+        CONF_TIMEOUT: result[1],
+        CONF_USERNAME: resutl[0],
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
