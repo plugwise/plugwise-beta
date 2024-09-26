@@ -147,7 +147,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
             self.entity_description.key, self.device[LOCATION], option, STATE_ON
         )
         LOGGER.debug(
-            "Set %s to %s was successful.",
+            "Set %s to %s was successful",
             self.entity_description.key,
             option,
         )
