@@ -341,6 +341,7 @@ async def test_zercoconf_discovery_update_configuration(
 
     assert result.get("type") == FlowResultType.ABORT
     assert result.get("reason") == "already_configured"
+    _LOGGER.debug("HOI2 entry data: %s", entry.data)
     assert entry.data[CONF_HOST] == "1.1.1.1"
 
 
