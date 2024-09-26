@@ -190,7 +190,7 @@ async def test_zeroconf_form(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_TIMEOUT: result[1],
-        CONF_USERNAME: resutl[0],
+        CONF_USERNAME: result[0],
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
