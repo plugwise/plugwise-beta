@@ -135,6 +135,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
     discovery_info: ZeroconfServiceInfo | None = None
     _username: str = DEFAULT_USERNAME
+    _timeout: int = DEFAULT_TIMEOUT
 
     async def async_step_zeroconf(
         self, discovery_info: ZeroconfServiceInfo
