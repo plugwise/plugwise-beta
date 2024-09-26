@@ -142,6 +142,7 @@ async def test_form(
     )
     await hass.async_block_till_done()
 
+    _LOGGER.debug("HOI type: %s", result2.get("type"))
     assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
     data = result2.get("data")
@@ -193,6 +194,7 @@ async def test_zeroconf_form(
     assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
     timeout, username = parameters
+    _LOGGER.debug("HOI data: %s", result2.get("data"))
     assert result2.get("data") == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
