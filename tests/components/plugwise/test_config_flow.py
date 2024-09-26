@@ -170,7 +170,7 @@ async def test_zeroconf_form(
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={CONF_SOURCE: SOURCE_ZEROCONF},
-        data="discovery",
+        data=discovery,
     )
     assert result.get("type") == FlowResultType.FORM
     assert result.get("errors") == {}
@@ -189,8 +189,8 @@ async def test_zeroconf_form(
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
-        CONF_TIMEOUT: "timeout",
-        CONF_USERNAME: "username",
+        CONF_TIMEOUT: timeout,
+        CONF_USERNAME: username,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
