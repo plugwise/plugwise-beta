@@ -153,8 +153,7 @@ async def test_form(
         CONF_USERNAME: TEST_USERNAME,
         CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
-    assert data[CONF_TIMEOUT] == TEST_TIMEOUT
-    _LOGGER.debug("HOI data: %s", data)
+    assert data[CONF_TIMEOUT] == TEST_TIMEOUT_LEGACY
 
     assert len(mock_setup_entry.mock_calls) == 1
     assert len(mock_smile_config_flow.connect.mock_calls) == 1
