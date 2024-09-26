@@ -35,6 +35,8 @@ from homeassistant.data_entry_flow import FlowResultType
 
 from tests.common import MockConfigEntry
 
+from ../../components/plugwise/const import LOGGER
+
 TEST_HOST = "1.1.1.1"
 TEST_HOSTNAME = "smileabcdef"
 TEST_HOSTNAME2 = "stretchabc"
@@ -149,6 +151,7 @@ async def test_form(
     }
     assert data
     assert data.data[CONF_TIMEOUT] == TEST_TIMEOUT
+    LOGGER.debug("HOI data: %s", data)
 
     assert len(mock_setup_entry.mock_calls) == 1
     assert len(mock_smile_config_flow.connect.mock_calls) == 1
