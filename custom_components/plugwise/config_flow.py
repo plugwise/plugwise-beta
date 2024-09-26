@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import datetime as dt  # pw-beta options
-from packaging import version
 from typing import Any
 
 from plugwise import Smile
@@ -44,6 +43,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from packaging import version
 
 from .const import (
     ANNA_WITH_ADAM,
