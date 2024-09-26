@@ -149,7 +149,7 @@
         "name": "Cooling setpoint"
       },
       "heating_setpoint": {
-        "name": " Heating setpoint"
+        "name": "Heating setpoint"
       },
       "intended_boiler_temperature": {
         "name": "Intended boiler temperature"
