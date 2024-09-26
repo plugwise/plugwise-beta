@@ -153,7 +153,7 @@ async def test_form(
         CONF_USERNAME: TEST_USERNAME,
         CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
-    assert data.data[CONF_TIMEOUT] == TEST_TIMEOUT
+    assert data[CONF_TIMEOUT] == TEST_TIMEOUT
     _LOGGER.debug("HOI data: %s", data)
 
     assert len(mock_setup_entry.mock_calls) == 1
