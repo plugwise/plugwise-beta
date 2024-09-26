@@ -235,7 +235,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_HOST] = self.discovery_info.host
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
-            user_input[CONF_TIMEOUT] = self._timeout
+
+        user_input[CONF_TIMEOUT] = self._timeout
+
         try:
             api = await validate_input(self.hass, user_input)
         except ConnectionFailedError:
