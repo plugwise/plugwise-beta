@@ -185,12 +185,13 @@ async def test_zeroconf_form(
 
     assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
+    timeout, username = result
     assert result2.get("data") == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
-        CONF_TIMEOUT: result[1],
-        CONF_USERNAME: result[0],
+        CONF_TIMEOUT: timeout,
+        CONF_USERNAME: username,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
