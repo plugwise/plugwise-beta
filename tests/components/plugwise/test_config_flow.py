@@ -1,4 +1,6 @@
 """Test the Plugwise config flow."""
+
+import logging
 from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -35,7 +37,7 @@ from homeassistant.data_entry_flow import FlowResultType
 
 from tests.common import MockConfigEntry
 
-from ../../components/plugwise/const import LOGGER
+_LOGGER = logging.getLogger(__name__)
 
 TEST_HOST = "1.1.1.1"
 TEST_HOSTNAME = "smileabcdef"
@@ -142,16 +144,16 @@ async def test_form(
 
     assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
-    data = result2.get("data") == {
+    data = result2.get("data")
+    assert data == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
         CONF_USERNAME: TEST_USERNAME,
     }
-    assert data
     assert data.data[CONF_TIMEOUT] == TEST_TIMEOUT
-    LOGGER.debug("HOI data: %s", data)
+    _LOGGER.debug("HOI data: %s", data)
 
     assert len(mock_setup_entry.mock_calls) == 1
     assert len(mock_smile_config_flow.connect.mock_calls) == 1
@@ -169,7 +171,7 @@ async def test_zeroconf_form(
     mock_setup_entry: AsyncMock,
     mock_smile_config_flow: MagicMock,
     discovery: ZeroconfServiceInfo,
-    parameters: tuple(str),
+    parameters: tuple[str, str],
 ) -> None:
     """Test config flow for Smile devices."""
     result = await hass.config_entries.flow.async_init(
