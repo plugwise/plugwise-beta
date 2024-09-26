@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt  # pw-beta options
+from packaging import version
 from typing import Any
 
 from plugwise import Smile
@@ -35,6 +36,7 @@ from homeassistant.const import (
     CONF_PASSWORD,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
+    CONF_TIMEOUT,
     CONF_USERNAME,
 )
 
@@ -50,6 +52,7 @@ from .const import (
     CONTEXT,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,  # pw-beta option
+    DEFAULT_TIMEOUT,
     DEFAULT_USERNAME,
     DOMAIN,
     FLOW_ID,
@@ -118,7 +121,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
         password=data[CONF_PASSWORD],
         port=data[CONF_PORT],
         username=data[CONF_USERNAME],
-        timeout=30,
+        timeout=data[CONF_TIMEOUT],
         websession=websession,
     )
     await api.connect()
@@ -150,6 +153,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                         CONF_PORT: discovery_info.port,
                         CONF_USERNAME: config_entry.data[CONF_USERNAME],
                         CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
+                        CONF_TIMEOUT: DEFAULT_TIMEOUT,
                     },
                 )
             except Exception:  # noqa: BLE001
@@ -167,6 +171,10 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         _product = _properties.get(PRODUCT, None)
         _version = _properties.get(VERSION, "n/a")
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
+
+        self._timeout = 10
+        if version.parse(_version) < version_parse("3.2.0"):
+            self._timeout = 30
 
         # This is an Anna, but we already have config entries.
         # Assuming that the user has already configured Adam, aborting discovery.
@@ -227,6 +235,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_HOST] = self.discovery_info.host
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
+            user_input[CONF_TIMEOUT] = self._timeout
         try:
             api = await validate_input(self.hass, user_input)
         except ConnectionFailedError:
