@@ -149,8 +149,8 @@ async def test_form(
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
-        CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
         CONF_USERNAME: TEST_USERNAME,
+        CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
     assert data.data[CONF_TIMEOUT] == TEST_TIMEOUT
     _LOGGER.debug("HOI data: %s", data)
@@ -197,8 +197,8 @@ async def test_zeroconf_form(
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
-        CONF_TIMEOUT: timeout,
         CONF_USERNAME: username,
+        CONF_TIMEOUT: timeout,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
