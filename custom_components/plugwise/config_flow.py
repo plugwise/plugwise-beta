@@ -208,6 +208,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     CONF_HOST: discovery_info.host,
                     CONF_NAME: _name,
                     CONF_PORT: discovery_info.port,
+                    CONF_TIMEOUT: self._timeout,
                     CONF_USERNAME: self._username,
                 },
                 ATTR_CONFIGURATION_URL: (
