@@ -398,6 +398,7 @@ async def test_flow_errors(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
+        CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
