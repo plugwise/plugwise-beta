@@ -153,7 +153,7 @@ async def test_form(
 
 
 @pytest.mark.parametrize(
-    ("discovery", "result",),
+    ("discovery", "parameters",),
     [
         (TEST_DISCOVERY, (TEST_USERNAME, TEST_TIMEOUT)),
         (TEST_DISCOVERY2, (TEST_USERNAME2, TEST_TIMEOUT_LEGACY)),
@@ -164,7 +164,7 @@ async def test_zeroconf_form(
     mock_setup_entry: AsyncMock,
     mock_smile_config_flow: MagicMock,
     discovery: ZeroconfServiceInfo,
-    username: str,
+    parameters: tuple(str),
 ) -> None:
     """Test config flow for Smile devices."""
     result = await hass.config_entries.flow.async_init(
@@ -185,7 +185,7 @@ async def test_zeroconf_form(
 
     assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
-    timeout, username = result
+    timeout, username = parameters
     assert result2.get("data") == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
