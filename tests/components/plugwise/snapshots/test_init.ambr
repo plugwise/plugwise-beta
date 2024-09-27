@@ -6,7 +6,7 @@
       'mac': 'AA:BB:CC:DD:EE:FF',
       'password': 'test-password',
       'port': 80,
-      'timeout': 30,
+      'timeout': 10,
       'username': 'smile',
     }),
     'disabled_by': None,
