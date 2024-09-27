@@ -8,7 +8,7 @@ from plugwise.exceptions import PlugwiseError
 import voluptuous as vol  # pw-beta delete_notification
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
+from homeassistant.const import CONF_TIMEOUT, Platform
 from homeassistant.core import (
     HomeAssistant,
     ServiceCall,  # pw-beta delete_notification
@@ -44,7 +44,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
 
-    migrate_sensor_entities(hass, coordinator)
+    await async_migrate_plugwise_entry(hass, coordinator)
+    await async_migrate_sensor_entities(hass, coordinator)
 
     entry.runtime_data = coordinator
 
@@ -123,7 +124,7 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
     # No migration needed
     return None
 
-def migrate_sensor_entities(
+async def async_migrate_sensor_entities(
     hass: HomeAssistant,
     coordinator: PlugwiseDataUpdateCoordinator,
 ) -> None:
@@ -143,3 +144,26 @@ def migrate_sensor_entities(
             new_unique_id = f"{device_id}-outdoor_air_temperature"
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+
+async def async_migrate_plugwise_entry(
+    hass: HomeAssistant,
+    coordinator: PlugwiseDataUpdateCoordinator,
+    entry: PlugwiseConfigEntry) -> bool:
+    """Migrate old config entry."""
+
+    _timeout = 30
+    if coordinator.api.smile_version >= "3.2.0":
+        _timeout = 10
+
+    if entry_version > 1:
+        return False
+
+    if entry.version == 1:
+        new_data = entry.data.copy()
+        new_data |= {CONF_TIMEOUT: _timeout }
+
+        hass.config_entries.async_update_entry(
+            entry, data=new_data, version=2
+        )
+
+    return True
