@@ -45,7 +45,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
 
-    await async_migrate_plugwise_entry(hass, coordinator, entry)
     await async_migrate_sensor_entities(hass, coordinator)
 
     entry.runtime_data = coordinator
