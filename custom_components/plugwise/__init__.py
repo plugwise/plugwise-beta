@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from packaging import version
 from typing import Any
 
 from plugwise.exceptions import PlugwiseError
@@ -16,6 +15,7 @@ from homeassistant.core import (
     callback,
 )
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+from packaging import version
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
