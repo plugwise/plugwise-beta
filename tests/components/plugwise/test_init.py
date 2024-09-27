@@ -21,7 +21,6 @@ from homeassistant.const import (
     CONF_MAC,
     CONF_PASSWORD,
     CONF_PORT,
-    CONF_TIMEOUT,
     CONF_USERNAME,
     Platform,
 )
@@ -248,9 +247,9 @@ async def test_entry_migration(hass: HomeAssistant, snapshot: SnapshotAssertion)
             CONF_MAC: "AA:BB:CC:DD:EE:FF",
             CONF_PASSWORD: "test-password",
             CONF_PORT: 80,
-            CONF_TIMEOUT: 30,
             CONF_USERNAME: "smile",
         },
+        version=1,
         unique_id="smile98765",
     )
 
