@@ -434,12 +434,13 @@ async def test_options_flow_thermo(
             CONF_PASSWORD: TEST_PASSWORD,
             CONF_TIMEOUT: TEST_TIMEOUT,
         },
+        minor_version=2,
         options={
             CONF_HOMEKIT_EMULATION: False,
             CONF_REFRESH_INTERVAL: 1.5,
             CONF_SCAN_INTERVAL: 60,
         },
-        version=2,
+        version=1,
     )
     entry.runtime_data = MagicMock(api=mock_smile_anna_2)
     entry.add_to_hass(hass)
