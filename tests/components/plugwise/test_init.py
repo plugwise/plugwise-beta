@@ -1,6 +1,7 @@
 """Tests for the Plugwise Climate integration."""
 from datetime import timedelta
 import logging
+from syrupy import SnapshotAssertion
 from unittest.mock import MagicMock, patch
 
 from plugwise.exceptions import (
@@ -229,6 +230,27 @@ async def test_migrate_unique_id_relay(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
 
+async def test_entry_migration(hass: HomeAssistant, snapshot: SnapshotAssertion) -> None:
+    """Test config entry version 1 -> 2 migration."""
+    mock_config_entry = MockConfigEntry(
+        title="My Plugwise",
+        domain=DOMAIN,
+        data={
+            CONF_HOST: "127.0.0.1",
+            CONF_MAC: "AA:BB:CC:DD:EE:FF",
+            CONF_PASSWORD: "test-password",
+            CONF_PORT: 80,
+            CONF_TIMEOUT: 30,
+            CONF_USERNAME: "smile",
+        },
+        unique_id="smile98765",
+    )
+
+    mock_config_entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert hass.config_entries.async_get_entry(mock_config_entry.entry_id) == snapshot
 
 async def test_update_device(
     hass: HomeAssistant,
