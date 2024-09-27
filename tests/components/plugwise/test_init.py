@@ -16,7 +16,15 @@ import pytest
 from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.const import Platform
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_MAC,
+    CONF_PASSWORD,
+    CONF_PORT,
+    CONF_TIMEOUT,
+    CONF_USERNAME,
+    Platform
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.setup import async_setup_component
