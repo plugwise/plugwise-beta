@@ -146,27 +146,29 @@ async def async_migrate_sensor_entities(
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
-async def async_migrate_plugwise_entry(
-    hass: HomeAssistant,
-    coordinator: PlugwiseDataUpdateCoordinator,
-    entry: ConfigEntry
-) -> bool:
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate old config entry."""
-
-    _timeout = 30
-    if version.parse(coordinator.api.smile_version) >= version.parse("3.2.0"):
-        _timeout = 10
 
     LOGGER.debug("HOI version: %s", entry.version)
     if entry.version > 1:
         return False
 
-    if entry.minor_version < 2:
+    if config_entry.version == 1 and entry.minor_version < 2:
         new_data = {**entry.data}
+        api = Smile(
+            entry.data[CONF_HOST],
+            entry.data[CONF_PASSWORD],
+            entry.data[CONF_PORT],
+            entry.data[CONF_USERNAME]
+        )
+        _timeout = 30
+        if version.parse(api.smile_version) >= version.parse("3.2.0"):
+            _timeout = 10
+
         new_data[CONF_TIMEOUT] = _timeout
 
         hass.config_entries.async_update_entry(
-            entry, data=new_data, version=2
+            entry, data=new_data, minor_version=2, version=1
         )
 
     return True
