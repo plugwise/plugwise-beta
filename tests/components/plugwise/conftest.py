@@ -15,6 +15,7 @@ from homeassistant.const import (
     CONF_MAC,
     CONF_PASSWORD,
     CONF_PORT,
+    CONF_TIMEOUT,
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
@@ -39,6 +40,7 @@ def mock_config_entry() -> MockConfigEntry:
             CONF_MAC: "AA:BB:CC:DD:EE:FF",
             CONF_PASSWORD: "test-password",
             CONF_PORT: 80,
+            CONF_TIMEOUT: 30,
             CONF_USERNAME: "smile",
         },
         unique_id="smile98765",
