@@ -15,7 +15,7 @@ from homeassistant.core import (
     callback,
 )
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-# from packaging import version
+from packaging import version
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
@@ -155,8 +155,8 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if entry.version == 1 and entry.minor_version < 2:
         new_data = {**entry.data}
         _timeout = 30
-        # if version.parse(entry.runtime_data.api.smile_version) >= version.parse("3.2.0"):
-        #     _timeout = 10
+        if version.parse(entry.runtime_data.api.smile_version) >= version.parse("3.2.0"):
+            _timeout = 10
 
         new_data[CONF_TIMEOUT] = _timeout
 
