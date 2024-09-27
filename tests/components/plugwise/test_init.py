@@ -249,6 +249,7 @@ async def test_entry_migration(hass: HomeAssistant, snapshot: SnapshotAssertion)
             CONF_PORT: 80,
             CONF_USERNAME: "smile",
         },
+        minor_version=1,
         version=1,
         unique_id="smile98765",
     )

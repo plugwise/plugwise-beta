@@ -12,7 +12,7 @@
     'disabled_by': None,
     'domain': 'plugwise',
     'entry_id': <ANY>,
-    'minor_version': 1,
+    'minor_version': 2,
     'options': dict({
     }),
     'pref_disable_new_entities': False,
@@ -20,6 +20,6 @@
     'source': 'user',
     'title': 'My Plugwise',
     'unique_id': 'smile98765',
-    'version': 2,
+    'version': 1,
   })
 # ---
