@@ -161,9 +161,9 @@ async def async_migrate_plugwise_entry(
     if entry.version > 1:
         return False
 
-    if entry.version == 1:
-        new_data = entry.data.copy()
-        new_data |= {CONF_TIMEOUT: _timeout }
+    if entry.minor_version < 2:
+        new_data = {**entry.data}
+        new_data[CONF_TIMEOUT] = _timeout
 
         hass.config_entries.async_update_entry(
             entry, data=new_data, version=2
