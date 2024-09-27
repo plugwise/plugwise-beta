@@ -29,7 +29,6 @@ from homeassistant.config_entries import (
 # Upstream
 from homeassistant.const import (
     ATTR_CONFIGURATION_URL,
-    CONF_API_VERSION,
     CONF_BASE,
     CONF_HOST,
     CONF_NAME,
@@ -50,6 +49,7 @@ from .const import (
     ANNA_WITH_ADAM,
     CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_REFRESH_INTERVAL,  # pw-beta option
+    CONF_VERSION,
     CONTEXT,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,  # pw-beta option
@@ -138,6 +138,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     discovery_info: ZeroconfServiceInfo | None = None
     _username: str = DEFAULT_USERNAME
     _timeout: int = DEFAULT_TIMEOUT
+    _version: str = "0.0.0"
 
     async def async_step_zeroconf(
         self, discovery_info: ZeroconfServiceInfo
@@ -207,12 +208,12 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self.context.update(
             {
                 TITLE_PLACEHOLDERS: {
-                    CONF_API_VERSION: self._version,
                     CONF_HOST: discovery_info.host,
                     CONF_NAME: _name,
                     CONF_PORT: discovery_info.port,
                     CONF_TIMEOUT: self._timeout,
                     CONF_USERNAME: self._username,
+                    CONF_VERSION: self._version,
                 },
                 ATTR_CONFIGURATION_URL: (
                     f"http://{discovery_info.host}:{discovery_info.port}"
@@ -240,8 +241,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
 
-        user_input[CONF_API_VERSION] = self._version
         user_input[CONF_TIMEOUT] = self._timeout
+        user_input[CONF_VERSION] = self._version
 
         try:
             api = await validate_input(self.hass, user_input)
