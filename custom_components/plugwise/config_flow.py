@@ -241,9 +241,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
 
-        user_input[CONF_TIMEOUT] = self._timeout
-        user_input[CONF_VERSION] = self._version
-
         try:
             api = await validate_input(self.hass, user_input)
         except ConnectionFailedError:
@@ -265,6 +262,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 data_schema=_base_schema(None, user_input),
                 errors=errors,
             )
+
+        user_input[CONF_TIMEOUT] = self._timeout
+        user_input[CONF_VERSION] = api.smile_version
 
         await self.async_set_unique_id(
             api.smile_hostname or api.gateway_id, raise_on_progress=False
