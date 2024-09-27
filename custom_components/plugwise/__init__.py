@@ -155,14 +155,8 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     if config_entry.version == 1 and entry.minor_version < 2:
         new_data = {**entry.data}
-        api = Smile(
-            entry.data[CONF_HOST],
-            entry.data[CONF_PASSWORD],
-            entry.data[CONF_PORT],
-            entry.data[CONF_USERNAME]
-        )
         _timeout = 30
-        if version.parse(api.smile_version) >= version.parse("3.2.0"):
+        if version.parse(entry.runtime_data.api.smile_version) >= version.parse("3.2.0"):
             _timeout = 10
 
         new_data[CONF_TIMEOUT] = _timeout
