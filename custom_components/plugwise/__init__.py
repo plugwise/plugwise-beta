@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from packaging import version
 from typing import Any
 
 from plugwise.exceptions import PlugwiseError
@@ -152,7 +153,7 @@ async def async_migrate_plugwise_entry(
     """Migrate old config entry."""
 
     _timeout = 30
-    if coordinator.api.smile_version >= "3.2.0":
+    if version.parse(coordinator.api.smile_version) >= version.parse("3.2.0"):
         _timeout = 10
 
     if entry.version > 1:
