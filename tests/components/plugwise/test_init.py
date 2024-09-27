@@ -237,7 +237,10 @@ async def test_migrate_unique_id_relay(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
 
-async def test_entry_migration(hass: HomeAssistant, snapshot: SnapshotAssertion) -> None:
+async def test_entry_migration(
+    hass: HomeAssistant,
+    mock_smile_anna_2: MagicMock,
+    snapshot: SnapshotAssertion) -> None:
     """Test config entry version 1 -> 2 migration."""
     entry = MockConfigEntry(
         title="My Plugwise",
@@ -254,6 +257,7 @@ async def test_entry_migration(hass: HomeAssistant, snapshot: SnapshotAssertion)
         unique_id="smile98765",
     )
 
+    entry.runtime_data = MagicMock(api=mock_smile_anna_2)
     entry.add_to_hass(hass)
 
     assert entry.version == 1
