@@ -147,8 +147,6 @@ async def async_migrate_sensor_entities(
 
 async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate old config entry."""
-
-    LOGGER.debug("HOI version: %s", entry.version)
     if entry.version > 1:
         return False
 
