@@ -16,6 +16,7 @@ from homeassistant.components import zeroconf
 from homeassistant.components.plugwise.const import (
     CONF_HOMEKIT_EMULATION,
     CONF_REFRESH_INTERVAL,
+    CONF_VERSION,
     DEFAULT_PORT,
     DOMAIN,
 )
@@ -45,6 +46,8 @@ TEST_TIMEOUT_LEGACY = 30
 TEST_TIMEOUT = 10
 TEST_USERNAME = "smile"
 TEST_USERNAME2 = "stretch"
+TEST_VERSION = "4.3.2"
+TEST_VERSION_LEGACY = "2.1.0"
 
 TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
     ip_address=TEST_HOST,
@@ -147,6 +150,7 @@ async def test_form(
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
         CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
+        CONF_VERSION: TEST_VERSION,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -193,6 +197,7 @@ async def test_zeroconf_form(
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: username,
         CONF_TIMEOUT: timeout,
+        CONF_VERSION: TEST_VERSION,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -229,6 +234,7 @@ async def test_zeroconf_stretch_form(
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME2,
         CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
+        CONF_VERSION: TEST_VERSION,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -391,6 +397,7 @@ async def test_flow_errors(
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
         CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
+        CONF_VERSION: TEST_VERSION,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -433,6 +440,7 @@ async def test_options_flow_thermo(
             CONF_HOST: TEST_HOST,
             CONF_PASSWORD: TEST_PASSWORD,
             CONF_TIMEOUT: TEST_TIMEOUT,
+            CONF_VERSION: TEST_VERSION,
         },
         minor_version=2,
         options={

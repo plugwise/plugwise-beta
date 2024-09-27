@@ -138,7 +138,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     discovery_info: ZeroconfServiceInfo | None = None
     _username: str = DEFAULT_USERNAME
     _timeout: int = DEFAULT_TIMEOUT
-    _version: str = "0.0.0"
 
     async def async_step_zeroconf(
         self, discovery_info: ZeroconfServiceInfo
@@ -213,7 +212,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     CONF_PORT: discovery_info.port,
                     CONF_TIMEOUT: self._timeout,
                     CONF_USERNAME: self._username,
-                    CONF_VERSION: self._version,
+                    CONF_VERSION: _version,
                 },
                 ATTR_CONFIGURATION_URL: (
                     f"http://{discovery_info.host}:{discovery_info.port}"
@@ -241,6 +240,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
 
+        user_input[CONF_TIMEOUT] = self._timeout
         try:
             api = await validate_input(self.hass, user_input)
         except ConnectionFailedError:
@@ -263,7 +263,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors=errors,
             )
 
-        user_input[CONF_TIMEOUT] = self._timeout
         user_input[CONF_VERSION] = api.smile_version
 
         await self.async_set_unique_id(

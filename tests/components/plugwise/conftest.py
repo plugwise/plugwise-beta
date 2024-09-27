@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from plugwise import PlugwiseData
 import pytest
 
-from homeassistant.components.plugwise.const import DOMAIN
+from homeassistant.components.plugwise.const import CONF_VERSION, DOMAIN
 from homeassistant.const import (
     CONF_HOST,
     CONF_MAC,
@@ -42,6 +42,7 @@ def mock_config_entry() -> MockConfigEntry:
             CONF_PORT: 80,
             CONF_TIMEOUT: 30,
             CONF_USERNAME: "smile",
+            CONF_VERSION: "4.3.2"
         },
         minor_version=2,
         version=1,
@@ -70,6 +71,7 @@ def mock_smile_config_flow() -> Generator[None, MagicMock, None]:
         smile.smile_model = "Test Model"
         smile.smile_model_id = "Test Model ID"
         smile.smile_name = "Test Smile Name"
+        smile.smile_version = "4.3.2"
         smile.connect.return_value = True
         yield smile
 
