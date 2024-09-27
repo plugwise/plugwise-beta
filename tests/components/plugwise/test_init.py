@@ -239,7 +239,7 @@ async def test_migrate_unique_id_relay(
 
 async def test_entry_migration(hass: HomeAssistant, snapshot: SnapshotAssertion) -> None:
     """Test config entry version 1 -> 2 migration."""
-    mock_config_entry = MockConfigEntry(
+    entry = MockConfigEntry(
         title="My Plugwise",
         domain=DOMAIN,
         data={
@@ -253,11 +253,15 @@ async def test_entry_migration(hass: HomeAssistant, snapshot: SnapshotAssertion)
         unique_id="smile98765",
     )
 
-    mock_config_entry.add_to_hass(hass)
-    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    entry.add_to_hass(hass)
+
+    assert entry.version == 1
+    assert entry.minor_version == 1
+
+    await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
 
-    assert hass.config_entries.async_get_entry(mock_config_entry.entry_id) == snapshot
+    assert hass.config_entries.async_get_entry(entry.entry_id) == snapshot
 
 async def test_update_device(
     hass: HomeAssistant,
