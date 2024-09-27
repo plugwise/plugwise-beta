@@ -1,7 +1,6 @@
 """Tests for the Plugwise Climate integration."""
 from datetime import timedelta
 import logging
-from syrupy import SnapshotAssertion
 from unittest.mock import MagicMock, patch
 
 from plugwise.exceptions import (
@@ -21,6 +20,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.setup import async_setup_component
+from syrupy import SnapshotAssertion
 
 from tests.common import MockConfigEntry, async_fire_time_changed
 
