@@ -131,7 +131,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
 class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise Smile."""
 
-    VERSION = 1
+    VERSION = 2
 
     discovery_info: ZeroconfServiceInfo | None = None
     _username: str = DEFAULT_USERNAME
