@@ -155,7 +155,7 @@ async def async_migrate_plugwise_entry(
     if coordinator.api.smile_version >= "3.2.0":
         _timeout = 10
 
-    if entry_version > 1:
+    if entry.version > 1:
         return False
 
     if entry.version == 1:
