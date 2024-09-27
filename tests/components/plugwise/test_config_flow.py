@@ -429,12 +429,17 @@ async def test_options_flow_thermo(
     entry = MockConfigEntry(
         domain=DOMAIN,
         title=CONF_NAME,
-        data={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
+        data={
+            CONF_HOST: TEST_HOST,
+            CONF_PASSWORD: TEST_PASSWORD,
+            CONF_TIMEOUT: TEST_TIMEOUT,
+        },
         options={
             CONF_HOMEKIT_EMULATION: False,
             CONF_REFRESH_INTERVAL: 1.5,
             CONF_SCAN_INTERVAL: 60,
         },
+        version=2,
     )
     entry.runtime_data = MagicMock(api=mock_smile_anna_2)
     entry.add_to_hass(hass)
@@ -453,7 +458,7 @@ async def test_options_flow_thermo(
         )
 
         assert result["type"] == FlowResultType.CREATE_ENTRY
-        assert result["data"] == {
+        assert result["options"] == {
             CONF_HOMEKIT_EMULATION: False,
             CONF_REFRESH_INTERVAL: 3.0,
             CONF_SCAN_INTERVAL: 60,
