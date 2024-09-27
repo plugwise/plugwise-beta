@@ -29,6 +29,7 @@ from homeassistant.config_entries import (
 # Upstream
 from homeassistant.const import (
     ATTR_CONFIGURATION_URL,
+    CONF_API_VERSION,
     CONF_BASE,
     CONF_HOST,
     CONF_NAME,
@@ -206,6 +207,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self.context.update(
             {
                 TITLE_PLACEHOLDERS: {
+                    CONF_API_VERSION: self._version,
                     CONF_HOST: discovery_info.host,
                     CONF_NAME: _name,
                     CONF_PORT: discovery_info.port,
@@ -238,6 +240,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
 
+        user_input[CONF_API_VERSION] = self._version
         user_input[CONF_TIMEOUT] = self._timeout
 
         try:
