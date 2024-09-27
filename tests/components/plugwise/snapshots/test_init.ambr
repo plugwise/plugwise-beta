@@ -20,6 +20,6 @@
     'source': 'user',
     'title': 'My Plugwise',
     'unique_id': 'smile98765',
-    'version': 1,
+    'version': 2,
   })
 # ---
