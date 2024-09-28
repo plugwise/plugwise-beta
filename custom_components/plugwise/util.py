@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from collections.abc import Awaitable, Callable, Coroutine
-from packaging import version
 from typing import Any, Concatenate
 
 from plugwise.exceptions import PlugwiseException
 
 from homeassistant.exceptions import HomeAssistantError
+from packaging import version
 
 from .const import DEFAULT_TIMEOUT
 from .entity import PlugwiseEntity
