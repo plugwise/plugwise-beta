@@ -17,7 +17,6 @@ COORDINATOR: Final = "coordinator"
 CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta options
 CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta options
 CONF_MANUAL_PATH: Final = "Enter Manually"
-CONF_VERSION: Final = "version"
 DEVICES: Final = "devices"
 GATEWAY: Final = "gateway"
 LOCATION: Final = "location"
