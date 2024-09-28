@@ -19,6 +19,7 @@ from packaging import version
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
+    CONF_VERSION,
     DOMAIN,
     LOGGER,
     PLATFORMS,
@@ -153,7 +154,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if entry.version == 1 and entry.minor_version < 2:
         new_data = {**entry.data}
         _timeout = 30
-        if version.parse(entry.data["version"]) >= version.parse("3.2.0"):
+        if version.parse(entry.data[CONF_VERSION]) >= version.parse("3.2.0"):
             _timeout = 10
 
         new_data[CONF_TIMEOUT] = _timeout

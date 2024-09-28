@@ -107,8 +107,14 @@ def _base_schema(
                 ),
             }
         )
-
     return vol.Schema({vol.Required(CONF_PASSWORD): str})
+
+
+def get_timeout_for_version(version_str: str) -> int:
+    """Determine timeout value based on gateway version."""
+    if version.parse(version_str) >= version.parse("3.2.0"):
+        return 10
+    return DEFAULT_TIMEOUT
 
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
@@ -175,8 +181,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         _version = _properties.get(VERSION, "n/a")
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
 
-        if version.parse(_version) >= version.parse("3.2.0"):
-            self._timeout = 10
+        self._timeout = get_timeout_for_version(_version)
 
         # This is an Anna, but we already have config entries.
         # Assuming that the user has already configured Adam, aborting discovery.
@@ -269,7 +274,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             api.smile_hostname or api.gateway_id, raise_on_progress=False
         )
         self._abort_if_unique_id_configured()
-
         return self.async_create_entry(title=api.smile_name, data=user_input)
 
     @staticmethod
@@ -294,7 +298,6 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
             return self.async_create_entry(title="", data=self._options)
-
         return self.async_show_form(step_id="none")
 
     async def async_step_init(
@@ -338,5 +341,4 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
                 ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=10.0)),
             }
         )  # pw-beta
-
         return self.async_show_form(step_id=INIT, data_schema=vol.Schema(data))

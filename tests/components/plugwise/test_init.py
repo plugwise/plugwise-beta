@@ -14,9 +14,8 @@ from plugwise.exceptions import (
 import pytest
 
 from freezegun.api import FrozenDateTimeFactory
-from homeassistant.components.plugwise.const import DOMAIN
+from homeassistant.components.plugwise.const import CONF_VERSION, DOMAIN
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.components.plugwise.const import CONF_VERSION
 from homeassistant.const import (
     CONF_HOST,
     CONF_MAC,
