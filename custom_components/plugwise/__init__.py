@@ -15,18 +15,16 @@ from homeassistant.core import (
     callback,
 )
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from packaging import version
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
-    CONF_VERSION,
-    DEFAULT_TIMEOUT,
     DOMAIN,
     LOGGER,
     PLATFORMS,
     SERVICE_DELETE,  # pw-beta delete_notifications
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .util import get_timeout_for_version
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
@@ -159,13 +157,7 @@ async def async_migrate_plugwise_entry(
 
     if entry.version == 1 and entry.minor_version < 2:
         new_data = {**entry.data}
-        new_data[CONF_VERSION] = coordinator.api.smile_version
-        timeout = DEFAULT_TIMEOUT
-        if version.parse(new_data[CONF_VERSION]) >= version.parse("3.2.0"):
-            timeout = 10
-
-        new_data[CONF_TIMEOUT] = timeout
-
+        new_data[CONF_TIMEOUT] = get_timeout_for_version(coordinator.api.smile_version)
         LOGGER.debug(
             "Migration to version %s.%s successful",
             entry.version,

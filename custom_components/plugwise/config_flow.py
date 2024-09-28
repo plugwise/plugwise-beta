@@ -43,13 +43,11 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from packaging import version
 
 from .const import (
     ANNA_WITH_ADAM,
     CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_REFRESH_INTERVAL,  # pw-beta option
-    CONF_VERSION,
     CONTEXT,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,  # pw-beta option
@@ -74,6 +72,7 @@ from .const import (
 
 # Upstream
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .util import get_timeout_for_version
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
@@ -108,13 +107,6 @@ def _base_schema(
             }
         )
     return vol.Schema({vol.Required(CONF_PASSWORD): str})
-
-
-def get_timeout_for_version(version_str: str) -> int:
-    """Determine timeout value based on gateway version."""
-    if version.parse(version_str) >= version.parse("3.2.0"):
-        return 10
-    return DEFAULT_TIMEOUT
 
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
@@ -217,7 +209,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     CONF_PORT: discovery_info.port,
                     CONF_TIMEOUT: self._timeout,
                     CONF_USERNAME: self._username,
-                    CONF_VERSION: _version,
                 },
                 ATTR_CONFIGURATION_URL: (
                     f"http://{discovery_info.host}:{discovery_info.port}"
@@ -267,8 +258,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 data_schema=_base_schema(None, user_input),
                 errors=errors,
             )
-
-        user_input[CONF_VERSION] = api.smile_version
 
         await self.async_set_unique_id(
             api.smile_hostname or api.gateway_id, raise_on_progress=False

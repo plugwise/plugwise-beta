@@ -14,7 +14,7 @@ from plugwise.exceptions import (
 import pytest
 
 from freezegun.api import FrozenDateTimeFactory
-from homeassistant.components.plugwise.const import CONF_VERSION, DOMAIN
+from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import (
     CONF_HOST,
@@ -251,7 +251,6 @@ async def test_entry_migration(
             CONF_PASSWORD: "test-password",
             CONF_PORT: 80,
             CONF_USERNAME: "smile",
-            CONF_VERSION: "4.3.2",
         },
         minor_version=1,
         version=1,

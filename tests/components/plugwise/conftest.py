@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from plugwise import PlugwiseData
 import pytest
 
-from homeassistant.components.plugwise.const import CONF_VERSION, DOMAIN
+from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.const import (
     CONF_HOST,
     CONF_MAC,
@@ -42,7 +42,6 @@ def mock_config_entry() -> MockConfigEntry:
             CONF_PORT: 80,
             CONF_TIMEOUT: 30,
             CONF_USERNAME: "smile",
-            CONF_VERSION: "4.3.2"
         },
         minor_version=2,
         version=1,
