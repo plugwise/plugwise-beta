@@ -70,7 +70,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             ),
         )
 
-        LOGGER.debug("HOI entry data: %s", self.config_entry.data)
         self.api = Smile(
             host=self.config_entry.data[CONF_HOST],
             username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
