@@ -20,6 +20,7 @@ from packaging import version
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
     CONF_VERSION,
+    DEFAULT_TIMEOUT,
     DOMAIN,
     LOGGER,
     PLATFORMS,
@@ -47,6 +48,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     await coordinator.async_config_entry_first_refresh()
 
     await async_migrate_sensor_entities(hass, coordinator)
+    await async_migrate_plugwise_entry(hass, coordinator, entry)
 
     entry.runtime_data = coordinator
 
@@ -146,18 +148,23 @@ async def async_migrate_sensor_entities(
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
-async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Migrate old config entry."""
+async def async_migrate_plugwise_entry(
+    hass: HomeAssistant,
+    coordinator: PlugwiseDataUpdateCoordinator,
+    entry: ConfigEntry
+) -> bool:
+    """Migrate to new config entry."""
     if entry.version > 1:
         return False
 
     if entry.version == 1 and entry.minor_version < 2:
         new_data = {**entry.data}
-        _timeout = 30
-        if version.parse(entry.data[CONF_VERSION]) >= version.parse("3.2.0"):
-            _timeout = 10
+        new_data[CONF_VERSION] = coordinator.api.smile_version
+        timeout = DEFAULT_TIMEOUT
+        if version.parse(new_data[CONF_VERSION]) >= version.parse("3.2.0"):
+            timeout = 10
 
-        new_data[CONF_TIMEOUT] = _timeout
+        new_data[CONF_TIMEOUT] = timeout
 
         hass.config_entries.async_update_entry(
             entry, data=new_data, minor_version=2, version=1
