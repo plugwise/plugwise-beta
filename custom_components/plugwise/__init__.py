@@ -166,6 +166,11 @@ async def async_migrate_plugwise_entry(
 
         new_data[CONF_TIMEOUT] = timeout
 
+        LOGGER.debug(
+            "Migration to version %s.%s successful",
+            entry.version,
+            entry.minor_version,
+        )
         hass.config_entries.async_update_entry(
             entry, data=new_data, minor_version=2, version=1
         )
