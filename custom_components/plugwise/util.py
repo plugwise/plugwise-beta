@@ -20,7 +20,11 @@ from .entity import PlugwiseEntity
 
 
 def get_timeout_for_version(version_str: str) -> int:
-    """Determine timeout value based on gateway version."""
+    """Determine timeout value based on gateway version.
+    
+    A gateway firmware version > 3.2.0 should mean a latest-generation-device, allowing for a timeout of 10s.
+    Legacy devices require a timeout of 30s.
+    """
     if version.parse(version_str) >= version.parse("3.2.0"):
         return 10
     return DEFAULT_TIMEOUT
