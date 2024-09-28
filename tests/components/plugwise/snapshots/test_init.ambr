@@ -8,6 +8,7 @@
       'port': 80,
       'timeout': 10,
       'username': 'smile',
+      'version': '4.3.2',
     }),
     'disabled_by': None,
     'domain': 'plugwise',
