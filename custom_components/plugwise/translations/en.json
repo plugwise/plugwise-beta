@@ -20,7 +20,7 @@
     "step": {
       "user": {
         "title": "Set up Plugwise Adam/Smile/Stretch",
-        "description": "Enter your Plugwise device: (setup can take up to 90s!)",
+        "description": "Enter your Plugwise device: (setup can take up to 90s)",
         "data": {
           "password": "ID",
           "username": "Username",
