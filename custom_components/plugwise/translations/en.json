@@ -19,8 +19,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect to the Plugwise Adam/Smile/Stretch",
-        "description": "Please enter:",
+        "title": "Set up Plugwise (can take up to 90s!)",
+        "description": "Enter your Plugwise device:",
         "data": {
           "password": "ID",
           "username": "Username",

@@ -19,8 +19,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "Verbinden met de Plugwise Adam/Smile/Stretch",
-        "description": "Aub invoeren:",
+        "title": "Plugwise installeren (kan tot 90s duren!)",
+        "description": "Van uw Plugwise apparaat voer in:",
         "data": {
           "password": "ID",
           "username": "Gebruikersnaam",
