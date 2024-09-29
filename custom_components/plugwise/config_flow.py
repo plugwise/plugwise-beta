@@ -35,6 +35,7 @@ from homeassistant.const import (
     CONF_PASSWORD,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
+    CONF_TIMEOUT,
     CONF_USERNAME,
 )
 
@@ -50,6 +51,7 @@ from .const import (
     CONTEXT,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,  # pw-beta option
+    DEFAULT_TIMEOUT,
     DEFAULT_USERNAME,
     DOMAIN,
     FLOW_ID,
@@ -70,6 +72,7 @@ from .const import (
 
 # Upstream
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .util import get_timeout_for_version
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
@@ -103,7 +106,6 @@ def _base_schema(
                 ),
             }
         )
-
     return vol.Schema({vol.Required(CONF_PASSWORD): str})
 
 
@@ -118,7 +120,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
         password=data[CONF_PASSWORD],
         port=data[CONF_PORT],
         username=data[CONF_USERNAME],
-        timeout=30,
+        timeout=data[CONF_TIMEOUT],
         websession=websession,
     )
     await api.connect()
@@ -129,9 +131,11 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise Smile."""
 
     VERSION = 1
+    MINOR_VERSION = 2
 
     discovery_info: ZeroconfServiceInfo | None = None
     _username: str = DEFAULT_USERNAME
+    _timeout: int = DEFAULT_TIMEOUT
 
     async def async_step_zeroconf(
         self, discovery_info: ZeroconfServiceInfo
@@ -147,9 +151,10 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     self.hass,
                     {
                         CONF_HOST: discovery_info.host,
+                        CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
                         CONF_PORT: discovery_info.port,
                         CONF_USERNAME: config_entry.data[CONF_USERNAME],
-                        CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
+                        CONF_TIMEOUT: self._timeout,
                     },
                 )
             except Exception:  # noqa: BLE001
@@ -167,6 +172,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         _product = _properties.get(PRODUCT, None)
         _version = _properties.get(VERSION, "n/a")
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
+
+        self._timeout = get_timeout_for_version(_version)
 
         # This is an Anna, but we already have config entries.
         # Assuming that the user has already configured Adam, aborting discovery.
@@ -200,6 +207,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     CONF_HOST: discovery_info.host,
                     CONF_NAME: _name,
                     CONF_PORT: discovery_info.port,
+                    CONF_TIMEOUT: self._timeout,
                     CONF_USERNAME: self._username,
                 },
                 ATTR_CONFIGURATION_URL: (
@@ -227,6 +235,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_HOST] = self.discovery_info.host
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
+
+        user_input[CONF_TIMEOUT] = self._timeout
         try:
             api = await validate_input(self.hass, user_input)
         except ConnectionFailedError:
@@ -253,7 +263,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             api.smile_hostname or api.gateway_id, raise_on_progress=False
         )
         self._abort_if_unique_id_configured()
-
         return self.async_create_entry(title=api.smile_name, data=user_input)
 
     @staticmethod
@@ -278,7 +287,6 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
             return self.async_create_entry(title="", data=self._options)
-
         return self.async_show_form(step_id="none")
 
     async def async_step_init(
@@ -322,5 +330,4 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
                 ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=10.0)),
             }
         )  # pw-beta
-
         return self.async_show_form(step_id=INIT, data_schema=vol.Schema(data))

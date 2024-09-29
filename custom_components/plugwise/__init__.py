@@ -8,7 +8,7 @@ from plugwise.exceptions import PlugwiseError
 import voluptuous as vol  # pw-beta delete_notification
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
+from homeassistant.const import CONF_TIMEOUT, Platform
 from homeassistant.core import (
     HomeAssistant,
     ServiceCall,  # pw-beta delete_notification
@@ -24,6 +24,7 @@ from .const import (
     SERVICE_DELETE,  # pw-beta delete_notifications
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
+from .util import get_timeout_for_version
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
@@ -44,7 +45,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
 
-    migrate_sensor_entities(hass, coordinator)
+    await async_migrate_sensor_entities(hass, coordinator)
+    await async_migrate_plugwise_entry(hass, coordinator, entry)
 
     entry.runtime_data = coordinator
 
@@ -123,7 +125,7 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
     # No migration needed
     return None
 
-def migrate_sensor_entities(
+async def async_migrate_sensor_entities(
     hass: HomeAssistant,
     coordinator: PlugwiseDataUpdateCoordinator,
 ) -> None:
@@ -143,3 +145,27 @@ def migrate_sensor_entities(
             new_unique_id = f"{device_id}-outdoor_air_temperature"
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+
+async def async_migrate_plugwise_entry(
+    hass: HomeAssistant,
+    coordinator: PlugwiseDataUpdateCoordinator,
+    entry: ConfigEntry
+) -> bool:
+    """Migrate to new config entry."""
+    if entry.version > 1:
+        return False
+
+    if entry.version == 1 and entry.minor_version < 2:
+        new_data = {**entry.data}
+        new_data[CONF_TIMEOUT] = get_timeout_for_version(coordinator.api.smile_version)
+        hass.config_entries.async_update_entry(
+            entry, data=new_data, minor_version=2, version=1
+        )
+        LOGGER.debug(
+            "Migration to version %s.%s successful",
+            entry.version,
+            entry.minor_version,
+        )
+        return True
+
+    return False

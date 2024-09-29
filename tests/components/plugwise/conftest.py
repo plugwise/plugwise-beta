@@ -15,6 +15,7 @@ from homeassistant.const import (
     CONF_MAC,
     CONF_PASSWORD,
     CONF_PORT,
+    CONF_TIMEOUT,
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
@@ -39,8 +40,11 @@ def mock_config_entry() -> MockConfigEntry:
             CONF_MAC: "AA:BB:CC:DD:EE:FF",
             CONF_PASSWORD: "test-password",
             CONF_PORT: 80,
+            CONF_TIMEOUT: 30,
             CONF_USERNAME: "smile",
         },
+        minor_version=2,
+        version=1,
         unique_id="smile98765",
     )
 
@@ -66,6 +70,7 @@ def mock_smile_config_flow() -> Generator[None, MagicMock, None]:
         smile.smile_model = "Test Model"
         smile.smile_model_id = "Test Model ID"
         smile.smile_name = "Test Smile Name"
+        smile.smile_version = "4.3.2"
         smile.connect.return_value = True
         yield smile
 

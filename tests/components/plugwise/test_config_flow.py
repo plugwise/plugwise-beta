@@ -1,4 +1,5 @@
 """Test the Plugwise config flow."""
+
 from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -27,6 +28,7 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_SCAN_INTERVAL,
     CONF_SOURCE,
+    CONF_TIMEOUT,
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
@@ -39,9 +41,10 @@ TEST_HOSTNAME = "smileabcdef"
 TEST_HOSTNAME2 = "stretchabc"
 TEST_PASSWORD = "test_password"
 TEST_PORT = 81
+TEST_TIMEOUT_LEGACY = 30
+TEST_TIMEOUT = 10
 TEST_USERNAME = "smile"
 TEST_USERNAME2 = "stretch"
-
 TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
     ip_address=TEST_HOST,
     ip_addresses=[TEST_HOST],
@@ -51,7 +54,7 @@ TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
     port=DEFAULT_PORT,
     properties={
         "product": "smile",
-        "version": "1.2.3",
+        "version": "4.1.2",
         "hostname": f"{TEST_HOSTNAME}.local.",
     },
     type="mock_type",
@@ -78,7 +81,7 @@ TEST_DISCOVERY_ANNA = ZeroconfServiceInfo(
     port=DEFAULT_PORT,
     properties={
         "product": "smile_thermo",
-        "version": "1.2.3",
+        "version": "3.2.1",
         "hostname": f"{TEST_HOSTNAME}.local.",
     },
     type="mock_type",
@@ -92,7 +95,7 @@ TEST_DISCOVERY_ADAM = ZeroconfServiceInfo(
     port=DEFAULT_PORT,
     properties={
         "product": "smile_open_therm",
-        "version": "1.2.3",
+        "version": "4.3.2",
         "hostname": f"{TEST_HOSTNAME2}.local.",
     },
     type="mock_type",
@@ -142,6 +145,7 @@ async def test_form(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
+        CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -149,10 +153,10 @@ async def test_form(
 
 
 @pytest.mark.parametrize(
-    ("discovery", "username"),
+    ("discovery", "parameters",),
     [
-        (TEST_DISCOVERY, TEST_USERNAME),
-        (TEST_DISCOVERY2, TEST_USERNAME2),
+        (TEST_DISCOVERY, (TEST_USERNAME, TEST_TIMEOUT)),
+        (TEST_DISCOVERY2, (TEST_USERNAME2, TEST_TIMEOUT_LEGACY)),
     ],
 )
 async def test_zeroconf_form(
@@ -160,13 +164,13 @@ async def test_zeroconf_form(
     mock_setup_entry: AsyncMock,
     mock_smile_config_flow: MagicMock,
     discovery: ZeroconfServiceInfo,
-    username: str,
+    parameters: tuple[str, str],
 ) -> None:
     """Test config flow for Smile devices."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={CONF_SOURCE: SOURCE_ZEROCONF},
-        data=TEST_DISCOVERY,
+        data=discovery,
     )
     assert result.get("type") == FlowResultType.FORM
     assert result.get("errors") == {}
@@ -181,11 +185,13 @@ async def test_zeroconf_form(
 
     assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
+    username, timeout = parameters
     assert result2.get("data") == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
-        CONF_USERNAME: TEST_USERNAME,
+        CONF_USERNAME: username,
+        CONF_TIMEOUT: timeout,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -221,6 +227,7 @@ async def test_zeroconf_stretch_form(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME2,
+        CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -382,6 +389,7 @@ async def test_flow_errors(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
+        CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -420,12 +428,18 @@ async def test_options_flow_thermo(
     entry = MockConfigEntry(
         domain=DOMAIN,
         title=CONF_NAME,
-        data={CONF_HOST: TEST_HOST, CONF_PASSWORD: TEST_PASSWORD},
+        data={
+            CONF_HOST: TEST_HOST,
+            CONF_PASSWORD: TEST_PASSWORD,
+            CONF_TIMEOUT: TEST_TIMEOUT,
+        },
+        minor_version=2,
         options={
             CONF_HOMEKIT_EMULATION: False,
             CONF_REFRESH_INTERVAL: 1.5,
             CONF_SCAN_INTERVAL: 60,
         },
+        version=1,
     )
     entry.runtime_data = MagicMock(api=mock_smile_anna_2)
     entry.add_to_hass(hass)

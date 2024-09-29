@@ -159,7 +159,7 @@ DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
     "stretch": timedelta(seconds=60),
     "thermostat": timedelta(seconds=60),
 }
-DEFAULT_TIMEOUT: Final[int] = 10
+DEFAULT_TIMEOUT: Final[int] = 30
 DEFAULT_USERNAME: Final = "smile"
 
 # --- Const for Plugwise Smile and Stretch

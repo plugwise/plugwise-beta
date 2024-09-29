@@ -18,6 +18,7 @@ from homeassistant.const import (
     CONF_PASSWORD,
     CONF_PORT,
     CONF_SCAN_INTERVAL,  # pw-beta options
+    CONF_TIMEOUT,
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
@@ -30,6 +31,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from .const import (
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_TIMEOUT,
     DEFAULT_USERNAME,
     DOMAIN,
     GATEWAY_ID,
@@ -73,7 +75,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
             password=self.config_entry.data[CONF_PASSWORD],
             port=self.config_entry.data.get(CONF_PORT, DEFAULT_PORT),
-            timeout=30,
+            timeout=self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._current_devices: set[str] = set()
@@ -115,11 +117,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             raise ConfigEntryError("Device with unsupported firmware") from err
         else:
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
-            self._async_add_remove_devices(data, self.config_entry)
+            await self.async_add_remove_devices(data, self.config_entry)
 
         return data
 
-    def _async_add_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
+    async def async_add_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new or removed devices
         self.new_devices = set(data.devices) - self._current_devices
@@ -127,9 +129,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self._current_devices = set(data.devices)
 
         if removed_devices:
-            self._async_remove_devices(data, entry)
+            await self.async_remove_devices(data, entry)
 
-    def _async_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
+    async def async_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
         """Clean registries when removed devices found."""
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(

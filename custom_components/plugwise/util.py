@@ -8,13 +8,26 @@ from typing import Any, Concatenate
 from plugwise.exceptions import PlugwiseException
 
 from homeassistant.exceptions import HomeAssistantError
+from packaging import version
 
+from .const import DEFAULT_TIMEOUT
 from .entity import PlugwiseEntity
 
 # For reference:
 # _PlugwiseEntityT = TypeVar("_PlugwiseEntityT", bound=PlugwiseEntity)
 # _R = TypeVar("_R")
 # _P = ParamSpec("_P")
+
+
+def get_timeout_for_version(version_str: str) -> int:
+    """Determine timeout value based on gateway version.
+
+    A gateway firmware version > 3.2.0 should mean a latest-generation-device, allowing for a timeout of 10s.
+    Legacy devices require a timeout of 30s.
+    """
+    if version.parse(version_str) >= version.parse("3.2.0"):
+        return 10
+    return DEFAULT_TIMEOUT
 
 
 def plugwise_command[_PlugwiseEntityT: PlugwiseEntity, **_P, _R](

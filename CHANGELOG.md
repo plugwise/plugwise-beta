@@ -2,10 +2,11 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.53.3
 
 - Test-code improvements.
 - Fix errors showing after Core 2023.9.3 release.
+- Set the connection-timeout based on the device discovered, 10s for actual devices, legacy devices require a 30s timeout.
 
 ## v0.53.2
 
