@@ -79,40 +79,41 @@ type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 # Upstream basically the whole file (excluding the pw-beta options)
 
 
-def _base_schema(
-    discovery_info: ZeroconfServiceInfo | None,
-    user_input: dict[str, Any] | None,
+def base_schema(
+    cf_input: ZeroconfServiceInfo | dict[str, Any] | None,
 ) -> vol.Schema:
     """Generate base schema for gateways."""
-    if not discovery_info:
-        if not user_input:
+    if cf_input is not None:
+        if isinstance(cf_input, ZeroconfServiceInfo):
+            return vol.Schema({vol.Required(CONF_PASSWORD): str})
+        else:
             return vol.Schema(
                 {
-                    vol.Required(CONF_PASSWORD): str,
-                    vol.Required(CONF_HOST): str,
-                    vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
-                    vol.Required(CONF_USERNAME, default=SMILE): vol.In(
+                    vol.Required(CONF_HOST, default=user_input[CONF_HOST]): str,
+                    vol.Required(CONF_PASSWORD, default=user_input[CONF_PASSWORD]): str,
+                    vol.Optional(CONF_PORT, default=user_input[CONF_PORT]): int,
+                    vol.Required(CONF_USERNAME, default=user_input[CONF_USERNAME]): vol.In(
                         {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
                     ),
                 }
             )
-        return vol.Schema(
-            {
-                vol.Required(CONF_PASSWORD, default=user_input[CONF_PASSWORD]): str,
-                vol.Required(CONF_HOST, default=user_input[CONF_HOST]): str,
-                vol.Optional(CONF_PORT, default=user_input[CONF_PORT]): int,
-                vol.Required(CONF_USERNAME, default=user_input[CONF_USERNAME]): vol.In(
-                    {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
-                ),
-            }
-        )
-    return vol.Schema({vol.Required(CONF_PASSWORD): str})
+
+    return vol.Schema(
+        {
+            vol.Required(CONF_HOST): str,
+            vol.Required(CONF_PASSWORD): str,
+            vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
+            vol.Required(CONF_USERNAME, default=SMILE): vol.In(
+                {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
+            ),
+        }
+    )
 
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
     """Validate whether the user input allows us to connect to the gateway.
 
-    Data has the keys from _base_schema() with values provided by the user.
+    Data has the keys from base_schema() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
@@ -134,8 +135,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     MINOR_VERSION = 2
 
     discovery_info: ZeroconfServiceInfo | None = None
-    _username: str = DEFAULT_USERNAME
     _timeout: int = DEFAULT_TIMEOUT
+    _username: str = DEFAULT_USERNAME
 
     async def async_step_zeroconf(
         self, discovery_info: ZeroconfServiceInfo
@@ -227,7 +228,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if not user_input:
             return self.async_show_form(
                 step_id=SOURCE_USER,
-                data_schema=_base_schema(self.discovery_info, None),
+                data_schema=base_schema(self.discovery_info),
                 errors=errors,
             )
 
@@ -255,7 +256,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if errors:
             return self.async_show_form(
                 step_id=SOURCE_USER,
-                data_schema=_base_schema(None, user_input),
+                data_schema=base_schema(user_input),
                 errors=errors,
             )
 
@@ -263,6 +264,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             api.smile_hostname or api.gateway_id, raise_on_progress=False
         )
         self._abort_if_unique_id_configured()
+
         return self.async_create_entry(title=api.smile_name, data=user_input)
 
     @staticmethod
