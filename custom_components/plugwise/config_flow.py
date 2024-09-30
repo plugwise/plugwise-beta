@@ -86,17 +86,17 @@ def base_schema(
     if cf_input is not None:
         if isinstance(cf_input, ZeroconfServiceInfo):
             return vol.Schema({vol.Required(CONF_PASSWORD): str})
-        else:
-            return vol.Schema(
-                {
-                    vol.Required(CONF_HOST, default=cf_input[CONF_HOST]): str,
-                    vol.Required(CONF_PASSWORD, default=cf_input[CONF_PASSWORD]): str,
-                    vol.Optional(CONF_PORT, default=cf_input[CONF_PORT]): int,
-                    vol.Required(CONF_USERNAME, default=cf_input[CONF_USERNAME]): vol.In(
-                        {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
-                    ),
-                }
-            )
+
+        return vol.Schema(
+            {
+                vol.Required(CONF_HOST, default=cf_input[CONF_HOST]): str,
+                vol.Required(CONF_PASSWORD, default=cf_input[CONF_PASSWORD]): str,
+                vol.Optional(CONF_PORT, default=cf_input[CONF_PORT]): int,
+                vol.Required(CONF_USERNAME, default=cf_input[CONF_USERNAME]): vol.In(
+                    {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
+                ),
+            }
+        )
 
     return vol.Schema(
         {
@@ -142,7 +142,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, discovery_info: ZeroconfServiceInfo
     ) -> ConfigFlowResult:
         """Prepare configuration for a discovered Plugwise Smile."""
-        self.discovery_info = discovery_info
         _properties = discovery_info.properties
 
         unique_id = discovery_info.hostname.split(".")[0].split("-")[0]
