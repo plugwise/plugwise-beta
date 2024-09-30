@@ -169,7 +169,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if DEFAULT_USERNAME not in unique_id:
             self._username = STRETCH_USERNAME
-        _product = _properties.get(PRODUCT, None)
+        _product = _properties.get(PRODUCT, "Unknown Smile")
         _version = _properties.get(VERSION, "n/a")
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
 
@@ -257,7 +257,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             api.smile_hostname or api.gateway_id, raise_on_progress=False
         )
         self._abort_if_unique_id_configured()
-
         return self.async_create_entry(title=api.smile_name, data=user_input)
 
     @staticmethod
