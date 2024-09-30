@@ -83,27 +83,27 @@ def base_schema(
     cf_input: ZeroconfServiceInfo | dict[str, Any] | None,
 ) -> vol.Schema:
     """Generate base schema for gateways."""
-    if cf_input is not None:
-        if isinstance(cf_input, ZeroconfServiceInfo):
-            return vol.Schema({vol.Required(CONF_PASSWORD): str})
-
+    if not cf_input:
         return vol.Schema(
             {
-                vol.Required(CONF_HOST, default=cf_input[CONF_HOST]): str,
-                vol.Required(CONF_PASSWORD, default=cf_input[CONF_PASSWORD]): str,
-                vol.Optional(CONF_PORT, default=cf_input[CONF_PORT]): int,
-                vol.Required(CONF_USERNAME, default=cf_input[CONF_USERNAME]): vol.In(
+                vol.Required(CONF_HOST): str,
+                vol.Required(CONF_PASSWORD): str,
+                vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
+                vol.Required(CONF_USERNAME, default=SMILE): vol.In(
                     {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
                 ),
             }
         )
 
+    if isinstance(cf_input, ZeroconfServiceInfo):
+        return vol.Schema({vol.Required(CONF_PASSWORD): str})
+
     return vol.Schema(
         {
-            vol.Required(CONF_HOST): str,
-            vol.Required(CONF_PASSWORD): str,
-            vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
-            vol.Required(CONF_USERNAME, default=SMILE): vol.In(
+            vol.Required(CONF_HOST, default=cf_input[CONF_HOST]): str,
+            vol.Required(CONF_PASSWORD, default=cf_input[CONF_PASSWORD]): str,
+            vol.Optional(CONF_PORT, default=cf_input[CONF_PORT]): int,
+            vol.Required(CONF_USERNAME, default=cf_input[CONF_USERNAME]): vol.In(
                 {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
             ),
         }
