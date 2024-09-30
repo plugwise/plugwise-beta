@@ -89,10 +89,10 @@ def base_schema(
         else:
             return vol.Schema(
                 {
-                    vol.Required(CONF_HOST, default=user_input[CONF_HOST]): str,
-                    vol.Required(CONF_PASSWORD, default=user_input[CONF_PASSWORD]): str,
-                    vol.Optional(CONF_PORT, default=user_input[CONF_PORT]): int,
-                    vol.Required(CONF_USERNAME, default=user_input[CONF_USERNAME]): vol.In(
+                    vol.Required(CONF_HOST, default=cf_input[CONF_HOST]): str,
+                    vol.Required(CONF_PASSWORD, default=cf_input[CONF_PASSWORD]): str,
+                    vol.Optional(CONF_PORT, default=cf_input[CONF_PORT]): int,
+                    vol.Required(CONF_USERNAME, default=cf_input[CONF_USERNAME]): vol.In(
                         {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
                     ),
                 }
