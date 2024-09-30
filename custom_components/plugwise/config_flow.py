@@ -83,7 +83,7 @@ def base_schema(
     cf_input: ZeroconfServiceInfo | dict[str, Any] | None,
 ) -> vol.Schema:
     """Generate base schema for gateways."""
-    if not cf_input:
+    if not cf_input:  # no discovery- or user-input available
         return vol.Schema(
             {
                 vol.Required(CONF_HOST): str,
