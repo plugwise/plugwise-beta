@@ -275,6 +275,29 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
     """Plugwise option flow."""
 
+    def _create_options_schema(self, coordinator):
+        interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]  # pw-beta options
+        schema = {
+            vol.Optional(
+                CONF_SCAN_INTERVAL,
+                default=self._options.get(CONF_SCAN_INTERVAL, interval.seconds),
+            ): vol.All(cv.positive_int, vol.Clamp(min=10)),
+        }  # pw-beta
+        
+        if coordinator.api.smile_type == THERMOSTAT:
+            schema.update({
+                vol.Optional(
+                    CONF_HOMEKIT_EMULATION,
+                    default=self._options.get(CONF_HOMEKIT_EMULATION, False),
+                ): vol.All(cv.boolean),
+                vol.Optional(
+                    CONF_REFRESH_INTERVAL,
+                    default=self._options.get(CONF_REFRESH_INTERVAL, 1.5),
+                ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=10.0)),
+            })  # pw-beta
+        
+        return vol.Schema(schema)
+
     async def async_step_none(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:  # pragma: no cover
@@ -284,9 +307,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
             return self.async_create_entry(title="", data=self._options)
         return self.async_show_form(step_id="none")
 
-    async def async_step_init(
-        self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:  # pragma: no cover
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Manage the Plugwise options."""
         if not self.config_entry.data.get(CONF_HOST):
             return await self.async_step_none(user_input)
@@ -295,34 +316,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
             return self.async_create_entry(title="", data=user_input)
 
         coordinator = self.config_entry.runtime_data
-        interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[
-            coordinator.api.smile_type
-        ]  # pw-beta options
-
-        data = {
-            vol.Optional(
-                CONF_SCAN_INTERVAL,
-                default=self._options.get(
-                    CONF_SCAN_INTERVAL, interval.seconds
-                ),
-            ): vol.All(cv.positive_int, vol.Clamp(min=10)),
-        }  # pw-beta
-
-        if coordinator.api.smile_type != THERMOSTAT:
-            return self.async_show_form(step_id=INIT, data_schema=vol.Schema(data))
-
-        data.update(
-            {
-                vol.Optional(
-                    CONF_HOMEKIT_EMULATION,
-                    default=self._options.get(
-                        CONF_HOMEKIT_EMULATION, False
-                    ),
-                ): vol.All(cv.boolean),
-                vol.Optional(
-                    CONF_REFRESH_INTERVAL,
-                    default=self._options.get(CONF_REFRESH_INTERVAL, 1.5),
-                ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=10.0)),
-            }
-        )  # pw-beta
-        return self.async_show_form(step_id=INIT, data_schema=vol.Schema(data))
+        return self.async_show_form(
+            step_id=INIT,
+            data_schema=self._create_options_schema(coordinator)
+        )
