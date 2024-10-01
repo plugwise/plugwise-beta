@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import datetime as dt  # pw-beta options
 from typing import Any, Self
 
 from plugwise import Smile
