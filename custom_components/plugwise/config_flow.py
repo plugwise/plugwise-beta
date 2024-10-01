@@ -2,12 +2,7 @@
 
 from __future__ import annotations
 
-<<<<<<< HEAD
-from typing import Any
-=======
-import datetime as dt  # pw-beta options
 from typing import Any, Self
->>>>>>> e84e10bc (Implement changes from Core PR #126896)
 
 from plugwise import Smile
 from plugwise.exceptions import (
