@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import datetime as dt  # pw-beta options
 from typing import Any
 
 from plugwise import Smile
@@ -231,7 +230,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
 
-        # Ensure a timeout-value is available, required for validation 
+        # Ensure a timeout-value is available, required for validation
         user_input[CONF_TIMEOUT] = self._timeout
         try:
             api = await validate_input(self.hass, user_input)
@@ -284,7 +283,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
                 default=self._options.get(CONF_SCAN_INTERVAL, interval.seconds),
             ): vol.All(cv.positive_int, vol.Clamp(min=10)),
         }  # pw-beta
-        
+
         if coordinator.api.smile_type == THERMOSTAT:
             schema.update({
                 vol.Optional(
@@ -296,7 +295,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
                     default=self._options.get(CONF_REFRESH_INTERVAL, 1.5),
                 ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=10.0)),
             })  # pw-beta
-        
+
         return vol.Schema(schema)
 
     async def async_step_none(
