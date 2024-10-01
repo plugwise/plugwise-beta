@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import datetime as dt  # pw-beta options
 from typing import Any
 
 from plugwise import Smile
@@ -79,40 +78,41 @@ type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 # Upstream basically the whole file (excluding the pw-beta options)
 
 
-def _base_schema(
-    discovery_info: ZeroconfServiceInfo | None,
-    user_input: dict[str, Any] | None,
+def base_schema(
+    cf_input: ZeroconfServiceInfo | dict[str, Any] | None,
 ) -> vol.Schema:
     """Generate base schema for gateways."""
-    if not discovery_info:
-        if not user_input:
-            return vol.Schema(
-                {
-                    vol.Required(CONF_PASSWORD): str,
-                    vol.Required(CONF_HOST): str,
-                    vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
-                    vol.Required(CONF_USERNAME, default=SMILE): vol.In(
-                        {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
-                    ),
-                }
-            )
+    if not cf_input:  # no discovery- or user-input available
         return vol.Schema(
             {
-                vol.Required(CONF_PASSWORD, default=user_input[CONF_PASSWORD]): str,
-                vol.Required(CONF_HOST, default=user_input[CONF_HOST]): str,
-                vol.Optional(CONF_PORT, default=user_input[CONF_PORT]): int,
-                vol.Required(CONF_USERNAME, default=user_input[CONF_USERNAME]): vol.In(
+                vol.Required(CONF_HOST): str,
+                vol.Required(CONF_PASSWORD): str,
+                vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
+                vol.Required(CONF_USERNAME, default=SMILE): vol.In(
                     {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
                 ),
             }
         )
-    return vol.Schema({vol.Required(CONF_PASSWORD): str})
+
+    if isinstance(cf_input, ZeroconfServiceInfo):
+        return vol.Schema({vol.Required(CONF_PASSWORD): str})
+
+    return vol.Schema(
+        {
+            vol.Required(CONF_HOST, default=cf_input[CONF_HOST]): str,
+            vol.Required(CONF_PASSWORD, default=cf_input[CONF_PASSWORD]): str,
+            vol.Optional(CONF_PORT, default=cf_input[CONF_PORT]): int,
+            vol.Required(CONF_USERNAME, default=cf_input[CONF_USERNAME]): vol.In(
+                {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
+            ),
+        }
+    )
 
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
     """Validate whether the user input allows us to connect to the gateway.
 
-    Data has the keys from _base_schema() with values provided by the user.
+    Data has the keys from base_schema() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
@@ -134,8 +134,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     MINOR_VERSION = 2
 
     discovery_info: ZeroconfServiceInfo | None = None
-    _username: str = DEFAULT_USERNAME
     _timeout: int = DEFAULT_TIMEOUT
+    _username: str = DEFAULT_USERNAME
 
     async def async_step_zeroconf(
         self, discovery_info: ZeroconfServiceInfo
@@ -169,7 +169,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if DEFAULT_USERNAME not in unique_id:
             self._username = STRETCH_USERNAME
-        _product = _properties.get(PRODUCT, None)
+        _product = _properties.get(PRODUCT, "Unknown Smile")
         _version = _properties.get(VERSION, "n/a")
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
 
@@ -203,13 +203,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         self.context.update(
             {
-                TITLE_PLACEHOLDERS: {
-                    CONF_HOST: discovery_info.host,
-                    CONF_NAME: _name,
-                    CONF_PORT: discovery_info.port,
-                    CONF_TIMEOUT: self._timeout,
-                    CONF_USERNAME: self._username,
-                },
+                TITLE_PLACEHOLDERS: {CONF_NAME: _name},
                 ATTR_CONFIGURATION_URL: (
                     f"http://{discovery_info.host}:{discovery_info.port}"
                 ),
@@ -227,7 +221,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if not user_input:
             return self.async_show_form(
                 step_id=SOURCE_USER,
-                data_schema=_base_schema(self.discovery_info, None),
+                data_schema=base_schema(self.discovery_info),
                 errors=errors,
             )
 
@@ -236,6 +230,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
 
+        # Ensure a timeout-value is available, required for validation
         user_input[CONF_TIMEOUT] = self._timeout
         try:
             api = await validate_input(self.hass, user_input)
@@ -255,7 +250,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if errors:
             return self.async_show_form(
                 step_id=SOURCE_USER,
-                data_schema=_base_schema(None, user_input),
+                data_schema=base_schema(user_input),
                 errors=errors,
             )
 
@@ -280,6 +275,29 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
     """Plugwise option flow."""
 
+    def _create_options_schema(self, coordinator):
+        interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]  # pw-beta options
+        schema = {
+            vol.Optional(
+                CONF_SCAN_INTERVAL,
+                default=self._options.get(CONF_SCAN_INTERVAL, interval.seconds),
+            ): vol.All(cv.positive_int, vol.Clamp(min=10)),
+        }  # pw-beta
+
+        if coordinator.api.smile_type == THERMOSTAT:
+            schema.update({
+                vol.Optional(
+                    CONF_HOMEKIT_EMULATION,
+                    default=self._options.get(CONF_HOMEKIT_EMULATION, False),
+                ): vol.All(cv.boolean),
+                vol.Optional(
+                    CONF_REFRESH_INTERVAL,
+                    default=self._options.get(CONF_REFRESH_INTERVAL, 1.5),
+                ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=10.0)),
+            })  # pw-beta
+
+        return vol.Schema(schema)
+
     async def async_step_none(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:  # pragma: no cover
@@ -289,9 +307,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
             return self.async_create_entry(title="", data=self._options)
         return self.async_show_form(step_id="none")
 
-    async def async_step_init(
-        self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:  # pragma: no cover
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Manage the Plugwise options."""
         if not self.config_entry.data.get(CONF_HOST):
             return await self.async_step_none(user_input)
@@ -300,34 +316,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
             return self.async_create_entry(title="", data=user_input)
 
         coordinator = self.config_entry.runtime_data
-        interval: dt.timedelta = DEFAULT_SCAN_INTERVAL[
-            coordinator.api.smile_type
-        ]  # pw-beta options
-
-        data = {
-            vol.Optional(
-                CONF_SCAN_INTERVAL,
-                default=self._options.get(
-                    CONF_SCAN_INTERVAL, interval.seconds
-                ),
-            ): vol.All(cv.positive_int, vol.Clamp(min=10)),
-        }  # pw-beta
-
-        if coordinator.api.smile_type != THERMOSTAT:
-            return self.async_show_form(step_id=INIT, data_schema=vol.Schema(data))
-
-        data.update(
-            {
-                vol.Optional(
-                    CONF_HOMEKIT_EMULATION,
-                    default=self._options.get(
-                        CONF_HOMEKIT_EMULATION, False
-                    ),
-                ): vol.All(cv.boolean),
-                vol.Optional(
-                    CONF_REFRESH_INTERVAL,
-                    default=self._options.get(CONF_REFRESH_INTERVAL, 1.5),
-                ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=10.0)),
-            }
-        )  # pw-beta
-        return self.async_show_form(step_id=INIT, data_schema=vol.Schema(data))
+        return self.async_show_form(
+            step_id=INIT,
+            data_schema=self._create_options_schema(coordinator)
+        )

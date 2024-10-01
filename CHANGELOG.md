@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Improve / clean up config_flow code.
+
 ## v0.53.3
 
 - Test-code improvements.
