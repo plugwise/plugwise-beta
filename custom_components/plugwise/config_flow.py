@@ -47,7 +47,6 @@ from .const import (
     ANNA_WITH_ADAM,
     CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_REFRESH_INTERVAL,  # pw-beta option
-    CONTEXT,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,  # pw-beta option
     DEFAULT_USERNAME,
@@ -201,11 +200,11 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     def is_matching(self, other_flow: Self) -> bool:
         """Return True if other_flow is matching this flow."""
         # This is an Anna, and there is already an Adam flow in progress
-        if self.product == "smile_thermo" and other_flow.product == "smile_open_therm":
+        if self.product == SMILE_THERMO and other_flow.product == SMILE_OPEN_THERM:
             return True
 
         # This is an Adam, and there is already an Anna flow in progress
-        if self.product == "smile_open_therm" and other_flow.product == "smile_thermo":
+        if self.product == SMILE_OPEN_THERM and other_flow.product == SMILE_THERMO:
             self.hass.config_entries.flow.async_abort(other_flow.flow_id)
 
         return False
