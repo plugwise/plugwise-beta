@@ -142,6 +142,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, discovery_info: ZeroconfServiceInfo
     ) -> ConfigFlowResult:
         """Prepare configuration for a discovered Plugwise Smile."""
+        self.discovery_info = discovery_info
         _properties = discovery_info.properties
 
         unique_id = discovery_info.hostname.split(".")[0].split("-")[0]
