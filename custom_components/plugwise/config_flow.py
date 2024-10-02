@@ -275,7 +275,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
     """Plugwise option flow."""
 
-    def _create_options_schema(self, coordinator):
+    def _create_options_schema(self, coordinator: PlugwiseDataUpdateCoordinator) -> None:
         interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]  # pw-beta options
         schema = {
             vol.Optional(
