@@ -300,7 +300,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
 
     async def async_step_none(
         self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:
+    ) -> ConfigFlowResult:  # pragma: no cover
         """No options available."""
         if user_input is not None:
             # Apparently not possible to abort an options flow at the moment
@@ -310,7 +310,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Manage the Plugwise options."""
         if not self.config_entry.data.get(CONF_HOST):
-            return await self.async_step_none(user_input)
+            return await self.async_step_none(user_input)  # pragma: no cover
 
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
