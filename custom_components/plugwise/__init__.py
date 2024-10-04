@@ -152,9 +152,6 @@ async def async_migrate_plugwise_entry(
     entry: ConfigEntry
 ) -> bool:
     """Migrate to new config entry."""
-    if entry.version > 1:
-        return False
-
     if entry.version == 1 and entry.minor_version < 2:
         new_data = {**entry.data}
         new_data[CONF_TIMEOUT] = get_timeout_for_version(coordinator.api.smile_version)
