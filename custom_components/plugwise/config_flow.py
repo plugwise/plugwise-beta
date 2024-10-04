@@ -275,7 +275,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
     """Plugwise option flow."""
 
-    def _create_options_schema(self, coordinator):
+    def _create_options_schema(self, coordinator: PlugwiseDataUpdateCoordinator) -> vol.Schema:
         interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]  # pw-beta options
         schema = {
             vol.Optional(
@@ -310,7 +310,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlowWithConfigEntry):  # pw-beta options
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Manage the Plugwise options."""
         if not self.config_entry.data.get(CONF_HOST):
-            return await self.async_step_none(user_input)
+            return await self.async_step_none(user_input)  # pragma: no cover
 
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
