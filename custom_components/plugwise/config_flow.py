@@ -118,10 +118,10 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
     api = Smile(
         host=data[CONF_HOST],
         password=data[CONF_PASSWORD],
+        websession=websession,
+        username=data[CONF_USERNAME],
         port=data[CONF_PORT],
         timeout=data[CONF_TIMEOUT],
-        username=data[CONF_USERNAME],
-        websession=websession,
     )
     await api.connect()
     return api
