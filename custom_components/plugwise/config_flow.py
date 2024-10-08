@@ -57,6 +57,7 @@ from .const import (
     FLOW_SMILE,
     FLOW_STRETCH,
     INIT,
+    LOGGER,
     PRODUCT,
     SMILE,
     SMILE_OPEN_THERM,
@@ -221,7 +222,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if not user_input:
             return self.async_show_form(
                 step_id=SOURCE_USER,
-                data_schema=base_schema(None),
+                data_schema=base_schema(self.discovery_info),
                 errors=errors,
             )
 
@@ -229,15 +230,11 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_HOST] = self.discovery_info.host
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
-            return self.async_show_form(
-                step_id=SOURCE_USER,
-                data_schema=base_schema(self.discovery_info),
-                errors=errors,
-            )
 
         # Ensure a timeout-value is available, required for validation
         user_input[CONF_TIMEOUT] = self._timeout
         try:
+            LOGGER.debug("HOI user-input: %s", user_input)
             api = await validate_input(self.hass, user_input)
         except ConnectionFailedError:
             errors[CONF_BASE] = "cannot_connect"
