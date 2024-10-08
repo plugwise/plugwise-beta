@@ -76,7 +76,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
             username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
             port=self.config_entry.data.get(CONF_PORT, DEFAULT_PORT),
-            timeout=self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
+            timeout=DEFAULT_TIMEOUT,
         )
         self._current_devices: set[str] = set()
         self.new_devices: set[str] = set()
