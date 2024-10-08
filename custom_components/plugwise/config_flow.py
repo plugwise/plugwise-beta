@@ -221,7 +221,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if not user_input:
             return self.async_show_form(
                 step_id=SOURCE_USER,
-                data_schema=base_schema(self.discovery_info),
+                data_schema=base_schema(None),
                 errors=errors,
             )
 
@@ -229,6 +229,11 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_HOST] = self.discovery_info.host
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
+            return self.async_show_form(
+                step_id=SOURCE_USER,
+                data_schema=base_schema(self.discovery_info),
+                errors=errors,
+            )
 
         # Ensure a timeout-value is available, required for validation
         user_input[CONF_TIMEOUT] = self._timeout
