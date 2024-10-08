@@ -70,14 +70,19 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             ),
         )
 
-        self.api = Smile(
-            host=self.config_entry.data[CONF_HOST],
-            password=self.config_entry.data[CONF_PASSWORD],
-            websession=async_get_clientsession(hass, verify_ssl=False),
-            username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
-            port=self.config_entry.data.get(CONF_PORT, DEFAULT_PORT),
-            timeout=DEFAULT_TIMEOUT,
-        )
+        try:
+            self.api = Smile(
+                host=self.config_entry.data[CONF_HOST],
+                password=self.config_entry.data[CONF_PASSWORD],
+                websession=async_get_clientsession(hass, verify_ssl=False),
+                username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
+                port=self.config_entry.data.get(CONF_PORT, DEFAULT_PORT),
+                timeout=self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
+            )
+        except TypeError as err:
+            LOGGER.debug("HOI data: %s", self.config_entry.data)
+            LOGGER.debug("HOI error: %s", err)
+
         self._current_devices: set[str] = set()
         self.new_devices: set[str] = set()
         self.update_interval = update_interval
