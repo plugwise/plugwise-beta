@@ -143,8 +143,13 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
         _properties = discovery_info.properties
-
+        _product = _properties.get(PRODUCT, "Unknown Smile")
+        _version = _properties.get(VERSION, "n/a")
+        self._timeout = get_timeout_for_version(_version)
         unique_id = discovery_info.hostname.split(".")[0].split("-")[0]
+        if DEFAULT_USERNAME not in unique_id:
+            self._username = STRETCH_USERNAME
+
         if config_entry := await self.async_set_unique_id(unique_id):
             try:
                 await validate_input(
@@ -153,7 +158,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                         CONF_HOST: discovery_info.host,
                         CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
                         CONF_PORT: discovery_info.port,
-                        CONF_USERNAME: config_entry.data[CONF_USERNAME],
+                        CONF_USERNAME: self._username,
                         CONF_TIMEOUT: self._timeout,
                     },
                 )
@@ -166,14 +171,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                         CONF_PORT: discovery_info.port,
                     }
                 )
-
-        if DEFAULT_USERNAME not in unique_id:
-            self._username = STRETCH_USERNAME
-        _product = _properties.get(PRODUCT, "Unknown Smile")
-        _version = _properties.get(VERSION, "n/a")
-        _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
-
-        self._timeout = get_timeout_for_version(_version)
 
         # This is an Anna, but we already have config entries.
         # Assuming that the user has already configured Adam, aborting discovery.
@@ -201,6 +198,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             ):
                 self.hass.config_entries.flow.async_abort(flow[FLOW_ID])
 
+        _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
         self.context.update(
             {
                 TITLE_PLACEHOLDERS: {CONF_NAME: _name},
