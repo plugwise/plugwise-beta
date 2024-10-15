@@ -72,10 +72,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
         self.api = Smile(
             host=self.config_entry.data[CONF_HOST],
-            username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
             password=self.config_entry.data[CONF_PASSWORD],
             port=self.config_entry.data.get(CONF_PORT, DEFAULT_PORT),
             timeout=self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
+            username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._current_devices: set[str] = set()
