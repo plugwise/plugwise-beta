@@ -4,7 +4,8 @@
 
 ## Ongoing
 
-- Improve / clean up config_flow code.
+- Improve / clean up config_flow code (#736 and #747).
+- Typing and other fixes (#738).
 
 ## v0.53.3
 
