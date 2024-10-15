@@ -119,8 +119,8 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
         host=data[CONF_HOST],
         password=data[CONF_PASSWORD],
         port=data[CONF_PORT],
-        username=data[CONF_USERNAME],
         timeout=data[CONF_TIMEOUT],
+        username=data[CONF_USERNAME],
         websession=websession,
     )
     await api.connect()
@@ -153,8 +153,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                         CONF_HOST: discovery_info.host,
                         CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
                         CONF_PORT: discovery_info.port,
-                        CONF_USERNAME: config_entry.data[CONF_USERNAME],
                         CONF_TIMEOUT: self._timeout,
+                        CONF_USERNAME: config_entry.data[CONF_USERNAME],
                     },
                 )
             except Exception:  # noqa: BLE001
