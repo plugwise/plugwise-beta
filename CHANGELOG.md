@@ -4,7 +4,7 @@
 
 ## Ongoing
 
-- Downstream Core PR #126896
+- Downstream Core PR [#126896](https://github.com/home-assistant/core/pull/126896).
 
 ## v0.53.5
 
