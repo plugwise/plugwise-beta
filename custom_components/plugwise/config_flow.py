@@ -163,9 +163,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     }
                 )
 
-         # This is an Anna, but we already have config entries.
+        # This is an Anna, but we already have config entries.
         # Assuming that the user has already configured Adam, aborting discovery.
-        if self._async_current_entries() and self.product == SMILE_THERMO:
+        if self._async_current_entries() and _product == SMILE_THERMO:
             return self.async_abort(reason=ANNA_WITH_ADAM)
 
         # If we have discovered an Adam or Anna, both might be on the network.
