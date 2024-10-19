@@ -138,8 +138,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         """Prepare configuration for a discovered Plugwise Smile."""
         self.discovery_info = discovery_info
         _properties = discovery_info.properties
-        _product = _properties.get(PRODUCT, "Unknown Smile")
         _version = _properties.get(VERSION, "n/a")
+        self.product = _product = _properties.get("product", "Unknown Smile")
         unique_id = discovery_info.hostname.split(".")[0].split("-")[0]
         if DEFAULT_USERNAME not in unique_id:
             self._username = STRETCH_USERNAME
@@ -165,7 +165,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     }
                 )
 
-        # This is an Anna, but we already have config entries.
+         # This is an Anna, but we already have config entries.
         # Assuming that the user has already configured Adam, aborting discovery.
         if self._async_current_entries() and self.product == SMILE_THERMO:
             return self.async_abort(reason=ANNA_WITH_ADAM)
@@ -175,15 +175,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         # be added.
         if self.hass.config_entries.flow.async_has_matching_flow(self):
             return self.async_abort(reason="anna_with_adam")
-
-            # This is an Adam, and there is already an Anna flow in progress
-            if (
-                _product == SMILE_OPEN_THERM
-                and CONTEXT in flow
-                and flow[CONTEXT].get(PRODUCT) == SMILE_THERMO
-                and FLOW_ID in flow
-            ):
-                self.hass.config_entries.flow.async_abort(flow[FLOW_ID])
 
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
         self.context.update(
