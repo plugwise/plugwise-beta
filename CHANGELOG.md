@@ -13,6 +13,7 @@
   - Remove the need to pass a connection-timeout value to the backend library, as suggested by a Core dev
 - Link to plugwise [v1.4.4](https://github.com/plugwise/python-plugwise/releases/tag/v1.4.4) and adapt
 - Fix coordinator connection-method: don't use defaults
+- Downstream Core PR #126896
 
 ## v0.53.5
 
