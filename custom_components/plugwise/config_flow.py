@@ -50,11 +50,9 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,  # pw-beta option
     DEFAULT_USERNAME,
     DOMAIN,
-    FLOW_ID,
     FLOW_SMILE,
     FLOW_STRETCH,
     INIT,
-    PRODUCT,
     SMILE,
     SMILE_OPEN_THERM,
     SMILE_THERMO,
