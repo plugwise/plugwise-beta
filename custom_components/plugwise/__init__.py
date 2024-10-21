@@ -146,10 +146,10 @@ async def async_migrate_sensor_entities(
 
 async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate to new config entry."""
-    device_reg = dr.async_get(hass)
+    # device_reg = dr.async_get(hass)
     if entry.version == 1 and entry.minor_version < 2:
         new_data = {**entry.data}
-        new_data[CONF_TIMEOUT] = get_timeout_for_version(device_reg.DeviceInfo.sw_version)
+        new_data[CONF_TIMEOUT] = get_timeout_for_version(dr.DeviceInfo.sw_version)
         hass.config_entries.async_update_entry(
             entry, data=new_data, minor_version=2, version=1
         )
