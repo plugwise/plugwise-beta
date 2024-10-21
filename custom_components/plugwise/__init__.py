@@ -44,11 +44,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
         hass, cooldown
     )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
+    entry.runtime_data = coordinator
 
     await async_migrate_sensor_entities(hass, coordinator)
-    await async_migrate_plugwise_entry(hass, coordinator, entry)
-
-    entry.runtime_data = coordinator
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
@@ -146,11 +144,7 @@ async def async_migrate_sensor_entities(
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
-async def async_migrate_plugwise_entry(
-    hass: HomeAssistant,
-    coordinator: PlugwiseDataUpdateCoordinator,
-    entry: ConfigEntry
-) -> bool:
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate to new config entry."""
     device_reg = dr.async_get(hass)
     if entry.version == 1 and entry.minor_version < 2:
