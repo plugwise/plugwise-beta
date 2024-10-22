@@ -4,20 +4,32 @@ from __future__ import annotations
 
 from typing import Any
 
+from plugwise import Smile
 from plugwise.exceptions import PlugwiseError
 import voluptuous as vol  # pw-beta delete_notification
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_TIMEOUT, Platform
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_PASSWORD,
+    CONF_PORT,
+    CONF_TIMEOUT,
+    CONF_USERNAME,
+    Platform,
+)
 from homeassistant.core import (
     HomeAssistant,
     ServiceCall,  # pw-beta delete_notification
     callback,
 )
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
+    DEFAULT_PORT,
+    DEFAULT_TIMEOUT,
+    DEFAULT_USERNAME,
     DOMAIN,
     LOGGER,
     PLATFORMS,
@@ -44,11 +56,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
         hass, cooldown
     )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
+    entry.runtime_data = coordinator
 
     await async_migrate_sensor_entities(hass, coordinator)
-    await async_migrate_plugwise_entry(hass, coordinator, entry)
-
-    entry.runtime_data = coordinator
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
@@ -58,7 +68,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
         model=coordinator.api.smile_model,
         model_id=coordinator.api.smile_model_id,
         name=coordinator.api.smile_name,
-        sw_version=coordinator.api.smile_version,
+        sw_version=str(coordinator.api.smile_version),
     )  # required for adding the entity-less P1 Gateway
 
     async def delete_notification(
@@ -146,15 +156,20 @@ async def async_migrate_sensor_entities(
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
-async def async_migrate_plugwise_entry(
-    hass: HomeAssistant,
-    coordinator: PlugwiseDataUpdateCoordinator,
-    entry: ConfigEntry
-) -> bool:
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate to new config entry."""
     if entry.version == 1 and entry.minor_version < 2:
+        api = Smile(
+            host=entry.data[CONF_HOST],
+            password=entry.data[CONF_PASSWORD],
+            port=entry.data.get(CONF_PORT, DEFAULT_PORT),
+            timeout=entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
+            username=entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
+            websession=async_get_clientsession(hass, verify_ssl=False),
+        )
+        version = await api.connect()
         new_data = {**entry.data}
-        new_data[CONF_TIMEOUT] = get_timeout_for_version(coordinator.api.smile_version)
+        new_data[CONF_TIMEOUT] = get_timeout_for_version(str(version))
         hass.config_entries.async_update_entry(
             entry, data=new_data, minor_version=2, version=1
         )
