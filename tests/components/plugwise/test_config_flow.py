@@ -1,6 +1,7 @@
 """Test the Plugwise config flow."""
 
 from collections.abc import Generator
+from packaging.version import Version
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from plugwise.exceptions import (
@@ -112,7 +113,7 @@ def mock_smile() -> Generator[MagicMock]:
         smile_mock.InvalidAuthentication = InvalidAuthentication
         smile_mock.InvalidXMLError = InvalidXMLError
         smile_mock.UnsupportedDeviceError = UnsupportedDeviceError
-        smile_mock.return_value.connect.return_value = True
+        smile_mock.return_value.connect.return_value = Version("4.3.2")
         yield smile_mock.return_value
 
 
