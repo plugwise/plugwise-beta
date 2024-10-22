@@ -159,15 +159,15 @@ async def async_migrate_sensor_entities(
 async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate to new config entry."""
     if entry.version == 1 and entry.minor_version < 2:
-        #api = Smile(
-        #    host=entry.data[CONF_HOST],
-        #    password=entry.data[CONF_PASSWORD],
-        #    port=entry.data.get(CONF_PORT, DEFAULT_PORT),
-        #    timeout=entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
-        #    username=entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
-        #    websession=async_get_clientsession(hass, verify_ssl=False),
-        #)
-        version = await self.api.connect()
+        api = Smile(
+            host=entry.data[CONF_HOST],
+            password=entry.data[CONF_PASSWORD],
+            port=entry.data.get(CONF_PORT, DEFAULT_PORT),
+            timeout=entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
+            username=entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
+            websession=async_get_clientsession(hass, verify_ssl=False),
+        )
+        version = await api.connect()
         new_data = {**entry.data}
         new_data[CONF_TIMEOUT] = get_timeout_for_version(str(version))
         hass.config_entries.async_update_entry(
