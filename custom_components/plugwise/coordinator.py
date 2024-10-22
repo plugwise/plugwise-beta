@@ -1,7 +1,7 @@
 """DataUpdateCoordinator for Plugwise."""
 
 from datetime import timedelta
-from packaging import version
+from packaging.version import Version
 
 from plugwise import PlugwiseData, Smile
 from plugwise.exceptions import (
@@ -77,15 +77,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile."""
-        version_str: version.Version = await self.api.connect()
-        LOGGER.debug("HOI output: %s", version_str)
-        try:
-            version.parse(version_str)
-        except version.InvalidVersion as err:
-            LOGGER.debug("Could not connect")
-            return
+        version = await self.api.connect()
+        if isinstance(version, Version):
+            self._connected = True
 
-        self._connected = True
         self.api.get_all_devices()
         self.update_interval = DEFAULT_SCAN_INTERVAL.get(
             self.api.smile_type, timedelta(seconds=60)
