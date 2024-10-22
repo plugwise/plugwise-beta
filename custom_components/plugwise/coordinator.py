@@ -78,6 +78,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile."""
         version_str: version.Version = await self.api.connect()
+        LOGGER.debug("HOI output: %s", version_str)
         try:
             version.parse(version_str)
         except version.InvalidVersion as err:
