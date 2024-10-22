@@ -1,8 +1,8 @@
 """DataUpdateCoordinator for Plugwise."""
 
 from datetime import timedelta
-from packaging.version import Version
 
+from packaging.version import Version
 from plugwise import PlugwiseData, Smile
 from plugwise.exceptions import (
     ConnectionFailedError,
