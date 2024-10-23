@@ -241,7 +241,7 @@ async def test_migrate_unique_id_relay(
 async def test_entry_migration(
     hass: HomeAssistant,
     snapshot: SnapshotAssertion) -> None:
-    """Test config entry version 1 -> 2 migration."""
+    """Test config-entry version 1 -> 2 migration."""
     entry = MockConfigEntry(
         title="My Plugwise",
         domain=DOMAIN,
@@ -271,6 +271,30 @@ async def test_entry_migration(
 
         assert entry.version == 1
         assert entry.minor_version == 2
+
+async def test_no_entry_migration(
+    hass: HomeAssistant,
+    snapshot: SnapshotAssertion) -> None:
+    """Test no config-entry migration."""
+    entry = MockConfigEntry(
+        title="My Plugwise",
+        domain=DOMAIN,
+        data={
+            CONF_HOST: "127.0.0.1",
+            CONF_MAC: "AA:BB:CC:DD:EE:FF",
+            CONF_PASSWORD: "test-password",
+            CONF_PORT: 80,
+            CONF_USERNAME: "smile",
+        },
+        minor_version=2,
+        version=1,
+        unique_id="smile98765",
+    )
+
+    entry.add_to_hass(hass)
+
+    assert entry.version == 1
+    assert entry.minor_version == 2
 
 
 async def test_update_device(
