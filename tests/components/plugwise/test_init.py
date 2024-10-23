@@ -296,11 +296,16 @@ async def test_no_entry_migration(
 
     entry.runtime_data = MagicMock(api=mock_smile_anna_2)
     entry.add_to_hass(hass)
-    await hass.config_entries.async_setup(entry.entry_id)
-    await hass.async_block_till_done()
 
-    assert entry.version == 1
-    assert entry.minor_version == 2
+    with patch(
+        "homeassistant.components.plugwise.Smile.connect",
+        return_value=(Version("4.0.15")),
+    ):
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+
+        assert entry.version == 1
+        assert entry.minor_version == 2
 
 
 async def test_update_device(
