@@ -28,6 +28,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.setup import async_setup_component
 from syrupy import SnapshotAssertion
+from packaging.version import Version
 
 from tests.common import MockConfigEntry, async_fire_time_changed
 
@@ -263,11 +264,16 @@ async def test_entry_migration(
     assert entry.version == 1
     assert entry.minor_version == 1
 
-    await hass.config_entries.async_setup(entry.entry_id)
-    await hass.async_block_till_done()
+    with patch(
+        "homeassistant.components.plugwise.Smile.connect",
+        return_value=(Version("4.0.15")),
+    ):
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
 
-    # Assert that the migrated entry matches the expected structure
-    assert hass.config_entries.async_get_entry(entry.entry_id) == snapshot
+        # Assert that the migrated entry matches the expected structure
+        assert hass.config_entries.async_get_entry(entry.entry_id) == snapshot
+
 
 async def test_update_device(
     hass: HomeAssistant,
