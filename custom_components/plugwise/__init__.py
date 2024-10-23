@@ -180,4 +180,5 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         return True
 
+    LOGGER.debug("No migration required or version unknown")
     return False
