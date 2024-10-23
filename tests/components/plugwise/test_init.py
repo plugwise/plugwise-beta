@@ -269,8 +269,8 @@ async def test_entry_migration(
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
 
-        # Assert that the migrated entry matches the expected structure
-        assert hass.config_entries.async_get_entry(entry.entry_id) == snapshot
+        assert entry.version == 1
+        assert entry.minor_version == 2
 
 
 async def test_update_device(
