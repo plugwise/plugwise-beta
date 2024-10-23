@@ -21,6 +21,7 @@ from homeassistant.const import (
     CONF_MAC,
     CONF_PASSWORD,
     CONF_PORT,
+    CONF_TIMEOUT,
     CONF_USERNAME,
     Platform,
 )
@@ -238,9 +239,7 @@ async def test_migrate_unique_id_relay(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
 
-async def test_entry_migration(
-    hass: HomeAssistant,
-    snapshot: SnapshotAssertion) -> None:
+async def test_entry_migration(hass: HomeAssistant) -> None:
     """Test config-entry version 1 -> 2 migration."""
     entry = MockConfigEntry(
         title="My Plugwise",
@@ -272,9 +271,7 @@ async def test_entry_migration(
         assert entry.version == 1
         assert entry.minor_version == 2
 
-async def test_no_entry_migration(
-    hass: HomeAssistant,
-    snapshot: SnapshotAssertion) -> None:
+async def test_no_entry_migration(hass: HomeAssistant) -> None:
     """Test no config-entry migration."""
     entry = MockConfigEntry(
         title="My Plugwise",
@@ -284,6 +281,7 @@ async def test_no_entry_migration(
             CONF_MAC: "AA:BB:CC:DD:EE:FF",
             CONF_PASSWORD: "test-password",
             CONF_PORT: 80,
+            CONF_TIMEOUT: 10,
             CONF_USERNAME: "smile",
         },
         minor_version=2,
@@ -292,6 +290,8 @@ async def test_no_entry_migration(
     )
 
     entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
 
     assert entry.version == 1
     assert entry.minor_version == 2
