@@ -171,9 +171,9 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             username=entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        version = await api.connect()
+        # version = await api.connect()
         new_data = {**entry.data}
-        new_data[CONF_TIMEOUT] = get_timeout_for_version(str(version))
+        new_data[CONF_TIMEOUT] = get_timeout_for_version(str(api.smile_version))
         hass.config_entries.async_update_entry(
             entry, data=new_data, minor_version=2, version=1
         )
