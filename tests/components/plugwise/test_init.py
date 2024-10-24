@@ -35,7 +35,6 @@ from tests.common import MockConfigEntry, async_fire_time_changed
 
 LOGGER = logging.getLogger(__package__)
 
-HA_PLUGWISE_SMILE = "homeassistant.components.plugwise.coordinator.Smile"
 HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
     "homeassistant.components.plugwise.coordinator.Smile.async_update"
 )
