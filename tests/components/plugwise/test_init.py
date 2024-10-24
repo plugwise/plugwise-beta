@@ -18,7 +18,6 @@ from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import (
     CONF_HOST,
-    CONF_MAC,
     CONF_PASSWORD,
     CONF_PORT,
     CONF_TIMEOUT,

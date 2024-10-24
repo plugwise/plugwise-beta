@@ -13,7 +13,6 @@ import pytest
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.const import (
     CONF_HOST,
-    CONF_MAC,
     CONF_PASSWORD,
     CONF_PORT,
     CONF_TIMEOUT,
