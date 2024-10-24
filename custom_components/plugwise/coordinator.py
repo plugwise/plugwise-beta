@@ -101,7 +101,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             raise ConfigEntryError("Authentication failed") from err
         except (InvalidXMLError, ResponseError) as err:
             raise UpdateFailed(
-                "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
+                f"Invalid XML data or error from Plugwise device: {err}"
             ) from err
         except PlugwiseError as err:
             raise UpdateFailed("Data incomplete or missing") from err
