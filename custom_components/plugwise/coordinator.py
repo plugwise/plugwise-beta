@@ -70,7 +70,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self.api = Smile(
             host=self.config_entry.data[CONF_HOST],
             password=self.config_entry.data[CONF_PASSWORD],
-            port=self.config_entry.data.[CONF_PORT],
+            port=self.config_entry.data[CONF_PORT],
             timeout=self.config_entry.data[CONF_TIMEOUT],
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
