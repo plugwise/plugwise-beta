@@ -34,11 +34,9 @@ def _read_json(environment: str, call: str) -> dict[str, Any]:
 def mock_config_entry() -> MockConfigEntry:
     """Return the default mocked config entry."""
     return MockConfigEntry(
-        title="My Plugwise",
         domain=DOMAIN,
         data={
             CONF_HOST: "127.0.0.1",
-            CONF_MAC: "AA:BB:CC:DD:EE:FF",
             CONF_PASSWORD: "test-password",
             CONF_PORT: 80,
             CONF_TIMEOUT: 30,
