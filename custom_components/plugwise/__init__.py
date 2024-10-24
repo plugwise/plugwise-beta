@@ -167,7 +167,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             host=entry.data[CONF_HOST],
             password=entry.data[CONF_PASSWORD],
             port=entry.data[CONF_PORT],
-            timeout=entry.data[CONF_TIMEOUT],
+            timeout=DEFAULT_TIMEOUT,
             username=entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
