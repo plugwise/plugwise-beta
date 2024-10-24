@@ -27,6 +27,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from packaging.version import Version
 
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, GATEWAY_ID, LOGGER
 
@@ -76,9 +77,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile."""
-        self._connected = await self.api.connect()
-        self.api.get_all_devices()
+        version = await self.api.connect()
+        if isinstance(version, Version):
+            self._connected = True
 
+        self.api.get_all_devices()
         self.update_interval = DEFAULT_SCAN_INTERVAL.get(
             self.api.smile_type, timedelta(seconds=60)
         )  # pw-beta options scan-interval
@@ -86,6 +89,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             self.update_interval = timedelta(
                 seconds=int(custom_time)
             )  # pragma: no cover  # pw-beta options
+
         LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
 
     async def _async_update_data(self) -> PlugwiseData:

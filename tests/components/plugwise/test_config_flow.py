@@ -33,6 +33,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+from packaging.version import Version
 
 from tests.common import MockConfigEntry
 
@@ -112,7 +113,7 @@ def mock_smile() -> Generator[MagicMock]:
         smile_mock.InvalidAuthentication = InvalidAuthentication
         smile_mock.InvalidXMLError = InvalidXMLError
         smile_mock.UnsupportedDeviceError = UnsupportedDeviceError
-        smile_mock.return_value.connect.return_value = True
+        smile_mock.return_value.connect.return_value = Version("4.3.2")
         yield smile_mock.return_value
 
 
