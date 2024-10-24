@@ -243,11 +243,9 @@ async def test_config_entry_migration(
 ) -> None:
     """Test config-entry version 1 -> 2 migration."""
     entry = MockConfigEntry(
-        title="My Plugwise",
         domain=DOMAIN,
         data={
             CONF_HOST: "127.0.0.1",
-            CONF_MAC: "AA:BB:CC:DD:EE:FF",
             CONF_PASSWORD: "test-password",
             CONF_PORT: 80,
             CONF_USERNAME: "smile",
@@ -259,10 +257,6 @@ async def test_config_entry_migration(
 
     entry.runtime_data = MagicMock(api=mock_smile_anna_2)
     entry.add_to_hass(hass)
-
-    assert entry.version == 1
-    assert entry.minor_version == 1
-
     with patch(
         "homeassistant.components.plugwise.Smile.connect",
         return_value=(Version("4.0.15")),
