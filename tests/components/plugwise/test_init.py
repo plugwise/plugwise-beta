@@ -267,17 +267,36 @@ async def test_config_entry_migration(
         assert entry.version == 1
         assert entry.minor_version == 2
         assert entry.data[CONF_TIMEOUT] == 10
+        assert entry.state is ConfigEntryState.LOADED
 
 
 async def test_config_flow_entry_migration_downgrade(
     hass: HomeAssistant, mock_smile_anna_2: MagicMock
 ) -> None:
     """Test that config-entry migration fails for a future version."""
-    entry = MockConfigEntry(domain=DOMAIN, version=2)
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            CONF_HOST: "127.0.0.1",
+            CONF_PASSWORD: "test-password",
+            CONF_PORT: 80,
+            CONF_USERNAME: "smile",
+        },
+        minor_version=1,
+        version=2,
+        unique_id="smile98765",
+    )
     entry.runtime_data = MagicMock(api=mock_smile_anna_2)
     entry.add_to_hass(hass)
+    with patch(
+        "homeassistant.components.plugwise.Smile.connect",
+        return_value=(Version("4.0.15")),
+    ):
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
 
-    assert not await hass.config_entries.async_setup(entry.entry_id)
+        entry = hass.config_entries.async_get_entry(entry.entry_id)
+        assert entry.state is ConfigEntryState.MIGRATION_ERROR
 
 
 async def test_update_device(
