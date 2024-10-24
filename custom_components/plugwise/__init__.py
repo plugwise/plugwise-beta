@@ -158,6 +158,10 @@ async def async_migrate_sensor_entities(
 
 async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate to new config entry."""
+    if entry.version > 1:
+        # This means the user has downgraded from a future version
+        return False
+
     if entry.version == 1 and entry.minor_version < 2:
         api = Smile(
             host=entry.data[CONF_HOST],
@@ -179,6 +183,3 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             entry.minor_version,
         )
         return True
-
-    LOGGER.debug("No migration required or version unknown")
-    return False
