@@ -273,6 +273,7 @@ async def test_entry_migration(
 
         assert entry.version == 1
         assert entry.minor_version == 2
+        assert entry.data[CONF_TIMEOUT] == 10
 
 async def test_no_entry_migration(
     hass: HomeAssistant, mock_smile_anna_2: MagicMock
