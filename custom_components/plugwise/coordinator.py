@@ -28,15 +28,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import (
-    DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,
-    DEFAULT_TIMEOUT,
-    DEFAULT_USERNAME,
-    DOMAIN,
-    GATEWAY_ID,
-    LOGGER,
-)
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, GATEWAY_ID, LOGGER
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -73,9 +65,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self.api = Smile(
             host=self.config_entry.data[CONF_HOST],
             password=self.config_entry.data[CONF_PASSWORD],
-            port=self.config_entry.data.get(CONF_PORT, DEFAULT_PORT),
-            timeout=self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
-            username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
+            port=self.config_entry.data[CONF_PORT],
+            timeout=self.config_entry.data[CONF_TIMEOUT],
+            username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._current_devices: set[str] = set()
@@ -109,7 +101,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             raise ConfigEntryError("Authentication failed") from err
         except (InvalidXMLError, ResponseError) as err:
             raise UpdateFailed(
-                "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
+                f"Invalid XML data or error from Plugwise device: {err}"
             ) from err
         except PlugwiseError as err:
             raise UpdateFailed("Data incomplete or missing") from err
