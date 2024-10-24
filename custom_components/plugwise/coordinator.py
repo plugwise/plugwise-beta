@@ -29,10 +29,7 @@ from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
-    DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
-    DEFAULT_TIMEOUT,
-    DEFAULT_USERNAME,
     DOMAIN,
     GATEWAY_ID,
     LOGGER,
@@ -73,9 +70,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         self.api = Smile(
             host=self.config_entry.data[CONF_HOST],
             password=self.config_entry.data[CONF_PASSWORD],
-            port=self.config_entry.data.get(CONF_PORT, DEFAULT_PORT),
-            timeout=self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
-            username=self.config_entry.data.get(CONF_USERNAME, DEFAULT_USERNAME),
+            port=self.config_entry.data.[CONF_PORT],
+            timeout=self.config_entry.data[CONF_TIMEOUT],
+            username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._current_devices: set[str] = set()
