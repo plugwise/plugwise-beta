@@ -177,9 +177,11 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.config_entries.async_update_entry(
             entry, data=new_data, minor_version=2, version=1
         )
-        LOGGER.debug(
-            "Migration to version %s.%s successful",
-            entry.version,
-            entry.minor_version,
-        )
-        return True
+
+    LOGGER.debug(
+        "Migration to version %s.%s successful",
+        entry.version,
+        entry.minor_version,
+    )
+
+    return True
