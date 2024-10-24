@@ -27,9 +27,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
-    DEFAULT_PORT,
     DEFAULT_TIMEOUT,
-    DEFAULT_USERNAME,
     DOMAIN,
     LOGGER,
     PLATFORMS,
