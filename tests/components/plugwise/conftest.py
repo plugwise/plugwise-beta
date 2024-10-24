@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from collections.abc import Generator
 import json
-from packaging.version import Version
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -19,6 +18,7 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
+from packaging.version import Version
 
 from tests.common import MockConfigEntry, load_fixture
 

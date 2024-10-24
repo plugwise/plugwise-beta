@@ -27,7 +27,6 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.setup import async_setup_component
-from syrupy import SnapshotAssertion
 from packaging.version import Version
 
 from tests.common import MockConfigEntry, async_fire_time_changed

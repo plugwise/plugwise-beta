@@ -1,7 +1,6 @@
 """Test the Plugwise config flow."""
 
 from collections.abc import Generator
-from packaging.version import Version
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from plugwise.exceptions import (
@@ -34,6 +33,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+from packaging.version import Version
 
 from tests.common import MockConfigEntry
 
