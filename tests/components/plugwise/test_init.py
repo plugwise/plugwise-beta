@@ -270,10 +270,11 @@ async def test_config_entry_migration(
 
 
 async def test_config_flow_entry_migration_downgrade(
-    hass: HomeAssistant,
+    hass: HomeAssistant, mock_smile_anna_2: MagicMock
 ) -> None:
     """Test that config-entry migration fails for a future version."""
     entry = MockConfigEntry(domain=DOMAIN, version=2)
+    entry.runtime_data = MagicMock(api=mock_smile_anna_2)
     entry.add_to_hass(hass)
 
     assert not await hass.config_entries.async_setup(entry.entry_id)
