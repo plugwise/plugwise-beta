@@ -78,17 +78,16 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile."""
         version = await self.api.connect()
-        if isinstance(version, Version):
-            self._connected = True
-
-        self.api.get_all_devices()
-        self.update_interval = DEFAULT_SCAN_INTERVAL.get(
-            self.api.smile_type, timedelta(seconds=60)
-        )  # pw-beta options scan-interval
-        if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
-            self.update_interval = timedelta(
-                seconds=int(custom_time)
-            )  # pragma: no cover  # pw-beta options
+        self._connected = isinstance(version, Version)
+        if self._connected:
+            self.api.get_all_devices()
+            self.update_interval = DEFAULT_SCAN_INTERVAL.get(
+                self.api.smile_type, timedelta(seconds=60)
+            )  # pw-beta options scan-interval
+            if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
+                self.update_interval = timedelta(
+                    seconds=int(custom_time)
+                )  # pragma: no cover  # pw-beta options
 
         LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
 
