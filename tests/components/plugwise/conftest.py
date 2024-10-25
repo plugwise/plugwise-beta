@@ -103,38 +103,18 @@ def mock_smile_adam() -> Generator[MagicMock]:
 
 
 @pytest.fixture
-def mock_smile_adam_2() -> Generator[MagicMock]:
-    """Create a 2nd Mock Adam environment for testing exceptions."""
-    chosen_env = "m_adam_heating"
+def chosen_env(request: pytest.FixtureRequest) -> str:
+    """Pass the chosen_env string.
 
-    with patch(
-        "homeassistant.components.plugwise.coordinator.Smile", autospec=True
-    ) as smile_mock:
-        smile = smile_mock.return_value
-
-        smile.gateway_id = "da224107914542988a88561b4452b0f6"
-        smile.heater_id = "056ee145a816487eaa69243c3280f8bf"
-        smile.smile_version = "3.6.4"
-        smile.smile_type = "thermostat"
-        smile.smile_hostname = "smile98765"
-        smile.smile_model = "Gateway"
-        smile.smile_model_id = "smile_open_therm"
-        smile.smile_name = "Adam"
-
-        smile.connect.return_value = Version("3.6.4")
-
-        all_data = _read_json(chosen_env, "all_data")
-        smile.async_update.return_value = PlugwiseData(
-            all_data["gateway"], all_data["devices"]
-        )
-
-        yield smile
+    Used with fixtures that require parametrization of a user-data fixture.
+    """
+    return request.param
 
 
 @pytest.fixture
-def mock_smile_adam_3() -> Generator[MagicMock]:
-    """Create a 3rd Mock Adam environment for testing exceptions."""
-    chosen_env = "m_adam_cooling"
+def mock_smile_adam_heat_cool(chosen_env) -> Generator[MagicMock]:
+    """Create a base Mock Adam environment for testing with more than one dataset."""
+    #chosen_env = "m_adam_heating"
 
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
@@ -158,6 +138,35 @@ def mock_smile_adam_3() -> Generator[MagicMock]:
         )
 
         yield smile
+
+
+# @pytest.fixture
+# def mock_smile_adam_3() -> Generator[MagicMock]:
+#     """Create a 3rd Mock Adam environment for testing exceptions."""
+#     chosen_env = "m_adam_cooling"
+#
+#    with patch(
+#        "homeassistant.components.plugwise.coordinator.Smile", autospec=True
+#    ) as smile_mock:
+#        smile = smile_mock.return_value
+#
+#        smile.gateway_id = "da224107914542988a88561b4452b0f6"
+#        smile.heater_id = "056ee145a816487eaa69243c3280f8bf"
+#        smile.smile_version = "3.6.4"
+#        smile.smile_type = "thermostat"
+#        smile.smile_hostname = "smile98765"
+#        smile.smile_model = "Gateway"
+#        smile.smile_model_id = "smile_open_therm"
+#        smile.smile_name = "Adam"
+#
+#        smile.connect.return_value = Version("3.6.4")
+#
+#        all_data = _read_json(chosen_env, "all_data")
+#        smile.async_update.return_value = PlugwiseData(
+#            all_data["gateway"], all_data["devices"]
+#        )
+#
+#        yield smile
 
 
 @pytest.fixture

@@ -236,6 +236,7 @@ async def test_migrate_unique_id_relay(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
 
+
 async def test_config_entry_migration(
     hass: HomeAssistant, mock_smile_anna_2: MagicMock
 ) -> None:
@@ -297,16 +298,17 @@ async def test_config_flow_entry_migration_downgrade(
         assert entry.state is ConfigEntryState.MIGRATION_ERROR
 
 
+@pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
 async def test_update_device(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_smile_adam_2: MagicMock,
+    mock_smile_adam_heat_cool: MagicMock,
     device_registry: dr.DeviceRegistry,
     entity_registry: er.EntityRegistry,
     freezer: FrozenDateTimeFactory,
 ) -> None:
     """Test a clean-up of the device_registry."""
-    data = mock_smile_adam_2.async_update.return_value
+    data = mock_smile_adam_heat_cool.async_update.return_value
 
     mock_config_entry.add_to_hass(hass)
     assert await async_setup_component(hass, DOMAIN, {})
