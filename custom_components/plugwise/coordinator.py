@@ -27,8 +27,9 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from packaging.version import Version
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, GATEWAY_ID, LOGGER
+from .const import DEFAULT_SCAN_INTERVAL, DEFAULT_TIMEOUT, DOMAIN, GATEWAY_ID, LOGGER
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -66,7 +67,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             host=self.config_entry.data[CONF_HOST],
             password=self.config_entry.data[CONF_PASSWORD],
             port=self.config_entry.data[CONF_PORT],
-            timeout=self.config_entry.data[CONF_TIMEOUT],
+            # Needs to stay .get() for config_entry migration-testing:
+            timeout=self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
@@ -76,16 +78,18 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile."""
-        self._connected = await self.api.connect()
-        self.api.get_all_devices()
+        version = await self.api.connect()
+        self._connected = isinstance(version, Version)
+        if self._connected:
+            self.api.get_all_devices()
+            self.update_interval = DEFAULT_SCAN_INTERVAL.get(
+                self.api.smile_type, timedelta(seconds=60)
+            )  # pw-beta options scan-interval
+            if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
+                self.update_interval = timedelta(
+                    seconds=int(custom_time)
+                )  # pragma: no cover  # pw-beta options
 
-        self.update_interval = DEFAULT_SCAN_INTERVAL.get(
-            self.api.smile_type, timedelta(seconds=60)
-        )  # pw-beta options scan-interval
-        if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
-            self.update_interval = timedelta(
-                seconds=int(custom_time)
-            )  # pragma: no cover  # pw-beta options
         LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
 
     async def _async_update_data(self) -> PlugwiseData:

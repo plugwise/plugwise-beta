@@ -20,7 +20,7 @@
     'pref_disable_new_entities': False,
     'pref_disable_polling': False,
     'source': 'user',
-    'title': 'My Plugwise',
+    'title': 'Mock Title',
     'unique_id': 'smile98765',
     'version': 1,
   })
