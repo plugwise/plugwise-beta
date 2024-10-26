@@ -1,6 +1,7 @@
 """DataUpdateCoordinator for Plugwise."""
 
 from datetime import timedelta
+from packaging.version import Version
 
 from plugwise import PlugwiseData, Smile
 from plugwise.exceptions import (
@@ -76,16 +77,18 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile."""
-        self._connected = await self.api.connect()
-        self.api.get_all_devices()
+        version = await self.api.connect()
+        self._connected = isinstance(version, Version)
+        if self._connected:
+            self.api.get_all_devices()
+            self.update_interval = DEFAULT_SCAN_INTERVAL.get(
+                self.api.smile_type, timedelta(seconds=60)
+            )  # pw-beta options scan-interval
+            if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
+                self.update_interval = timedelta(
+                    seconds=int(custom_time)
+                )  # pragma: no cover  # pw-beta options
 
-        self.update_interval = DEFAULT_SCAN_INTERVAL.get(
-            self.api.smile_type, timedelta(seconds=60)
-        )  # pw-beta options scan-interval
-        if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
-            self.update_interval = timedelta(
-                seconds=int(custom_time)
-            )  # pragma: no cover  # pw-beta options
         LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
 
     async def _async_update_data(self) -> PlugwiseData:

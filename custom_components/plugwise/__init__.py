@@ -58,7 +58,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
         model=coordinator.api.smile_model,
         model_id=coordinator.api.smile_model_id,
         name=coordinator.api.smile_name,
-        sw_version=coordinator.api.smile_version,
+        sw_version=str(coordinator.api.smile_version),
     )  # required for adding the entity-less P1 Gateway
 
     async def delete_notification(
