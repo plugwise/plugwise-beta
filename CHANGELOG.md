@@ -4,6 +4,7 @@
 
 ## Ongoing
 
+- Link to plugwise [v1.4.4](https://github.com/plugwise/python-plugwise/releases/tag/v1.4.4) and adapt.
 - Fix coordinator connection-method: don't use defaults
 
 ## v0.53.5
