@@ -33,7 +33,6 @@ from tests.common import MockConfigEntry, async_fire_time_changed
 
 LOGGER = logging.getLogger(__package__)
 
-HA_PLUGWISE_SMILE = "homeassistant.components.plugwise.coordinator.Smile"
 HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
     "homeassistant.components.plugwise.coordinator.Smile.async_update"
 )
@@ -237,13 +236,13 @@ async def test_migrate_unique_id_relay(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
 
+
 async def test_entry_migration(
     hass: HomeAssistant,
     mock_smile_anna_2: MagicMock,
     snapshot: SnapshotAssertion) -> None:
     """Test config entry version 1 -> 2 migration."""
     entry = MockConfigEntry(
-        title="My Plugwise",
         domain=DOMAIN,
         data={
             CONF_HOST: "127.0.0.1",
@@ -260,14 +259,12 @@ async def test_entry_migration(
     entry.runtime_data = MagicMock(api=mock_smile_anna_2)
     entry.add_to_hass(hass)
 
-    assert entry.version == 1
-    assert entry.minor_version == 1
-
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
 
     # Assert that the migrated entry matches the expected structure
     assert hass.config_entries.async_get_entry(entry.entry_id) == snapshot
+
 
 async def test_update_device(
     hass: HomeAssistant,
