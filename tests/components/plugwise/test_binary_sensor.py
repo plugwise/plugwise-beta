@@ -2,6 +2,8 @@
 
 from unittest.mock import MagicMock
 
+import pytest
+
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_component import async_update_entity
@@ -9,6 +11,7 @@ from homeassistant.helpers.entity_component import async_update_entity
 from tests.common import MockConfigEntry
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_anna_climate_binary_sensor_entities(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
@@ -34,6 +37,7 @@ async def test_anna_climate_binary_sensor_entities(
     assert state.state == STATE_ON
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_anna_climate_binary_sensor_change(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:

@@ -421,9 +421,9 @@ async def test_form_cannot_connect_port(
     assert result2["type"] == FlowResultType.FORM
     assert result2["errors"] == {"base": "cannot_connect"}
 
-
+@pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
 async def test_options_flow_thermo(
-    hass: HomeAssistant, mock_smile_anna_2: MagicMock
+    hass: HomeAssistant, mock_smile_anna: MagicMock
 ) -> None:
     """Test config flow options for thermostatic environments."""
     entry = MockConfigEntry(
@@ -442,7 +442,7 @@ async def test_options_flow_thermo(
         },
         version=1,
     )
-    entry.runtime_data = MagicMock(api=mock_smile_anna_2)
+    entry.runtime_data = MagicMock(api=mock_smile_anna)
     entry.add_to_hass(hass)
     with patch(
         "homeassistant.components.plugwise.async_setup_entry", return_value=True

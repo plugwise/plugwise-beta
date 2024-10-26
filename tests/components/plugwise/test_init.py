@@ -71,6 +71,7 @@ TOM = {
 }
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_load_unload_config_entry(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
@@ -91,6 +92,7 @@ async def test_load_unload_config_entry(
     assert mock_config_entry.state is ConfigEntryState.NOT_LOADED
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize(
     ("side_effect", "entry_state"),
     [
@@ -166,6 +168,7 @@ async def check_migration(
     assert entity_migrated.unique_id == new_unique_id
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize(
     ("entitydata", "old_unique_id", "new_unique_id"),
     [
@@ -236,9 +239,9 @@ async def test_migrate_unique_id_relay(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
 
-
+@pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
 async def test_config_entry_migration(
-    hass: HomeAssistant, mock_smile_anna_2: MagicMock
+    hass: HomeAssistant, mock_smile_anna: MagicMock
 ) -> None:
     """Test config-entry version 1 -> 2 migration."""
     entry = MockConfigEntry(
@@ -254,7 +257,7 @@ async def test_config_entry_migration(
         unique_id="smile98765",
     )
 
-    entry.runtime_data = MagicMock(api=mock_smile_anna_2)
+    entry.runtime_data = MagicMock(api=mock_smile_anna)
     entry.add_to_hass(hass)
     with patch(
         "homeassistant.components.plugwise.Smile.connect",
@@ -268,9 +271,9 @@ async def test_config_entry_migration(
         assert entry.data[CONF_TIMEOUT] == 10
         assert entry.state is ConfigEntryState.LOADED
 
-
+@pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
 async def test_config_flow_entry_migration_downgrade(
-    hass: HomeAssistant, mock_smile_anna_2: MagicMock
+    hass: HomeAssistant, mock_smile_anna: MagicMock
 ) -> None:
     """Test that config-entry migration fails for a future version."""
     entry = MockConfigEntry(
@@ -285,7 +288,7 @@ async def test_config_flow_entry_migration_downgrade(
         version=2,
         unique_id="smile98765",
     )
-    entry.runtime_data = MagicMock(api=mock_smile_anna_2)
+    entry.runtime_data = MagicMock(api=mock_smile_anna)
     entry.add_to_hass(hass)
     with patch(
         "homeassistant.components.plugwise.Smile.connect",

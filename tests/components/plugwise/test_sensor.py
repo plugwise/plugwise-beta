@@ -2,6 +2,8 @@
 
 from unittest.mock import MagicMock
 
+import pytest
+
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.core import HomeAssistant
@@ -90,6 +92,7 @@ async def test_unique_id_migration_humidity(
     assert entity_entry.unique_id == "f61f1a2535f54f52ad006a3d18e459ca-battery"
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_anna_as_smt_climate_sensor_entities(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
@@ -111,6 +114,7 @@ async def test_anna_as_smt_climate_sensor_entities(
     assert float(state.state) == 86.0
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_anna_climate_sensor_entities(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:

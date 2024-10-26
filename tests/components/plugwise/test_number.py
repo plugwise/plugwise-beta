@@ -15,6 +15,7 @@ from homeassistant.core import HomeAssistant
 from tests.common import MockConfigEntry
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_anna_number_entities(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
@@ -24,6 +25,7 @@ async def test_anna_number_entities(
     assert float(state.state) == 60.0
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_anna_max_boiler_temp_change(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
