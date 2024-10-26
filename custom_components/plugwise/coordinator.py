@@ -29,7 +29,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, GATEWAY_ID, LOGGER
+from .const import DEFAULT_SCAN_INTERVAL, DEFAULT_TIMEOUT, DOMAIN, GATEWAY_ID, LOGGER
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -67,7 +67,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             host=self.config_entry.data[CONF_HOST],
             password=self.config_entry.data[CONF_PASSWORD],
             port=self.config_entry.data[CONF_PORT],
-            timeout=self.config_entry.data[CONF_TIMEOUT],
+            timeout=self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
