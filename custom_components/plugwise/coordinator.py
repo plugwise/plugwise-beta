@@ -2,7 +2,6 @@
 
 from datetime import timedelta
 
-from packaging.version import Version
 from plugwise import PlugwiseData, Smile
 from plugwise.exceptions import (
     ConnectionFailedError,
@@ -28,6 +27,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from packaging.version import Version
 
 from .const import DEFAULT_SCAN_INTERVAL, DEFAULT_TIMEOUT, DOMAIN, GATEWAY_ID, LOGGER
 
