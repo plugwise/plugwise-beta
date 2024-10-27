@@ -143,3 +143,32 @@ async def async_migrate_sensor_entities(
             new_unique_id = f"{device_id}-outdoor_air_temperature"
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate back to v1.1 config entry."""
+    if entry.version > 1:
+        # This means the user has downgraded from a future version
+        return False
+
+    if entry.version == 1 and entry.minor_version == 2:
+        api = Smile(
+            host=entry.data[CONF_HOST],
+            password=entry.data[CONF_PASSWORD],
+            port=entry.data[CONF_PORT],
+            username=entry.data[CONF_USERNAME],
+            websession=async_get_clientsession(hass, verify_ssl=False),
+        )
+        version = await api.connect()
+        new_data = {**entry.data}
+        new_data.pop(CONF_TIMEOUT)
+        hass.config_entries.async_update_entry(
+            entry, data=new_data, minor_version=1, version=1
+        )
+
+    LOGGER.debug(
+        "Migration to version %s.%s successful",
+        entry.version,
+        entry.minor_version,
+    )
+
+    return True
