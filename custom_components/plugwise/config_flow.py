@@ -197,7 +197,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 TITLE_PLACEHOLDERS: {CONF_NAME: _name},
                 ATTR_CONFIGURATION_URL: (
                     f"http://{discovery_info.host}:{discovery_info.port}"
-                )
+                ),
+                    "product": _product,
             }
         )
         return await self.async_step_user()
