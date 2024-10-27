@@ -28,6 +28,7 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_SCAN_INTERVAL,
     CONF_SOURCE,
+    CONF_TIMEOUT,
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
@@ -424,6 +425,7 @@ async def test_options_flow_thermo(
         data={
             CONF_HOST: TEST_HOST,
             CONF_PASSWORD: TEST_PASSWORD,
+            CONF_TIMEOUT: 30,
         },
         minor_version=2,
         options={
