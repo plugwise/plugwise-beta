@@ -4,17 +4,25 @@ from __future__ import annotations
 
 from typing import Any
 
+from plugwise import Smile
 from plugwise.exceptions import PlugwiseError
 import voluptuous as vol  # pw-beta delete_notification
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_PASSWORD,
+    CONF_PORT,
+    CONF_USERNAME,
+    Platform,
+)
 from homeassistant.core import (
     HomeAssistant,
     ServiceCall,  # pw-beta delete_notification
     callback,
 )
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
@@ -158,7 +166,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             username=entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        version = await api.connect()
+        await api.connect()
         new_data = {**entry.data}
         new_data.pop(CONF_TIMEOUT)
         hass.config_entries.async_update_entry(
