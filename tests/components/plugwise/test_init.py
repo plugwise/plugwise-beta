@@ -265,7 +265,7 @@ async def test_entry_migration(
 
     assert entry.version == 1
     assert entry.minor_version == 1
-    assert not entry.data[CONF_TIMEOUT]
+    assert entry.data.get(CONF_TIMEOUT) is None
     assert entry.state is ConfigEntryState.LOADED
 
 
