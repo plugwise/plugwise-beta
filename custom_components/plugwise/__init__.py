@@ -8,7 +8,7 @@ from plugwise.exceptions import PlugwiseError
 import voluptuous as vol  # pw-beta delete_notification
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_TIMEOUT, Platform
+from homeassistant.const import Platform
 from homeassistant.core import (
     HomeAssistant,
     ServiceCall,  # pw-beta delete_notification
