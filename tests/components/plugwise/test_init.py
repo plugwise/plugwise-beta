@@ -196,41 +196,6 @@ async def test_migrate_unique_id_temperature(
     )
 
 
-async def test_entry_migration(
-    hass: HomeAssistant,
-    mock_smile_anna_2: MagicMock,
-    snapshot: SnapshotAssertion) -> None:
-    """Test config entry version 2 -> 1 migration."""
-    entry = MockConfigEntry(
-        domain=DOMAIN,
-        data={
-            CONF_HOST: "127.0.0.1",
-            CONF_MAC: "AA:BB:CC:DD:EE:FF",
-            CONF_PASSWORD: "test-password",
-            CONF_PORT: 80,
-            CONF_TIMEOUT: 30,
-            CONF_USERNAME: "smile",
-        },
-        minor_version=1,
-        version=2,
-        unique_id="smile98765",
-    )
-
-    entry.runtime_data = MagicMock(api=mock_smile_anna_2)
-    entry.add_to_hass(hass)
-    with patch(
-        "homeassistant.components.plugwise.Smile.connect",
-        return_value=(Version("4.0.15")),
-    ):
-        await hass.config_entries.async_setup(entry.entry_id)
-        await hass.async_block_till_done()
-
-        assert entry.version == 1
-        assert entry.minor_version == 1
-        assert not entry.data[CONF_TIMEOUT]
-        assert entry.state is ConfigEntryState.LOADED
-
-
 @pytest.mark.parametrize(
     ("entitydata", "old_unique_id", "new_unique_id"),
     [
@@ -270,6 +235,41 @@ async def test_migrate_unique_id_relay(
     await check_migration(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
+
+
+async def test_entry_migration(
+    hass: HomeAssistant,
+    mock_smile_anna_2: MagicMock,
+    snapshot: SnapshotAssertion) -> None:
+    """Test config entry version 2 -> 1 migration."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            CONF_HOST: "127.0.0.1",
+            CONF_MAC: "AA:BB:CC:DD:EE:FF",
+            CONF_PASSWORD: "test-password",
+            CONF_PORT: 80,
+            CONF_TIMEOUT: 30,
+            CONF_USERNAME: "smile",
+        },
+        minor_version=1,
+        version=2,
+        unique_id="smile98765",
+    )
+
+    entry.runtime_data = MagicMock(api=mock_smile_anna_2)
+    entry.add_to_hass(hass)
+    with patch(
+        "homeassistant.components.plugwise.Smile.connect",
+        return_value=(Version("4.0.15")),
+    ):
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+
+        assert entry.version == 1
+        assert entry.minor_version == 1
+        assert not entry.data[CONF_TIMEOUT]
+        assert entry.state is ConfigEntryState.LOADED
 
 
 async def test_update_device(
