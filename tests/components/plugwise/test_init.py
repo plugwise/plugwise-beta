@@ -253,8 +253,8 @@ async def test_entry_migration(
             CONF_TIMEOUT: 30,
             CONF_USERNAME: "smile",
         },
-        minor_version=1,
-        version=2,
+        minor_version=2,
+        version=1,
         unique_id="smile98765",
     )
 
