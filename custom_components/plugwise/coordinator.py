@@ -67,8 +67,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             host=self.config_entry.data[CONF_HOST],
             password=self.config_entry.data[CONF_PASSWORD],
             port=self.config_entry.data[CONF_PORT],
-            # Needs to stay .get() for config_entry migration-testing:
-            timeout=self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )

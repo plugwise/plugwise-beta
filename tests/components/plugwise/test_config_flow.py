@@ -161,7 +161,7 @@ async def test_zeroconf_form(
     mock_setup_entry: AsyncMock,
     mock_smile_config_flow: MagicMock,
     discovery: ZeroconfServiceInfo,
-    parameters: tuple[str, str],
+    username: str,
 ) -> None:
     """Test config flow for Smile devices."""
     result = await hass.config_entries.flow.async_init(
