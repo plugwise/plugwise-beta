@@ -28,7 +28,6 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_SCAN_INTERVAL,
     CONF_SOURCE,
-    CONF_TIMEOUT,
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
@@ -42,8 +41,6 @@ TEST_HOSTNAME = "smileabcdef"
 TEST_HOSTNAME2 = "stretchabc"
 TEST_PASSWORD = "test_password"
 TEST_PORT = 81
-TEST_TIMEOUT_LEGACY = 30
-TEST_TIMEOUT = 10
 TEST_USERNAME = "smile"
 TEST_USERNAME2 = "stretch"
 TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
@@ -146,7 +143,6 @@ async def test_form(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
-        CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -154,10 +150,10 @@ async def test_form(
 
 
 @pytest.mark.parametrize(
-    ("discovery", "parameters",),
+    ("discovery", "username",),
     [
-        (TEST_DISCOVERY, (TEST_USERNAME, TEST_TIMEOUT)),
-        (TEST_DISCOVERY2, (TEST_USERNAME2, TEST_TIMEOUT_LEGACY)),
+        (TEST_DISCOVERY, TEST_USERNAME),
+        (TEST_DISCOVERY2, TEST_USERNAME2),
     ],
 )
 async def test_zeroconf_form(
@@ -186,13 +182,11 @@ async def test_zeroconf_form(
 
     assert result2.get("type") == FlowResultType.CREATE_ENTRY
     assert result2.get("title") == "Test Smile Name"
-    username, timeout = parameters
     assert result2.get("data") == {
         CONF_HOST: TEST_HOST,
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: username,
-        CONF_TIMEOUT: timeout,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -228,7 +222,6 @@ async def test_zeroconf_stretch_form(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME2,
-        CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -390,7 +383,6 @@ async def test_flow_errors(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
-        CONF_TIMEOUT: TEST_TIMEOUT_LEGACY,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -432,7 +424,6 @@ async def test_options_flow_thermo(
         data={
             CONF_HOST: TEST_HOST,
             CONF_PASSWORD: TEST_PASSWORD,
-            CONF_TIMEOUT: TEST_TIMEOUT,
         },
         minor_version=2,
         options={
