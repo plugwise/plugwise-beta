@@ -24,7 +24,6 @@ from .const import (
     SERVICE_DELETE,  # pw-beta delete_notifications
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .util import get_timeout_for_version
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
@@ -46,7 +45,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     await coordinator.async_config_entry_first_refresh()
 
     await async_migrate_sensor_entities(hass, coordinator)
-    await async_migrate_plugwise_entry(hass, coordinator, entry)
 
     entry.runtime_data = coordinator
 
@@ -146,23 +144,23 @@ async def async_migrate_sensor_entities(
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
-async def async_migrate_plugwise_entry(
-    hass: HomeAssistant,
-    coordinator: PlugwiseDataUpdateCoordinator,
-    entry: ConfigEntry
-) -> bool:
-    """Migrate to new config entry."""
-    if entry.version == 1 and entry.minor_version < 2:
-        new_data = {**entry.data}
-        new_data[CONF_TIMEOUT] = get_timeout_for_version(str(coordinator.api.smile_version))
-        hass.config_entries.async_update_entry(
-            entry, data=new_data, minor_version=2, version=1
-        )
-        LOGGER.debug(
-            "Migration to version %s.%s successful",
-            entry.version,
-            entry.minor_version,
-        )
-        return True
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate back to v1.1 config entry."""
+    if entry.version > 1:
+        # This means the user has downgraded from a future version
+        return False
 
-    return False
+    if entry.version == 1 and entry.minor_version == 2:
+        new_data = {**entry.data}
+        new_data.pop(CONF_TIMEOUT)
+        hass.config_entries.async_update_entry(
+            entry, data=new_data, minor_version=1, version=1
+        )
+
+    LOGGER.debug(
+        "Migration to version %s.%s successful",
+        entry.version,
+        entry.minor_version,
+    )
+
+    return True

@@ -2,9 +2,12 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.54.0
 
-- Link to plugwise [v1.4.4](https://github.com/plugwise/python-plugwise/releases/tag/v1.4.4) and adapt.
+- Link to plugwise [v1.5.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.5.0) and adapt:
+  - Remove the connection-timeout function added in v0.53.3, not accepted in Core
+  - Remove the need to pass a connection-timeout value to the backend library, as suggested by a Core dev
+- Link to plugwise [v1.4.4](https://github.com/plugwise/python-plugwise/releases/tag/v1.4.4) and adapt
 - Fix coordinator connection-method: don't use defaults
 
 ## v0.53.5

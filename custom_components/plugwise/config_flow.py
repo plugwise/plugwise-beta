@@ -34,7 +34,6 @@ from homeassistant.const import (
     CONF_PASSWORD,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
-    CONF_TIMEOUT,
     CONF_USERNAME,
 )
 
@@ -50,7 +49,6 @@ from .const import (
     CONTEXT,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,  # pw-beta option
-    DEFAULT_TIMEOUT,
     DEFAULT_USERNAME,
     DOMAIN,
     FLOW_ID,
@@ -71,7 +69,6 @@ from .const import (
 
 # Upstream
 from .coordinator import PlugwiseDataUpdateCoordinator
-from .util import get_timeout_for_version
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
@@ -119,7 +116,6 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
         host=data[CONF_HOST],
         password=data[CONF_PASSWORD],
         port=data[CONF_PORT],
-        timeout=data[CONF_TIMEOUT],
         username=data[CONF_USERNAME],
         websession=websession,
     )
@@ -131,10 +127,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise Smile."""
 
     VERSION = 1
-    MINOR_VERSION = 2
+    MINOR_VERSION = 1
 
     discovery_info: ZeroconfServiceInfo | None = None
-    _timeout: int = DEFAULT_TIMEOUT
     _username: str = DEFAULT_USERNAME
 
     async def async_step_zeroconf(
@@ -145,7 +140,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         _properties = discovery_info.properties
         _product = _properties.get(PRODUCT, "Unknown Smile")
         _version = _properties.get(VERSION, "n/a")
-        self._timeout = get_timeout_for_version(_version)
         unique_id = discovery_info.hostname.split(".")[0].split("-")[0]
         if DEFAULT_USERNAME not in unique_id:
             self._username = STRETCH_USERNAME
@@ -158,7 +152,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                         CONF_HOST: discovery_info.host,
                         CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
                         CONF_PORT: discovery_info.port,
-                        CONF_TIMEOUT: self._timeout,
                         CONF_USERNAME: config_entry.data[CONF_USERNAME],
                     },
                 )
@@ -228,8 +221,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
 
-        # Ensure a timeout-value is available, required for validation
-        user_input[CONF_TIMEOUT] = self._timeout
         try:
             api = await validate_input(self.hass, user_input)
         except ConnectionFailedError:

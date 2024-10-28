@@ -18,7 +18,6 @@ from homeassistant.const import (
     CONF_PASSWORD,
     CONF_PORT,
     CONF_SCAN_INTERVAL,  # pw-beta options
-    CONF_TIMEOUT,
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
@@ -29,7 +28,7 @@ from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from packaging.version import Version
 
-from .const import DEFAULT_SCAN_INTERVAL, DEFAULT_TIMEOUT, DOMAIN, GATEWAY_ID, LOGGER
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, GATEWAY_ID, LOGGER
 
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
@@ -67,8 +66,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             host=self.config_entry.data[CONF_HOST],
             password=self.config_entry.data[CONF_PASSWORD],
             port=self.config_entry.data[CONF_PORT],
-            # Needs to stay .get() for config_entry migration-testing:
-            timeout=self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )

@@ -21,6 +21,7 @@ from homeassistant.const import (
     CONF_MAC,
     CONF_PASSWORD,
     CONF_PORT,
+    CONF_TIMEOUT,
     CONF_USERNAME,
     Platform,
 )
@@ -241,7 +242,7 @@ async def test_entry_migration(
     hass: HomeAssistant,
     mock_smile_anna_2: MagicMock,
     snapshot: SnapshotAssertion) -> None:
-    """Test config entry version 1 -> 2 migration."""
+    """Test config entry version 2 -> 1 migration."""
     entry = MockConfigEntry(
         domain=DOMAIN,
         data={
@@ -249,21 +250,23 @@ async def test_entry_migration(
             CONF_MAC: "AA:BB:CC:DD:EE:FF",
             CONF_PASSWORD: "test-password",
             CONF_PORT: 80,
+            CONF_TIMEOUT: 30,
             CONF_USERNAME: "smile",
         },
-        minor_version=1,
+        minor_version=2,
         version=1,
         unique_id="smile98765",
     )
 
     entry.runtime_data = MagicMock(api=mock_smile_anna_2)
     entry.add_to_hass(hass)
-
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
 
-    # Assert that the migrated entry matches the expected structure
-    assert hass.config_entries.async_get_entry(entry.entry_id) == snapshot
+    assert entry.version == 1
+    assert entry.minor_version == 1
+    assert entry.data.get(CONF_TIMEOUT) is None
+    assert entry.state is ConfigEntryState.LOADED
 
 
 async def test_update_device(
