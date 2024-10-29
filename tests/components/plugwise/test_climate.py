@@ -77,8 +77,9 @@ async def test_adam_climate_entity_attributes(
     )
 
 
+@pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
 async def test_adam_2_climate_entity_attributes(
-    hass: HomeAssistant, mock_smile_adam_2: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test creation of adam climate device environment."""
     state = hass.states.get("climate.anna")
@@ -102,9 +103,10 @@ async def test_adam_2_climate_entity_attributes(
     ]
 
 
+@pytest.mark.parametrize("chosen_env", ["m_adam_cooling"], indirect=True)
 async def test_adam_3_climate_entity_attributes(
     hass: HomeAssistant,
-    mock_smile_adam_3: MagicMock,
+    mock_smile_adam_heat_cool: MagicMock,
     init_integration: MockConfigEntry,
     freezer: FrozenDateTimeFactory,
 ) -> None:
@@ -119,7 +121,7 @@ async def test_adam_3_climate_entity_attributes(
         HVACMode.COOL,
     ]
 
-    data = mock_smile_adam_3.async_update.return_value
+    data = mock_smile_adam_heat_cool.async_update.return_value
     data.devices["da224107914542988a88561b4452b0f6"][
         "select_regulation_mode"
     ] = "heating"
@@ -145,7 +147,7 @@ async def test_adam_3_climate_entity_attributes(
             HVACMode.HEAT,
         ]
 
-    data = mock_smile_adam_3.async_update.return_value
+    data = mock_smile_adam_heat_cool.async_update.return_value
     data.devices["da224107914542988a88561b4452b0f6"][
         "select_regulation_mode"
     ] = "cooling"
@@ -313,6 +315,7 @@ async def test_adam_climate_off_mode_change(
     assert mock_smile_adam_4.set_regulation_mode.call_count == 2
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_anna_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MagicMock
 ) -> None:
@@ -340,10 +343,10 @@ async def test_anna_climate_entity_attributes(
         state.attributes["target_temp_step"], 0.1, rel_tol=1e-09, abs_tol=1e-09
     )
 
-
+@pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
 async def test_anna_2_climate_entity_attributes(
     hass: HomeAssistant,
-    mock_smile_anna_2: MagicMock,
+    mock_smile_anna: MagicMock,
     init_integration: MockConfigEntry,
 ) -> None:
     """Test creation of anna climate device environment."""
@@ -360,9 +363,10 @@ async def test_anna_2_climate_entity_attributes(
     assert state.attributes["target_temp_low"] == 20.5
 
 
+@pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_idle"], indirect=True)
 async def test_anna_3_climate_entity_attributes(
     hass: HomeAssistant,
-    mock_smile_anna_3: MagicMock,
+    mock_smile_anna: MagicMock,
     init_integration: MockConfigEntry,
 ) -> None:
     """Test creation of anna climate device environment."""
@@ -376,6 +380,7 @@ async def test_anna_3_climate_entity_attributes(
     ]
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_anna_climate_entity_climate_changes(
     hass: HomeAssistant,
     mock_smile_anna: MagicMock,
