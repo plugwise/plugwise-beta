@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Optimize test code, improve docstrings and add comments
+
 ## v0.54.0
 
 - Link to plugwise [v1.5.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.5.0) and adapt:
