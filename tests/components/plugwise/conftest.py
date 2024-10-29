@@ -30,6 +30,24 @@ def _read_json(environment: str, call: str) -> dict[str, Any]:
 
 
 @pytest.fixture
+def chosen_env(request: pytest.FixtureRequest) -> str:
+    """Pass the chosen_env string.
+
+    Used with fixtures that require parametrization of the user-data fixture.
+    """
+    return request.param
+
+
+@pytest.fixture
+def gateway_id(request: pytest.FixtureRequest) -> str:
+    """Pass the gateway_id string.
+
+    Used with fixtures that require parametrization of the gateway_id.
+    """
+    return request.param
+
+
+@pytest.fixture
 def mock_config_entry() -> MockConfigEntry:
     """Return the default mocked config entry."""
     return MockConfigEntry(
@@ -78,7 +96,7 @@ def mock_smile_config_flow() -> Generator[MagicMock]:
 
 @pytest.fixture
 def mock_smile_adam() -> Generator[MagicMock]:
-    """Create a Mock Adam environment for testing exceptions."""
+    """Create a Mock Adam type for testing."""
     chosen_env = "m_adam_multiple_devices_per_zone"
     all_data = _read_json(chosen_env, "all_data")
     with patch(
@@ -103,26 +121,8 @@ def mock_smile_adam() -> Generator[MagicMock]:
 
 
 @pytest.fixture
-def chosen_env(request: pytest.FixtureRequest) -> str:
-    """Pass the chosen_env string.
-
-    Used with fixtures that require parametrization of a user-data fixture.
-    """
-    return request.param
-
-
-@pytest.fixture
-def gateway_id(request: pytest.FixtureRequest) -> str:
-    """Pass the gateway_id string.
-
-    Used with fixtures that require parametrization of a user-data fixture.
-    """
-    return request.param
-
-
-@pytest.fixture
 def mock_smile_adam_heat_cool(chosen_env) -> Generator[MagicMock]:
-    """Create a base Mock Adam environment for testing with more than one dataset."""
+    """Create a special base Mock Adam type for testing with different datasets."""
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
     ) as smile_mock:
@@ -149,7 +149,7 @@ def mock_smile_adam_heat_cool(chosen_env) -> Generator[MagicMock]:
 
 @pytest.fixture
 def mock_smile_adam_4() -> Generator[MagicMock]:
-    """Create a 4th Mock Adam environment for testing exceptions."""
+    """Create a 4th Mock Adam type for testing."""
     chosen_env = "m_adam_jip"
     all_data = _read_json(chosen_env, "all_data")
     with patch(
@@ -175,7 +175,7 @@ def mock_smile_adam_4() -> Generator[MagicMock]:
 
 @pytest.fixture
 def mock_smile_anna(chosen_env) -> Generator[MagicMock]:
-    """Create a Mock Anna environment for testing exceptions."""
+    """Create a Mock Anna type for testing."""
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
     ) as smile_mock:
@@ -202,7 +202,7 @@ def mock_smile_anna(chosen_env) -> Generator[MagicMock]:
 
 @pytest.fixture
 def mock_smile_p1(chosen_env, gateway_id) -> Generator[MagicMock]:
-    """Create a Mock P1 DSMR environment for testing exceptions."""
+    """Create a base Mock P1 type for testing with different datasets and gateway-ids."""
     all_data = _read_json(chosen_env, "all_data")
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
@@ -227,7 +227,7 @@ def mock_smile_p1(chosen_env, gateway_id) -> Generator[MagicMock]:
 
 @pytest.fixture
 def mock_smile_legacy_anna() -> Generator[MagicMock]:
-    """Create a Mock legacy Anna environment for testing exceptions."""
+    """Create a Mock legacy Anna type for testing."""
     chosen_env = "legacy_anna"
     all_data = _read_json(chosen_env, "all_data")
     with patch(
@@ -253,7 +253,7 @@ def mock_smile_legacy_anna() -> Generator[MagicMock]:
 
 @pytest.fixture
 def mock_stretch() -> Generator[MagicMock]:
-    """Create a Mock Stretch environment for testing exceptions."""
+    """Create a Mock Stretch type for testing."""
     chosen_env = "stretch_v31"
     all_data = _read_json(chosen_env, "all_data")
     with patch(
