@@ -2,6 +2,8 @@
 
 from unittest.mock import MagicMock
 
+import pytest
+
 from homeassistant.components.number import (
     ATTR_VALUE,
     DOMAIN as NUMBER_DOMAIN,
@@ -13,6 +15,7 @@ from homeassistant.core import HomeAssistant
 from tests.common import MockConfigEntry
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_anna_number_entities(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
@@ -22,6 +25,7 @@ async def test_anna_number_entities(
     assert float(state.state) == 60.0
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 async def test_anna_max_boiler_temp_change(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
@@ -42,8 +46,9 @@ async def test_anna_max_boiler_temp_change(
     )
 
 
+@pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
 async def test_adam_dhw_setpoint_change(
-    hass: HomeAssistant, mock_smile_adam_2: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test changing of number entities."""
     await hass.services.async_call(
@@ -56,8 +61,8 @@ async def test_adam_dhw_setpoint_change(
         blocking=True,
     )
 
-    assert mock_smile_adam_2.set_number.call_count == 1
-    mock_smile_adam_2.set_number.assert_called_with(
+    assert mock_smile_adam_heat_cool.set_number.call_count == 1
+    mock_smile_adam_heat_cool.set_number.assert_called_with(
         "056ee145a816487eaa69243c3280f8bf", "max_dhw_temperature", 55.0
     )
 
