@@ -241,12 +241,12 @@ async def test_migrate_unique_id_relay(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
 
-
+#### pw-beta only ####
 @pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
 async def test_entry_migration(
     hass: HomeAssistant, mock_smile_anna: MagicMock
 ) -> None:
-    """Test config entry version 2 -> 1 migration."""
+    """Test config entry 1.2 -> 1.1 migration."""
     entry = MockConfigEntry(
         domain=DOMAIN,
         data={
