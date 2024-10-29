@@ -121,7 +121,7 @@ def mock_smile_adam() -> Generator[MagicMock]:
 
 
 @pytest.fixture
-def mock_smile_adam_heat_cool(chosen_env) -> Generator[MagicMock]:
+def mock_smile_adam_heat_cool(chosen_env: str) -> Generator[MagicMock]:
     """Create a special base Mock Adam type for testing with different datasets."""
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
@@ -174,7 +174,7 @@ def mock_smile_adam_4() -> Generator[MagicMock]:
 
 
 @pytest.fixture
-def mock_smile_anna(chosen_env) -> Generator[MagicMock]:
+def mock_smile_anna(chosen_env: str) -> Generator[MagicMock]:
     """Create a Mock Anna type for testing."""
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
@@ -201,7 +201,7 @@ def mock_smile_anna(chosen_env) -> Generator[MagicMock]:
 
 
 @pytest.fixture
-def mock_smile_p1(chosen_env, gateway_id) -> Generator[MagicMock]:
+def mock_smile_p1(chosen_env: str, gateway_id: str) -> Generator[MagicMock]:
     """Create a base Mock P1 type for testing with different datasets and gateway-ids."""
     all_data = _read_json(chosen_env, "all_data")
     with patch(
