@@ -2,8 +2,10 @@
 
 ## Versions from 0.40 and up
 
-## Ongoing
+## v0.54.1
 
+- Fix typing error
+- Downstream Core PR #126896
 - Optimize test code, improve docstrings and add comments
 
 ## v0.54.0
