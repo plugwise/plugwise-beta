@@ -200,7 +200,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             return HVACMode.HEAT  # pragma: no cover
         # pw-beta homekit emulation
         if self._homekit_enabled and self._homekit_mode == HVACMode.OFF:
-            climate_mode = HVACMode.OFF  # pragma: no cover
+            mode = HVACMode.OFF  # pragma: no cover
 
         return HVACMode(mode)
 
