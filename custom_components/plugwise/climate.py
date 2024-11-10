@@ -31,6 +31,7 @@ from .const import (
     ACTIVE_PRESET,
     AVAILABLE_SCHEDULES,
     BINARY_SENSORS,
+    CLIMATE_MODE,
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     CONTROL_STATE,
     COOLING_PRESENT,
@@ -43,7 +44,6 @@ from .const import (
     LOGGER,
     LOWER_BOUND,
     MASTER_THERMOSTATS,
-    MODE,
     REGULATION_MODES,
     RESOLUTION,
     SELECT_REGULATION_MODE,
@@ -195,12 +195,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, cool, heat, heat_cool, or off mode."""
         if (
-            mode := self.device[MODE]
+            mode := self.device[CLIMATE_MODE]
         ) is None or mode not in self.hvac_modes:  # pw-beta add to Core
             return HVACMode.HEAT  # pragma: no cover
         # pw-beta homekit emulation
         if self._homekit_enabled and self._homekit_mode == HVACMode.OFF:
-            mode = HVACMode.OFF  # pragma: no cover
+            climate_mode = HVACMode.OFF  # pragma: no cover
 
         return HVACMode(mode)
 
@@ -238,7 +238,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Adam provides the hvac_action for each thermostat
         if (control_state := self.device.get(CONTROL_STATE)) in (HVACAction.COOLING, HVACAction.HEATING, HVACAction.PREHEATING):
-            return cast(HVACAction, control_state)
+            return HVACAction(control_state)
         if control_state == HVACMode.OFF:
             return HVACAction.IDLE
 

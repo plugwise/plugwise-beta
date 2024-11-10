@@ -43,11 +43,11 @@ SECONDARY_BOILER_STATE: Final = "secondary_boiler_state"
 
 # Climate constants
 ACTIVE_PRESET: Final = "active_preset"
+CLIMATE_MODE: Final = "climate_mode"
 CONTROL_STATE: Final = "control_state"
 COOLING_PRESENT: Final ="cooling_present"
 DEV_CLASS: Final = "dev_class"
 NONE : Final = "None"
-MODE: Final = "mode"
 TARGET_TEMP: Final = "setpoint"
 TARGET_TEMP_HIGH: Final = "setpoint_high"
 TARGET_TEMP_LOW: Final = "setpoint_low"
