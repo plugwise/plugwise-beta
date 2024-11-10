@@ -5,7 +5,7 @@
 ## v0.54.2:
 
 - Link to plugwise [v1.5.1](https://github.com/plugwise/python-plugwise/releases/tag/v1.5.1) and adapt:
-  - change device-key `mode` to `climate_mode`
+  - Change thermostat device-key `mode` to `climate_mode`
 
 ## v0.54.1
 
