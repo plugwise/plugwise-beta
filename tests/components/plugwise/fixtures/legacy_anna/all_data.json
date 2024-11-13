@@ -51,7 +51,7 @@
         "no_frost"
       ],
       "sensors": {
-        "illuminance": 151,
+        "illuminance": 150.8,
         "setpoint": 20.5,
         "temperature": 20.4
       },
