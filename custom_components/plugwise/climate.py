@@ -31,6 +31,7 @@ from .const import (
     ACTIVE_PRESET,
     AVAILABLE_SCHEDULES,
     BINARY_SENSORS,
+    CLIMATE_MODE,
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     CONTROL_STATE,
     COOLING_PRESENT,
@@ -43,7 +44,6 @@ from .const import (
     LOGGER,
     LOWER_BOUND,
     MASTER_THERMOSTATS,
-    MODE,
     REGULATION_MODES,
     RESOLUTION,
     SELECT_REGULATION_MODE,
@@ -195,7 +195,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, cool, heat, heat_cool, or off mode."""
         if (
-            mode := self.device[MODE]
+            mode := self.device[CLIMATE_MODE]
         ) is None or mode not in self.hvac_modes:  # pw-beta add to Core
             return HVACMode.HEAT  # pragma: no cover
         # pw-beta homekit emulation
