@@ -96,7 +96,7 @@ async def async_setup_entry(
                             PlugwiseSelectEntity(coordinator, device_id, description)
                         )
                         LOGGER.debug(
-                            "Add %s %s selector", device["name"], description.translation_key
+                            "Add %s %s selector", thermostat["name"], description.translation_key
                         )
 
         elif coordinator.new_devices:
