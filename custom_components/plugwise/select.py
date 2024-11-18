@@ -99,7 +99,7 @@ async def async_setup_entry(
                             "Add %s %s selector", thermostat["name"], description.translation_key
                         )
 
-        elif coordinator.new_devices:
+        if coordinator.new_devices:
             # Upstream consts
             # async_add_entities(
             #     PlugwiseSelectEntity(coordinator, device_id, description)
