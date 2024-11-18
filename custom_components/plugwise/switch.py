@@ -130,14 +130,14 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
     @property
     def is_on(self) -> bool:
         """Return True if entity is on."""
-        return self.device[SWITCHES][self.entity_description.key]  # Upstream const
+        return self.device_or_zone[SWITCHES][self.entity_description.key]  # Upstream const
 
     @plugwise_command
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the device on."""
         await self.coordinator.api.set_switch_state(
             self._dev_id,
-            self.device.get(MEMBERS),
+            self.device_or_zone.get(MEMBERS),
             self.entity_description.key,
             "on",
         )  # Upstream const
@@ -147,7 +147,7 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
         """Turn the device off."""
         await self.coordinator.api.set_switch_state(
             self._dev_id,
-            self.device.get(MEMBERS),
+            self.device_or_zone.get(MEMBERS),
             self.entity_description.key,
             "off",
         )  # Upstream const

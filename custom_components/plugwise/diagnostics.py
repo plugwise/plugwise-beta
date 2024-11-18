@@ -17,4 +17,5 @@ async def async_get_config_entry_diagnostics(
     return {
         "gateway": coordinator.data.gateway,
         "devices": coordinator.data.devices,
+        "zones": coordinator.data.zones,
     }

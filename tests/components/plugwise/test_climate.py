@@ -82,7 +82,7 @@ async def test_adam_2_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test creation of adam climate device environment."""
-    state = hass.states.get("climate.anna")
+    state = hass.states.get("climate.living_room")
     assert state
     assert state.state == HVACMode.HEAT
     assert state.attributes["hvac_action"] == "preheating"
@@ -92,7 +92,7 @@ async def test_adam_2_climate_entity_attributes(
         HVACMode.HEAT,
     ]
 
-    state = hass.states.get("climate.lisa_badkamer")
+    state = hass.states.get("climate.bathroom")
     assert state
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_action"] == "idle"
@@ -111,7 +111,7 @@ async def test_adam_3_climate_entity_attributes(
     freezer: FrozenDateTimeFactory,
 ) -> None:
     """Test creation of adam climate device environment."""
-    state = hass.states.get("climate.anna")
+    state = hass.states.get("climate.living_room")
     assert state
     assert state.state == HVACMode.COOL
     assert state.attributes["hvac_action"] == "cooling"
@@ -137,7 +137,7 @@ async def test_adam_3_climate_entity_attributes(
         async_fire_time_changed(hass)
         await hass.async_block_till_done()
 
-        state = hass.states.get("climate.anna")
+        state = hass.states.get("climate.living_room")
         assert state
         assert state.state == HVACMode.HEAT
         assert state.attributes["hvac_action"] == "heating"
@@ -163,7 +163,7 @@ async def test_adam_3_climate_entity_attributes(
         async_fire_time_changed(hass)
         await hass.async_block_till_done()
 
-        state = hass.states.get("climate.anna")
+        state = hass.states.get("climate.living_room")
         assert state
         assert state.state == HVACMode.COOL
         assert state.attributes["hvac_action"] == "cooling"
