@@ -13,7 +13,6 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import (
-    ATTR_NAME,
     ATTR_TEMPERATURE,  # Upstream
     LIGHT_LUX,
     PERCENTAGE,
@@ -60,7 +59,6 @@ from .const import (
     GAS_CONS_CUMULATIVE,
     GAS_CONS_INTERVAL,
     INTENDED_BOILER_TEMP,
-    LOCATION,
     LOGGER,  # pw-beta
     MOD_LEVEL,
     NET_EL_CUMULATIVE,
@@ -529,10 +527,6 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-
-        self._attr_name = f"{self.device_or_zone[ATTR_NAME]}_{description.translation_key}"
-        if (location := self.device_or_zone.get(LOCATION)) is not None:
-            self._attr_name = None
 
     @property
     def native_value(self) -> int | float:

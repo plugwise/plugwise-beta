@@ -111,6 +111,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     """Representation of a Plugwise thermostat."""
 
     _attr_has_entity_name = True
+    _attr_name = None
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_translation_key = DOMAIN
     _enable_turn_on_off_backwards_compatibility = False
@@ -129,10 +130,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
 
-        self._attr_name = self.device_or_zone[ATTR_NAME]
         self._location = device_id
         if (location := self.device_or_zone.get(LOCATION)) is not None:
-            self._attr_name = None
             self._location = location
 
         gateway_id: str = coordinator.data.gateway[GATEWAY_ID]
