@@ -76,19 +76,30 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities during init and runtime."""
-        if not coordinator.new_devices:
+        if not (coordinator.new_devices or coordinator.new_zones):
             return
 
         entities: list[PlugwiseClimateEntity] = []
-        for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
-            if device[DEV_CLASS] in MASTER_THERMOSTATS:
+        if coordinator.new_zones:
+            for device_id in coordinator.new_zones:
+                thermostat = coordinator.data.zones[device_id]
                 entities.append(
                     PlugwiseClimateEntity(
                         coordinator, device_id, homekit_enabled
                     )  # pw-beta homekit emulation
                 )
-                LOGGER.debug("Add climate %s", device[ATTR_NAME])
+                LOGGER.debug("Add climate %s", thermostat[ATTR_NAME])
+
+        elif coordinator.new_devices:
+            for device_id in coordinator.new_devices:
+                device = coordinator.data.devices[device_id]
+                if device[DEV_CLASS] in MASTER_THERMOSTATS:
+                    entities.append(
+                        PlugwiseClimateEntity(
+                            coordinator, device_id, homekit_enabled
+                        )  # pw-beta homekit emulation
+                    )
+                    LOGGER.debug("Add climate %s", device[ATTR_NAME])
 
         async_add_entities(entities)
 
@@ -100,7 +111,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     """Representation of a Plugwise thermostat."""
 
     _attr_has_entity_name = True
-    _attr_name = None
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_translation_key = DOMAIN
     _enable_turn_on_off_backwards_compatibility = False
@@ -118,14 +128,21 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         super().__init__(coordinator, device_id)
 
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
+
+        self._attr_name = self.device_or_zone[ATTR_NAME]
+        self._location = device_id
+        if (location := self.device_or_zone.get(LOCATION)) is not None:
+            self._attr_name = None
+            self._location = location
+
         gateway_id: str = coordinator.data.gateway[GATEWAY_ID]
         self.gateway_data = coordinator.data.devices[gateway_id]
 
-        self._attr_max_temp = min(self.device[THERMOSTAT][UPPER_BOUND], 35.0)
-        self._attr_min_temp = self.device[THERMOSTAT][LOWER_BOUND]
+        self._attr_max_temp = min(self.device_or_zone[THERMOSTAT][UPPER_BOUND], 35.0)
+        self._attr_min_temp = self.device_or_zone[THERMOSTAT][LOWER_BOUND]
         # Ensure we don't drop below 0.1
         self._attr_target_temperature_step = max(
-            self.device[THERMOSTAT][RESOLUTION], 0.1
+            self.device_or_zone[THERMOSTAT][RESOLUTION], 0.1
         )
         self._attr_unique_id = f"{device_id}-climate"
 
@@ -143,7 +160,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= (
                 ClimateEntityFeature.TURN_OFF | ClimateEntityFeature.TURN_ON
             )
-        if presets := self.device["preset_modes"]:  # can be NONE
+        if presets := self.device_or_zone["preset_modes"]:  # can be NONE
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
         self._attr_preset_modes = presets
 
@@ -164,7 +181,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def current_temperature(self) -> float:
         """Return the current temperature."""
-        return self.device[SENSORS][ATTR_TEMPERATURE]
+        return self.device_or_zone[SENSORS][ATTR_TEMPERATURE]
 
     @property
     def target_temperature(self) -> float:
@@ -173,7 +190,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         Connected to the HVACMode combination of AUTO-HEAT.
         """
 
-        return self.device[THERMOSTAT][TARGET_TEMP]
+        return self.device_or_zone[THERMOSTAT][TARGET_TEMP]
 
     @property
     def target_temperature_high(self) -> float:
@@ -181,7 +198,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACMode combination of AUTO-HEAT_COOL.
         """
-        return self.device[THERMOSTAT][TARGET_TEMP_HIGH]
+        return self.device_or_zone[THERMOSTAT][TARGET_TEMP_HIGH]
 
     @property
     def target_temperature_low(self) -> float:
@@ -189,13 +206,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         Connected to the HVACMode combination AUTO-HEAT_COOL.
         """
-        return self.device[THERMOSTAT][TARGET_TEMP_LOW]
+        return self.device_or_zone[THERMOSTAT][TARGET_TEMP_LOW]
 
     @property
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, cool, heat, heat_cool, or off mode."""
         if (
-            mode := self.device[CLIMATE_MODE]
+            mode := self.device_or_zone[CLIMATE_MODE]
         ) is None or mode not in self.hvac_modes:  # pw-beta add to Core
             return HVACMode.HEAT  # pragma: no cover
         # pw-beta homekit emulation
@@ -214,7 +231,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         ):
             hvac_modes.append(HVACMode.OFF)
 
-        if AVAILABLE_SCHEDULES in self.device:
+        if AVAILABLE_SCHEDULES in self.device_or_zone:
             hvac_modes.append(HVACMode.AUTO)
 
         if self.cdr_gateway[COOLING_PRESENT]:
@@ -237,7 +254,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._previous_action_mode(self.coordinator)
 
         # Adam provides the hvac_action for each thermostat
-        if (control_state := self.device.get(CONTROL_STATE)) in (HVACAction.COOLING, HVACAction.HEATING, HVACAction.PREHEATING):
+        if (control_state := self.device_or_zone.get(CONTROL_STATE)) in (HVACAction.COOLING, HVACAction.HEATING, HVACAction.PREHEATING):
             return cast(HVACAction, control_state)
         if control_state == HVACMode.OFF:
             return HVACAction.IDLE
@@ -255,7 +272,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def preset_mode(self) -> str | None:
         """Return the current preset mode."""
-        return self.device[ACTIVE_PRESET]
+        return self.device_or_zone[ACTIVE_PRESET]
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
@@ -273,7 +290,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if mode := kwargs.get(ATTR_HVAC_MODE):
             await self.async_set_hvac_mode(mode)
 
-        await self.coordinator.api.set_temperature(self.device[LOCATION], data)
+        await self.coordinator.api.set_temperature(self._location, data)
 
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
@@ -286,7 +303,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         if hvac_mode != HVACMode.OFF:
             await self.coordinator.api.set_schedule_state(
-                self.device[LOCATION],
+                self._location,
                 STATE_ON if hvac_mode == HVACMode.AUTO else STATE_OFF,
             )
 
@@ -303,11 +320,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
             if (
                 self._homekit_mode in [HVACMode.HEAT, HVACMode.HEAT_COOL]
-                and self.device[ACTIVE_PRESET] == PRESET_AWAY
+                and self.device_or_zone[ACTIVE_PRESET] == PRESET_AWAY
             ):  # pragma: no cover
                 await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
 
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode."""
-        await self.coordinator.api.set_preset(self.device[LOCATION], preset_mode)
+        await self.coordinator.api.set_preset(self._location, preset_mode)

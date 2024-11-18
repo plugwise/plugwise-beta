@@ -70,7 +70,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._current_devices: set[str] = set()
+        self._current_zones: set[str] = set()
         self.new_devices: set[str] = set()
+        self.new_zones: set[str] = set()
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -91,7 +93,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
-        data = PlugwiseData({}, {})
+        data = PlugwiseData(devices={}, gateway={}, zones={})
         try:
             if not self._connected:
                 await self._connect()
@@ -110,19 +112,24 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             raise ConfigEntryError("Device with unsupported firmware") from err
         else:
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
-            await self.async_add_remove_devices(data, self.config_entry)
+            await self.async_add_remove_devices_zones(data, self.config_entry)
 
         return data
 
-    async def async_add_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
+    async def async_add_remove_devices_zones(self, data: PlugwiseData, entry: ConfigEntry) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new or removed devices
         self.new_devices = set(data.devices) - self._current_devices
+        self.new_zones = set(data.zones) - self._current_zones
         removed_devices = self._current_devices - set(data.devices)
+        removed_zones = self._current_zones - set(data.zones)
         self._current_devices = set(data.devices)
+        self._current_zones = set(data.zones)
 
         if removed_devices:
             await self.async_remove_devices(data, entry)
+        # if removed_zones:
+            # await self.async_remove_zones(data, entry)
 
     async def async_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
         """Clean registries when removed devices found."""

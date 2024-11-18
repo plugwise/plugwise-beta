@@ -492,6 +492,19 @@ async def async_setup_entry(
                 LOGGER.debug(
                     "Add %s %s sensor", device["name"], description.translation_key or description.key
                 )
+
+        for device_id in coordinator.new_zones:
+            thermostat = coordinator.data.zones[device_id]
+            if not (sensors := thermostat.get(SENSORS)):
+                continue
+            for description in PLUGWISE_SENSORS:
+                if description.key not in sensors:
+                    continue
+                entities.append(PlugwiseSensorEntity(coordinator, device_id, description))
+                LOGGER.debug(
+                    "Add %s %s sensor", thermostat["name"], description.translation_key or description.key
+                )
+
         async_add_entities(entities)
 
     _add_entities()
@@ -517,4 +530,4 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
     @property
     def native_value(self) -> int | float:
         """Return the value reported by the sensor."""
-        return self.device[SENSORS][self.entity_description.key]  # Upstream consts
+        return self.device_or_zone[SENSORS][self.entity_description.key]  # Upstream consts
