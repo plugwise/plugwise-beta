@@ -468,42 +468,43 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator.new_devices:
+        if not (coordinator.new_devices or coordinator.new_zones):
             return
 
-        # Upstream consts
-        # async_add_entities(
-        #     PlugwiseSensorEntity(coordinator, device_id, description)
-        #     for device_id in coordinator.new_devices
-        #     if (sensors := coordinator.data.devices[device_id].get(SENSORS))
-        #     for description in PLUGWISE_SENSORS
-        #     if description.key in sensors
-        # )
-        # pw-beta alternative for debugging
         entities: list[PlugwiseSensorEntity] = []
-        for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
-            if not (sensors := device.get(SENSORS)):
-                continue
-            for description in PLUGWISE_SENSORS:
-                if description.key not in sensors:
+        if coordinator.new_zones:
+            for device_id in coordinator.new_zones:
+                thermostat = coordinator.data.zones[device_id]
+                if not (sensors := thermostat.get(SENSORS)):
                     continue
-                entities.append(PlugwiseSensorEntity(coordinator, device_id, description))
-                LOGGER.debug(
-                    "Add %s %s sensor", device["name"], description.translation_key or description.key
-                )
-
-        for device_id in coordinator.new_zones:
-            thermostat = coordinator.data.zones[device_id]
-            if not (sensors := thermostat.get(SENSORS)):
-                continue
-            for description in PLUGWISE_SENSORS:
-                if description.key not in sensors:
+                for description in PLUGWISE_SENSORS:
+                    if description.key not in sensors:
+                        continue
+                    entities.append(PlugwiseSensorEntity(coordinator, device_id, description))
+                    LOGGER.debug(
+                        "Add %s %s sensor", thermostat["name"], description.translation_key or description.key
+                    )
+        if coordinator.new_devices:
+            # Upstream consts
+            # async_add_entities(
+            #     PlugwiseSensorEntity(coordinator, device_id, description)
+            #     for device_id in coordinator.new_devices
+            #     if (sensors := coordinator.data.devices[device_id].get(SENSORS))
+            #     for description in PLUGWISE_SENSORS
+            #     if description.key in sensors
+            # )
+            # pw-beta alternative for debugging
+            for device_id in coordinator.new_devices:
+                device = coordinator.data.devices[device_id]
+                if not (sensors := device.get(SENSORS)):
                     continue
-                entities.append(PlugwiseSensorEntity(coordinator, device_id, description))
-                LOGGER.debug(
-                    "Add %s %s sensor", thermostat["name"], description.translation_key or description.key
-                )
+                for description in PLUGWISE_SENSORS:
+                    if description.key not in sensors:
+                        continue
+                    entities.append(PlugwiseSensorEntity(coordinator, device_id, description))
+                    LOGGER.debug(
+                        "Add %s %s sensor", device["name"], description.translation_key or description.key
+                    )
 
         async_add_entities(entities)
 
