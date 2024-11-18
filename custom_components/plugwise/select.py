@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
-from homeassistant.const import STATE_ON, EntityCategory
+from homeassistant.const import ATTR_NAME, STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -140,8 +140,11 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         super().__init__(coordinator, device_id)
         self._attr_unique_id = f"{device_id}-{entity_description.key}"
         self.entity_description = entity_description
+
+        self._attr_name = f"{self.device_or_zone[ATTR_NAME]}_{entity_description.translation_key}"
         self._location = device_id
         if (location := self.device_or_zone.get(LOCATION)) is not None:
+            self._attr_name = None
             self._location = location
 
     @property
