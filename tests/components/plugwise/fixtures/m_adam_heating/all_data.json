@@ -143,18 +143,7 @@
       "switches": {
         "relay": true
       }
-    }
-  },
-  "gateway": {
-    "cooling_present": false,
-    "gateway_id": "da224107914542988a88561b4452b0f6",
-    "heater_id": "056ee145a816487eaa69243c3280f8bf",
-    "item_count": 89,
-    "notifications": {},
-    "reboot": true,
-    "smile_name": "Adam"
-  },
-  "zones": {
+    },
     "f2bf9048bef64cc5b6d5110154e33c81": {
       "active_preset": "home",
       "available_schedules": [
@@ -235,5 +224,14 @@
         ]
       }
     }
+  },
+  "gateway": {
+    "cooling_present": false,
+    "gateway_id": "da224107914542988a88561b4452b0f6",
+    "heater_id": "056ee145a816487eaa69243c3280f8bf",
+    "item_count": 89,
+    "notifications": {},
+    "reboot": true,
+    "smile_name": "Adam"
   }
 }
