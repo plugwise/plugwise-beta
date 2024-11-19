@@ -1,5 +1,5 @@
 {
-  "devices": {
+  "device_zones": {
     "1346fbd8498d4dbcab7e18d51b771f3d": {
       "active_preset": "no_frost",
       "available": true,
@@ -358,6 +358,5 @@
     "notifications": {},
     "reboot": true,
     "smile_name": "Adam"
-  },
-  "zones": {}
+  }
 }

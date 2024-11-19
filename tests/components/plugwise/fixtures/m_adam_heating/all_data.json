@@ -1,5 +1,5 @@
 {
-  "devices": {
+  "device_zones": {
     "056ee145a816487eaa69243c3280f8bf": {
       "available": true,
       "binary_sensors": {

@@ -1,5 +1,5 @@
 {
-  "devices": {
+  "device_zones": {
     "02cf28bfec924855854c544690a609ef": {
       "available": true,
       "dev_class": "vcr_plug",
@@ -543,6 +543,5 @@
     },
     "reboot": true,
     "smile_name": "Adam"
-  },
-  "zones": {}
+  }
 }
