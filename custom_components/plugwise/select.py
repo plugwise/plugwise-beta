@@ -5,14 +5,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
-from homeassistant.const import ATTR_NAME, STATE_ON, EntityCategory
+from homeassistant.const import STATE_ON, EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import PlugwiseConfigEntry
 from .const import (
     AVAILABLE_SCHEDULES,
-    DEV_CLASS,
     DHW_MODE,
     DHW_MODES,
     GATEWAY_MODE,
