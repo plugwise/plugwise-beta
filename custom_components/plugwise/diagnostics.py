@@ -15,7 +15,6 @@ async def async_get_config_entry_diagnostics(
     """Return diagnostics for a config entry."""
     coordinator = entry.runtime_data
     return {
+        "devices": coordinator.data.device_zones,
         "gateway": coordinator.data.gateway,
-        "devices": coordinator.data.devices,
-        "zones": coordinator.data.zones,
     }
