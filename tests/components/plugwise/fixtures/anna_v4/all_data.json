@@ -1,5 +1,5 @@
 {
-  "devices": {
+  "device_zones": {
     "01b85360fdd243d0aaad4d6ac2a5ba7e": {
       "active_preset": "home",
       "available_schedules": [
@@ -103,6 +103,5 @@
     "notifications": {},
     "reboot": true,
     "smile_name": "Smile Anna"
-  },
-  "zones": {}
+  }
 }

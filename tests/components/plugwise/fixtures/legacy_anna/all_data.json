@@ -1,5 +1,5 @@
 {
-  "devices": {
+  "device_zones": {
     "0000aaaa0000aaaa0000aaaa0000aa00": {
       "dev_class": "gateway",
       "firmware": "1.8.22",
@@ -70,6 +70,5 @@
     "heater_id": "04e4cbfe7f4340f090f85ec3b9e6a950",
     "item_count": 41,
     "smile_name": "Smile Anna"
-  },
-  "zones": {}
+  }
 }

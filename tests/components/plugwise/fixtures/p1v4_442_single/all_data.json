@@ -1,5 +1,5 @@
 {
-  "devices": {
+  "device_zones": {
     "a455b61e52394b2db5081ce025a430f3": {
       "binary_sensors": {
         "plugwise_notification": false
@@ -47,6 +47,5 @@
     "notifications": {},
     "reboot": true,
     "smile_name": "Smile P1"
-  },
-  "zones": {}
+  }
 }
