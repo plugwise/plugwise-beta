@@ -78,7 +78,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         version = await self.api.connect()
         self._connected = isinstance(version, Version)
         if self._connected:
-            self.api.get_all_devices()
+            self.api.get_all_device_zones()
             self.update_interval = DEFAULT_SCAN_INTERVAL.get(
                 self.api.smile_type, timedelta(seconds=60)
             )  # pw-beta options scan-interval
