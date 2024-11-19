@@ -12,6 +12,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from . import PlugwiseConfigEntry
 from .const import (
     AVAILABLE_SCHEDULES,
+    DEV_CLASS,
     DHW_MODE,
     DHW_MODES,
     GATEWAY_MODE,
@@ -86,32 +87,17 @@ async def async_setup_entry(
         if not coordinator.new_device_zones:
             return
 
-        climate_present = False
         entities: list[PlugwiseClimateEntity] = []
         for devzone_id in coordinator.new_device_zones:
             devzone = coordinator.data.device_zones[devzone_id]
-            if devzone[DEV_CLASS] == "climate":
-                climate_present = True
-                for description in SELECT_TYPES:
-                    if description.options_key in devzone:
-                        entities.append(
-                            PlugwiseSelectEntity(coordinator, devzone_id, description)
-                        )
-                        LOGGER.debug(
-                            "Add %s %s selector", devzone["name"], description.translation_key
-                        )
-
-        if not climate_present:
-            for device_id in coordinator.new_device_zones:
-                device = coordinator.data.device_zones[device_id]
-                for description in SELECT_TYPES:
-                    if description.options_key in device:
-                        entities.append(
-                            PlugwiseSelectEntity(coordinator, device_id, description)
-                        )
-                        LOGGER.debug(
-                            "Add %s %s selector", device["name"], description.translation_key
-                        )
+            for description in SELECT_TYPES:
+                if description.options_key in devzone:
+                    entities.append(
+                        PlugwiseSelectEntity(coordinator, devzone_id, description)
+                    )
+                    LOGGER.debug(
+                        "Add %s %s selector", devzone["name"], description.translation_key
+                    )
 
         async_add_entities(entities)
 
@@ -136,18 +122,18 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         self.entity_description = entity_description
 
         self._location = device_id
-        if (location := self.device_or_zone.get(LOCATION)) is not None:
+        if (location := self.device_zone.get(LOCATION)) is not None:
             self._location = location
 
     @property
     def current_option(self) -> str:
         """Return the selected entity option to represent the entity state."""
-        return self.device_or_zone[self.entity_description.key]
+        return self.device_zone[self.entity_description.key]
 
     @property
     def options(self) -> list[str]:
         """Return the available select-options."""
-        return self.device_or_zone[self.entity_description.options_key]
+        return self.device_zone[self.entity_description.options_key]
 
     @plugwise_command
     async def async_select_option(self, option: str) -> None:

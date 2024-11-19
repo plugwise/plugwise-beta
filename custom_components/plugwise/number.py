@@ -127,8 +127,8 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_mode = NumberMode.BOX
-        self._attr_native_max_value = self.device_or_zone[description.key][UPPER_BOUND]  # Upstream const
-        self._attr_native_min_value = self.device_or_zone[description.key][LOWER_BOUND]  # Upstream const
+        self._attr_native_max_value = self.device_zone[description.key][UPPER_BOUND]  # Upstream const
+        self._attr_native_min_value = self.device_zone[description.key][LOWER_BOUND]  # Upstream const
 
         native_step = self.device_zone[description.key][RESOLUTION]  # Upstream const
         if description.key != TEMPERATURE_OFFSET:  # Upstream const

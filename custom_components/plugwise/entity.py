@@ -67,7 +67,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
             hw_version=data.get(HARDWARE),
         )
 
-        if device_id != coordinator.data.gateway[GATEWAY_ID]:
+        if device_zone_id != coordinator.data.gateway[GATEWAY_ID]:
             self._attr_device_info.update(
                 {
                     ATTR_NAME: data.get(ATTR_NAME),
