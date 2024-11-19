@@ -112,7 +112,7 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator.new_devices:
+        if not coordinator.new_device_zones:
             return
 
         # Upstream consts to HA
@@ -130,8 +130,8 @@ async def async_setup_entry(
 
         # pw-beta alternative for debugging
         entities: list[PlugwiseBinarySensorEntity] = []
-        for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
+        for device_id in coordinator.new_device_zones:
+            device = coordinator.data.device_zones[device_id]
             if not (binary_sensors := device.get(BINARY_SENSORS)):
                 continue
             for description in PLUGWISE_BINARY_SENSORS:
@@ -174,7 +174,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                     self.hass, message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self.device_or_zone[BINARY_SENSORS][self.entity_description.key]
+        return self.device_zone[BINARY_SENSORS][self.entity_description.key]
 
     @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:

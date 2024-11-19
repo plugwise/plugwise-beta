@@ -69,10 +69,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        self._current_devices: set[str] = set()
-        self._current_zones: set[str] = set()
-        self.new_devices: set[str] = set()
-        self.new_zones: set[str] = set()
+        self._current_device_zones: set[str] = set()
+        self.new_device_zones: set[str] = set()
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -93,7 +91,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
-        data = PlugwiseData(devices={}, gateway={}, zones={})
+        data = PlugwiseData(device_zones={}, gateway={})
         try:
             if not self._connected:
                 await self._connect()
@@ -119,22 +117,17 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
     async def async_add_remove_devices_zones(self, data: PlugwiseData, entry: ConfigEntry) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new or removed devices
-        self.new_devices = set(data.devices) - self._current_devices
-        self.new_zones = set(data.zones) - self._current_zones
-        removed_devices = self._current_devices - set(data.devices)
-        removed_zones = self._current_zones - set(data.zones)
-        self._current_devices = set(data.devices)
-        self._current_zones = set(data.zones)
+        self.new_device_zones = set(data.device_zones) - self._current_device_zones
+        removed_device_zones = self._current_device_zones - set(data.device_zones)
+        self._current_device_zones = set(data.device_zones)
 
-        if removed_devices:
-            await self.async_remove_devices(data, entry)
-        # if removed_zones:
-            # await self.async_remove_zones(data, entry)
+        if removed_device_zones:
+            await self.async_remove_device_zones(data, entry)
 
-    async def async_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
-        """Clean registries when removed devices found."""
+    async def async_remove_device_zones(self, data: PlugwiseData, entry: ConfigEntry) -> None:
+        """Clean registries when removed devices or zones found."""
         device_reg = dr.async_get(self.hass)
-        device_list = dr.async_entries_for_config_entry(
+        device_zone_list = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
 
@@ -144,18 +137,18 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             via_device_id = gateway_device.id
 
         # Then remove the connected orphaned device(s)
-        for device_entry in device_list:
+        for device_entry in device_zone_list:
             for identifier in device_entry.identifiers:
                 if identifier[0] == DOMAIN:
                     if (
                         device_entry.via_device_id == via_device_id
-                        and identifier[1] not in data.devices
+                        and identifier[1] not in data.device_zones
                     ):
                         device_reg.async_update_device(
                             device_entry.id, remove_config_entry_id=entry.entry_id
                         )
                         LOGGER.debug(
-                            "Removed %s device %s %s from device_registry",
+                            "Removed %s device/zone %s %s from device_registry",
                             DOMAIN,
                             device_entry.model,
                             identifier[1],

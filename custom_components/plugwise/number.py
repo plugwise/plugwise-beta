@@ -79,7 +79,7 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator.new_devices:
+        if not coordinator.new_device_zones:
             return
 
         # Upstream consts
@@ -92,8 +92,8 @@ async def async_setup_entry(
 
         # pw-beta alternative for debugging
         entities: list[PlugwiseNumberEntity] = []
-        for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
+        for device_id in coordinator.new_device_zones:
+            device = coordinator.data.device_zones[device_id]
             for description in NUMBER_TYPES:
                 if description.key in device:
                     entities.append(
@@ -122,7 +122,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     ) -> None:
         """Initiate Plugwise Number."""
         super().__init__(coordinator, device_id)
-        self.actuator = self.device_or_zone[description.key]  # Upstream
+        self.actuator = self.device_zone[description.key]  # Upstream
         self.device_id = device_id
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
@@ -130,7 +130,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self._attr_native_max_value = self.device_or_zone[description.key][UPPER_BOUND]  # Upstream const
         self._attr_native_min_value = self.device_or_zone[description.key][LOWER_BOUND]  # Upstream const
 
-        native_step = self.device_or_zone[description.key][RESOLUTION]  # Upstream const
+        native_step = self.device_zone[description.key][RESOLUTION]  # Upstream const
         if description.key != TEMPERATURE_OFFSET:  # Upstream const
             native_step = max(native_step, 0.5)
         self._attr_native_step = native_step
@@ -138,7 +138,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     @property
     def native_value(self) -> float:
         """Return the present setpoint value."""
-        return self.device_or_zone[self.entity_description.key]["setpoint"]
+        return self.device_zone[self.entity_description.key]["setpoint"]
 
     @plugwise_command
     async def async_set_native_value(self, value: float) -> None:

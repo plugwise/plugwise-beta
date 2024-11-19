@@ -83,33 +83,27 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not (coordinator.new_devices or coordinator.new_zones):
+        if not coordinator.new_device_zones:
             return
 
+        climate_present = False
         entities: list[PlugwiseClimateEntity] = []
-        if coordinator.new_zones:
-            for device_id in coordinator.new_zones:
-                thermostat = coordinator.data.zones[device_id]
+        for devzone_id in coordinator.new_device_zones:
+            devzone = coordinator.data.device_zones[devzone_id]
+            if devzone[DEV_CLASS] == "climate":
+                climate_present = True
                 for description in SELECT_TYPES:
-                    if description.options_key in thermostat:
+                    if description.options_key in devzone:
                         entities.append(
-                            PlugwiseSelectEntity(coordinator, device_id, description)
+                            PlugwiseSelectEntity(coordinator, devzone_id, description)
                         )
                         LOGGER.debug(
-                            "Add %s %s selector", thermostat["name"], description.translation_key
+                            "Add %s %s selector", devzone["name"], description.translation_key
                         )
 
-        if coordinator.new_devices:
-            # Upstream consts
-            # async_add_entities(
-            #     PlugwiseSelectEntity(coordinator, device_id, description)
-            #     for device_id in coordinator.new_devices
-            #     for description in SELECT_TYPES
-            #     if description.options_key in coordinator.data.devices[device_id]
-            # )
-            # pw-beta alternative for debugging
-            for device_id in coordinator.new_devices:
-                device = coordinator.data.devices[device_id]
+        if not climate_present:
+            for device_id in coordinator.new_device_zones:
+                device = coordinator.data.device_zones[device_id]
                 for description in SELECT_TYPES:
                     if description.options_key in device:
                         entities.append(
