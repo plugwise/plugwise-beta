@@ -69,8 +69,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        self._current_device_zones: set[str] = set()
-        self.new_device_zones: set[str] = set()
+        self._current_pw_entities: set[str] = set()
+        self.new_pw_entities: set[str] = set()
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
@@ -78,7 +78,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         version = await self.api.connect()
         self._connected = isinstance(version, Version)
         if self._connected:
-            self.api.get_all_device_zones()
+            self.api.get_all_gateway_entities()
             self.update_interval = DEFAULT_SCAN_INTERVAL.get(
                 self.api.smile_type, timedelta(seconds=60)
             )  # pw-beta options scan-interval
@@ -91,7 +91,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
-        data = PlugwiseData(device_zones={}, gateway={})
+        data = PlugwiseData(entities={}, gateway={})
         try:
             if not self._connected:
                 await self._connect()
@@ -110,24 +110,24 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             raise ConfigEntryError("Device with unsupported firmware") from err
         else:
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
-            await self.async_add_remove_devices_zones(data, self.config_entry)
+            await self.async_add_remove_plugise_entities(data, self.config_entry)
 
         return data
 
-    async def async_add_remove_devices_zones(self, data: PlugwiseData, entry: ConfigEntry) -> None:
-        """Add new Plugwise devices, remove non-existing devices."""
-        # Check for new or removed devices
-        self.new_device_zones = set(data.device_zones) - self._current_device_zones
-        removed_device_zones = self._current_device_zones - set(data.device_zones)
-        self._current_device_zones = set(data.device_zones)
+    async def async_add_remove_plugwise_entities(self, data: PlugwiseData, entry: ConfigEntry) -> None:
+        """Add new Plugwise entities, remove non-existing entities."""
+        # Check for new or removed entities
+        self.new_pw_entities = set(data.entities) - self._current_pw_entities
+        removed_pw_entities = self._current_pw_entities - set(data.entities)
+        self._current_pw_entities = set(data.entities)
 
-        if removed_device_zones:
-            await self.async_remove_device_zones(data, entry)
+        if removed_pw_entities:
+            await self.async_remove_plugwise_entities(data, entry)
 
-    async def async_remove_device_zones(self, data: PlugwiseData, entry: ConfigEntry) -> None:
-        """Clean registries when removed devices or zones found."""
+    async def async_remove_plugwise_entities(self, data: PlugwiseData, entry: ConfigEntry) -> None:
+        """Clean registries when removed Plugwise entities."""
         device_reg = dr.async_get(self.hass)
-        device_zone_list = dr.async_entries_for_config_entry(
+        pw_entities_list = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
 
@@ -137,7 +137,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             via_device_id = gateway_device.id
 
         # Then remove the connected orphaned device(s)
-        for device_entry in device_zone_list:
+        for device_entry in pw_entities_list:
             for identifier in device_entry.identifiers:
                 if identifier[0] == DOMAIN:
                     if (
