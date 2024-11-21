@@ -1,5 +1,5 @@
 {
-  "device_zones": {
+  "entities": {
     "0000aaaa0000aaaa0000aaaa0000aa00": {
       "dev_class": "gateway",
       "firmware": "3.1.11",
