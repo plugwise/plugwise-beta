@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from plugwise.constants import DeviceZoneData
+from plugwise.constants import GwEntityData
 
 from homeassistant.const import ATTR_NAME, ATTR_VIA_DEVICE, CONF_HOST
 from homeassistant.helpers.device_registry import (
@@ -38,17 +38,17 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        device_zone_id: str,
+        pw_entity_id: str,
     ) -> None:
         """Initialise the gateway."""
         super().__init__(coordinator)
-        self._dev_zone_id = device_zone_id
+        self._pw_ent_id = pw_entity_id
 
         configuration_url: str | None = None
         if entry := self.coordinator.config_entry:
             configuration_url = f"http://{entry.data[CONF_HOST]}"
 
-        data = coordinator.data.device_zones.get(device_zone_id)
+        data = coordinator.data.entities.get(pw_entity_id)
         connections = set()
         if mac := data.get(MAC_ADDRESS):
             connections.add((CONNECTION_NETWORK_MAC, mac))
@@ -57,7 +57,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
 
         self._attr_device_info = DeviceInfo(
             configuration_url=configuration_url,
-            identifiers={(DOMAIN, device_zone_id)},
+            identifiers={(DOMAIN, pw_entity_id)},
             connections=connections,
             manufacturer=data.get(VENDOR),
             model=data.get(MODEL),
@@ -67,7 +67,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
             hw_version=data.get(HARDWARE),
         )
 
-        if device_zone_id != coordinator.data.gateway[GATEWAY_ID]:
+        if pw_entity_id != coordinator.data.gateway[GATEWAY_ID]:
             self._attr_device_info.update(
                 {
                     ATTR_NAME: data.get(ATTR_NAME),
@@ -84,15 +84,15 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         return (
             # Upstream: Do not change the AVAILABLE line below: some Plugwise devices and zones
             # Upstream: do not provide their availability-status!
-            self._dev_zone_id in self.coordinator.data.device_zones
-            and (AVAILABLE not in self.device_zone or self.device_zone[AVAILABLE] is True)
+            self._pw_ent_id in self.coordinator.data.entities
+            and (AVAILABLE not in self.pw_entity or self.pw_entity[AVAILABLE] is True)
             and super().available
         )
 
     @property
-    def device_zone(self) -> DeviceZoneData:
-        """Return the device or zone connected to the dev_zone_id."""
-        return self.coordinator.data.device_zones[self._dev_zone_id]
+    def pw_entity(self) -> GwEntityData:
+        """Return the plugwise entity connected to the pw_entity_id."""
+        return self.coordinator.data.entities[self._pw_ent_id]
 
 
     async def async_added_to_hass(self) -> None:

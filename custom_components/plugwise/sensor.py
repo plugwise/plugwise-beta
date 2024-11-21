@@ -468,20 +468,20 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator.new_device_zones:
+        if not coordinator.new_pw_entities:
             return
 
         entities: list[PlugwiseSensorEntity] = []
-        for devzone_id in coordinator.new_device_zones:
-            devzone = coordinator.data.device_zones[devzone_id]
-            if not (sensors := devzone.get(SENSORS)):
+        for pw_entity_id in coordinator.new_pw_entities:
+            pw_entity = coordinator.data.entities[pw_entity_id]
+            if not (sensors := pw_entity.get(SENSORS)):
                 continue
             for description in PLUGWISE_SENSORS:
                 if description.key not in sensors:
                     continue
-                entities.append(PlugwiseSensorEntity(coordinator, devzone_id, description))
+                entities.append(PlugwiseSensorEntity(coordinator, pw_entity_id, description))
                 LOGGER.debug(
-                    "Add %s %s sensor", devzone["name"], description.translation_key or description.key
+                    "Add %s %s sensor", pw_entity["name"], description.translation_key or description.key
                 )
 
         async_add_entities(entities)
@@ -498,15 +498,15 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        device_id: str,
+        pw_entity_id: str,
         description: PlugwiseSensorEntityDescription,
     ) -> None:
         """Initialise the sensor."""
-        super().__init__(coordinator, device_id)
+        super().__init__(coordinator, pw_entity_id)
         self.entity_description = description
-        self._attr_unique_id = f"{device_id}-{description.key}"
+        self._attr_unique_id = f"{pw_entity_id}-{description.key}"
 
     @property
     def native_value(self) -> int | float:
         """Return the value reported by the sensor."""
-        return self.device_zone[SENSORS][self.entity_description.key]  # Upstream consts
+        return self.pw_entity[SENSORS][self.entity_description.key]  # Upstream consts

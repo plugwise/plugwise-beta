@@ -83,19 +83,19 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator.new_device_zones:
+        if not coordinator.new_pw_entities:
             return
 
         entities: list[PlugwiseClimateEntity] = []
-        for devzone_id in coordinator.new_device_zones:
-            devzone = coordinator.data.device_zones[devzone_id]
+        for pw_entity_id in coordinator.new_pw_entities:
+            pw_entity = coordinator.data.entities[pw_entity_id]
             for description in SELECT_TYPES:
-                if description.options_key in devzone:
+                if description.options_key in pw_entity:
                     entities.append(
-                        PlugwiseSelectEntity(coordinator, devzone_id, description)
+                        PlugwiseSelectEntity(coordinator, pw_entity_id, description)
                     )
                     LOGGER.debug(
-                        "Add %s %s selector", devzone["name"], description.translation_key
+                        "Add %s %s selector", pw_entity["name"], description.translation_key
                     )
 
         async_add_entities(entities)
@@ -112,27 +112,27 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        device_id: str,
+        pw_entity_id: str,
         entity_description: PlugwiseSelectEntityDescription,
     ) -> None:
         """Initialise the selector."""
-        super().__init__(coordinator, device_id)
-        self._attr_unique_id = f"{device_id}-{entity_description.key}"
+        super().__init__(coordinator, pw_entity_id)
+        self._attr_unique_id = f"{pw_entity_id}-{entity_description.key}"
         self.entity_description = entity_description
 
-        self._location = device_id
-        if (location := self.device_zone.get(LOCATION)) is not None:
+        self._location = pw_entity_id
+        if (location := self.pw_entity.get(LOCATION)) is not None:
             self._location = location
 
     @property
     def current_option(self) -> str:
         """Return the selected entity option to represent the entity state."""
-        return self.device_zone[self.entity_description.key]
+        return self.pw_entity[self.entity_description.key]
 
     @property
     def options(self) -> list[str]:
         """Return the available select-options."""
-        return self.device_zone[self.entity_description.options_key]
+        return self.pw_entity[self.entity_description.options_key]
 
     @plugwise_command
     async def async_select_option(self, option: str) -> None:

@@ -36,10 +36,10 @@ async def async_setup_entry(
     # )
     # pw-beta alternative for debugging
     entities: list[PlugwiseButtonEntity] = []
-    for device_id, device in coordinator.data.device_zones.items():
-        if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
-            entities.append(PlugwiseButtonEntity(coordinator, device_id))
-            LOGGER.debug("Add %s reboot button", device["name"])
+    for pw_entity_id, pw_entity in coordinator.data.entities.items():
+        if pw_entity_id == gateway[GATEWAY_ID] and REBOOT in gateway:
+            entities.append(PlugwiseButtonEntity(coordinator, pw_entity_id))
+            LOGGER.debug("Add %s reboot button", pw_entity["name"])
     async_add_entities(entities)
 
 
@@ -52,12 +52,12 @@ class PlugwiseButtonEntity(PlugwiseEntity, ButtonEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        device_id: str,
+        pw_entity_id: str,
     ) -> None:
         """Initialize the button."""
-        super().__init__(coordinator, device_id)
+        super().__init__(coordinator, pw_entity_id)
         self._attr_translation_key = REBOOT
-        self._attr_unique_id = f"{device_id}-reboot"
+        self._attr_unique_id = f"{pw_entity_id}-reboot"
 
     @plugwise_command
     async def async_press(self) -> None:

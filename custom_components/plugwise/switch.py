@@ -81,29 +81,29 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator.new_device_zones:
+        if not coordinator.new_pw_entities:
             return
 
         # Upstream consts
         # async_add_entities(
-        #     PlugwiseSwitchEntity(coordinator, device_id, description)
-        #     for device_id in coordinator.new_devices
-        #     if (switches := coordinator.data.devices[device_id].get(SWITCHES))
+        #     PlugwiseSwitchEntity(coordinator, pw_entity_id, description)
+        #     for pw_entity_id in coordinator.new_pw_entities
+        #     if (switches := coordinator.data.entities[pw_entity_id].get(SWITCHES))
         #     for description in PLUGWISE_SWITCHES
         #     if description.key in switches
         # )
         # pw-beta alternative for debugging
         entities: list[PlugwiseSwitchEntity] = []
-        for device_id in coordinator.new_device_zones:
-            device = coordinator.data.device_zones[device_id]
-            if not (switches := device.get(SWITCHES)):
+        for pw_entity_id in coordinator.new_pw_entities:
+            pw_entity = coordinator.data.entities[pw_entity_id]
+            if not (switches := pw_entity.get(SWITCHES)):
                 continue
             for description in PLUGWISE_SWITCHES:
                 if description.key not in switches:
                     continue
-                entities.append(PlugwiseSwitchEntity(coordinator, device_id, description))
+                entities.append(PlugwiseSwitchEntity(coordinator, pw_entity_id, description))
                 LOGGER.debug(
-                    "Add %s %s switch", device["name"], description.translation_key
+                    "Add %s %s switch", pw_entity["name"], description.translation_key
                 )
         async_add_entities(entities)
 
@@ -119,25 +119,25 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        device_id: str,
+        pw_entity_id: str,
         description: PlugwiseSwitchEntityDescription,
     ) -> None:
         """Set up the Plugwise API."""
-        super().__init__(coordinator, device_id)
+        super().__init__(coordinator, pw_entity_id)
         self.entity_description = description
-        self._attr_unique_id = f"{device_id}-{description.key}"
+        self._attr_unique_id = f"{pw_entity_id}-{description.key}"
 
     @property
     def is_on(self) -> bool:
         """Return True if entity is on."""
-        return self.device_zone[SWITCHES][self.entity_description.key]  # Upstream const
+        return self.pw_entity[SWITCHES][self.entity_description.key]  # Upstream const
 
     @plugwise_command
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the device on."""
         await self.coordinator.api.set_switch_state(
-            self._dev_zone_id,
-            self.device_zone.get(MEMBERS),
+            self._pw_entity_id,
+            self.pw_entity.get(MEMBERS),
             self.entity_description.key,
             "on",
         )  # Upstream const
@@ -146,8 +146,8 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the device off."""
         await self.coordinator.api.set_switch_state(
-            self._dev_zone_id,
-            self.device_zone.get(MEMBERS),
+            self._pw_entity_id,
+            self.pw_entity.get(MEMBERS),
             self.entity_description.key,
             "off",
         )  # Upstream const

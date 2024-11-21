@@ -132,7 +132,7 @@ async def async_migrate_sensor_entities(
 
     # Migrate opentherm_outdoor_temperature
     # to opentherm_outdoor_air_temperature sensor
-    for device_id, device in coordinator.data.device_zones.items():
+    for device_id, device in coordinator.data.entities.items():
         if device["dev_class"] != "heater_central":
             continue
 
