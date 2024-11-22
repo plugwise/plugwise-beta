@@ -86,7 +86,7 @@ async def async_setup_entry(
         if not coordinator.new_pw_entities:
             return
 
-        entities: list[PlugwiseClimateEntity] = []
+        entities: list[SelectEntity] = []
         for pw_entity_id in coordinator.new_pw_entities:
             pw_entity = coordinator.data.entities[pw_entity_id]
             for description in SELECT_TYPES:
