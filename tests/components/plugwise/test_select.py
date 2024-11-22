@@ -19,7 +19,7 @@ async def test_adam_select_entities(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test a thermostat select."""
-    state = hass.states.get("select.zone_lisa_wk_thermostat_schedule")
+    state = hass.states.get("select.woonkamer_thermostat_schedule")
     assert state
     assert state.state == "GF7  Woonkamer"
 
@@ -34,7 +34,7 @@ async def test_adam_change_select_entity(
         SELECT_DOMAIN,
         SERVICE_SELECT_OPTION,
         {
-            ATTR_ENTITY_ID: "select.zone_lisa_wk_thermostat_schedule",
+            ATTR_ENTITY_ID: "select.woonkamer_thermostat_schedule",
             ATTR_OPTION: "Badkamer Schema",
         },
         blocking=True,

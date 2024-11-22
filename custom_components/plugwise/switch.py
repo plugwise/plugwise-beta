@@ -136,7 +136,7 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the device on."""
         await self.coordinator.api.set_switch_state(
-            self._pw_entity_id,
+            self._pw_ent_id,
             self.pw_entity.get(MEMBERS),
             self.entity_description.key,
             "on",
@@ -146,7 +146,7 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the device off."""
         await self.coordinator.api.set_switch_state(
-            self._pw_entity_id,
+            self._pw_ent_id,
             self.pw_entity.get(MEMBERS),
             self.entity_description.key,
             "off",

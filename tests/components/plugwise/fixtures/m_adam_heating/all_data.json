@@ -58,27 +58,6 @@
       "vendor": "Plugwise",
       "zigbee_mac_address": "000D6F000C8FF5EE"
     },
-    "29542b2b6a6a4169acecc15c72a599b8": {
-      "available": true,
-      "dev_class": "computer_desktop_plug",
-      "firmware": "2020-11-10T01:00:00+01:00",
-      "location": "f2bf9048bef64cc5b6d5110154e33c81",
-      "model": "Plug",
-      "model_id": "160-01",
-      "name": "Plug Werkplek",
-      "sensors": {
-        "electricity_consumed": 91.3,
-        "electricity_consumed_interval": 23.0,
-        "electricity_produced": 0.0,
-        "electricity_produced_interval": 0.0
-      },
-      "switches": {
-        "lock": false,
-        "relay": true
-      },
-      "vendor": "Plugwise",
-      "zigbee_mac_address": "000D6F000D13CA9A"
-    },
     "ad4838d7d35c4d6ea796ee12ae5aedf8": {
       "available": true,
       "dev_class": "thermostat",

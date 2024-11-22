@@ -137,7 +137,7 @@ async def async_setup_entry(
             for description in PLUGWISE_BINARY_SENSORS:
                 if description.key not in binary_sensors:
                     continue
-                entities.append(PlugwiseBinarySensorEntity(coordinator, pw_entity, description))
+                entities.append(PlugwiseBinarySensorEntity(coordinator, pw_entity_id, description))
                 LOGGER.debug(
                     "Add %s %s binary sensor", pw_entity["name"], description.translation_key
                 )
