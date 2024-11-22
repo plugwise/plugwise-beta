@@ -85,14 +85,14 @@ async def async_setup_entry(
         # Upstream consts
         # async_add_entities(
         #     PlugwiseNumberEntity(coordinator, pw_entity_id, description)
-        #     for pw_entity_id in coordinator.new_devices
+        #     for pw_entity_id in coordinator.new_pw_entities
         #     for description in NUMBER_TYPES
-        #     if description.key in coordinator.data.devices[pw_entity_id]
+        #     if description.key in coordinator.data.entities[pw_entity_id]
         # )
 
         # pw-beta alternative for debugging
         entities: list[PlugwiseNumberEntity] = []
-        for pw_entity_id in coordinator.new_device_zones:
+        for pw_entity_id in coordinator.new_pw_entities:
             pw_entity = coordinator.data.entities[pw_entity_id]
             for description in NUMBER_TYPES:
                 if description.key in pw_entity:
@@ -122,7 +122,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     ) -> None:
         """Initiate Plugwise Number."""
         super().__init__(coordinator, pw_entity_id)
-        self.actuator = self.device_zone[description.key]  # Upstream
+        self.actuator = self.pw_entity[description.key]  # Upstream
         self.pw_entity_id = pw_entity_id
         self.entity_description = description
         self._attr_unique_id = f"{pw_entity_id}-{description.key}"
