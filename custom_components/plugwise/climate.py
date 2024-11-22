@@ -79,21 +79,18 @@ async def async_setup_entry(
         if not coordinator.new_pw_entities:
             return
 
-        thermostat_zone_present = False
         entities: list[PlugwiseClimateEntity] = []
         for pw_entity_id in coordinator.new_pw_entities:
             pw_entity = coordinator.data.entities[pw_entity_id]
             if pw_entity[DEV_CLASS] == "climate":
-                thermostat_zone_present = True
-                thermostat = coordinator.data.entities[pw_entity_id]
                 entities.append(
                     PlugwiseClimateEntity(
                         coordinator, pw_entity_id, homekit_enabled
                     )  # pw-beta homekit emulation
                 )
-                LOGGER.debug("Add climate %s", thermostat[ATTR_NAME])
+                LOGGER.debug("Add climate %s", pw_entity[ATTR_NAME])
 
-        if not thermostat_zone_present:
+        if not entities:
             for pw_entity_id in coordinator.new_pw_entities:
                 pw_entity = coordinator.data.entities[pw_entity_id]
                 if pw_entity[DEV_CLASS] in MASTER_THERMOSTATS:
