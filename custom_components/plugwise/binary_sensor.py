@@ -137,7 +137,7 @@ async def async_setup_entry(
             for description in PLUGWISE_BINARY_SENSORS:
                 if description.key not in binary_sensors:
                     continue
-                ha_entities.append(PlugwiseBinarySensorEntity(coordinator, pw_entity, description))
+                entities.append(PlugwiseBinarySensorEntity(coordinator, pw_entity, description))
                 LOGGER.debug(
                     "Add %s %s binary sensor", pw_entity["name"], description.translation_key
                 )
@@ -179,7 +179,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
     @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return entity specific state attributes."""
-        if self.entity_dscription.key != PLUGWISE_NOTIFICATION:  # Upstream const
+        if self.entity_description.key != PLUGWISE_NOTIFICATION:  # Upstream const
             return None
 
         # pw-beta adjustment with attrs is to only represent severities *with* content

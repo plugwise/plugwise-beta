@@ -110,7 +110,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             raise ConfigEntryError("Device with unsupported firmware") from err
         else:
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
-            await self.async_add_remove_plugise_entities(data, self.config_entry)
+            await self.async_add_remove_plugwise_entities(data, self.config_entry)
 
         return data
 
@@ -142,7 +142,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 if identifier[0] == DOMAIN:
                     if (
                         device_entry.via_device_id == via_device_id
-                        and identifier[1] not in data.device_zones
+                        and identifier[1] not in data.entities
                     ):
                         device_reg.async_update_device(
                             device_entry.id, remove_config_entry_id=entry.entry_id
