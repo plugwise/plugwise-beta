@@ -2,6 +2,11 @@
 
 ## Versions from 0.40 and up
 
+## v0.55.0
+
+- New Feature: implement zone-based climate entities for Adam, solving HA Core Issue [130597](https://github.com/home-assistant/core/issues/130597).
+- Link to plugwise [v1.6.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.6.0).
+
 ## v0.54.3
 
 - Bugfix for #768 via plugwise [v1.5.2](https://github.com/plugwise/python-plugwise/releases/tag/v1.5.2).
