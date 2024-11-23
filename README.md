@@ -52,7 +52,7 @@ Our [Changelog](CHANGELOG.MD) is available as a [separate file](CHANGELOG.md) in
 ### What do we support (in short)?
 
 - Thermostats
-  - Adam (firmware 2.x and 3.x) and the accompanying Lisa's, Tom's, Floor's, Koen's and Plugs.
+  - Adam (firmware 2.x and 3.x) and the accompanying Anna, Jip's, Lisa's, Tom's, Floor's and Plugs (Koen via a Plug). From v0.55.0 zones with one or more thermostats are represented as a single and separate climate-entity in HA.
   - Anna (firmware 1.x, 3.x and 4.x)
   - Notifications for both types
 - Power-related
@@ -70,6 +70,7 @@ As such we ask USB users, who are tied in with the `custom_component` as there i
 ### What can I expect in HA Core from this component
 
 - `binary_sensor` and `sensor`: A number of sensoric values depending on your hardware: outdoor temperature, Anna's illuminance, Tom's valve position, Plug's and Circle/Stealth's power-values, P1 power- and gas-values, Plugwise Notifications.
+- `button`: A reboot-button is available for the Gateways that support this function.
 - `climate`: A (number of) thermostat(s) visible in HA, including temperature, presets and heating-demand status, per thermostat. Also, setting of temperature, preset and switching the active schedule on and off. Cooling is only supported in combination with an Anna (fw 3.1 and 4.0).
 - `number`: Numerical indication on boiler setpoints.
 - `select`: Input selector to choose the active schedule.
