@@ -48,9 +48,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         if entry := self.coordinator.config_entry:
             configuration_url = f"http://{entry.data[CONF_HOST]}"
 
-        if (data := coordinator.data.entities.get(pw_entity_id)) is None:
-            return
-
+        data = coordinator.data.entities[pw_entity_id]
         connections = set()
         if mac := data.get(MAC_ADDRESS):
             connections.add((CONNECTION_NETWORK_MAC, mac))
