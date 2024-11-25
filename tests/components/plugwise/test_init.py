@@ -299,7 +299,7 @@ async def test_update_device(
     )
 
     # Add a 2nd Tom/Floor
-    data.entities.update(TOM)
+    data.devices.update(TOM)
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))
         async_fire_time_changed(hass)
@@ -319,7 +319,7 @@ async def test_update_device(
         assert "01234567890abcdefghijklmnopqrstu" in item_list
 
     # Remove the existing Tom/Floor
-    data.entities.pop("1772a4ea304041adb83f357b751341ff")
+    data.devices.pop("1772a4ea304041adb83f357b751341ff")
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))
         async_fire_time_changed(hass)
