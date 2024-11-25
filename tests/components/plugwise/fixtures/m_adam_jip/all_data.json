@@ -1,10 +1,11 @@
 {
-  "entities": {
+  "devices": {
     "06aecb3d00354375924f50c47af36bd2": {
       "active_preset": "no_frost",
       "climate_mode": "off",
       "control_state": "off",
       "dev_class": "climate",
+      "model": "ThermoZone",
       "name": "Slaapkamer",
       "preset_modes": [
         "home",
@@ -29,13 +30,15 @@
         "secondary": [
           "356b65335e274d769c338223e7af9c33"
         ]
-      }
+      },
+      "vendor": "Plugwise"
     },
     "13228dab8ce04617af318a2888b3c548": {
       "active_preset": "home",
       "climate_mode": "heat",
       "control_state": "off",
       "dev_class": "climate",
+      "model": "ThermoZone",
       "name": "Woonkamer",
       "preset_modes": [
         "home",
@@ -60,7 +63,8 @@
         "secondary": [
           "833de10f269c4deab58fb9df69901b4e"
         ]
-      }
+      },
+      "vendor": "Plugwise"
     },
     "1346fbd8498d4dbcab7e18d51b771f3d": {
       "available": true,
@@ -265,6 +269,7 @@
       "climate_mode": "heat",
       "control_state": "off",
       "dev_class": "climate",
+      "model": "ThermoZone",
       "name": "Kinderkamer",
       "preset_modes": [
         "home",
@@ -289,7 +294,8 @@
         "secondary": [
           "d4496250d0e942cfa7aea3476e9070d5"
         ]
-      }
+      },
+      "vendor": "Plugwise"
     },
     "d4496250d0e942cfa7aea3476e9070d5": {
       "available": true,
@@ -320,6 +326,7 @@
       "climate_mode": "heat",
       "control_state": "off",
       "dev_class": "climate",
+      "model": "ThermoZone",
       "name": "Logeerkamer",
       "preset_modes": [
         "home",
@@ -344,7 +351,8 @@
         "secondary": [
           "1da4d325838e4ad8aac12177214505c9"
         ]
-      }
+      },
+      "vendor": "Plugwise"
     },
     "e4684553153b44afbef2200885f379dc": {
       "available": true,

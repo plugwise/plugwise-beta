@@ -1,5 +1,5 @@
 {
-  "entities": {
+  "devices": {
     "056ee145a816487eaa69243c3280f8bf": {
       "available": true,
       "binary_sensors": {
@@ -134,7 +134,8 @@
       "name": "Test",
       "switches": {
         "relay": true
-      }
+      },
+      "vendor": "Plugwise"
     },
     "f2bf9048bef64cc5b6d5110154e33c81": {
       "active_preset": "home",
@@ -148,6 +149,7 @@
       "climate_mode": "cool",
       "control_state": "cooling",
       "dev_class": "climate",
+      "model": "ThermoZone",
       "name": "Living room",
       "preset_modes": [
         "no_frost",
@@ -173,7 +175,8 @@
           "ad4838d7d35c4d6ea796ee12ae5aedf8"
         ],
         "secondary": []
-      }
+      },
+      "vendor": "Plugwise"
     },
     "f871b8c4d63549319221e294e4f88074": {
       "active_preset": "home",
@@ -187,6 +190,7 @@
       "climate_mode": "cool",
       "control_state": "auto",
       "dev_class": "climate",
+      "model": "ThermoZone",
       "name": "Bathroom",
       "preset_modes": [
         "no_frost",
@@ -214,7 +218,8 @@
         "secondary": [
           "1772a4ea304041adb83f357b751341ff"
         ]
-      }
+      },
+      "vendor": "Plugwise"
     }
   },
   "gateway": {
