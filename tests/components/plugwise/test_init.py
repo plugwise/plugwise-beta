@@ -44,12 +44,12 @@ SECONDARY_ID = (
 TOM = {
     "01234567890abcdefghijklmnopqrstu": {
         "available": True,
-        "dev_class": "thermo_sensor",
+        "dev_class": "thermostatic_radiator_valve",
         "firmware": "2020-11-04T01:00:00+01:00",
         "hardware": "1",
         "location": "f871b8c4d63549319221e294e4f88074",
         "model": "Tom/Floor",
-        "name": "Tom Zolder",
+        "name": "Tom Badkamer 2",
         "binary_sensors": {
             "low_battery": False,
         },
@@ -300,6 +300,14 @@ async def test_update_device(
 
     # Add a 2nd Tom/Floor
     data.devices.update(TOM)
+    data.devices["f871b8c4d63549319221e294e4f88074"]["thermostats"].update(
+        {
+            "secondary": [
+                "01234567890abcdefghijklmnopqrstu",
+                "1772a4ea304041adb83f357b751341ff",
+            ]
+        }
+    )
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))
         async_fire_time_changed(hass)
@@ -319,6 +327,13 @@ async def test_update_device(
         assert "01234567890abcdefghijklmnopqrstu" in item_list
 
     # Remove the existing Tom/Floor
+    data.devices["f871b8c4d63549319221e294e4f88074"]["thermostats"].update(
+        {
+            "secondary": [
+                "01234567890abcdefghijklmnopqrstu"
+            ]
+        }
+    )
     data.devices.pop("1772a4ea304041adb83f357b751341ff")
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))

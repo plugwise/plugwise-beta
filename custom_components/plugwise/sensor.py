@@ -468,20 +468,20 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator.new_pw_entities:
+        if not coordinator.new_devices:
             return
 
         entities: list[PlugwiseSensorEntity] = []
-        for pw_entity_id in coordinator.new_pw_entities:
-            pw_entity = coordinator.data.entities[pw_entity_id]
-            if not (sensors := pw_entity.get(SENSORS)):
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
+            if not (sensors := device.get(SENSORS)):
                 continue
             for description in PLUGWISE_SENSORS:
                 if description.key not in sensors:
                     continue
-                entities.append(PlugwiseSensorEntity(coordinator, pw_entity_id, description))
+                entities.append(PlugwiseSensorEntity(coordinator, device_id, description))
                 LOGGER.debug(
-                    "Add %s %s sensor", pw_entity["name"], description.translation_key or description.key
+                    "Add %s %s sensor", device["name"], description.translation_key or description.key
                 )
 
         async_add_entities(entities)
@@ -498,15 +498,15 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        pw_entity_id: str,
+        device_id: str,
         description: PlugwiseSensorEntityDescription,
     ) -> None:
         """Initialise the sensor."""
-        super().__init__(coordinator, pw_entity_id)
+        super().__init__(coordinator, device_id)
         self.entity_description = description
-        self._attr_unique_id = f"{pw_entity_id}-{description.key}"
+        self._attr_unique_id = f"{device_id}-{description.key}"
 
     @property
     def native_value(self) -> int | float:
         """Return the value reported by the sensor."""
-        return self.pw_entity[SENSORS][self.entity_description.key]  # Upstream consts
+        return self.device[SENSORS][self.entity_description.key]  # Upstream consts

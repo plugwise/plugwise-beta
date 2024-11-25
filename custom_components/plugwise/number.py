@@ -79,28 +79,28 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator.new_pw_entities:
+        if not coordinator.new_devices:
             return
 
         # Upstream consts
         # async_add_entities(
-        #     PlugwiseNumberEntity(coordinator, pw_entity_id, description)
-        #     for pw_entity_id in coordinator.new_pw_entities
+        #     PlugwiseNumberEntity(coordinator, device_id, description)
+        #     for device_id in coordinator.new_devices
         #     for description in NUMBER_TYPES
-        #     if description.key in coordinator.data.entities[pw_entity_id]
+        #     if description.key in coordinator.data.devices[device_id]
         # )
 
         # pw-beta alternative for debugging
         entities: list[PlugwiseNumberEntity] = []
-        for pw_entity_id in coordinator.new_pw_entities:
-            pw_entity = coordinator.data.entities[pw_entity_id]
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
             for description in NUMBER_TYPES:
-                if description.key in pw_entity:
+                if description.key in device:
                     entities.append(
-                        PlugwiseNumberEntity(coordinator, pw_entity_id, description)
+                        PlugwiseNumberEntity(coordinator, device_id, description)
                     )
                     LOGGER.debug(
-                        "Add %s %s number", pw_entity["name"], description.translation_key
+                        "Add %s %s number", device["name"], description.translation_key
                     )
 
         async_add_entities(entities)
@@ -117,20 +117,20 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        pw_entity_id: str,
+        device_id: str,
         description: PlugwiseNumberEntityDescription,
     ) -> None:
         """Initiate Plugwise Number."""
-        super().__init__(coordinator, pw_entity_id)
-        self.actuator = self.pw_entity[description.key]  # Upstream
-        self.pw_entity_id = pw_entity_id
+        super().__init__(coordinator, device_id)
+        self.actuator = self.device[description.key]  # Upstream
+        self.device_id = device_id
         self.entity_description = description
-        self._attr_unique_id = f"{pw_entity_id}-{description.key}"
+        self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_mode = NumberMode.BOX
-        self._attr_native_max_value = self.pw_entity[description.key][UPPER_BOUND]  # Upstream const
-        self._attr_native_min_value = self.pw_entity[description.key][LOWER_BOUND]  # Upstream const
+        self._attr_native_max_value = self.device[description.key][UPPER_BOUND]  # Upstream const
+        self._attr_native_min_value = self.device[description.key][LOWER_BOUND]  # Upstream const
 
-        native_step = self.pw_entity[description.key][RESOLUTION]  # Upstream const
+        native_step = self.device[description.key][RESOLUTION]  # Upstream const
         if description.key != TEMPERATURE_OFFSET:  # Upstream const
             native_step = max(native_step, 0.5)
         self._attr_native_step = native_step
@@ -138,12 +138,12 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     @property
     def native_value(self) -> float:
         """Return the present setpoint value."""
-        return self.pw_entity[self.entity_description.key]["setpoint"]
+        return self.device[self.entity_description.key]["setpoint"]
 
     @plugwise_command
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.coordinator.api.set_number(self.pw_entity_id, self.entity_description.key, value)
+        await self.coordinator.api.set_number(self.device_id, self.entity_description.key, value)
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.key, value
         )

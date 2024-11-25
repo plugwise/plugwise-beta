@@ -112,7 +112,7 @@ async def async_setup_entry(
     @callback
     def _add_entities() -> None:
         """Add Entities."""
-        if not coordinator.new_pw_entities:
+        if not coordinator.new_devices:
             return
 
         # Upstream consts to HA
@@ -130,16 +130,16 @@ async def async_setup_entry(
 
         # pw-beta alternative for debugging
         entities: list[PlugwiseBinarySensorEntity] = []
-        for pw_entity_id in coordinator.new_pw_entities:
-            pw_entity = coordinator.data.entities[pw_entity_id]
-            if not (binary_sensors := pw_entity.get(BINARY_SENSORS)):
+        for device_id in coordinator.new_devices:
+            device = coordinator.data.devices[device_id]
+            if not (binary_sensors := device.get(BINARY_SENSORS)):
                 continue
             for description in PLUGWISE_BINARY_SENSORS:
                 if description.key not in binary_sensors:
                     continue
-                entities.append(PlugwiseBinarySensorEntity(coordinator, pw_entity_id, description))
+                entities.append(PlugwiseBinarySensorEntity(coordinator, device_id, description))
                 LOGGER.debug(
-                    "Add %s %s binary sensor", pw_entity["name"], description.translation_key
+                    "Add %s %s binary sensor", device["name"], description.translation_key
                 )
         async_add_entities(entities)
 
@@ -155,13 +155,13 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
-        pw_entity_id: str,
+        device_id: str,
         description: PlugwiseBinarySensorEntityDescription,
     ) -> None:
         """Initialise the binary_sensor."""
-        super().__init__(coordinator, pw_entity_id)
+        super().__init__(coordinator, device_id)
         self.entity_description = description
-        self._attr_unique_id = f"{pw_entity_id}-{description.key}"
+        self._attr_unique_id = f"{device_id}-{description.key}"
         self._notification: dict[str, str] = {}  # pw-beta
 
     @property
@@ -174,7 +174,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                     self.hass, message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self.pw_entity[BINARY_SENSORS][self.entity_description.key]
+        return self.device[BINARY_SENSORS][self.entity_description.key]
 
     @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
