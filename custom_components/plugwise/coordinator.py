@@ -115,17 +115,17 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         return data
 
     async def async_add_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
-        """Add new Plugwise entities, remove non-existing entities."""
-        # Check for new or removed entities
-        self.new_devices = set(data.devices) - self._current_devices
+        """Add new Plugwise devices, remove non-existing devices."""
+        # Check for new or removed devices
         self.new_devices = set(data.devices) - self._current_devices
         removed_devices = self._current_devices - set(data.devices)
+        self._current_devices = set(data.devices)
 
         if removed_devices:
             await self.async_remove_devices(data, entry)
 
     async def async_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
-        """Clean registries when removed Plugwise entities."""
+        """Clean registries when removed devices found."""
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
@@ -142,7 +142,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 if identifier[0] == DOMAIN:
                     if (
                         device_entry.via_device_id == via_device_id
-                        and identifier[1] not in data.entities
+                        and identifier[1] not in data.devices
                     ):
                         device_reg.async_update_device(
                             device_entry.id, remove_config_entry_id=entry.entry_id
