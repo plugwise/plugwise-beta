@@ -80,17 +80,18 @@ async def async_setup_entry(
             return
 
         entities: list[PlugwiseClimateEntity] = []
-        for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
-            if device[DEV_CLASS] == "climate":
-                entities.append(
-                    PlugwiseClimateEntity(
-                        coordinator, device_id, homekit_enabled
-                    )  # pw-beta homekit emulation
-                )
-                LOGGER.debug("Add climate %s", device[ATTR_NAME])
+        if coordinator.data.gateway[SMILE_NAME] == "Adam":
+            for device_id in coordinator.new_devices:
+                device = coordinator.data.devices[device_id]
+                if device[DEV_CLASS] == "climate":
+                    entities.append(
+                        PlugwiseClimateEntity(
+                            coordinator, device_id, homekit_enabled
+                        )  # pw-beta homekit emulation
+                    )
+                    LOGGER.debug("Add climate %s", device[ATTR_NAME])
 
-        if not entities:
+        else:
             for device_id in coordinator.new_devices:
                 device = coordinator.data.devices[device_id]
                 if device[DEV_CLASS] in MASTER_THERMOSTATS:
