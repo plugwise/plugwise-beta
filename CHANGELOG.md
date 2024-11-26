@@ -4,6 +4,7 @@
 
 ## v0.55.0
 
+- **BREAKING change for Adam**: the device-based climate entities will be replace by zone-based climate entities
 - New Feature: implement zone-based climate entities for Adam, solving HA Core Issue [130597](https://github.com/home-assistant/core/issues/130597).
 - Link to plugwise [v1.6.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.6.0).
 
