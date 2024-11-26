@@ -78,7 +78,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
         version = await self.api.connect()
         self._connected = isinstance(version, Version)
         if self._connected:
-            self.api.get_all_devices()
+            self.api.get_all_gateway_entities()
             self.update_interval = DEFAULT_SCAN_INTERVAL.get(
                 self.api.smile_type, timedelta(seconds=60)
             )  # pw-beta options scan-interval
@@ -91,7 +91,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
-        data = PlugwiseData({}, {})
+        data = PlugwiseData(devices={}, gateway={})
         try:
             if not self._connected:
                 await self._connect()
@@ -148,7 +148,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                             device_entry.id, remove_config_entry_id=entry.entry_id
                         )
                         LOGGER.debug(
-                            "Removed %s device %s %s from device_registry",
+                            "Removed %s device/zone %s %s from device_registry",
                             DOMAIN,
                             device_entry.model,
                             identifier[1],

@@ -31,7 +31,7 @@ async def test_adam_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test creation of adam climate device environment."""
-    state = hass.states.get("climate.zone_lisa_wk")
+    state = hass.states.get("climate.woonkamer")
     assert state
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_modes"] == [
@@ -54,7 +54,7 @@ async def test_adam_climate_entity_attributes(
         state.attributes["target_temp_step"], 0.1, rel_tol=1e-09, abs_tol=1e-09
     )
 
-    state = hass.states.get("climate.zone_thermostat_jessie")
+    state = hass.states.get("climate.jessie")
     assert state
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_modes"] == [
@@ -82,7 +82,7 @@ async def test_adam_2_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test creation of adam climate device environment."""
-    state = hass.states.get("climate.anna")
+    state = hass.states.get("climate.living_room")
     assert state
     assert state.state == HVACMode.HEAT
     assert state.attributes["hvac_action"] == "preheating"
@@ -92,7 +92,7 @@ async def test_adam_2_climate_entity_attributes(
         HVACMode.HEAT,
     ]
 
-    state = hass.states.get("climate.lisa_badkamer")
+    state = hass.states.get("climate.bathroom")
     assert state
     assert state.state == HVACMode.AUTO
     assert state.attributes["hvac_action"] == "idle"
@@ -111,7 +111,7 @@ async def test_adam_3_climate_entity_attributes(
     freezer: FrozenDateTimeFactory,
 ) -> None:
     """Test creation of adam climate device environment."""
-    state = hass.states.get("climate.anna")
+    state = hass.states.get("climate.living_room")
     assert state
     assert state.state == HVACMode.COOL
     assert state.attributes["hvac_action"] == "cooling"
@@ -125,7 +125,7 @@ async def test_adam_3_climate_entity_attributes(
     data.devices["da224107914542988a88561b4452b0f6"][
         "select_regulation_mode"
     ] = "heating"
-    data.devices["ad4838d7d35c4d6ea796ee12ae5aedf8"]["control_state"] = "heating"
+    data.devices["f2bf9048bef64cc5b6d5110154e33c81"]["control_state"] = "heating"
     data.devices["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
         "cooling_state"
     ] = False
@@ -137,7 +137,7 @@ async def test_adam_3_climate_entity_attributes(
         async_fire_time_changed(hass)
         await hass.async_block_till_done()
 
-        state = hass.states.get("climate.anna")
+        state = hass.states.get("climate.living_room")
         assert state
         assert state.state == HVACMode.HEAT
         assert state.attributes["hvac_action"] == "heating"
@@ -151,7 +151,7 @@ async def test_adam_3_climate_entity_attributes(
     data.devices["da224107914542988a88561b4452b0f6"][
         "select_regulation_mode"
     ] = "cooling"
-    data.devices["ad4838d7d35c4d6ea796ee12ae5aedf8"]["control_state"] = "cooling"
+    data.devices["f2bf9048bef64cc5b6d5110154e33c81"]["control_state"] = "cooling"
     data.devices["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
         "cooling_state"
     ] = True
@@ -163,7 +163,7 @@ async def test_adam_3_climate_entity_attributes(
         async_fire_time_changed(hass)
         await hass.async_block_till_done()
 
-        state = hass.states.get("climate.anna")
+        state = hass.states.get("climate.living_room")
         assert state
         assert state.state == HVACMode.COOL
         assert state.attributes["hvac_action"] == "cooling"
@@ -184,7 +184,7 @@ async def test_adam_climate_adjust_negative_testing(
         await hass.services.async_call(
             CLIMATE_DOMAIN,
             SERVICE_SET_TEMPERATURE,
-            {"entity_id": "climate.zone_lisa_wk", "temperature": 25},
+            {"entity_id": "climate.woonkamer", "temperature": 25},
             blocking=True,
         )
 
@@ -196,7 +196,7 @@ async def test_adam_climate_entity_climate_changes(
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_TEMPERATURE,
-        {"entity_id": "climate.zone_lisa_wk", "temperature": 25},
+        {"entity_id": "climate.woonkamer", "temperature": 25},
         blocking=True,
     )
     assert mock_smile_adam.set_temperature.call_count == 1
@@ -208,7 +208,7 @@ async def test_adam_climate_entity_climate_changes(
         CLIMATE_DOMAIN,
         SERVICE_SET_TEMPERATURE,
         {
-            "entity_id": "climate.zone_lisa_wk",
+            "entity_id": "climate.woonkamer",
             "hvac_mode": "heat",
             "temperature": 25,
         },
@@ -223,14 +223,14 @@ async def test_adam_climate_entity_climate_changes(
         await hass.services.async_call(
             CLIMATE_DOMAIN,
             SERVICE_SET_TEMPERATURE,
-            {"entity_id": "climate.zone_lisa_wk", "temperature": 150},
+            {"entity_id": "climate.woonkamer", "temperature": 150},
             blocking=True,
         )
 
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_PRESET_MODE,
-        {"entity_id": "climate.zone_lisa_wk", "preset_mode": "away"},
+        {"entity_id": "climate.woonkamer", "preset_mode": "away"},
         blocking=True,
     )
     assert mock_smile_adam.set_preset.call_count == 1
@@ -241,7 +241,7 @@ async def test_adam_climate_entity_climate_changes(
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_HVAC_MODE,
-        {"entity_id": "climate.zone_lisa_wk", "hvac_mode": "heat"},
+        {"entity_id": "climate.woonkamer", "hvac_mode": "heat"},
         blocking=True,
     )
     assert mock_smile_adam.set_schedule_state.call_count == 2
@@ -254,7 +254,7 @@ async def test_adam_climate_entity_climate_changes(
             CLIMATE_DOMAIN,
             SERVICE_SET_HVAC_MODE,
             {
-                "entity_id": "climate.zone_thermostat_jessie",
+                "entity_id": "climate.jessie",
                 "hvac_mode": "dry",
             },
             blocking=True,

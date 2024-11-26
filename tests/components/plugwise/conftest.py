@@ -104,7 +104,7 @@ def mock_smile_adam() -> Generator[MagicMock]:
         smile = smile_mock.return_value
 
         smile.async_update.return_value = PlugwiseData(
-            all_data["gateway"], all_data["devices"]
+            all_data["devices"], all_data["gateway"]
         )
         smile.connect.return_value = Version("3.0.15")
         smile.gateway_id = "fe799307f1624099878210aa0b9f1475"
@@ -129,7 +129,7 @@ def mock_smile_adam_heat_cool(chosen_env: str) -> Generator[MagicMock]:
         smile = smile_mock.return_value
 
         smile.async_update.return_value = PlugwiseData(
-            all_data["gateway"], all_data["devices"]
+            all_data["devices"], all_data["gateway"]
         )
         smile.connect.return_value = Version("3.6.4")
         smile.gateway_id = "da224107914542988a88561b4452b0f6"
@@ -155,7 +155,7 @@ def mock_smile_adam_4() -> Generator[MagicMock]:
         smile = smile_mock.return_value
 
         smile.async_update.return_value = PlugwiseData(
-            all_data["gateway"], all_data["devices"]
+            all_data["devices"], all_data["gateway"]
         )
         smile.connect.return_value = Version("3.2.8")
         smile.gateway_id = "b5c2386c6f6342669e50fe49dd05b188"
@@ -180,7 +180,7 @@ def mock_smile_anna(chosen_env: str) -> Generator[MagicMock]:
         smile = smile_mock.return_value
 
         smile.async_update.return_value = PlugwiseData(
-            all_data["gateway"], all_data["devices"]
+            all_data["devices"], all_data["gateway"]
         )
         smile.connect.return_value = Version("4.0.15")
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
@@ -205,7 +205,7 @@ def mock_smile_p1(chosen_env: str, gateway_id: str) -> Generator[MagicMock]:
         smile = smile_mock.return_value
 
         smile.async_update.return_value = PlugwiseData(
-            all_data["gateway"], all_data["devices"]
+            all_data["devices"], all_data["gateway"]
         )
         smile.connect.return_value = Version("4.4.2")
         smile.gateway_id = gateway_id
@@ -231,7 +231,7 @@ def mock_smile_legacy_anna() -> Generator[MagicMock]:
         smile = smile_mock.return_value
 
         smile.async_update.return_value = PlugwiseData(
-            all_data["gateway"], all_data["devices"]
+            all_data["devices"], all_data["gateway"]
         )
         smile.connect.return_value = Version("1.8.22")
         smile.gateway_id = "0000aaaa0000aaaa0000aaaa0000aa00"
@@ -257,7 +257,7 @@ def mock_stretch() -> Generator[MagicMock]:
         smile = smile_mock.return_value
 
         smile.async_update.return_value = PlugwiseData(
-            all_data["gateway"], all_data["devices"]
+            all_data["devices"], all_data["gateway"]
         )
         smile.connect.return_value = Version("3.1.11")
         smile.gateway_id = "259882df3c05415b99c2d962534ce820"

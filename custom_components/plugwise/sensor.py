@@ -492,6 +492,7 @@ async def async_setup_entry(
                 LOGGER.debug(
                     "Add %s %s sensor", device["name"], description.translation_key or description.key
                 )
+
         async_add_entities(entities)
 
     _add_entities()

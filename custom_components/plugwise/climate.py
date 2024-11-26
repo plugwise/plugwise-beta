@@ -80,9 +80,18 @@ async def async_setup_entry(
             return
 
         entities: list[PlugwiseClimateEntity] = []
+        gateway_name = coordinator.data.gateway[SMILE_NAME]
         for device_id in coordinator.new_devices:
             device = coordinator.data.devices[device_id]
-            if device[DEV_CLASS] in MASTER_THERMOSTATS:
+            if gateway_name == "Adam":
+                if device[DEV_CLASS] == "climate":
+                    entities.append(
+                        PlugwiseClimateEntity(
+                            coordinator, device_id, homekit_enabled
+                        )  # pw-beta homekit emulation
+                    )
+                    LOGGER.debug("Add climate %s", device[ATTR_NAME])
+            elif device[DEV_CLASS] in MASTER_THERMOSTATS:
                 entities.append(
                     PlugwiseClimateEntity(
                         coordinator, device_id, homekit_enabled
@@ -118,6 +127,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         super().__init__(coordinator, device_id)
 
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
+
+        self._location = device_id
+        if (location := self.device.get(LOCATION)) is not None:
+            self._location = location
+
         gateway_id: str = coordinator.data.gateway[GATEWAY_ID]
         self.gateway_data = coordinator.data.devices[gateway_id]
 
@@ -273,7 +287,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if mode := kwargs.get(ATTR_HVAC_MODE):
             await self.async_set_hvac_mode(mode)
 
-        await self.coordinator.api.set_temperature(self.device[LOCATION], data)
+        await self.coordinator.api.set_temperature(self._location, data)
 
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
@@ -286,7 +300,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         if hvac_mode != HVACMode.OFF:
             await self.coordinator.api.set_schedule_state(
-                self.device[LOCATION],
+                self._location,
                 STATE_ON if hvac_mode == HVACMode.AUTO else STATE_OFF,
             )
 
@@ -310,4 +324,4 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode."""
-        await self.coordinator.api.set_preset(self.device[LOCATION], preset_mode)
+        await self.coordinator.api.set_preset(self._location, preset_mode)
