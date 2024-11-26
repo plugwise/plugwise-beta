@@ -471,6 +471,15 @@ async def async_setup_entry(
         if not coordinator.new_devices:
             return
 
+        # Upstream consts
+        # async_add_entities(
+        #     PlugwiseSensorEntity(coordinator, device_id, description)
+        #     for device_id in coordinator.new_devices
+        #     if (sensors := coordinator.data.devices[device_id].get(SENSORS))
+        #     for description in PLUGWISE_SENSORS
+        #     if description.key in sensors
+        # )
+        # pw-beta alternative for debugging
         entities: list[PlugwiseSensorEntity] = []
         for device_id in coordinator.new_devices:
             device = coordinator.data.devices[device_id]
