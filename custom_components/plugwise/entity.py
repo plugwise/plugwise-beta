@@ -80,7 +80,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
 
     @property
     def available(self) -> bool:
-        """Return if entity is available."""
+        """Return if device is available."""
         return (
             # Upstream: Do not change the AVAILABLE line below: some Plugwise devices and zones
             # Upstream: do not provide their availability-status!
@@ -91,7 +91,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
 
     @property
     def device(self) -> GwEntityData:
-        """Return the plugwise entity connected to the device_id."""
+        """Return the plugwise device connected to the device_id."""
         return self.coordinator.data.devices[self._dev_id]
 
 
