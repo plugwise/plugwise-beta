@@ -55,6 +55,7 @@ TOM = {
         },
         "sensors": {
             "battery": 99,
+            "setpoint": 18.0,
             "temperature": 18.6,
             "temperature_difference": 2.3,
             "valve_position": 0.0,
@@ -291,7 +292,7 @@ async def test_update_device(
 
     assert (
         len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-        == 37
+        == 38
     )
     assert (
         len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
@@ -315,7 +316,7 @@ async def test_update_device(
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-            == 43
+            == 45
         )
         assert (
             len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
@@ -342,7 +343,7 @@ async def test_update_device(
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-            == 37
+            == 38
         )
         assert (
             len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
