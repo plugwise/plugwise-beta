@@ -40,6 +40,7 @@
       "name": "Tom Badkamer",
       "sensors": {
         "battery": 99,
+        "setpoint": 18.0,
         "temperature": 21.6,
         "temperature_difference": -0.2,
         "valve_position": 100
