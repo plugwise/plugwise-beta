@@ -91,14 +91,13 @@ async def async_setup_entry(
                         )  # pw-beta homekit emulation
                     )
                     LOGGER.debug("Add climate %s", device[ATTR_NAME])
-            else:
-                if device[DEV_CLASS] in MASTER_THERMOSTATS:
-                    entities.append(
-                        PlugwiseClimateEntity(
-                            coordinator, device_id, homekit_enabled
-                        )  # pw-beta homekit emulation
-                    )
-                    LOGGER.debug("Add climate %s", device[ATTR_NAME])
+            elif device[DEV_CLASS] in MASTER_THERMOSTATS:
+                entities.append(
+                    PlugwiseClimateEntity(
+                        coordinator, device_id, homekit_enabled
+                    )  # pw-beta homekit emulation
+                )
+                LOGGER.debug("Add climate %s", device[ATTR_NAME])
 
         async_add_entities(entities)
 
