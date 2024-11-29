@@ -5,6 +5,7 @@
 ## Ongoing
 
 - Bugfix for Issue #776
+- Support python 3.13 / HA-Core 2024.12
 
 ## v0.55.0
 
