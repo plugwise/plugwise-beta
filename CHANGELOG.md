@@ -1,6 +1,6 @@
 # Changelog
 
-## Versions from 0.40 and up
+Versions from 0.40 and up
 
 ## Ongoing
 
