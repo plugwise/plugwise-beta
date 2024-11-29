@@ -2,11 +2,12 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.55.1
 
 - Bugfix for Issue #776
 - Support python 3.13 / HA-Core 2024.12
 - Link to plugwise [v1.6.1](https://github.com/plugwise/python-plugwise/releases/tag/v1.6.1)
+- Make Config-OptionsFlow compatible with HA 2024.12.0
 
 ## v0.55.0
 
