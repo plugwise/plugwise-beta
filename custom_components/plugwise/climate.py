@@ -257,7 +257,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             ):
                 return cast(HVACAction, control_state)
         # Anna
-        else: 
+        else:
             heater: str = self._gateway["heater_id"]
             heater_data = self._devices[heater]
             if heater_data[BINARY_SENSORS][HEATING_STATE]:
