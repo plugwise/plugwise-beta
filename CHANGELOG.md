@@ -6,6 +6,7 @@ Versions from 0.40 and up
 
 - Bugfix for Issue #776
 - Support python 3.13 / HA-Core 2024.12
+- Link to plugwise [v1.6.1](https://github.com/plugwise/python-plugwise/releases/tag/v1.6.1)
 
 ## v0.55.0
 
