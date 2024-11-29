@@ -2,6 +2,10 @@
 
 ## Versions from 0.40 and up
 
+## Ongoing
+
+- Bugfix for Issue #776
+
 ## v0.55.0
 
 - **BREAKING change for Adam**: the existing device-based climate entities will be replaced by new zone-based climate entities, most likely with a different name.
