@@ -258,7 +258,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 class PlugwiseOptionsFlowHandler(OptionsFlow):  # pw-beta options
     """Plugwise option flow."""
 
-
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
         self.options = deepcopy(dict(config_entry.options))
