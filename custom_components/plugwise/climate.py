@@ -252,8 +252,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         # Adam provides the hvac_action for each thermostat
         if self._gateway[SMILE_NAME] == "Adam":
-            return HVACAction(control_state)
-        # Anna
+            if (action := self.device.get(CONTROL_STATE)) is not None:
+                return HVACAction(action)
+
+        # Anna and Adam older firmware
         heater: str = self._gateway["heater_id"]
         heater_data = self._devices[heater]
         if heater_data[BINARY_SENSORS][HEATING_STATE]:
