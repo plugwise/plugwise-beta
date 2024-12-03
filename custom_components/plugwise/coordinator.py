@@ -91,7 +91,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
 
     async def _async_update_data(self) -> PlugwiseData:
         """Fetch data from Plugwise."""
-        data = PlugwiseData(devices={}, gateway={})
         try:
             if not self._connected:
                 await self._connect()
@@ -108,10 +107,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
             raise UpdateFailed("Data incomplete or missing") from err
         except UnsupportedDeviceError as err:
             raise ConfigEntryError("Device with unsupported firmware") from err
-        else:
-            LOGGER.debug(f"{self.api.smile_name} data: %s", data)
-            await self.async_add_remove_devices(data, self.config_entry)
 
+        LOGGER.debug(f"{self.api.smile_name} data: %s", data)
+        await self.async_add_remove_devices(data, self.config_entry)
         return data
 
     async def async_add_remove_devices(self, data: PlugwiseData, entry: ConfigEntry) -> None:
