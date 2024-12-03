@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import Any
 
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
@@ -251,19 +251,16 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._previous_action_mode(self.coordinator)
 
         # Adam provides the hvac_action for each thermostat
-        if self._gateway[SMILE_NAME] == "Adam":
-            if (control_state := self.device.get(CONTROL_STATE)) in (
-                HVACAction.COOLING, HVACAction.HEATING, HVACAction.PREHEATING
-            ):
-                return cast(HVACAction, control_state)
+        if (action := self.device.get(CONTROL_STATE)) is not None:
+            return HVACAction(action)
+
         # Anna
-        else:
-            heater: str = self._gateway["heater_id"]
-            heater_data = self._devices[heater]
-            if heater_data[BINARY_SENSORS][HEATING_STATE]:
-                return HVACAction.HEATING
-            if heater_data[BINARY_SENSORS].get(COOLING_STATE, False):
-                return HVACAction.COOLING
+        heater: str = self._gateway["heater_id"]
+        heater_data = self._devices[heater]
+        if heater_data[BINARY_SENSORS][HEATING_STATE]:
+            return HVACAction.HEATING
+        if heater_data[BINARY_SENSORS].get(COOLING_STATE, False):
+            return HVACAction.COOLING
 
         return HVACAction.IDLE
 

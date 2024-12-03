@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## v0.55.2
+
+- Link to plugwise [v1.6.2](https://github.com/plugwise/python-plugwise/releases/tag/v1.6.2), implementing Adam `control_state` related improvements.
+
 ## v0.55.1
 
 - Bugfix for Issue #776

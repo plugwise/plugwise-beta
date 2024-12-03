@@ -34,12 +34,11 @@ async def test_adam_climate_entity_attributes(
     state = hass.states.get("climate.woonkamer")
     assert state
     assert state.state == HVACMode.AUTO
+    assert state.attributes["hvac_action"] == "heating"
     assert state.attributes["hvac_modes"] == [
         HVACMode.AUTO,
         HVACMode.HEAT,
     ]
-    # hvac_action is not asserted as the fixture is not in line with recent firmware functionality
-
     assert "preset_modes" in state.attributes
     assert "no_frost" in state.attributes["preset_modes"]
     assert "home" in state.attributes["preset_modes"]
@@ -57,12 +56,11 @@ async def test_adam_climate_entity_attributes(
     state = hass.states.get("climate.jessie")
     assert state
     assert state.state == HVACMode.AUTO
+    assert state.attributes["hvac_action"] == "idle"
     assert state.attributes["hvac_modes"] == [
         HVACMode.AUTO,
         HVACMode.HEAT,
     ]
-    # hvac_action is not asserted as the fixture is not in line with recent firmware functionality
-
     assert "preset_modes" in state.attributes
     assert "no_frost" in state.attributes["preset_modes"]
     assert "home" in state.attributes["preset_modes"]
