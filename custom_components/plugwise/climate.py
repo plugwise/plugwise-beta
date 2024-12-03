@@ -251,9 +251,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._previous_action_mode(self.coordinator)
 
         # Adam provides the hvac_action for each thermostat
-        if self._gateway[SMILE_NAME] == "Adam":
-            if (action := self.device.get(CONTROL_STATE)) is not None:
-                return HVACAction(action)
+        if (action := self.device.get(CONTROL_STATE)) is not None:
+            return HVACAction(action)
 
         # Anna
         heater: str = self._gateway["heater_id"]
