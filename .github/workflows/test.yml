@@ -15,6 +15,7 @@ on:
 jobs:
   # Run pre-commit
   pre-commit:
+    name: Validate pre-commit requirements
     runs-on: ubuntu-latest
     steps:
       - name: Check out committed code
