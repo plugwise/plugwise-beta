@@ -41,6 +41,9 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
+      - name: Set-up environment
+        run: |
+          scripts/setup.sh
       - name: Install pre-commit dependencies
         run: |
           . venv/bin/activate
