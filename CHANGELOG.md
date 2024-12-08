@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Internal: Adjustments in the CI process
+
 ## v0.55.3
 
 - Bugfix for HA Core issue [#132479](https://github.com/home-assistant/core/issues/132479) via plugwise [v1.6.3](https://github.com/plugwise/python-plugwise/releases/tag/v1.6.3).
