@@ -13,21 +13,61 @@ on:
 # pull_request:
 
 jobs:
-  # Prepare default python version environment
-  ha-core-prepare:
+  # Run pre-commit
+  pre-commit:
     runs-on: ubuntu-latest
-    name: Setup for HA-core (release)
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5.3.0
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
         id: cache-hacore
-        uses: actions/cache@v4
+        uses: actions/cache@v4.2.0
+        env:
+          cache-name: cache-hacore
+        with:
+          path: ./
+          key: >-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
+            steps.python.outputs.python-version }}-${{
+            hashFiles('./custom_components/plugwise/manifest.json') }}-${{
+            hashFiles('./ha-core/.git/plugwise-tracking') }}
+          restore-keys: |
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}
+            ${{ env.CACHE_VERSION}}
+      - name: Install pre-commit dependencies
+        if: steps.cache-precommit.outputs.cache-hit != 'true'
+        run: |
+          . venv/bin/activate
+          pre-commit install-hooks
+      - name: Run full pre-commit
+        run: |
+          . venv/bin/activate
+          pre-commit run --all-files --show-diff-on-failure
+
+  # Prepare default python version environment
+  ha-core-prepare:
+    runs-on: ubuntu-latest
+    name: Setup for HA-core (release)
+    needs:
+      - pre-commit
+    steps:
+      - name: Check out committed code
+        uses: actions/checkout@v4.2.2
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        id: python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
+        id: cache-hacore
+        uses: actions/cache@v4.2.0
         env:
           cache-name: cache-hacore
         with:
