@@ -1,13 +1,6 @@
-# For pre-commit.ci
-ci:
-  # Defer autoupdate to quarterly (there is no 'off' button) to have renovate pick up first
-  autoupdate_schedule: quarterly
-  skip: [test-core-prep, test-pip-prep, testing, quality]
-  submodules: true
-
 default_language_version:
   # force all unspecified python hooks to run python3
-  python: python3.11
+  python: python3.13
 
 repos:
   # Run manually in CI skipping the branch checks
@@ -80,28 +73,28 @@ repos:
         files: ^(custom_components|tests)/.+\.py$
   - repo: local
     hooks:
-      - id: test-core-prep
+      - id: local-test-core-prep
         # yamllint disable-line rule:line-length
         name: "Home Assistant Core Testing - Cloning/updating HA core#master - patience!"
         # yamllint disable-line rule:line-length
         entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh core_prep'
         language: script
         pass_filenames: false
-      - id: test-pip-prep
+      - id: local-test-pip-prep
         # yamllint disable-line rule:line-length
         name: "Home Assistant Core Testing - Installing dependencies - patience!"
         # yamllint disable-line rule:line-length
         entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh pip_prep'
         language: script
         pass_filenames: false
-      - id: testing
+      - id: local-testing
         # yamllint disable-line rule:line-length
         name: "Home Assistant Core Testing - Performing Tests"
         # yamllint disable-line rule:line-length
         entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh testing'
         language: script
         pass_filenames: false
-      - id: quality
+      - id: local-quality
         # yamllint disable-line rule:line-length
         name: "Home Assistant Core Testing - Quality checks - might need patience"
         # yamllint disable-line rule:line-length
