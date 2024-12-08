@@ -4,7 +4,7 @@
 name: Test against HA-core (master/released)
 
 env:
-  CACHE_VERSION: 28
+  CACHE_VERSION: 29
   DEFAULT_PYTHON: "3.13"
 
 on:
@@ -51,8 +51,9 @@ jobs:
       - name: Run full pre-commit
         run: |
           . venv/bin/activate
-          # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
-          SKIP=local-test-core-prep,local-test-pip-prep,local-testing,local-quality pre-commit run --all-files --show-diff-on-failure
+          pre-commit run --all-files --show-diff-on-failure
+        env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
+          SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
 
   # Prepare default python version environment
   ha-core-prepare:
