@@ -51,7 +51,8 @@ jobs:
       - name: Run full pre-commit
         run: |
           . venv/bin/activate
-          pre-commit run --all-files --show-diff-on-failure
+          # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
+          SKIP=local-test-core-prep,local-test-pip-prep,local-testing,local-quality pre-commit run --all-files --show-diff-on-failure
 
   # Prepare default python version environment
   ha-core-prepare:
