@@ -4,7 +4,7 @@
 name: Test against HA-core (master/released)
 
 env:
-  CACHE_VERSION: 27
+  CACHE_VERSION: 28
   DEFAULT_PYTHON: "3.13"
 
 on:
@@ -42,7 +42,6 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
       - name: Install pre-commit dependencies
-        if: steps.cache-precommit.outputs.cache-hit != 'true'
         run: |
           . venv/bin/activate
           pre-commit install-hooks
