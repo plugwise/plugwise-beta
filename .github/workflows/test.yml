@@ -17,6 +17,7 @@ jobs:
   pre-commit:
     name: Validate pre-commit requirements
     runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/master'
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
