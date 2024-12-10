@@ -294,7 +294,15 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     vol.Required(
                         CONF_PORT,
                         default=reconfigure_entry.data.get(CONF_PORT),
-                    ): TextSelector(),
+                    ): vol.Coerce(int),
+                    vol.Required(
+                        CONF_PASSWORD,
+                        default=reconfigure_entry.data.get(CONF_PASSWORD),
+                    ): str,
+                    vol.Required(
+                        CONF_USERNAME,
+                        default=reconfigure_entry.data.get(CONF_USERNAME),
+                    ): vol.In({SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH})
                 }
             ),
             description_placeholders={
