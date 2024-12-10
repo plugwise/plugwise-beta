@@ -98,9 +98,15 @@ def mock_smile_adam() -> Generator[MagicMock]:
     """Create a Mock Adam type for testing."""
     chosen_env = "m_adam_multiple_devices_per_zone"
     all_data = _read_json(chosen_env, "all_data")
-    with patch(
-        "homeassistant.components.plugwise.coordinator.Smile", autospec=True
-    ) as smile_mock:
+    with (
+        patch(
+            "homeassistant.components.plugwise.coordinator.Smile", autospec=True
+        ) as smile_mock,
+        patch(
+            "homeassistant.components.plugwise.config_flow.Smile",
+            new=smile_mock,
+        ),
+    ):
         smile = smile_mock.return_value
 
         smile.async_update.return_value = PlugwiseData(
