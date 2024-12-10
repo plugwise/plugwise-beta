@@ -41,6 +41,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.selector import TextSelector
 
 from .const import (
     ANNA_WITH_ADAM,
@@ -250,6 +251,57 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> PlugwiseOptionsFlowHandler:  # pw-beta options
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
+
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle reconfiguration of the integration."""
+        errors: dict[str, str] = {}
+        if user_input:
+            try:
+                api = await validate_input(self.hass, user_input)
+            except ConnectionFailedError:
+                errors[CONF_BASE] = "cannot_connect"
+            except InvalidAuthentication:
+                errors[CONF_BASE] = "invalid_auth"
+            except InvalidSetupError:
+                errors[CONF_BASE] = "invalid_setup"
+            except (InvalidXMLError, ResponseError):
+                errors[CONF_BASE] = "response_error"
+            except UnsupportedDeviceError:
+                errors[CONF_BASE] = "unsupported"
+            except Exception:  # noqa: BLE001
+                errors[CONF_BASE] = "unknown"
+            else:
+                await self.async_set_unique_id(
+                    api.smile_hostname or api.gateway_id, raise_on_progress=False
+                )
+                self._abort_if_unique_id_mismatch(reason="wrong_device")
+                return self.async_update_reload_and_abort(
+                    self._get_reconfigure_entry(),
+                    data_updates=user_input,
+                )
+        reconfigure_entry = self._get_reconfigure_entry()
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(
+                        CONF_HOST,
+                        default=reconfigure_entry.data.get(CONF_HOST),
+                    ): TextSelector(),
+                    vol.Required(
+                        CONF_PORT,
+                        default=reconfigure_entry.data.get(CONF_PORT),
+                    ): TextSelector(),
+                }
+            ),
+            description_placeholders={
+                "title": reconfigure_entry.title,
+            },
+            errors=errors,
+        )
 
 
 # pw-beta - change the scan-interval via CONFIGURE
