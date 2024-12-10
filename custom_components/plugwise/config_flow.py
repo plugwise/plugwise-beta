@@ -244,14 +244,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self._abort_if_unique_id_configured()
         return self.async_create_entry(title=api.smile_name, data=user_input)
 
-    @staticmethod
-    @callback
-    def async_get_options_flow(
-        config_entry: PlugwiseConfigEntry,
-    ) -> PlugwiseOptionsFlowHandler:  # pw-beta options
-        """Get the options flow for this handler."""
-        return PlugwiseOptionsFlowHandler(config_entry)
-
 
     async def async_step_reconfigure(
         self, user_input: dict[str, Any] | None = None
@@ -277,7 +269,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(
                     api.smile_hostname or api.gateway_id, raise_on_progress=False
                 )
-                self._abort_if_unique_id_mismatch(reason="wrong_device")
+                self._abort_if_unique_id_mismatch(reason="not_the_same_smile")
                 return self.async_update_reload_and_abort(
                     self._get_reconfigure_entry(),
                     data_updates=user_input,
@@ -302,7 +294,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     vol.Required(
                         CONF_USERNAME,
                         default=reconfigure_entry.data.get(CONF_USERNAME),
-                    ): vol.In({SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH})
+                    ): vol.In({SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}),
                 }
             ),
             description_placeholders={
@@ -310,6 +302,15 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             },
             errors=errors,
         )
+
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: PlugwiseConfigEntry,
+    ) -> PlugwiseOptionsFlowHandler:  # pw-beta options
+        """Get the options flow for this handler."""
+        return PlugwiseOptionsFlowHandler(config_entry)
 
 
 # pw-beta - change the scan-interval via CONFIGURE
