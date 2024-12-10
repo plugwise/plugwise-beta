@@ -18,14 +18,21 @@
   },
   "config": {
     "step": {
+      "reconfigure": {
+        "description": "Update configuration for {title}.",
+        "data": {
+          "host": "[%key:common::config_flow::data::ip%]",
+          "port": "[%key:common::config_flow::data::port%]"
+        }
+      },
       "user": {
         "title": "Set up Plugwise Adam/Smile/Stretch",
         "description": "Enter your Plugwise device: (setup can take up to 90s)",
         "data": {
           "password": "ID",
           "username": "Username",
-          "host": "IP-address",
-          "port": "Port number"
+          "host": "[%key:common::config_flow::data::ip%]",
+          "port": "[%key:common::config_flow::data::port%]"
         }
       }
     },
