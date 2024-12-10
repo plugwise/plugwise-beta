@@ -20,7 +20,7 @@ from homeassistant.components.plugwise.const import (
     DOMAIN,
 )
 from homeassistant.components.zeroconf import ZeroconfServiceInfo
-from homeassistant.config_entries import SOURCE_USER, SOURCE_ZEROCONF
+from homeassistant.config_entries import SOURCE_USER, SOURCE_ZEROCONF, ConfigFlowResult
 from homeassistant.const import (
     CONF_HOST,
     CONF_NAME,
@@ -44,6 +44,8 @@ TEST_PASSWORD = "test_password"
 TEST_PORT = 81
 TEST_USERNAME = "smile"
 TEST_USERNAME2 = "stretch"
+MOCK_SMILE_ID = "smile12345"
+
 TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
     ip_address=TEST_HOST,
     ip_addresses=[TEST_HOST],
@@ -458,3 +460,82 @@ async def test_options_flow_thermo(
             CONF_REFRESH_INTERVAL: 3.0,
             CONF_SCAN_INTERVAL: 60,
         }
+
+
+async def _start_reconfigure_flow(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    host_ip: str,
+) -> ConfigFlowResult:
+    """Initialize a reconfigure flow."""
+    mock_config_entry.add_to_hass(hass)
+
+    reconfigure_result = await mock_config_entry.start_reconfigure_flow(hass)
+
+    assert reconfigure_result["type"] is FlowResultType.FORM
+    assert reconfigure_result["step_id"] == "reconfigure"
+
+    return await hass.config_entries.flow.async_configure(
+        reconfigure_result["flow_id"], {CONF_HOST: host_ip}
+    )
+
+
+async def test_reconfigure_flow(
+    hass: HomeAssistant,
+    mock_smile_adam: AsyncMock,
+    mock_setup_entry: AsyncMock,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test reconfigure flow."""
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_HOST)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "reconfigure_successful"
+
+    entry = hass.config_entries.async_get_entry(mock_config_entry.entry_id)
+    assert entry
+    assert entry.data.get(CONF_HOST) == TEST_HOST
+
+
+async def test_reconfigure_flow_other_smile(
+    hass: HomeAssistant,
+    mock_smile_adam: AsyncMock,
+    mock_setup_entry: AsyncMock,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test reconfigure flow aborts on other Smile ID."""
+    mock_smile_adam.smile_hostname = MOCK_SMILE_ID
+
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_HOST)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "not_the_same_smile"
+
+
+@pytest.mark.parametrize(
+    ("side_effect", "reason"),
+    [
+        (ConnectionFailedError, "cannot_connect"),
+        (InvalidAuthentication, "invalid_auth"),
+        (InvalidSetupError, "invalid_setup"),
+        (InvalidXMLError, "response_error"),
+        (RuntimeError, "unknown"),
+        (UnsupportedDeviceError, "unsupported"),
+    ],
+)
+async def test_reconfigure_flow_errors(
+    hass: HomeAssistant,
+    mock_smile_adam: AsyncMock,
+    mock_config_entry: MockConfigEntry,
+    side_effect: Exception,
+    reason: str,
+) -> None:
+    """Test we handle each reconfigure exception error."""
+
+    mock_smile_adam.connect.side_effect = side_effect
+
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_HOST)
+
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("errors") == {"base": reason}
+    assert result.get("step_id") == "reconfigure"
