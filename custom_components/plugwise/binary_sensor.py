@@ -40,7 +40,8 @@ from .const import (
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 
-PARALLEL_UPDATES = 0  # Upstream
+# Coordinator is used to centralize the data updates
+PARALLEL_UPDATES = 0
 
 
 @dataclass(frozen=True)
@@ -54,7 +55,6 @@ class PlugwiseBinarySensorEntityDescription(BinarySensorEntityDescription):
 PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     PlugwiseBinarySensorEntityDescription(
         key=BATTERY_STATE,
-        translation_key=BATTERY_STATE,
         device_class=BinarySensorDeviceClass.BATTERY,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),

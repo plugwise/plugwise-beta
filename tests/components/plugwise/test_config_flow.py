@@ -44,7 +44,7 @@ TEST_PASSWORD = "test_password"
 TEST_PORT = 81
 TEST_USERNAME = "smile"
 TEST_USERNAME2 = "stretch"
-MOCK_SMILE_ID = "smile12345"
+TEST_SMILE_ID = "smile12345"
 
 TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
     ip_address=TEST_HOST,
@@ -504,7 +504,7 @@ async def test_reconfigure_flow_other_smile(
     mock_config_entry: MockConfigEntry,
 ) -> None:
     """Test reconfigure flow aborts on other Smile ID."""
-    mock_smile_adam.smile_hostname = MOCK_SMILE_ID
+    mock_smile_adam.smile_hostname = TEST_SMILE_ID
 
     result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_HOST)
 

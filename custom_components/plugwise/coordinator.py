@@ -97,17 +97,31 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
                 await self._connect()
             data = await self.api.async_update()
         except ConnectionFailedError as err:
-            raise UpdateFailed("Failed to connect") from err
-        except InvalidAuthentication as err:
-            raise ConfigEntryError("Authentication failed") from err
-        except (InvalidXMLError, ResponseError) as err:
             raise UpdateFailed(
-                f"Invalid XML data or error from Plugwise device: {err}"
+                translation_domain=DOMAIN,
+                translation_key="failed_to_connect",
+            ) from err
+        except InvalidAuthentication as err:
+            raise ConfigEntryError(
+                translation_domain=DOMAIN,
+                translation_key="authentication_failed",
+            ) from err
+        except (InvalidXMLError, ResponseError) as err:
+            # pwbeta TODO; we had {err} in the text, but not upstream, do we want this?
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="invalid_xml_data",
             ) from err
         except PlugwiseError as err:
-            raise UpdateFailed("Data incomplete or missing") from err
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="data_incomplete_or_missing",
+            ) from err
         except UnsupportedDeviceError as err:
-            raise ConfigEntryError("Device with unsupported firmware") from err
+            raise ConfigEntryError(
+                translation_domain=DOMAIN,
+                translation_key="unsupported_firmware",
+            ) from err
         else:
             LOGGER.debug(f"{self.api.smile_name} data: %s", data)
             await self.async_add_remove_devices(data, self.config_entry)
