@@ -56,9 +56,6 @@
   },
   "entity": {
     "binary_sensor": {
-      "low_battery": {
-        "name": "Battery state"
-      },
       "compressor_state": {
         "name": "Compressor state"
       },
@@ -303,6 +300,26 @@
       "relay": {
         "name": "Relay"
       }
+    }
+  },
+  "exceptions": {
+    "authentication_failed": {
+      "message": "Invalid authentication"
+    },
+    "data_incomplete_or_missing": {
+      "message": "Data incomplete or missing."
+    },
+    "error_communicating_with_api": {
+      "message": "Error communicating with API: {error}."
+    },
+    "failed_to_connect": {
+      "message": "Failed to connect"
+    },
+    "invalid_xml_data": {
+      "message": "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
+    },
+    "unsupported_firmware": {
+      "message": "Device with unsupported firmware"
     }
   },
   "services": {
