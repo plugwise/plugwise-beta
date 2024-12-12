@@ -30,16 +30,13 @@ from . import PlugwiseConfigEntry
 from .const import (
     ACTIVE_PRESET,
     AVAILABLE_SCHEDULES,
-    BINARY_SENSORS,
     CLIMATE_MODE,
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     CONTROL_STATE,
     COOLING_PRESENT,
-    COOLING_STATE,
     DEV_CLASS,
     DOMAIN,
     GATEWAY_ID,
-    HEATING_STATE,
     LOCATION,
     LOGGER,
     LOWER_BOUND,
