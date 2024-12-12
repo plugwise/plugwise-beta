@@ -21,8 +21,8 @@
       "reconfigure": {
         "description": "Update configuration for {title}.",
         "data": {
-          "host": "[%key:common::config_flow::data::ip%]",
-          "port": "[%key:common::config_flow::data::port%]"
+          "host": "IP-address",
+          "port": "Port number"
         }
       },
       "user": {
@@ -31,8 +31,8 @@
         "data": {
           "password": "ID",
           "username": "Username",
-          "host": "[%key:common::config_flow::data::ip%]",
-          "port": "[%key:common::config_flow::data::port%]"
+          "host": "IP-address",
+          "port": "Port number"
         }
       }
     },
@@ -51,7 +51,7 @@
       "already_configured": "This device is already configured",
       "anna_with_adam": "Both Anna and Adam detected. Add your Adam instead of your Anna",
       "not_the_same_smile": "The configured Smile ID does not match the Smile ID on the requested IP address.",
-      "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]"
+      "reconfigure_successful": "Reconfiguration successful"
     }
   },
   "entity": {
