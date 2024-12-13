@@ -4,7 +4,7 @@
             "already_configured": "This device is already configured",
             "anna_with_adam": "Both Anna and Adam detected. Add your Adam instead of your Anna",
             "not_the_same_smile": "The configured Smile ID does not match the Smile ID on the requested IP address.",
-            "reconfigure_successful": "Re-configuration was successful"
+            "reconfigure_successful": "Reconfiguration successful"
         },
         "error": {
             "cannot_connect": "Failed to connect",
@@ -20,16 +20,16 @@
         "step": {
             "reconfigure": {
                 "data": {
-                    "host": "IP address",
-                    "port": "Port"
+                    "host": "IP-address",
+                    "port": "Port number"
                 },
                 "description": "Update configuration for {title}."
             },
             "user": {
                 "data": {
-                    "host": "IP address",
+                    "host": "IP-address",
                     "password": "ID",
-                    "port": "Port",
+                    "port": "Port number",
                     "username": "Username"
                 },
                 "description": "Enter your Plugwise device: (setup can take up to 90s)",
@@ -56,9 +56,6 @@
             },
             "heating_state": {
                 "name": "Heating"
-            },
-            "low_battery": {
-                "name": "Battery state"
             },
             "plugwise_notification": {
                 "name": "Plugwise notification"
@@ -286,6 +283,26 @@
             "relay": {
                 "name": "Relay"
             }
+        }
+    },
+    "exceptions": {
+        "authentication_failed": {
+            "message": "Invalid authentication"
+        },
+        "data_incomplete_or_missing": {
+            "message": "Data incomplete or missing."
+        },
+        "error_communicating_with_api": {
+            "message": "Error communicating with API: {error}."
+        },
+        "failed_to_connect": {
+            "message": "Failed to connect"
+        },
+        "invalid_xml_data": {
+            "message": "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
+        },
+        "unsupported_firmware": {
+            "message": "Device with unsupported firmware"
         }
     },
     "options": {

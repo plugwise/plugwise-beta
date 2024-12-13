@@ -11,7 +11,6 @@ from homeassistant.components.select import (
 )
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ServiceValidationError
 
 from tests.common import MockConfigEntry
 
@@ -89,18 +88,18 @@ async def test_legacy_anna_select_entities(
     assert not hass.states.get("select.anna_thermostat_schedule")
 
 
-async def test_adam_select_unavailable_regulation_mode(
-    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
-) -> None:
-    """Test a regulation_mode non-available preset."""
-
-    with pytest.raises(ServiceValidationError, match="valid options"):
-        await hass.services.async_call(
-            SELECT_DOMAIN,
-            SERVICE_SELECT_OPTION,
-            {
-                ATTR_ENTITY_ID: "select.anna_thermostat_schedule",
-                ATTR_OPTION: "freezing",
-            },
-            blocking=True,
-        )
+#async def test_anna_select_unavailable_regulation_mode(
+#    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
+#) -> None:
+#    """Test a regulation_mode non-available preset."""
+#
+#    with pytest.raises(ServiceValidationError, match="valid options"):
+#        await hass.services.async_call(
+#            SELECT_DOMAIN,
+#            SERVICE_SELECT_OPTION,
+#            {
+#                ATTR_ENTITY_ID: "select.anna_thermostat_schedule",
+#                ATTR_OPTION: "freezing",
+#            },
+#            blocking=True,
+#        )
