@@ -18,7 +18,6 @@
   },
   "config": {
     "step": {
-      "user": {
       "reconfigure": {
         "description": "Pas configuratie aan voor {title}.",
         "data": {
@@ -26,6 +25,7 @@
           "port": "Poortnumber"
         }
       },
+      "user": {
         "title": "Installeer Plugwise Adam/Smile/Stretch",
         "description": "Van uw Plugwise apparaat voer in: (installeren kan tot 90s duren)",
         "data": {
@@ -49,7 +49,7 @@
     },
     "abort": {
       "already_configured": "Dit apparaat is al geconfigureerd",
-      "anna_with_adam": "Zowel Anna als Adam gedetecteerd. Voeg alleen de Adam toe, niet de Anna"
+      "anna_with_adam": "Zowel Anna als Adam gedetecteerd. Voeg alleen de Adam toe, niet de Anna",
       "not_the_same_smile": "Het ingegeven Smile ID past niet bij het Smile ID van het ingegeven IP adres",
       "reconfigure_successful": "Herconfiguratie is gelukt"
     }
