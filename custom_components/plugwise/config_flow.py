@@ -80,7 +80,7 @@ SMILE_RECONF_SCHEMA = vol.Schema(
 )
 
 
-def SMILE_USER_SCHEMA(
+def smile_user_schema(
     cf_input: ZeroconfServiceInfo | dict[str, Any] | None,
 ) -> vol.Schema:
     """Generate base schema for gateways."""
@@ -140,7 +140,7 @@ async def verify_connection(
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
     """Validate whether the user input allows us to connect to the gateway.
 
-    Data has the keys from SMILE_USER_SCHEMA() with values provided by the user.
+    Data has the keys from smile_user_schema() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
@@ -240,7 +240,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if not user_input:
             return self.async_show_form(
                 step_id=SOURCE_USER,
-                data_schema=SMILE_USER_SCHEMA(self.discovery_info),
+                data_schema=smile_user_schema(self.discovery_info),
                 errors=errors,
             )
 
@@ -250,10 +250,10 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_USERNAME] = self._username
 
         api = await verify_connection(self.hass, user_input)
-        if isinstance(api, dict):  # api = error
+        if isinstance(api, dict):  # error returned
             return self.async_show_form(
                 step_id=SOURCE_USER,
-                data_schema=SMILE_USER_SCHEMA(user_input),
+                data_schema=smile_user_schema(user_input),
                 errors=api,
             )
 
@@ -291,7 +291,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         }
 
         api = await verify_connection(self.hass, full_input)
-        if isinstance(api, dict):  # api = error
+        if isinstance(api, dict):  # error returned
             return self.async_show_form(
                 step_id="reconfigure",
                 data_schema=self.add_suggested_values_to_schema(
