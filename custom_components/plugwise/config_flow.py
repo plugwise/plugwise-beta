@@ -250,7 +250,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_USERNAME] = self._username
 
         api = await verify_connection(self.hass, user_input)
-        if isinstance(api, dict):
+        if isinstance(api, dict):  # api = error
             return self.async_show_form(
                 step_id=SOURCE_USER,
                 data_schema=SMILE_USER_SCHEMA(user_input),
@@ -271,34 +271,44 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         reconfigure_entry = self._get_reconfigure_entry()
 
-        if user_input:
-            # Keep current username and password
-            full_input = {
-                CONF_HOST: user_input.get(CONF_HOST),
-                CONF_PORT: user_input.get(CONF_PORT),
-                CONF_USERNAME: reconfigure_entry.data.get(CONF_USERNAME),
-                CONF_PASSWORD: reconfigure_entry.data.get(CONF_PASSWORD),
-            }
+        if not user_input:
+            return self.async_show_form(
+                step_id="reconfigure",
+                data_schema=self.add_suggested_values_to_schema(
+                    data_schema=SMILE_RECONF_SCHEMA,
+                    suggested_values=reconfigure_entry.data,
+                ),
+                description_placeholders={"title": reconfigure_entry.title},
+                errors=errors,
+            )
 
-            api = await verify_connection(self.hass, full_input)
-            if not isinstance(api, dict):
-                await self.async_set_unique_id(
-                    api.smile_hostname or api.gateway_id, raise_on_progress=False
-                )
-                self._abort_if_unique_id_mismatch(reason="not_the_same_smile")
-                return self.async_update_reload_and_abort(
-                    reconfigure_entry,
-                    data_updates=full_input,
-                )
+        # Keep current username and password
+        full_input = {
+            CONF_HOST: user_input.get(CONF_HOST),
+            CONF_PORT: user_input.get(CONF_PORT),
+            CONF_USERNAME: reconfigure_entry.data.get(CONF_USERNAME),
+            CONF_PASSWORD: reconfigure_entry.data.get(CONF_PASSWORD),
+        }
 
-        return self.async_show_form(
-            step_id="reconfigure",
-            data_schema=self.add_suggested_values_to_schema(
-                data_schema=SMILE_RECONF_SCHEMA,
-                suggested_values=reconfigure_entry.data,
-            ),
-            description_placeholders={"title": reconfigure_entry.title},
-            errors=api,
+        api = await verify_connection(self.hass, full_input)
+        if isinstance(api, dict):  # api = error
+            return self.async_show_form(
+                step_id="reconfigure",
+                data_schema=self.add_suggested_values_to_schema(
+                    data_schema=SMILE_RECONF_SCHEMA,
+                    suggested_values=reconfigure_entry.data,
+                ),
+                description_placeholders={"title": reconfigure_entry.title},
+                errors=api,
+            )
+
+        await self.async_set_unique_id(
+            api.smile_hostname or api.gateway_id, raise_on_progress=False
+        )
+        self._abort_if_unique_id_mismatch(reason="not_the_same_smile")
+        return self.async_update_reload_and_abort(
+            reconfigure_entry,
+            data_updates=full_input,
         )
 
 
