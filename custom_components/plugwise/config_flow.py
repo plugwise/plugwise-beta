@@ -72,7 +72,15 @@ type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 # Upstream basically the whole file (excluding the pw-beta options)
 
 
-def base_schema(
+SMILE_RECONF_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_HOST): str,
+        vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
+    }
+)
+
+
+def SMILE_USER_SCHEMA(
     cf_input: ZeroconfServiceInfo | dict[str, Any] | None,
 ) -> vol.Schema:
     """Generate base schema for gateways."""
@@ -103,10 +111,36 @@ def base_schema(
     )
 
 
+async def verify_connection(
+    hass: HomeAssistant, user_input: dict[str, Any]
+) -> tuple[Smile | None, dict[str, str]]:
+    """Verify and return the gateway connection using helper function."""
+    errors: dict[str, str] = {}
+
+    try:
+        api = await validate_input(hass, user_input)
+    except ConnectionFailedError:
+        errors[CONF_BASE] = "cannot_connect"
+    except InvalidAuthentication:
+        errors[CONF_BASE] = "invalid_auth"
+    except InvalidSetupError:
+        errors[CONF_BASE] = "invalid_setup"
+    except (InvalidXMLError, ResponseError):
+        errors[CONF_BASE] = "response_error"
+    except UnsupportedDeviceError:
+        errors[CONF_BASE] = "unsupported"
+    except Exception:  # noqa: BLE001
+        errors[CONF_BASE] = "unknown"
+    else:
+        return (api, errors)
+
+    return (None, errors)
+
+
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
     """Validate whether the user input allows us to connect to the gateway.
 
-    Data has the keys from base_schema() with values provided by the user.
+    Data has the keys from SMILE_USER_SCHEMA() with values provided by the user.
     """
     websession = async_get_clientsession(hass, verify_ssl=False)
     api = Smile(
@@ -150,7 +184,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                         CONF_HOST: discovery_info.host,
                         CONF_PASSWORD: config_entry.data[CONF_PASSWORD],
                         CONF_PORT: discovery_info.port,
-                        CONF_USERNAME: config_entry.data[CONF_USERNAME],
+                        CONF_USERNAME: self._username,
                     },
                 )
             except Exception:  # noqa: BLE001
@@ -206,7 +240,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         if not user_input:
             return self.async_show_form(
                 step_id=SOURCE_USER,
-                data_schema=base_schema(self.discovery_info),
+                data_schema=SMILE_USER_SCHEMA(self.discovery_info),
                 errors=errors,
             )
 
@@ -215,25 +249,11 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
 
-        try:
-            api = await validate_input(self.hass, user_input)
-        except ConnectionFailedError:
-            errors[CONF_BASE] = "cannot_connect"
-        except InvalidAuthentication:
-            errors[CONF_BASE] = "invalid_auth"
-        except InvalidSetupError:
-            errors[CONF_BASE] = "invalid_setup"
-        except (InvalidXMLError, ResponseError):
-            errors[CONF_BASE] = "response_error"
-        except UnsupportedDeviceError:
-            errors[CONF_BASE] = "unsupported"
-        except Exception:  # noqa: BLE001
-            errors[CONF_BASE] = "unknown"
-
+        api, errors = await verify_connection(self.hass, user_input)
         if errors:
             return self.async_show_form(
                 step_id=SOURCE_USER,
-                data_schema=base_schema(user_input),
+                data_schema=SMILE_USER_SCHEMA(user_input),
                 errors=errors,
             )
 
@@ -243,6 +263,45 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self._abort_if_unique_id_configured()
         return self.async_create_entry(title=api.smile_name, data=user_input)
 
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle reconfiguration of the integration."""
+        errors: dict[str, str] = {}
+
+        reconfigure_entry = self._get_reconfigure_entry()
+
+        if user_input:
+            # Keep current username and password
+            full_input = {
+                CONF_HOST: user_input.get(CONF_HOST),
+                CONF_PORT: user_input.get(CONF_PORT),
+                CONF_USERNAME: reconfigure_entry.data.get(CONF_USERNAME),
+                CONF_PASSWORD: reconfigure_entry.data.get(CONF_PASSWORD),
+            }
+
+            api, errors = await verify_connection(self.hass, full_input)
+            if not errors and api:
+                await self.async_set_unique_id(
+                    api.smile_hostname or api.gateway_id, raise_on_progress=False
+                )
+                self._abort_if_unique_id_mismatch(reason="not_the_same_smile")
+                return self.async_update_reload_and_abort(
+                    reconfigure_entry,
+                    data_updates=full_input,
+                )
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=self.add_suggested_values_to_schema(
+                data_schema=SMILE_RECONF_SCHEMA,
+                suggested_values=reconfigure_entry.data,
+            ),
+            description_placeholders={"title": reconfigure_entry.title},
+            errors=errors,
+        )
+
+
     @staticmethod
     @callback
     def async_get_options_flow(
@@ -250,7 +309,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> PlugwiseOptionsFlowHandler:  # pw-beta options
         """Get the options flow for this handler."""
         return PlugwiseOptionsFlowHandler(config_entry)
-
 
 # pw-beta - change the scan-interval via CONFIGURE
 # pw-beta - add homekit emulation via CONFIGURE
