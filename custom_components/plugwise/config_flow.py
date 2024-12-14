@@ -113,7 +113,7 @@ def SMILE_USER_SCHEMA(
 
 async def verify_connection(
     hass: HomeAssistant, user_input: dict[str, Any]
-) -> tuple[Smile | None, dict[str, str]]:
+) -> Smile | dict[str, str]:
     """Verify and return the gateway connection using helper function."""
     errors: dict[str, str] = {}
 
@@ -132,9 +132,9 @@ async def verify_connection(
     except Exception:  # noqa: BLE001
         errors[CONF_BASE] = "unknown"
     else:
-        return (api, errors)
+        return api
 
-    return (None, errors)
+    return errors
 
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
@@ -249,12 +249,12 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_PORT] = self.discovery_info.port
             user_input[CONF_USERNAME] = self._username
 
-        api, errors = await verify_connection(self.hass, user_input)
-        if errors:
+        api = await verify_connection(self.hass, user_input)
+        if isinstance(api, dict):
             return self.async_show_form(
                 step_id=SOURCE_USER,
                 data_schema=SMILE_USER_SCHEMA(user_input),
-                errors=errors,
+                errors=api,
             )
 
         await self.async_set_unique_id(
@@ -280,8 +280,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 CONF_PASSWORD: reconfigure_entry.data.get(CONF_PASSWORD),
             }
 
-            api, errors = await verify_connection(self.hass, full_input)
-            if not errors and api:
+            api = await verify_connection(self.hass, full_input)
+            if not isinstance(api, dict):
                 await self.async_set_unique_id(
                     api.smile_hostname or api.gateway_id, raise_on_progress=False
                 )
@@ -298,7 +298,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 suggested_values=reconfigure_entry.data,
             ),
             description_placeholders={"title": reconfigure_entry.title},
-            errors=errors,
+            errors=api,
         )
 
 
