@@ -43,7 +43,7 @@ TEST_HOSTNAME2 = "stretchabc"
 TEST_PASSWORD = "test_password"
 TEST_PORT = 81
 TEST_USERNAME = "smile"
-TEST_USERNAME2 = "stretch"
+TEST_USERNAME_STRETCH = "stretch"
 TEST_SMILE_HOST = "smile12345"
 TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
     ip_address=TEST_HOST,
@@ -59,7 +59,7 @@ TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
     },
     type="mock_type",
 )
-TEST_DISCOVERY2 = zeroconf.ZeroconfServiceInfo(
+TEST_DISCOVERY_STRETCH = zeroconf.ZeroconfServiceInfo(
     ip_address=TEST_HOST,
     ip_addresses=[TEST_HOST],
     hostname=f"{TEST_HOSTNAME2}.local.",
@@ -155,7 +155,7 @@ async def test_form(
     ("discovery", "username",),
     [
         (TEST_DISCOVERY, TEST_USERNAME),
-        (TEST_DISCOVERY2, TEST_USERNAME2),
+        (TEST_DISCOVERY_STRETCH, TEST_USERNAME_STRETCH),
     ],
 )
 async def test_zeroconf_form(
@@ -189,41 +189,6 @@ async def test_zeroconf_form(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: username,
-    }
-
-    assert len(mock_setup_entry.mock_calls) == 1
-    assert len(mock_smile_config_flow.connect.mock_calls) == 1
-
-
-async def test_zeroconf_stretch_form(
-    hass: HomeAssistant,
-    mock_setup_entry: AsyncMock,
-    mock_smile_config_flow: MagicMock,
-) -> None:
-    """Test config flow for Stretch devices."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN,
-        context={CONF_SOURCE: SOURCE_ZEROCONF},
-        data=TEST_DISCOVERY2,
-    )
-    assert result.get("type") == FlowResultType.FORM
-    assert result.get("errors") == {}
-    assert result.get("step_id") == "user"
-    assert "flow_id" in result
-
-    result2 = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={CONF_PASSWORD: TEST_PASSWORD},
-    )
-    await hass.async_block_till_done()
-
-    assert result2.get("type") == FlowResultType.CREATE_ENTRY
-    assert result2.get("title") == "Test Smile Name"
-    assert result2.get("data") == {
-        CONF_HOST: TEST_HOST,
-        CONF_PASSWORD: TEST_PASSWORD,
-        CONF_PORT: DEFAULT_PORT,
-        CONF_USERNAME: TEST_USERNAME2,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
