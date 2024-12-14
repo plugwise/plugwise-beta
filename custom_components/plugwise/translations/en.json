@@ -18,6 +18,13 @@
   },
   "config": {
     "step": {
+      "reconfigure": {
+        "description": "Update configuration for {title}.",
+        "data": {
+          "host": "IP-address",
+          "port": "Port number"
+        }
+      },
       "user": {
         "title": "Set up Plugwise Adam/Smile/Stretch",
         "description": "Enter your Plugwise device: (setup can take up to 90s)",
@@ -42,7 +49,9 @@
     },
     "abort": {
       "already_configured": "This device is already configured",
-      "anna_with_adam": "Both Anna and Adam detected. Add your Adam instead of your Anna"
+      "anna_with_adam": "Both Anna and Adam detected. Add your Adam instead of your Anna",
+      "not_the_same_smile": "The configured Smile ID does not match the Smile ID on the requested IP address",
+      "reconfigure_successful": "Reconfiguration successful"
     }
   },
   "entity": {
