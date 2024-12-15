@@ -81,10 +81,10 @@ SMILE_RECONF_SCHEMA = vol.Schema(
 
 
 def smile_user_schema(
-    cf_input: ZeroconfServiceInfo | dict[str, Any] | None,
+    configure_input: ZeroconfServiceInfo | dict[str, Any] | None,
 ) -> vol.Schema:
     """Generate base schema for gateways."""
-    if not cf_input:  # no discovery- or user-input available
+    if configure_input is None:  # no discovery- or user-input available
         return vol.Schema(
             {
                 vol.Required(CONF_HOST): str,
@@ -96,15 +96,16 @@ def smile_user_schema(
             }
         )
 
-    if isinstance(cf_input, ZeroconfServiceInfo):
+    if isinstance(configure_input, ZeroconfServiceInfo):
         return vol.Schema({vol.Required(CONF_PASSWORD): str})
 
+    # When an error occurs show the previously entered userdata
     return vol.Schema(
         {
-            vol.Required(CONF_HOST, default=cf_input[CONF_HOST]): str,
-            vol.Required(CONF_PASSWORD, default=cf_input[CONF_PASSWORD]): str,
-            vol.Optional(CONF_PORT, default=cf_input[CONF_PORT]): int,
-            vol.Required(CONF_USERNAME, default=cf_input[CONF_USERNAME]): vol.In(
+            vol.Required(CONF_HOST, default=configure_input[CONF_HOST]): str,
+            vol.Required(CONF_PASSWORD, default=configure_input[CONF_PASSWORD]): str,
+            vol.Optional(CONF_PORT, default=configure_input[CONF_PORT]): int,
+            vol.Required(CONF_USERNAME, default=configure_input[CONF_USERNAME]): vol.In(
                 {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
             ),
         }
@@ -235,13 +236,11 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle the initial step when using network/gateway setups."""
-        errors: dict[str, str] = {}
-
-        if not user_input:
+        if user_input is None:
             return self.async_show_form(
                 step_id=SOURCE_USER,
                 data_schema=smile_user_schema(self.discovery_info),
-                errors=errors,
+                errors={},
             )
 
         if self.discovery_info:
@@ -267,11 +266,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle reconfiguration of the integration."""
-        errors: dict[str, str] = {}
-
         reconfigure_entry = self._get_reconfigure_entry()
 
-        if not user_input:
+        if user_input is None:
             return self.async_show_form(
                 step_id="reconfigure",
                 data_schema=self.add_suggested_values_to_schema(
@@ -279,7 +276,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                     suggested_values=reconfigure_entry.data,
                 ),
                 description_placeholders={"title": reconfigure_entry.title},
-                errors=errors,
+                errors={},
             )
 
         # Keep current username and password
