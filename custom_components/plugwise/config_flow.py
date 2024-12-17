@@ -119,7 +119,7 @@ async def verify_connection(
     errors: dict[str, str] = {}
 
     try:
-        api = await validate_input(hass, user_input)
+        return await validate_input(hass, user_input)
     except ConnectionFailedError:
         errors[CONF_BASE] = "cannot_connect"
     except InvalidAuthentication:
@@ -132,9 +132,6 @@ async def verify_connection(
         errors[CONF_BASE] = "unsupported"
     except Exception:  # noqa: BLE001
         errors[CONF_BASE] = "unknown"
-    else:
-        return api
-
     return errors
 
 
