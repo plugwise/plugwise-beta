@@ -83,6 +83,7 @@ from .const import (
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 
+# Coordinator is used to centralize the data updates
 PARALLEL_UPDATES = 0
 
 
