@@ -21,6 +21,7 @@ from homeassistant.const import (
     UnitOfEnergy,
     UnitOfPower,
     UnitOfPressure,
+    UnitOfIrradiance,
     UnitOfTemperature,
     UnitOfVolume,
     UnitOfVolumeFlowRate,
@@ -67,6 +68,7 @@ from .const import (
     OUTDOOR_TEMP,
     RETURN_TEMP,
     SENSORS,
+    SOLAR_IRRADIANCE,
     TARGET_TEMP,
     TARGET_TEMP_HIGH,
     TARGET_TEMP_LOW,
@@ -435,6 +437,12 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         key="humidity",
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.HUMIDITY,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    PlugwiseSensorEntityDescription(
+        key=SOLAR_IRRADIANCE,
+        native_unit_of_measurement=UnitOfIrradiance.WATTS_PER_SQUARE_METER
+        device_class=SensorDeviceClass.IRRADIANCE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
