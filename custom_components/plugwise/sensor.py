@@ -441,7 +441,7 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
     ),
     PlugwiseSensorEntityDescription(
         key=SOLAR_IRRADIANCE,
-        native_unit_of_measurement=UnitOfIrradiance.WATTS_PER_SQUARE_METER
+        native_unit_of_measurement=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
         device_class=SensorDeviceClass.IRRADIANCE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
