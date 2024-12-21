@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from homeassistant.components.weather import WeatherEntity
-from homeassistant.const import EntityCategory, UnitOfSpeed, UnitOfTemperature
+from homeassistant.const import UnitOfSpeed, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -15,8 +15,8 @@ from .const import (
     LOGGER,  # pw-betea
     TEMPERATURE,
     WEATHER,
-    WINDSPEED,
     WIND_BEARING,
+    WINDSPEED,
 )
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -54,6 +54,7 @@ class PlugwiseWeatherEntity(PlugwiseEntity, WeatherEntity):
     ) -> None:
         """Initialize the weather-item."""
         super().__init__(coordinator, device_id)
+        self._attr_name = "home"
         self._attr_unique_id = f"{device_id}-weather"
 
     @property
@@ -77,6 +78,6 @@ class PlugwiseWeatherEntity(PlugwiseEntity, WeatherEntity):
         return self.device[WEATHER][WINDSPEED]
 
     @property
-    def wind_bearing(self) -> int:
+    def wind_bearing(self) -> float:
         """Return the wind bearing."""
         return self.device[WEATHER][WIND_BEARING]
