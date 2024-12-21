@@ -229,9 +229,16 @@
       "select_gateway_mode": "full",
       "select_regulation_mode": "heating",
       "sensors": {
-        "outdoor_temperature": 24.9
+        "solar_irradiance": 449.2
       },
       "vendor": "Plugwise",
+      "weather": {
+        "humidity": 68,
+        "outdoor_temperature": 24.9,
+        "weather_description": "overcast",
+        "wind_bearing": 216.0,
+        "wind_speed": 2.68
+      },
       "zigbee_mac_address": "ABCD012345670101"
     },
     "d27aede973b54be484f6842d1b2802ad": {
@@ -372,7 +379,7 @@
     "cooling_present": false,
     "gateway_id": "b5c2386c6f6342669e50fe49dd05b188",
     "heater_id": "e4684553153b44afbef2200885f379dc",
-    "item_count": 244,
+    "item_count": 249,
     "notifications": {},
     "reboot": true,
     "smile_name": "Adam"

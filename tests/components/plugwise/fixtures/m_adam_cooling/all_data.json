@@ -90,9 +90,16 @@
       "select_gateway_mode": "full",
       "select_regulation_mode": "cooling",
       "sensors": {
-        "outdoor_temperature": 29.65
+        "solar_irradiance": 3.0
       },
       "vendor": "Plugwise",
+      "weather": {
+        "humidity": 90,
+        "outdoor_temperature": 29.65,
+        "weather_description": "rain",
+        "wind_bearing": 291.0,
+        "wind_speed": 6.26
+      },
       "zigbee_mac_address": "000D6F000D5A168D"
     },
     "e2f4322d57924fa090fbbc48b3a140dc": {
