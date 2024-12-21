@@ -151,6 +151,14 @@ RELAY: Final = "relay"
 COOLING_ENA_SWITCH: Final ="cooling_ena_switch"
 SWITCHES: Final = "switches"
 
+# Weather constants
+CONDITION: Final ="weather_description"
+HUMIDITY: Final = "humidity"
+TEMPERATURE: Final ="outdoor_temperature"
+WEATHER: Final = "weather"
+WINDSPEED: Final ="wind_speed"
+WIND_BEARING: Final ="wind_bearing"
+
 # Default directives
 DEFAULT_PORT: Final[int] = 80
 DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
