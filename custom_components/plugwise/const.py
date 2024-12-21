@@ -179,6 +179,7 @@ PLATFORMS: Final[list[str]] = [
     Platform.SELECT,
     Platform.SENSOR,
     Platform.SWITCH,
+    Platform.WEATHER,
 ]
 SERVICE_DELETE: Final = "delete_notification"
 SEVERITIES: Final[list[str]] = ["other", "info", "message", "warning", "error"]
