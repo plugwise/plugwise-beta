@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import logging
 from typing import Any, Self
 
 from plugwise import Smile
@@ -69,25 +70,25 @@ from .coordinator import PlugwiseDataUpdateCoordinator
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
+_LOGGER = logging.getLogger(__name__)
+
 # Upstream basically the whole file (excluding the pw-beta options)
 
 SMILE_RECONF_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
     }
 )
 
 
-def SMILE_USER_SCHEMA(
-    cf_input: ZeroconfServiceInfo | dict[str, Any] | None,
-) -> vol.Schema:
+def smile_user_schema(cf_input: ZeroconfServiceInfo | dict[str, Any] | None) -> vol.Schema:
     """Generate base schema for gateways."""
     if not cf_input:  # no discovery- or user-input available
         return vol.Schema(
             {
                 vol.Required(CONF_HOST): str,
                 vol.Required(CONF_PASSWORD): str,
+                # Port under investigation for removal (hence not added in #132878)
                 vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
                 vol.Required(CONF_USERNAME, default=SMILE): vol.In(
                     {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
@@ -125,6 +126,32 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> Smile:
     )
     await api.connect()
     return api
+
+
+async def verify_connection(
+    hass: HomeAssistant, user_input: dict[str, Any]
+) -> tuple[Smile | None, dict[str, str]]:
+    """Verify and return the gateway connection or an error."""
+    errors: dict[str, str] = {}
+
+    try:
+        return (await validate_input(hass, user_input), errors)
+    except ConnectionFailedError:
+        errors[CONF_BASE] = "cannot_connect"
+    except InvalidAuthentication:
+        errors[CONF_BASE] = "invalid_auth"
+    except InvalidSetupError:
+        errors[CONF_BASE] = "invalid_setup"
+    except (InvalidXMLError, ResponseError):
+        errors[CONF_BASE] = "response_error"
+    except UnsupportedDeviceError:
+        errors[CONF_BASE] = "unsupported"
+    except Exception:  # noqa: BLE001
+        _LOGGER.exception(
+            "Unknown exception while verifying connection with your Plugwise Smile"
+        )
+        errors[CONF_BASE] = "unknown"
+    return (None, errors)
 
 
 class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -205,31 +232,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         return False
 
 
-    async def _verify_connection(
-         self, user_input: dict[str, Any]
-     ) -> tuple[Smile | None, dict[str, str]]:
-         """Verify and return the gateway connection using helper function."""
-         errors: dict[str, str] = {}
-
-         try:
-             api = await validate_input(self.hass, user_input)
-         except ConnectionFailedError:
-             errors[CONF_BASE] = "cannot_connect"
-         except InvalidAuthentication:
-             errors[CONF_BASE] = "invalid_auth"
-         except InvalidSetupError:
-             errors[CONF_BASE] = "invalid_setup"
-         except (InvalidXMLError, ResponseError):
-             errors[CONF_BASE] = "response_error"
-         except UnsupportedDeviceError:
-             errors[CONF_BASE] = "unsupported"
-         except Exception:  # noqa: BLE001
-             errors[CONF_BASE] = "unknown"
-         else:
-             return (api, errors)
-         return (None, errors)
-
-
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -242,8 +244,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 user_input[CONF_PORT] = self.discovery_info.port
                 user_input[CONF_USERNAME] = self._username
 
-            api, errors = await self._verify_connection(user_input)
-            if not errors and api:
+            api, errors = await verify_connection(self.hass, user_input)
+            if api:
                 await self.async_set_unique_id(
                     api.smile_hostname or api.gateway_id, raise_on_progress=False
                 )
@@ -252,7 +254,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id=SOURCE_USER,
-            data_schema=SMILE_USER_SCHEMA(self.discovery_info),
+            data_schema=smile_user_schema(self.discovery_info),
             errors=errors,
         )
 
@@ -268,19 +270,19 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             # Redefine ingest existing username and password
             full_input = {
                 CONF_HOST: user_input.get(CONF_HOST),
-                CONF_PORT: user_input.get(CONF_PORT),
+                CONF_PORT: reconfigure_entry.data.get(CONF_PORT),
                 CONF_USERNAME: reconfigure_entry.data.get(CONF_USERNAME),
                 CONF_PASSWORD: reconfigure_entry.data.get(CONF_PASSWORD),
             }
 
-            api, errors = await self._verify_connection(full_input)
-            if not errors and api:
+            api, errors = await verify_connection(self.hass, full_input)
+            if api:
                 await self.async_set_unique_id(
                     api.smile_hostname or api.gateway_id, raise_on_progress=False
                 )
                 self._abort_if_unique_id_mismatch(reason="not_the_same_smile")
                 return self.async_update_reload_and_abort(
-                    self._get_reconfigure_entry(),
+                    reconfigure_entry,
                     data_updates=full_input,
                 )
 
