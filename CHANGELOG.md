@@ -2,8 +2,13 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.55.5
 
+- Rework quality improvements from Core Quality Scale
+
+## v0.55.4
+
+- Link to plugwise [v1.6.4](https://github.com/plugwise/python-plugwise/releases/tag/v1.6.4)
 - Internal: Adjustments in the CI process
 
 ## v0.55.3
