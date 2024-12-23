@@ -37,7 +37,7 @@ echo -e "${CINFO}Working on HA-core branch ${core_branch}${CNORM}"
 # Which packages to install (to prevent installing all test requirements)
 # actual package version ARE verified (i.e. grepped) from requirements_test_all
 # separate packages with |
-pip_packages="fnvhash|lru-dict|voluptuous|aiohasupervisor|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff|ffmpeg|hassil|home-assistant-intents|pylint|pylint-per-file-ignores"
+pip_packages="fnvhash|lru-dict|voluptuous|aiohasupervisor|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff|ffmpeg|hassil|home-assistant-intents|pylint|pylint-per-file-ignores|cronsim"
 
 echo ""
 echo -e "${CINFO}Checking for necessary tools and preparing setup:${CNORM}"

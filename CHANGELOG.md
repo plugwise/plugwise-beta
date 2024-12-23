@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Internal: Fixes for the CI process
+
 ## v0.55.5
 
 - Rework quality improvements from Core Quality Scale
