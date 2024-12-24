@@ -252,11 +252,13 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
                 self._abort_if_unique_id_configured()
                 return self.async_create_entry(title=api.smile_name, data=user_input)
 
+        configure_input = self.discovery_info or user_input
         return self.async_show_form(
             step_id=SOURCE_USER,
-            data_schema=smile_user_schema(self.discovery_info),
+            data_schema=smile_user_schema(configure_input),
             errors=errors,
         )
+
 
     async def async_step_reconfigure(
         self, user_input: dict[str, Any] | None = None
