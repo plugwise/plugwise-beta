@@ -5,6 +5,7 @@ Versions from 0.40 and up
 ## Ongoing
 
 - Internal: Fixes for the CI process
+- Add test-coverage for persistent_notification-use in binary_sensor
 
 ## v0.55.5
 
