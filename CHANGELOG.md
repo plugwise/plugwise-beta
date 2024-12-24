@@ -6,6 +6,7 @@ Versions from 0.40 and up
 
 - Internal: Fixes for the CI process
 - Add test-coverage for persistent_notification-use in binary_sensor
+- Config_flow: restore showing provided user_input when an error occurs
 
 ## v0.55.5
 
