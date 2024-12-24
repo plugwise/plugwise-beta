@@ -1,14 +1,16 @@
 """Tests for the Plugwise binary_sensor integration."""
 
-from unittest.mock import MagicMock
+from datetime import timedelta
+from unittest.mock import MagicMock, patch
 
 import pytest
 
+from freezegun.api import FrozenDateTimeFactory
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_component import async_update_entity
 
-from tests.common import MockConfigEntry
+from tests.common import MockConfigEntry, async_fire_time_changed
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
@@ -69,7 +71,10 @@ async def test_adam_climate_binary_sensor_change(
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
 @pytest.mark.parametrize("gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True)
 async def test_p1_v4_binary_sensor_entity(
-    hass: HomeAssistant, mock_smile_p1: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant,
+    mock_smile_p1: MagicMock,
+    init_integration: MockConfigEntry,
+    freezer: FrozenDateTimeFactory,
 ) -> None:
     """Test of a Smile P1 related plugwise-notification binary_sensor."""
     state = hass.states.get("binary_sensor.smile_p1_plugwise_notification")
@@ -77,3 +82,12 @@ async def test_p1_v4_binary_sensor_entity(
     assert state.state == STATE_ON
     assert "warning_msg" in state.attributes
     assert "connected" in state.attributes["warning_msg"][0]
+
+    with patch(
+        "homeassistant.components.plugwise.binary_sensor.persistent_notification"
+    ) as persistent_notification_mock:
+        freezer.tick(timedelta(minutes=1))
+        async_fire_time_changed(hass)
+        await hass.async_block_till_done()
+
+        persistent_notification_mock.async_create.assert_called()
