@@ -12,6 +12,7 @@
       "model": "Gateway",
       "model_id": "smile",
       "name": "Smile P1",
+      "notifications": {},
       "vendor": "Plugwise"
     },
     "ba4de7613517478da82dd9b6abea36af": {
