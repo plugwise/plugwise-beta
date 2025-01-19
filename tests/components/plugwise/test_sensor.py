@@ -93,6 +93,7 @@ async def test_unique_id_migration_humidity(
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_as_smt_climate_sensor_entities(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
@@ -112,6 +113,7 @@ async def test_anna_as_smt_climate_sensor_entities(
     state = hass.states.get("sensor.anna_illuminance")
     assert state
     assert float(state.state) == 86.0
+
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_single"], indirect=True)
 @pytest.mark.parametrize("gateway_id", ["a455b61e52394b2db5081ce025a430f3"], indirect=True)
