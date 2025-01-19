@@ -73,6 +73,7 @@ TOM = {
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_load_unload_config_entry(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
@@ -94,6 +95,7 @@ async def test_load_unload_config_entry(
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize(
     ("side_effect", "entry_state"),
     [
@@ -172,6 +174,7 @@ async def check_migration(
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize(
     ("entitydata", "old_unique_id", "new_unique_id"),
     [
@@ -244,6 +247,7 @@ async def test_migrate_unique_id_relay(
 
 #### pw-beta only ####
 @pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_entry_migration(
     hass: HomeAssistant, mock_smile_anna: MagicMock
 ) -> None:
@@ -275,6 +279,7 @@ async def test_entry_migration(
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_update_device(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,

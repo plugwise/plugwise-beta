@@ -418,6 +418,7 @@ async def test_form_cannot_connect_port(
 
 
 @pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_options_flow_thermo(
     hass: HomeAssistant, mock_smile_anna: MagicMock
 ) -> None:
