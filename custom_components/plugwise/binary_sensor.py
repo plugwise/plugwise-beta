@@ -32,7 +32,6 @@ from .const import (
     FLAME_STATE,
     HEATING_STATE,
     LOGGER,  # pw-beta
-    NOTIFICATIONS,
     PLUGWISE_NOTIFICATION,
     SECONDARY_BOILER_STATE,
     SEVERITIES,

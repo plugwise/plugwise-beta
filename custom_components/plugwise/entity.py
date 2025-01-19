@@ -16,12 +16,10 @@ from .const import (
     AVAILABLE,
     DOMAIN,
     FIRMWARE,
-    GATEWAY_ID,
     HARDWARE,
     MAC_ADDRESS,
     MODEL,
     MODEL_ID,
-    SMILE_NAME,
     VENDOR,
     ZIGBEE_MAC_ADDRESS,
 )
