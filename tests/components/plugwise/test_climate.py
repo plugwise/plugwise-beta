@@ -76,6 +76,7 @@ async def test_adam_climate_entity_attributes(
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_adam_2_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, init_integration: MockConfigEntry
 ) -> None:
@@ -102,6 +103,7 @@ async def test_adam_2_climate_entity_attributes(
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_cooling"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_adam_3_climate_entity_attributes(
     hass: HomeAssistant,
     mock_smile_adam_heat_cool: MagicMock,
@@ -314,6 +316,7 @@ async def test_adam_climate_off_mode_change(
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MagicMock
 ) -> None:
@@ -342,6 +345,7 @@ async def test_anna_climate_entity_attributes(
     )
 
 @pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_2_climate_entity_attributes(
     hass: HomeAssistant,
     mock_smile_anna: MagicMock,
@@ -362,6 +366,7 @@ async def test_anna_2_climate_entity_attributes(
 
 
 @pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_idle"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_3_climate_entity_attributes(
     hass: HomeAssistant,
     mock_smile_anna: MagicMock,
@@ -379,6 +384,7 @@ async def test_anna_3_climate_entity_attributes(
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_climate_entity_climate_changes(
     hass: HomeAssistant,
     mock_smile_anna: MagicMock,
