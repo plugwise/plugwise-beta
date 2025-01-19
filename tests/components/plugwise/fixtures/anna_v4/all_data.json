@@ -85,14 +85,5 @@
       },
       "vendor": "Bosch Thermotechniek B.V."
     }
-  },
-  "gateway": {
-    "cooling_present": false,
-    "gateway_id": "0466eae8520144c78afb29628384edeb",
-    "heater_id": "cd0e6156b1f04d5f952349ffbe397481",
-    "item_count": 58,
-    "notifications": {},
-    "reboot": true,
-    "smile_name": "Smile Anna"
   }
 }
