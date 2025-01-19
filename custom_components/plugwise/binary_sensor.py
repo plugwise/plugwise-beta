@@ -133,7 +133,7 @@ async def async_setup_entry(
         # pw-beta alternative for debugging
         entities: list[PlugwiseBinarySensorEntity] = []
         for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
+            device = coordinator.data[device_id]
             if not (binary_sensors := device.get(BINARY_SENSORS)):
                 continue
             for description in PLUGWISE_BINARY_SENSORS:
@@ -188,7 +188,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         # not all severities including those without content as empty lists
         attrs: dict[str, list[str]] = {}  # pw-beta Re-evaluate against Core
         self._notification = {}  # pw-beta
-        if notify := self.coordinator.data.gateway[NOTIFICATIONS]:
+        if notify := self.coordinator.api.notifications:
             for notify_id, details in notify.items():  # pw-beta uses notify_id
                 for msg_type, msg in details.items():
                     msg_type = msg_type.lower()

@@ -77,9 +77,9 @@ async def async_setup_entry(
             return
 
         entities: list[PlugwiseClimateEntity] = []
-        gateway_name = coordinator.data.gateway[SMILE_NAME]
+        gateway_name = coordinator.api.smile_name
         for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
+            device = coordinator.data[device_id]
             if gateway_name == "Adam":
                 if device[DEV_CLASS] == "climate":
                     entities.append(
@@ -123,10 +123,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
 
-        self._devices = coordinator.data.devices
-        self._gateway = coordinator.data.gateway
-        gateway_id: str = self._gateway[GATEWAY_ID]
-        self._gateway_data = self._devices[gateway_id]
+         gateway_id: str = coordinator.api.gateway_id
+        self._gateway_data = coordinator.data[gateway_id]
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
 
         self._location = device_id
@@ -144,7 +142,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         if (
-            self._gateway[COOLING_PRESENT]
+            self.coordinator.api.cooling_present
             and self._gateway[SMILE_NAME] != "Adam"
         ):
             self._attr_supported_features = (
@@ -228,7 +226,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if AVAILABLE_SCHEDULES in self.device:
             hvac_modes.append(HVACMode.AUTO)
 
-        if self._gateway[COOLING_PRESENT]:
+        if self.coordinator.api.cooling_present:
             if REGULATION_MODES in self._gateway_data:
                 if self._gateway_data[SELECT_REGULATION_MODE] == HVACAction.COOLING:
                     hvac_modes.append(HVACMode.COOL)
