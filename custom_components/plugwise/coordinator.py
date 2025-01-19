@@ -91,7 +91,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
 
     async def _async_update_data(self) -> dict[str, GwEntityData]:
         """Fetch data from Plugwise."""
-        data = dict[str, GwEntityData]
+        data: dict[str, GwEntityData] = {}
         try:
             if not self._connected:
                 await self._connect()
