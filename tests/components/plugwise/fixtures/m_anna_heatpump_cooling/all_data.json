@@ -12,6 +12,7 @@
       "model": "Gateway",
       "model_id": "smile_thermo",
       "name": "Smile Anna",
+      "notifications": {},
       "sensors": {
         "outdoor_temperature": 28.2
       },

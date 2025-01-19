@@ -85,6 +85,7 @@
       "model": "Gateway",
       "model_id": "smile_open_therm",
       "name": "Adam",
+      "notifications": {},
       "regulation_modes": ["bleeding_hot", "bleeding_cold", "off", "heating"],
       "select_gateway_mode": "full",
       "select_regulation_mode": "heating",
