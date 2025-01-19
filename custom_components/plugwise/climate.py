@@ -33,10 +33,8 @@ from .const import (
     CLIMATE_MODE,
     CONF_HOMEKIT_EMULATION,  # pw-beta homekit emulation
     CONTROL_STATE,
-    COOLING_PRESENT,
     DEV_CLASS,
     DOMAIN,
-    GATEWAY_ID,
     LOCATION,
     LOGGER,
     LOWER_BOUND,
@@ -45,7 +43,6 @@ from .const import (
     RESOLUTION,
     SELECT_REGULATION_MODE,
     SENSORS,
-    SMILE_NAME,
     TARGET_TEMP,
     TARGET_TEMP_HIGH,
     TARGET_TEMP_LOW,

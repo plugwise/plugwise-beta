@@ -9,7 +9,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import PlugwiseConfigEntry
 from .const import (
-    GATEWAY_ID,
     LOGGER,  # pw-betea
     REBOOT,
 )
