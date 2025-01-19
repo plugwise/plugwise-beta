@@ -95,7 +95,7 @@ async def async_setup_entry(
         # pw-beta alternative for debugging
         entities: list[PlugwiseSwitchEntity] = []
         for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
+            device = coordinator.data[device_id]
             if not (switches := device.get(SWITCHES)):
                 continue
             for description in PLUGWISE_SWITCHES:
