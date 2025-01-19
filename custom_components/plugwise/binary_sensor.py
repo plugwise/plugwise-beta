@@ -189,9 +189,6 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         attrs: dict[str, list[str]] = {}  # pw-beta Re-evaluate against Core
         self._notification = {}  # pw-beta
         gateway_id = self.coordinator.api.gateway_id
-        if "notifications" not in self.coordinator.data[gateway_id]:
-            return attrs
-
         if notify := self.coordinator.data[gateway_id]["notifications"]:
             for notify_id, details in notify.items():  # pw-beta uses notify_id
                 for msg_type, msg in details.items():
