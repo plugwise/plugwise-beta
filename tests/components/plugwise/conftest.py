@@ -135,7 +135,7 @@ def mock_smile_adam() -> Generator[MagicMock]:
         smile.connect.return_value = Version("3.0.15")
         smile.gateway_id = "fe799307f1624099878210aa0b9f1475"
         smile.heater_id = "90986d591dcd426cae3ec3e8111ff730"
-        smile.reboot = true
+        smile.reboot = True
         smile.smile_hostname = "smile98765"
         smile.smile_model = "Gateway"
         smile.smile_model_id = "smile_open_therm"
