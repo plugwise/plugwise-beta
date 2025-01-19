@@ -123,7 +123,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
 
-         gateway_id: str = coordinator.api.gateway_id
+        gateway_id: str = coordinator.api.gateway_id
         self._gateway_data = coordinator.data[gateway_id]
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
 
@@ -143,7 +143,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         if (
             self.coordinator.api.cooling_present
-            and self._gateway[SMILE_NAME] != "Adam"
+            and coordinator.api.smile_name != "Adam"
         ):
             self._attr_supported_features = (
                 ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
