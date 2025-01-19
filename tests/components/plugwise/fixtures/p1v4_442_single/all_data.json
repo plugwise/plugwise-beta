@@ -40,12 +40,5 @@
       },
       "vendor": "SHENZHEN KAIFA TECHNOLOGY \uff08CHENGDU\uff09 CO., LTD."
     }
-  },
-  "gateway": {
-    "gateway_id": "a455b61e52394b2db5081ce025a430f3",
-    "item_count": 32,
-    "notifications": {},
-    "reboot": true,
-    "smile_name": "Smile P1"
   }
 }

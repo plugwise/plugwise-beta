@@ -94,14 +94,5 @@
       },
       "vendor": "Plugwise"
     }
-  },
-  "gateway": {
-    "cooling_present": true,
-    "gateway_id": "015ae9ea3f964e668e490fa39da3870b",
-    "heater_id": "1cbf783bb11e4a7c8a6843dee3a86927",
-    "item_count": 67,
-    "notifications": {},
-    "reboot": true,
-    "smile_name": "Smile Anna"
   }
 }
