@@ -118,7 +118,7 @@ def mock_smile_config_flow() -> Generator[MagicMock]:
 def mock_smile_adam() -> Generator[MagicMock]:
     """Create a Mock Adam type for testing."""
     chosen_env = "m_adam_multiple_devices_per_zone"
-    all_data = _read_json(chosen_env, "all_data")
+    data = _read_json(chosen_env, "data")
     with (
         patch(
             "homeassistant.components.plugwise.coordinator.Smile", autospec=True
@@ -130,7 +130,7 @@ def mock_smile_adam() -> Generator[MagicMock]:
     ):
         smile = smile_mock.return_value
 
-        smile.async_update.return_value = all_data["devices"]
+        smile.async_update.return_value = data
         smile.cooling_present = False
         smile.connect.return_value = Version("3.0.15")
         smile.gateway_id = "fe799307f1624099878210aa0b9f1475"
@@ -149,13 +149,13 @@ def mock_smile_adam() -> Generator[MagicMock]:
 @pytest.fixture
 def mock_smile_adam_heat_cool(chosen_env: str, cooling_present: bool) -> Generator[MagicMock]:
     """Create a special base Mock Adam type for testing with different datasets."""
-    all_data = _read_json(chosen_env, "all_data")
+    data = _read_json(chosen_env, "data")
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.async_update.return_value = all_data["devices"]
+        smile.async_update.return_value = data
         smile.connect.return_value = Version("3.6.4")
         smile.cooling_present = cooling_present
         smile.gateway_id = "da224107914542988a88561b4452b0f6"
@@ -175,13 +175,13 @@ def mock_smile_adam_heat_cool(chosen_env: str, cooling_present: bool) -> Generat
 def mock_smile_adam_4() -> Generator[MagicMock]:
     """Create a 4th Mock Adam type for testing."""
     chosen_env = "m_adam_jip"
-    all_data = _read_json(chosen_env, "all_data")
+    data = _read_json(chosen_env, "data")
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.async_update.return_value = all_data["devices"]
+        smile.async_update.return_value = data
         smile.connect.return_value = Version("3.2.8")
         smile.cooling_present = False
         smile.gateway_id = "b5c2386c6f6342669e50fe49dd05b188"
@@ -200,13 +200,13 @@ def mock_smile_adam_4() -> Generator[MagicMock]:
 @pytest.fixture
 def mock_smile_anna(chosen_env: str, cooling_present: bool) -> Generator[MagicMock]:
     """Create a Mock Anna type for testing."""
-    all_data = _read_json(chosen_env, "all_data")
+    data = _read_json(chosen_env, "data")
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.async_update.return_value = all_data["devices"]
+        smile.async_update.return_value = data
         smile.connect.return_value = Version("4.0.15")
         smile.cooling_present = cooling_present
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
@@ -225,13 +225,13 @@ def mock_smile_anna(chosen_env: str, cooling_present: bool) -> Generator[MagicMo
 @pytest.fixture
 def mock_smile_p1(chosen_env: str, gateway_id: str) -> Generator[MagicMock]:
     """Create a base Mock P1 type for testing with different datasets and gateway-ids."""
-    all_data = _read_json(chosen_env, "all_data")
+    data = _read_json(chosen_env, "data")
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.async_update.return_value = all_data["devices"]
+        smile.async_update.return_value = data
         smile.connect.return_value = Version("4.4.2")
         smile.gateway_id = gateway_id
         smile.heater_id = None
@@ -250,13 +250,13 @@ def mock_smile_p1(chosen_env: str, gateway_id: str) -> Generator[MagicMock]:
 def mock_smile_legacy_anna() -> Generator[MagicMock]:
     """Create a Mock legacy Anna type for testing."""
     chosen_env = "legacy_anna"
-    all_data = _read_json(chosen_env, "all_data")
+    data = _read_json(chosen_env, "data")
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.async_update.return_value = all_data["devices"]
+        smile.async_update.return_value = data
         smile.connect.return_value = Version("1.8.22")
         smile.gateway_id = "0000aaaa0000aaaa0000aaaa0000aa00"
         smile.heater_id = "04e4cbfe7f4340f090f85ec3b9e6a950"
@@ -275,13 +275,13 @@ def mock_smile_legacy_anna() -> Generator[MagicMock]:
 def mock_stretch() -> Generator[MagicMock]:
     """Create a Mock Stretch type for testing."""
     chosen_env = "stretch_v31"
-    all_data = _read_json(chosen_env, "all_data")
+    data = _read_json(chosen_env, "data")
     with patch(
         "homeassistant.components.plugwise.coordinator.Smile", autospec=True
     ) as smile_mock:
         smile = smile_mock.return_value
 
-        smile.async_update.return_value = all_data["devices"]
+        smile.async_update.return_value = data
         smile.connect.return_value = Version("3.1.11")
         smile.gateway_id = "259882df3c05415b99c2d962534ce820"
         smile.heater_id = None
