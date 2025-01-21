@@ -91,7 +91,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
 
     async def _async_update_data(self) -> dict[str, GwEntityData]:
         """Fetch data from Plugwise."""
-        data: dict[str, GwEntityData] = {}
         try:
             if not self._connected:
                 await self._connect()
@@ -122,13 +121,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 translation_domain=DOMAIN,
                 translation_key="unsupported_firmware",
             ) from err
-        else:
-            LOGGER.debug(f"{self.api.smile_name} data: %s", data)
-            await self.async_add_remove_devices(data, self.config_entry)
 
+        LOGGER.debug(f"{self.api.smile_name} data: %s", data)
+        await self._async_add_remove_devices(data, self.config_entry)
         return data
 
-    async def async_add_remove_devices(
+    async def _async_add_remove_devices(
         self, data: dict[str, GwEntityData], entry: ConfigEntry
     ) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
@@ -138,9 +136,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         self._current_devices = set(data)
 
         if removed_devices:
-            await self.async_remove_devices(data, entry)
+            await self._async_remove_devices(data, entry)
 
-    async def async_remove_devices(
+    async def _async_remove_devices(
         self, data: dict[str, GwEntityData], entry: ConfigEntry
     ) -> None:
         """Clean registries when removed devices found."""
