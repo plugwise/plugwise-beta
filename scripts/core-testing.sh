@@ -101,7 +101,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 			cp -a "${manualdir}." "${coredir}"
 		else
 			echo ""
-			echo -e "${CINFO} ** Cloning HA core **{CNORM}"
+			echo -e "${CINFO} ** Cloning HA core **${CNORM}"
 			echo ""
 			git clone https://github.com/home-assistant/core.git "${coredir}"
 			cp -a "${coredir}." "${manualdir}"
