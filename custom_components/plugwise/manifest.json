@@ -7,7 +7,7 @@
   "integration_type": "hub",
   "iot_class": "local_polling",
   "loggers": ["plugwise"],
-  "requirements": ["https://test-files.pythonhosted.org/packages/d2/70/70fa657b61e7fa3a0852385283593d6ac41f060119ba5f35f814c03cf711/plugwise-1.7.0a3.tar.gz#plugwise==1.7.0a3"],
-  "version": "0.55.5",
+  "requirements": ["https://test-files.pythonhosted.org/packages/17/a8/389eedd43baaf284bc5f07d37922ec8defae5ed854db639f59290acda5d3/plugwise-1.7.0a5.tar.gz#plugwise==1.7.0a5"],
+  "version": "0.56.0a0",
   "zeroconf": ["_plugwise._tcp.local."]
 }
