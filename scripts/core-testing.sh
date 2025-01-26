@@ -101,7 +101,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 			cp -a "${manualdir}." "${coredir}"
 		else
 			echo ""
-			echo -e "${CINFO} ** Cloning HA core **{CNORM}"
+			echo -e "${CINFO} ** Cloning HA core **${CNORM}"
 			echo ""
 			git clone https://github.com/home-assistant/core.git "${coredir}"
 			cp -a "${coredir}." "${manualdir}"
@@ -185,12 +185,12 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo -e "${CINFO}Installing pip modules (using uv)${CNORM}"
 	echo ""
 	echo -e "${CINFO} - HA requirements (core and test)${CNORM}"
-	uv pip install --upgrade -r requirements.txt -r requirements_test.txt
+	pip install --upgrade -r requirements.txt -r requirements_test.txt
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo -e "${CINFO} - extra's required for plugwise${CNORM}"
-	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
+	pip install --upgrade -r ./tmp/requirements_test_extra.txt
 	echo -e "${CINFO} - home assistant basics${CNORM}"
-	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
+	pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 	echo ""
 	# When using test.py prettier makes multi-line, so use jq
 	module=$(jq '.requirements[]' ../custom_components/plugwise/manifest.json | tr -d '"')
