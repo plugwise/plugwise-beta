@@ -121,14 +121,14 @@ jobs:
         id: ha_core_release_tests
         continue-on-error: ${{ env.STRICT_DEV == 'true' }} # Allow master failures only if dev is strict
         run: |
-          echo "failed=true" > result.txt
+          echo "true" > result.txt
           GITHUB_ACTIONS="" scripts/core-testing.sh
           if [ $? -ne 0 ]; then
             echo "::warning::Release  HA core incompatibility"
-            echo "failed=true" > result.txt
+            echo "true" > result.txt
           else
             echo "Successfully tested against released HA-core"
-            echo "failed=false" > result.txt
+            echo "false" > result.txt
           fi
       - name: Set output explicitly
         id: capture_release
@@ -183,14 +183,14 @@ jobs:
         id: ha_core_dev_tests
         continue-on-error: ${{ env.STRICT_DEV == 'false' }} # Allow dev failures unless strict
         run: |
-          echo "failed=true" > result.txt
+          echo "true" > result.txt
           GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
           if [ $? -ne 0 ]; then
             echo "::warning::Development HA core incompatibility"
-            echo "failed=true" > result.txt
+            echo "true" > result.txt
           else
             echo "Successfully tested against dev HA-core"
-            echo "failed=false" > result.txt
+            echo "false" > result.txt
           fi
       - name: Set output explicitly
         id: capture_dev
