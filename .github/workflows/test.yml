@@ -124,10 +124,10 @@ jobs:
           GITHUB_ACTIONS="" scripts/core-testing.sh
           if [ $? -ne 0 ]; then
             echo "::warning::Release HA core incompatibility"
-            echo "RELEASE_TESTS_FAILED=true" >> $GITHUB_ENV
+            echo "RELEASE_TESTS_FAILED=true" >> $GITHUB_OUTPUT
           else
             echo "Successfully tested against released HA-core"
-            echo "RELEASE_TESTS_FAILED=false" >> $GITHUB_ENV
+            echo "RELEASE_TESTS_FAILED=false" >> $GITHUB_OUTPUT
           fi
 
   ha-core-dev:
@@ -178,10 +178,10 @@ jobs:
           GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
           if [ $? -ne 0 ]; then
             echo "::warning::Development HA core incompatibility"
-            echo "DEV_TESTS_FAILED=true" >> $GITHUB_ENV
+            echo "DEV_TESTS_FAILED=true" >> $GITHUB_OUTPUT
           else
             echo "Successfully tested against dev HA-core"
-            echo "DEV_TESTS_FAILED=false" >> $GITHUB_ENV
+            echo "DEV_TESTS_FAILED=false" >> $GITHUB_OUTPUT
           fi
 
   final-comment:
@@ -200,13 +200,14 @@ jobs:
         run: |
           # Get the results of the previous scripts
           STRICT_DEV=$STRICT_DEV
-          DEV_TESTS_FAILED=$DEV_TESTS_FAILED
-          RELEASE_TESTS_FAILED=$RELEASE_TESTS_FAILED
+          DEV_TESTS_FAILED=${{ needs.ha-core-dev.outputs.dev_failed }}
+          RELEASE_TESTS_FAILED=${{ needs.ha-core-release.outputs.release_failed }}
           FAIL_COUNT=0
 
-          COMMENT_BODY="**Error while testing for RELEASED HA-core:**\n"
           if [[ $DEV_TESTS_FAILED == "true" ]]; then
-            COMMENT_BODY="**Error while testing for Development HA-core:**\n"
+            COMMENT_BODY="**Error while testing for Development HA-core:**\n\n"
+          else
+            COMMENT_BODY="**Error while testing for RELEASED HA-core:**\n\n"
           fi
 
           if [[ $DEV_TESTS_FAILED == "true" ]]; then
