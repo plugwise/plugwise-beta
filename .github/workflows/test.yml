@@ -61,19 +61,19 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-#      - name: Set-up environment
-#        run: |
-#          scripts/setup.sh
-#      - name: Install pre-commit dependencies
-#        run: |
-#          . venv/bin/activate
-#          pre-commit install-hooks
-#      - name: Run all-files pre-commit excluding testing
-#        run: |
-#          . venv/bin/activate
-#          pre-commit run --all-files --show-diff-on-failure
-#        env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
-#          SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
+      - name: Set-up environment
+        run: |
+          scripts/setup.sh
+      - name: Install pre-commit dependencies
+        run: |
+          . venv/bin/activate
+          pre-commit install-hooks
+      - name: Run all-files pre-commit excluding testing
+        run: |
+          . venv/bin/activate
+          pre-commit run --all-files --show-diff-on-failure
+        env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
+          SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
 
   # Prepare default python version environment
   ha-core-release:
@@ -122,8 +122,7 @@ jobs:
         continue-on-error: ${{ env.STRICT_DEV == 'true' }} # Allow master failures only if dev is strict
         run: |
           echo "true" > result.txt
-          #GITHUB_ACTIONS="" scripts/core-testing.sh
-          $(exit 0)
+          GITHUB_ACTIONS="" scripts/core-testing.sh
           if [ $? -ne 0 ]; then
             echo "::warning::Release  HA core incompatibility"
             echo "true" > result.txt
@@ -137,7 +136,6 @@ jobs:
         run: |
           FAILED=$(cat result.txt)
           echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
-          echo "Failed release status: $FAILED"  # Print out for debugging
 
   ha-core-dev:
     runs-on: ubuntu-latest
@@ -185,8 +183,7 @@ jobs:
         continue-on-error: ${{ env.STRICT_DEV == 'false' }} # Allow dev failures unless strict
         run: |
           echo "true" > result.txt
-          #GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
-          $(exit 1)
+          GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
           if [ $? -ne 0 ]; then
             echo "::warning::Development HA core incompatibility"
             echo "true" > result.txt
@@ -200,7 +197,6 @@ jobs:
         run: |
           FAILED=$(cat result.txt)
           echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
-          echo "Failed dev status: $FAILED"  # Print out for debugging
 
   final-comment:
     runs-on: ubuntu-latest
@@ -223,41 +219,34 @@ jobs:
           FAIL_COUNT=0
 
           if [[ $DEV_TESTS_FAILED == "true" ]]; then
-            COMMENT_BODY="**Error while testing for Development HA-core:**\n\n"
+            COMMENT_BODY=":x: **Error while testing for Development HA-core:**\n\n"
           else
-            COMMENT_BODY="**Error while testing for RELEASED HA-core:**\n\n"
+            COMMENT_BODY=":warning: **Warning while testing for RELEASED HA-core:**\n\n"
           fi
 
           if [[ $DEV_TESTS_FAILED == "true" ]]; then
             if [[ $STRICT_DEV == "true" ]]; then
-              COMMENT_BODY+="**Error:** Incompatible while testing against dev HA-core and required to pass.\n"
+              COMMENT_BODY+=":x: **Error:** Incompatible while testing against dev HA-core and required to pass.\n"
               FAIL_COUNT=2
             else
-              COMMENT_BODY+="**Warning:** Incompatible while testing against dev HA-core.\n"
+              COMMENT_BODY+=":warning: **Warning:** Incompatible while testing against dev HA-core.\n"
               FAIL_COUNT=1
             fi
           else
-            COMMENT_BODY+="**Success:** No problem with testing against dev HA-core.\n"
+            COMMENT_BODY+=":heavy_check_mark: **Success:** No problem with testing against dev HA-core.\n"
           fi
 
           if [[ $RELEASE_TESTS_FAILED == "true" ]]; then
             if [[ $STRICT_DEV == "false" ]]; then
-              COMMENT_BODY+="**Error:** Incompatible while testing against released HA-core and required to pass.\n"
+              COMMENT_BODY+=":x: **Error:** Incompatible while testing against released HA-core and required to pass.\n"
               FAIL_COUNT=2
             else
-              COMMENT_BODY+="**Warning:** Incompatible while testing against released HA-core.\n"
+              COMMENT_BODY+=":warning: **Warning:** Incompatible while testing against released HA-core.\n"
               FAIL_COUNT=1
             fi
           else
-            COMMENT_BODY+="**Success:** No problem with testing against released HA-core.\n"
+            COMMENT_BODY+=":heavy_check_mark: **Success:** No problem with testing against released HA-core.\n"
           fi
-
-          echo "FAIL_COUNT = ${FAIL_COUNT}"
-          echo "COMMENT_BODY = ${COMMENT_BODY}"
-          echo "DEV_TESTS_FAILED = ${DEV_TESTS_FAILED}"
-          echo "RELEASE_TESTS_FAILED = ${RELEASE_TESTS_FAILED}"
-          echo "DEV_TESTS_FAILED=${{ needs.ha-core-dev.outputs.dev_failed }}"
-          echo "RELEASE_TESTS_FAILED=${{ needs.ha-core-release.outputs.release_failed }}"
 
           if [[ $FAIL_COUNT -eq 1 ]]; then
             echo "Creating a comment on the pull request"
