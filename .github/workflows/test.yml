@@ -117,22 +117,25 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Test through HA-core (master/release) - continue-on-error = ${{ env.STRICT_DEV == 'true' }}
+      - name: Test through HA-core (master/release) - continue-on-error = ${{ env.STRICT_DEV == 'false' }}
         id: ha_core_release_tests
         continue-on-error: ${{ env.STRICT_DEV == 'true' }} # Allow master failures only if dev is strict
         run: |
+          echo "failed=true" > result.txt
           GITHUB_ACTIONS="" scripts/core-testing.sh
           if [ $? -ne 0 ]; then
-            echo "::warning::Release HA core incompatibility"
-            echo "failed=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Release  HA core incompatibility"
+            echo "failed=true" > result.txt
           else
             echo "Successfully tested against released HA-core"
-            echo "failed=false" >> "$GITHUB_OUTPUT"
+            echo "failed=false" > result.txt
           fi
       - name: Set output explicitly
         if: always()
         run: |
-          echo "release_failed=${{ steps.ha_core_release_tests.outputs.failed }}" >> "$GITHUB_ENV"
+          FAILED=$(cat result.txt)
+          echo "dev_failed=$FAILED" >> "$GITHUB_ENV"  # Set as environment variable
+          echo "Failed release status: $FAILED"  # Print out for debugging
 
   ha-core-dev:
     runs-on: ubuntu-latest
@@ -179,18 +182,21 @@ jobs:
         id: ha_core_dev_tests
         continue-on-error: ${{ env.STRICT_DEV == 'false' }} # Allow dev failures unless strict
         run: |
+          echo "failed=true" > result.txt
           GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
           if [ $? -ne 0 ]; then
             echo "::warning::Development HA core incompatibility"
-            echo "failed=true" >> "$GITHUB_OUTPUT"
+            echo "failed=true" > result.txt
           else
             echo "Successfully tested against dev HA-core"
-            echo "failed=false" >> "$GITHUB_OUTPUT"
+            echo "failed=false" > result.txt
           fi
       - name: Set output explicitly
         if: always()
         run: |
-          echo "release_failed=${{ steps.ha_core_dev_tests.outputs.failed }}" >> "$GITHUB_ENV"
+          FAILED=$(cat result.txt)
+          echo "dev_failed=$FAILED" >> "$GITHUB_ENV"  # Set as environment variable
+          echo "Failed dev status: $FAILED"  # Print out for debugging
 
   final-comment:
     runs-on: ubuntu-latest
