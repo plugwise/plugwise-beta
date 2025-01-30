@@ -129,6 +129,10 @@ jobs:
             echo "Successfully tested against released HA-core"
             echo "failed=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Set output explicitly
+        if: always()
+        run: |
+          echo "release_failed=${{ steps.ha_core_release_tests.outputs.failed }}" >> "$GITHUB_ENV"
 
   ha-core-dev:
     runs-on: ubuntu-latest
@@ -183,6 +187,10 @@ jobs:
             echo "Successfully tested against dev HA-core"
             echo "failed=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Set output explicitly
+        if: always()
+        run: |
+          echo "release_failed=${{ steps.ha_core_dev_tests.outputs.failed }}" >> "$GITHUB_ENV"
 
   final-comment:
     runs-on: ubuntu-latest
