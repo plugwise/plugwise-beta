@@ -254,7 +254,7 @@ jobs:
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
             --data "{\"event\": \"APPROVE\", \"body\": \"$COMMENT_BODY\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews"
           fi
           if [[ $FAIL_COUNT -eq 2 ]]; then
             echo "Requesting changes on the pull request"
