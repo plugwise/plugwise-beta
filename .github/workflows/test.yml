@@ -1,10 +1,10 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Test PRs against HA-core
+name: Test PR against HA-core
 
 env:
-  CACHE_VERSION: 29
+  CACHE_VERSION: 30
   DEFAULT_PYTHON: "3.13"
 
 # Do not run on 'push' (as the flow doesn't have access to the labels) - also disabled workflow_dispatch as such
@@ -124,10 +124,10 @@ jobs:
           GITHUB_ACTIONS="" scripts/core-testing.sh
           if [ $? -ne 0 ]; then
             echo "::warning::Release HA core incompatibility"
-            echo "failed=true" >> $GITHUB_OUTPUT
+            echo "failed=true" >> "$GITHUB_OUTPUT"
           else
             echo "Successfully tested against released HA-core"
-            echo "failed=false" >> $GITHUB_OUTPUT
+            echo "failed=false" >> "$GITHUB_OUTPUT"
           fi
 
   ha-core-dev:
@@ -178,10 +178,10 @@ jobs:
           GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
           if [ $? -ne 0 ]; then
             echo "::warning::Development HA core incompatibility"
-            echo "failed=true" >> $GITHUB_OUTPUT
+            echo "failed=true" >> "$GITHUB_OUTPUT"
           else
             echo "Successfully tested against dev HA-core"
-            echo "failed=false" >> $GITHUB_OUTPUT
+            echo "failed=false" >> "$GITHUB_OUTPUT"
           fi
 
   final-comment:
@@ -238,6 +238,8 @@ jobs:
           echo "COMMENT_BODY = ${COMMENT_BODY}"
           echo "DEV_TESTS_FAILED = ${DEV_TESTS_FAILED}"
           echo "RELEASE_TESTS_FAILED = ${RELEASE_TESTS_FAILED}"
+          echo "DEV_TESTS_FAILED=${{ needs.ha-core-dev.outputs.dev_failed }}"
+          echo "RELEASE_TESTS_FAILED=${{ needs.ha-core-release.outputs.release_failed }}"
 
           if [[ $FAIL_COUNT -eq 1 ]]; then
             echo "Creating a comment on the pull request"
