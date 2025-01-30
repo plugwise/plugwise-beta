@@ -135,7 +135,7 @@ jobs:
         if: always()
         run: |
           FAILED=$(cat result.txt)
-          echo "dev_failed=$FAILED" >> "$GITHUB_OUTPUT"
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
           echo "Failed release status: $FAILED"  # Print out for debugging
 
   ha-core-dev:
@@ -197,7 +197,7 @@ jobs:
         if: always()
         run: |
           FAILED=$(cat result.txt)
-          echo "dev_failed=$FAILED" >> "$GITHUB_OUTPUT"
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
           echo "Failed dev status: $FAILED"  # Print out for debugging
 
   final-comment:
