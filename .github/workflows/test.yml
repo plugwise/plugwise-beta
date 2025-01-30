@@ -21,6 +21,7 @@ on:
       - opened
       - synchronize
       - labeled
+      - unlabeled
 
 jobs:
   # Run pre-commit
