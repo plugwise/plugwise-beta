@@ -83,7 +83,7 @@ jobs:
     needs:
       - pre-commit
     outputs:
-      release_failed: ${{ steps.ha_core_release_tests.outputs.failed }}
+      release_failed: ${{ steps.capture_release.outputs.failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
@@ -131,10 +131,11 @@ jobs:
             echo "failed=false" > result.txt
           fi
       - name: Set output explicitly
+        id: capture_release
         if: always()
         run: |
           FAILED=$(cat result.txt)
-          echo "dev_failed=$FAILED" >> "$GITHUB_ENV"  # Set as environment variable
+          echo "dev_failed=$FAILED" >> "$GITHUB_OUTPUT"
           echo "Failed release status: $FAILED"  # Print out for debugging
 
   ha-core-dev:
@@ -144,7 +145,7 @@ jobs:
     needs:
       - pre-commit
     outputs:
-      dev_failed: ${{ steps.ha_core_dev_tests.outputs.failed }}
+      dev_failed: ${{ steps.capture_dev.outputs.failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
@@ -192,10 +193,11 @@ jobs:
             echo "failed=false" > result.txt
           fi
       - name: Set output explicitly
+        id: capture_dev
         if: always()
         run: |
           FAILED=$(cat result.txt)
-          echo "dev_failed=$FAILED" >> "$GITHUB_ENV"  # Set as environment variable
+          echo "dev_failed=$FAILED" >> "$GITHUB_OUTPUT"
           echo "Failed dev status: $FAILED"  # Print out for debugging
 
   final-comment:
