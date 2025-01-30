@@ -36,7 +36,6 @@ COOLING_STATE: Final = "cooling_state"
 DHW_STATE: Final = "dhw_state"
 FLAME_STATE: Final = "flame_state"
 HEATING_STATE: Final = "heating_state"
-NOTIFICATIONS: Final ="notifications"
 PLUGWISE_NOTIFICATION: Final = "plugwise_notification"
 SECONDARY_BOILER_STATE: Final = "secondary_boiler_state"
 
@@ -70,11 +69,9 @@ VERSION: Final = "version"
 # Entity constants
 AVAILABLE: Final = "available"
 FIRMWARE: Final = "firmware"
-GATEWAY_ID: Final = "gateway_id"
 HARDWARE: Final = "hardware"
 MODEL: Final = "model"
 MODEL_ID: Final = "model_id"
-SMILE_NAME: Final = "smile_name"
 VENDOR: Final = "vendor"
 
 # Number constants
