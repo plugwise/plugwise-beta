@@ -16,12 +16,10 @@ from .const import (
     AVAILABLE,
     DOMAIN,
     FIRMWARE,
-    GATEWAY_ID,
     HARDWARE,
     MAC_ADDRESS,
     MODEL,
     MODEL_ID,
-    SMILE_NAME,
     VENDOR,
     ZIGBEE_MAC_ADDRESS,
 )
@@ -48,7 +46,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         if entry := self.coordinator.config_entry:
             configuration_url = f"http://{entry.data[CONF_HOST]}"
 
-        data = coordinator.data.devices[device_id]
+        data = coordinator.data[device_id]
         connections = set()
         if mac := data.get(MAC_ADDRESS):
             connections.add((CONNECTION_NETWORK_MAC, mac))
@@ -62,18 +60,18 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
             manufacturer=data.get(VENDOR),
             model=data.get(MODEL),
             model_id=data.get(MODEL_ID),
-            name=coordinator.data.gateway[SMILE_NAME],
+            name=coordinator.api.smile_name,
             sw_version=data.get(FIRMWARE),
             hw_version=data.get(HARDWARE),
         )
 
-        if device_id != coordinator.data.gateway[GATEWAY_ID]:
+        if device_id != coordinator.api.gateway_id:
             self._attr_device_info.update(
                 {
                     ATTR_NAME: data.get(ATTR_NAME),
                     ATTR_VIA_DEVICE: (
                         DOMAIN,
-                        str(self.coordinator.data.gateway[GATEWAY_ID]),
+                        str(self.coordinator.api.gateway_id),
                     ),
                 }
             )
@@ -84,7 +82,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         return (
             # Upstream: Do not change the AVAILABLE line below: some Plugwise devices and zones
             # Upstream: do not provide their availability-status!
-            self._dev_id in self.coordinator.data.devices
+            self._dev_id in self.coordinator.data
             and (AVAILABLE not in self.device or self.device[AVAILABLE] is True)
             and super().available
         )
@@ -92,4 +90,4 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
     @property
     def device(self) -> GwEntityData:
         """Return data for this device."""
-        return self.coordinator.data.devices[self._dev_id]
+        return self.coordinator.data[self._dev_id]

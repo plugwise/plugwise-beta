@@ -2,11 +2,12 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.56.0
 
 - Internal: Fixes for the CI process
 - Add test-coverage for persistent_notification-use in binary_sensor
 - Config_flow: restore showing provided user_input when an error occurs
+- Link to plugwise [v1.7.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.0) and adapt
 
 ## v0.55.5
 

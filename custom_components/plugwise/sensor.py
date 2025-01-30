@@ -483,7 +483,7 @@ async def async_setup_entry(
         # pw-beta alternative for debugging
         entities: list[PlugwiseSensorEntity] = []
         for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
+            device = coordinator.data[device_id]
             if not (sensors := device.get(SENSORS)):
                 continue
             for description in PLUGWISE_SENSORS:

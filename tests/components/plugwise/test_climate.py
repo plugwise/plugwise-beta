@@ -76,6 +76,7 @@ async def test_adam_climate_entity_attributes(
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_adam_2_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, init_integration: MockConfigEntry
 ) -> None:
@@ -102,6 +103,7 @@ async def test_adam_2_climate_entity_attributes(
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_cooling"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_adam_3_climate_entity_attributes(
     hass: HomeAssistant,
     mock_smile_adam_heat_cool: MagicMock,
@@ -120,14 +122,14 @@ async def test_adam_3_climate_entity_attributes(
     ]
 
     data = mock_smile_adam_heat_cool.async_update.return_value
-    data.devices["da224107914542988a88561b4452b0f6"][
+    data["da224107914542988a88561b4452b0f6"][
         "select_regulation_mode"
     ] = "heating"
-    data.devices["f2bf9048bef64cc5b6d5110154e33c81"]["control_state"] = "heating"
-    data.devices["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
+    data["f2bf9048bef64cc5b6d5110154e33c81"]["control_state"] = "heating"
+    data["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
         "cooling_state"
     ] = False
-    data.devices["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
+    data["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
         "heating_state"
     ] = True
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
@@ -146,14 +148,14 @@ async def test_adam_3_climate_entity_attributes(
         ]
 
     data = mock_smile_adam_heat_cool.async_update.return_value
-    data.devices["da224107914542988a88561b4452b0f6"][
+    data["da224107914542988a88561b4452b0f6"][
         "select_regulation_mode"
     ] = "cooling"
-    data.devices["f2bf9048bef64cc5b6d5110154e33c81"]["control_state"] = "cooling"
-    data.devices["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
+    data["f2bf9048bef64cc5b6d5110154e33c81"]["control_state"] = "cooling"
+    data["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
         "cooling_state"
     ] = True
-    data.devices["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
+    data["056ee145a816487eaa69243c3280f8bf"]["binary_sensors"][
         "heating_state"
     ] = False
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
@@ -314,6 +316,7 @@ async def test_adam_climate_off_mode_change(
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_climate_entity_attributes(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MagicMock
 ) -> None:
@@ -342,6 +345,7 @@ async def test_anna_climate_entity_attributes(
     )
 
 @pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_2_climate_entity_attributes(
     hass: HomeAssistant,
     mock_smile_anna: MagicMock,
@@ -362,6 +366,7 @@ async def test_anna_2_climate_entity_attributes(
 
 
 @pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_idle"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_3_climate_entity_attributes(
     hass: HomeAssistant,
     mock_smile_anna: MagicMock,
@@ -379,6 +384,7 @@ async def test_anna_3_climate_entity_attributes(
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_climate_entity_climate_changes(
     hass: HomeAssistant,
     mock_smile_anna: MagicMock,
@@ -430,7 +436,7 @@ async def test_anna_climate_entity_climate_changes(
     )
 
     data = mock_smile_anna.async_update.return_value
-    data.devices["3cb70739631c4d17a86b8b12e8a5161b"].pop("available_schedules")
+    data["3cb70739631c4d17a86b8b12e8a5161b"].pop("available_schedules")
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))
         async_fire_time_changed(hass)

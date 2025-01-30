@@ -9,7 +9,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import PlugwiseConfigEntry
 from .const import (
-    GATEWAY_ID,
     LOGGER,  # pw-betea
     REBOOT,
 )
@@ -28,7 +27,6 @@ async def async_setup_entry(
     """Set up Plugwise buttons from a config entry."""
     coordinator = entry.runtime_data
 
-    gateway = coordinator.data.gateway
     # async_add_entities(
     #     PlugwiseButtonEntity(coordinator, device_id)
     #     for device_id in coordinator.data.devices
@@ -36,8 +34,8 @@ async def async_setup_entry(
     # )
     # pw-beta alternative for debugging
     entities: list[PlugwiseButtonEntity] = []
-    for device_id, device in coordinator.data.devices.items():
-        if device_id == gateway[GATEWAY_ID] and REBOOT in gateway:
+    for device_id, device in coordinator.data.items():
+        if device_id == coordinator.api.gateway_id and coordinator.api.reboot:
             entities.append(PlugwiseButtonEntity(coordinator, device_id))
             LOGGER.debug("Add %s reboot button", device["name"])
     async_add_entities(entities)

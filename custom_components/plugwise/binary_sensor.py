@@ -32,7 +32,6 @@ from .const import (
     FLAME_STATE,
     HEATING_STATE,
     LOGGER,  # pw-beta
-    NOTIFICATIONS,
     PLUGWISE_NOTIFICATION,
     SECONDARY_BOILER_STATE,
     SEVERITIES,
@@ -133,7 +132,7 @@ async def async_setup_entry(
         # pw-beta alternative for debugging
         entities: list[PlugwiseBinarySensorEntity] = []
         for device_id in coordinator.new_devices:
-            device = coordinator.data.devices[device_id]
+            device = coordinator.data[device_id]
             if not (binary_sensors := device.get(BINARY_SENSORS)):
                 continue
             for description in PLUGWISE_BINARY_SENSORS:
@@ -188,7 +187,8 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         # not all severities including those without content as empty lists
         attrs: dict[str, list[str]] = {}  # pw-beta Re-evaluate against Core
         self._notification = {}  # pw-beta
-        if notify := self.coordinator.data.gateway[NOTIFICATIONS]:
+        gateway_id = self.coordinator.api.gateway_id
+        if notify := self.coordinator.data[gateway_id]["notifications"]:
             for notify_id, details in notify.items():  # pw-beta uses notify_id
                 for msg_type, msg in details.items():
                     msg_type = msg_type.lower()
