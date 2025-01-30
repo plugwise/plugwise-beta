@@ -8,6 +8,6 @@
   "iot_class": "local_polling",
   "loggers": ["plugwise"],
   "requirements": ["plugwise==1.7.0"],
-  "version": "0.56.0",
+  "version": "0.56.1a0",
   "zeroconf": ["_plugwise._tcp.local."]
 }

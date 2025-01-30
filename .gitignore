@@ -8,3 +8,4 @@ venv
 *.orig
 node_modules
 manual_clone_ha
+package-lock.json

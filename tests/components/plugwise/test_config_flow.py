@@ -19,7 +19,6 @@ from homeassistant.components.plugwise.const import (
     DEFAULT_PORT,
     DOMAIN,
 )
-from homeassistant.components.zeroconf import ZeroconfServiceInfo
 from homeassistant.config_entries import SOURCE_USER, SOURCE_ZEROCONF, ConfigFlowResult
 from homeassistant.const import (
     CONF_HOST,
@@ -33,6 +32,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 from packaging.version import Version
 
 from tests.common import MockConfigEntry

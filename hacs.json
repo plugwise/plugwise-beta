@@ -9,6 +9,6 @@
     "sensor",
     "switch"
   ],
-  "homeassistant": "2024.12.0b2",
+  "homeassistant": "2025.2.0",
   "render_readme": true
 }

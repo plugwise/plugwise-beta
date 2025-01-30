@@ -58,14 +58,22 @@ jobs:
           SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
 
   # Prepare default python version environment
-  ha-core-prepare:
+  ha-core-release:
     runs-on: ubuntu-latest
-    name: Setup for HA-core (release)
+    name: Setup for HA-core (release/master)
     needs:
       - pre-commit
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
+      - name: Determine Branch Test Mode
+        id: determine_mode
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
+            echo "STRICT_DEV=true" >> $GITHUB_ENV
+          else
+            echo "STRICT_DEV=false" >> $GITHUB_ENV
+          fi
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v5.4.0
@@ -75,7 +83,7 @@ jobs:
         id: cache-hacore
         uses: actions/cache@v4.2.0
         env:
-          cache-name: cache-hacore
+          cache-name: cache-hacore-release
         with:
           path: ./
           key: >-
@@ -89,8 +97,52 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
       - name: Test through HA-core (master/release)
+        continue-on-error: ${{ env.STRICT_DEV == 'true' }} # Allow master failures only if dev is strict
         run: |
-          GITHUB_ACTIONS="" BRANCH="master" scripts/core-testing.sh
+          GITHUB_ACTIONS="" scripts/core-testing.sh
+
+  ha-core-dev:
+    runs-on: ubuntu-latest
+    name: Setup for HA-core (dev)
+    needs:
+      - pre-commit
+    steps:
+      - name: Check out committed code
+        uses: actions/checkout@v4.2.2
+      - name: Determine Branch Test Mode
+        id: determine_mode
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
+            echo "STRICT_DEV=true" >> $GITHUB_ENV
+          else
+            echo "STRICT_DEV=false" >> $GITHUB_ENV
+          fi
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        id: python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
+        id: cache-hacore
+        uses: actions/cache@v4.2.0
+        env:
+          cache-name: cache-hacore-dev
+        with:
+          path: ./
+          key: >-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
+            steps.python.outputs.python-version }}-${{
+            hashFiles('./custom_components/plugwise/manifest.json') }}-${{
+            hashFiles('./ha-core/.git/plugwise-tracking') }}
+          restore-keys: |
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}
+            ${{ env.CACHE_VERSION}}
+      - name: Test through HA-core (dev)
+        continue-on-error: ${{ env.STRICT_DEV == 'false' }} # Allow dev failures unless strict
+        run: |
+          GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
 
   shellcheck:
     name: Shellcheck

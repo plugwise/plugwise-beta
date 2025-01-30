@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## v0.56.1 / ONGOING
+
+- Config_flow: follow [Core PR](https://github.com/home-assistant/core/pull/135653) movement of ZeroconfServiceInfo
+
 ## v0.56.0
 
 - Internal: Fixes for the CI process
