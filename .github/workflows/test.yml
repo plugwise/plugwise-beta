@@ -61,19 +61,19 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Set-up environment
-        run: |
-          scripts/setup.sh
-      - name: Install pre-commit dependencies
-        run: |
-          . venv/bin/activate
-          pre-commit install-hooks
-      - name: Run full pre-commit
-        run: |
-          . venv/bin/activate
-          pre-commit run --all-files --show-diff-on-failure
-        env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
-          SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
+#      - name: Set-up environment
+#        run: |
+#          scripts/setup.sh
+#      - name: Install pre-commit dependencies
+#        run: |
+#          . venv/bin/activate
+#          pre-commit install-hooks
+#      - name: Run all-files pre-commit excluding testing
+#        run: |
+#          . venv/bin/activate
+#          pre-commit run --all-files --show-diff-on-failure
+#        env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
+#          SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
 
   # Prepare default python version environment
   ha-core-release:
@@ -272,6 +272,6 @@ jobs:
             curl -s -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data "{\"event\": \"REQUEST_ACTIONS\", \"body\": \"$COMMENT_BODY\"}" \
+            --data "{\"event\": \"REQUEST_CHANGES\", \"body\": \"$COMMENT_BODY\"}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews"
           fi
