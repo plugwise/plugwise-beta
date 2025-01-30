@@ -24,7 +24,14 @@ on:
       - unlabeled
 
 jobs:
-  # Run pre-commit
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+
   pre-commit:
     name: Validate pre-commit requirements
     runs-on: ubuntu-latest
@@ -74,6 +81,8 @@ jobs:
     name: Setup for HA-core (release/master)
     needs:
       - pre-commit
+    outputs:
+      release_failed: ${{ steps.ha_core_tests.outputs.failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
@@ -108,15 +117,25 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
       - name: Test through HA-core (master/release) - continue-on-error = ${{ env.STRICT_DEV == 'true' }}
+        id: ha-core-tests
         continue-on-error: ${{ env.STRICT_DEV == 'true' }} # Allow master failures only if dev is strict
         run: |
           GITHUB_ACTIONS="" scripts/core-testing.sh
+          if [ $? -ne 0 ]; then
+            echo "::warning::Release HA core incompatibility"
+            echo "RELEASE_TESTS_FAILED=true" >> $GITHUB_ENV
+          else
+            echo "Successfully tested against released HA-core"
+            echo "RELEASE_TESTS_FAILED=false" >> $GITHUB_ENV
+          fi
 
   ha-core-dev:
     runs-on: ubuntu-latest
     name: Setup for HA-core (dev)
     needs:
       - pre-commit
+    outputs:
+      dev_failed: ${{ steps.ha_core_tests.outputs.failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
@@ -151,14 +170,80 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
       - name: Test through HA-core (dev) - continue-on-error = ${{ env.STRICT_DEV == 'false' }}
+        id: ha-core-tests
         continue-on-error: ${{ env.STRICT_DEV == 'false' }} # Allow dev failures unless strict
         run: |
           GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
+          if [ $? -ne 0 ]; then
+            echo "::warning::Development HA core incompatibility"
+            echo "DEV_TESTS_FAILED=true" >> $GITHUB_ENV
+          else
+            echo "Successfully tested against dev HA-core"
+            echo "DEV_TESTS_FAILED=false" >> $GITHUB_ENV
+          fi
 
-  shellcheck:
-    name: Shellcheck
+  final-comment:
     runs-on: ubuntu-latest
+    needs: [ha-core-release, ha-core-dev]
     steps:
-      - uses: actions/checkout@v4.2.2
-      - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
+      - name: Determine Branch Test Mode
+        id: determine_mode
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
+            echo "STRICT_DEV=true" >> $GITHUB_ENV
+          else
+            echo "STRICT_DEV=false" >> $GITHUB_ENV
+          fi
+      - name: Create combined comment
+        run: |
+          # Get the results of the previous scripts
+          STRICT_DEV=$STRICT_DEV
+          DEV_TESTS_FAILED=$DEV_TESTS_FAILED
+          RELEASE_TESTS_FAILED=$RELEASE_TESTS_FAILED
+          FAIL_COUNT=0
+
+          COMMENT_BODY="**Error while testing for RELEASED HA-core:**\n"
+          if [[ $DEV_TESTS_FAILED == "true" ]]; then
+            COMMENT_BODY="**Error while testing for Development HA-core:**\n"
+          fi
+
+          if [[ $DEV_TESTS_FAILED == "true" ]]; then
+            if [[ $STRICT_DEV == "true" ]]; then
+              COMMENT_BODY+="**Error:** Incompatible while testing against dev HA-core and required to pass.\n"
+              FAIL_COUNT=2
+            else
+              COMMENT_BODY+="**Warning:** Incompatible while testing against dev HA-core.\n"
+              FAIL_COUNT=1
+            fi
+          else
+            COMMENT_BODY+="**Success:** No problem with testing against dev HA-core.\n"
+          fi
+
+          if [[ $RELEASE_TESTS_FAILED == "true" ]]; then
+            if [[ $STRICT_DEV == "false" ]]; then
+              COMMENT_BODY+="**Error:** Incompatible while testing against released HA-core and required to pass.\n"
+              FAIL_COUNT=2
+            else
+              COMMENT_BODY+="**Warning:** Incompatible while testing against released HA-core.\n"
+              FAIL_COUNT=1
+            fi
+          else
+            COMMENT_BODY+="**Success:** No problem with testing against released HA-core.\n"
+          fi
+
+          if [[ FAIL_COUNT == 1 ]]; then
+            # Create a comment on the pull request
+            curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data "{\"body\": \"$COMMENT_BODY\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+          fi
+          if [[ FAIL_COUNT == 2 ]]; then
+            # Request changes on the pull request
+            curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data ""{\"event\": \"REQUEST_ACTIONS\", \"body\": \"$COMMENT_BODY\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+          fi
