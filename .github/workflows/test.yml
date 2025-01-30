@@ -96,7 +96,7 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Test through HA-core (master/release)
+      - name: Test through HA-core (master/release) - continue-on-error = ${{ env.STRICT_DEV == 'true' }}
         continue-on-error: ${{ env.STRICT_DEV == 'true' }} # Allow master failures only if dev is strict
         run: |
           GITHUB_ACTIONS="" scripts/core-testing.sh
@@ -139,7 +139,7 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Test through HA-core (dev)
+      - name: Test through HA-core (dev) - continue-on-error = ${{ env.STRICT_DEV == 'false' }}
         continue-on-error: ${{ env.STRICT_DEV == 'false' }} # Allow dev failures unless strict
         run: |
           GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
