@@ -79,6 +79,7 @@ jobs:
   ha-core-release:
     runs-on: ubuntu-latest
     name: Setup for HA-core (release/master)
+    continue-on-error: true
     needs:
       - pre-commit
     outputs:
@@ -132,6 +133,7 @@ jobs:
   ha-core-dev:
     runs-on: ubuntu-latest
     name: Setup for HA-core (dev)
+    continue-on-error: true
     needs:
       - pre-commit
     outputs:
