@@ -117,7 +117,7 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
       - name: Test through HA-core (master/release) - continue-on-error = ${{ env.STRICT_DEV == 'true' }}
-        id: ha-core-tests
+        id: ha_core_tests
         continue-on-error: ${{ env.STRICT_DEV == 'true' }} # Allow master failures only if dev is strict
         run: |
           GITHUB_ACTIONS="" scripts/core-testing.sh
@@ -170,7 +170,7 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
       - name: Test through HA-core (dev) - continue-on-error = ${{ env.STRICT_DEV == 'false' }}
-        id: ha-core-tests
+        id: ha_core_tests
         continue-on-error: ${{ env.STRICT_DEV == 'false' }} # Allow dev failures unless strict
         run: |
           GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
@@ -231,7 +231,7 @@ jobs:
             COMMENT_BODY+="**Success:** No problem with testing against released HA-core.\n"
           fi
 
-          if [[ FAIL_COUNT == 1 ]]; then
+          if [[ FAIL_COUNT -eq 1 ]]; then
             # Create a comment on the pull request
             curl -s -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
@@ -239,11 +239,11 @@ jobs:
             --data "{\"body\": \"$COMMENT_BODY\"}" \
             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
           fi
-          if [[ FAIL_COUNT == 2 ]]; then
+          if [[ FAIL_COUNT -eq 2 ]]; then
             # Request changes on the pull request
             curl -s -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data ""{\"event\": \"REQUEST_ACTIONS\", \"body\": \"$COMMENT_BODY\"}" \
+            --data "{\"event\": \"REQUEST_ACTIONS\", \"body\": \"$COMMENT_BODY\"}" \
             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
           fi
