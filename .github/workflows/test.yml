@@ -249,11 +249,11 @@ jobs:
           fi
 
           if [[ $FAIL_COUNT -eq 1 ]]; then
-            echo "Creating a comment on the pull request"
+            echo "Comment and approve the pull request"
             curl -s -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data "{\"body\": \"$COMMENT_BODY\"}" \
+            --data "{\"event\": \"APPROVE\", \"body\": \"$COMMENT_BODY\"}" \
             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
           fi
           if [[ $FAIL_COUNT -eq 2 ]]; then
