@@ -1,8 +1,8 @@
 name: Validate with hassfest
 
+# Removed push not to duplicate
 on:
   workflow_dispatch:
-  push:
   pull_request:
   schedule:
     - cron: "0 0 * * *"

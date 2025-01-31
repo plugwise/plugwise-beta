@@ -2,6 +2,14 @@
 
 Versions from 0.40 and up
 
+## v0.56.1
+
+- Config_flow: follow [Core PR](https://github.com/home-assistant/core/pull/135653) movement of ZeroconfServiceInfo
+- Github actions: added `require-dev-pass` label to invert testing from passing HA Core release to HA Core dev
+  - The actions will now indicate and request changes or approve depending on the testing outcome
+  - When developing a PR for `dev` not just release pre-fix your `git commit` and `scripts/core-testing` with `BRANCH=dev`
+  - When creating the PR set the `require-dev-pass` label accordingly
+
 ## v0.56.0
 
 - Internal: Fixes for the CI process

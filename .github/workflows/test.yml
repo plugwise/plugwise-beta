@@ -1,19 +1,37 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Test against HA-core (master/released)
+name: Test PR against HA-core
 
 env:
-  CACHE_VERSION: 29
+  CACHE_VERSION: 30
   DEFAULT_PYTHON: "3.13"
 
+# Do not run on 'push' (as the flow doesn't have access to the labels) - also disabled workflow_dispatch as such
+# Workaround could be something like
+#      - name: Get PR labels
+#        run: |
+#          PR_LABELS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+#          "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels")
+#          echo "PR Labels: $PR_LABELS"
+
 on:
-  workflow_dispatch:
-  push:
-# pull_request:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - labeled
+      - unlabeled
 
 jobs:
-  # Run pre-commit
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+
   pre-commit:
     name: Validate pre-commit requirements
     runs-on: ubuntu-latest
@@ -50,7 +68,7 @@ jobs:
         run: |
           . venv/bin/activate
           pre-commit install-hooks
-      - name: Run full pre-commit
+      - name: Run all-files pre-commit excluding testing
         run: |
           . venv/bin/activate
           pre-commit run --all-files --show-diff-on-failure
@@ -58,14 +76,25 @@ jobs:
           SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
 
   # Prepare default python version environment
-  ha-core-prepare:
+  ha-core-release:
     runs-on: ubuntu-latest
-    name: Setup for HA-core (release)
+    name: Setup for HA-core (release/master)
+    continue-on-error: true
     needs:
       - pre-commit
+    outputs:
+      release_failed: ${{ steps.capture_release.outputs.failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
+      - name: Determine Branch Test Mode
+        id: determine_mode
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
+            echo "STRICT_DEV=true" >> $GITHUB_ENV
+          else
+            echo "STRICT_DEV=false" >> $GITHUB_ENV
+          fi
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v5.4.0
@@ -75,7 +104,7 @@ jobs:
         id: cache-hacore
         uses: actions/cache@v4.2.0
         env:
-          cache-name: cache-hacore
+          cache-name: cache-hacore-release
         with:
           path: ./
           key: >-
@@ -88,14 +117,150 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Test through HA-core (master/release)
+      - name: Test through HA-core (master/release) - continue-on-error = ${{ env.STRICT_DEV == 'false' }}
+        id: ha_core_release_tests
+        continue-on-error: ${{ env.STRICT_DEV == 'true' }} # Allow master failures only if dev is strict
         run: |
-          GITHUB_ACTIONS="" BRANCH="master" scripts/core-testing.sh
+          echo "true" > result.txt
+          GITHUB_ACTIONS="" scripts/core-testing.sh
+          if [ $? -ne 0 ]; then
+            echo "::warning::Release  HA core incompatibility"
+            echo "true" > result.txt
+          else
+            echo "Successfully tested against released HA-core"
+            echo "false" > result.txt
+          fi
+      - name: Set output explicitly
+        id: capture_release
+        if: always()
+        run: |
+          FAILED=$(cat result.txt)
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
 
-  shellcheck:
-    name: Shellcheck
+  ha-core-dev:
     runs-on: ubuntu-latest
+    name: Setup for HA-core (dev)
+    continue-on-error: true
+    needs:
+      - pre-commit
+    outputs:
+      dev_failed: ${{ steps.capture_dev.outputs.failed }}
     steps:
-      - uses: actions/checkout@v4.2.2
-      - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
+      - name: Check out committed code
+        uses: actions/checkout@v4.2.2
+      - name: Determine Branch Test Mode
+        id: determine_mode
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
+            echo "STRICT_DEV=true" >> $GITHUB_ENV
+          else
+            echo "STRICT_DEV=false" >> $GITHUB_ENV
+          fi
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        id: python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
+        id: cache-hacore
+        uses: actions/cache@v4.2.0
+        env:
+          cache-name: cache-hacore-dev
+        with:
+          path: ./
+          key: >-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
+            steps.python.outputs.python-version }}-${{
+            hashFiles('./custom_components/plugwise/manifest.json') }}-${{
+            hashFiles('./ha-core/.git/plugwise-tracking') }}
+          restore-keys: |
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}
+            ${{ env.CACHE_VERSION}}
+      - name: Test through HA-core (dev) - continue-on-error = ${{ env.STRICT_DEV == 'false' }}
+        id: ha_core_dev_tests
+        continue-on-error: ${{ env.STRICT_DEV == 'false' }} # Allow dev failures unless strict
+        run: |
+          echo "true" > result.txt
+          GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
+          if [ $? -ne 0 ]; then
+            echo "::warning::Development HA core incompatibility"
+            echo "true" > result.txt
+          else
+            echo "Successfully tested against dev HA-core"
+            echo "false" > result.txt
+          fi
+      - name: Set output explicitly
+        id: capture_dev
+        if: always()
+        run: |
+          FAILED=$(cat result.txt)
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
+
+  final-comment:
+    runs-on: ubuntu-latest
+    needs: [ha-core-release, ha-core-dev]
+    steps:
+      - name: Determine Branch Test Mode
+        id: determine_mode
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
+            echo "STRICT_DEV=true" >> $GITHUB_ENV
+          else
+            echo "STRICT_DEV=false" >> $GITHUB_ENV
+          fi
+      - name: Create combined comment
+        run: |
+          # Get the results of the previous scripts
+          STRICT_DEV=$STRICT_DEV
+          DEV_TESTS_FAILED=${{ needs.ha-core-dev.outputs.dev_failed }}
+          RELEASE_TESTS_FAILED=${{ needs.ha-core-release.outputs.release_failed }}
+          FAIL_COUNT=0
+
+          if [[ $DEV_TESTS_FAILED == "true" ]]; then
+            COMMENT_BODY=":x: **Error while testing for Development HA-core:**\n\n"
+          else
+            COMMENT_BODY=":warning: **Warning while testing for RELEASED HA-core:**\n\n"
+          fi
+
+          if [[ $DEV_TESTS_FAILED == "true" ]]; then
+            if [[ $STRICT_DEV == "true" ]]; then
+              COMMENT_BODY+=":x: **Error:** Incompatible while testing against dev HA-core and required to pass.\n"
+              FAIL_COUNT=2
+            else
+              COMMENT_BODY+=":warning: **Warning:** Incompatible while testing against dev HA-core.\n"
+              FAIL_COUNT=1
+            fi
+          else
+            COMMENT_BODY+=":heavy_check_mark: **Success:** No problem with testing against dev HA-core.\n"
+          fi
+
+          if [[ $RELEASE_TESTS_FAILED == "true" ]]; then
+            if [[ $STRICT_DEV == "false" ]]; then
+              COMMENT_BODY+=":x: **Error:** Incompatible while testing against released HA-core and required to pass.\n"
+              FAIL_COUNT=2
+            else
+              COMMENT_BODY+=":warning: **Warning:** Incompatible while testing against released HA-core.\n"
+              FAIL_COUNT=1
+            fi
+          else
+            COMMENT_BODY+=":heavy_check_mark: **Success:** No problem with testing against released HA-core.\n"
+          fi
+
+          if [[ $FAIL_COUNT -eq 1 ]]; then
+            echo "Comment and approve the pull request"
+            curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data "{\"event\": \"APPROVE\", \"body\": \"$COMMENT_BODY\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews"
+          fi
+          if [[ $FAIL_COUNT -eq 2 ]]; then
+            echo "Requesting changes on the pull request"
+            curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data "{\"event\": \"REQUEST_CHANGES\", \"body\": \"$COMMENT_BODY\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews"
+          fi
