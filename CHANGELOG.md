@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Remove user-configuration of port
+
 ## v0.56.1
 
 - Config_flow: follow [Core PR](https://github.com/home-assistant/core/pull/135653) movement of ZeroconfServiceInfo
