@@ -409,7 +409,6 @@ async def test_form_cannot_connect_port(
         user_input={
             CONF_HOST: TEST_HOST,
             CONF_PASSWORD: TEST_PASSWORD,
-            CONF_PORT: TEST_PORT,
         },
     )
 
