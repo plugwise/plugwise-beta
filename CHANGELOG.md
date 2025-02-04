@@ -5,7 +5,7 @@ Versions from 0.40 and up
 ## v0.57.0
 
 - Removed: user-configuration of port
-- Link to plugwise [v1.7.1](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.1) 
+- Link to plugwise [v1.7.1](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.1)
 
 ## v0.56.1
 
