@@ -7,7 +7,6 @@ from typing import Any
 from plugwise.exceptions import PlugwiseError
 import voluptuous as vol  # pw-beta delete_notification
 
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_TIMEOUT, Platform
 from homeassistant.core import (
     HomeAssistant,
@@ -23,9 +22,7 @@ from .const import (
     PLATFORMS,
     SERVICE_DELETE,  # pw-beta delete_notifications
 )
-from .coordinator import PlugwiseDataUpdateCoordinator
-
-type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
+from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
@@ -40,7 +37,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     LOGGER.debug("DUC cooldown interval: %s", cooldown)
 
     coordinator = PlugwiseDataUpdateCoordinator(
-        hass, cooldown
+        hass, cooldown, entry
     )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
 
@@ -145,7 +142,7 @@ async def async_migrate_sensor_entities(
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
 # pw-beta only - revert adding CONF_TIMEOUT to config_entry in v0.53.3
-async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
     """Migrate back to v1.1 config entry."""
     if entry.version > 1:
         # This means the user has downgraded from a future version

@@ -30,24 +30,28 @@ from packaging.version import Version
 
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, LOGGER
 
+type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
+
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData]]):
     """Class to manage fetching Plugwise data from single endpoint."""
 
     _connected: bool = False
 
-    config_entry: ConfigEntry
+    config_entry: PlugwiseConfigEntry
 
     def __init__(
         self,
         hass: HomeAssistant,
         cooldown: float,
+        config_entry: PlugwiseConfigEntry,
         update_interval: timedelta = timedelta(seconds=60),
     ) -> None:  # pw-beta cooldown
         """Initialize the coordinator."""
         super().__init__(
             hass,
             LOGGER,
+            config_entry=config_entry,
             name=DOMAIN,
             # Core directly updates from const's DEFAULT_SCAN_INTERVAL
             # Upstream check correct progress for adjusting

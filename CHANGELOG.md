@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Implement HA Core PR [#138039](https://github.com/home-assistant/core/pull/138039)
+
 ## v0.57.0
 
 - Removed: user-configuration of port

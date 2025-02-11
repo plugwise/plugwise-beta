@@ -26,7 +26,6 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import PlugwiseConfigEntry
 from .const import (
     ACTIVE_PRESET,
     AVAILABLE_SCHEDULES,
@@ -49,7 +48,7 @@ from .const import (
     THERMOSTAT,
     UPPER_BOUND,
 )
-from .coordinator import PlugwiseDataUpdateCoordinator
+from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 
