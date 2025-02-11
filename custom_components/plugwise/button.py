@@ -7,12 +7,11 @@ from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import PlugwiseConfigEntry
 from .const import (
     LOGGER,  # pw-betea
     REBOOT,
 )
-from .coordinator import PlugwiseDataUpdateCoordinator
+from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 

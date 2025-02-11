@@ -16,7 +16,6 @@ from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import PlugwiseConfigEntry
 from .const import (
     COOLING_ENA_SWITCH,
     DHW_CM_SWITCH,
@@ -28,7 +27,7 @@ from .const import (
 )
 
 # Upstream consts
-from .coordinator import PlugwiseDataUpdateCoordinator
+from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 

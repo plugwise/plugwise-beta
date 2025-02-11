@@ -28,7 +28,6 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import PlugwiseConfigEntry
 from .const import (
     DHW_SETPOINT,
     DHW_TEMP,
@@ -80,7 +79,7 @@ from .const import (
 )
 
 # Upstream consts
-from .coordinator import PlugwiseDataUpdateCoordinator
+from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 
 # Coordinator is used to centralize the data updates
