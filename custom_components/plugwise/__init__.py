@@ -142,7 +142,7 @@ async def async_migrate_sensor_entities(
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
 # pw-beta only - revert adding CONF_TIMEOUT to config_entry in v0.53.3
-async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
     """Migrate back to v1.1 config entry."""
     if entry.version > 1:
         # This means the user has downgraded from a future version
