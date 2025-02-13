@@ -141,7 +141,7 @@ jobs:
         run: |
           echo "true" > result.txt
           #GITHUB_ACTIONS="" scripts/core-testing.sh
-          exit 1
+          exit 0
           if [ $? -ne 0 ]; then
             echo "::warning::Release  HA core incompatibility"
             echo "true" > result.txt
@@ -205,7 +205,7 @@ jobs:
         run: |
           echo "true" > result.txt
           #GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
-          exit 0
+          exit 1
           if [ $? -ne 0 ]; then
             echo "::warning::Development HA core incompatibility"
             echo "true" > result.txt
