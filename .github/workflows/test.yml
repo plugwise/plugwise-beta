@@ -6,6 +6,7 @@ name: Test PR against HA-core
 env:
   CACHE_VERSION: 30
   DEFAULT_PYTHON: "3.13"
+  STRICT_DEV: false
 
 # Do not run on 'push' (as the flow doesn't have access to the labels) - also disabled workflow_dispatch as such
 # Workaround could be something like
@@ -24,6 +25,16 @@ on:
       - unlabeled
 
 jobs:
+  determine-mode:
+    name: Determine release or dev mode
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Environment Variable
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
+            echo "STRICT_DEV=true" >> $GITHUB_ENV
+          fi
+
   shellcheck:
     name: Shellcheck
     runs-on: ubuntu-latest
@@ -79,8 +90,9 @@ jobs:
   ha-core-release:
     runs-on: ubuntu-latest
     name: Setup for HA-core (release/master)
-    continue-on-error: true
+    continue-on-error: ${{ env.STRICT_DEV == 'true' }}
     needs:
+      - determine-mode
       - pre-commit
     outputs:
       release_failed: ${{ steps.capture_release.outputs.failed }}
@@ -140,8 +152,9 @@ jobs:
   ha-core-dev:
     runs-on: ubuntu-latest
     name: Setup for HA-core (dev)
-    continue-on-error: true
+    continue-on-error: ${{ env.STRICT_DEV == 'false' }}
     needs:
+      - determine-mode
       - pre-commit
     outputs:
       dev_failed: ${{ steps.capture_dev.outputs.failed }}
