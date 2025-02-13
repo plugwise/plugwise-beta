@@ -28,11 +28,16 @@ jobs:
   determine-mode:
     name: Determine release or dev mode
     runs-on: ubuntu-latest
+    outputs:
+      strict_dev: ${{ steps.set_mode.outputs.strict_dev }}
     steps:
-      - name: Set Environment Variable
+      - name: Determine Branch Test Mode
+        id: set_mode
         run: |
           if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
-            echo "STRICT_DEV=true" >> $GITHUB_ENV
+            echo "::set-output name=strict_dev::true"
+          else
+            echo "::set-output name=strict_dev::false"
           fi
 
   shellcheck:
@@ -90,7 +95,7 @@ jobs:
   ha-core-release:
     runs-on: ubuntu-latest
     name: Setup for HA-core (release/master)
-    continue-on-error: ${{ env.STRICT_DEV == 'true' }}
+    continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'true' }}
     needs:
       - determine-mode
       - pre-commit
@@ -153,7 +158,7 @@ jobs:
   ha-core-dev:
     runs-on: ubuntu-latest
     name: Setup for HA-core (dev)
-    continue-on-error: ${{ env.STRICT_DEV == 'false' }}
+    continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'false' }}
     needs:
       - determine-mode
       - pre-commit
