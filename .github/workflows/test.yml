@@ -35,10 +35,10 @@ jobs:
         id: set_mode
         run: |
           if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
-            echo "{strict_dev}=true" >> $GITHUB_OUTPUT
+            echo "strict_dev=true" >> $GITHUB_OUTPUT
 
           else
-            echo "{strict_dev}=false" >> $GITHUB_OUTPUT
+            echo "strict_dev=false" >> $GITHUB_OUTPUT
           fi
 
   shellcheck:
