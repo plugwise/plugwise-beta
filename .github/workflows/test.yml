@@ -111,9 +111,9 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
             steps.python.outputs.python-version }}-${{
             hashFiles('./custom_components/plugwise/manifest.json') }}-${{
-            hashFiles('./ha-core/.git/plugwise-tracking') }}
+            hashFiles('./ha-core/.git/plugwise-tracking') }}-release
           restore-keys: |
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-release
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
@@ -172,9 +172,10 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
             steps.python.outputs.python-version }}-${{
             hashFiles('./custom_components/plugwise/manifest.json') }}-${{
-            hashFiles('./ha-core/.git/plugwise-tracking') }}
+            hashFiles('./ha-core/.git/plugwise-tracking') }}-dev
           restore-keys: |
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-dev
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
