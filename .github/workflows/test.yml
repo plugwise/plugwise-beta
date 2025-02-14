@@ -110,7 +110,7 @@ jobs:
       - determine-mode
       - pre-commit
     outputs:
-      release_failed: ${{ steps.capture_release.outputs.failed }}
+      release_failed: ${{ steps.ha_core_release_tests.outputs.release_failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
@@ -148,10 +148,10 @@ jobs:
 
           if [ $EXIT_CODE -ne 0 ]; then
             echo "::warning::Release HA core incompatibility"
-            echo "failed=true" >> "$GITHUB_OUTPUT"
+            echo "release_failed=true" >> "$GITHUB_OUTPUT"
           else
             echo "Successfully tested against released HA-core"
-            echo "failed=false" >> "$GITHUB_OUTPUT"
+            echo "release_failed=false" >> "$GITHUB_OUTPUT"
           fi
 
           exit $EXIT_CODE
@@ -164,7 +164,7 @@ jobs:
       - determine-mode
       - pre-commit
     outputs:
-      dev_failed: ${{ steps.capture_dev.outputs.failed }}
+      dev_failed: ${{ steps.ha_core_dev_tests.outputs.dev_failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
@@ -203,10 +203,10 @@ jobs:
 
           if [ $EXIT_CODE -ne 0 ]; then
             echo "::warning::Development HA core incompatibility"
-            echo "failed=true" >> "$GITHUB_OUTPUT"
+            echo "dev_failed=true" >> "$GITHUB_OUTPUT"
           else
             echo "Successfully tested against dev HA-core"
-            echo "failed=false" >> "$GITHUB_OUTPUT"
+            echo "dev_failed=false" >> "$GITHUB_OUTPUT"
           fi
 
           exit $EXIT_CODE
