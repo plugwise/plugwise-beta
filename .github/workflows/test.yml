@@ -32,6 +32,22 @@ jobs:
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
 
+  determine-mode:
+    name: Determine release or dev mode
+    runs-on: ubuntu-latest
+    outputs:
+      strict_dev: ${{ steps.set_mode.outputs.strict_dev }}
+    steps:
+      - name: Determine Branch Test Mode
+        id: set_mode
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
+            echo "strict_dev=true" >> $GITHUB_OUTPUT
+
+          else
+            echo "strict_dev=false" >> $GITHUB_OUTPUT
+          fi
+
   pre-commit:
     name: Validate pre-commit requirements
     runs-on: ubuntu-latest
@@ -79,22 +95,15 @@ jobs:
   ha-core-release:
     runs-on: ubuntu-latest
     name: Setup for HA-core (release/master)
-    continue-on-error: true
+    continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'true' }} # Allow master failures only if dev is strict
     needs:
+      - determine-mode
       - pre-commit
     outputs:
-      release_failed: ${{ steps.capture_release.outputs.failed }}
+      release_failed: ${{ steps.ha_core_release_tests.outputs.release_failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
-      - name: Determine Branch Test Mode
-        id: determine_mode
-        run: |
-          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
-            echo "STRICT_DEV=true" >> $GITHUB_ENV
-          else
-            echo "STRICT_DEV=false" >> $GITHUB_ENV
-          fi
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v5.4.0
@@ -111,51 +120,43 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
             steps.python.outputs.python-version }}-${{
             hashFiles('./custom_components/plugwise/manifest.json') }}-${{
-            hashFiles('./ha-core/.git/plugwise-tracking') }}
+            hashFiles('./ha-core/.git/plugwise-tracking') }}-release
           restore-keys: |
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-release
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Test through HA-core (master/release) - continue-on-error = ${{ env.STRICT_DEV == 'false' }}
+      - name: Test through HA-core (master/release) - continue-on-error = ${{ needs.determine-mode.outputs.strict_dev == 'true' }}
         id: ha_core_release_tests
-        continue-on-error: ${{ env.STRICT_DEV == 'true' }} # Allow master failures only if dev is strict
+        continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'true' }} # Allow master failures only if dev is strict
         run: |
-          echo "true" > result.txt
+          set +e
+
           GITHUB_ACTIONS="" scripts/core-testing.sh
-          if [ $? -ne 0 ]; then
-            echo "::warning::Release  HA core incompatibility"
-            echo "true" > result.txt
+          EXIT_CODE=$?
+
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::warning::Release HA core incompatibility"
+            echo "release_failed=true" >> "$GITHUB_OUTPUT"
           else
             echo "Successfully tested against released HA-core"
-            echo "false" > result.txt
+            echo "release_failed=false" >> "$GITHUB_OUTPUT"
           fi
-      - name: Set output explicitly
-        id: capture_release
-        if: always()
-        run: |
-          FAILED=$(cat result.txt)
-          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
+
+          exit $EXIT_CODE
 
   ha-core-dev:
     runs-on: ubuntu-latest
     name: Setup for HA-core (dev)
-    continue-on-error: true
+    continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'false' }} # Allow dev failures unless strict
     needs:
+      - determine-mode
       - pre-commit
     outputs:
-      dev_failed: ${{ steps.capture_dev.outputs.failed }}
+      dev_failed: ${{ steps.ha_core_dev_tests.outputs.dev_failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
-      - name: Determine Branch Test Mode
-        id: determine_mode
-        run: |
-          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
-            echo "STRICT_DEV=true" >> $GITHUB_ENV
-          else
-            echo "STRICT_DEV=false" >> $GITHUB_ENV
-          fi
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v5.4.0
@@ -172,50 +173,43 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
             steps.python.outputs.python-version }}-${{
             hashFiles('./custom_components/plugwise/manifest.json') }}-${{
-            hashFiles('./ha-core/.git/plugwise-tracking') }}
+            hashFiles('./ha-core/.git/plugwise-tracking') }}-dev
           restore-keys: |
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-dev
+            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Test through HA-core (dev) - continue-on-error = ${{ env.STRICT_DEV == 'false' }}
+      - name: Test through HA-core (dev) - continue-on-error = ${{ needs.determine-mode.outputs.strict_dev == 'false' }}
         id: ha_core_dev_tests
-        continue-on-error: ${{ env.STRICT_DEV == 'false' }} # Allow dev failures unless strict
+        continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'false' }} # Allow dev failures unless strict
         run: |
-          echo "true" > result.txt
+          set +e
+
           GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
-          if [ $? -ne 0 ]; then
+          EXIT_CODE=$?
+
+          if [ $EXIT_CODE -ne 0 ]; then
             echo "::warning::Development HA core incompatibility"
-            echo "true" > result.txt
+            echo "dev_failed=true" >> "$GITHUB_OUTPUT"
           else
             echo "Successfully tested against dev HA-core"
-            echo "false" > result.txt
+            echo "dev_failed=false" >> "$GITHUB_OUTPUT"
           fi
-      - name: Set output explicitly
-        id: capture_dev
-        if: always()
-        run: |
-          FAILED=$(cat result.txt)
-          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
+
+          exit $EXIT_CODE
 
   final-comment:
     runs-on: ubuntu-latest
-    needs: [ha-core-release, ha-core-dev]
+    needs: [determine-mode, ha-core-release, ha-core-dev]
+    if: always()
     steps:
-      - name: Determine Branch Test Mode
-        id: determine_mode
-        run: |
-          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
-            echo "STRICT_DEV=true" >> $GITHUB_ENV
-          else
-            echo "STRICT_DEV=false" >> $GITHUB_ENV
-          fi
       - name: Create combined comment
         run: |
           # Get the results of the previous scripts
-          STRICT_DEV=$STRICT_DEV
-          DEV_TESTS_FAILED=${{ needs.ha-core-dev.outputs.dev_failed }}
-          RELEASE_TESTS_FAILED=${{ needs.ha-core-release.outputs.release_failed }}
+          STRICT_DEV="${{ needs.determine-mode.outputs.strict_dev }}"
+          DEV_TESTS_FAILED="${{ needs.ha-core-dev.outputs.dev_failed }}"
+          RELEASE_TESTS_FAILED="${{ needs.ha-core-release.outputs.release_failed }}"
           FAIL_COUNT=0
 
           if [[ $DEV_TESTS_FAILED == "true" ]]; then
