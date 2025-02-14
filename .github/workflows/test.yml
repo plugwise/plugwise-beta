@@ -141,7 +141,7 @@ jobs:
         continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'true' }} # Allow master failures only if dev is strict
         run: |
           #GITHUB_ACTIONS="" scripts/core-testing.sh
-          exit 1
+          exit 0
           if [ $? -ne 0 ]; then
             echo "::warning::Release HA core incompatibility"
             echo "failed=true" >> "$GITHUB_OUTPUT"
@@ -191,7 +191,7 @@ jobs:
         continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'false' }} # Allow dev failures unless strict
         run: |
           #GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
-          exit 0
+          exit 1
           if [ $? -ne 0 ]; then
             echo "::warning::Development HA core incompatibility"
             echo "failed=true" >> "$GITHUB_OUTPUT"
