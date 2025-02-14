@@ -140,15 +140,13 @@ jobs:
         id: ha_core_release_tests
         continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'true' }} # Allow master failures only if dev is strict
         run: |
-          #GITHUB_ACTIONS="" scripts/core-testing.sh
-          exit 0
-          if [ $? -ne 0 ]; then
-            echo "::warning::Release HA core incompatibility"
-            echo "failed=true" >> "$GITHUB_OUTPUT"
-            exit 1
-          else
+          #if GITHUB_ACTIONS="" scripts/core-testing.sh; then
+          if exit 1; then
             echo "Successfully tested against released HA-core"
             echo "failed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Release HA core incompatibility"
+            echo "failed=true" >> "$GITHUB_OUTPUT"
           fi
 
   ha-core-dev:
@@ -190,15 +188,13 @@ jobs:
         id: ha_core_dev_tests
         continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'false' }} # Allow dev failures unless strict
         run: |
-          #GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
-          exit 1
-          if [ $? -ne 0 ]; then
-            echo "::warning::Development HA core incompatibility"
-            echo "failed=true" >> "$GITHUB_OUTPUT"
-            exit 1
-          else
+          #if GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh; then
+          if exit 1; then
             echo "Successfully tested against dev HA-core"
             echo "failed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Development HA core incompatibility"
+            echo "failed=true" >> "$GITHUB_OUTPUT"
           fi
 
   final-comment:
