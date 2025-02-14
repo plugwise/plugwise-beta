@@ -146,6 +146,9 @@ jobs:
           false
           EXIT_CODE=$?
 
+          echo "EXIT_CODE = $EXIT_CODE"
+          echo "Writing to GITHUB_OUTPUT: $GITHUB_OUTPUT"
+
           if [ $EXIT_CODE -ne 0 ]; then
             echo "::warning::Release HA core incompatibility"
             echo "failed=true" >> "$GITHUB_OUTPUT"
@@ -153,6 +156,8 @@ jobs:
             echo "Successfully tested against released HA-core"
             echo "failed=false" >> "$GITHUB_OUTPUT"
           fi
+
+          cat "$GITHUB_OUTPUT"
 
           exit $EXIT_CODE
 
