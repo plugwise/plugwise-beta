@@ -204,7 +204,7 @@ jobs:
   final-comment:
     runs-on: ubuntu-latest
     needs: [determine-mode, ha-core-release, ha-core-dev]
-    if: failure()
+    if: always()
     steps:
       - name: Create combined comment
         run: |
