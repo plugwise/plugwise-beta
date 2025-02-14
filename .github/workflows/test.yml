@@ -146,9 +146,6 @@ jobs:
           false
           EXIT_CODE=$?
 
-          echo "EXIT_CODE = $EXIT_CODE"
-          echo "Writing to GITHUB_OUTPUT: $GITHUB_OUTPUT"
-
           if [ $EXIT_CODE -ne 0 ]; then
             echo "::warning::Release HA core incompatibility"
             echo "failed=true" >> "$GITHUB_OUTPUT"
@@ -156,8 +153,6 @@ jobs:
             echo "Successfully tested against released HA-core"
             echo "failed=false" >> "$GITHUB_OUTPUT"
           fi
-
-          cat "$GITHUB_OUTPUT"
 
           exit $EXIT_CODE
 
@@ -225,8 +220,8 @@ jobs:
         run: |
           # Get the results of the previous scripts
           STRICT_DEV="${{ needs.determine-mode.outputs.strict_dev }}"
-          RELEASE_TESTS_FAILED="${{ needs.ha-core-release.outputs.failed }}"
-          DEV_TESTS_FAILED="${{ needs.ha-core-dev.outputs.failed }}"
+          RELEASE_TESTS_FAILED="${{ needs.ha-core-release.outputs.release_failed }}"
+          DEV_TESTS_FAILED="${{ needs.ha-core-dev.outputs.dev_failed }}"
           FAIL_COUNT=0
 
           if [[ $DEV_TESTS_FAILED == "true" ]]; then
