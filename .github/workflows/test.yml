@@ -203,13 +203,13 @@ jobs:
 
   final-comment:
     runs-on: ubuntu-latest
-    needs: [ha-core-release, ha-core-dev]
+    needs: [determine-mode, ha-core-release, ha-core-dev]
     if: failure()
     steps:
       - name: Create combined comment
         run: |
           # Get the results of the previous scripts
-          STRICT_DEV=${{ needs.determine-mode.outputs.strict_dev }}
+          STRICT_DEV="${{ needs.determine-mode.outputs.strict_dev }}"
           RELEASE_TESTS_FAILED="${{ needs.ha-core-release.outputs.failed }}"
           DEV_TESTS_FAILED="${{ needs.ha-core-dev.outputs.failed }}"
           FAIL_COUNT=0
