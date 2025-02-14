@@ -15,16 +15,6 @@ env:
 #          "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels")
 #          echo "PR Labels: $PR_LABELS"
 
-# Release / dev mode
-#
-# Assuming release mode testing
-# - PR is not labeled with require-dev-pass label
-# - Release test should NOT continue-on-error (as a whole)
-#   - continue-on-error = false
-# - Actual release test should just fail and become red
-# - Dev test SHOULD continue-on-error (as a whole)
-# - Actual dev test should continue-on-error and report accordingly
-
 on:
   pull_request:
     types:
@@ -87,19 +77,19 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-#      - name: Set-up environment
-#        run: |
-#          scripts/setup.sh
-#      - name: Install pre-commit dependencies
-#        run: |
-#          . venv/bin/activate
-#          pre-commit install-hooks
-#      - name: Run all-files pre-commit excluding testing
-#        run: |
-#          . venv/bin/activate
-#          pre-commit run --all-files --show-diff-on-failure
-#        env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
-#          SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
+      - name: Set-up environment
+        run: |
+          scripts/setup.sh
+      - name: Install pre-commit dependencies
+        run: |
+          . venv/bin/activate
+          pre-commit install-hooks
+      - name: Run all-files pre-commit excluding testing
+        run: |
+          . venv/bin/activate
+          pre-commit run --all-files --show-diff-on-failure
+        env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
+          SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
 
   # Prepare default python version environment
   ha-core-release:
@@ -142,8 +132,7 @@ jobs:
         run: |
           set +e
 
-          #GITHUB_ACTIONS="" scripts/core-testing.sh
-          true
+          GITHUB_ACTIONS="" scripts/core-testing.sh
           EXIT_CODE=$?
 
           if [ $EXIT_CODE -ne 0 ]; then
@@ -197,8 +186,7 @@ jobs:
         run: |
           set +e
 
-          #GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
-          false
+          GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
           EXIT_CODE=$?
 
           if [ $EXIT_CODE -ne 0 ]; then
