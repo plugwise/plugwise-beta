@@ -143,7 +143,7 @@ jobs:
           set +e
 
           #GITHUB_ACTIONS="" scripts/core-testing.sh
-          exit 1
+          false
           EXIT_CODE=$?
 
           if [ $EXIT_CODE -ne 0 ]; then
@@ -198,7 +198,7 @@ jobs:
           set +e
 
           #GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
-          exit 0
+          true
           EXIT_CODE=$?
 
           if [ $EXIT_CODE -ne 0 ]; then
