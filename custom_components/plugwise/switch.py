@@ -14,7 +14,7 @@ from homeassistant.components.switch import (
 )
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     COOLING_ENA_SWITCH,
@@ -72,7 +72,7 @@ PLUGWISE_SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: PlugwiseConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up Plugwise switches from a config entry."""
     coordinator = entry.runtime_data
