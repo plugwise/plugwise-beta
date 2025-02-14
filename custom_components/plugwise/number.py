@@ -12,7 +12,7 @@ from homeassistant.components.number import (
 )
 from homeassistant.const import EntityCategory, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     LOGGER,
@@ -69,7 +69,7 @@ NUMBER_TYPES = (
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: PlugwiseConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up Plugwise number platform from a config entry."""
     # Upstream above to adhere to standard used
