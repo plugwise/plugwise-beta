@@ -8,8 +8,8 @@
   "iot_class": "local_polling",
   "loggers": ["plugwise"],
   "requirements": [
-    "https://test-files.pythonhosted.org/packages/46/13/b8dbc4d3a12320264ca04ed55a810b7930e73a71817dfe24e96b50a81ebd/plugwise-1.7.2a2.tar.gz#plugwise==1.7.2a2"
+    "https://test-files.pythonhosted.org/packages/cd/fb/f40b7e06066c52cde5ce6b3c0662c1e9b241f86ee6c4362dea5dfb4262b9/plugwise-1.7.2a3.tar.gz#plugwise==1.7.2a3"
   ],
-  "version": "0.57.1a2",
+  "version": "0.57.1a3",
   "zeroconf": ["_plugwise._tcp.local."]
 }
