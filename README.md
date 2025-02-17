@@ -1,5 +1,7 @@
 # Plugwise Smile/Stretch custom_component (BETA)
 
+If you are in doubt using this or the formal HA integration (that we also maintain) - feel free to reach out on ![Static Badge](https://img.shields.io/badge/Plugwise_Discord--purple?style=social&logo=discord&link=https%3A%2F%2Fdiscord.gg%2FmFVhF8Ar6A)
+
 :warning::no_entry::warning: Do **not** use this custom_component for **USB**, this functionality was moved to [plugwise_usb](https://github.com/plugwise/plugwise_usb-beta), see [why](#usb-notes) :warning::no_entry::warning:
 
 :no_entry::no_entry::no_entry: If you have **no** intention to beta-test our integration, please defer to the **supported** release of this integration **natively** available in [Home Assistant](https://www.home-assistant.io/integrations/plugwise/)! :no_entry::no_entry::no_entry:
@@ -10,6 +12,7 @@
 
 A fully asynchronous approach to supporting Plugwise devices in Home-Assistant. This repository is **meant** for use of beta-testing. As of March 2021 we include testing against latest `dev` in Home-Assistant Core, the above batches should indicate compatibility and compliance.
 
+![Static Badge](https://img.shields.io/badge/Plugwise_Discord-Join_now-purple?style=social&logo=discord&link=https%3A%2F%2Fdiscord.gg%2FmFVhF8Ar6A)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/plugwise)
 [![Generic badge](https://img.shields.io/github/v/release/plugwise/plugwise-beta)](https://github.com/plugwise/plugwise-beta)
 
