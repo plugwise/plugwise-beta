@@ -9,6 +9,6 @@
   "loggers": ["plugwise"],
   "requirements": ["plugwise==1.7.3"
   ],
-  "version": "0.57.2a0",
+  "version": "0.57.2a1",
   "zeroconf": ["_plugwise._tcp.local."]
 }
