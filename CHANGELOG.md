@@ -4,7 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
-- Downstream HA Core PR 138201
+- Downstream HA [Core PR](https://github.com/home-assistant/core/pull/138201) update signature of platforms' async_setup_entry
 
 ## v0.57.1
 
