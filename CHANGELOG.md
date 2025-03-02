@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Downstream HA [Core PR](https://github.com/home-assistant/core/pull/138201) update signature of platforms' async_setup_entry
+
 ## v0.57.1
 
 - Bugfix for Stretch (Issue #833) via plugwise [v1.7.2](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.2)
