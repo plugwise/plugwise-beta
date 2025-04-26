@@ -126,12 +126,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             ) from err
 
         LOGGER.debug(f"{self.api.smile_name} data: %s", data)
-        await self._async_add_remove_devices(data, self.config_entry)
+        await self._async_add_remove_devices(data)
         return data
 
-    async def _async_add_remove_devices(
-        self, data: dict[str, GwEntityData], entry: ConfigEntry
-    ) -> None:
+    async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new or removed devices
         self.new_devices = set(data) - self._current_devices
@@ -139,11 +137,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         self._current_devices = set(data)
 
         if removed_devices:
-            await self._async_remove_devices(data, entry)
+            await self._async_remove_devices(data)
 
-    async def _async_remove_devices(
-        self, data: dict[str, GwEntityData], entry: ConfigEntry
-    ) -> None:
+    async def _async_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Clean registries when removed devices found."""
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(
@@ -164,7 +160,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                         and identifier[1] not in data
                     ):
                         device_reg.async_update_device(
-                            device_entry.id, remove_config_entry_id=entry.entry_id
+                            device_entry.id, remove_config_entry_id=self.config_entry.entry_id
                         )
                         LOGGER.debug(
                             "Removed %s device/zone %s %s from device_registry",
