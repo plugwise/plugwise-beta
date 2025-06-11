@@ -2,7 +2,7 @@
 from unittest.mock import MagicMock
 
 from homeassistant.core import HomeAssistant
-from syrupy import SnapshotAssertion
+from syrupy.assertion import SnapshotAssertion
 
 from tests.common import MockConfigEntry
 from tests.components.diagnostics import get_diagnostics_for_config_entry
