@@ -90,7 +90,7 @@ jobs:
           fi
 
           if ! [ -x "$(command -v uv)" ]; then
-            python3 -m pip install uv
+            python3 -m pip install uv pre-commit
           fi
       - name: Install pre-commit dependencies
         run: |
