@@ -124,8 +124,14 @@ class PlugwiseSwitchEntity(PlugwiseEntity, SwitchEntity):
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
         self.entity_description = description
-        self._attr_is_on = self.device[SWITCHES][self.entity_description.key]
+        self._attr_is_on = self.device[SWITCHES][self.entity_description.key]  # Upstream const
         self._attr_unique_id = f"{device_id}-{description.key}"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Synchronise state with coordinator data."""
+        self._attr_is_on = self.device[SWITCHES][self.entity_description.key]
+        super()._handle_coordinator_update()
 
     @plugwise_command
     async def async_turn_on(self, **kwargs: Any) -> None:
