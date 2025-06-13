@@ -79,8 +79,7 @@ fi
 # /20250613
 
 # Install commit requirements
-#uv pip install --upgrade -e . -r requirements_commit.txt 
-uv pip install --upgrade -r requirements_commit.txt 
+uv pip install --upgrade pre-commit
 
 # Install pre-commit hook
 pre-commit install
