@@ -81,7 +81,7 @@ jobs:
         run: |
           if [ -z "$VIRTUAL_ENV" ]; then
             if [ -x "$(command -v uv)" ]; then
-              uv venv venv
+              uv venv --seed venv
             else
               python3 -m venv venv
             fi

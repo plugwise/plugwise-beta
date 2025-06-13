@@ -65,7 +65,7 @@ set -e
 
 if [ -z "$VIRTUAL_ENV" ]; then
   if [ -x "$(command -v uv)" ]; then
-    uv venv venv
+    uv venv --seed venv
   else
     python3 -m venv venv
   fi
@@ -165,7 +165,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CWARN}"
         if [ -x "$(command -v uv)" ]; then
-          uv venv venv
+          uv venv --seed venv
         else
           python3 -m venv venv
         fi
