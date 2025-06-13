@@ -38,7 +38,8 @@ async def test_adam_climate_switch_entities(
         {"entity_id": "switch.fibaro_hc2_relay"},
         blocking=True,
     )
-    # state.state doesn't change, the switch is locked
+    # Switch is locked – state should remain on
+    state = hass.states.get("switch.fibaro_hc2_relay")
     assert state.state == STATE_ON
     assert mock_smile_adam.set_switch_state.call_count == 1
     mock_smile_adam.set_switch_state.assert_called_with(
