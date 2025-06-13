@@ -65,7 +65,7 @@ set -e
 
 if [ -z "$VIRTUAL_ENV" ]; then
   if [ -x "$(command -v uv)" ]; then
-    uv venv --with-pip venv
+    uv venv venv
   else
     python3 -m venv venv
   fi
@@ -165,14 +165,15 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CWARN}"
         if [ -x "$(command -v uv)" ]; then
-          uv venv --with-pip venv
+          uv venv venv
         else
           python3 -m venv venv
         fi
         # shellcheck disable=SC1091
-	source ./venv/bin/activate
+	source venv/bin/activate
 
 	if ! [ -x "$(command -v uv)" ]; then
+	  echo -e "${CINFO}Ensure uv presence${CWARN}"
 	  python3 -m pip install uv
 	fi
 
@@ -198,16 +199,17 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source "./venv/bin/activate"
+        source venv/bin/activate
 	mkdir -p ./tmp
 	echo ""
 	echo -e "${CINFO}Ensure translations are there${CNORM}"
 	echo ""
 	python3 -m script.translations develop --all > /dev/null 2>&1
 	echo ""
-	echo -e "${CINFO}Ensure uv is there${CNORM}"
-	echo ""
-	python3 -m pip install pip uv
+	if ! [ -x "$(command -v uv)" ]; then
+	  echo -e "${CINFO}Ensure uv is there${CNORM}"
+	  python3 -m pip install uv
+	fi
 	echo -e "${CINFO}Installing pip modules (using uv)${CNORM}"
 	echo ""
 	echo -e "${CINFO} - HA requirements (core and test)${CNORM}"
@@ -232,7 +234,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source "./venv/bin/activate"
+        source venv/bin/activate
 	echo ""
 	echo -e "${CINFO}Test commencing ...${CNORM}"
 	echo ""
@@ -249,7 +251,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source "./venv/bin/activate"
+        source venv/bin/activate
 	echo ""
 	set +e
 	echo -e "${CINFO}... ruff-ing component...${CNORM}"
@@ -273,7 +275,7 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo ""
 	echo "Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source "./venv/bin/activate"
+        source venv/bin/activate
 	echo ""
 	echo -e "${CINFO}Copy back modified files ...${CNORM}"
 	echo ""
