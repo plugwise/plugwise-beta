@@ -56,14 +56,34 @@ which jq || ( echo -e "${CFAIL}You should have jq installed, exiting${CNORM}"; e
 # - testing
 # - quality
 
-
 my_path=$(git rev-parse --show-toplevel)
 
 # Ensure environment is set-up
-# shellcheck disable=SC1091
-source "${my_path}/scripts/setup.sh"
-# shellcheck disable=SC1091
-source "${my_path}/scripts/python-venv.sh"
+
+# 20250613 Copied from HA-core and shell-check adjusted and modified for local use
+set -e
+
+if [ -z "$VIRTUAL_ENV" ]; then
+  if [ -x "$(command -v uv)" ]; then
+    uv venv venv
+  else
+    python3 -m venv venv
+  fi
+  # shellcheck disable=SC1091 # ingesting virtualenv
+  source venv/bin/activate
+fi
+
+if ! [ -x "$(command -v uv)" ]; then
+  python3 -m pip install uv
+fi
+# /20250613
+
+# Install commit requirements
+#uv pip install --upgrade -e . -r requirements_commit.txt 
+uv pip install --upgrade -r requirements_commit.txt 
+
+# Install pre-commit hook
+pre-commit install
 
 # i.e. args used for functions, not directions 
 set +u
@@ -145,8 +165,11 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CWARN}"
-	# shellcheck disable=SC1091
-	source "${my_path}/scripts/python-venv.sh"
+        if [ -x "$(command -v uv)" ]; then
+          uv venv venv
+        else
+          python3 -m venv venv
+        fi
         # shellcheck disable=SC1091
 	source ./venv/bin/activate
 
@@ -185,12 +208,12 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo -e "${CINFO}Installing pip modules (using uv)${CNORM}"
 	echo ""
 	echo -e "${CINFO} - HA requirements (core and test)${CNORM}"
-	pip install --upgrade -r requirements.txt -r requirements_test.txt
+	uv pip install --upgrade -r requirements.txt -r requirements_test.txt
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo -e "${CINFO} - extra's required for plugwise${CNORM}"
-	pip install --upgrade -r ./tmp/requirements_test_extra.txt
+	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
 	echo -e "${CINFO} - home assistant basics${CNORM}"
-	pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
+	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 	echo ""
 	# When using test.py prettier makes multi-line, so use jq
 	module=$(jq '.requirements[]' ../custom_components/plugwise/manifest.json | tr -d '"')

@@ -77,16 +77,26 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Set-up environment
-        run: |
-          scripts/setup.sh
       - name: Install pre-commit dependencies
         run: |
-          . venv/bin/activate
+          if [ -z "$VIRTUAL_ENV" ]; then
+            if [ -x "$(command -v uv)" ]; then
+              uv venv venv
+            else
+              python3 -m venv venv
+            fi
+            # shellcheck disable=SC1091 # ingesting virtualenv
+            source venv/bin/activate
+          fi
+
+          if ! [ -x "$(command -v uv)" ]; then
+            python3 -m pip install uv
+          fi
+      - name: Install pre-commit dependencies
+        run: |
           pre-commit install-hooks
       - name: Run all-files pre-commit excluding testing
         run: |
-          . venv/bin/activate
           pre-commit run --all-files --show-diff-on-failure
         env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
           SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality

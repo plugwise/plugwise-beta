@@ -1,9 +1,9 @@
 [project]
 name = "plugwise-beta"
-version = "0.57.1"
+version = "0.58.0"
 description = "Plugwise beta custom-component"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 license = "MIT"
 keywords = ["Plugwise", "Adam", "Anna", "P1", "Stretch", "Smile"]
 authors = [
