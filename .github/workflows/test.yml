@@ -262,7 +262,7 @@ jobs:
 
           # If everything is OK, don't approve - if requested changes before and everything is good now, approve
           # to release the 'requested changes' bit
-          if [[ $FAIL_COUNT -eq 1 ]]; then
+          if [[ $FAIL_COUNT -eq 0 ]]; then
             if [[ "$LAST_REVIEW_STATE" == "CHANGES_REQUESTED" ]]; then
               echo "Lifting previous changes requested — submitting approval."
               curl -s -X POST \
@@ -283,6 +283,7 @@ jobs:
             --data "{\"event\": \"APPROVE\", \"body\": \"$COMMENT_BODY\"}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews"
           fi
+
           if [[ $FAIL_COUNT -eq 2 ]]; then
             echo "Requesting changes on the pull request"
             curl -s -X POST \
