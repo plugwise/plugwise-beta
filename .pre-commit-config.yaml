@@ -51,6 +51,13 @@ repos:
     hooks:
       - id: yamllint
         name: "Linting yaml"
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+        name: "Shell checking"
+        args:
+          - --external-sources
   - repo: https://github.com/biomejs/pre-commit
     rev: v1.9.4
     hooks:

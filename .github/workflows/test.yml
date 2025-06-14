@@ -43,7 +43,6 @@ jobs:
         run: |
           if [[ "${{ contains(github.event.pull_request.labels.*.name, 'require-dev-pass') }}" == "true" ]]; then
             echo "strict_dev=true" >> $GITHUB_OUTPUT
-
           else
             echo "strict_dev=false" >> $GITHUB_OUTPUT
           fi
@@ -77,16 +76,30 @@ jobs:
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
             ${{ env.CACHE_VERSION}}-${{ runner.os }}
             ${{ env.CACHE_VERSION}}
-      - name: Set-up environment
-        run: |
-          scripts/setup.sh
       - name: Install pre-commit dependencies
         run: |
-          . venv/bin/activate
+          if [ -z "$VIRTUAL_ENV" ]; then
+            if [ -x "$(command -v uv)" ]; then
+              uv venv --seed venv
+            else
+              python3 -m venv venv
+            fi
+            # shellcheck disable=SC1091 # ingesting virtualenv
+            source venv/bin/activate
+          fi
+
+          if ! [ -x "$(command -v uv)" ]; then
+            python3 -m pip install uv pre-commit
+          fi
+      - name: Install pre-commit dependencies
+        run: |
+          # shellcheck disable=SC1091 # ingesting virtualenv
+          source venv/bin/activate
           pre-commit install-hooks
       - name: Run all-files pre-commit excluding testing
         run: |
-          . venv/bin/activate
+          # shellcheck disable=SC1091 # ingesting virtualenv
+          source venv/bin/activate
           pre-commit run --all-files --show-diff-on-failure
         env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
           SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
@@ -212,6 +225,11 @@ jobs:
           RELEASE_TESTS_FAILED="${{ needs.ha-core-release.outputs.release_failed }}"
           FAIL_COUNT=0
 
+          # Get the action-bot's latest state
+          LAST_REVIEW_STATE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews" \
+            | jq -r '[.[] | select(.user.login=="github-actions[bot]")] | last | .state')
+
           if [[ $DEV_TESTS_FAILED == "true" ]]; then
             COMMENT_BODY=":x: **Error while testing for Development HA-core:**\n\n"
           else
@@ -242,6 +260,21 @@ jobs:
             COMMENT_BODY+=":heavy_check_mark: **Success:** No problem with testing against released HA-core.\n"
           fi
 
+          # If everything is OK, don't approve - if requested changes before and everything is good now, approve
+          # to release the 'requested changes' bit
+          if [[ $FAIL_COUNT -eq 0 ]]; then
+            if [[ "$LAST_REVIEW_STATE" == "CHANGES_REQUESTED" ]]; then
+              echo "Lifting previous changes requested — submitting approval."
+              curl -s -X POST \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Content-Type: application/json" \
+                --data "{\"event\": \"APPROVE\", \"body\": \"$COMMENT_BODY\"}" \
+                "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews"
+            else
+              echo "No prior changes requested — skipping approval."
+            fi
+          fi
+
           if [[ $FAIL_COUNT -eq 1 ]]; then
             echo "Comment and approve the pull request"
             curl -s -X POST \
@@ -250,6 +283,7 @@ jobs:
             --data "{\"event\": \"APPROVE\", \"body\": \"$COMMENT_BODY\"}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews"
           fi
+
           if [[ $FAIL_COUNT -eq 2 ]]; then
             echo "Requesting changes on the pull request"
             curl -s -X POST \

@@ -37,7 +37,7 @@ def chosen_env(request: pytest.FixtureRequest) -> str:
     return request.param
 
 @pytest.fixture
-def cooling_present(request: pytest.FixtureRequest) -> str:
+def cooling_present(request: pytest.FixtureRequest) -> bool:
     """Pass the cooling_present boolean.
 
     Used with fixtures that require parametrization of the cooling capability.
@@ -61,7 +61,7 @@ def heater_id(request: pytest.FixtureRequest) -> str:
     return request.param
 
 @pytest.fixture
-def reboot(request: pytest.FixtureRequest) -> str:
+def reboot(request: pytest.FixtureRequest) -> bool:
     """Pass the reboot boolean.
 
     Used with fixtures that require parametrization of the reboot capability.

@@ -56,14 +56,33 @@ which jq || ( echo -e "${CFAIL}You should have jq installed, exiting${CNORM}"; e
 # - testing
 # - quality
 
-
 my_path=$(git rev-parse --show-toplevel)
 
 # Ensure environment is set-up
-# shellcheck disable=SC1091
-source "${my_path}/scripts/setup.sh"
-# shellcheck disable=SC1091
-source "${my_path}/scripts/python-venv.sh"
+
+# 20250613 Copied from HA-core and shell-check adjusted and modified for local use
+set -e
+
+if [ -z "$VIRTUAL_ENV" ]; then
+  if [ -x "$(command -v uv)" ]; then
+    uv venv --seed venv
+  else
+    python3 -m venv venv
+  fi
+  # shellcheck disable=SC1091 # ingesting virtualenv
+  source venv/bin/activate
+fi
+
+if ! [ -x "$(command -v uv)" ]; then
+  python3 -m pip install uv
+fi
+# /20250613
+
+# Install commit requirements
+uv pip install --upgrade pre-commit
+
+# Install pre-commit hook
+pre-commit install
 
 # i.e. args used for functions, not directions 
 set +u
@@ -145,10 +164,18 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CWARN}"
-	# shellcheck disable=SC1091
-	source "${my_path}/scripts/python-venv.sh"
+        if [ -x "$(command -v uv)" ]; then
+          uv venv --seed venv
+        else
+          python3 -m venv venv
+        fi
         # shellcheck disable=SC1091
-	source ./venv/bin/activate
+	source venv/bin/activate
+
+	if ! [ -x "$(command -v uv)" ]; then
+	  echo -e "${CINFO}Ensure uv presence${CWARN}"
+	  python3 -m pip install uv
+	fi
 
 	echo -e "${CINFO}Bootstrap pip parts of HA-core${CWARN}"
 	grep -v "^#" "${coredir}/script/bootstrap" | grep "pip install" | sed 's/python3 -m pip install/uv pip install/g' | sh
@@ -172,25 +199,26 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source "./venv/bin/activate"
+        source venv/bin/activate
 	mkdir -p ./tmp
 	echo ""
 	echo -e "${CINFO}Ensure translations are there${CNORM}"
 	echo ""
 	python3 -m script.translations develop --all > /dev/null 2>&1
 	echo ""
-	echo -e "${CINFO}Ensure uv is there${CNORM}"
-	echo ""
-	python3 -m pip install pip uv
+	if ! [ -x "$(command -v uv)" ]; then
+	  echo -e "${CINFO}Ensure uv is there${CNORM}"
+	  python3 -m pip install uv
+	fi
 	echo -e "${CINFO}Installing pip modules (using uv)${CNORM}"
 	echo ""
 	echo -e "${CINFO} - HA requirements (core and test)${CNORM}"
-	pip install --upgrade -r requirements.txt -r requirements_test.txt
+	uv pip install --upgrade -r requirements.txt -r requirements_test.txt
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo -e "${CINFO} - extra's required for plugwise${CNORM}"
-	pip install --upgrade -r ./tmp/requirements_test_extra.txt
+	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
 	echo -e "${CINFO} - home assistant basics${CNORM}"
-	pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
+	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 	echo ""
 	# When using test.py prettier makes multi-line, so use jq
 	module=$(jq '.requirements[]' ../custom_components/plugwise/manifest.json | tr -d '"')
@@ -206,7 +234,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source "./venv/bin/activate"
+        source venv/bin/activate
 	echo ""
 	echo -e "${CINFO}Test commencing ...${CNORM}"
 	echo ""
@@ -223,7 +251,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source "./venv/bin/activate"
+        source venv/bin/activate
 	echo ""
 	set +e
 	echo -e "${CINFO}... ruff-ing component...${CNORM}"
@@ -247,7 +275,7 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo ""
 	echo "Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source "./venv/bin/activate"
+        source venv/bin/activate
 	echo ""
 	echo -e "${CINFO}Copy back modified files ...${CNORM}"
 	echo ""
