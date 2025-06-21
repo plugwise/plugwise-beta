@@ -14,13 +14,13 @@ from .entity import PlugwiseEntity
 
 # For reference:
 # PlugwiseEntityT = TypeVar("PlugwiseEntityT", bound=PlugwiseEntity)
-# _R = TypeVar("_R")
-# _P = ParamSpec("_P")
+# R = TypeVar("_R")
+# P = ParamSpec("_P")
 
 
-def plugwise_command[PlugwiseEntityT: PlugwiseEntity, **_P, _R](
-    func: Callable[Concatenate[PlugwiseEntityT, _P], Awaitable[_R]],
-) -> Callable[Concatenate[PlugwiseEntityT, _P], Coroutine[Any, Any, _R]]:
+def plugwise_command[PlugwiseEntityT: PlugwiseEntity, **P, R](
+    func: Callable[Concatenate[PlugwiseEntityT, P], Awaitable[R]],
+) -> Callable[Concatenate[PlugwiseEntityT, P], Coroutine[Any, Any, R]]:
     """Decorate Plugwise calls that send commands/make changes to the device.
 
     A decorator that wraps the passed in function, catches Plugwise errors,
@@ -28,8 +28,8 @@ def plugwise_command[PlugwiseEntityT: PlugwiseEntity, **_P, _R](
     """
 
     async def handler(
-        self: PlugwiseEntityT, *args: _P.args, **kwargs: _P.kwargs
-    ) -> _R:
+        self: PlugwiseEntityT, *args: P.args, **kwargs: P.kwargs
+    ) -> R:
         try:
             return await func(self, *args, **kwargs)
         except PlugwiseException as err:
