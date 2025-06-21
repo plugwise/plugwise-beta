@@ -90,7 +90,7 @@ jobs:
   # Prepare default python version environment
   ha-core-release-prepare:
     runs-on: ubuntu-latest
-    name: Setup for HA-core (release/master)
+    name: Prepare and validate pre-commit
     needs:
       - cache
       - prepare
