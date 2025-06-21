@@ -122,7 +122,6 @@ jobs:
       - cache
       - prepare
       - determine-mode
-      - pre-commit
     outputs:
       release_failed: ${{ steps.ha_core_release_tests.outputs.release_failed }}
     steps:
@@ -163,7 +162,6 @@ jobs:
       - cache
       - prepare
       - determine-mode
-      - pre-commit
     outputs:
       dev_failed: ${{ steps.ha_core_dev_tests.outputs.dev_failed }}
     steps:
@@ -198,7 +196,13 @@ jobs:
 
   final-comment:
     runs-on: ubuntu-latest
-    needs: [determine-mode, ha-core-release, ha-core-dev]
+    needs:
+      - cache
+      - prepare
+      - determine-mode
+      - ha-core-release-prepare
+      - ha-core-testing
+      - ha-core-dev
     if: always()
     steps:
       - name: Create combined comment
