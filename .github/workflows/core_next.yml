@@ -5,8 +5,10 @@ name: Validate plugwise-beta against HA-core dev
 
 env:
   # Uses a different key/restore key than test.yml
-  CACHE_VERSION: 1009
+  CACHE_VERSION: 1
   DEFAULT_PYTHON: "3.13"
+  PRE_COMMIT_HOME: ~/.cache/pre-commit
+  VENV: venv
 
 on:
   workflow_dispatch:
@@ -19,35 +21,43 @@ on:
     - cron: "0 9 * * 3"
 
 jobs:
-  # Prepare default python version environment
-  ha-core-prepare:
+  # Determine cache key once
+  cache:
     runs-on: ubuntu-latest
-    name: Setup for HA-core (DEV)
+    name: Cache identify
+    outputs:
+      cache-key: ${{ steps.set-key.outputs.cache-key }}
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
-      - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
-        id: cache-hacore
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-hacore
+      - name: Fetch HA pyproject
+        id: core-version
+        run: wget -O ha_pyproject.toml "https://raw.githubusercontent.com/home-assistant/core/refs/heads/dev/pyproject.toml"
+      - name: Compute cache key
+        id: set-key
+        run: echo "cache-key=${{ runner.os }}-venv-cache-${{ env.CACHE_VERSION }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml', 'ha_pyproject.toml') }}-dev-branch" >> "$GITHUB_OUTPUT"
+
+  # Prepare default python version environment
+  ha-core-prepare:
+    runs-on: ubuntu-latest
+    needs: cache
+    name: Prepare
+    steps:
+      - name: Prepare code checkout and python/pre-commit setup
+        id: cache-reuse
+        uses: plugwise/gh-actions/prepare-python-and-code@v1
         with:
-          path: ./
-          key: >-
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-dev-${{
-            steps.python.outputs.python-version }}-${{
-            hashFiles('./custom_components/plugwise/manifest.json') }}-${{
-            hashFiles('./ha-core/.git/plugwise-tracking') }}
-          restore-keys: |
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-dev-${{ steps.python.outputs.python-version }}-
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}
-            ${{ env.CACHE_VERSION}}
+          cache-key: ${{ needs.cache.outputs.cache-key }}
+          fail-on-miss: false  # First time create cache (if not already exists)
+          python-version: ${{ env.DEFAULT_PYTHON }}
+          venv-dir: ${{ env.VENV }}
+          precommit-home: ${{ env.PRE_COMMIT_HOME }}
+          clone-core: "true"
       - name: Test against HA-core DEV (for active or upcoming RC/Beta)
         run: |
           GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
