@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Maintenance chores on CI
+
 ## v0.58.0
 
 - Downstream HA [Core PR](https://github.com/home-assistant/core/pull/138201) update signature of platforms' async_setup_entry

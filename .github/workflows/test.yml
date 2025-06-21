@@ -6,6 +6,8 @@ name: Test PR against HA-core
 env:
   CACHE_VERSION: 30
   DEFAULT_PYTHON: "3.13"
+  PRE_COMMIT_HOME: ~/.cache/pre-commit
+  VENV: venv
 
 # Do not run on 'push' (as the flow doesn't have access to the labels) - also disabled workflow_dispatch as such
 # Workaround could be something like
@@ -32,6 +34,27 @@ jobs:
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
 
+  # Determine cache key once
+  cache:
+    runs-on: ubuntu-latest
+    name: Cache identify
+    outputs:
+      cache-key: ${{ steps.set-key.outputs.cache-key }}
+    steps:
+      - name: Check out committed code
+        uses: actions/checkout@v4
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        id: python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Fetch HA pyproject
+        id: core-version
+        run: wget -O ha_pyproject.toml "https://raw.githubusercontent.com/home-assistant/core/refs/heads/dev/pyproject.toml"
+      - name: Compute cache key
+        id: set-key
+        run: echo "cache-key=${{ runner.os }}-venv-cache-${{ env.CACHE_VERSION }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml', 'ha_pyproject.toml') }}" >> "$GITHUB_OUTPUT"
+
   determine-mode:
     name: Determine release or dev mode
     runs-on: ubuntu-latest
@@ -47,55 +70,41 @@ jobs:
             echo "strict_dev=false" >> $GITHUB_OUTPUT
           fi
 
-  pre-commit:
-    name: Validate pre-commit requirements
+  # Prepare default python version environment
+  prepare:
     runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/main'
+    needs: cache
+    name: Prepare
+    steps:
+      - name: Prepare code checkout and python/pre-commit setup
+        id: cache-reuse
+        uses: plugwise/gh-actions/prepare-python-and-code@v1
+        with:
+          cache-key: ${{ needs.cache.outputs.cache-key }}
+          fail-on-miss: false  # First time create cache (if not already exists)
+          python-version: ${{ env.DEFAULT_PYTHON }}
+          venv-dir: ${{ env.VENV }}
+          precommit-home: ${{ env.PRE_COMMIT_HOME }}
+          clone-core: "true"
+
+  # Prepare default python version environment
+  ha-core-release-prepare:
+    runs-on: ubuntu-latest
+    name: Prepare and validate pre-commit
+    needs:
+      - cache
+      - prepare
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v4.2.2
-      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
-        id: python
-        uses: actions/setup-python@v5.6.0
+        uses: actions/checkout@v4
+      - name: Prepare code checkout and python/pre-commit setup
+        id: cache-reuse
+        uses: plugwise/gh-actions/prepare-python-and-code@v1
         with:
+          cache-key: ${{ needs.cache.outputs.cache-key }}
+          fail-on-miss: false  # First time create cache (if not already exists)
           python-version: ${{ env.DEFAULT_PYTHON }}
-      - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
-        id: cache-hacore
-        uses: actions/cache@v4.2.3
-        env:
-          cache-name: cache-hacore
-        with:
-          path: ./
-          key: >-
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
-            steps.python.outputs.python-version }}-${{
-            hashFiles('./custom_components/plugwise/manifest.json') }}-${{
-            hashFiles('./ha-core/.git/plugwise-tracking') }}
-          restore-keys: |
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}
-            ${{ env.CACHE_VERSION}}
-      - name: Install pre-commit dependencies
-        run: |
-          if [ -z "$VIRTUAL_ENV" ]; then
-            if [ -x "$(command -v uv)" ]; then
-              uv venv --seed venv
-            else
-              python3 -m venv venv
-            fi
-            # shellcheck disable=SC1091 # ingesting virtualenv
-            source venv/bin/activate
-          fi
-
-          if ! [ -x "$(command -v uv)" ]; then
-            python3 -m pip install uv pre-commit
-          fi
-      - name: Install pre-commit dependencies
-        run: |
-          # shellcheck disable=SC1091 # ingesting virtualenv
-          source venv/bin/activate
-          pre-commit install-hooks
+          venv-dir: ${{ env.VENV }}
       - name: Run all-files pre-commit excluding testing
         run: |
           # shellcheck disable=SC1091 # ingesting virtualenv
@@ -105,40 +114,27 @@ jobs:
           SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
 
   # Prepare default python version environment
-  ha-core-release:
+  ha-core-testing:
     runs-on: ubuntu-latest
     name: Setup for HA-core (release/master)
     continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'true' }} # Allow master failures only if dev is strict
     needs:
+      - cache
+      - prepare
       - determine-mode
-      - pre-commit
     outputs:
       release_failed: ${{ steps.ha_core_release_tests.outputs.release_failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
-      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
-        id: python
-        uses: actions/setup-python@v5.6.0
+      - name: Prepare code checkout and python/pre-commit setup
+        id: cache-reuse
+        uses: plugwise/gh-actions/prepare-python-and-code@v1
         with:
+          cache-key: ${{ needs.cache.outputs.cache-key }}
+          fail-on-miss: false  # First time create cache (if not already exists)
           python-version: ${{ env.DEFAULT_PYTHON }}
-      - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
-        id: cache-hacore
-        uses: actions/cache@v4.2.3
-        env:
-          cache-name: cache-hacore-release
-        with:
-          path: ./
-          key: >-
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
-            steps.python.outputs.python-version }}-${{
-            hashFiles('./custom_components/plugwise/manifest.json') }}-${{
-            hashFiles('./ha-core/.git/plugwise-tracking') }}-release
-          restore-keys: |
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-release
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}
-            ${{ env.CACHE_VERSION}}
+          venv-dir: ${{ env.VENV }}
       - name: Test through HA-core (master/release) - continue-on-error = ${{ needs.determine-mode.outputs.strict_dev == 'true' }}
         id: ha_core_release_tests
         continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'true' }} # Allow master failures only if dev is strict
@@ -163,36 +159,22 @@ jobs:
     name: Setup for HA-core (dev)
     continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'false' }} # Allow dev failures unless strict
     needs:
+      - cache
+      - prepare
       - determine-mode
-      - pre-commit
     outputs:
       dev_failed: ${{ steps.ha_core_dev_tests.outputs.dev_failed }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
-      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
-        id: python
-        uses: actions/setup-python@v5.6.0
+      - name: Prepare code checkout and python/pre-commit setup
+        id: cache-reuse
+        uses: plugwise/gh-actions/prepare-python-and-code@v1
         with:
+          cache-key: ${{ needs.cache.outputs.cache-key }}
+          fail-on-miss: false  # First time create cache (if not already exists)
           python-version: ${{ env.DEFAULT_PYTHON }}
-      - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
-        id: cache-hacore
-        uses: actions/cache@v4.2.3
-        env:
-          cache-name: cache-hacore-dev
-        with:
-          path: ./
-          key: >-
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
-            steps.python.outputs.python-version }}-${{
-            hashFiles('./custom_components/plugwise/manifest.json') }}-${{
-            hashFiles('./ha-core/.git/plugwise-tracking') }}-dev
-          restore-keys: |
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-dev
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}
-            ${{ env.CACHE_VERSION}}
+          venv-dir: ${{ env.VENV }}
       - name: Test through HA-core (dev) - continue-on-error = ${{ needs.determine-mode.outputs.strict_dev == 'false' }}
         id: ha_core_dev_tests
         continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'false' }} # Allow dev failures unless strict
@@ -214,7 +196,13 @@ jobs:
 
   final-comment:
     runs-on: ubuntu-latest
-    needs: [determine-mode, ha-core-release, ha-core-dev]
+    needs:
+      - cache
+      - prepare
+      - determine-mode
+      - ha-core-release-prepare
+      - ha-core-testing
+      - ha-core-dev
     if: always()
     steps:
       - name: Create combined comment
