@@ -5,7 +5,7 @@ Versions from 0.40 and up
 ## v0.57.4
 
 - Maintenance chores on CI
-- Don't raise an error when toggling a locked switch via plugwise to [v1.7.6](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.6) via PR [#878](https://github.com/plugwise/plugwise-beta/pull/878)
+- Don't raise an error when toggling a locked switch via plugwise [v1.7.6](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.6) via PR [#878](https://github.com/plugwise/plugwise-beta/pull/878)
 
 ## v0.57.3
 
