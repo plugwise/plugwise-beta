@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Solve a test-fail when testing towards HA Core dev branch in PR [#887](https://github.com/plugwise/plugwise-beta/pull/887)
+
 ## v0.57.4
 
 - Maintenance chores on CI
