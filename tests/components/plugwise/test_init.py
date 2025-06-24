@@ -317,7 +317,7 @@ async def test_update_device(
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))
         async_fire_time_changed(hass)
-        await hass.async_block_till_done()
+        await hass.async_block_till_done(wait_background_tasks=True)
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
@@ -344,7 +344,7 @@ async def test_update_device(
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))
         async_fire_time_changed(hass)
-        await hass.async_block_till_done()
+        await hass.async_block_till_done(wait_background_tasks=True)
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
