@@ -2,9 +2,19 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.57.4
+
+- Don't raise an error when toggling a locked switch via plugwise to [v1.7.6](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.6) via PR [#878](https://github.com/plugwise/plugwise-beta/pull/878)
+
+## v0.57.3
+
+- Improve code via PR [#875](https://github.com/plugwise/plugwise-beta/pull/865)
+- Bump plugwise to [v1.7.4](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.4)
+
+## v0.57.2
 
 - Downstream HA [Core PR](https://github.com/home-assistant/core/pull/138201) update signature of platforms' async_setup_entry
+- Bump plugwise to [v1.7.3](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.3)
 
 ## v0.57.1
 
