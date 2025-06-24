@@ -9,7 +9,7 @@ Versions from 0.40 and up
 
 ## v0.57.3
 
-- Improve code via PR [#875](https://github.com/plugwise/plugwise-beta/pull/865)
+- Improve code via PR [#865](https://github.com/plugwise/plugwise-beta/pull/865)
 - Bump plugwise to [v1.7.4](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.4)
 
 ## v0.57.2
