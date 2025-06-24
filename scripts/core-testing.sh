@@ -7,11 +7,14 @@ CFAIL="\x1B[31m"  # red
 CINFO="\x1B[96m"  # cyan
 CWARN="\x1B[93m"  # yellow
 
+# Repository name (for reuse betweeh plugwise network and usb)
+REPO_NAME="plugwise"
+
 # By default assumes running against 'master' branch of Core-HA
 # as requested by @bouwew for on-par development with the releases
 # version of HA
 #
-# Override by setting HABRANCH environment variable to run against
+# Override by setting BRANCH environment variable to run against
 # a different branch of core
 #
 # Github flows are run against both 'dev' and 'master'
@@ -46,7 +49,7 @@ which git || ( echo -e "${CFAIL}You should have git installed, exiting${CNORM}";
 
 which jq || ( echo -e "${CFAIL}You should have jq installed, exiting${CNORM}"; exit 1)
 
-# Cloned/adjusted code from python-plugwise, note that we don't actually
+# Cloned/adjusted code from python-${REPO_NAME}, note that we don't actually
 # use the 'venv', but instantiate it to ensure it works in the
 # ha-core testing later on
 
@@ -158,7 +161,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	fi
 	cd "${coredir}" || exit
 	# Add tracker
-	git log -1 | head -1 > "${coredir}/.git/plugwise-tracking"
+	git log -1 | head -1 > "${coredir}/.git/${REPO_NAME}-tracking"
 	# Fake branch
 	git checkout -b fake_branch
 
@@ -182,14 +185,14 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 
 	echo ""
-	echo -e "${CINFO}Cleaning existing plugwise from HA core${CNORM}"
+	echo -e "${CINFO}Cleaning existing ${REPO_NAME} from HA core${CNORM}"
 	echo ""
-	rm -r homeassistant/components/plugwise tests/components/plugwise || echo -e "${CWARN}already clean${CNORM}"
+	rm -r homeassistant/components/${REPO_NAME} tests/components/${REPO_NAME} || echo -e "${CWARN}already clean${CNORM}"
 	echo ""
-	echo -e "${CINFO}Overwriting with plugwise-beta${CNORM}"
+	echo -e "${CINFO}Overwriting with ${REPO_NAME}-beta${CNORM}"
 	echo ""
-	cp -r ../custom_components/plugwise ./homeassistant/components/
-	cp -r ../tests/components/plugwise ./tests/components/
+	cp -r ../custom_components/${REPO_NAME} ./homeassistant/components/
+	cp -r ../tests/components/${REPO_NAME} ./tests/components/
 	echo ""
 fi # core_prep
 
@@ -215,15 +218,15 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo -e "${CINFO} - HA requirements (core and test)${CNORM}"
 	uv pip install --upgrade -r requirements.txt -r requirements_test.txt
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
-	echo -e "${CINFO} - extra's required for plugwise${CNORM}"
+	echo -e "${CINFO} - extra's required for ${REPO_NAME}${CNORM}"
 	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
 	echo -e "${CINFO} - home assistant basics${CNORM}"
 	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 	echo ""
 	# When using test.py prettier makes multi-line, so use jq
-	module=$(jq '.requirements[]' ../custom_components/plugwise/manifest.json | tr -d '"')
-	#module=$(grep require ../custom_components/plugwise/manifest.json | cut -f 4 -d '"')
-	echo -e "${CINFO}Checking manifest for current python-plugwise to install: ${module}${CNORM}"
+	module=$(jq '.requirements[]' ../custom_components/${REPO_NAME}/manifest.json | tr -d '"')
+	#module=$(grep require ../custom_components/${REPO_NAME}/manifest.json | cut -f 4 -d '"')
+	echo -e "${CINFO}Checking manifest for current python-${REPO_NAME} to install: ${module}${CNORM}"
 	echo ""
 	uv pip install --upgrade "${module}"
 fi # pip_prep
@@ -243,7 +246,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
         	debug_params="-rpP --log-cli-level=DEBUG"
 	fi
 	# shellcheck disable=SC2086
-	pytest ${debug_params} ${subject} tests/components/plugwise/${basedir} --snapshot-update --cov=homeassistant/components/plugwise/ --cov-report term-missing || exit
+	pytest ${debug_params} ${subject} tests/components/${REPO_NAME}/${basedir} --snapshot-update --cov=homeassistant/components/${REPO_NAME}/ --cov-report term-missing || exit
 fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
@@ -255,14 +258,14 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo ""
 	set +e
 	echo -e "${CINFO}... ruff-ing component...${CNORM}"
-	ruff check --fix homeassistant/components/plugwise/*py || echo -e "${CWARN}Ruff applied autofixes${CNORM}"
+	ruff check --fix homeassistant/components/${REPO_NAME}/*py || echo -e "${CWARN}Ruff applied autofixes${CNORM}"
 	echo -e "${CINFO}... ruff-ing tests...${CNORM}"
-	ruff check --fix tests/components/plugwise/*py || echo -e "${CWARN}Ruff applied autofixes${CNORM}"
+	ruff check --fix tests/components/${REPO_NAME}/*py || echo -e "${CWARN}Ruff applied autofixes${CNORM}"
 	set -e
 	echo -e "${CINFO}... pylint-ing component...${CNORM}"
-	pylint -j 0 --ignore-missing-annotations=y homeassistant/components/plugwise/*py tests/components/plugwise/*py || (echo -e "${CFAIL}Linting issue, exiting cowardly${CNORM}"; exit 1)
+	pylint -j 0 --ignore-missing-annotations=y homeassistant/components/${REPO_NAME}/*py tests/components/${REPO_NAME}/*py || (echo -e "${CFAIL}Linting issue, exiting cowardly${CNORM}"; exit 1)
 	echo -e "${CINFO}... mypy ...${CNORM}"
-	script/run-in-env.sh mypy homeassistant/components/plugwise/*.py || exit
+	script/run-in-env.sh mypy homeassistant/components/${REPO_NAME}/*.py || exit
 	cd ..
 	echo -e "${CINFO}... markdownlint ...${CNORM}"
 	pre-commit run --all-files --hook-stage manual markdownlint
@@ -279,23 +282,23 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo ""
 	echo -e "${CINFO}Copy back modified files ...${CNORM}"
 	echo ""
-	cp -r ./homeassistant/components/plugwise ../custom_components/
-	cp -r ./tests/components/plugwise ../tests/components/
+	cp -r ./homeassistant/components/${REPO_NAME} ../custom_components/
+	cp -r ./tests/components/${REPO_NAME} ../tests/components/
 	echo -e "${CINFO}Removing 'version' from manifest for hassfest-ing, version not allowed in core components${CNORM}"
 	echo ""
 	# shellcheck disable=SC2090
-	src_manifest="../custom_components/plugwise/manifest.json"
-	dst_manifest="./homeassistant/components/plugwise/manifest.json"
+	src_manifest="../custom_components/${REPO_NAME}/manifest.json"
+	dst_manifest="./homeassistant/components/${REPO_NAME}/manifest.json"
         jq 'del(.version)' ${src_manifest} | tee ${dst_manifest}
-	grep -q -E 'require.*http.*test-files.pythonhosted.*#' ./homeassistant/components/plugwise/manifest.json && (
+	grep -q -E 'require.*http.*test-files.pythonhosted.*#' ./homeassistant/components/${REPO_NAME}/manifest.json && (
 	  echo -e "${CINFO}Changing requirement for hassfest pass ....${CNORM}"
 	  # shellcheck disable=SC2090
-	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise/manifest.json
+	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/${REPO_NAME}/manifest.json
 	)
 
 	# Hassfest already runs on Github
 	if [ -n "${GITHUB_ACTIONS}" ] ; then
-		echo -e "${CINFO}Running hassfest for plugwise${CNORM}"
+		echo -e "${CINFO}Running hassfest for ${REPO_NAME}${CNORM}"
 		python3 -m script.hassfest --requirements --action validate 
 	fi
 fi
