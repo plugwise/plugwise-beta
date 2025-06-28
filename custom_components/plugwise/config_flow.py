@@ -245,10 +245,10 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             api, errors = await verify_connection(self.hass, user_input)
             if api:
                 await self.async_set_unique_id(
-                    api.smile_hostname or api.gateway_id, raise_on_progress=False
+                    api.smile.hostname or api.gateway_id, raise_on_progress=False
                 )
                 self._abort_if_unique_id_configured()
-                return self.async_create_entry(title=api.smile_name, data=user_input)
+                return self.async_create_entry(title=api.smile.name, data=user_input)
 
         configure_input = self.discovery_info or user_input
         return self.async_show_form(
@@ -278,7 +278,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
             api, errors = await verify_connection(self.hass, full_input)
             if api:
                 await self.async_set_unique_id(
-                    api.smile_hostname or api.gateway_id, raise_on_progress=False
+                    api.smile.hostname or api.gateway_id, raise_on_progress=False
                 )
                 self._abort_if_unique_id_mismatch(reason="not_the_same_smile")
                 return self.async_update_reload_and_abort(
@@ -317,7 +317,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlow):  # pw-beta options
         self.options = deepcopy(dict(config_entry.options))
 
     def _create_options_schema(self, coordinator: PlugwiseDataUpdateCoordinator) -> vol.Schema:
-        interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile_type]  # pw-beta options
+        interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile.type]  # pw-beta options
         schema = {
             vol.Optional(
                 CONF_SCAN_INTERVAL,
@@ -325,7 +325,7 @@ class PlugwiseOptionsFlowHandler(OptionsFlow):  # pw-beta options
             ): vol.All(cv.positive_int, vol.Clamp(min=10)),
         }  # pw-beta
 
-        if coordinator.api.smile_type == THERMOSTAT:
+        if coordinator.api.smile.type == THERMOSTAT:
             schema.update({
                 vol.Optional(
                     CONF_HOMEKIT_EMULATION,

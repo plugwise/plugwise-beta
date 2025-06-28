@@ -83,7 +83,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         self._connected = isinstance(version, Version)
         if self._connected:
             self.update_interval = DEFAULT_SCAN_INTERVAL.get(
-                self.api.smile_type, timedelta(seconds=60)
+                self.api.smile.type, timedelta(seconds=60)
             )  # pw-beta options scan-interval
             if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
                 self.update_interval = timedelta(
@@ -125,7 +125,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 translation_key="unsupported_firmware",
             ) from err
 
-        LOGGER.debug(f"{self.api.smile_name} data: %s", data)
+        LOGGER.debug(f"{self.api.smile.name} data: %s", data)
         await self._async_add_remove_devices(data)
         return data
 
