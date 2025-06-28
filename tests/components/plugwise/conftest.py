@@ -17,6 +17,7 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
+from munch import Munch
 from packaging.version import Version
 
 from tests.common import MockConfigEntry, load_fixture
@@ -105,6 +106,7 @@ def mock_smile_config_flow() -> Generator[MagicMock]:
         smile = smile_mock.return_value
 
         smile.connect.return_value = Version("4.3.2")
+        smile.smile = Munch()
         smile.smile.hostname = "smile12345"
         smile.smile.model = "Test Model"
         smile.smile.model_id = "Test Model ID"
@@ -136,6 +138,7 @@ def mock_smile_adam() -> Generator[MagicMock]:
         smile.gateway_id = "fe799307f1624099878210aa0b9f1475"
         smile.heater_id = "90986d591dcd426cae3ec3e8111ff730"
         smile.reboot = True
+        smile.smile = Munch()
         smile.smile.hostname = "smile98765"
         smile.smile.model = "Gateway"
         smile.smile.model_id = "smile_open_therm"
@@ -161,6 +164,7 @@ def mock_smile_adam_heat_cool(chosen_env: str, cooling_present: bool) -> Generat
         smile.gateway_id = "da224107914542988a88561b4452b0f6"
         smile.heater_id = "056ee145a816487eaa69243c3280f8bf"
         smile.reboot = True
+        smile.smile = Munch()
         smile.smile.version = "3.6.4"
         smile.smile.type = "thermostat"
         smile.smile.hostname = "smile98765"
@@ -187,6 +191,7 @@ def mock_smile_adam_4() -> Generator[MagicMock]:
         smile.gateway_id = "b5c2386c6f6342669e50fe49dd05b188"
         smile.heater_id = "e4684553153b44afbef2200885f379dc"
         smile.reboot = True
+        smile.smile = Munch()
         smile.smile.hostname = "smile98765"
         smile.smile.model = "Gateway"
         smile.smile.model_id = "smile_open_therm"
@@ -212,6 +217,7 @@ def mock_smile_anna(chosen_env: str, cooling_present: bool) -> Generator[MagicMo
         smile.gateway_id = "015ae9ea3f964e668e490fa39da3870b"
         smile.heater_id = "1cbf783bb11e4a7c8a6843dee3a86927"
         smile.reboot = True
+        smile.smile = Munch()
         smile.smile.version = "4.0.15"
         smile.smile.type = "thermostat"
         smile.smile.hostname = "smile98765"
@@ -236,6 +242,7 @@ def mock_smile_p1(chosen_env: str, gateway_id: str) -> Generator[MagicMock]:
         smile.gateway_id = gateway_id
         smile.heater_id = None
         smile.reboot = True
+        smile.smile = Munch()
         smile.smile.hostname = "smile98765"
         smile.smile.model = "Gateway"
         smile.smile.model_id = "smile"
@@ -261,6 +268,7 @@ def mock_smile_legacy_anna() -> Generator[MagicMock]:
         smile.gateway_id = "0000aaaa0000aaaa0000aaaa0000aa00"
         smile.heater_id = "04e4cbfe7f4340f090f85ec3b9e6a950"
         smile.reboot = False
+        smile.smile = Munch()
         smile.smile.hostname = "smile98765"
         smile.smile.model = "Gateway"
         smile.smile.model_id = None
@@ -286,6 +294,7 @@ def mock_stretch() -> Generator[MagicMock]:
         smile.gateway_id = "259882df3c05415b99c2d962534ce820"
         smile.heater_id = None
         smile.reboot = False
+        smile.smile = Munch()
         smile.smile.hostname = "stretch98765"
         smile.smile.model = "Gateway"
         smile.smile.model_id = None
