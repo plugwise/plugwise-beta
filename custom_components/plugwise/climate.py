@@ -73,7 +73,7 @@ async def async_setup_entry(
             return
 
         entities: list[PlugwiseClimateEntity] = []
-        gateway_name = coordinator.api.smile_name
+        gateway_name = coordinator.api.smile.name
         for device_id in coordinator.new_devices:
             device = coordinator.data[device_id]
             if gateway_name == "Adam":
@@ -139,7 +139,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         if (
             self.coordinator.api.cooling_present
-            and coordinator.api.smile_name != "Adam"
+            and coordinator.api.smile.name != "Adam"
         ):
             self._attr_supported_features = (
                 ClimateEntityFeature.TARGET_TEMPERATURE_RANGE

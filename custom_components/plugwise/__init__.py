@@ -50,10 +50,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, str(coordinator.api.gateway_id))},
         manufacturer="Plugwise",
-        model=coordinator.api.smile_model,
-        model_id=coordinator.api.smile_model_id,
-        name=coordinator.api.smile_name,
-        sw_version=str(coordinator.api.smile_version),
+        model=coordinator.api.smile.model,
+        model_id=coordinator.api.smile.model_id,
+        name=coordinator.api.smile.name,
+        sw_version=str(coordinator.api.smile.version),
     )  # required for adding the entity-less P1 Gateway
 
     async def delete_notification(
@@ -62,7 +62,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
         """Service: delete the Plugwise Notification."""
         LOGGER.debug(
             "Service delete PW Notification called for %s",
-            coordinator.api.smile_name,
+            coordinator.api.smile.name,
         )
         try:
             await coordinator.api.delete_notification()
@@ -70,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
         except PlugwiseError:
             LOGGER.debug(
                 "Failed to delete the Plugwise Notification for %s",
-                coordinator.api.smile_name,
+                coordinator.api.smile.name,
             )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
