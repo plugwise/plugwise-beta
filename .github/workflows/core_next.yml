@@ -72,4 +72,4 @@ jobs:
           # closes existing issue if all labels match
           close-previous: true
           title: Next Home Assistant version incompatibility
-          body: "**Note: This does not affect users of the plugwise integration in Core nor Plugwise-Beta users on the latest version of Home Assistant.** For our beloved {{ assignees }}, please check action logs, it seems our current code is not compatible with the upcoming version (and/or Release Candidate (RC)/beta) of Home Assistant in a timely matter to conform before the next monthly release."
+          body: "**Note: This does not affect users of the plugwise integration in Core nor Plugwise-Beta users on the latest version of Home Assistant.** For our beloved {{ assignees }}, please check action logs, it seems our current code is not compatible with the upcoming version (and/or Release Candidate (RC)/beta) of Home Assistant in a timely matter to conform before the next monthly release. See details at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
