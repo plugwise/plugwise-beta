@@ -24,6 +24,7 @@ from tests.common import MockConfigEntry, load_fixture
 
 
 def build_smile(**attrs):
+    """Build smile Munch from provided attributes."""
     smile = Munch()
     for k, v in attrs.items():
         setattr(smile, k, v)
