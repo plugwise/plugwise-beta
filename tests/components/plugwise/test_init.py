@@ -328,7 +328,7 @@ async def test_update_device(
             == 9
         )
         item_list: list[str] = []
-        for device_entry in list(device_registry.devices.values()):
+        for device_entry in device_registry.devices.values():
             item_list.extend(x[1] for x in device_entry.identifiers)
         assert "01234567890abcdefghijklmnopqrstu" in item_list
 
@@ -355,6 +355,6 @@ async def test_update_device(
             == 8
         )
         item_list: list[str] = []
-        for device_entry in list(device_registry.devices.values()):
+        for device_entry in device_registry.devices.values():
             item_list.extend(x[1] for x in device_entry.identifiers)
         assert "1772a4ea304041adb83f357b751341ff" not in item_list
