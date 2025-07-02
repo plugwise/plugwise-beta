@@ -245,8 +245,22 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 	if [ ! "${DEBUG}" == "" ] ; then 
         	debug_params="-rpP --log-cli-level=DEBUG"
 	fi
-	# shellcheck disable=SC2086
-	pytest ${debug_params} ${subject} tests/components/${REPO_NAME}/${basedir} --snapshot-update --cov=homeassistant/components/${REPO_NAME}/ --cov-report term-missing || exit
+	# First test if snapshots still valid (silent fail, otherwise will update snapshots)
+        PYTEST_COMMAND="pytest ${debug_params} ${subject} tests/components/${REPO_NAME}/${basedir} --cov=homeassistant/components/${REPO_NAME}/ --cov-report term-missing"
+	eval "${PYTEST_COMMAND}" || {
+		echo ""
+        	echo -e "${CFAIL}Pytest / Snapshot validation failed, re-running to update snapshot ...${CNORM}"
+		eval "${PYTEST_COMMAND} --snapshot-update" || {
+		echo ""
+        		echo -e "${CFAIL}Pytest failed, not a snapshot issue ...${CNORM}" || exit 1
+		} && {
+		echo ""
+        		echo -e "${CINFO}Pytest / Snapshot validation passed"
+		}
+	} && {
+		echo ""
+        	echo -e "${CINFO}Pytest / Snapshot validation passed"
+	}
 fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
