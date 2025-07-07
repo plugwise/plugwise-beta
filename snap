@@ -1,2 +1,0 @@
-#!/bin/bash
-(cd ha-core ; cp ../tests/components/plugwise/test_setup.py tests/components/plugwise/ ; source venv/bin/activate; pytest tests/components/plugwise/test_setup.py ; deactivate; cd ..)
