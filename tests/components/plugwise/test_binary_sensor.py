@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from freezegun.api import FrozenDateTimeFactory
-from homeassistant.components.climate import DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
@@ -27,9 +27,9 @@ async def test_binary_sensor_states(
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
 ) -> None:
-    """Test binary sensor state."""
-
+    """Test binary sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
+
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
