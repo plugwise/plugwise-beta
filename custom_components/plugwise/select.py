@@ -97,7 +97,7 @@ async def async_setup_entry(
         for device_id in coordinator.new_devices:
             device = coordinator.data[device_id]
             for description in SELECT_TYPES:
-                if description.options_key in device:
+                if device.get(description.options_key):
                     entities.append(
                         PlugwiseSelectEntity(coordinator, device_id, description)
                     )
@@ -132,7 +132,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
             self._location = location
 
     @property
-    def current_option(self) -> str:
+    def current_option(self) -> str| None:
         """Return the selected entity option to represent the entity state."""
         return self.device[self.entity_description.key]
 

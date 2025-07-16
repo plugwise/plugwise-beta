@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## v0.57.6
+
+- Fix issue #897, partly via plugwise [v1.7.8](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.8)
+
 ## v0.57.5
 
 - Bump plugwise to [v1.7.7](https://github.com/plugwise/python-plugwise/releases/tag/v1.7.7) and adapt, small improvements
