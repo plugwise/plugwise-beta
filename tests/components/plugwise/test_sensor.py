@@ -7,10 +7,26 @@ import pytest
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_component import async_update_entity
-import homeassistant.helpers.entity_registry as er
+from syrupy.assertion import SnapshotAssertion
 
-from tests.common import MockConfigEntry
+from tests.common import MockConfigEntry, snapshot_platform
+
+
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
+@pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_binary_sensor_states(
+    hass: HomeAssistant,
+    mock_smile_anna: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test sensor snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
 async def test_adam_climate_sensor_entities(
