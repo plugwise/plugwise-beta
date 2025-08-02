@@ -3,6 +3,7 @@ from datetime import timedelta
 import logging
 from unittest.mock import MagicMock, patch
 
+from freezegun.api import FrozenDateTimeFactory
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -13,7 +14,6 @@ from plugwise.exceptions import (
 )
 import pytest
 
-from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import (
