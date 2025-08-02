@@ -14,13 +14,11 @@ from homeassistant.helpers.entity_component import async_update_entity
 from tests.common import MockConfigEntry, snapshot_platform
 
 
-@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
-@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_binary_sensor_states(
+async def test_adam_sensor_entities(
     hass: HomeAssistant,
-    mock_smile_anna: MagicMock,
+    mock_smile_adam: MagicMock,
     snapshot: SnapshotAssertion,
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
@@ -106,6 +104,21 @@ async def test_unique_id_migration_humidity(
     entity_entry = entity_registry.async_get("sensor.woonkamer_battery")
     assert entity_entry
     assert entity_entry.unique_id == "f61f1a2535f54f52ad006a3d18e459ca-battery"
+
+
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
+@pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_anna_sensor_states(
+    hass: HomeAssistant,
+    mock_smile_anna: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test sensor snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_single"], indirect=True)
