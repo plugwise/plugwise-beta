@@ -26,10 +26,10 @@ async def test_adam_sensor_entities(
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
-async def test_adam_sensor_entity_2(
+async def test_adam_4_sensor_entity(
     hass: HomeAssistant, mock_smile_adam_4: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test creation of specifc Adam related sensor entity."""
+    """Test creation of specifc Adam sensor entity."""
     state = hass.states.get("sensor.woonkamer_humidity")
     assert state
     assert float(state.state) == 56.2
