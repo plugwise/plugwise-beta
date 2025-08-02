@@ -27,33 +27,6 @@ async def test_adam_sensor_entities(
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
-async def test_adam_climate_sensor_entities(
-    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
-) -> None:
-    """Test creation of climate related sensor entities."""
-    state = hass.states.get("sensor.adam_outdoor_temperature")
-    assert state
-    assert float(state.state) == 7.81
-
-    state = hass.states.get("sensor.cv_pomp_electricity_consumed")
-    assert state
-    assert float(state.state) == 35.6
-
-    state = hass.states.get("sensor.onoff_water_temperature")
-    assert state
-    assert float(state.state) == 70.0
-
-    state = hass.states.get("sensor.cv_pomp_electricity_consumed_interval")
-    assert state
-    assert float(state.state) == 7.37
-
-    await async_update_entity(hass, "sensor.zone_lisa_wk_battery")
-
-    state = hass.states.get("sensor.zone_lisa_wk_battery")
-    assert state
-    assert int(state.state) == 34
-
-
 async def test_adam_climate_sensor_entity_2(
     hass: HomeAssistant, mock_smile_adam_4: MagicMock, init_integration: MockConfigEntry
 ) -> None:
