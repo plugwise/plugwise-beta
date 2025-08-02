@@ -58,7 +58,7 @@ async def test_adam_change_select_entity(
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize("platforms", [(SELECT_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_adam_select_entities(
+async def test_adam_2_select_entities(
     hass: HomeAssistant,
     mock_smile_adam_heat_cool: MagicMock,
     snapshot: SnapshotAssertion,
