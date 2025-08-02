@@ -3,13 +3,13 @@
 from unittest.mock import MagicMock
 
 import pytest
+from syrupy.assertion import SnapshotAssertion
 
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_component import async_update_entity
-from syrupy.assertion import SnapshotAssertion
 
 from tests.common import MockConfigEntry, snapshot_platform
 
