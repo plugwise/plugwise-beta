@@ -21,6 +21,7 @@ from syrupy.assertion import SnapshotAssertion
 
 from tests.common import MockConfigEntry, snapshot_platform
 
+
 @pytest.mark.parametrize("platforms", [(SWITCH_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_binary_sensor_states(
@@ -32,18 +33,6 @@ async def test_binary_sensor_states(
 ) -> None:
     """Test sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
-
-async def test_adam_climate_switch_entities(
-    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
-) -> None:
-    """Test creation of climate related switch entities."""
-    state = hass.states.get("switch.cv_pomp_relay")
-    assert state
-    assert state.state == STATE_ON
-
-    state = hass.states.get("switch.fibaro_hc2_relay")
-    assert state
-    assert state.state == STATE_ON
 
 
 async def test_adam_climate_switch_negative_testing(
