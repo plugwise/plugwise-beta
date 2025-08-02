@@ -3,7 +3,6 @@
 from unittest.mock import MagicMock
 
 import pytest
-
 from syrupy.assertion import SnapshotAssertion
 
 from homeassistant.components.select import (
