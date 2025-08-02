@@ -33,30 +33,6 @@ async def test_binary_sensor_states(
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
-@pytest.mark.parametrize(
-    ("entity_id", "expected_state"),
-    [
-        ("binary_sensor.opentherm_secondary_boiler_state", STATE_OFF),
-        ("binary_sensor.opentherm_dhw_state", STATE_OFF),
-        ("binary_sensor.opentherm_heating", STATE_ON),
-        ("binary_sensor.opentherm_cooling_enabled", STATE_OFF),
-        ("binary_sensor.opentherm_compressor_state", STATE_ON),
-    ],
-)
-async def test_anna_climate_binary_sensor_entities(
-    hass: HomeAssistant,
-    mock_smile_anna: MagicMock,
-    init_integration: MockConfigEntry,
-    entity_id: str,
-    expected_state: str,
-) -> None:
-    """Test creation of climate related binary_sensor entities."""
-    state = hass.states.get(entity_id)
-    assert state.state == expected_state
-
-
-@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
-@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_climate_binary_sensor_change(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
