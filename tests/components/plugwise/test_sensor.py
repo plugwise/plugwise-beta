@@ -29,7 +29,7 @@ async def test_adam_sensor_entities(
 def test_adam_4_sensor_entity(
     hass: HomeAssistant, mock_smile_adam_4: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test creation of specifc Adam sensor entity."""
+    """Test creation of specific Adam sensor entity."""
     state = hass.states.get("sensor.woonkamer_humidity")
     assert state
     assert float(state.state) == 56.2
@@ -131,7 +131,7 @@ async def test_p1_3ph_dsmr_disabled_sensor_entitiy(
     mock_smile_p1: MagicMock,
     init_integration: MockConfigEntry,
 ) -> None:
-    """Test specifc P1 disabled sensor entity."""
+    """Test specific P1 disabled sensor entity."""
     entity_id = "sensor.p1_voltage_phase_one"
     state = hass.states.get(entity_id)
     assert not state
