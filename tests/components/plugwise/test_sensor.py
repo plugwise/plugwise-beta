@@ -123,28 +123,17 @@ async def test_anna_sensor_states(
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_single"], indirect=True)
 @pytest.mark.parametrize("gateway_id", ["a455b61e52394b2db5081ce025a430f3"], indirect=True)
+@pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_p1_dsmr_sensor_entities(
-    hass: HomeAssistant, mock_smile_p1: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant,
+    mock_smile_p1: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
 ) -> None:
-    """Test creation of power related sensor entities."""
-    state = hass.states.get("sensor.p1_net_electricity_point")
-    assert state
-    assert int(state.state) == 486
-
-    state = hass.states.get("sensor.p1_electricity_consumed_off_peak_cumulative")
-    assert state
-    assert float(state.state) == 17643.423
-
-    state = hass.states.get("sensor.p1_electricity_produced_peak_point")
-    assert state
-    assert int(state.state) == 0
-
-    state = hass.states.get("sensor.p1_electricity_consumed_peak_cumulative")
-    assert state
-    assert float(state.state) == 13966.608
-
-    state = hass.states.get("sensor.p1_gas_consumed_cumulative")
-    assert not state
+    """Test sensor snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
@@ -183,14 +172,14 @@ async def test_p1_3ph_dsmr_sensor_entities(
     assert float(state.state) == 233.2
 
 
+@pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_stretch_sensor_entities(
-    hass: HomeAssistant, mock_stretch: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant,
+    mock_stretch: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
 ) -> None:
-    """Test creation of power related sensor entities."""
-    state = hass.states.get("sensor.boiler_1EB31_electricity_consumed")
-    assert state
-    assert float(state.state) == 1.19
-
-    state = hass.states.get("sensor.droger_52559_electricity_consumed_interval")
-    assert state
-    assert float(state.state) == 0.0
+    """Test sensor snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
