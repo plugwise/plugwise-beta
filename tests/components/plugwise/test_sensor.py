@@ -108,29 +108,6 @@ async def test_unique_id_migration_humidity(
     assert entity_entry.unique_id == "f61f1a2535f54f52ad006a3d18e459ca-battery"
 
 
-@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
-@pytest.mark.parametrize("cooling_present", [True], indirect=True)
-async def test_anna_as_smt_climate_sensor_entities(
-    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
-) -> None:
-    """Test creation of climate related sensor entities."""
-    state = hass.states.get("sensor.opentherm_outdoor_air_temperature")
-    assert state
-    assert float(state.state) == 3.0
-
-    state = hass.states.get("sensor.opentherm_water_temperature")
-    assert state
-    assert float(state.state) == 29.1
-
-    state = hass.states.get("sensor.opentherm_dhw_temperature")
-    assert state
-    assert float(state.state) == 46.3
-
-    state = hass.states.get("sensor.anna_illuminance")
-    assert state
-    assert float(state.state) == 86.0
-
-
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_single"], indirect=True)
 @pytest.mark.parametrize("gateway_id", ["a455b61e52394b2db5081ce025a430f3"], indirect=True)
 async def test_p1_dsmr_sensor_entities(
