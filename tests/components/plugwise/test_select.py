@@ -34,7 +34,7 @@ async def test_adam_select_entities(
 async def test_adam_change_select_entity(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test changing of Adam thermostat schedule select entity."""
+    """Test changing of Adam thermostat_schedule select entity."""
     await hass.services.async_call(
         SELECT_DOMAIN,
         SERVICE_SELECT_OPTION,
