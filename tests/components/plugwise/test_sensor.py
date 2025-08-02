@@ -22,14 +22,14 @@ async def test_adam_sensor_entities(
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
 ) -> None:
-    """Test sensor snapshot."""
+    """Test Adam sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
-async def test_adam_climate_sensor_entity_2(
+async def test_adam_sensor_entity_2(
     hass: HomeAssistant, mock_smile_adam_4: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test creation of climate related sensor entities."""
+    """Test creation of specifc Adam related sensor entity."""
     state = hass.states.get("sensor.woonkamer_humidity")
     assert state
     assert float(state.state) == 56.2
@@ -89,7 +89,7 @@ async def test_anna_sensor_states(
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
 ) -> None:
-    """Test sensor snapshot."""
+    """Test Anna sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
@@ -104,7 +104,7 @@ async def test_p1_dsmr_sensor_entities(
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
 ) -> None:
-    """Test sensor snapshot."""
+    """Test P1 1-phase sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
@@ -119,7 +119,7 @@ async def test_p1_3ph_dsmr_sensor_entities(
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
 ) -> None:
-    """Test sensor snapshot."""
+    """Test P1 3-phase sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
@@ -131,7 +131,7 @@ async def test_p1_3ph_dsmr_disabled_sensor_entitiy(
     mock_smile_p1: MagicMock,
     init_integration: MockConfigEntry,
 ) -> None:
-    """Test creation of power related sensor entities."""
+    """Test specifc P1 disabled sensor entity."""
     entity_id = "sensor.p1_voltage_phase_one"
     state = hass.states.get(entity_id)
     assert not state
@@ -156,5 +156,5 @@ async def test_stretch_sensor_entities(
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
 ) -> None:
-    """Test sensor snapshot."""
+    """Test Stretch sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
