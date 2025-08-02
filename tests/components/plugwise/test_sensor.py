@@ -111,25 +111,28 @@ async def test_p1_dsmr_sensor_entities(
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
 @pytest.mark.parametrize("gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True)
+@pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_p1_3ph_dsmr_sensor_entities(
+    hass: HomeAssistant,
+    mock_smile_p1: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test sensor snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
+
+
+@pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
+@pytest.mark.parametrize("gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True)
+async def test_p1_3ph_dsmr_disabled_sensor_entitiy(
     hass: HomeAssistant,
     entity_registry: er.EntityRegistry,
     mock_smile_p1: MagicMock,
     init_integration: MockConfigEntry,
 ) -> None:
     """Test creation of power related sensor entities."""
-    state = hass.states.get("sensor.p1_electricity_phase_one_consumed")
-    assert state
-    assert int(state.state) == 1763
-
-    state = hass.states.get("sensor.p1_electricity_phase_two_consumed")
-    assert state
-    assert int(state.state) == 1703
-
-    state = hass.states.get("sensor.p1_electricity_phase_three_consumed")
-    assert state
-    assert int(state.state) == 2080
-
     entity_id = "sensor.p1_voltage_phase_one"
     state = hass.states.get(entity_id)
     assert not state
