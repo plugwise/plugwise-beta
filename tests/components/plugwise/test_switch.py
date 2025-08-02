@@ -35,7 +35,7 @@ async def test_adam_switch_states(
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
-async def test_adam_climate_switch_changes(
+async def test_adam_switch_changes(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test changing of Adam switch entities."""
@@ -76,7 +76,7 @@ async def test_adam_climate_switch_changes(
     )
 
 
-async def test_adam_climate_switch_negative_testing(
+async def test_adam_switch_negative_testing(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test exceptions of Adam switch entities."""
