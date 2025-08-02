@@ -74,7 +74,7 @@ async def test_adam_2_select_entities(
 async def test_adam_select_regulation_mode(
     hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test chaging of Adam regulation_mode select entity.
+    """Test changing of Adam regulation_mode select entity.
 
     Also tests a change in climate _previous mode.
     """
