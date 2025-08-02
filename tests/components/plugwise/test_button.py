@@ -2,8 +2,9 @@
 
 from unittest.mock import MagicMock
 
-from syrupy.assertion import SnapshotAssertion
 import pytest
+from syrupy.assertion import SnapshotAssertion
+
 from homeassistant.components.button import DOMAIN as BUTTON_DOMAIN, SERVICE_PRESS
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
