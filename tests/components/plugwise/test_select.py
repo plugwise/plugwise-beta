@@ -4,6 +4,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from syrupy.assertion import SnapshotAssertion
+
 from homeassistant.components.select import (
     ATTR_OPTION,
     DOMAIN as SELECT_DOMAIN,
@@ -12,19 +14,22 @@ from homeassistant.components.select import (
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ServiceValidationError
+from homeassistant.helpers import entity_registry as er
 
-from tests.common import MockConfigEntry
+from tests.common import MockConfigEntry, snapshot_platform
 
 
+@pytest.mark.parametrize("platforms", [(SELECT_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_adam_select_entities(
-    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant,
+    mock_smile_adam: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
 ) -> None:
-    """Test a thermostat select."""
-    state = hass.states.get("select.woonkamer_thermostat_schedule")
-    assert state
-    assert state.state == "GF7  Woonkamer"
-
-    assert not hass.states.get("select.cv_kraan_garage_thermostat_schedule")
+    """Test Adam select snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
 async def test_adam_change_select_entity(
