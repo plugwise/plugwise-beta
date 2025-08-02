@@ -24,7 +24,7 @@ from tests.common import MockConfigEntry, snapshot_platform
 
 @pytest.mark.parametrize("platforms", [(SWITCH_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_binary_sensor_states(
+async def test_adam_switch_states(
     hass: HomeAssistant,
     mock_smile_adam: MagicMock,
     snapshot: SnapshotAssertion,
@@ -108,18 +108,17 @@ async def test_adam_climate_switch_changes(
         "a28f588dc4a049a483fd03a30361ad3a", None, "relay", STATE_ON
     )
 
-
-async def test_stretch_switch_entities(
-    hass: HomeAssistant, mock_stretch: MagicMock, init_integration: MockConfigEntry
+@pytest.mark.parametrize("platforms", [(SWITCH_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_stretch_switch_states(
+    hass: HomeAssistant,
+    mock_stretch: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
 ) -> None:
-    """Test creation of climate related switch entities."""
-    state = hass.states.get("switch.boiler_1eb31_relay")
-    assert state
-    assert state.state == STATE_ON
-
-    state = hass.states.get("switch.droger_52559_relay")
-    assert state
-    assert state.state == STATE_ON
+    """Test sensor snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
 async def test_stretch_switch_changes(
