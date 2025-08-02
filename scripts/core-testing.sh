@@ -250,16 +250,18 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
         PYTEST_COMMAND="pytest ${debug_params} ${subject} tests/components/${REPO_NAME}/${basedir} --cov=homeassistant/components/${REPO_NAME}/ --cov-report term-missing"
 	eval "${PYTEST_COMMAND}" || {
 		echo ""
-        	echo -e "${CFAIL}Pytest / Snapshot validation failed, re-running to update snapshot ...${CNORM}"
+        echo -e "${CFAIL}Pytest / Snapshot validation failed, re-running to update snapshot ...${CNORM}"
+		# Rerun with --snapshot-update; abort if this also fails
 		eval "${PYTEST_COMMAND} --snapshot-update" || {
-		echo ""
-        		echo -e "${CFAIL}Pytest failed, not a snapshot issue ...${CNORM}" || exit 1
-		} && {
-			SNAPSHOT_UPDATED=1
+			echo ""
+			echo -e "${CFAIL}Pytest failed, not a snapshot issue ...${CNORM}"
+			exit 1
 		}
+		# Second run succeeded ⇒ mark snapshots updated
+		SNAPSHOT_UPDATED=1
 	} && {
 		echo ""
-        	echo -e "${CINFO}Pytest / Snapshot validation passed"
+        echo -e "${CINFO}Pytest / Snapshot validation passed"
 	}
 fi # testing
 
