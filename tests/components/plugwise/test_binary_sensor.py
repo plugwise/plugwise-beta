@@ -6,35 +6,42 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from freezegun.api import FrozenDateTimeFactory
+from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_component import async_update_entity
+from syrupy.assertion import SnapshotAssertion
 
-from tests.common import MockConfigEntry, async_fire_time_changed
+from tests.common import MockConfigEntry, async_fire_time_changed, snapshot_platform
+
+
+@pytest.mark.parametrize("platforms", [(BINARY_SENSOR_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_adam_binary_sensor_states(
+    hass: HomeAssistant,
+    mock_smile_adam: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test Adam binary sensor snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
-@pytest.mark.parametrize(
-    ("entity_id", "expected_state"),
-    [
-        ("binary_sensor.opentherm_secondary_boiler_state", STATE_OFF),
-        ("binary_sensor.opentherm_dhw_state", STATE_OFF),
-        ("binary_sensor.opentherm_heating", STATE_ON),
-        ("binary_sensor.opentherm_cooling_enabled", STATE_OFF),
-        ("binary_sensor.opentherm_compressor_state", STATE_ON),
-    ],
-)
-async def test_anna_climate_binary_sensor_entities(
+@pytest.mark.parametrize("platforms", [(BINARY_SENSOR_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_anna_binary_sensor_states(
     hass: HomeAssistant,
     mock_smile_anna: MagicMock,
-    init_integration: MockConfigEntry,
-    entity_id: str,
-    expected_state: str,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
 ) -> None:
-    """Test creation of climate related binary_sensor entities."""
-    state = hass.states.get(entity_id)
-    assert state.state == expected_state
+    """Test Anna binary sensor snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
@@ -55,19 +62,6 @@ async def test_anna_climate_binary_sensor_change(
     state = hass.states.get("binary_sensor.opentherm_dhw_state")
     assert state
     assert state.state == STATE_OFF
-
-
-async def test_adam_climate_binary_sensor_change(
-    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
-) -> None:
-    """Test of a climate related plugwise-notification binary_sensor."""
-    state = hass.states.get("binary_sensor.adam_plugwise_notification")
-    assert state
-    assert state.state == STATE_ON
-    assert "warning_msg" in state.attributes
-    assert "unreachable" in state.attributes["warning_msg"][0]
-    assert not state.attributes.get("error_msg")
-    assert not state.attributes.get("other_msg")
 
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
