@@ -18,7 +18,7 @@ from tests.common import MockConfigEntry, async_fire_time_changed, snapshot_plat
 
 @pytest.mark.parametrize("platforms", [(BINARY_SENSOR_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_adam_binary_sensor_states(
+async def test_adam_binary_sensor_snapshot(
     hass: HomeAssistant,
     mock_smile_adam: MagicMock,
     snapshot: SnapshotAssertion,
@@ -29,11 +29,12 @@ async def test_adam_binary_sensor_states(
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
+
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize("platforms", [(BINARY_SENSOR_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_anna_binary_sensor_states(
+async def test_anna_binary_sensor_snapshot(
     hass: HomeAssistant,
     mock_smile_anna: MagicMock,
     snapshot: SnapshotAssertion,
@@ -66,6 +67,21 @@ async def test_anna_climate_binary_sensor_change(
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
 @pytest.mark.parametrize("gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True)
+@pytest.mark.parametrize("platforms", [(BINARY_SENSOR_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_p1_v4_binary_sensor_snapshot(
+    hass: HomeAssistant,
+    mock_smile_p1: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test Smile P1 binary_sensor snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
+
+
+@pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
+@pytest.mark.parametrize("gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True)
 async def test_p1_v4_binary_sensor_entity(
     hass: HomeAssistant,
     mock_smile_p1: MagicMock,
@@ -73,12 +89,6 @@ async def test_p1_v4_binary_sensor_entity(
     freezer: FrozenDateTimeFactory,
 ) -> None:
     """Test of a Smile P1 related plugwise-notification binary_sensor."""
-    state = hass.states.get("binary_sensor.smile_p1_plugwise_notification")
-    assert state
-    assert state.state == STATE_ON
-    assert "warning_msg" in state.attributes
-    assert "connected" in state.attributes["warning_msg"][0]
-
     with patch(
         "homeassistant.components.plugwise.binary_sensor.persistent_notification"
     ) as persistent_notification_mock:
