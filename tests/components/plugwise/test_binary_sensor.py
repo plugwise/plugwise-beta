@@ -29,7 +29,6 @@ async def test_adam_binary_sensor_snapshot(
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
-
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize("platforms", [(BINARY_SENSOR_DOMAIN,)])
