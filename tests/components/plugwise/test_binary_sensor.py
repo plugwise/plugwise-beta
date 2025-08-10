@@ -78,7 +78,7 @@ async def test_p1_v4_binary_sensor_snapshot(
     """Test Smile P1 binary_sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
-
+# pw-beta only
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
 @pytest.mark.parametrize("gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True)
 async def test_p1_v4_binary_sensor_entity(
@@ -87,7 +87,7 @@ async def test_p1_v4_binary_sensor_entity(
     init_integration: MockConfigEntry,
     freezer: FrozenDateTimeFactory,
 ) -> None:
-    """Test of a Smile P1 related plugwise-notification binary_sensor."""
+    """Test creation of a persistent notification for the corresponding P1 related binary_sensor."""
     with patch(
         "homeassistant.components.plugwise.binary_sensor.persistent_notification"
     ) as persistent_notification_mock:
