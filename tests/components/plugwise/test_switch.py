@@ -16,61 +16,29 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
-import homeassistant.helpers.entity_registry as er
+from homeassistant.helpers import entity_registry as er
+from syrupy.assertion import SnapshotAssertion
 
-from tests.common import MockConfigEntry
+from tests.common import MockConfigEntry, snapshot_platform
 
 
-async def test_adam_climate_switch_entities(
+@pytest.mark.parametrize("platforms", [(SWITCH_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_adam_switch_states(
+    hass: HomeAssistant,
+    mock_smile_adam: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test Adam switch snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
+
+
+async def test_adam_switch_changes(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test creation of climate related switch entities."""
-    state = hass.states.get("switch.cv_pomp_relay")
-    assert state
-    assert state.state == STATE_ON
-
-    state = hass.states.get("switch.fibaro_hc2_relay")
-    assert state
-    assert state.state == STATE_ON
-
-
-async def test_adam_climate_switch_negative_testing(
-    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
-) -> None:
-    """Test exceptions of climate related switch entities."""
-    mock_smile_adam.set_switch_state.side_effect = PlugwiseException
-
-    with pytest.raises(HomeAssistantError):
-        await hass.services.async_call(
-            SWITCH_DOMAIN,
-            SERVICE_TURN_OFF,
-            {"entity_id": "switch.cv_pomp_relay"},
-            blocking=True,
-        )
-
-    assert mock_smile_adam.set_switch_state.call_count == 1
-    mock_smile_adam.set_switch_state.assert_called_with(
-        "78d1126fc4c743db81b61c20e88342a7", None, "relay", STATE_OFF
-    )
-
-    with pytest.raises(HomeAssistantError):
-        await hass.services.async_call(
-            SWITCH_DOMAIN,
-            SERVICE_TURN_ON,
-            {"entity_id": "switch.fibaro_hc2_relay"},
-            blocking=True,
-        )
-
-    assert mock_smile_adam.set_switch_state.call_count == 2
-    mock_smile_adam.set_switch_state.assert_called_with(
-        "a28f588dc4a049a483fd03a30361ad3a", None, "relay", STATE_ON
-    )
-
-
-async def test_adam_climate_switch_changes(
-    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
-) -> None:
-    """Test changing of climate related switch entities."""
+    """Test changing of Adam switch entities."""
     await hass.services.async_call(
         SWITCH_DOMAIN,
         SERVICE_TURN_OFF,
@@ -108,23 +76,56 @@ async def test_adam_climate_switch_changes(
     )
 
 
-async def test_stretch_switch_entities(
-    hass: HomeAssistant, mock_stretch: MagicMock, init_integration: MockConfigEntry
+async def test_adam_switch_negative_testing(
+    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test creation of climate related switch entities."""
-    state = hass.states.get("switch.boiler_1eb31_relay")
-    assert state
-    assert state.state == STATE_ON
+    """Test exceptions of Adam switch entities."""
+    mock_smile_adam.set_switch_state.side_effect = PlugwiseException
 
-    state = hass.states.get("switch.droger_52559_relay")
-    assert state
-    assert state.state == STATE_ON
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            SWITCH_DOMAIN,
+            SERVICE_TURN_OFF,
+            {"entity_id": "switch.cv_pomp_relay"},
+            blocking=True,
+        )
+
+    assert mock_smile_adam.set_switch_state.call_count == 1
+    mock_smile_adam.set_switch_state.assert_called_with(
+        "78d1126fc4c743db81b61c20e88342a7", None, "relay", STATE_OFF
+    )
+
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            SWITCH_DOMAIN,
+            SERVICE_TURN_ON,
+            {"entity_id": "switch.fibaro_hc2_relay"},
+            blocking=True,
+        )
+
+    assert mock_smile_adam.set_switch_state.call_count == 2
+    mock_smile_adam.set_switch_state.assert_called_with(
+        "a28f588dc4a049a483fd03a30361ad3a", None, "relay", STATE_ON
+    )
+
+
+@pytest.mark.parametrize("platforms", [(SWITCH_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_stretch_switch_states(
+    hass: HomeAssistant,
+    mock_stretch: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test Stretch switch snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
 async def test_stretch_switch_changes(
     hass: HomeAssistant, mock_stretch: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test changing of power related switch entities."""
+    """Test changing of Stretch switch entities."""
     await hass.services.async_call(
         SWITCH_DOMAIN,
         SERVICE_TURN_OFF,
