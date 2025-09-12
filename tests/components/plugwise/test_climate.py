@@ -17,14 +17,31 @@ from homeassistant.components.climate import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
+from homeassistant.helpers import entity_registry as er
+from syrupy.assertion import SnapshotAssertion
 
-from tests.common import MockConfigEntry, async_fire_time_changed
+from tests.common import MockConfigEntry, async_fire_time_changed, snapshot_platform
 
 HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
     "homeassistant.components.plugwise.coordinator.Smile.async_update"
 )
 TEST_HOST = "1.1.1.1"
 TEST_PASSWORD = "test_password"
+
+
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
+@pytest.mark.parametrize("platforms", [(CLIMATE_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_binary_sensor_states(
+    hass: HomeAssistant,
+    mock_smile_anna: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test climate snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
 async def test_adam_climate_entity_attributes(
@@ -442,6 +459,7 @@ async def test_anna_climate_entity_climate_changes(
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))
         async_fire_time_changed(hass)
+        await hass.async_block_till_done()
         await hass.async_block_till_done()
 
         state = hass.states.get("climate.anna")
