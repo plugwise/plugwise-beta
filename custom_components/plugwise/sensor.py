@@ -518,4 +518,4 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
     @property
     def native_value(self) -> int | float:
         """Return the value reported by the sensor."""
-        return self.device[SENSORS][self.entity_description.key]  # Upstream consts
+        return self.device.get(SENSORS, {}).get(self.entity_description.key)  # Upstream consts
