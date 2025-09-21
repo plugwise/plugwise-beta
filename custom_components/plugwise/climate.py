@@ -127,11 +127,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if (location := self.device.get(LOCATION)) is not None:
             self._location = location
 
-        self._attr_max_temp = min(self.device.get(THERMOSTAT, {}).get(UPPER_BOUND), 35.0)
-        self._attr_min_temp = self.device.get(THERMOSTAT, {}).get(LOWER_BOUND)
+        self._attr_max_temp = min(self.device.get(THERMOSTAT, {}).get(UPPER_BOUND, 35.0), 35.0)
+        self._attr_min_temp = self.device.get(THERMOSTAT, {}).get(LOWER_BOUND, 0.0)
         # Ensure we don't drop below 0.1
         self._attr_target_temperature_step = max(
-            self.device.get(THERMOSTAT, {}).get(RESOLUTION), 0.1
+            self.device.get(THERMOSTAT, {}).get(RESOLUTION, 0.5), 0.1
         )
         self._attr_unique_id = f"{device_id}-climate"
 
@@ -148,7 +148,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= (
                 ClimateEntityFeature.TURN_OFF | ClimateEntityFeature.TURN_ON
             )
-        if presets := self.device.get("preset_modes"):  # can be NONE
+        if presets := self.device.get("preset_modes", None):  # can be NONE
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
         self._attr_preset_modes = presets
 
@@ -167,12 +167,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 self._previous_mode = mode
 
     @property
-    def current_temperature(self) -> float:
+    def current_temperature(self) -> float | None:
         """Return the current temperature."""
-        return self.device.get(SENSORS,()).get(ATTR_TEMPERATURE)
+        return self.device.get(SENSORS, {}).get(ATTR_TEMPERATURE)
 
     @property
-    def target_temperature(self) -> float:
+    def target_temperature(self) -> float | None:
         """Return the temperature we try to reach.
 
         Connected to the HVACMode combination of AUTO-HEAT.
@@ -181,7 +181,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return self.device.get(THERMOSTAT, {}).get(TARGET_TEMP)
 
     @property
-    def target_temperature_high(self) -> float:
+    def target_temperature_high(self) -> float | None:
         """Return the temperature we try to reach in case of cooling.
 
         Connected to the HVACMode combination of AUTO-HEAT_COOL.
@@ -189,7 +189,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         return self.device.get(THERMOSTAT, {}).get(TARGET_TEMP_HIGH)
 
     @property
-    def target_temperature_low(self) -> float:
+    def target_temperature_low(self) -> float | None:
         """Return the heating temperature we try to reach in case of heating.
 
         Connected to the HVACMode combination AUTO-HEAT_COOL.
@@ -207,7 +207,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if self._homekit_enabled and self._homekit_mode == HVACMode.OFF:
             mode = HVACMode.OFF  # pragma: no cover
 
-        return mode
+        return HVACMode(mode)
 
     @property
     def hvac_modes(self) -> list[HVACMode]:
@@ -219,7 +219,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         ):
             hvac_modes.append(HVACMode.OFF)
 
-        if self.device.get(AVAILABLE_SCHEDULES):
+        if self.device.get(AVAILABLE_SCHEDULES, []):
             hvac_modes.append(HVACMode.AUTO)
 
         if self.coordinator.api.cooling_present:
