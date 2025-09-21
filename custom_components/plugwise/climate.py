@@ -107,7 +107,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     _enable_turn_on_off_backwards_compatibility = False
 
     _previous_mode: str = HVACAction.HEATING  # Upstream
-    _homekit_mode: str | None = None  # pw-beta homekit emulation + intentional unsort
+    _homekit_mode: HVACMode | None = None  # pw-beta homekit emulation + intentional unsort
 
     def __init__(
         self,
