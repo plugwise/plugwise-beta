@@ -139,7 +139,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     @property
     def options(self) -> list[str]:
         """Return the available select-options."""
-        if options := self.device.get(self.entity_description.options_key) is not None:
+        if (options := self.device.get(self.entity_description.options_key)) is not None:
             return options
         return []
 
