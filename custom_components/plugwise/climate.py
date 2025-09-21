@@ -272,9 +272,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set the hvac mode."""
-        if hvac_mode not in self.hvac_modes:
-            raise HomeAssistantError("Unsupported hvac_mode")
-
         if hvac_mode == self.hvac_mode:
             return
 
