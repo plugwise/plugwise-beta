@@ -83,7 +83,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
             # Upstream: Do not change the AVAILABLE line below: some Plugwise devices and zones
             # Upstream: do not provide their availability-status!
             self._dev_id in self.coordinator.data
-            and (AVAILABLE not in self.device or self.device.get(AVAILABLE) is True)
+            and (self.device.get(AVAILABLE, True) is True)
             and super().available
         )
 

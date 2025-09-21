@@ -121,15 +121,15 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     ) -> None:
         """Initiate Plugwise Number."""
         super().__init__(coordinator, device_id)
-        self.actuator = self.device.get(description.key)  # Upstream
         self.device_id = device_id
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_mode = NumberMode.BOX
-        self._attr_native_max_value = self.device.get(description.key, {}).get(UPPER_BOUND, 100.0)  # Upstream const
-        self._attr_native_min_value = self.device.get(description.key, {}).get(LOWER_BOUND, 0.0)  # Upstream const
+        ctrl = self.device.get(description.key, {})
+        self._attr_native_max_value = ctrl.get(UPPER_BOUND, 100.0)  # Upstream const
+        self._attr_native_min_value = ctrl.get(LOWER_BOUND, 0.0)  # Upstream const
 
-        native_step = self.device.get(description.key, {}).get(RESOLUTION, 0.5)  # Upstream const
+        native_step = ctrl.get(RESOLUTION, 0.5)  # Upstream const
         if description.key != TEMPERATURE_OFFSET:  # Upstream const
             native_step = max(native_step, 0.5)
         self._attr_native_step = native_step

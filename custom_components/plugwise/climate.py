@@ -198,15 +198,19 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, cool, heat, heat_cool, or off mode."""
-        if (
-            mode := self.device.get(CLIMATE_MODE)
-        ) is None or mode not in self.hvac_modes:  # pw-beta add to Core
+        mode = self.device.get(CLIMATE_MODE)
+        if mode is None:
+            return HVACMode.HEAT  # pragma: no cover
+        try:
+            hvac = HVACMode(mode)
+        except ValueError:
+            return HVACMode.HEAT  # pragma: no cover
+        if hvac not in self.hvac_modes:
             return HVACMode.HEAT  # pragma: no cover
         # pw-beta homekit emulation
         if self._homekit_enabled and self._homekit_mode == HVACMode.OFF:
-            mode = HVACMode.OFF  # pragma: no cover
-
-        return HVACMode(mode)
+            return HVACMode.OFF  # pragma: no cover
+        return hvac
 
     @property
     def hvac_modes(self) -> list[HVACMode]:
@@ -223,9 +227,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         if self.coordinator.api.cooling_present:
             if REGULATION_MODES in self._gateway_data:
-                if self._gateway_data[SELECT_REGULATION_MODE] == HVACAction.COOLING:
+                selected = self._gateway_data.get(SELECT_REGULATION_MODE)
+                if selected == HVACAction.COOLING:
                     hvac_modes.append(HVACMode.COOL)
-                if self._gateway_data[SELECT_REGULATION_MODE] == HVACAction.HEATING:
+                if selected == HVACAction.HEATING:
                     hvac_modes.append(HVACMode.HEAT)
             else:
                 hvac_modes.append(HVACMode.HEAT_COOL)

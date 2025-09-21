@@ -132,7 +132,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
             self._location = location
 
     @property
-    def current_option(self) -> str| None:
+    def current_option(self) -> str | None:
         """Return the selected entity option to represent the entity state."""
         return self.device.get(self.entity_description.key)
 
