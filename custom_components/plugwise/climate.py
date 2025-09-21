@@ -23,7 +23,6 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
@@ -108,7 +107,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     _enable_turn_on_off_backwards_compatibility = False
 
     _previous_mode: str = HVACAction.HEATING  # Upstream
-    _homekit_mode: str | None = None  # pw-beta homekit emulation + intentional unsort
+    _homekit_mode: HVACMode | None = None  # pw-beta homekit emulation + intentional unsort
 
     def __init__(
         self,
@@ -127,11 +126,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         if (location := self.device.get(LOCATION)) is not None:
             self._location = location
 
-        self._attr_max_temp = min(self.device[THERMOSTAT][UPPER_BOUND], 35.0)
-        self._attr_min_temp = self.device[THERMOSTAT][LOWER_BOUND]
+        self._attr_max_temp = min(self.device.get(THERMOSTAT, {}).get(UPPER_BOUND, 35.0), 35.0)
+        self._attr_min_temp = self.device.get(THERMOSTAT, {}).get(LOWER_BOUND, 0.0)
         # Ensure we don't drop below 0.1
         self._attr_target_temperature_step = max(
-            self.device[THERMOSTAT][RESOLUTION], 0.1
+            self.device.get(THERMOSTAT, {}).get(RESOLUTION, 0.5), 0.1
         )
         self._attr_unique_id = f"{device_id}-climate"
 
@@ -148,7 +147,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             self._attr_supported_features |= (
                 ClimateEntityFeature.TURN_OFF | ClimateEntityFeature.TURN_ON
             )
-        if presets := self.device["preset_modes"]:  # can be NONE
+        if presets := self.device.get("preset_modes", None):  # can be NONE
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
         self._attr_preset_modes = presets
 
@@ -167,47 +166,51 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 self._previous_mode = mode
 
     @property
-    def current_temperature(self) -> float:
+    def current_temperature(self) -> float | None:
         """Return the current temperature."""
-        return self.device[SENSORS][ATTR_TEMPERATURE]
+        return self.device.get(SENSORS, {}).get(ATTR_TEMPERATURE)
 
     @property
-    def target_temperature(self) -> float:
+    def target_temperature(self) -> float | None:
         """Return the temperature we try to reach.
 
         Connected to the HVACMode combination of AUTO-HEAT.
         """
 
-        return self.device[THERMOSTAT][TARGET_TEMP]
+        return self.device.get(THERMOSTAT, {}).get(TARGET_TEMP)
 
     @property
-    def target_temperature_high(self) -> float:
+    def target_temperature_high(self) -> float | None:
         """Return the temperature we try to reach in case of cooling.
 
         Connected to the HVACMode combination of AUTO-HEAT_COOL.
         """
-        return self.device[THERMOSTAT][TARGET_TEMP_HIGH]
+        return self.device.get(THERMOSTAT, {}).get(TARGET_TEMP_HIGH)
 
     @property
-    def target_temperature_low(self) -> float:
+    def target_temperature_low(self) -> float | None:
         """Return the heating temperature we try to reach in case of heating.
 
         Connected to the HVACMode combination AUTO-HEAT_COOL.
         """
-        return self.device[THERMOSTAT][TARGET_TEMP_LOW]
+        return self.device.get(THERMOSTAT, {}).get(TARGET_TEMP_LOW)
 
     @property
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, cool, heat, heat_cool, or off mode."""
-        if (
-            mode := self.device[CLIMATE_MODE]
-        ) is None or mode not in self.hvac_modes:  # pw-beta add to Core
+        mode = self.device.get(CLIMATE_MODE)
+        if mode is None:
+            return HVACMode.HEAT  # pragma: no cover
+        try:
+            hvac = HVACMode(mode)
+        except ValueError:
+            return HVACMode.HEAT  # pragma: no cover
+        if hvac not in self.hvac_modes:
             return HVACMode.HEAT  # pragma: no cover
         # pw-beta homekit emulation
         if self._homekit_enabled and self._homekit_mode == HVACMode.OFF:
-            mode = HVACMode.OFF  # pragma: no cover
-
-        return HVACMode(mode)
+            return HVACMode.OFF  # pragma: no cover
+        return hvac
 
     @property
     def hvac_modes(self) -> list[HVACMode]:
@@ -219,14 +222,15 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
         ):
             hvac_modes.append(HVACMode.OFF)
 
-        if self.device.get(AVAILABLE_SCHEDULES):
+        if self.device.get(AVAILABLE_SCHEDULES, []):
             hvac_modes.append(HVACMode.AUTO)
 
         if self.coordinator.api.cooling_present:
             if REGULATION_MODES in self._gateway_data:
-                if self._gateway_data[SELECT_REGULATION_MODE] == HVACAction.COOLING:
+                selected = self._gateway_data.get(SELECT_REGULATION_MODE)
+                if selected == HVACAction.COOLING:
                     hvac_modes.append(HVACMode.COOL)
-                if self._gateway_data[SELECT_REGULATION_MODE] == HVACAction.HEATING:
+                if selected == HVACAction.HEATING:
                     hvac_modes.append(HVACMode.HEAT)
             else:
                 hvac_modes.append(HVACMode.HEAT_COOL)
@@ -249,7 +253,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @property
     def preset_mode(self) -> str | None:
         """Return the current preset mode."""
-        return self.device[ACTIVE_PRESET]
+        return self.device.get(ACTIVE_PRESET)
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
@@ -272,9 +276,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set the hvac mode."""
-        if hvac_mode not in self.hvac_modes:
-            raise HomeAssistantError("Unsupported hvac_mode")
-
         if hvac_mode == self.hvac_mode:
             return
 
@@ -297,7 +298,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
                 await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
             if (
                 self._homekit_mode in [HVACMode.HEAT, HVACMode.HEAT_COOL]
-                and self.device[ACTIVE_PRESET] == PRESET_AWAY
+                and self.device.get(ACTIVE_PRESET) == PRESET_AWAY
             ):  # pragma: no cover
                 await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
 

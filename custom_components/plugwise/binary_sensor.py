@@ -165,7 +165,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         self._notification: dict[str, str] = {}  # pw-beta
 
     @property
-    def is_on(self) -> bool:
+    def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
         # pw-beta: show Plugwise notifications as HA persistent notifications
         if self._notification:
@@ -174,7 +174,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
                     self.hass, message, "Plugwise Notification:", f"{DOMAIN}.{notify_id}"
                 )
 
-        return self.device[BINARY_SENSORS][self.entity_description.key]
+        return self.device.get(BINARY_SENSORS, {}).get(self.entity_description.key)
 
     @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
