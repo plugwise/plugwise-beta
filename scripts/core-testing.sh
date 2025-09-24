@@ -181,7 +181,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	fi
 
 	echo -e "${CINFO}Bootstrap pip parts of HA-core${CWARN}"
-	grep -v "^#" "${coredir}/script/bootstrap" | grep "pip install" | sed 's/python3 -m pip install/uv pip install/g' | sh
+        sh "${coredir}/script/bootstrap"
 	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 
 	echo ""
