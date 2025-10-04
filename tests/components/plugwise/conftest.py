@@ -1,7 +1,7 @@
 """Setup mocks for the Plugwise integration tests."""
 from __future__ import annotations
 
-from collections.abc import Generator
+from collections.abc import AsyncGenerator, Generator
 import json
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -126,6 +126,28 @@ def mock_smile_config_flow() -> Generator[MagicMock]:
 
 
 @pytest.fixture
+def platforms(request: pytest.FixtureRequest) -> list[str]:
+    """Fixture for platforms."""
+    return list(request.param)
+
+
+@pytest.fixture
+async def setup_platform(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    platforms,
+) -> AsyncGenerator[None]:
+    """Set up one or all platforms."""
+
+    mock_config_entry.add_to_hass(hass)
+
+    with patch(f"homeassistant.components.{DOMAIN}.PLATFORMS", platforms):
+        assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+        await hass.async_block_till_done()
+        yield mock_config_entry
+
+
+@pytest.fixture
 def mock_smile_adam() -> Generator[MagicMock]:
     """Create a Mock Adam type for testing."""
     chosen_env = "m_adam_multiple_devices_per_zone"
@@ -187,8 +209,8 @@ def mock_smile_adam_heat_cool(chosen_env: str, cooling_present: bool) -> Generat
 
 
 @pytest.fixture
-def mock_smile_adam_4() -> Generator[MagicMock]:
-    """Create a 4th Mock Adam type for testing."""
+def mock_smile_adam_jip() -> Generator[MagicMock]:
+    """Create a Mock Adam-Jip type for testing."""
     chosen_env = "m_adam_jip"
     data = _read_json(chosen_env, "data")
     with patch(

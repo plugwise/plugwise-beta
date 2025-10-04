@@ -245,8 +245,24 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 	if [ ! "${DEBUG}" == "" ] ; then 
         	debug_params="-rpP --log-cli-level=DEBUG"
 	fi
-	# shellcheck disable=SC2086
-	pytest ${debug_params} ${subject} tests/components/${REPO_NAME}/${basedir} --snapshot-update --cov=homeassistant/components/${REPO_NAME}/ --cov-report term-missing || exit
+	# First test if snapshots still valid (silent fail, otherwise will update snapshots)
+	SNAPSHOT_UPDATED=0
+        PYTEST_COMMAND="pytest ${debug_params} ${subject} tests/components/${REPO_NAME}/${basedir} --cov=homeassistant/components/${REPO_NAME}/ --cov-report term-missing"
+	eval "${PYTEST_COMMAND}" || {
+		echo ""
+        echo -e "${CFAIL}Pytest / Snapshot validation failed, re-running to update snapshot ...${CNORM}"
+		# Rerun with --snapshot-update; abort if this also fails
+		eval "${PYTEST_COMMAND} --snapshot-update" || {
+			echo ""
+			echo -e "${CFAIL}Pytest failed, not a snapshot issue ...${CNORM}"
+			exit 1
+		}
+		# Second run succeeded ⇒ mark snapshots updated
+		SNAPSHOT_UPDATED=1
+	} && {
+		echo ""
+        echo -e "${CINFO}Pytest / Snapshot validation passed"
+	}
 fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
@@ -284,6 +300,9 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo ""
 	cp -r ./homeassistant/components/${REPO_NAME} ../custom_components/
 	cp -r ./tests/components/${REPO_NAME} ../tests/components/
+        if [ "${SNAPSHOT_UPDATED}" == "1" ]; then
+		echo -e "${CWARN}Note: updated snapshots ...${CNORM}"
+	fi
 	echo -e "${CINFO}Removing 'version' from manifest for hassfest-ing, version not allowed in core components${CNORM}"
 	echo ""
 	# shellcheck disable=SC2090
