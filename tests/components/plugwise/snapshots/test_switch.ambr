@@ -1,5 +1,5 @@
 # serializer version: 1
-# name: test_adam_switch_states[platforms0][switch.cv_pomp_relay-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.cv_pomp_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -34,7 +34,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.cv_pomp_relay-state]
+# name: test_adam_switch_snapshot[platforms0][switch.cv_pomp_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -48,7 +48,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.fibaro_hc2_lock-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.fibaro_hc2_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -83,7 +83,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.fibaro_hc2_lock-state]
+# name: test_adam_switch_snapshot[platforms0][switch.fibaro_hc2_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -97,7 +97,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.fibaro_hc2_relay-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.fibaro_hc2_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -132,7 +132,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.fibaro_hc2_relay-state]
+# name: test_adam_switch_snapshot[platforms0][switch.fibaro_hc2_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -146,7 +146,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.nas_lock-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.nas_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -181,7 +181,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.nas_lock-state]
+# name: test_adam_switch_snapshot[platforms0][switch.nas_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -195,7 +195,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.nas_relay-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.nas_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -230,7 +230,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.nas_relay-state]
+# name: test_adam_switch_snapshot[platforms0][switch.nas_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -244,7 +244,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.nvr_lock-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.nvr_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -279,7 +279,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.nvr_lock-state]
+# name: test_adam_switch_snapshot[platforms0][switch.nvr_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -293,7 +293,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.nvr_relay-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.nvr_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -328,7 +328,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.nvr_relay-state]
+# name: test_adam_switch_snapshot[platforms0][switch.nvr_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -342,7 +342,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.playstation_smart_plug_lock-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.playstation_smart_plug_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -377,7 +377,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.playstation_smart_plug_lock-state]
+# name: test_adam_switch_snapshot[platforms0][switch.playstation_smart_plug_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -391,7 +391,7 @@
     'state': 'off',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.playstation_smart_plug_relay-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.playstation_smart_plug_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -426,7 +426,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.playstation_smart_plug_relay-state]
+# name: test_adam_switch_snapshot[platforms0][switch.playstation_smart_plug_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -440,7 +440,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.test_relay-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.test_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -475,7 +475,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.test_relay-state]
+# name: test_adam_switch_snapshot[platforms0][switch.test_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -489,7 +489,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.usg_smart_plug_lock-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.usg_smart_plug_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -524,7 +524,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.usg_smart_plug_lock-state]
+# name: test_adam_switch_snapshot[platforms0][switch.usg_smart_plug_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -538,7 +538,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.usg_smart_plug_relay-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.usg_smart_plug_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -573,7 +573,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.usg_smart_plug_relay-state]
+# name: test_adam_switch_snapshot[platforms0][switch.usg_smart_plug_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -587,7 +587,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.ziggo_modem_lock-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.ziggo_modem_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -622,7 +622,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.ziggo_modem_lock-state]
+# name: test_adam_switch_snapshot[platforms0][switch.ziggo_modem_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -636,7 +636,7 @@
     'state': 'on',
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.ziggo_modem_relay-entry]
+# name: test_adam_switch_snapshot[platforms0][switch.ziggo_modem_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -671,7 +671,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_switch_states[platforms0][switch.ziggo_modem_relay-state]
+# name: test_adam_switch_snapshot[platforms0][switch.ziggo_modem_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -685,7 +685,7 @@
     'state': 'on',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.boiler_1eb31_lock-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.boiler_1eb31_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -720,7 +720,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.boiler_1eb31_lock-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.boiler_1eb31_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -734,7 +734,7 @@
     'state': 'off',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.boiler_1eb31_relay-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.boiler_1eb31_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -769,7 +769,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.boiler_1eb31_relay-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.boiler_1eb31_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -783,7 +783,7 @@
     'state': 'on',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.droger_52559_lock-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.droger_52559_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -818,7 +818,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.droger_52559_lock-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.droger_52559_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -832,7 +832,7 @@
     'state': 'off',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.droger_52559_relay-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.droger_52559_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -867,7 +867,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.droger_52559_relay-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.droger_52559_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -881,7 +881,7 @@
     'state': 'on',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.koelkast_92c4a_lock-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.koelkast_92c4a_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -916,7 +916,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.koelkast_92c4a_lock-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.koelkast_92c4a_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -930,7 +930,7 @@
     'state': 'off',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.koelkast_92c4a_relay-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.koelkast_92c4a_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -965,7 +965,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.koelkast_92c4a_relay-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.koelkast_92c4a_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -979,7 +979,7 @@
     'state': 'on',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.schakel_relay-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.schakel_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -1014,7 +1014,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.schakel_relay-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.schakel_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -1028,7 +1028,7 @@
     'state': 'on',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.stroomvreters_relay-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.stroomvreters_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -1063,7 +1063,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.stroomvreters_relay-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.stroomvreters_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -1077,7 +1077,7 @@
     'state': 'on',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.vaatwasser_2a1ab_lock-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.vaatwasser_2a1ab_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -1112,7 +1112,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.vaatwasser_2a1ab_lock-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.vaatwasser_2a1ab_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -1126,7 +1126,7 @@
     'state': 'off',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.vaatwasser_2a1ab_relay-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.vaatwasser_2a1ab_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -1161,7 +1161,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.vaatwasser_2a1ab_relay-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.vaatwasser_2a1ab_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -1175,7 +1175,7 @@
     'state': 'on',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.wasmachine_52ac1_lock-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.wasmachine_52ac1_lock-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -1210,7 +1210,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.wasmachine_52ac1_lock-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.wasmachine_52ac1_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
@@ -1224,7 +1224,7 @@
     'state': 'on',
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.wasmachine_52ac1_relay-entry]
+# name: test_stretch_switch_snapshot[platforms0][switch.wasmachine_52ac1_relay-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -1259,7 +1259,7 @@
     'unit_of_measurement': None,
   })
 # ---
-# name: test_stretch_switch_states[platforms0][switch.wasmachine_52ac1_relay-state]
+# name: test_stretch_switch_snapshot[platforms0][switch.wasmachine_52ac1_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'switch',
