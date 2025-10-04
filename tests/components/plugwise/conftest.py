@@ -126,9 +126,9 @@ def mock_smile_config_flow() -> Generator[MagicMock]:
 
 
 @pytest.fixture
-def platforms() -> list[str]:
+def platforms(request: pytest.FixtureRequest) -> list[str]:
     """Fixture for platforms."""
-    return []
+    return list(request.param)
 
 
 @pytest.fixture
