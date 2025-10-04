@@ -4,7 +4,6 @@ from unittest.mock import MagicMock
 
 from plugwise.exceptions import PlugwiseException
 import pytest
-from syrupy.assertion import SnapshotAssertion
 
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
@@ -19,6 +18,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
+from syrupy.assertion import SnapshotAssertion
 
 from tests.common import MockConfigEntry, snapshot_platform
 

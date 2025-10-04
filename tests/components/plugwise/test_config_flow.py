@@ -3,7 +3,6 @@
 from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from packaging.version import Version
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -34,6 +33,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
+from packaging.version import Version
 
 from tests.common import MockConfigEntry
 
