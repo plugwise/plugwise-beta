@@ -1,19 +1,17 @@
 """Tests for the Plugwise binary_sensor integration."""
 
-from datetime import timedelta
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
+from syrupy.assertion import SnapshotAssertion
 
-from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_component import async_update_entity
-from syrupy.assertion import SnapshotAssertion
 
-from tests.common import MockConfigEntry, async_fire_time_changed, snapshot_platform
+from tests.common import MockConfigEntry, snapshot_platform
 
 
 @pytest.mark.parametrize("platforms", [(BINARY_SENSOR_DOMAIN,)])
@@ -25,7 +23,7 @@ async def test_adam_binary_sensor_snapshot(
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
 ) -> None:
-    """Test Adam binary sensor snapshot."""
+    """Test Adam binary_sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
@@ -40,7 +38,7 @@ async def test_anna_binary_sensor_snapshot(
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
 ) -> None:
-    """Test Anna binary sensor snapshot."""
+    """Test Anna binary_sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
@@ -58,14 +56,15 @@ async def test_anna_climate_binary_sensor_change(
     assert state.state == STATE_ON
 
     await async_update_entity(hass, "binary_sensor.opentherm_dhw_state")
-
     state = hass.states.get("binary_sensor.opentherm_dhw_state")
     assert state
     assert state.state == STATE_OFF
 
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
-@pytest.mark.parametrize("gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True)
+@pytest.mark.parametrize(
+    "gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True
+)
 @pytest.mark.parametrize("platforms", [(BINARY_SENSOR_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_p1_v4_binary_sensor_snapshot(
@@ -77,22 +76,3 @@ async def test_p1_v4_binary_sensor_snapshot(
 ) -> None:
     """Test Smile P1 binary_sensor snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
-
-# pw-beta only
-@pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
-@pytest.mark.parametrize("gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True)
-async def test_p1_v4_binary_sensor_entity(
-    hass: HomeAssistant,
-    mock_smile_p1: MagicMock,
-    init_integration: MockConfigEntry,
-    freezer: FrozenDateTimeFactory,
-) -> None:
-    """Test creation of a persistent notification for the corresponding P1 related binary_sensor."""
-    with patch(
-        "homeassistant.components.plugwise.binary_sensor.persistent_notification"
-    ) as persistent_notification_mock:
-        freezer.tick(timedelta(minutes=1))
-        async_fire_time_changed(hass)
-        await hass.async_block_till_done()
-
-        persistent_notification_mock.async_create.assert_called()

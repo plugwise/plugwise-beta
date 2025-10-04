@@ -3,19 +3,19 @@
 from unittest.mock import MagicMock
 
 import pytest
+from syrupy.assertion import SnapshotAssertion
 
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
-from syrupy.assertion import SnapshotAssertion
 
 from tests.common import MockConfigEntry, snapshot_platform
 
 
 @pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_adam_sensor_entities(
+async def test_adam_sensor_snapshot(
     hass: HomeAssistant,
     mock_smile_adam: MagicMock,
     snapshot: SnapshotAssertion,
@@ -26,10 +26,12 @@ async def test_adam_sensor_entities(
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
-def test_adam_4_sensor_entity(
-    hass: HomeAssistant, mock_smile_adam_4: MagicMock, init_integration: MockConfigEntry
+async def test_adam_climate_sensor_humidity(
+    hass: HomeAssistant,
+    mock_smile_adam_jip: MagicMock,
+    init_integration: MockConfigEntry,
 ) -> None:
-    """Test creation of specific Adam sensor entity."""
+    """Test creation of climate related humidity sensor entity."""
     state = hass.states.get("sensor.woonkamer_humidity")
     assert state
     assert float(state.state) == 56.2
@@ -38,7 +40,7 @@ def test_adam_4_sensor_entity(
 async def test_unique_id_migration_humidity(
     hass: HomeAssistant,
     entity_registry: er.EntityRegistry,
-    mock_smile_adam_4: MagicMock,
+    mock_smile_adam_jip: MagicMock,
     mock_config_entry: MockConfigEntry,
 ) -> None:
     """Test unique ID migration of -relative_humidity to -humidity."""
@@ -82,7 +84,7 @@ async def test_unique_id_migration_humidity(
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_anna_sensor_states(
+async def test_anna_sensor_snapshot(
     hass: HomeAssistant,
     mock_smile_anna: MagicMock,
     snapshot: SnapshotAssertion,
@@ -94,10 +96,12 @@ async def test_anna_sensor_states(
 
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_single"], indirect=True)
-@pytest.mark.parametrize("gateway_id", ["a455b61e52394b2db5081ce025a430f3"], indirect=True)
+@pytest.mark.parametrize(
+    "gateway_id", ["a455b61e52394b2db5081ce025a430f3"], indirect=True
+)
 @pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_p1_dsmr_sensor_entities(
+async def test_p1_dsmr_sensor_snapshot(
     hass: HomeAssistant,
     mock_smile_p1: MagicMock,
     snapshot: SnapshotAssertion,
@@ -109,10 +113,12 @@ async def test_p1_dsmr_sensor_entities(
 
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
-@pytest.mark.parametrize("gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True)
+@pytest.mark.parametrize(
+    "gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True
+)
 @pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_p1_3ph_dsmr_sensor_entities(
+async def test_p1_3ph_dsmr_sensor_snapshot(
     hass: HomeAssistant,
     mock_smile_p1: MagicMock,
     snapshot: SnapshotAssertion,
@@ -124,14 +130,16 @@ async def test_p1_3ph_dsmr_sensor_entities(
 
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_triple"], indirect=True)
-@pytest.mark.parametrize("gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True)
-async def test_p1_3ph_dsmr_disabled_sensor_entitiy(
+@pytest.mark.parametrize(
+    "gateway_id", ["03e65b16e4b247a29ae0d75a78cb492e"], indirect=True
+)
+async def test_p1_3ph_dsmr_sensor_disabled_entities(
     hass: HomeAssistant,
     entity_registry: er.EntityRegistry,
     mock_smile_p1: MagicMock,
     init_integration: MockConfigEntry,
 ) -> None:
-    """Test specific P1 disabled sensor entity."""
+    """Test disabled power related sensor entities intent."""
     entity_id = "sensor.p1_voltage_phase_one"
     state = hass.states.get(entity_id)
     assert not state
@@ -149,7 +157,7 @@ async def test_p1_3ph_dsmr_disabled_sensor_entitiy(
 
 @pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_stretch_sensor_entities(
+async def test_stretch_sensor_snapshot(
     hass: HomeAssistant,
     mock_stretch: MagicMock,
     snapshot: SnapshotAssertion,

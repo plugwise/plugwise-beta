@@ -30,11 +30,6 @@ async def test_adam_press_reboot_button(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
     """Test pressing of button entity."""
-    registry = er.async_get(hass)
-    entry = registry.async_get("button.adam_reboot")
-    assert entry
-    assert entry.unique_id == "fe799307f1624099878210aa0b9f1475-reboot"
-
     await hass.services.async_call(
         BUTTON_DOMAIN,
         SERVICE_PRESS,

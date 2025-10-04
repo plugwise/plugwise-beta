@@ -209,8 +209,8 @@ def mock_smile_adam_heat_cool(chosen_env: str, cooling_present: bool) -> Generat
 
 
 @pytest.fixture
-def mock_smile_adam_4() -> Generator[MagicMock]:
-    """Create a 4th Mock Adam type for testing."""
+def mock_smile_adam_jip() -> Generator[MagicMock]:
+    """Create a Mock Adam-Jip type for testing."""
     chosen_env = "m_adam_jip"
     data = _read_json(chosen_env, "data")
     with patch(

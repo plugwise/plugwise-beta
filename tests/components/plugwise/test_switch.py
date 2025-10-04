@@ -4,10 +4,12 @@ from unittest.mock import MagicMock
 
 from plugwise.exceptions import PlugwiseException
 import pytest
+from syrupy.assertion import SnapshotAssertion
 
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import (
+    ATTR_ENTITY_ID,
     SERVICE_TOGGLE,
     SERVICE_TURN_OFF,
     SERVICE_TURN_ON,
@@ -17,14 +19,13 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
-from syrupy.assertion import SnapshotAssertion
 
 from tests.common import MockConfigEntry, snapshot_platform
 
 
 @pytest.mark.parametrize("platforms", [(SWITCH_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_adam_switch_states(
+async def test_adam_switch_snapshot(
     hass: HomeAssistant,
     mock_smile_adam: MagicMock,
     snapshot: SnapshotAssertion,
@@ -35,14 +36,14 @@ async def test_adam_switch_states(
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
-async def test_adam_switch_changes(
+async def test_adam_climate_switch_changes(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test changing of Adam switch entities."""
+    """Test changing of climate related switch entities."""
     await hass.services.async_call(
         SWITCH_DOMAIN,
         SERVICE_TURN_OFF,
-        {"entity_id": "switch.cv_pomp_relay"},
+        {ATTR_ENTITY_ID: "switch.cv_pomp_relay"},
         blocking=True,
     )
 
@@ -54,7 +55,7 @@ async def test_adam_switch_changes(
     await hass.services.async_call(
         SWITCH_DOMAIN,
         SERVICE_TOGGLE,
-        {"entity_id": "switch.fibaro_hc2_relay"},
+        {ATTR_ENTITY_ID: "switch.fibaro_hc2_relay"},
         blocking=True,
     )
 
@@ -66,7 +67,7 @@ async def test_adam_switch_changes(
     await hass.services.async_call(
         SWITCH_DOMAIN,
         SERVICE_TURN_ON,
-        {"entity_id": "switch.fibaro_hc2_relay"},
+        {ATTR_ENTITY_ID: "switch.fibaro_hc2_relay"},
         blocking=True,
     )
 
@@ -76,17 +77,17 @@ async def test_adam_switch_changes(
     )
 
 
-async def test_adam_switch_negative_testing(
+async def test_adam_climate_switch_negative_testing(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test exceptions of Adam switch entities."""
+    """Test exceptions of climate related switch entities."""
     mock_smile_adam.set_switch_state.side_effect = PlugwiseException
 
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
             SWITCH_DOMAIN,
             SERVICE_TURN_OFF,
-            {"entity_id": "switch.cv_pomp_relay"},
+            {ATTR_ENTITY_ID: "switch.cv_pomp_relay"},
             blocking=True,
         )
 
@@ -99,7 +100,7 @@ async def test_adam_switch_negative_testing(
         await hass.services.async_call(
             SWITCH_DOMAIN,
             SERVICE_TURN_ON,
-            {"entity_id": "switch.fibaro_hc2_relay"},
+            {ATTR_ENTITY_ID: "switch.fibaro_hc2_relay"},
             blocking=True,
         )
 
@@ -111,7 +112,7 @@ async def test_adam_switch_negative_testing(
 
 @pytest.mark.parametrize("platforms", [(SWITCH_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
-async def test_stretch_switch_states(
+async def test_stretch_switch_snapshot(
     hass: HomeAssistant,
     mock_stretch: MagicMock,
     snapshot: SnapshotAssertion,
@@ -125,22 +126,22 @@ async def test_stretch_switch_states(
 async def test_stretch_switch_changes(
     hass: HomeAssistant, mock_stretch: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test changing of Stretch switch entities."""
+    """Test changing of power related switch entities."""
     await hass.services.async_call(
         SWITCH_DOMAIN,
         SERVICE_TURN_OFF,
-        {"entity_id": "switch.boiler_1eb31_relay"},
+        {ATTR_ENTITY_ID: "switch.koelkast_92c4a_relay"},
         blocking=True,
     )
     assert mock_stretch.set_switch_state.call_count == 1
     mock_stretch.set_switch_state.assert_called_with(
-        "5871317346d045bc9f6b987ef25ee638", None, "relay", STATE_OFF
+        "e1c884e7dede431dadee09506ec4f859", None, "relay", STATE_OFF
     )
 
     await hass.services.async_call(
         SWITCH_DOMAIN,
         SERVICE_TOGGLE,
-        {"entity_id": "switch.droger_52559_relay"},
+        {ATTR_ENTITY_ID: "switch.droger_52559_relay"},
         blocking=True,
     )
     assert mock_stretch.set_switch_state.call_count == 2
@@ -151,7 +152,7 @@ async def test_stretch_switch_changes(
     await hass.services.async_call(
         SWITCH_DOMAIN,
         SERVICE_TURN_ON,
-        {"entity_id": "switch.droger_52559_relay"},
+        {ATTR_ENTITY_ID: "switch.droger_52559_relay"},
         blocking=True,
     )
     assert mock_stretch.set_switch_state.call_count == 3

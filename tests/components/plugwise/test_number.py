@@ -3,6 +3,7 @@
 from unittest.mock import MagicMock
 
 import pytest
+from syrupy.assertion import SnapshotAssertion
 
 from homeassistant.components.number import (
     ATTR_VALUE,
@@ -13,7 +14,6 @@ from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import entity_registry as er
-from syrupy.assertion import SnapshotAssertion
 
 from tests.common import MockConfigEntry, snapshot_platform
 
@@ -70,9 +70,15 @@ async def test_adam_temperature_offset_out_of_bounds_change(
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_adam_dhw_setpoint_change(
-    hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant,
+    mock_smile_adam_heat_cool: MagicMock,
+    init_integration: MockConfigEntry,
 ) -> None:
     """Test changing of number entities."""
+    state = hass.states.get("number.opentherm_domestic_hot_water_setpoint")
+    assert state
+    assert float(state.state) == 60.0
+
     await hass.services.async_call(
         NUMBER_DOMAIN,
         SERVICE_SET_VALUE,
@@ -109,7 +115,7 @@ async def test_anna_number_entities(
 async def test_anna_max_boiler_temp_change(
     hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
 ) -> None:
-    """Test changing of an Anna number entity."""
+    """Test changing of number entities."""
     await hass.services.async_call(
         NUMBER_DOMAIN,
         SERVICE_SET_VALUE,
