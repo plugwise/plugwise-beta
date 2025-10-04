@@ -4,7 +4,8 @@ Versions from 0.40 and up
 
 ## Ongoing
 
-- Fix mypy errors in Core
+- Fix mypy errors in Core (not accepted in HA Core)
+- Introduce Snapshot testing for all platforms (requirement from HA Core)
 
 ## v0.57.6
 
