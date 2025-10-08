@@ -109,7 +109,7 @@ jobs:
       - name: Run all-files pre-commit excluding testing
         run: |
           # shellcheck disable=SC1091 # ingesting virtualenv
-          source venv/bin/activate
+          source venv-${{ needs.cache.outputs.python-version }}/bin/activate
           pre-commit run --all-files --show-diff-on-failure
         env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
           SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
