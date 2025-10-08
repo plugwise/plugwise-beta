@@ -205,7 +205,7 @@ jobs:
       - determine-mode
       - ha-core-release-prepare
       - ha-core-testing
-      - ha-core-dev
+      - ha-core-dev-testing
     if: always()
     steps:
       - name: Create combined comment
