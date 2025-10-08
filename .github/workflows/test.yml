@@ -4,8 +4,8 @@
 name: Test PR against HA-core
 
 env:
-  CACHE_VERSION: 30
-  DEFAULT_PYTHON: "3.13"
+  CACHE_VERSION: 1
+  DEFAULT_PYTHON: "3.14"
   PRE_COMMIT_HOME: ~/.cache/pre-commit
   VENV: venv
 
@@ -40,6 +40,7 @@ jobs:
     name: Cache identify
     outputs:
       cache-key: ${{ steps.set-key.outputs.cache-key }}
+      python-version: ${{ steps.python.outputs.python-version }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v5
@@ -53,7 +54,7 @@ jobs:
         run: wget -O ha_pyproject.toml "https://raw.githubusercontent.com/home-assistant/core/refs/heads/dev/pyproject.toml"
       - name: Compute cache key
         id: set-key
-        run: echo "cache-key=${{ runner.os }}-venv-cache-${{ env.CACHE_VERSION }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml', 'ha_pyproject.toml') }}" >> "$GITHUB_OUTPUT"
+        run: echo "cache-key=${{ runner.os }}--${{ env.CACHE_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml', 'ha_pyproject.toml') }}" >> "$GITHUB_OUTPUT"
 
   determine-mode:
     name: Determine release or dev mode
@@ -82,7 +83,7 @@ jobs:
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
-          python-version: ${{ env.DEFAULT_PYTHON }}
+          python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
           precommit-home: ${{ env.PRE_COMMIT_HOME }}
           clone-core: "true"
@@ -103,7 +104,7 @@ jobs:
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
-          python-version: ${{ env.DEFAULT_PYTHON }}
+          python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
       - name: Run all-files pre-commit excluding testing
         run: |
@@ -133,7 +134,7 @@ jobs:
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
-          python-version: ${{ env.DEFAULT_PYTHON }}
+          python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
       - name: Test through HA-core (master/release) - continue-on-error = ${{ needs.determine-mode.outputs.strict_dev == 'true' }}
         id: ha_core_release_tests
@@ -173,7 +174,7 @@ jobs:
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
-          python-version: ${{ env.DEFAULT_PYTHON }}
+          python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
       - name: Test through HA-core (dev) - continue-on-error = ${{ needs.determine-mode.outputs.strict_dev == 'false' }}
         id: ha_core_dev_tests
