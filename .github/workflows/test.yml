@@ -4,7 +4,7 @@
 name: Test PR against HA-core
 
 env:
-  CACHE_VERSION: 1
+  CACHE_VERSION: 3
   DEFAULT_PYTHON: "3.14"
   PRE_COMMIT_HOME: ~/.cache/pre-commit
   VENV: venv
@@ -123,6 +123,7 @@ jobs:
       - cache
       - prepare
       - determine-mode
+      - ha-core-release-prepare
     outputs:
       release_failed: ${{ steps.ha_core_release_tests.outputs.release_failed }}
     steps:
@@ -155,7 +156,7 @@ jobs:
 
           exit $EXIT_CODE
 
-  ha-core-dev:
+  ha-core-dev-testing:
     runs-on: ubuntu-latest
     name: Setup for HA-core (dev)
     continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'false' }} # Allow dev failures unless strict
@@ -163,6 +164,7 @@ jobs:
       - cache
       - prepare
       - determine-mode
+      - ha-core-release-prepare
     outputs:
       dev_failed: ${{ steps.ha_core_dev_tests.outputs.dev_failed }}
     steps:
