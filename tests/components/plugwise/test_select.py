@@ -120,7 +120,7 @@ async def test_anna_select_unavailable_schedule_mode(
             SELECT_DOMAIN,
             SERVICE_SELECT_OPTION,
             {
-                ATTR_ENTITY_ID: "select.anna_thermostat_schedule",
+                ATTR_ENTITY_ID: "select.living_room_thermostat_schedule",
                 ATTR_OPTION: "Winter",
             },
             blocking=True,
