@@ -79,7 +79,7 @@ async def async_setup_entry(
         gateway_name = coordinator.api.smile.name
         for device_id in coordinator.new_devices:
             device = coordinator.data[device_id]
-            if gateway_name == "Adam":
+            if gateway_name in ("Adam", "Smile Anna"):
                 if device[DEV_CLASS] == "climate":
                     entities.append(
                         PlugwiseClimateEntity(
