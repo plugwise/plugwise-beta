@@ -2,10 +2,11 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.58.0
 
 - Fix mypy errors in Core (not accepted in HA Core)
 - Introduce Snapshot testing for all platforms (requirement from HA Core)
+- New Feature: add initial support for the Emma via plugwise [v1.8.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.8.0)
 
 ## v0.57.6
 
