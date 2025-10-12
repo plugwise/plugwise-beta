@@ -212,7 +212,7 @@ jobs:
         run: |
           # Get the results of the previous scripts
           STRICT_DEV="${{ needs.determine-mode.outputs.strict_dev }}"
-          DEV_TESTS_FAILED="${{ needs.ha-core-dev.outputs.dev_failed }}"
+          DEV_TESTS_FAILED="${{ needs.ha-core-dev-testing.outputs.dev_failed }}"
           RELEASE_TESTS_FAILED="${{ needs.ha-core-release.outputs.release_failed }}"
           FAIL_COUNT=0
 
