@@ -137,8 +137,14 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         self._current_devices = dr.async_entries_for_config_entry(
             self.device_registry, self.config_entry.entry_id
         )
-        self.new_devices = list(set(data) - set(self._current_devices))
-        removed_devices = list(set(self._current_devices) - set(data))
+        current_device_ids = {
+            identifier[1]
+            for device_entry in self._current_devices
+            for identifier in device_entry.identifiers
+            if identifier[0] == DOMAIN
+        }
+        self.new_devices = list(set(data) - current_device_ids)
+        removed_devices = list(current_device_ids - set(data))
 
         if removed_devices:
             await self._async_remove_devices(data)
@@ -146,7 +152,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     async def _async_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Clean registries when removed devices found."""
         # First find the Plugwise via_device
-        gateway_device = self.device_reg.async_get_device({(DOMAIN, self.api.gateway_id)})
+        gateway_device = self.device_registry.async_get_device({(DOMAIN, self.api.gateway_id)})
         if gateway_device is not None:
             via_device_id = gateway_device.id
 
