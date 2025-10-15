@@ -154,8 +154,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         # First find the Plugwise via_device
         gateway_device = self.device_registry.async_get_device({(DOMAIN, self.api.gateway_id)})
         if gateway_device is None:
-            LOGGER.warning("Failed to remove device, gateway reference not found")
-            return
+            LOGGER.warning("Failed to remove device, plugwise gateway reference not found")  # pragma: no cover
+            return  # pragma: no cover
 
         # Then remove the connected orphaned device(s)
         via_device_id = gateway_device.id

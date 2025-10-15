@@ -203,7 +203,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             return HVACMode.HEAT  # pragma: no cover
         try:
             hvac = HVACMode(mode)
-        except ValueError:
+        except ValueError:  # pragma: no cover
             return HVACMode.HEAT  # pragma: no cover
         if hvac not in self.hvac_modes:
             return HVACMode.HEAT  # pragma: no cover
