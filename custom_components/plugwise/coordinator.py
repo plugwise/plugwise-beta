@@ -25,7 +25,7 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.debounce import Debouncer
-from homeassistant.helpers.device_registry import DeviceEntry
+from homeassistant.helpers.device_registry import DeviceEntry, DeviceRegistry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from packaging.version import Version
 
@@ -133,9 +133,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new or removed devices
-        self.device_registry = dr.async_get(self.hass)
+        device_registry = dr.async_get(self.hass)
         self._current_devices = dr.async_entries_for_config_entry(
-            self.device_registry, self.config_entry.entry_id
+            device_registry, self.config_entry.entry_id
         )
         current_device_ids = {
             identifier[1]
@@ -147,12 +147,16 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         removed_devices = list(current_device_ids - set(data))
 
         if removed_devices:
-            await self._async_remove_devices(data)
+            await self._async_remove_devices(data, device_registry)
 
-    async def _async_remove_devices(self, data: dict[str, GwEntityData]) -> None:
+    async def _async_remove_devices(
+        self,
+        data: dict[str, GwEntityData],
+        device_registry: DeviceRegistry,
+    ) -> None:
         """Clean registries when removed devices found."""
         # First find the Plugwise via_device
-        gateway_device = self.device_registry.async_get_device({(DOMAIN, self.api.gateway_id)})
+        gateway_device = device_registry.async_get_device({(DOMAIN, self.api.gateway_id)})
         if gateway_device is None:
             LOGGER.warning("Failed to remove device, plugwise gateway reference not found")  # pragma: no cover
             return  # pragma: no cover
@@ -166,7 +170,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                     and device_entry.via_device_id == via_device_id
                     and identifier[1] not in data
                 ):
-                    self.device_registry.async_update_device(
+                    device_registry.async_update_device(
                         device_entry.id, remove_config_entry_id=self.config_entry.entry_id
                     )
                     LOGGER.debug(
