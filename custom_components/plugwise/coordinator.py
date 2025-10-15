@@ -143,10 +143,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             for identifier in device_entry.identifiers
             if identifier[0] == DOMAIN
         }
-        self.new_devices = list(set(data) - current_device_ids)
-        removed_devices = list(current_device_ids - set(data))
+        data_ids = set(data)
+        self.new_devices = sorted(data_ids - current_device_ids)
+        removed_ids = current_device_ids - data_ids
 
-        if removed_devices:
+        if removed_ids:
             await self._async_remove_devices(data, device_registry)
 
     async def _async_remove_devices(
@@ -164,13 +165,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         # Then remove the connected orphaned device(s)
         via_device_id = gateway_device.id
         for device_entry in self._current_devices:
+            if device_entry.via_device_id != via_device_id:
+                continue
             for identifier in device_entry.identifiers:
-                if (
-                    identifier[0] == DOMAIN
-                    and device_entry.via_device_id == via_device_id
-                    and identifier[1] not in data
-                ):
-                    device_registry.async_update_device(
+                if identifier[0] == DOMAIN and identifier[1] in removed_ids:
+                    self.device_registry.async_update_device(
                         device_entry.id, remove_config_entry_id=self.config_entry.entry_id
                     )
                     LOGGER.debug(
@@ -179,3 +178,4 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                         device_entry.model,
                         identifier[1],
                     )
+                    break
