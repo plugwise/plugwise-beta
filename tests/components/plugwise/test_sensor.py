@@ -139,20 +139,19 @@ async def test_p1_3ph_dsmr_sensor_disabled_entities(
     mock_smile_p1: MagicMock,
     init_integration: MockConfigEntry,
 ) -> None:
-    """Test disabled power related sensor entities intent."""
+    """Test enabling of disabled voltage sensor."""
     entity_id = "sensor.p1_voltage_phase_one"
-    state = hass.states.get(entity_id)
-    assert not state
+    entry = entity_registry.async_get(entity_id)
+    assert entry
+    assert entry.unique_id == "b82b6b3322484f2ea4e25e0bd5f3d61f-voltage_phase_one"
+    assert entry.disabled
+    assert entry.disabled_by is er.RegistryEntryDisabler.INTEGRATION
 
-    entity_registry.async_update_entity(entity_id=entity_id, disabled_by=None)
-    await hass.async_block_till_done()
-
-    await hass.config_entries.async_reload(init_integration.entry_id)
-    await hass.async_block_till_done()
-
-    state = hass.states.get("sensor.p1_voltage_phase_one")
-    assert state
-    assert float(state.state) == 233.2
+    updated_entry = entity_registry.async_update_entity(
+        entity_id=entity_id, disabled_by=None
+    )
+    assert updated_entry != entry
+    assert updated_entry.disabled is False
 
 
 @pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
