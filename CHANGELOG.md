@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## v0.58.1
+
+- Improve detection of removed device(s) via plugwise [v1.8.1](https://github.com/plugwise/python-plugwise/releases/tag/v1.8.1)
+
 ## v0.58.0
 
 - Fix mypy errors in Core (not accepted in HA Core)
