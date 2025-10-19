@@ -38,6 +38,7 @@ from .const import (
     LOGGER,
     LOWER_BOUND,
     MASTER_THERMOSTATS,
+    NONE,
     REGULATION_MODES,
     RESOLUTION,
     SELECT_REGULATION_MODE,
@@ -122,7 +123,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         gateway_id: str = coordinator.api.gateway_id
         self._gateway_data = coordinator.data[gateway_id]
-        if self.device.get("select_schedule") is not in (None, NONE):
+        schedule = self.device.get("select_schedule")
+        if schedule is not None or schedule != NONE:
             self._last_active_schedule = self.device["select_schedule"]
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
 
