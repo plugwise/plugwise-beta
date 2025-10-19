@@ -334,7 +334,7 @@ async def test_anna_climate_entity_climate_changes(
     )
     assert mock_smile_anna.set_schedule_state.call_count == 1
     mock_smile_anna.set_schedule_state.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", HVACMode.OFF
+        "c784ee9fdab44e1395b8dee7d7a497d5", HVACMode.OFF, "standaard",
     )
 
     # Mock user deleting last schedule from app or browser
