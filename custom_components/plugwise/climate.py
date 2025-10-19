@@ -108,7 +108,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _attr_translation_key = DOMAIN
     _enable_turn_on_off_backwards_compatibility = False
 
-    _last_active_schedule: str | None  = None
+    _last_active_schedule: str | None = None
     _previous_mode: str = HVACAction.HEATING  # Upstream
     _homekit_mode: HVACMode | None = None  # pw-beta homekit emulation + intentional unsort
 
