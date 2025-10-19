@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import asdict, dataclass
 from typing import Any
 
 from homeassistant.components.climate import (
@@ -20,11 +21,13 @@ from homeassistant.const import (
     ATTR_TEMPERATURE,
     STATE_OFF,
     STATE_ON,
+    STATE_UNAVAILABLE,
+    STATE_UNKNOWN,
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
-from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.helpers.restore_state import ExtraStoredData, RestoreEntity
 
 from .const import (
     ACTIVE_PRESET,
@@ -99,6 +102,17 @@ async def async_setup_entry(
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
 
+@dataclass
+class PlugwiseClimateExtraStoredData(ExtraStoredData):
+    """Object to hold extra stored data."""
+
+    last_active_schedule: str | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return a dict representation of the text data."""
+        return asdict(self)
+
+
 class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     """Representation of a Plugwise thermostat."""
 
@@ -112,6 +126,24 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _previous_mode: str = HVACAction.HEATING  # Upstream
     _homekit_mode: HVACMode | None = None  # pw-beta homekit emulation + intentional unsort
 
+    async def async_added_to_hass(self) -> None:
+        """Run when entity about to be added."""
+        if not (
+            last_state := await self.async_get_last_state()
+        ) or last_state.state in (
+            STATE_UNAVAILABLE,
+            STATE_UNKNOWN,
+        ):
+            return
+
+        LOGGER.debug("Last state: %s", last_state)
+        LOGGER.debug("Last state attributes: %s", last_state.attributes)
+        last_extra_data = await self.async_get_last_extra_data()
+        if last_extra_data is not None:
+            self._last_active_schedule = last_extra_data.as_dict()["last_active_schedule"]
+
+        await super().async_added_to_hass()
+
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
@@ -124,10 +156,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         gateway_id: str = coordinator.api.gateway_id
         self._gateway_data = coordinator.data[gateway_id]
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
-        schedule = self.device.get("select_schedule")
-        if schedule is not None and schedule not in (NONE, "off"):
-            self._last_active_schedule = schedule
-
         self._location = device_id
         if (location := self.device.get(LOCATION)) is not None:
             self._location = location
@@ -175,6 +203,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     def current_temperature(self) -> float | None:
         """Return the current temperature."""
         return self.device.get(SENSORS, {}).get(ATTR_TEMPERATURE)
+
+    @property
+    def extra_restore_state_data(self) -> PlugwiseClimateExtraStoredData:
+        """Return text specific state data to be restored."""
+        return PlugwiseClimateExtraStoredData(self._last_active_schedule)
 
     @property
     def target_temperature(self) -> float | None:
@@ -261,14 +294,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         """Return the current preset mode."""
         return self.device.get(ACTIVE_PRESET)
 
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        schedule = self.device.get("select_schedule")
-        if schedule is not None and schedule not in (NONE, "off"):
-            self._last_active_schedule = schedule
-        super()._handle_coordinator_update()
-
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
@@ -294,10 +319,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             return
 
         if hvac_mode != HVACMode.OFF:
+            schedule = self.device.get("select_schedule")
+            if schedule is not None and schedule not in (NONE, "off"):
+                self._last_active_schedule = schedule
             await self.coordinator.api.set_schedule_state(
                 self._location,
                 STATE_ON if hvac_mode == HVACMode.AUTO else STATE_OFF,
-                self._last_active_schedule,
+                schedule,
             )
 
         if (
