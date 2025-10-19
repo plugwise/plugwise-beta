@@ -124,6 +124,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         gateway_id: str = coordinator.api.gateway_id
         self._gateway_data = coordinator.data[gateway_id]
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
+        schedule = self.device.get("select_schedule")
+        if schedule is not None and schedule not in (NONE, "off"):
+            self._last_active_schedule = schedule
+
         self._location = device_id
         if (location := self.device.get(LOCATION)) is not None:
             self._location = location
@@ -226,9 +230,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         if self.device.get(AVAILABLE_SCHEDULES, []):
             hvac_modes.append(HVACMode.AUTO)
-            schedule = self.device.get("select_schedule")
-            if schedule not in (None, NONE, "off"):
-                self._last_active_schedule = schedule
 
         if self.coordinator.api.cooling_present:
             if REGULATION_MODES in self._gateway_data:
@@ -259,6 +260,14 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     def preset_mode(self) -> str | None:
         """Return the current preset mode."""
         return self.device.get(ACTIVE_PRESET)
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        schedule = self.device.get("select_schedule")
+        if schedule is not None and schedule not in (NONE, "off"):
+            self._last_active_schedule = schedule
+        super()._handle_coordinator_update()
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
