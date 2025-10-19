@@ -105,7 +105,7 @@ async def test_adam_climate_entity_climate_changes(
     )
     assert mock_smile_adam.set_schedule_state.call_count == 2
     mock_smile_adam.set_schedule_state.assert_called_with(
-        "c50f167537524366a5af7aa3942feb1e", HVACMode.OFF
+        "c50f167537524366a5af7aa3942feb1e", HVACMode.OFF, "GF7  Woonkamer",
     )
 
     with pytest.raises(
