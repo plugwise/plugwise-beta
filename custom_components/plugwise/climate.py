@@ -123,11 +123,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         gateway_id: str = coordinator.api.gateway_id
         self._gateway_data = coordinator.data[gateway_id]
-        schedule = self.device.get("select_schedule")
-        if schedule is not None and (schedule != NONE or schedule != "off"):
-            self._last_active_schedule = schedule
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
-
         self._location = device_id
         if (location := self.device.get(LOCATION)) is not None:
             self._location = location
@@ -230,6 +226,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         if self.device.get(AVAILABLE_SCHEDULES, []):
             hvac_modes.append(HVACMode.AUTO)
+            schedule = self.device.get("select_schedule")
+            if schedule is not None and (schedule != NONE or schedule != "off"):
+                self._last_active_schedule = schedule
 
         if self.coordinator.api.cooling_present:
             if REGULATION_MODES in self._gateway_data:
