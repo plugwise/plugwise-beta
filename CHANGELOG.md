@@ -4,7 +4,7 @@ Versions from 0.40 and up
 
 ## v0.58.2
 
-- More Emma related updates via plugwise [v1.8.2](https://github.com/plugwise/python-plugwise/releases/tag/v1.8.2)
+- More Emma-related updates via plugwise [v1.8.2](https://github.com/plugwise/python-plugwise/releases/tag/v1.8.2)
 
 ## v0.58.1
 
