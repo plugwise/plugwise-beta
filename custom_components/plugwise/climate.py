@@ -227,7 +227,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         if self.device.get(AVAILABLE_SCHEDULES, []):
             hvac_modes.append(HVACMode.AUTO)
             schedule = self.device.get("select_schedule")
-            if schedule is not None and (schedule != NONE or schedule != "off"):
+            if schedule not in (None, NONE, "off"):
                 self._last_active_schedule = schedule
 
         if self.coordinator.api.cooling_present:
