@@ -24,6 +24,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 
 from .const import (
     ACTIVE_PRESET,
@@ -97,7 +98,7 @@ async def async_setup_entry(
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
 
-class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
+class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     """Representation of a Plugwise thermostat."""
 
     _attr_has_entity_name = True
@@ -106,6 +107,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
     _attr_translation_key = DOMAIN
     _enable_turn_on_off_backwards_compatibility = False
 
+    _last_active_schedule: str | None  = None
     _previous_mode: str = HVACAction.HEATING  # Upstream
     _homekit_mode: HVACMode | None = None  # pw-beta homekit emulation + intentional unsort
 
@@ -120,6 +122,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
 
         gateway_id: str = coordinator.api.gateway_id
         self._gateway_data = coordinator.data[gateway_id]
+        if self.device.get("select_schedule") is not in (None, NONE):
+            self._last_active_schedule = self.device["select_schedule"]
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
 
         self._location = device_id
@@ -283,6 +287,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity):
             await self.coordinator.api.set_schedule_state(
                 self._location,
                 STATE_ON if hvac_mode == HVACMode.AUTO else STATE_OFF,
+                self._last_active_schedule,
             )
 
         if (
