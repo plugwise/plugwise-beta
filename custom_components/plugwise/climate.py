@@ -124,7 +124,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         gateway_id: str = coordinator.api.gateway_id
         self._gateway_data = coordinator.data[gateway_id]
         schedule = self.device.get("select_schedule")
-        if schedule is not None or schedule != NONE:
+        if schedule is not None or schedule != NONE or schedule != "off":
             self._last_active_schedule = self.device["select_schedule"]
         self._homekit_enabled = homekit_enabled  # pw-beta homekit emulation
 
