@@ -22,13 +22,20 @@ from homeassistant.components.climate import (
     HVACAction,
     HVACMode,
 )
+from homeassistant.components.plugwise.climate import PlugwiseClimateExtraStoredData
 from homeassistant.const import ATTR_ENTITY_ID, ATTR_TEMPERATURE
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, State
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import entity_registry as er
+
 from syrupy.assertion import SnapshotAssertion
 
-from tests.common import MockConfigEntry, async_fire_time_changed, snapshot_platform
+from tests.common import (
+    MockConfigEntry,
+    async_fire_time_changed,
+    mock_restore_cache_with_extra_data,
+    snapshot_platform,
+)
 
 HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
     "homeassistant.components.plugwise.coordinator.Smile.async_update"
@@ -122,7 +129,6 @@ async def test_adam_climate_entity_climate_changes(
             blocking=True,
         )
 
-
 async def test_adam_climate_adjust_negative_testing(
     hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
 ) -> None:
@@ -136,6 +142,28 @@ async def test_adam_climate_adjust_negative_testing(
             {ATTR_ENTITY_ID: "climate.woonkamer", ATTR_TEMPERATURE: 25},
             blocking=True,
         )
+
+
+@pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [False], indirect=True)
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_adam_restore_state_climate(
+    hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test restore_state for climate."""
+    mock_restore_cache_with_extra_data(
+        hass,
+        [
+            (
+                State("climate.living_room", "heat"),
+                PlugwiseClimateExtraStoredData(
+                    last_active_schedule="Weekschema", previous_action_mode="heat",
+                ).as_dict(),
+            ),
+        ],
+    )
+    assert (state := hass.states.get("climate.living_room"))
+    assert state.state == "heat"
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
