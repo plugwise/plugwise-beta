@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from typing import Any
 
 from homeassistant.components.climate import (
@@ -21,8 +21,6 @@ from homeassistant.const import (
     ATTR_TEMPERATURE,
     STATE_OFF,
     STATE_ON,
-    STATE_UNAVAILABLE,
-    STATE_UNKNOWN,
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant, callback
@@ -111,7 +109,10 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
 
     def as_dict(self) -> dict[str, Any]:
         """Return a dict representation of the text data."""
-        return asdict(self)
+        return {
+            "last_active_schedule": self.last_active_schedule,
+            "previous_action_mode": self.previous_action_mode,
+        }
 
 
 class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
@@ -124,27 +125,17 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _enable_turn_on_off_backwards_compatibility = False
 
     _last_active_schedule: str | None = None
-    _previous_action_mode: str = HVACAction.HEATING  # Upstream
+    _previous_action_mode = HVACAction.HEATING  # Upstream
     _homekit_mode: HVACMode | None = None  # pw-beta homekit emulation + intentional unsort
 
     async def async_added_to_hass(self) -> None:
         """Run when entity about to be added."""
         await super().async_added_to_hass()
-        if not (
-            last_state := await self.async_get_last_state()
-        ) or last_state.state in (
-            STATE_UNAVAILABLE,
-            STATE_UNKNOWN,
-        ):
-            return
 
-        LOGGER.debug("Last state: %s", last_state)
-        LOGGER.debug("Last state attributes: %s", last_state.attributes)
-        last_extra_data = await self.async_get_last_extra_data()
-        if last_extra_data is not None:
-            LOGGER.debug("Last extra data: %s", last_extra_data)
-            self._last_active_schedule = last_extra_data.as_dict()["last_active_schedule"]
-            self._previous_action_mode = last_extra_data.as_dict()["previous_action_mode"]
+        if (extra_data := await self.async_get_last_extra_data()):
+            LOGGER.debug("Extra data: %s", extra_data)
+            self._last_active_schedule = extra_data.as_dict()["last_active_schedule"]
+            self._previous_action_mode = extra_data.as_dict()["previous_action_mode"]
 
     def __init__(
         self,
@@ -195,7 +186,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     @property
     def extra_restore_state_data(self) -> PlugwiseClimateExtraStoredData:
         """Return text specific state data to be restored."""
-        return PlugwiseClimateExtraStoredData(self._last_active_schedule)
+        return PlugwiseClimateExtraStoredData(
+            last_active_schedule=self._last_active_schedule,
+            previous_action_mode=self._previous_action_mode,
+        )
 
     @property
     def target_temperature(self) -> float | None:
@@ -278,7 +272,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         ):
             mode = self._gateway_data[SELECT_REGULATION_MODE]
             if mode in (HVACAction.COOLING, HVACAction.HEATING):
-                self._previous_action_mode = mode
+                self._previous_action_mode = HVACAction(mode)
 
         if (action := self.device.get(CONTROL_STATE)) is not None:
             return HVACAction(action)
