@@ -129,6 +129,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
     async def async_added_to_hass(self) -> None:
         """Run when entity about to be added."""
+        await super().async_added_to_hass()
         if not (
             last_state := await self.async_get_last_state()
         ) or last_state.state in (
@@ -141,10 +142,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         LOGGER.debug("Last state attributes: %s", last_state.attributes)
         last_extra_data = await self.async_get_last_extra_data()
         if last_extra_data is not None:
+            LOGGER.debug("Last extra data: %s", last_extra_data)
             self._last_active_schedule = last_extra_data.as_dict()["last_active_schedule"]
             self._previous_action_mode = last_extra_data.as_dict()["previous_action_mode"]
-
-        await super().async_added_to_hass()
 
     def __init__(
         self,
