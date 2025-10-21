@@ -310,8 +310,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         if hvac_mode != HVACMode.OFF:
             schedule = self.device.get("select_schedule")
-            if schedule is not None and schedule not in (NONE, "off"):
-                self._last_active_schedule = schedule
+            if self._last_active_schedule is None:
+                if schedule is not None:
+                    if schedule != "off":
+                        self._last_active_schedule = schedule
+                    else:
+                        raise HomeAssistantError("Failed setting HVACMode, set a schedule first")
+
             await self.coordinator.api.set_schedule_state(
                 self._location,
                 STATE_ON if hvac_mode == HVACMode.AUTO else STATE_OFF,
