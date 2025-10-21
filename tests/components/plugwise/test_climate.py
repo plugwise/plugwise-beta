@@ -148,7 +148,7 @@ async def test_adam_climate_adjust_negative_testing(
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_adam_restore_state_climate(
-    hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, mock_config_entry: MockConfigEntry,
 ) -> None:
     """Test restore_state for climate."""
     mock_restore_cache_with_extra_data(
@@ -163,6 +163,11 @@ async def test_adam_restore_state_climate(
             ),
         ],
     )
+
+    mock_config_entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+    
     assert (state := hass.states.get("climate.living_room"))
     assert state.state == "heat"
 
@@ -175,7 +180,7 @@ async def test_adam_restore_state_climate(
     )
     # Verify set_schedule_state was called with the restored schedule
     mock_smile_adam_heat_cool.set_schedule_state.assert_called_with(
-        ANY, STATE_ON, "Weekschema"
+        "f2bf9048bef64cc5b6d5110154e33c81", "on", "Weekschema"
     )
 
 
