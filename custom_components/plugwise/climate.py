@@ -24,6 +24,7 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.restore_state import ExtraStoredData, RestoreEntity
 
@@ -113,6 +114,14 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
             "last_active_schedule": self.last_active_schedule,
             "previous_action_mode": self.previous_action_mode,
         }
+
+    @classmethod
+    def from_dict(cls, restored: dict[str, Any]) -> PlugwiseClimateExtraStoredData:
+        """Initialize a stored data object from a dict."""
+        return cls(
+            last_active_schedule=restored.get("last_active_schedule"),
+            previous_action_mode=restored.get("previous_action_mode"),
+        )
 
 
 class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
