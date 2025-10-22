@@ -105,7 +105,7 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
     """Object to hold extra stored data."""
 
     last_active_schedule: str | None
-    previous_action_mode: HVACAction
+    previous_action_mode: HVACAction 
 
     def as_dict(self) -> dict[str, Any]:
         """Return a dict representation of the text data."""
@@ -119,7 +119,7 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
         """Initialize a stored data object from a dict."""
         return cls(
             last_active_schedule=restored.get("last_active_schedule"),
-            previous_action_mode=restored.get("previous_action_mode"),
+            previous_action_mode=HVACAction(restored.previous_action_mode),
         )
 
 
