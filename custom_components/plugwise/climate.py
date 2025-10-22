@@ -104,8 +104,8 @@ async def async_setup_entry(
 class PlugwiseClimateExtraStoredData(ExtraStoredData):
     """Object to hold extra stored data."""
 
-    last_active_schedule: str | None = None
-    previous_action_mode: HVACAction | None = None
+    last_active_schedule: str | None
+    previous_action_mode: HVACAction
 
     def as_dict(self) -> dict[str, Any]:
         """Return a dict representation of the text data."""
@@ -142,8 +142,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         if (extra_data := await self.async_get_last_extra_data()):
             LOGGER.debug("Extra data: %s", extra_data)
-            self._last_active_schedule = extra_data.as_dict()["last_active_schedule"]
-            self._previous_action_mode = extra_data.as_dict()["previous_action_mode"]
+            self._last_active_schedule = extra_data.last_active_schedule
+            self._previous_action_mode = extra_data.previous_action_mode
 
     def __init__(
         self,
@@ -240,7 +240,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         if self._homekit_enabled and self._homekit_mode == HVACMode.OFF:
             return HVACMode.OFF  # pragma: no cover
 
-        LOGGER.debug("HOI havc_mode = %s", str(hvac))
         return hvac
 
     @property
