@@ -136,17 +136,20 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _enable_turn_on_off_backwards_compatibility = False
 
     _last_active_schedule: str | None = None
-    _previous_action_mode = HVACAction.HEATING  # Upstream
+    _previous_action_mode: HVACAction | None = HVACAction.HEATING  # Upstream
     _homekit_mode: HVACMode | None = None  # pw-beta homekit emulation + intentional unsort
 
     async def async_added_to_hass(self) -> None:
         """Run when entity about to be added."""
         await super().async_added_to_hass()
 
-        if (extra_data := await self.async_get_last_extra_data()):
-            LOGGER.debug("Extra data: %s", extra_data)
-            self._last_active_schedule = extra_data.as_dict()["last_active_schedule"]
-            self._previous_action_mode = extra_data.as_dict()["previous_action_mode"]
+        if (extra_data := await self.async_get_last_extra_data()) and (
+            plugwise_extra_data := PlugwiseClimateExtraStoredData.from_dict(
+                extra_data.as_dict()
+            )
+        ):  
+            self._last_active_schedule = plugwise_extra_data.last_active_schedule
+            self._previous_action_mode = plugwise_extra_data.previous_action_mode
 
     def __init__(
         self,
