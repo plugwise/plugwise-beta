@@ -142,8 +142,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         if (extra_data := await self.async_get_last_extra_data()):
             LOGGER.debug("Extra data: %s", extra_data)
-            self._last_active_schedule = extra_data.last_active_schedule
-            self._previous_action_mode = extra_data.previous_action_mode
+            self._last_active_schedule = extra_data.as_dict()["last_active_schedule"]
+            self._previous_action_mode = extra_data.as_dict()["previous_action_mode"]
 
     def __init__(
         self,
