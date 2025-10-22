@@ -319,6 +319,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         if hvac_mode != HVACMode.OFF:
             schedule = self.device.get("select_schedule")
+            if schedule == "off":
+                schedule = self._last_active_schedule
             if self._last_active_schedule is None:
                 if schedule is not None:
                     if schedule != "off":
