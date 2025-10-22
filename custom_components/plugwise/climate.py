@@ -105,15 +105,13 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
     """Object to hold extra stored data."""
 
     last_active_schedule: str | None
-    previous_action_mode: HVACAction | None
+    previous_action_mode: str | None
 
     def as_dict(self) -> dict[str, Any]:
         """Return a dict representation of the text data."""
         return {
             "last_active_schedule": self.last_active_schedule,
-            "previous_action_mode": (
-                self.previous_action_mode.value if self.previous_action_mode else None
-            ),
+            "previous_action_mode": self.previous_action_mode,
         }
 
     @classmethod
@@ -136,7 +134,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _enable_turn_on_off_backwards_compatibility = False
 
     _last_active_schedule: str | None = None
-    _previous_action_mode: HVACAction | None = HVACAction.HEATING  # Upstream
+    _previous_action_mode: str | None = HVACAction.HEATING.value  # Upstream
     _homekit_mode: HVACMode | None = None  # pw-beta homekit emulation + intentional unsort
 
     async def async_added_to_hass(self) -> None:
@@ -147,7 +145,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             plugwise_extra_data := PlugwiseClimateExtraStoredData.from_dict(
                 extra_data.as_dict()
             )
-        ):  
+        ):
             self._last_active_schedule = plugwise_extra_data.last_active_schedule
             self._previous_action_mode = plugwise_extra_data.previous_action_mode
 
@@ -285,7 +283,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         ):
             mode = self._gateway_data[SELECT_REGULATION_MODE]
             if mode in (HVACAction.COOLING, HVACAction.HEATING):
-                self._previous_action_mode = HVACAction(mode)
+                self._previous_action_mode = HVACAction(mode).value
 
         if (action := self.device.get(CONTROL_STATE)) is not None:
             return HVACAction(action)
@@ -348,7 +346,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         ):  # pw-beta: feature request - mimic HomeKit behavior
             if hvac_mode == HVACMode.OFF:
                 await self.coordinator.api.set_regulation_mode(hvac_mode)
-            elif self.hvac_mode == HVACMode.OFF:
+            elif self.hvac_mode == HVACMode.OFF and self._previous_action_mode:
                 await self.coordinator.api.set_regulation_mode(self._previous_action_mode)
         else:
             self._homekit_mode = hvac_mode  # pragma: no cover
