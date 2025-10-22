@@ -189,6 +189,29 @@ async def test_adam_restore_state_climate(
             blocking=True,
         )
 
+    #data = mock_smile_adam_heat_cool.async_update.return_value
+    #data["da224107914542988a88561b4452b0f6"]["select_regulation_mode"] = "heating"
+    #data["f2bf9048bef64cc5b6d5110154e33c81"]["climate_mode"] = "pr"
+    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
+        freezer.tick(timedelta(minutes=1))
+        async_fire_time_changed(hass)
+        await hass.async_block_till_done()
+
+        assert (state := hass.states.get("climate.living_room"))
+        assert state.state == "idle"
+
+        # Verify restoration is used when setting a schedule
+        await hass.services.async_call(
+            CLIMATE_DOMAIN,
+            SERVICE_SET_HVAC_MODE,
+            {ATTR_ENTITY_ID: "climate.living_room", ATTR_HVAC_MODE: HVACMode.OFF},
+            blocking=True,
+        )
+        # Verify set_schedule_state was called with the restored schedule
+        mock_smile_adam_heat_cool.set_regulation_mode.assert_called_with(
+            "off",
+        )
+
     data = mock_smile_adam_heat_cool.async_update.return_value
     data["f871b8c4d63549319221e294e4f88074"]["climate_mode"] = "heat"
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
@@ -205,6 +228,10 @@ async def test_adam_restore_state_climate(
             SERVICE_SET_HVAC_MODE,
             {ATTR_ENTITY_ID: "climate.bathroom", ATTR_HVAC_MODE: HVACMode.AUTO},
             blocking=True,
+        )
+        # Verify set_schedule_state was called with the restored schedule
+        mock_smile_adam_heat_cool.set_schedule_state.assert_called_with(
+            "f871b8c4d63549319221e294e4f88074", "on", "Badkamer"
         )
 
 
