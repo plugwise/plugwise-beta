@@ -317,20 +317,25 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             return
 
         if hvac_mode != HVACMode.OFF:
-            schedule = self.device.get("select_schedule")
-            if schedule == "off":
-                schedule = self._last_active_schedule
-            if self._last_active_schedule is None:
-                if schedule is not None:
-                    if schedule != "off":
-                        self._last_active_schedule = schedule
-                    else:
-                        raise HomeAssistantError("Failed setting HVACMode, set a schedule first")
+            current = self.device.get("select_schedule")
+            desired = current
+
+            # Normalize and capture last valid schedule
+            if desired and desired != "off":
+                self._last_active_schedule = desired
+            elif desired == "off":
+                desired = self._last_active_schedule
+
+            # Enabling HVACMode.AUTO requires a previously set schedule
+            if hvac_mode == HVACMode.AUTO and not desired:
+                raise HomeAssistantError(
+                    "Failed setting HVACMode, set a schedule first"
+                )
 
             await self.coordinator.api.set_schedule_state(
                 self._location,
                 STATE_ON if hvac_mode == HVACMode.AUTO else STATE_OFF,
-                schedule,
+                desired,
             )
 
         if (
