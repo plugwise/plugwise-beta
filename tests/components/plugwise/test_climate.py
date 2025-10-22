@@ -147,17 +147,27 @@ async def test_adam_climate_adjust_negative_testing(
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_adam_restore_state_climate(
-    hass: HomeAssistant, mock_smile_adam_heat_cool: MagicMock, mock_config_entry: MockConfigEntry,
+    hass: HomeAssistant,
+    mock_smile_adam_heat_cool: MagicMock,
+    mock_config_entry: MockConfigEntry,
+    freezer: FrozenDateTimeFactory,
 ) -> None:
-    """Test restore_state for climate."""
+    """Test restore_state for climate with restored schedule."""
     mock_restore_cache_with_extra_data(
         hass,
         [
             (
                 State("climate.living_room", "heat"),
                 PlugwiseClimateExtraStoredData(
-                    last_active_schedule="Weekschema",
-                    previous_action_mode=HVACAction.HEATING,
+                    last_active_schedule=None,
+                    previous_action_mode=None,
+                ).as_dict(),
+            ),
+            (
+                State("climate.bathroom", "heat"),
+                PlugwiseClimateExtraStoredData(
+                    last_active_schedule="Badkamer",
+                    previous_action_mode=HVACAction.HEATING.value,
                 ).as_dict(),
             ),
         ],
@@ -170,17 +180,32 @@ async def test_adam_restore_state_climate(
     assert (state := hass.states.get("climate.living_room"))
     assert state.state == "heat"
 
-    # Verify restoration is used when changing HVAC mode
-    await hass.services.async_call(
-        CLIMATE_DOMAIN,
-        SERVICE_SET_HVAC_MODE,
-        {ATTR_ENTITY_ID: "climate.living_room", ATTR_HVAC_MODE: HVACMode.AUTO},
-        blocking=True,
-    )
-    # Verify set_schedule_state was called with the restored schedule
-    mock_smile_adam_heat_cool.set_schedule_state.assert_called_with(
-        "f2bf9048bef64cc5b6d5110154e33c81", "on", "Weekschema"
-    )
+    # Verify a HomeAssistantError is raised setting a schedule with no restored name
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            CLIMATE_DOMAIN,
+            SERVICE_SET_HVAC_MODE,
+            {ATTR_ENTITY_ID: "climate.living_room", ATTR_HVAC_MODE: HVACMode.AUTO},
+            blocking=True,
+        )
+
+    data = mock_smile_adam_heat_cool.async_update.return_value
+    data["f871b8c4d63549319221e294e4f88074"]["climate_mode"] = "heat"
+    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
+        freezer.tick(timedelta(minutes=1))
+        async_fire_time_changed(hass)
+        await hass.async_block_till_done()
+    
+        assert (state := hass.states.get("climate.bathroom"))
+        assert state.state == "heat"
+
+        # Verify restoration is used when setting a schedule
+        await hass.services.async_call(
+            CLIMATE_DOMAIN,
+            SERVICE_SET_HVAC_MODE,
+            {ATTR_ENTITY_ID: "climate.bathroom", ATTR_HVAC_MODE: HVACMode.AUTO},
+            blocking=True,
+        )
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
