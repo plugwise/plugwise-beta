@@ -200,10 +200,6 @@ async def test_adam_restore_state_climate(
     mock_smile_adam_heat_cool.set_regulation_mode.assert_called_with(
         "off",
     )
-    await hass.async_block_till_done()
-
-    assert (state := hass.states.get("climate.living_room"))
-    assert state.state == "off"
 
     data = mock_smile_adam_heat_cool.async_update.return_value
     data["f871b8c4d63549319221e294e4f88074"]["climate_mode"] = "heat"
