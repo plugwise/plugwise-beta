@@ -141,11 +141,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         """Run when entity about to be added."""
         await super().async_added_to_hass()
 
-        if (extra_data := await self.async_get_last_extra_data()) and (
-            plugwise_extra_data := PlugwiseClimateExtraStoredData.from_dict(
+        if extra_data := await self.async_get_last_extra_data():
+            plugwise_extra_data = PlugwiseClimateExtraStoredData.from_dict(
                 extra_data.as_dict()
             )
-        ):
             self._last_active_schedule = plugwise_extra_data.last_active_schedule
             self._previous_action_mode = plugwise_extra_data.previous_action_mode
 
