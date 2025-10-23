@@ -23,7 +23,7 @@ from homeassistant.components.climate import (
     HVACMode,
 )
 from homeassistant.components.plugwise.climate import PlugwiseClimateExtraStoredData
-from homeassistant.const import ATTR_ENTITY_ID, ATTR_TEMPERATURE
+from homeassistant.const import ATTR_ENTITY_ID, ATTR_TEMPERATURE, STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant, State
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import entity_registry as er
@@ -111,7 +111,7 @@ async def test_adam_climate_entity_climate_changes(
     )
     assert mock_smile_adam.set_schedule_state.call_count == 2
     mock_smile_adam.set_schedule_state.assert_called_with(
-        "c50f167537524366a5af7aa3942feb1e", HVACMode.OFF, "GF7  Woonkamer",
+        "c50f167537524366a5af7aa3942feb1e", STATE_OFF, "GF7  Woonkamer",
     )
 
     with pytest.raises(
@@ -220,7 +220,7 @@ async def test_adam_restore_state_climate(
         )
         # Verify set_schedule_state was called with the restored schedule
         mock_smile_adam_heat_cool.set_schedule_state.assert_called_with(
-            "f871b8c4d63549319221e294e4f88074", "on", "Badkamer"
+            "f871b8c4d63549319221e294e4f88074", STATE_ON, "Badkamer"
         )
 
 
@@ -422,7 +422,7 @@ async def test_anna_climate_entity_climate_changes(
     )
     assert mock_smile_anna.set_schedule_state.call_count == 1
     mock_smile_anna.set_schedule_state.assert_called_with(
-        "c784ee9fdab44e1395b8dee7d7a497d5", HVACMode.OFF, "standaard",
+        "c784ee9fdab44e1395b8dee7d7a497d5", STATE_OFF, "standaard",
     )
 
     # Mock user deleting last schedule from app or browser
