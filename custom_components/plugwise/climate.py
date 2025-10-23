@@ -348,7 +348,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             not self._homekit_enabled  # pw-beta
         ):
             if mode == HVACMode.OFF:
-                await self.coordinator.api.set_regulation_mode(mode)
+                await self.coordinator.api.set_regulation_mode(mode.value)
             elif self.hvac_mode == HVACMode.OFF and self._previous_action_mode:
                 await self.coordinator.api.set_regulation_mode(self._previous_action_mode)
         else:  # pw-beta
