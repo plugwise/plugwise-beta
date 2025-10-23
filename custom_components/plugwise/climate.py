@@ -340,26 +340,26 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
                 desired,
             )
 
+        await self._homekit_translate_or_not(hvac_mode)  # pw-beta
+
+    async def _homekit_translate_or_not(self, mode) -> None:
+        """Mimic HomeKit by setting a suitable preset, when homekit mode is enabled."""
         if (
-            not self._homekit_enabled
-        ):  # pw-beta: feature request - mimic HomeKit behavior
-            if hvac_mode == HVACMode.OFF:
-                await self.coordinator.api.set_regulation_mode(hvac_mode)
+            not self._homekit_enabled  # pw-beta
+        ):
+            if mode == HVACMode.OFF:
+                await self.coordinator.api.set_regulation_mode(mode)
             elif self.hvac_mode == HVACMode.OFF and self._previous_action_mode:
                 await self.coordinator.api.set_regulation_mode(self._previous_action_mode)
-        else:
-            await self._homekit_translate(hvac_mode)
-
-    async def _homekit_translate(self, mode) -> None:
-        """Mimic HomeKit by setting a suitable preset."""
-        self._homekit_mode = mode  # pragma: no cover
-        if self._homekit_mode == HVACMode.OFF:  # pragma: no cover
-            await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
-        if (
-            self._homekit_mode in [HVACMode.HEAT, HVACMode.HEAT_COOL]
-            and self.device.get(ACTIVE_PRESET) == PRESET_AWAY
-        ):  # pragma: no cover
-            await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
+        else:  # pw-beta
+            self._homekit_mode = mode  # pragma: no cover
+            if self._homekit_mode == HVACMode.OFF:  # pragma: no cover
+                await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
+            if (
+                self._homekit_mode in [HVACMode.HEAT, HVACMode.HEAT_COOL]
+                and self.device.get(ACTIVE_PRESET) == PRESET_AWAY
+            ):  # pragma: no cover
+                await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
 
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
