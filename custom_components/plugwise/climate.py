@@ -54,6 +54,7 @@ from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 
+ERROR_NO_SCHEDULE = "Failed setting HVACMode, set a schedule first"
 PARALLEL_UPDATES = 0
 
 
@@ -322,17 +323,15 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             current = self.device.get("select_schedule")
             desired = current
 
-            # Normalize and capture last valid schedule
+            # Capture the last valid schedule
             if desired and desired != "off":
                 self._last_active_schedule = desired
             elif desired == "off":
                 desired = self._last_active_schedule
 
-            # Enabling HVACMode.AUTO requires a previously set schedule
+            # Enabling HVACMode.AUTO requires a previously set schedule for saving and restoring
             if hvac_mode == HVACMode.AUTO and not desired:
-                raise HomeAssistantError(
-                    "Failed setting HVACMode, set a schedule first"
-                )
+                raise HomeAssistantError(ERROR_NO_SCHEDULE)
 
             await self.coordinator.api.set_schedule_state(
                 self._location,
