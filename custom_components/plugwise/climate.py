@@ -120,7 +120,7 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
         """Initialize a stored data object from a dict."""
         return cls(
             last_active_schedule=restored.get("last_active_schedule"),
-            previous_action_mode=restored.get("previous_action_mode")
+            previous_action_mode=restored.get("previous_action_mode"),
         )
 
 
