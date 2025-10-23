@@ -342,7 +342,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         await self._homekit_translate_or_not(hvac_mode)  # pw-beta
 
-    async def _homekit_translate_or_not(self, mode) -> None:
+    async def _homekit_translate_or_not(self, mode: HVACMode) -> None:
         """Mimic HomeKit by setting a suitable preset, when homekit mode is enabled."""
         if (
             not self._homekit_enabled  # pw-beta
