@@ -2,8 +2,9 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.59.0
 
+- New Feature: use RestoreState in climate to save schedule en regulation status, also via plugwise [v1.8.3](https://github.com/plugwise/python-plugwise/releases/tag/v1.8.3)
 - More Emma-related updates via plugwise [v1.8.2](https://github.com/plugwise/python-plugwise/releases/tag/v1.8.2)
 
 ## v0.58.1

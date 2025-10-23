@@ -146,7 +146,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -
     """Migrate back to v1.1 config entry."""
     if entry.version > 1:
         # This means the user has downgraded from a future version
-        return False
+        return False  #pragma: no cover
 
     if entry.version == 1 and entry.minor_version == 2:
         new_data = {**entry.data}
