@@ -262,9 +262,9 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         if self.coordinator.api.cooling_present:
             if REGULATION_MODES in self._gateway_data:
                 selected = self._gateway_data.get(SELECT_REGULATION_MODE)
-                if selected == HVACAction.COOLING:
+                if selected == HVACAction.COOLING.value:
                     hvac_modes.append(HVACMode.COOL)
-                if selected == HVACAction.HEATING:
+                if selected == HVACAction.HEATING.value:
                     hvac_modes.append(HVACMode.HEAT)
             else:
                 hvac_modes.append(HVACMode.HEAT_COOL)
@@ -276,10 +276,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     @property
     def hvac_action(self) -> HVACAction:  # pw-beta add to Core
         """Return the current running hvac operation if supported."""
-        # Keep track of the previous havc_action mode. When no cooling available, _previous_action_mode is always heating
+        # Keep track of the previous hvac_action mode.
+        # When no cooling available, _previous_action_mode is always heating
         if (
             REGULATION_MODES in self._gateway_data
-            and HVACAction.COOLING in self._gateway_data[REGULATION_MODES]
+            and HVACAction.COOLING.value in self._gateway_data[REGULATION_MODES]
         ):
             mode = self._gateway_data[SELECT_REGULATION_MODE]
             if mode in (HVACAction.COOLING.value, HVACAction.HEATING.value):
