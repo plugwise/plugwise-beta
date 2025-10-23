@@ -348,14 +348,18 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             elif self.hvac_mode == HVACMode.OFF and self._previous_action_mode:
                 await self.coordinator.api.set_regulation_mode(self._previous_action_mode)
         else:
-            self._homekit_mode = hvac_mode  # pragma: no cover
-            if self._homekit_mode == HVACMode.OFF:  # pragma: no cover
-                await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
-            if (
-                self._homekit_mode in [HVACMode.HEAT, HVACMode.HEAT_COOL]
-                and self.device.get(ACTIVE_PRESET) == PRESET_AWAY
-            ):  # pragma: no cover
-                await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
+            await self._homekit_translate(hvac_mode)
+
+    async def _homekit_translate(self, mode) -> None:
+        """Mimic HomeKit by setting a suitable preset."""
+        self._homekit_mode = mode  # pragma: no cover
+        if self._homekit_mode == HVACMode.OFF:  # pragma: no cover
+            await self.async_set_preset_mode(PRESET_AWAY)  # pragma: no cover
+        if (
+            self._homekit_mode in [HVACMode.HEAT, HVACMode.HEAT_COOL]
+            and self.device.get(ACTIVE_PRESET) == PRESET_AWAY
+        ):  # pragma: no cover
+            await self.async_set_preset_mode(PRESET_HOME)  # pragma: no cover
 
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
