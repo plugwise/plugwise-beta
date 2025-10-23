@@ -117,10 +117,9 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
     @classmethod
     def from_dict(cls, restored: dict[str, Any]) -> PlugwiseClimateExtraStoredData:
         """Initialize a stored data object from a dict."""
-        prev = restored.get("previous_action_mode")
         return cls(
             last_active_schedule=restored.get("last_active_schedule"),
-            previous_action_mode=HVACAction(prev) if prev else None,
+            previous_action_mode=restored.get("previous_action_mode")
         )
 
 
@@ -282,8 +281,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             and HVACAction.COOLING in self._gateway_data[REGULATION_MODES]
         ):
             mode = self._gateway_data[SELECT_REGULATION_MODE]
-            if mode in (HVACAction.COOLING, HVACAction.HEATING):
-                self._previous_action_mode = HVACAction(mode).value
+            if mode in (HVACAction.COOLING.value, HVACAction.HEATING.value):
+                self._previous_action_mode = mode
 
         if (action := self.device.get(CONTROL_STATE)) is not None:
             return HVACAction(action)
