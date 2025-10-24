@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Add a ThermoZone to Anna
+
 ## v0.59.0
 
 - New Feature: use RestoreState in climate to save schedule en regulation status, also via plugwise [v1.8.3](https://github.com/plugwise/python-plugwise/releases/tag/v1.8.3)
@@ -15,7 +19,6 @@ Versions from 0.40 and up
 
 - Fix mypy errors in Core (not accepted in HA Core)
 - Introduce Snapshot testing for all platforms (requirement from HA Core)
-- Add a ThermoZone to Anna via plugwise [v1.8.0]()
 
 ## v0.57.6
 
