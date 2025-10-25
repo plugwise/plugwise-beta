@@ -318,6 +318,9 @@
     "invalid_xml_data": {
       "message": "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
     },
+    "set_schedule_first": {
+      "message": "Failed setting HVACMode, set a schedule first."
+    },
     "unsupported_firmware": {
       "message": "Device with unsupported firmware"
     }
