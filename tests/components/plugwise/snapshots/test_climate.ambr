@@ -575,7 +575,7 @@
     'state': 'auto',
   })
 # ---
-# name: test_anna_2_climate_snapshot[platforms0-True-m_anna_heatpump_cooling][climate.anna-entry]
+# name: test_anna_2_climate_snapshot[platforms0-True-m_anna_heatpump_cooling][climate.living_room-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -603,7 +603,7 @@
     'disabled_by': None,
     'domain': 'climate',
     'entity_category': None,
-    'entity_id': 'climate.anna',
+    'entity_id': 'climate.living_room',
     'has_entity_name': True,
     'hidden_by': None,
     'icon': None,
@@ -621,15 +621,15 @@
     'suggested_object_id': None,
     'supported_features': <ClimateEntityFeature: 18>,
     'translation_key': 'plugwise',
-    'unique_id': '3cb70739631c4d17a86b8b12e8a5161b-climate',
+    'unique_id': 'c784ee9fdab44e1395b8dee7d7a497d5-climate',
     'unit_of_measurement': None,
   })
 # ---
-# name: test_anna_2_climate_snapshot[platforms0-True-m_anna_heatpump_cooling][climate.anna-state]
+# name: test_anna_2_climate_snapshot[platforms0-True-m_anna_heatpump_cooling][climate.living_room-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'current_temperature': 26.3,
-      'friendly_name': 'Anna',
+      'friendly_name': 'Living room',
       'hvac_action': <HVACAction.COOLING: 'cooling'>,
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
@@ -651,14 +651,14 @@
       'target_temp_step': 0.1,
     }),
     'context': <ANY>,
-    'entity_id': 'climate.anna',
+    'entity_id': 'climate.living_room',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
     'state': 'auto',
   })
 # ---
-# name: test_anna_3_climate_snapshot[platforms0-True-m_anna_heatpump_idle][climate.anna-entry]
+# name: test_anna_3_climate_snapshot[platforms0-True-m_anna_heatpump_idle][climate.living_room-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -686,7 +686,7 @@
     'disabled_by': None,
     'domain': 'climate',
     'entity_category': None,
-    'entity_id': 'climate.anna',
+    'entity_id': 'climate.living_room',
     'has_entity_name': True,
     'hidden_by': None,
     'icon': None,
@@ -704,15 +704,15 @@
     'suggested_object_id': None,
     'supported_features': <ClimateEntityFeature: 18>,
     'translation_key': 'plugwise',
-    'unique_id': '3cb70739631c4d17a86b8b12e8a5161b-climate',
+    'unique_id': 'c784ee9fdab44e1395b8dee7d7a497d5-climate',
     'unit_of_measurement': None,
   })
 # ---
-# name: test_anna_3_climate_snapshot[platforms0-True-m_anna_heatpump_idle][climate.anna-state]
+# name: test_anna_3_climate_snapshot[platforms0-True-m_anna_heatpump_idle][climate.living_room-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'current_temperature': 23.0,
-      'friendly_name': 'Anna',
+      'friendly_name': 'Living room',
       'hvac_action': <HVACAction.IDLE: 'idle'>,
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
@@ -734,14 +734,14 @@
       'target_temp_step': 0.1,
     }),
     'context': <ANY>,
-    'entity_id': 'climate.anna',
+    'entity_id': 'climate.living_room',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
     'state': 'auto',
   })
 # ---
-# name: test_anna_climate_snapshot[platforms0-True-anna_heatpump_heating][climate.anna-entry]
+# name: test_anna_climate_snapshot[platforms0-True-anna_heatpump_heating][climate.living_room-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
     }),
@@ -769,7 +769,7 @@
     'disabled_by': None,
     'domain': 'climate',
     'entity_category': None,
-    'entity_id': 'climate.anna',
+    'entity_id': 'climate.living_room',
     'has_entity_name': True,
     'hidden_by': None,
     'icon': None,
@@ -787,16 +787,16 @@
     'suggested_object_id': None,
     'supported_features': <ClimateEntityFeature: 18>,
     'translation_key': 'plugwise',
-    'unique_id': '3cb70739631c4d17a86b8b12e8a5161b-climate',
+    'unique_id': 'c784ee9fdab44e1395b8dee7d7a497d5-climate',
     'unit_of_measurement': None,
   })
 # ---
-# name: test_anna_climate_snapshot[platforms0-True-anna_heatpump_heating][climate.anna-state]
+# name: test_anna_climate_snapshot[platforms0-True-anna_heatpump_heating][climate.living_room-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'current_temperature': 19.3,
-      'friendly_name': 'Anna',
-      'hvac_action': <HVACAction.HEATING: 'heating'>,
+      'current_temperature': 23.3,
+      'friendly_name': 'Living room',
+      'hvac_action': <HVACAction.IDLE: 'idle'>,
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT_COOL: 'heat_cool'>,
@@ -817,7 +817,7 @@
       'target_temp_step': 0.1,
     }),
     'context': <ANY>,
-    'entity_id': 'climate.anna',
+    'entity_id': 'climate.living_room',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
