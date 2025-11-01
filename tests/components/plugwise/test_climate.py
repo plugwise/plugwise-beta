@@ -393,7 +393,7 @@ async def test_anna_climate_entity_climate_changes(
         CLIMATE_DOMAIN,
         SERVICE_SET_TEMPERATURE,
         {
-            ATTR_ENTITY_ID: "climate.anna",
+            ATTR_ENTITY_ID: "climate.living_room",
             ATTR_TARGET_TEMP_HIGH: 30,
             ATTR_TARGET_TEMP_LOW: 20,
         },
@@ -408,7 +408,7 @@ async def test_anna_climate_entity_climate_changes(
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_PRESET_MODE,
-        {ATTR_ENTITY_ID: "climate.anna", ATTR_PRESET_MODE: PRESET_AWAY},
+        {ATTR_ENTITY_ID: "climate.living_room", ATTR_PRESET_MODE: PRESET_AWAY},
         blocking=True,
     )
     assert mock_smile_anna.set_preset.call_count == 1
@@ -419,7 +419,7 @@ async def test_anna_climate_entity_climate_changes(
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_HVAC_MODE,
-        {ATTR_ENTITY_ID: "climate.anna", ATTR_HVAC_MODE: HVACMode.AUTO},
+        {ATTR_ENTITY_ID: "climate.living_room", ATTR_HVAC_MODE: HVACMode.AUTO},
         blocking=True,
     )
     # hvac_mode is already auto so not called.
@@ -428,7 +428,7 @@ async def test_anna_climate_entity_climate_changes(
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_HVAC_MODE,
-        {ATTR_ENTITY_ID: "climate.anna", ATTR_HVAC_MODE: HVACMode.HEAT_COOL},
+        {ATTR_ENTITY_ID: "climate.living_room", ATTR_HVAC_MODE: HVACMode.HEAT_COOL},
         blocking=True,
     )
     assert mock_smile_anna.set_schedule_state.call_count == 1
@@ -438,15 +438,15 @@ async def test_anna_climate_entity_climate_changes(
 
     # Mock user deleting last schedule from app or browser
     data = mock_smile_anna.async_update.return_value
-    data["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = []
-    data["3cb70739631c4d17a86b8b12e8a5161b"]["select_schedule"] = None
-    data["3cb70739631c4d17a86b8b12e8a5161b"]["climate_mode"] = "heat_cool"
+    data["c784ee9fdab44e1395b8dee7d7a497d5"]["available_schedules"] = []
+    data["c784ee9fdab44e1395b8dee7d7a497d5"]["select_schedule"] = None
+    data["c784ee9fdab44e1395b8dee7d7a497d5"]["climate_mode"] = "heat_cool"
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))
         async_fire_time_changed(hass)
         await hass.async_block_till_done()
 
-        state = hass.states.get("climate.anna")
+        state = hass.states.get("climate.living_room")
         assert state.state == HVACMode.HEAT_COOL
         assert state.attributes[ATTR_HVAC_MODES] == [HVACMode.HEAT_COOL]
 
