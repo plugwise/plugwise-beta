@@ -53,8 +53,8 @@ Our [Changelog](CHANGELOG.MD) is available as a [separate file](CHANGELOG.md) in
 ### What do we support (in short)?
 
 - Thermostats
-  - Adam (firmware 2.x and 3.x) and the accompanying Anna, Jip's, Lisa's, Tom's, Floor's and Plugs (Koen via a Plug). From v0.55.0 zones with one or more thermostats are represented as a single and separate climate-entity in HA.
-  - Anna (firmware 1.x, 3.x and 4.x)
+  - Adam (firmware 2.x and 3.x) and the accompanying Anna, Emma's, Jip's, Lisa's, Tom's, Floor's and Plugs (Koen via a Plug). From v0.55.0 zones with one or more thermostats are represented as a single and separate climate-entity in HA.
+  - Anna (firmware 1.x, 3.x and 4.x) and Anna P1 (4.x)
   - Notifications for both types
 - Power-related
   - Smile P1 (firmware 2.x, 3.x and 4.x)
