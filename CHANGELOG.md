@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## v0.60.0
+
+- New Feature: add support for Anna P1 via plugwise [v1.9.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.9.0)
+
 ## v0.59.0
 
 - New Feature: use RestoreState in climate to save schedule en regulation status, also via plugwise [v1.8.3](https://github.com/plugwise/python-plugwise/releases/tag/v1.8.3)
