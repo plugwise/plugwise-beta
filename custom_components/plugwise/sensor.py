@@ -123,7 +123,6 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         key=ATTR_TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
@@ -399,7 +398,6 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         key="battery",
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.BATTERY,
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
@@ -407,7 +405,6 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=LIGHT_LUX,
         device_class=SensorDeviceClass.ILLUMINANCE,
         state_class=SensorStateClass.MEASUREMENT,
-        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseSensorEntityDescription(
         key=MOD_LEVEL,
