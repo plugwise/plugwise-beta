@@ -317,7 +317,7 @@
       "message": "Ongeldige XML data, of foutmelding ontvangen van de Plugwise Adam/Smile/Stretch"
     },
     "set_schedule_first": {
-      "message": "HVACMode aanpassing mislukt, activeer eerst een thermostaat schema."
+      "message": "Instellen van HVACMode mislukt, activeer eerst een thermostaat schema."
     },
     "unsupported_firmware": {
       "message": "Apparaat met niet-ondersteunde firmware"
