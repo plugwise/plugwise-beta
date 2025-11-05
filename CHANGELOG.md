@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Implement translation for added homeassistantError raise message via PR [#948](https://github.com/plugwise/plugwise-beta/pull/948)
+
 ## v0.60.0
 
 - New Feature: add support for Anna P1 via plugwise [v1.9.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.9.0)

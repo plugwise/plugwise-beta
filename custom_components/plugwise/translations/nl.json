@@ -18,6 +18,13 @@
   },
   "config": {
     "step": {
+      "reconfigure": {
+        "description": "Configuratie bijwerken voor {title}.",
+        "data": {
+          "host": "IP-adres",
+          "port": "Port nummer"
+        }
+      },
       "user": {
         "title": "Installeer Plugwise Adam/Smile/Stretch",
         "description": "Van uw Plugwise apparaat voer in: (installeren kan tot 90s duren)",
@@ -42,7 +49,9 @@
     },
     "abort": {
       "already_configured": "Dit apparaat is al geconfigureerd",
-      "anna_with_adam": "Zowel Anna als Adam gedetecteerd. Voeg alleen de Adam toe, niet de Anna"
+      "anna_with_adam": "Zowel Anna als Adam gedetecteerd. Voeg alleen de Adam toe, niet de Anna",
+      "not_the_same_smile": "Het ingestelde Smile ID matcht niet met het ID van het ingegeven IP adres.",
+      "reconfigure_successful": "Herconfigureren gelukt"
     }
   },
   "entity": {
@@ -289,6 +298,29 @@
       "relay": {
         "name": "Schakelaar"
       }
+    }
+  },
+  "exceptions": {
+    "authentication_failed": {
+      "message": "Ongeldige authenticatie"
+    },
+    "data_incomplete_or_missing": {
+      "message": "Data niet compleet of niet beschikbaar."
+    },
+    "error_communicating_with_api": {
+      "message": "Fout bij het communiceren met API: {error}."
+    },
+    "failed_to_connect": {
+      "message": "Verbinden mislukt"
+    },
+    "invalid_xml_data": {
+      "message": "Ongeldige XML data, of foutmelding ontvangen van de Plugwise Adam/Smile/Stretch"
+    },
+    "set_schedule_first": {
+      "message": "Instellen van HVACMode mislukt, activeer eerst een thermostaat schema."
+    },
+    "unsupported_firmware": {
+      "message": "Apparaat met niet-ondersteunde firmware"
     }
   },
   "services": {
