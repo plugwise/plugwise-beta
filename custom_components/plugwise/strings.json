@@ -194,7 +194,7 @@
         "name": "Electricity consumed peak interval"
       },
       "electricity_consumed_off_peak_interval": {
-        "name": "Electricity consumed off peak interval"
+        "name": "Electricity consumed off-peak interval"
       },
       "electricity_produced_interval": {
         "name": "Electricity produced interval"
@@ -203,28 +203,28 @@
         "name": "Electricity produced peak interval"
       },
       "electricity_produced_off_peak_interval": {
-        "name": "Electricity produced off peak interval"
+        "name": "Electricity produced off-peak interval"
       },
       "electricity_consumed_off_peak_point": {
-        "name": "Electricity consumed off peak point"
+        "name": "Electricity consumed off-peak point"
       },
       "electricity_consumed_peak_point": {
         "name": "Electricity consumed peak point"
       },
       "electricity_consumed_off_peak_cumulative": {
-        "name": "Electricity consumed off peak cumulative"
+        "name": "Electricity consumed off-peak cumulative"
       },
       "electricity_consumed_peak_cumulative": {
         "name": "Electricity consumed peak cumulative"
       },
       "electricity_produced_off_peak_point": {
-        "name": "Electricity produced off peak point"
+        "name": "Electricity produced off-peak point"
       },
       "electricity_produced_peak_point": {
         "name": "Electricity produced peak point"
       },
       "electricity_produced_off_peak_cumulative": {
-        "name": "Electricity produced off peak cumulative"
+        "name": "Electricity produced off-peak cumulative"
       },
       "electricity_produced_peak_cumulative": {
         "name": "Electricity produced peak cumulative"
