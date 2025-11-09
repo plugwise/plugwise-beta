@@ -23,6 +23,8 @@ from .const import (
     SELECT_GATEWAY_MODE,
     SELECT_REGULATION_MODE,
     SELECT_SCHEDULE,
+    SELECT_ZONE_PROFILE,
+    ZONE_PROFILES,
     SelectOptionsType,
     SelectType,
 )
@@ -67,6 +69,12 @@ SELECT_TYPES = (
         translation_key=GATEWAY_MODE,
         entity_category=EntityCategory.CONFIG,
         options_key=GATEWAY_MODES,
+    ),
+    PlugwiseSelectEntityDescription(
+        key=SELECT_ZONE_PROFILE,
+        translation_key=SELECT_ZONE_PROFILE,
+        entity_category=EntityCategory.CONFIG,
+        options_key=ZONE_PROFILES,
     ),
 )
 

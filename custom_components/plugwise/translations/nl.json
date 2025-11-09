@@ -143,6 +143,14 @@
         "state": {
           "off": "Uit"
         }
+      },
+      "select_zone_profile": {
+        "name": "Zone profiel",
+        "state": {
+          "active": "Actief",
+          "off": "Uit",
+          "passive": "Passief"
+        }
       }
     },
     "sensor": {

@@ -135,10 +135,12 @@ GATEWAY_MODE: Final = "gateway_mode"
 GATEWAY_MODES: Final = "gateway_modes"
 REGULATION_MODE: Final = "regulation_mode"
 REGULATION_MODES: Final = "regulation_modes"
+ZONE_PROFILES: Final = "zone_profiles"
 SELECT_DHW_MODE: Final = "select_dhw_mode"
 SELECT_GATEWAY_MODE: Final = "select_gateway_mode"
 SELECT_REGULATION_MODE: Final = "select_regulation_mode"
 SELECT_SCHEDULE: Final = "select_schedule"
+SELECT_ZONE_PROFILE: Final = "select_zone_profile"
 
 # Switch constants
 DHW_CM_SWITCH: Final = "dhw_cm_switch"

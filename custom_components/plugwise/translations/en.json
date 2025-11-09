@@ -128,6 +128,14 @@
                 "state": {
                     "off": "Off"
                 }
+            },
+            "select_zone_profile": {
+                "name": "Zone profile",
+                "state": {
+                    "active": "Active",
+                    "off": "Off",
+                    "passive": "Passive"
+                }
             }
         },
         "sensor": {
