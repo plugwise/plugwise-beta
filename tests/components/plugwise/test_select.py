@@ -45,7 +45,6 @@ async def test_adam_change_select_entity(
         },
         blocking=True,
     )
-
     assert mock_smile_adam.set_select.call_count == 1
     mock_smile_adam.set_select.assert_called_with(
         "select_schedule",
@@ -98,6 +97,29 @@ async def test_adam_select_regulation_mode(
         "on",
     )
 
+@pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
+async def test_adam_select_zone_profile(
+    hass: HomeAssistant,
+    mock_smile_adam_heat_cool: MagicMock,
+    init_integration: MockConfigEntry,
+) -> None:
+    """Test changing the zone_profile select."""
+    await hass.services.async_call(
+        SELECT_DOMAIN,
+        SERVICE_SELECT_OPTION,
+        {
+            ATTR_ENTITY_ID: "select.living_room_zone_profile",
+            ATTR_OPTION: "passive",
+        },
+        blocking=True,
+    )
+    assert mock_smile_adam_heat_cool.set_select.call_count == 1
+    mock_smile_adam_heat_cool.set_select.assert_called_with(
+        "select_zone_profile",
+        "f2bf9048bef64cc5b6d5110154e33c81",
+        "passive",
+    )
 
 async def test_legacy_anna_select_entities(
     hass: HomeAssistant,
