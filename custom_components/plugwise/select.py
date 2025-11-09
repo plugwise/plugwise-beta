@@ -11,18 +11,17 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     AVAILABLE_SCHEDULES,
-    DHW_MODE,
     DHW_MODES,
-    GATEWAY_MODE,
     GATEWAY_MODES,
     LOCATION,
     LOGGER,
-    REGULATION_MODE,
     REGULATION_MODES,
     SELECT_DHW_MODE,
     SELECT_GATEWAY_MODE,
     SELECT_REGULATION_MODE,
     SELECT_SCHEDULE,
+    SELECT_ZONE_PROFILE,
+    ZONE_PROFILES,
     SelectOptionsType,
     SelectType,
 )
@@ -43,7 +42,7 @@ class PlugwiseSelectEntityDescription(SelectEntityDescription):
     options_key: SelectOptionsType
 
 
-# Upstream + is there a reason we didn't rename this one prefixed?
+# Upstream
 SELECT_TYPES = (
     PlugwiseSelectEntityDescription(
         key=SELECT_SCHEDULE,
@@ -52,21 +51,27 @@ SELECT_TYPES = (
     ),
     PlugwiseSelectEntityDescription(
         key=SELECT_REGULATION_MODE,
-        translation_key=REGULATION_MODE,
+        translation_key=SELECT_REGULATION_MODE,
         entity_category=EntityCategory.CONFIG,
         options_key=REGULATION_MODES,
     ),
     PlugwiseSelectEntityDescription(
         key=SELECT_DHW_MODE,
-        translation_key=DHW_MODE,
+        translation_key=SELECT_DHW_MODE,
         entity_category=EntityCategory.CONFIG,
         options_key=DHW_MODES,
     ),
     PlugwiseSelectEntityDescription(
         key=SELECT_GATEWAY_MODE,
-        translation_key=GATEWAY_MODE,
+        translation_key=SELECT_GATEWAY_MODE,
         entity_category=EntityCategory.CONFIG,
         options_key=GATEWAY_MODES,
+    ),
+    PlugwiseSelectEntityDescription(
+        key=SELECT_ZONE_PROFILE,
+        translation_key=SELECT_ZONE_PROFILE,
+        entity_category=EntityCategory.CONFIG,
+        options_key=ZONE_PROFILES,
     ),
 )
 
