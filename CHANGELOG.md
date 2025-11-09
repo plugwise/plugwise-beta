@@ -4,6 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
+- New feature: implement setting of Adam zone profile
 - Implement translation for added homeassistantError raise message via PR [#948](https://github.com/plugwise/plugwise-beta/pull/948)
 - Line up strings with Core Plugwise strings via PR [#954](https://github.com/plugwise/plugwise-beta/pull/954)
 
