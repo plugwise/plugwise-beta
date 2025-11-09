@@ -111,7 +111,7 @@
       }
     },
     "select": {
-      "dhw_mode": {
+      "select_dhw_mode": {
         "name": "Modus huishoudelijk warmwater",
         "state": {
           "auto": "Auto",
@@ -120,7 +120,7 @@
           "off": "Uit"
         }
       },
-      "regulation_mode": {
+      "select_regulation_mode": {
         "name": "Regelmodus",
         "state": {
           "bleeding_cold": "Koud ontluchten",
@@ -130,7 +130,7 @@
           "off": "Uit"
         }
       },
-      "gateway_mode": {
+      "select_gateway_mode": {
         "name": "Gateway mode",
         "state": {
           "away": "Pauze",

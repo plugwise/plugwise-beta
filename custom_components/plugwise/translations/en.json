@@ -96,7 +96,7 @@
             }
         },
         "select": {
-            "dhw_mode": {
+            "select_dhw_mode": {
                 "name": "DHW mode",
                 "state": {
                     "auto": "Auto",
@@ -105,7 +105,7 @@
                     "off": "Off"
                 }
             },
-            "gateway_mode": {
+            "select_gateway_mode": {
                 "name": "Gateway mode",
                 "state": {
                     "away": "Pause",
@@ -113,7 +113,7 @@
                     "vacation": "Vacation"
                 }
             },
-            "regulation_mode": {
+            "select_regulation_mode": {
                 "name": "Regulation mode",
                 "state": {
                     "bleeding_cold": "Bleeding cold",
