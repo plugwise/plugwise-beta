@@ -119,6 +119,7 @@ async def test_adam_select_zone_profile(
         "select_zone_profile",
         "f2bf9048bef64cc5b6d5110154e33c81",
         "passive",
+        "on",
     )
 
 async def test_legacy_anna_select_entities(
