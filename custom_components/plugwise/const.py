@@ -200,10 +200,12 @@ type SelectType = Literal[
     "select_gateway_mode",
     "select_regulation_mode",
     "select_schedule",
+    "select_zone_profile"
 ]
 type SelectOptionsType = Literal[
+    "available_schedules",
     "dhw_modes",
     "gateway_modes",
     "regulation_modes",
-    "available_schedules",
+    "zone_profiles",
 ]
