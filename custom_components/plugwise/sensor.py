@@ -127,7 +127,6 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key=INTENDED_BOILER_TEMP,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
@@ -159,7 +158,6 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key=WATER_TEMP,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
@@ -413,7 +411,6 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
         key=VALVE_POS,
         translation_key=VALVE_POS,
-        entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
@@ -436,7 +433,6 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key=DHW_TEMP,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     PlugwiseSensorEntityDescription(
@@ -444,7 +440,6 @@ PLUGWISE_SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         translation_key=DHW_SETPOINT,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
     ),
 )
