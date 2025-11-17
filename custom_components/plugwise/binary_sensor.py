@@ -71,6 +71,7 @@ PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     PlugwiseBinarySensorEntityDescription(
         key=DHW_STATE,
         translation_key=DHW_STATE,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=FLAME_STATE,
@@ -80,10 +81,12 @@ PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     PlugwiseBinarySensorEntityDescription(
         key=HEATING_STATE,
         translation_key=HEATING_STATE,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=COOLING_STATE,
         translation_key=COOLING_STATE,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseBinarySensorEntityDescription(
         key=SECONDARY_BOILER_STATE,
@@ -93,6 +96,7 @@ PLUGWISE_BINARY_SENSORS: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     PlugwiseBinarySensorEntityDescription(
         key=PLUGWISE_NOTIFICATION,
         translation_key=PLUGWISE_NOTIFICATION,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
 )
 

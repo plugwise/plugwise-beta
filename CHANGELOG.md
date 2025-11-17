@@ -2,8 +2,9 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.61.0
 
+- Final revisit of diagnostics category assignments as accepted in Core Plugwise, via PR [#965](https://github.com/plugwise/plugwise-beta/pull/965)
 - Revisit diagnostics category assignments based on [#810](https://github.com/plugwise/python-plugwise/issues/810) via PR [#952](https://github.com/plugwise/plugwise-beta/pull/952)
 - New feature: implement setting Adam zone profile via PR [#958](https://github.com/plugwise/plugwise-beta/pull/958)
 - Implement translation for added homeassistantError raise message via PR [#948](https://github.com/plugwise/plugwise-beta/pull/948)
