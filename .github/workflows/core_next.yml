@@ -30,7 +30,7 @@ jobs:
       python-version: ${{ steps.python.outputs.python-version }}  # Ensure all runners use THIS minor version
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v6
