@@ -4,12 +4,7 @@ from __future__ import annotations
 
 from plugwise.constants import GwEntityData
 
-from homeassistant.const import (
-    ATTR_CONFIGURATION_URL,
-    ATTR_NAME,
-    ATTR_VIA_DEVICE,
-    CONF_HOST,
-)
+from homeassistant.const import ATTR_NAME, ATTR_VIA_DEVICE, CONF_HOST
 from homeassistant.helpers.device_registry import (
     CONNECTION_NETWORK_MAC,
     CONNECTION_ZIGBEE,
@@ -48,7 +43,10 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         self._dev_id = device_id
 
         configuration_url: str | None = None
-        if entry := self.coordinator.config_entry:
+        if (
+            device_id == coordinator.api.gateway_id
+            and (entry := self.coordinator.config_entry)
+        ):
             configuration_url = f"http://{entry.data[CONF_HOST]}"
 
         data = coordinator.data[device_id]
@@ -73,7 +71,6 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         if device_id != coordinator.api.gateway_id:
             self._attr_device_info.update(
                 {
-                    ATTR_CONFIGURATION_URL: None,
                     ATTR_NAME: data.get(ATTR_NAME),
                     ATTR_VIA_DEVICE: (
                         DOMAIN,
