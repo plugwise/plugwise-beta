@@ -4,11 +4,17 @@ from __future__ import annotations
 
 from plugwise.constants import GwEntityData
 
-from homeassistant.const import ATTR_NAME, ATTR_VIA_DEVICE, CONF_HOST
+from homeassistant.const import (
+    ATTR_CONFIGURATION_URL,
+    ATTR_NAME,
+    ATTR_VIA_DEVICE,
+    CONF_HOST,
+)
 from homeassistant.helpers.device_registry import (
     CONNECTION_NETWORK_MAC,
     CONNECTION_ZIGBEE,
     DeviceInfo,
+    format_mac,
 )
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -49,9 +55,9 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         data = coordinator.data[device_id]
         connections = set()
         if mac := data.get(MAC_ADDRESS):
-            connections.add((CONNECTION_NETWORK_MAC, mac))
+            connections.add((CONNECTION_NETWORK_MAC, format_mac(mac)))
         if mac := data.get(ZIGBEE_MAC_ADDRESS):
-            connections.add((CONNECTION_ZIGBEE, mac))
+            connections.add((CONNECTION_ZIGBEE, format_mac(mac)))
 
         self._attr_device_info = DeviceInfo(
             configuration_url=configuration_url,
@@ -68,6 +74,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         if device_id != coordinator.api.gateway_id:
             self._attr_device_info.update(
                 {
+                    ATTR_CONFIGURATION_URL: None,
                     ATTR_NAME: data.get(ATTR_NAME),
                     ATTR_VIA_DEVICE: (
                         DOMAIN,
