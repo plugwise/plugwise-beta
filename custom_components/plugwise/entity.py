@@ -14,7 +14,6 @@ from homeassistant.helpers.device_registry import (
     CONNECTION_NETWORK_MAC,
     CONNECTION_ZIGBEE,
     DeviceInfo,
-    format_mac,
 )
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -55,9 +54,9 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         data = coordinator.data[device_id]
         connections = set()
         if mac := data.get(MAC_ADDRESS):
-            connections.add((CONNECTION_NETWORK_MAC, format_mac(mac)))
+            connections.add((CONNECTION_NETWORK_MAC, mac))
         if mac := data.get(ZIGBEE_MAC_ADDRESS):
-            connections.add((CONNECTION_ZIGBEE, format_mac(mac)))
+            connections.add((CONNECTION_ZIGBEE, mac))
 
         self._attr_device_info = DeviceInfo(
             configuration_url=configuration_url,
