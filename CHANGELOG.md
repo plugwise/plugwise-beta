@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- DeviceInfo: show configuration_url on gateway only, via PR [#975](https://github.com/plugwise/plugwise-beta/pull/975)
+
 ## v0.61.0
 
 - Final revisit of diagnostics category assignments as accepted in Core Plugwise, via PR [#965](https://github.com/plugwise/plugwise-beta/pull/965)
