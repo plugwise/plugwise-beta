@@ -4,7 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
-- DeviceInfo: show configuration_url on gateway only, format mac- and zigbee-addresses via PR [https://git#975](https://github.com/plugwise/plugwise-beta/pull/975)
+- DeviceInfo: show configuration_url on gateway only, via PR [https://git#975](https://github.com/plugwise/plugwise-beta/pull/975)
 
 ## v0.61.0
 
