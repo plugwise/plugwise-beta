@@ -4,6 +4,8 @@ Versions from 0.40 and up
 
 ## Ongoing
 
+- Extended feature: extent/improve Plugwise groups, via PR[]()
+- Bump plugwise to [v1.11.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.11.0)
 - DeviceInfo: show configuration_url on gateway only, via PR [#975](https://github.com/plugwise/plugwise-beta/pull/975)
 
 ## v0.61.0
