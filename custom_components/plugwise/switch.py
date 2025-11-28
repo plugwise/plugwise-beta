@@ -24,8 +24,8 @@ from .const import (
     LOGGER,  # pw-beta
     MEMBERS,
     RELAY,
-    SWITCHES,
     SWITCH_GROUPS,
+    SWITCHES,
 )
 
 # Upstream consts
