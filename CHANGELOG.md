@@ -4,13 +4,14 @@ Versions from 0.40 and up
 
 ## Ongoing
 
+- Extended feature: extent/improve Plugwise groups, via PR[#976](https://github.com/plugwise/plugwise-beta/pull/976) and plugwise [v1.11.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.11.0)
 - DeviceInfo: show configuration_url on gateway only, via PR [#975](https://github.com/plugwise/plugwise-beta/pull/975)
 
 ## v0.61.0
 
 - Final revisit of diagnostics category assignments as accepted in Core Plugwise, via PR [#965](https://github.com/plugwise/plugwise-beta/pull/965)
 - Revisit diagnostics category assignments based on [#810](https://github.com/plugwise/python-plugwise/issues/810) via PR [#952](https://github.com/plugwise/plugwise-beta/pull/952)
-- New feature: implement setting Adam zone profile via PR [#958](https://github.com/plugwise/plugwise-beta/pull/958)
+- New feature: implement setting Adam zone profile via PR [#958](https://github.com/plugwise/plugwise-beta/pull/958) and plugwise [v1.10.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.10.0)
 - Implement translation for added homeassistantError raise message via PR [#948](https://github.com/plugwise/plugwise-beta/pull/948)
 - Line up strings with Core Plugwise strings via PR [#954](https://github.com/plugwise/plugwise-beta/pull/954)
 
