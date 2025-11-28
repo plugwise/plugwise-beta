@@ -57,7 +57,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         if mac := data.get(ZIGBEE_MAC_ADDRESS):
             connections.add((CONNECTION_ZIGBEE, mac))
 
-        disabled_by = None
+        disabled_by: DeviceEntryDisabler | None = None
         if data.get("dev_class") in ("report", "switching"):
             disabled_by = DeviceEntryDisabler.INTEGRATION
 
