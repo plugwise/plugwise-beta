@@ -8,6 +8,7 @@ from homeassistant.const import ATTR_NAME, ATTR_VIA_DEVICE, CONF_HOST
 from homeassistant.helpers.device_registry import (
     CONNECTION_NETWORK_MAC,
     CONNECTION_ZIGBEE,
+    DeviceEntryDisabler,
     DeviceInfo,
 )
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -56,10 +57,15 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         if mac := data.get(ZIGBEE_MAC_ADDRESS):
             connections.add((CONNECTION_ZIGBEE, mac))
 
+        disabled_by = None
+        if data.get("dev_class") in ("report", "switching"):
+            disabled_by = DeviceEntryDisabler.INTEGRATION 
+
         self._attr_device_info = DeviceInfo(
             configuration_url=configuration_url,
             identifiers={(DOMAIN, device_id)},
             connections=connections,
+            disabled_by=disabled_by,
             manufacturer=data.get(VENDOR),
             model=data.get(MODEL),
             model_id=data.get(MODEL_ID),
