@@ -97,6 +97,9 @@ async def async_setup_entry(
             device = coordinator.data[device_id]
             if not (switches := device.get(SWITCHES)):
                 continue
+            # block switch-groups, user HA group helper instead
+            if device.get("dev_class") in ("report", "switching"):
+                continue
             for description in PLUGWISE_SWITCHES:
                 if description.key not in switches:
                     continue
