@@ -18,12 +18,14 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     COOLING_ENA_SWITCH,
+    DEV_CLASS,
     DHW_CM_SWITCH,
     LOCK,
     LOGGER,  # pw-beta
     MEMBERS,
     RELAY,
     SWITCHES,
+    SWITCH_GROUPS,
 )
 
 # Upstream consts
@@ -98,7 +100,7 @@ async def async_setup_entry(
             if not (switches := device.get(SWITCHES)):
                 continue
             # block switch-groups, user HA group helper instead
-            if device.get("dev_class") in ("report", "switching"):
+            if device.get(DEV_CLASS) in SWITCH_GROUPS:
                 continue
             for description in PLUGWISE_SWITCHES:
                 if description.key not in switches:
