@@ -59,7 +59,7 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
 
         disabled_by = None
         if data.get("dev_class") in ("report", "switching"):
-            disabled_by = DeviceEntryDisabler.INTEGRATION 
+            disabled_by = DeviceEntryDisabler.INTEGRATION
 
         self._attr_device_info = DeviceInfo(
             configuration_url=configuration_url,
