@@ -29,6 +29,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
+    DEV_CLASS,
     DHW_SETPOINT,
     DHW_TEMP,
     EL_CONS_INTERVAL,
@@ -66,6 +67,7 @@ from .const import (
     OUTDOOR_TEMP,
     RETURN_TEMP,
     SENSORS,
+    SWITCH_GROUPS,
     TARGET_TEMP,
     TARGET_TEMP_HIGH,
     TARGET_TEMP_LOW,
@@ -481,6 +483,9 @@ async def async_setup_entry(
         for device_id in coordinator.new_devices:
             device = coordinator.data[device_id]
             if not (sensors := device.get(SENSORS)):
+                continue
+            # block switch-groups, user HA group helper instead
+            if device.get(DEV_CLASS) in SWITCH_GROUPS:
                 continue
             for description in PLUGWISE_SENSORS:
                 if description.key not in sensors:

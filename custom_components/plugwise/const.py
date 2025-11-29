@@ -146,6 +146,7 @@ MEMBERS: Final ="members"
 RELAY: Final = "relay"
 COOLING_ENA_SWITCH: Final ="cooling_ena_switch"
 SWITCHES: Final = "switches"
+SWITCH_GROUPS: Final[tuple[str, str]] = ("report", "switching")
 
 # Default directives
 DEFAULT_PORT: Final[int] = 80
