@@ -29,7 +29,7 @@ from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from packaging.version import Version
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, LOGGER
+from .const import DEFAULT_SCAN_INTERVAL, DEV_CLASS, DOMAIN, LOGGER, SWITCH_GROUPS
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
@@ -158,6 +158,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
 
     async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
+        # Block switch-groups, user HA group helper instead
+        for device_id, device in data.items():
+            if device(DEV_CLASS) in SWITCH_GROUPS:
+                data.pop(device_id)
         set_of_data = set(data)
         # Check for new or removed devices,
         # 'new_devices' contains all devices present in 'data' at init ('self._current_devices' is empty)
