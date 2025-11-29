@@ -160,7 +160,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         """Add new Plugwise devices, remove non-existing devices."""
         # Block switch-groups, user HA group helper instead
         for device_id, device in data.items():
-            if device(DEV_CLASS) in SWITCH_GROUPS:
+            if device.get(DEV_CLASS) in SWITCH_GROUPS:
                 data.pop(device_id)
         set_of_data = set(data)
         # Check for new or removed devices,
