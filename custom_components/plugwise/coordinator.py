@@ -1,6 +1,5 @@
 """DataUpdateCoordinator for Plugwise."""
 
-import copy
 from datetime import timedelta
 
 from plugwise import GwEntityData, Smile
@@ -160,7 +159,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Block switch-groups, user HA group helper instead
-        for device_id, device in copy.deepcopy(data).items():
+        for device_id, device in data.copy().items():
             if device.get(DEV_CLASS) in SWITCH_GROUPS:
                 data.pop(device_id)
         set_of_data = set(data)
