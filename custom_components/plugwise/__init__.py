@@ -102,7 +102,10 @@ async def async_remove_config_entry_device(
     return not any(
         identifier
         for identifier in device_entry.identifiers
-        if identifier[0] == DOMAIN and (identifier[1] in coordinator.data)
+        if identifier[0] == DOMAIN and (
+            identifier[1] != coordinator.api.gateway_id
+            and identifier[1] in coordinator.data
+            )
     )
 
 @callback
