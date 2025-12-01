@@ -85,14 +85,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     return True
 
 async def update_listener(
-    hass: HomeAssistant, entry: PlugwiseConfigEntry
+    hass: HomeAssistant, config_entry: PlugwiseConfigEntry
 ) -> None:  # pragma: no cover  # pw-beta
     """Handle options update."""
-    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.config_entries.async_reload(config_entry.entry_id)
 
-async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, config_entry: PlugwiseConfigEntry) -> bool:
     """Unload Plugwise."""
-    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
+
+async def async_remove_config_entry_device(
+    _hass: HomeAssistant, config_entry: PlugwiseConfigEntry, device_entry: dr.DeviceEntry
+) -> bool:
+    """Enable manual removal (button) for Plugwise devices."""
+    coordinator = config_entry.runtime_data
+    return not any(
+        identifier
+        for identifier in device_entry.identifiers
+        if identifier[0] == DOMAIN and (identifier[1] in coordinator.data)
+    )
 
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
