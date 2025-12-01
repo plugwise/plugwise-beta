@@ -158,7 +158,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
 
     async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
-        # Block switch-groups, user HA group helper instead
+        # Block switch-groups, use HA group helper instead
         for device_id, device in data.copy().items():
             if device.get(DEV_CLASS) in SWITCH_GROUPS:
                 data.pop(device_id)
