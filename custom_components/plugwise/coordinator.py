@@ -37,9 +37,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     """Class to manage fetching Plugwise data from single endpoint."""
 
     _connected: bool = False
-    _current_devices: set[str] = set()
-    _stored_devices: set[str] = set()
-    new_devices: set[str] = set()
+    _current_devices: set[str]
+    _stored_devices: set[str]
+    new_devices: set[str]
 
     config_entry: PlugwiseConfigEntry
 
@@ -76,6 +76,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
+        self._current_devices = set()
+        self._stored_devices = set()
+        self.new_devices = set()
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
