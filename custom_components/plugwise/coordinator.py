@@ -37,6 +37,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     """Class to manage fetching Plugwise data from single endpoint."""
 
     _connected: bool = False
+    _current_devices: set[str] = set()
+    _stored_devices: set[str] = set()
+    new_devices: set[str] = set()
 
     config_entry: PlugwiseConfigEntry
 
@@ -73,46 +76,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        self._current_devices: set[str] = set()
-        self._stored_devices: set[str] = set()
-        self.new_devices: set[str] = set()
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile."""
-        version = await self.api.connect()
-        self._connected = isinstance(version, Version)
-        if self._connected:
-            self.update_interval = DEFAULT_SCAN_INTERVAL.get(
-                self.api.smile.type, timedelta(seconds=60)
-            )  # pw-beta options scan-interval
-            if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
-                self.update_interval = timedelta(
-                    seconds=int(custom_time)
-                )  # pragma: no cover  # pw-beta options
-
-        LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
-
-    async def _async_setup(self) -> None:
-        """Initialize the update_data process."""
-        if not self._connected:
-            await self._connect()
-
-        device_reg = dr.async_get(self.hass)
-        device_entries = dr.async_entries_for_config_entry(
-            device_reg, self.config_entry.entry_id
-        )
-        self._stored_devices = {
-            identifier[1]
-            for device_entry in device_entries
-            for identifier in device_entry.identifiers
-            if identifier[0] == DOMAIN
-        }
-
-    async def _async_update_data(self) -> dict[str, GwEntityData]:
-        """Fetch data from Plugwise."""
         try:
-            data = await self.api.async_update()
+            version = await self.api.connect()
         except ConnectionFailedError as err:
             raise UpdateFailed(
                 translation_domain=DOMAIN,
@@ -129,6 +98,39 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 translation_domain=DOMAIN,
                 translation_key="invalid_xml_data",
             ) from err
+
+        self._connected = isinstance(version, Version)
+        if self._connected:
+            self.update_interval = DEFAULT_SCAN_INTERVAL.get(
+                self.api.smile.type, timedelta(seconds=60)
+            )  # pw-beta options scan-interval
+            if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
+                self.update_interval = timedelta(
+                    seconds=int(custom_time)
+                )  # pragma: no cover  # pw-beta options
+
+        LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
+
+    async def _async_setup(self) -> None:
+        """Initialize the update_data process."""
+        device_reg = dr.async_get(self.hass)
+        device_entries = dr.async_entries_for_config_entry(
+            device_reg, self.config_entry.entry_id
+        )
+        self._stored_devices = {
+            identifier[1]
+            for device_entry in device_entries
+            for identifier in device_entry.identifiers
+            if identifier[0] == DOMAIN
+        }
+
+    async def _async_update_data(self) -> dict[str, GwEntityData]:
+        """Fetch data from Plugwise."""
+        if not self._connected:
+            await self._connect()
+
+        try:
+            data = await self.api.async_update()
         except PlugwiseError as err:
             raise UpdateFailed(
                 translation_domain=DOMAIN,
@@ -148,7 +150,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new or removed devices
         self.new_devices = set(data) - self._current_devices
-        removed_devices = (self._stored_devices - set(data)) if not self._current_devices else (self._current_devices - set(data))
+        removed_devices = (
+            self._stored_devices - set(data)
+            if not self._current_devices
+            else self._current_devices - set(data)
+        )
         self._current_devices = set(data)
 
         if removed_devices:
