@@ -92,11 +92,20 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
 
         LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
 
+    async def _async_setup(self) -> None:
+        """Initialize the update_data process."""
+        if not self._connected:
+            await self._connect()
+
+        device_reg = dr.async_get(self.hass)
+        device_list = dr.async_entries_for_config_entry(
+            device_reg, self.config_entry.entry_id
+        )
+        self._current_devices = set(device_list)
+
     async def _async_update_data(self) -> dict[str, GwEntityData]:
         """Fetch data from Plugwise."""
         try:
-            if not self._connected:
-                await self._connect()
             data = await self.api.async_update()
         except ConnectionFailedError as err:
             raise UpdateFailed(
