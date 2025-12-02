@@ -74,6 +74,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
         self._current_devices: set[str] = set()
+        self._stored_devices: set[str] = set()
         self.new_devices: set[str] = set()
         self.update_interval = update_interval
 
@@ -101,7 +102,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         device_entries = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
-        self._current_devices = {
+        self._stored_devices = {
             identifier[1]
             for device_entry in device_entries
             for identifier in device_entry.identifiers
@@ -147,7 +148,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new or removed devices
         self.new_devices = set(data) - self._current_devices
-        removed_devices = self._current_devices - set(data)
+        removed_devices = (self._stored_devices - set(data)) if not self._current_devices else (self._current_devices - set(data))
         self._current_devices = set(data)
 
         if removed_devices:
