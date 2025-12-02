@@ -98,10 +98,15 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             await self._connect()
 
         device_reg = dr.async_get(self.hass)
-        device_list = dr.async_entries_for_config_entry(
+        device_entries = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
-        self._current_devices = set(device_list)
+        self._current_devices = {
+            identifier[1]
+            for device_entry in device_entries
+            for identifier in device_entry.identifiers
+            if identifier[0] == DOMAIN
+        }
 
     async def _async_update_data(self) -> dict[str, GwEntityData]:
         """Fetch data from Plugwise."""
