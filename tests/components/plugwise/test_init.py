@@ -1,7 +1,7 @@
 """Tests for the Plugwise Climate integration."""
 from datetime import timedelta
 import logging
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 from plugwise.exceptions import (
     ConnectionFailedError,
@@ -22,7 +22,6 @@ from homeassistant.const import (
     CONF_MAC,
     CONF_PASSWORD,
     CONF_PORT,
-    CONF_SCAN_INTERVAL,
     CONF_TIMEOUT,
     CONF_USERNAME,
     Platform,
@@ -125,6 +124,8 @@ async def test_gateway_config_entry_not_ready(
     assert mock_config_entry.state is entry_state
 
 
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize(
     "side_effect",
     [
@@ -137,25 +138,19 @@ async def test_gateway_config_entry_not_ready(
 async def test_coordinator_connect_exceptions(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    side_effect: type[Exception],
+    mock_smile_anna: MagicMock,
+    side_effect: Exception,
 ) -> None:
     """Ensure _connect raises translated errors."""
-    with patch("homeassistant.components.plugwise.coordinator.Smile") as mock_smile_cls:
-        smile = MagicMock()
-        smile.smile.type = "Smile Anna"
-        smile.connect = AsyncMock(side_effect=side_effect)
-        mock_smile_cls.return_value = smile
-
-        coordinator = PlugwiseDataUpdateCoordinator(
-            hass,
-            cooldown=0,
-            config_entry=mock_config_entry,
-        )
-
+    mock_smile_anna.connect.side_effect = side_effect
+    coordinator = PlugwiseDataUpdateCoordinator(
+        hass,
+        cooldown=0,
+        config_entry=mock_config_entry,
+    )
     expected_exception = (
         ConfigEntryError if side_effect is InvalidAuthentication else UpdateFailed
     )
-
     with pytest.raises(expected_exception):
         await coordinator._connect()
 
@@ -393,27 +388,3 @@ async def test_update_device(
         for device_entry in device_registry.devices.values():
             item_list.extend(x[1] for x in device_entry.identifiers)
         assert "1772a4ea304041adb83f357b751341ff" not in item_list
-
-
-#async def test_coordinator_connect_updates_interval(
-#    hass: HomeAssistant,
-#    mock_config_entry: MockConfigEntry,
-#) -> None:
-#    """Ensure _connect sets scan interval from options when available."""
-#    mock_config_entry.options = {CONF_SCAN_INTERVAL: 30}
-#    with patch("homeassistant.components.plugwise.coordinator.Smile") as mock_smile_cls:
-#        smile = MagicMock()
-#        smile.smile.type = "Smile Anna"
-#        smile.connect = AsyncMock(return_value=Version("4.0.0"))
-#        mock_smile_cls.return_value = smile
-#
-#        coordinator = PlugwiseDataUpdateCoordinator(
-#            hass,
-#            cooldown=0,
-#            config_entry=mock_config_entry,
-#        )
-#
-#    await coordinator._connect()
-#
-#    assert coordinator._connected is True
-#    assert coordinator.update_interval == timedelta(seconds=30)
