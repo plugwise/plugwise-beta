@@ -85,7 +85,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile.
 
-        Returns a Version object when connection succeeds.
+        A Version object is received when the connection succeeds.
         """
         try:
             version = await self.api.connect()
