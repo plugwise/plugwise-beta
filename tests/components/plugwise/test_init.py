@@ -125,6 +125,41 @@ async def test_gateway_config_entry_not_ready(
     assert mock_config_entry.state is entry_state
 
 
+@pytest.mark.parametrize(
+    "side_effect",
+    [
+        ConnectionFailedError,
+        InvalidAuthentication,
+        InvalidXMLError,
+        ResponseError,
+    ],
+)
+async def test_coordinator_connect_exceptions(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    side_effect: type[Exception],
+) -> None:
+    """Ensure _connect raises translated errors."""
+    with patch("homeassistant.components.plugwise.coordinator.Smile") as mock_smile_cls:
+        smile = MagicMock()
+        smile.smile.type = "Smile Anna"
+        smile.connect = AsyncMock(side_effect=side_effect)
+        mock_smile_cls.return_value = smile
+
+        coordinator = PlugwiseDataUpdateCoordinator(
+            hass,
+            cooldown=0,
+            config_entry=mock_config_entry,
+        )
+
+    expected_exception = (
+        ConfigEntryError if side_effect is InvalidAuthentication else UpdateFailed
+    )
+
+    with pytest.raises(expected_exception):
+        await coordinator._connect()
+
+
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_single"], indirect=True)
 @pytest.mark.parametrize("gateway_id", ["a455b61e52394b2db5081ce025a430f3"], indirect=True)
 async def test_device_in_dr(
@@ -358,41 +393,6 @@ async def test_update_device(
         for device_entry in device_registry.devices.values():
             item_list.extend(x[1] for x in device_entry.identifiers)
         assert "1772a4ea304041adb83f357b751341ff" not in item_list
-
-
-@pytest.mark.parametrize(
-    "side_effect",
-    [
-        ConnectionFailedError,
-        InvalidAuthentication,
-        InvalidXMLError,
-        ResponseError,
-    ],
-)
-async def test_coordinator_connect_exceptions(
-    hass: HomeAssistant,
-    mock_config_entry: MockConfigEntry,
-    side_effect: type[Exception],
-) -> None:
-    """Ensure _connect raises translated errors."""
-    with patch("homeassistant.components.plugwise.coordinator.Smile") as mock_smile_cls:
-        smile = MagicMock()
-        smile.smile.type = "Smile Anna"
-        smile.connect = AsyncMock(side_effect=side_effect)
-        mock_smile_cls.return_value = smile
-
-        coordinator = PlugwiseDataUpdateCoordinator(
-            hass,
-            cooldown=0,
-            config_entry=mock_config_entry,
-        )
-
-    expected_exception = (
-        ConfigEntryError if side_effect is InvalidAuthentication else UpdateFailed
-    )
-
-    with pytest.raises(expected_exception):
-        await coordinator._connect()
 
 
 #async def test_coordinator_connect_updates_interval(
