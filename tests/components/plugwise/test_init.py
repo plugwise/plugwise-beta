@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
+    InvalidSetupError,
     InvalidXMLError,
     PlugwiseError,
     ResponseError,
@@ -99,19 +100,12 @@ async def test_load_unload_config_entry(
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
-@pytest.mark.parametrize(
-    ("side_effect", "entry_state"),
-    [
-        (PlugwiseError, ConfigEntryState.SETUP_RETRY),
-        (UnsupportedDeviceError, ConfigEntryState.SETUP_ERROR),
-    ],
-)
+@pytest.mark.parametrize("side_effect", [PlugwiseError])
 async def test_gateway_config_entry_not_ready(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     mock_smile_anna: MagicMock,
     side_effect: Exception,
-    entry_state: ConfigEntryState,
 ) -> None:
     """Test the Plugwise configuration entry not ready."""
     mock_smile_anna.async_update.side_effect = side_effect
@@ -121,7 +115,7 @@ async def test_gateway_config_entry_not_ready(
     await hass.async_block_till_done()
 
     assert len(mock_smile_anna.connect.mock_calls) == 1
-    assert mock_config_entry.state is entry_state
+    assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
@@ -131,8 +125,10 @@ async def test_gateway_config_entry_not_ready(
     [
         ConnectionFailedError,
         InvalidAuthentication,
+        InvalidSetupError,
         InvalidXMLError,
         ResponseError,
+        UnsupportedDeviceError,
     ],
 )
 async def test_coordinator_connect_exceptions(
@@ -149,7 +145,10 @@ async def test_coordinator_connect_exceptions(
         config_entry=mock_config_entry,
     )
     expected_exception = (
-        ConfigEntryError if side_effect is InvalidAuthentication else UpdateFailed
+        ConfigEntryError if side_effect in (
+            InvalidAuthentication, InvalidSetupError, UnsupportedDeviceError
+        )
+            else UpdateFailed
     )
     with pytest.raises(expected_exception):
         await coordinator._connect()
@@ -190,7 +189,7 @@ async def check_migration(
     mock_config_entry.add_to_hass(hass)
 
     entity_registry = er.async_get(hass)
-    entity: entity_registry.RegistryEntry = entity_registry.async_get_or_create(
+    entity: er.RegistryEntry = entity_registry.async_get_or_create(
         **entitydata,
         config_entry=mock_config_entry,
     )
