@@ -375,7 +375,7 @@ async def test_coordinator_connect_exceptions(
     side_effect: type[Exception],
 ) -> None:
     """Ensure _connect raises translated errors."""
-    with patch("custom_components.plugwise.coordinator.Smile") as mock_smile_cls:
+    with patch("homeassistant.components.plugwise.coordinator.Smile") as mock_smile_cls:
         smile = MagicMock()
         smile.smile.type = "anna"
         smile.connect = AsyncMock(side_effect=side_effect)
@@ -401,7 +401,7 @@ async def test_coordinator_connect_updates_interval(
 ) -> None:
     """Ensure _connect sets scan interval from options when available."""
     mock_config_entry.options = {CONF_SCAN_INTERVAL: 30}
-    with patch("custom_components.plugwise.coordinator.Smile") as mock_smile_cls:
+    with patch("homeassistant.components.plugwise.coordinator.Smile") as mock_smile_cls:
         smile = MagicMock()
         smile.smile.type = "anna"
         smile.connect = AsyncMock(return_value=Version("4.0.0"))
