@@ -82,7 +82,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
-        """Connect to the Plugwise Smile."""
+        """Connect to the Plugwise Smile.
+        
+        Returns a Version object when connection succeeds.
+        """
         try:
             version = await self.api.connect()
         except ConnectionFailedError as err:
@@ -145,7 +148,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             ) from err
 
         await self._async_add_remove_devices(data)
-        LOGGER.debug(f"{self.api.smile.name} data: %s", data)
+        LOGGER.debug("%s data: %s", self.api.smile.name, data)
         return data
 
     async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
