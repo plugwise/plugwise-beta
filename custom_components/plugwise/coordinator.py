@@ -101,6 +101,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 translation_domain=DOMAIN,
                 translation_key="invalid_xml_data",
             ) from err
+
         self._connected = isinstance(version, Version)
         if self._connected:
             self.update_interval = DEFAULT_SCAN_INTERVAL.get(
@@ -130,7 +131,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         """Fetch data from Plugwise."""
         if not self._connected:
             await self._connect()
-
         try:
             data = await self.api.async_update()
         except PlugwiseError as err:
@@ -144,8 +144,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 translation_key="unsupported_firmware",
             ) from err
 
-        LOGGER.debug(f"{self.api.smile.name} data: %s", data)
         await self._async_add_remove_devices(data)
+        LOGGER.debug(f"{self.api.smile.name} data: %s", data)
         return data
 
     async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
@@ -153,14 +153,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         # Check for new or removed devices
         set_of_data = set(data)
         self.new_devices = set_of_data - self._current_devices
-
-        current_devices = self._stored_devices
-        if self._current_devices:
-            current_devices = self._current_devices
-        removed_devices = current_devices - set_of_data
+        current_devices = self._stored_devices if not self._current_devices else self._current_devices
         self._current_devices = set_of_data
-
-        if removed_devices:
+        if (current_devices - set_of_data):  # device(s) to remove
             await self._async_remove_devices(data)
 
     async def _async_remove_devices(self, data: dict[str, GwEntityData]) -> None:
