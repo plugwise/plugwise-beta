@@ -121,14 +121,14 @@ async def test_gateway_config_entry_not_ready(
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize(
-    "side_effect",
+    ("side_effect", "expected_raise"),
     [
-        ConnectionFailedError,
-        InvalidAuthentication,
-        InvalidSetupError,
-        InvalidXMLError,
-        ResponseError,
-        UnsupportedDeviceError,
+        (ConnectionFailedError, UpdateFailed),
+        (InvalidAuthentication, ConfigEntryError),
+        (InvalidSetupError, ConfigEntryError),
+        (InvalidXMLError, UpdateFailed),
+        (ResponseError, UpdateFailed),
+        (UnsupportedDeviceError, ConfigEntryError),
     ],
 )
 async def test_coordinator_connect_exceptions(
@@ -136,6 +136,7 @@ async def test_coordinator_connect_exceptions(
     mock_config_entry: MockConfigEntry,
     mock_smile_anna: MagicMock,
     side_effect: Exception,
+    expected_raise: Exception,
 ) -> None:
     """Ensure _connect raises translated errors."""
     mock_smile_anna.connect.side_effect = side_effect
@@ -144,12 +145,7 @@ async def test_coordinator_connect_exceptions(
         cooldown=0,
         config_entry=mock_config_entry,
     )
-    expected_exception = (
-        ConfigEntryError if side_effect in (
-            InvalidAuthentication, InvalidSetupError, UnsupportedDeviceError
-        ) else UpdateFailed
-    )
-    with pytest.raises(expected_exception):
+    with pytest.raises(expected_raise):
         await coordinator._connect()
 
 
