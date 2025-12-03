@@ -147,8 +147,7 @@ async def test_coordinator_connect_exceptions(
     expected_exception = (
         ConfigEntryError if side_effect in (
             InvalidAuthentication, InvalidSetupError, UnsupportedDeviceError
-        )
-            else UpdateFailed
+        ) else UpdateFailed
     )
     with pytest.raises(expected_exception):
         await coordinator._connect()
