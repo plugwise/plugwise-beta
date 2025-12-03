@@ -15,6 +15,7 @@ import pytest
 
 from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.plugwise.const import DOMAIN
+from homeassistant.components.plugwise.coordinator import PlugwiseDataUpdateCoordinator
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import (
     CONF_HOST,
@@ -32,7 +33,6 @@ from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.update_coordinator import UpdateFailed
 from homeassistant.setup import async_setup_component
 
-from custom_components.plugwise.coordinator import PlugwiseDataUpdateCoordinator
 from tests.common import MockConfigEntry, async_fire_time_changed
 
 LOGGER = logging.getLogger(__package__)
