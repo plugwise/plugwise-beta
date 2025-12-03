@@ -89,31 +89,31 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         """
         try:
             version = await self.api.connect()
-        except ConnectionFailedError:
+        except ConnectionFailedError as err:
             raise UpdateFailed(
                 translation_domain=DOMAIN,
                 translation_key="failed_to_connect",
-            )
-        except InvalidAuthentication:
+            ) from err
+        except InvalidAuthentication as err:
             raise ConfigEntryError(
                 translation_domain=DOMAIN,
                 translation_key="authentication_failed",
-            )
-        except InvalidSetupError:
+            ) from err
+        except InvalidSetupError as err:
             raise ConfigEntryError(
                 translation_domain=DOMAIN,
                 translation_key="invalid_setup",
-            )
-        except (InvalidXMLError, ResponseError):
+            ) from err
+        except (InvalidXMLError, ResponseError) as err:
             raise UpdateFailed(
                 translation_domain=DOMAIN,
                 translation_key="invalid_xml_data",
-            )
-        except UnsupportedDeviceError:
+            ) from err
+        except UnsupportedDeviceError as err:
             raise ConfigEntryError(
                 translation_domain=DOMAIN,
                 translation_key="unsupported_firmware",
-            )
+            ) from err
 
         self._connected = isinstance(version, Version)
         if self._connected:
