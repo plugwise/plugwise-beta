@@ -6,6 +6,7 @@ from plugwise import GwEntityData, Smile
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
+    InvalidSetupError,
     InvalidXMLError,
     PlugwiseError,
     ResponseError,
@@ -88,22 +89,31 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         """
         try:
             version = await self.api.connect()
-        except ConnectionFailedError as err:
+        except ConnectionFailedError:
             raise UpdateFailed(
                 translation_domain=DOMAIN,
                 translation_key="failed_to_connect",
-            ) from err
-        except InvalidAuthentication as err:
+            )
+        except InvalidAuthentication:
             raise ConfigEntryError(
                 translation_domain=DOMAIN,
                 translation_key="authentication_failed",
-            ) from err
-        except (InvalidXMLError, ResponseError) as err:
-            # pwbeta TODO; we had {err} in the text, but not upstream, do we want this?
+            )
+        except InvalidSetupError:
+            raise ConfigEntryError(
+                translation_domain=DOMAIN,
+                translation_key="invalid_setup",
+            )
+        except (InvalidXMLError, ResponseError):
             raise UpdateFailed(
                 translation_domain=DOMAIN,
                 translation_key="invalid_xml_data",
-            ) from err
+            )
+        except UnsupportedDeviceError:
+            raise ConfigEntryError(
+                translation_domain=DOMAIN,
+                translation_key="unsupported_firmware",
+            )
 
         self._connected = isinstance(version, Version)
         if self._connected:
@@ -140,11 +150,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             raise UpdateFailed(
                 translation_domain=DOMAIN,
                 translation_key="data_incomplete_or_missing",
-            ) from err
-        except UnsupportedDeviceError as err:
-            raise ConfigEntryError(
-                translation_domain=DOMAIN,
-                translation_key="unsupported_firmware",
             ) from err
 
         await self._async_add_remove_devices(data)
