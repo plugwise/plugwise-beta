@@ -158,8 +158,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
 
     async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
-        # Check for new or removed devices
         set_of_data = set(data)
+        # Check for new or removed devices,
+        # new_devices contains all devices present in data at init (self._current_devices is empty)
+        # for the proper initialization of all the present platform entities.
         self.new_devices = set_of_data - self._current_devices
         current_devices = self._stored_devices if not self._current_devices else self._current_devices
         self._current_devices = set_of_data
