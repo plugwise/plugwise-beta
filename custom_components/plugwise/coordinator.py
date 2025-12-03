@@ -149,13 +149,14 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Check for new or removed devices
-        self.new_devices = set(data) - self._current_devices
-        removed_devices = (
-            self._stored_devices - set(data)
-            if not self._current_devices
-            else self._current_devices - set(data)
-        )
-        self._current_devices = set(data)
+        set_of_data = set(data)
+        self.new_devices = set_of_data - self._current_devices
+
+        current_devices = self._stored_devices
+        if self._current_devices:
+            current_devices = self._current_devices
+        removed_devices = current_devices - set_of_data
+        self._current_devices = set_of_data
 
         if removed_devices:
             await self._async_remove_devices(data)
@@ -169,9 +170,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
 
         # First find the Plugwise via_device
         gateway_device = device_reg.async_get_device({(DOMAIN, self.api.gateway_id)})
-        if gateway_device is not None:
-            via_device_id = gateway_device.id
+        if gateway_device is None:
+            return  # pragma: no cover
 
+        via_device_id = gateway_device.id
         # Then remove the connected orphaned device(s)
         for device_entry in device_list:
             for identifier in device_entry.identifiers:
