@@ -1,6 +1,5 @@
 """Tests for the Plugwise Climate integration."""
 from datetime import timedelta
-import logging
 from unittest.mock import MagicMock, patch
 
 from plugwise.exceptions import (
@@ -34,8 +33,6 @@ from homeassistant.helpers.update_coordinator import UpdateFailed
 from homeassistant.setup import async_setup_component
 
 from tests.common import MockConfigEntry, async_fire_time_changed
-
-LOGGER = logging.getLogger(__package__)
 
 HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
     "homeassistant.components.plugwise.coordinator.Smile.async_update"
@@ -269,38 +266,6 @@ async def test_migrate_unique_id_relay(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
 
-#### pw-beta only ####
-@pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
-@pytest.mark.parametrize("cooling_present", [True], indirect=True)
-async def test_entry_migration(
-    hass: HomeAssistant, mock_smile_anna: MagicMock
-) -> None:
-    """Test config entry 1.2 -> 1.1 migration."""
-    entry = MockConfigEntry(
-        domain=DOMAIN,
-        data={
-            CONF_HOST: "127.0.0.1",
-            CONF_MAC: "AA:BB:CC:DD:EE:FF",
-            CONF_PASSWORD: "test-password",
-            CONF_PORT: 80,
-            CONF_TIMEOUT: 30,
-            CONF_USERNAME: "smile",
-        },
-        minor_version=2,
-        version=1,
-        unique_id="smile98765",
-    )
-
-    entry.runtime_data = MagicMock(api=mock_smile_anna)
-    entry.add_to_hass(hass)
-    await hass.config_entries.async_setup(entry.entry_id)
-    await hass.async_block_till_done()
-
-    assert entry.version == 1
-    assert entry.minor_version == 1
-    assert entry.data.get(CONF_TIMEOUT) is None
-    assert entry.state is ConfigEntryState.LOADED
-
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
@@ -398,7 +363,7 @@ async def test_delete_removed_device(
     mock_config_entry.add_to_hass(hass)
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
-    
+
     item_list: list[str] = []
     for device_entry in device_registry.devices.values():
         item_list.extend(x[1] for x in device_entry.identifiers)
@@ -413,3 +378,36 @@ async def test_delete_removed_device(
     for device_entry in device_registry.devices.values():
         item_list.extend(x[1] for x in device_entry.identifiers)
     assert "14df5c4dc8cb4ba69f9d1ac0eaf7c5c6" not in item_list
+
+
+#### pw-beta only ####
+@pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
+async def test_entry_migration(
+    hass: HomeAssistant, mock_smile_anna: MagicMock
+) -> None:
+    """Test config entry 1.2 -> 1.1 migration."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            CONF_HOST: "127.0.0.1",
+            CONF_MAC: "AA:BB:CC:DD:EE:FF",
+            CONF_PASSWORD: "test-password",
+            CONF_PORT: 80,
+            CONF_TIMEOUT: 30,
+            CONF_USERNAME: "smile",
+        },
+        minor_version=2,
+        version=1,
+        unique_id="smile98765",
+    )
+
+    entry.runtime_data = MagicMock(api=mock_smile_anna)
+    entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert entry.version == 1
+    assert entry.minor_version == 1
+    assert entry.data.get(CONF_TIMEOUT) is None
+    assert entry.state is ConfigEntryState.LOADED
