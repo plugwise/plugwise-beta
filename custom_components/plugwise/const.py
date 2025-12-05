@@ -24,6 +24,7 @@ REBOOT: Final = "reboot"
 SMILE: Final = "smile"
 STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
+SWITCH_GROUPS: Final[tuple[str, str]] = ("report", "switching")
 UNIQUE_IDS: Final = "unique_ids"
 ZIGBEE_MAC_ADDRESS: Final = "zigbee_mac_address"
 

@@ -2,9 +2,10 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.62.0
 
 - Improve automatic deletion of device(s) removed from the backend output, via PR [$982](https://github.com/plugwise/plugwise-beta/pull/982)
+- Block Plugwise switch-groups, use HA group-helper instead, via PR [#981](https://github.com/plugwise/plugwise-beta/pull/981)
 - Extended feature: extent/improve Plugwise groups, via PR[#976](https://github.com/plugwise/plugwise-beta/pull/976) and plugwise [v1.11.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.11.0)
 - DeviceInfo: show configuration_url on gateway only, via PR [#975](https://github.com/plugwise/plugwise-beta/pull/975)
 
