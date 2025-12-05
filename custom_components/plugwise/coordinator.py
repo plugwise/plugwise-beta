@@ -6,6 +6,7 @@ from plugwise import GwEntityData, Smile
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
+    InvalidSetupError,
     InvalidXMLError,
     PlugwiseError,
     ResponseError,
@@ -37,6 +38,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     """Class to manage fetching Plugwise data from single endpoint."""
 
     _connected: bool = False
+    _current_devices: set[str]
+    _stored_devices: set[str]
+    new_devices: set[str]
 
     config_entry: PlugwiseConfigEntry
 
@@ -73,13 +77,44 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        self._current_devices: set[str] = set()
-        self.new_devices: set[str] = set()
+        self._current_devices = set()
+        self._stored_devices = set()
+        self.new_devices = set()
         self.update_interval = update_interval
 
     async def _connect(self) -> None:
-        """Connect to the Plugwise Smile."""
-        version = await self.api.connect()
+        """Connect to the Plugwise Smile.
+
+        A Version object is received when the connection succeeds.
+        """
+        try:
+            version = await self.api.connect()
+        except ConnectionFailedError as err:
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="failed_to_connect",
+            ) from err
+        except InvalidAuthentication as err:
+            raise ConfigEntryError(
+                translation_domain=DOMAIN,
+                translation_key="authentication_failed",
+            ) from err
+        except InvalidSetupError as err:
+            raise ConfigEntryError(
+                translation_domain=DOMAIN,
+                translation_key="invalid_setup",
+            ) from err
+        except (InvalidXMLError, ResponseError) as err:
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="invalid_xml_data",
+            ) from err
+        except UnsupportedDeviceError as err:
+            raise ConfigEntryError(
+                translation_domain=DOMAIN,
+                translation_key="unsupported_firmware",
+            ) from err
+
         self._connected = isinstance(version, Version)
         if self._connected:
             self.update_interval = DEFAULT_SCAN_INTERVAL.get(
@@ -92,51 +127,45 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
 
         LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
 
+    async def _async_setup(self) -> None:
+        """Initialize the update_data process."""
+        device_reg = dr.async_get(self.hass)
+        device_entries = dr.async_entries_for_config_entry(
+            device_reg, self.config_entry.entry_id
+        )
+        self._stored_devices = {
+            identifier[1]
+            for device_entry in device_entries
+            for identifier in device_entry.identifiers
+            if identifier[0] == DOMAIN
+        }
+
     async def _async_update_data(self) -> dict[str, GwEntityData]:
         """Fetch data from Plugwise."""
+        if not self._connected:
+            await self._connect()
         try:
-            if not self._connected:
-                await self._connect()
             data = await self.api.async_update()
-        except ConnectionFailedError as err:
-            raise UpdateFailed(
-                translation_domain=DOMAIN,
-                translation_key="failed_to_connect",
-            ) from err
-        except InvalidAuthentication as err:
-            raise ConfigEntryError(
-                translation_domain=DOMAIN,
-                translation_key="authentication_failed",
-            ) from err
-        except (InvalidXMLError, ResponseError) as err:
-            # pwbeta TODO; we had {err} in the text, but not upstream, do we want this?
-            raise UpdateFailed(
-                translation_domain=DOMAIN,
-                translation_key="invalid_xml_data",
-            ) from err
         except PlugwiseError as err:
             raise UpdateFailed(
                 translation_domain=DOMAIN,
                 translation_key="data_incomplete_or_missing",
             ) from err
-        except UnsupportedDeviceError as err:
-            raise ConfigEntryError(
-                translation_domain=DOMAIN,
-                translation_key="unsupported_firmware",
-            ) from err
 
-        LOGGER.debug(f"{self.api.smile.name} data: %s", data)
         await self._async_add_remove_devices(data)
+        LOGGER.debug("%s data: %s", self.api.smile.name, data)
         return data
 
     async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
-        # Check for new or removed devices
-        self.new_devices = set(data) - self._current_devices
-        removed_devices = self._current_devices - set(data)
-        self._current_devices = set(data)
-
-        if removed_devices:
+        set_of_data = set(data)
+        # Check for new or removed devices,
+        # 'new_devices' contains all devices present in 'data' at init ('self._current_devices' is empty)
+        # this is required for the proper initialization of all the present platform entities.
+        self.new_devices = set_of_data - self._current_devices
+        current_devices = self._stored_devices if not self._current_devices else self._current_devices
+        self._current_devices = set_of_data
+        if (current_devices - set_of_data):  # device(s) to remove
             await self._async_remove_devices(data)
 
     async def _async_remove_devices(self, data: dict[str, GwEntityData]) -> None:
@@ -148,9 +177,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
 
         # First find the Plugwise via_device
         gateway_device = device_reg.async_get_device({(DOMAIN, self.api.gateway_id)})
-        if gateway_device is not None:
-            via_device_id = gateway_device.id
+        if gateway_device is None:
+            return  # pragma: no cover
 
+        via_device_id = gateway_device.id
         # Then remove the connected orphaned device(s)
         for device_entry in device_list:
             for identifier in device_entry.identifiers:
