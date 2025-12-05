@@ -94,20 +94,6 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: PlugwiseConfigEn
     """Unload Plugwise."""
     return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
 
-async def async_remove_config_entry_device(
-    _hass: HomeAssistant, config_entry: PlugwiseConfigEntry, device_entry: dr.DeviceEntry
-) -> bool:
-    """Enable manual removal (button) for Plugwise devices."""
-    coordinator = config_entry.runtime_data
-    return not any(
-        identifier
-        for identifier in device_entry.identifiers
-        if identifier[0] == DOMAIN and (
-            identifier[1] != coordinator.api.gateway_id
-            and identifier[1] in coordinator.data
-            )
-    )
-
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
     """Migrate Plugwise entity entries.
