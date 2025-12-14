@@ -139,7 +139,7 @@ async def async_setup_entry(
                     continue
                 entities.append(PlugwiseBinarySensorEntity(coordinator, device_id, description))
                 LOGGER.debug(
-                    "Add %s %s binary sensor", device["name"], description.translation_key
+                    "Add %s %s binary sensor", device["name"], description.translation_key or description.key
                 )
         async_add_entities(entities)
 
