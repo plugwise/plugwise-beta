@@ -2,7 +2,7 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.62.1
 
 - Implement Core PR's [#158901](https://github.com/home-assistant/core/pull/158901) and [#158094](https://github.com/home-assistant/core/pull/158094)
 
