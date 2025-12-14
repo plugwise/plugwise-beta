@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Implement Core PR's [#158901](https://github.com/home-assistant/core/pull/158901) and [#158094](https://github.com/home-assistant/core/pull/158094)
+
 ## v0.62.0
 
 - Improve automatic deletion of device(s) removed from the backend output, via PR [$982](https://github.com/plugwise/plugwise-beta/pull/982)
