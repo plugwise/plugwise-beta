@@ -55,9 +55,9 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
 
         # Build connections set
         connections = set()
-        if mac := self.device.get("mac_address"):
+        if mac := self.device.get(MAC_ADDRESS):
             connections.add((CONNECTION_NETWORK_MAC, mac))
-        if zigbee_mac := self.device.get("zigbee_mac_address"):
+        if zigbee_mac := self.device.get(ZIGBEE_MAC_ADDRESS):
             connections.add((CONNECTION_ZIGBEE, zigbee_mac))
 
         # Set base device info
@@ -65,12 +65,12 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
             configuration_url=configuration_url,
             identifiers={(DOMAIN, device_id)},
             connections=connections,
-            manufacturer=self.device.get("vendor"),
-            model=self.device.get("model"),
-            model_id=self.device.get("model_id"),
+            manufacturer=self.device.get(VENDOR),
+            model=self.device.get(MODEL),
+            model_id=self.device.get(MODEL_ID),
             name=api.smile.name,
-            sw_version=self.device.get("firmware"),
-            hw_version=self.device.get("hardware"),
+            sw_version=self.device.get(FIRMWARE),
+            hw_version=self.device.get(HARDWARE),
         )
 
         # Add extra info if not the gateway device
