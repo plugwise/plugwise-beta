@@ -162,10 +162,12 @@ async def test_coordinator_connect_exceptions_2(
     """Ensure _connect raises translated errors."""
     mock_smile_anna.connect.side_effect = side_effect
 
-    with pytest.raises(ConfigEntryError, match=raise_match):
-        mock_config_entry.add_to_hass(hass)
-        await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    mock_config_entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
 
+    assert len(mock_smile_anna.connect.mock_calls) == 1
+    assert mock_config_entry.state is ConfigEntryState.SETUP_ERROR
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_single"], indirect=True)
 @pytest.mark.parametrize("gateway_id", ["a455b61e52394b2db5081ce025a430f3"], indirect=True)
