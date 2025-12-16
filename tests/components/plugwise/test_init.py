@@ -358,9 +358,6 @@ async def test_delete_removed_device(
 ) -> None:
     """Test device removal at integration init."""
     data = mock_smile_adam_heat_cool.async_update.return_value
-    mock_config_entry.add_to_hass(hass)
-    assert await async_setup_component(hass, DOMAIN, {})
-    await hass.async_block_till_done()
 
     item_list: list[str] = []
     for device_entry in device_registry.devices.values():
