@@ -15,7 +15,6 @@ import pytest
 
 from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.plugwise.const import DOMAIN
-from homeassistant.components.plugwise.coordinator import PlugwiseDataUpdateCoordinator
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import (
     CONF_HOST,
@@ -29,7 +28,8 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from homeassistant.helpers.update_coordinator import UpdateFailed
+
+# from homeassistant.helpers.update_coordinator import UpdateFailed
 from homeassistant.setup import async_setup_component
 
 from tests.common import MockConfigEntry, async_fire_time_changed
@@ -118,32 +118,53 @@ async def test_gateway_config_entry_not_ready(
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize(
-    ("side_effect", "expected_raise"),
+    "side_effect",
     [
-        (ConnectionFailedError, UpdateFailed),
-        (InvalidAuthentication, ConfigEntryError),
-        (InvalidSetupError, ConfigEntryError),
-        (InvalidXMLError, UpdateFailed),
-        (ResponseError, UpdateFailed),
-        (UnsupportedDeviceError, ConfigEntryError),
+        ConnectionFailedError,
+        InvalidXMLError,
+        ResponseError,
     ],
 )
-async def test_coordinator_connect_exceptions(
+async def test_coordinator_connect_exceptions_1(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     mock_smile_anna: MagicMock,
     side_effect: Exception,
-    expected_raise: Exception,
 ) -> None:
     """Ensure _connect raises translated errors."""
     mock_smile_anna.connect.side_effect = side_effect
-    coordinator = PlugwiseDataUpdateCoordinator(
-        hass,
-        cooldown=0,
-        config_entry=mock_config_entry,
-    )
-    with pytest.raises(expected_raise):
-        await coordinator._connect()
+
+    mock_config_entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert len(mock_smile_anna.connect.mock_calls) == 1
+    assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
+
+
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
+@pytest.mark.parametrize(
+    ("side_effect", "raise_match"),
+    [
+        (InvalidAuthentication, "Invalid authentication"),
+        (InvalidSetupError, "invalid_setup"),
+        (UnsupportedDeviceError, "Device with unsupported firmware"),
+    ],
+)
+async def test_coordinator_connect_exceptions_2(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_smile_anna: MagicMock,
+    side_effect: Exception,
+    raise_match: str,
+) -> None:
+    """Ensure _connect raises translated errors."""
+    mock_smile_anna.connect.side_effect = side_effect
+
+    with pytest.raises(ConfigEntryError, match=raise_match):
+        mock_config_entry.add_to_hass(hass)
+        await hass.config_entries.async_setup(mock_config_entry.entry_id)
 
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_single"], indirect=True)
