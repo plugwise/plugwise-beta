@@ -2,7 +2,6 @@
 from datetime import timedelta
 from unittest.mock import MagicMock, patch
 
-from freezegun.api import FrozenDateTimeFactory
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -14,6 +13,7 @@ from plugwise.exceptions import (
 )
 import pytest
 
+from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import (
@@ -121,6 +121,7 @@ async def test_gateway_config_entry_not_ready(
     [
         (ConnectionFailedError, ConfigEntryState.SETUP_RETRY),
         (InvalidAuthentication, ConfigEntryState.SETUP_ERROR),
+        (InvalidSetupError, ConfigEntryState.SETUP_ERROR),
         (InvalidXMLError, ConfigEntryState.SETUP_RETRY),
         (ResponseError, ConfigEntryState.SETUP_RETRY),
         (PlugwiseError, ConfigEntryState.SETUP_RETRY),
