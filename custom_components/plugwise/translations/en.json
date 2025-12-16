@@ -306,7 +306,7 @@
         "failed_to_connect": {
             "message": "Failed to connect"
         },
-        "invalid_xml_data": {
+        "response_error": {
             "message": "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
         },
         "set_schedule_first": {

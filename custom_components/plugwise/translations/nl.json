@@ -321,7 +321,7 @@
     "failed_to_connect": {
       "message": "Verbinden mislukt"
     },
-    "invalid_xml_data": {
+    "response_error": {
       "message": "Ongeldige XML data, of foutmelding ontvangen van de Plugwise Adam/Smile/Stretch"
     },
     "set_schedule_first": {
