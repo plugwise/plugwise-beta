@@ -322,7 +322,7 @@
       "message": "Verbinden mislukt"
     },
     "invalid_setup": {
-        "message": "Voeg je Adam toe in plaats van je Anna, lees de documentatie"
+      "message": "Voeg je Adam toe in plaats van je Anna, lees de documentatie"
     },
     "response_error": {
       "message": "Ongeldige XML data, of foutmelding ontvangen van de Plugwise Adam/Smile/Stretch"
