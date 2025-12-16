@@ -101,7 +101,7 @@ async def test_gateway_config_entry_not_ready(
     mock_smile_anna: MagicMock,
     side_effect: Exception,
 ) -> None:
-    """Test the Plugwise configuration entry not ready."""
+    """Test the Plugwise config-entry not being ready."""
     mock_smile_anna.async_update.side_effect = side_effect
 
     mock_config_entry.add_to_hass(hass)
