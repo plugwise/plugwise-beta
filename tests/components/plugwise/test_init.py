@@ -267,6 +267,23 @@ async def test_migrate_unique_id_relay(
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
+async def test_update_interval(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_smile_adam_heat_cool: MagicMock,
+    freezer: FrozenDateTimeFactory,
+) -> None:    
+    """Test Adam update interval."""
+    mock_config_entry.add_to_hass(hass)
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+
+    assert mock_config_entry.state is ConfigEntryState.LOADED
+    assert mock_smile_adam_heat_cool.async_update.call_count == 1
+
+
+@pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_update_device(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
