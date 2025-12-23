@@ -87,8 +87,38 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
 
         A Version object is received when the connection succeeds.
         """
+        version = await self.api.connect()
+        self._connected = isinstance(version, Version)
+        if self._connected:
+            self.update_interval = DEFAULT_SCAN_INTERVAL.get(
+                self.api.smile.type, timedelta(seconds=60)
+            )  # pw-beta options scan-interval
+            if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
+                self.update_interval = timedelta(
+                    seconds=int(custom_time)
+                )  # pragma: no cover  # pw-beta options
+
+            LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
+
+    async def _async_setup(self) -> None:
+        """Initialize the update_data process."""
+        device_reg = dr.async_get(self.hass)
+        device_entries = dr.async_entries_for_config_entry(
+            device_reg, self.config_entry.entry_id
+        )
+        self._stored_devices = {
+            identifier[1]
+            for device_entry in device_entries
+            for identifier in device_entry.identifiers
+            if identifier[0] == DOMAIN
+        }
+
+    async def _async_update_data(self) -> dict[str, GwEntityData]:
+        """Fetch data from Plugwise."""
         try:
-            version = await self.api.connect()
+            if not self._connected:
+                await self._connect()
+            data = await self.api.async_update()
         except ConnectionFailedError as err:
             raise UpdateFailed(
                 translation_domain=DOMAIN,
@@ -107,49 +137,17 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         except (InvalidXMLError, ResponseError) as err:
             raise UpdateFailed(
                 translation_domain=DOMAIN,
-                translation_key="invalid_xml_data",
+                translation_key="response_error",
+            ) from err
+        except PlugwiseError as err:
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="data_incomplete_or_missing",
             ) from err
         except UnsupportedDeviceError as err:
             raise ConfigEntryError(
                 translation_domain=DOMAIN,
                 translation_key="unsupported_firmware",
-            ) from err
-
-        self._connected = isinstance(version, Version)
-        if self._connected:
-            self.update_interval = DEFAULT_SCAN_INTERVAL.get(
-                self.api.smile.type, timedelta(seconds=60)
-            )  # pw-beta options scan-interval
-            if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
-                self.update_interval = timedelta(
-                    seconds=int(custom_time)
-                )  # pragma: no cover  # pw-beta options
-
-        LOGGER.debug("DUC update interval: %s", self.update_interval)  # pw-beta options
-
-    async def _async_setup(self) -> None:
-        """Initialize the update_data process."""
-        device_reg = dr.async_get(self.hass)
-        device_entries = dr.async_entries_for_config_entry(
-            device_reg, self.config_entry.entry_id
-        )
-        self._stored_devices = {
-            identifier[1]
-            for device_entry in device_entries
-            for identifier in device_entry.identifiers
-            if identifier[0] == DOMAIN
-        }
-
-    async def _async_update_data(self) -> dict[str, GwEntityData]:
-        """Fetch data from Plugwise."""
-        if not self._connected:
-            await self._connect()
-        try:
-            data = await self.api.async_update()
-        except PlugwiseError as err:
-            raise UpdateFailed(
-                translation_domain=DOMAIN,
-                translation_key="data_incomplete_or_missing",
             ) from err
 
         await self._async_add_remove_devices(data)

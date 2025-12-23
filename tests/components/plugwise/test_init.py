@@ -15,7 +15,6 @@ import pytest
 
 from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.plugwise.const import DOMAIN
-from homeassistant.components.plugwise.coordinator import PlugwiseDataUpdateCoordinator
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import (
     CONF_HOST,
@@ -27,9 +26,7 @@ from homeassistant.const import (
     Platform,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from homeassistant.helpers.update_coordinator import UpdateFailed
 from homeassistant.setup import async_setup_component
 
 from tests.common import MockConfigEntry, async_fire_time_changed
@@ -104,7 +101,7 @@ async def test_gateway_config_entry_not_ready(
     mock_smile_anna: MagicMock,
     side_effect: Exception,
 ) -> None:
-    """Test the Plugwise configuration entry not ready."""
+    """Test the Plugwise config-entry not being ready."""
     mock_smile_anna.async_update.side_effect = side_effect
 
     mock_config_entry.add_to_hass(hass)
@@ -118,14 +115,15 @@ async def test_gateway_config_entry_not_ready(
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize(
-    ("side_effect", "expected_raise"),
+    ("side_effect", "entry_state"),
     [
-        (ConnectionFailedError, UpdateFailed),
-        (InvalidAuthentication, ConfigEntryError),
-        (InvalidSetupError, ConfigEntryError),
-        (InvalidXMLError, UpdateFailed),
-        (ResponseError, UpdateFailed),
-        (UnsupportedDeviceError, ConfigEntryError),
+        (ConnectionFailedError, ConfigEntryState.SETUP_RETRY),
+        (InvalidAuthentication, ConfigEntryState.SETUP_ERROR),
+        (InvalidSetupError, ConfigEntryState.SETUP_ERROR),
+        (InvalidXMLError, ConfigEntryState.SETUP_RETRY),
+        (ResponseError, ConfigEntryState.SETUP_RETRY),
+        (PlugwiseError, ConfigEntryState.SETUP_RETRY),
+        (UnsupportedDeviceError, ConfigEntryState.SETUP_ERROR),
     ],
 )
 async def test_coordinator_connect_exceptions(
@@ -133,17 +131,17 @@ async def test_coordinator_connect_exceptions(
     mock_config_entry: MockConfigEntry,
     mock_smile_anna: MagicMock,
     side_effect: Exception,
-    expected_raise: Exception,
+    entry_state: ConfigEntryState,
 ) -> None:
     """Ensure _connect raises translated errors."""
     mock_smile_anna.connect.side_effect = side_effect
-    coordinator = PlugwiseDataUpdateCoordinator(
-        hass,
-        cooldown=0,
-        config_entry=mock_config_entry,
-    )
-    with pytest.raises(expected_raise):
-        await coordinator._connect()
+
+    mock_config_entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert len(mock_smile_anna.connect.mock_calls) == 1
+    assert mock_config_entry.state is entry_state
 
 
 @pytest.mark.parametrize("chosen_env", ["p1v4_442_single"], indirect=True)
@@ -360,9 +358,6 @@ async def test_delete_removed_device(
 ) -> None:
     """Test device removal at integration init."""
     data = mock_smile_adam_heat_cool.async_update.return_value
-    mock_config_entry.add_to_hass(hass)
-    assert await async_setup_component(hass, DOMAIN, {})
-    await hass.async_block_till_done()
 
     item_list: list[str] = []
     for device_entry in device_registry.devices.values():

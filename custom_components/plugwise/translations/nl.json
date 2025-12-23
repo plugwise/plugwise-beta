@@ -42,7 +42,7 @@
       "invalid_setup": "Voeg je Adam toe in plaats van je Anna, lees de documentatie",
       "network_down": "Plugwise Zigbee netwerk is onbereikbaar",
       "network_timeout": "Network communicatie timeout",
-      "response_error": "Ongeldige XML data, of error-indicatie ontvangen",
+      "response_error": "Ongeldige XML data, of foutmelding ontvangen van de Plugwise Adam/Smile/Stretch",
       "stick_init": "Initaliseren van USB-stick mislukt",
       "unknown": "Onbekende fout!",
       "unsupported": "Apparaat met onbekende firmware"
@@ -321,7 +321,10 @@
     "failed_to_connect": {
       "message": "Verbinden mislukt"
     },
-    "invalid_xml_data": {
+    "invalid_setup": {
+      "message": "Voeg je Adam toe in plaats van je Anna, lees de documentatie"
+    },
+    "response_error": {
       "message": "Ongeldige XML data, of foutmelding ontvangen van de Plugwise Adam/Smile/Stretch"
     },
     "set_schedule_first": {
