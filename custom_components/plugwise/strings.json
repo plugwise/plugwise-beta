@@ -42,7 +42,7 @@
       "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
-      "response_error": "Invalid XML data, or error indication received",
+      "response_error": "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch",
       "stick_init": "Initialization of Plugwise USB-stick failed",
       "unknown": "Unknown error!",
       "unsupported": "Device with unsupported firmware"
