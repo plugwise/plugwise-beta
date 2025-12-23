@@ -2,7 +2,7 @@
 
 Versions from 0.40 and up
 
-## v0.62.2
+## Ongoing
 
 - Revert exceptions-move in coordinator.py, line up with Core Plugwise via PR [#990](https://github.com/plugwise/plugwise-beta/pull/990)
 
