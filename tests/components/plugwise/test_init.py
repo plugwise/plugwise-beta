@@ -15,7 +15,6 @@ import pytest
 
 from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.plugwise.const import DEFAULT_SCAN_INTERVAL, DOMAIN
-from homeassistant.components.plugwise.coordinator import PlugwiseDataUpdateCoordinator
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import (
     CONF_HOST,
@@ -28,7 +27,6 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from homeassistant.setup import async_setup_component
 
 from tests.common import MockConfigEntry, async_fire_time_changed
 
