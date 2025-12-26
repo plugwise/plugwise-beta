@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Add tests for the integration default update_interval settings via PR [#994](https://github.com/plugwise/plugwise-beta/pull/994)
+
 ## v0.62.2
 
 - Bump plugwise to [v1.11.2](https://github.com/plugwise/python-plugwise/releases/tag/v1.11.2)
