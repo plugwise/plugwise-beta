@@ -48,12 +48,13 @@ from .const import (
     CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_REFRESH_INTERVAL,  # pw-beta option
     DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,  # pw-beta option
+    DEFAULT_UPDATE_INTERVAL,
     DEFAULT_USERNAME,
     DOMAIN,
     FLOW_SMILE,
     FLOW_STRETCH,
     INIT,
+    P1_UPDATE_INTERVAL,
     SMILE,
     SMILE_OPEN_THERM,
     SMILE_THERMO,
@@ -317,7 +318,9 @@ class PlugwiseOptionsFlowHandler(OptionsFlow):  # pw-beta options
         self.options = deepcopy(dict(config_entry.options))
 
     def _create_options_schema(self, coordinator: PlugwiseDataUpdateCoordinator) -> vol.Schema:
-        interval = DEFAULT_SCAN_INTERVAL[coordinator.api.smile.type]  # pw-beta options
+        interval = DEFAULT_UPDATE_INTERVAL
+        if coordinator.api.smile.type == "power":
+            interval = P1_UPDATE_INTERVAL
         schema = {
             vol.Optional(
                 CONF_SCAN_INTERVAL,
