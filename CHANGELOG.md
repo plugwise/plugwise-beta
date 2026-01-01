@@ -4,7 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
-- Add tests for the integration default update_interval settings via PR [#994](https://github.com/plugwise/plugwise-beta/pull/994)
+- Implement Core PR [#159626](https://github.com/home-assistant/core/pull/159626) via PR [#994](https://github.com/plugwise/plugwise-beta/pull/994)
 
 ## v0.62.2
 
