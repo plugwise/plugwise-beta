@@ -150,13 +150,10 @@ SWITCHES: Final = "switches"
 
 # Default directives
 DEFAULT_PORT: Final[int] = 80
-DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
-    "power": timedelta(seconds=10),
-    "stretch": timedelta(seconds=60),
-    "thermostat": timedelta(seconds=60),
-}
 DEFAULT_TIMEOUT: Final[int] = 30
+DEFAULT_UPDATE_INTERVAL: Final = timedelta(seconds=60)
 DEFAULT_USERNAME: Final = "smile"
+P1_UPDATE_INTERVAL: Final = timedelta(seconds=10)
 
 # --- Const for Plugwise Smile and Stretch
 PLATFORMS: Final[list[str]] = [
