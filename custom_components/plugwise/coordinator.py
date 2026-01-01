@@ -86,7 +86,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         self._current_devices = set()
         self._stored_devices = set()
         self.new_devices = set()
-        self.update_interval = update_interval
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile.
