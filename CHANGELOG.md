@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Implement Core PR [#159626](https://github.com/home-assistant/core/pull/159626) via PR [#994](https://github.com/plugwise/plugwise-beta/pull/994)
+
 ## v0.62.2
 
 - Bump plugwise to [v1.11.2](https://github.com/plugwise/python-plugwise/releases/tag/v1.11.2)

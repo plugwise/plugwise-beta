@@ -29,7 +29,14 @@ from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from packaging.version import Version
 
-from .const import DEFAULT_SCAN_INTERVAL, DEV_CLASS, DOMAIN, LOGGER, SWITCH_GROUPS
+from .const import (
+    DEFAULT_UPDATE_INTERVAL,
+    DEV_CLASS,
+    DOMAIN,
+    LOGGER,
+    P1_UPDATE_INTERVAL,
+    SWITCH_GROUPS,
+)
 
 type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
@@ -49,7 +56,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         hass: HomeAssistant,
         cooldown: float,
         config_entry: PlugwiseConfigEntry,
-        update_interval: timedelta = timedelta(seconds=60),
     ) -> None:  # pw-beta cooldown
         """Initialize the coordinator."""
         super().__init__(
@@ -59,7 +65,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             name=DOMAIN,
             # Core directly updates from const's DEFAULT_SCAN_INTERVAL
             # Upstream check correct progress for adjusting
-            update_interval=update_interval,
+            update_interval=DEFAULT_UPDATE_INTERVAL,
             # Don't refresh immediately, give the device time to process
             # the change in state before we query it.
             request_refresh_debouncer=Debouncer(
@@ -80,7 +86,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         self._current_devices = set()
         self._stored_devices = set()
         self.new_devices = set()
-        self.update_interval = update_interval
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile.
@@ -90,9 +95,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         version = await self.api.connect()
         self._connected = isinstance(version, Version)
         if self._connected:
-            self.update_interval = DEFAULT_SCAN_INTERVAL.get(
-                self.api.smile.type, timedelta(seconds=60)
-            )  # pw-beta options scan-interval
+            if self.api.smile.type == "power":
+                self.update_interval = P1_UPDATE_INTERVAL
             if (custom_time := self.config_entry.options.get(CONF_SCAN_INTERVAL)) is not None:
                 self.update_interval = timedelta(
                     seconds=int(custom_time)
