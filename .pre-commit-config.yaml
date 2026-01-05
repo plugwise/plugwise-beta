@@ -59,7 +59,7 @@ repos:
         args:
           - --external-sources
   - repo: https://github.com/biomejs/pre-commit
-    rev: v2.3.10
+    rev: v2.3.11
     hooks:
       - id: biome-lint
         additional_dependencies: ["@biomejs/biome@1.8.3"]
