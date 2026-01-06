@@ -3,14 +3,14 @@
     "step": {
       "none": {
         "title": "Geen Opties beschikbaar",
-        "description": "Deze Integratie heeft geen Opties"
+        "description": "Deze integratie heeft geen Opties"
       },
       "init": {
         "description": "Smile/Stretch Opties aanpassen",
         "data": {
           "cooling_on": "Anna: koelmodus is aan",
           "scan_interval": "Scan Interval (seconden) *) optie alleen in beta",
-          "homekit_emulation": "Homekit emulatie (bij hvac_off => Afwezig) *) optie alleen in beta",
+          "homekit_emulation": "Homekit-emulatie (bij hvac_off => Afwezig) *) optie alleen in beta",
           "refresh_interval": "Frontend ververs-tijd (1,5 - 5 seconden) *) optie alleen in beta"
         }
       }
@@ -22,12 +22,12 @@
         "description": "Configuratie bijwerken voor {title}.",
         "data": {
           "host": "IP-adres",
-          "port": "Port nummer"
+          "port": "Poortnummer"
         }
       },
       "user": {
         "title": "Installeer Plugwise Adam/Smile/Stretch",
-        "description": "Van uw Plugwise apparaat voer in: (installeren kan tot 90s duren)",
+        "description": "Van uw Plugwise-apparaat voer in: (installeren kan tot 90s duren)",
         "data": {
           "password": "ID",
           "username": "Gebruikersnaam",
@@ -40,9 +40,9 @@
       "cannot_connect": "Verbinden is mislukt",
       "invalid_auth": "Authenticatie mislukt",
       "invalid_setup": "Voeg je Adam toe in plaats van je Anna, lees de documentatie",
-      "network_down": "Plugwise Zigbee netwerk is onbereikbaar",
-      "network_timeout": "Network communicatie timeout",
-      "response_error": "Ongeldige XML data, of foutmelding ontvangen van de Plugwise Adam/Smile/Stretch",
+      "network_down": "Plugwise-Zigbeenetwerk is onbereikbaar",
+      "network_timeout": "Netwerkverbindingstimeout",
+      "response_error": "Ongeldige XML-data, of foutmelding ontvangen van de Plugwise Adam/Smile/Stretch",
       "stick_init": "Initaliseren van USB-stick mislukt",
       "unknown": "Onbekende fout!",
       "unsupported": "Apparaat met onbekende firmware"
@@ -50,14 +50,14 @@
     "abort": {
       "already_configured": "Dit apparaat is al geconfigureerd",
       "anna_with_adam": "Zowel Anna als Adam gedetecteerd. Voeg alleen de Adam toe, niet de Anna",
-      "not_the_same_smile": "Het ingestelde Smile ID matcht niet met het ID van het ingegeven IP adres.",
+      "not_the_same_smile": "Het ingestelde Smile-ID matcht niet met het ID van het ingegeven IP adres.",
       "reconfigure_successful": "Herconfigureren gelukt"
     }
   },
   "entity": {
     "binary_sensor": {
       "low_battery": {
-        "name": "Batterij status"
+        "name": "Batterijstatus"
       },
       "compressor_state": {
         "name": "Compressorstatus"
@@ -81,7 +81,7 @@
         "name": "Status secundaire boiler"
       },
       "plugwise_notification": {
-        "name": "Plugwise melding"
+        "name": "Plugwise-melding"
       }
     },
     "climate": {
@@ -101,7 +101,7 @@
     },
     "number": {
       "maximum_boiler_temperature": {
-        "name": "Maximale cv-ketel temperatuur"
+        "name": "Maximale cv-ketel-temperatuur"
       },
       "max_dhw_temperature": {
         "name": "Maximale huishoudelijk warmwatertemperatuur"
@@ -131,7 +131,7 @@
         }
       },
       "select_gateway_mode": {
-        "name": "Gateway mode",
+        "name": "Gateway-modus",
         "state": {
           "away": "Pauze",
           "full": "Normaal",
@@ -145,7 +145,7 @@
         }
       },
       "select_zone_profile": {
-        "name": "Zone profiel",
+        "name": "Zone-profiel",
         "state": {
           "active": "Actief",
           "off": "Uit",
@@ -182,76 +182,76 @@
         "name": "Terugvoertemperatuur"
       },
       "electricity_consumed": {
-        "name": "Verbruikte electriciteit"
+        "name": "Verbruikte elektriciteit"
       },
       "electricity_produced": {
-        "name": "Teruggeleverde electriciteit"
+        "name": "Teruggeleverde elektriciteit"
       },
       "electricity_consumed_point": {
-        "name": "Electriciteitsgebruik"
+        "name": "Elektriciteitsgebruik"
       },
       "electricity_produced_point": {
-        "name": "Electriciteitsopwek"
+        "name": "Elektriciteitsopwek"
       },
       "electricity_consumed_interval": {
-        "name": "Electriciteitsgebruik - interval"
+        "name": "Elektriciteitsgebruik - interval"
       },
       "electricity_consumed_peak_interval": {
-        "name": "Electriciteitsgebruik - interval piek"
+        "name": "Elektriciteitsgebruik - interval piek"
       },
       "electricity_consumed_off_peak_interval": {
-        "name": "Electriciteitsgebruik - interval dal"
+        "name": "Elektriciteitsgebruik - interval dal"
       },
       "electricity_produced_interval": {
-        "name": "Electriciteitsopwek - interval"
+        "name": "Elektriciteitsopwek - interval"
       },
       "electricity_produced_peak_interval": {
-        "name": "Electriciteitsopwek - interval piek"
+        "name": "Elektriciteitsopwek - interval piek"
       },
       "electricity_produced_off_peak_interval": {
-        "name": "Electriciteitsopwek - interval dal"
+        "name": "Elektriciteitsopwek - interval dal"
       },
       "electricity_consumed_off_peak_point": {
-        "name": "Electriciteitsgebruik dal"
+        "name": "Elektriciteitsgebruik dal"
       },
       "electricity_consumed_peak_point": {
-        "name": "Electriciteitsgebruik piek"
+        "name": "Elektriciteitsgebruik piek"
       },
       "electricity_consumed_off_peak_cumulative": {
-        "name": "Electriciteitsgebruik - cumulatief dal"
+        "name": "Elektriciteitsgebruik - cumulatief dal"
       },
       "electricity_consumed_peak_cumulative": {
-        "name": "Electriciteitsgebruik - cumulatief piek"
+        "name": "Elektriciteitsgebruik - cumulatief piek"
       },
       "electricity_produced_off_peak_point": {
-        "name": "Electriciteitsopwek - dal"
+        "name": "Elektriciteitsopwek - dal"
       },
       "electricity_produced_peak_point": {
-        "name": "Electriciteitsopwek - piek"
+        "name": "Elektriciteitsopwek - piek"
       },
       "electricity_produced_off_peak_cumulative": {
-        "name": "Electriciteitsopwek - cumulatief dal"
+        "name": "Elektriciteitsopwek - cumulatief dal"
       },
       "electricity_produced_peak_cumulative": {
-        "name": "Electriciteitsopwek - cumulatief piek"
+        "name": "Elektriciteitsopwek - cumulatief piek"
       },
       "electricity_phase_one_consumed": {
-        "name": "Electriciteitsgebruik fase een"
+        "name": "Elektriciteitsgebruik fase een"
       },
       "electricity_phase_two_consumed": {
-        "name": "Electriciteitsgebruik fase twee"
+        "name": "Elektriciteitsgebruik fase twee"
       },
       "electricity_phase_three_consumed": {
-        "name": "Electriciteitsgebruik fase drie"
+        "name": "Elektriciteitsgebruik fase drie"
       },
       "electricity_phase_one_produced": {
-        "name": "Electriciteitsopwek fase een"
+        "name": "Elektriciteitsopwek fase een"
       },
       "electricity_phase_two_produced": {
-        "name": "Electriciteitsopwek fase twee"
+        "name": "Elektriciteitsopwek fase twee"
       },
       "electricity_phase_three_produced": {
-        "name": "Electriciteitsopwek fase drie"
+        "name": "Elektriciteitsopwek fase drie"
       },
       "voltage_phase_one": {
         "name": "Netspanning fase een"
@@ -269,10 +269,10 @@
         "name": "Cumulatief gasverbruik"
       },
       "net_electricity_point": {
-        "name": "Netto electriciteitsgebruik"
+        "name": "Netto elektriciteitsgebruik"
       },
       "net_electricity_cumulative": {
-        "name": "Netto cumulatief electriciteitsgebruik"
+        "name": "Netto cumulatief elektriciteitsgebruik"
       },
       "modulation_level": {
         "name": "Modulatie"
@@ -325,10 +325,10 @@
       "message": "Voeg je Adam toe in plaats van je Anna, lees de documentatie"
     },
     "response_error": {
-      "message": "Ongeldige XML data, of foutmelding ontvangen van de Plugwise Adam/Smile/Stretch"
+      "message": "Ongeldige XML-data, of -foutmelding ontvangen van de Plugwise Adam/Smile/Stretch"
     },
     "set_schedule_first": {
-      "message": "Instellen van HVACMode mislukt, activeer eerst een thermostaat schema."
+      "message": "Instellen van HVACMode mislukt, activeer eerst een thermostaatschema."
     },
     "unsupported_firmware": {
       "message": "Apparaat met niet-ondersteunde firmware"
@@ -336,8 +336,8 @@
   },
   "services": {
     "delete_notification": {
-      "name": "Verwijder Plugwise notificatie",
-      "description": "Verwijder een Plugwise notificatie"
+      "name": "Verwijder Plugwise-notificatie",
+      "description": "Verwijder een Plugwise-notificatie"
     }
   }
 }
