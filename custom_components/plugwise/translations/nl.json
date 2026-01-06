@@ -3,10 +3,10 @@
     "step": {
       "none": {
         "title": "Geen Opties beschikbaar",
-        "description": "Deze integratie heeft geen Opties"
+        "description": "Deze integratie heeft geen opties"
       },
       "init": {
-        "description": "Smile/Stretch Opties aanpassen",
+        "description": "Smile/Stretch-opties aanpassen",
         "data": {
           "cooling_on": "Anna: koelmodus is aan",
           "scan_interval": "Scan Interval (seconden) *) optie alleen in beta",
