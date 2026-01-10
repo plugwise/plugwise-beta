@@ -1,40 +1,10 @@
 {
-  "options": {
-    "step": {
-      "none": {
-        "title": "Geen Opties beschikbaar",
-        "description": "Deze Integratie heeft geen Opties"
-      },
-      "init": {
-        "description": "Smile/Stretch Opties aanpassen",
-        "data": {
-          "cooling_on": "Anna: koelmodus is aan",
-          "scan_interval": "Scan Interval (seconden) *) optie alleen in beta",
-          "homekit_emulation": "Homekit emulatie (bij hvac_off => Afwezig) *) optie alleen in beta",
-          "refresh_interval": "Frontend ververs-tijd (1,5 - 5 seconden) *) optie alleen in beta"
-        }
-      }
-    }
-  },
   "config": {
-    "step": {
-      "reconfigure": {
-        "description": "Configuratie bijwerken voor {title}.",
-        "data": {
-          "host": "IP-adres",
-          "port": "Port nummer"
-        }
-      },
-      "user": {
-        "title": "Installeer Plugwise Adam/Smile/Stretch",
-        "description": "Van uw Plugwise apparaat voer in: (installeren kan tot 90s duren)",
-        "data": {
-          "password": "ID",
-          "username": "Gebruikersnaam",
-          "host": "IP-adres",
-          "port": "Poortnummer"
-        }
-      }
+    "abort": {
+      "already_configured": "Dit apparaat is al geconfigureerd",
+      "anna_with_adam": "Zowel Anna als Adam gedetecteerd. Voeg alleen de Adam toe, niet de Anna",
+      "not_the_same_smile": "Het ingestelde Smile ID matcht niet met het ID van het ingegeven IP adres.",
+      "reconfigure_successful": "Herconfigureren gelukt"
     },
     "error": {
       "cannot_connect": "Verbinden is mislukt",
@@ -47,23 +17,36 @@
       "unknown": "Onbekende fout!",
       "unsupported": "Apparaat met onbekende firmware"
     },
-    "abort": {
-      "already_configured": "Dit apparaat is al geconfigureerd",
-      "anna_with_adam": "Zowel Anna als Adam gedetecteerd. Voeg alleen de Adam toe, niet de Anna",
-      "not_the_same_smile": "Het ingestelde Smile ID matcht niet met het ID van het ingegeven IP adres.",
-      "reconfigure_successful": "Herconfigureren gelukt"
+    "step": {
+      "reconfigure": {
+        "data": {
+          "host": "IP-adres",
+          "port": "Port nummer"
+        },
+        "description": "Configuratie bijwerken voor {title}."
+      },
+      "user": {
+        "data": {
+          "host": "IP-adres",
+          "password": "ID",
+          "port": "Poortnummer",
+          "username": "Gebruikersnaam"
+        },
+        "description": "Van uw Plugwise apparaat voer in: (installeren kan tot 90s duren)",
+        "title": "Installeer Plugwise Adam/Smile/Stretch"
+      }
     }
   },
   "entity": {
     "binary_sensor": {
-      "low_battery": {
-        "name": "Batterij status"
-      },
       "compressor_state": {
         "name": "Compressorstatus"
       },
       "cooling_enabled": {
         "name": "Koelfunctie aan"
+      },
+      "cooling_state": {
+        "name": "Koelen"
       },
       "dhw_state": {
         "name": "Status huishoudelijk warmwater"
@@ -74,14 +57,14 @@
       "heating_state": {
         "name": "Verwarmen"
       },
-      "cooling_state": {
-        "name": "Koelen"
-      },
-      "secondary_boiler_state": {
-        "name": "Status secundaire boiler"
+      "low_battery": {
+        "name": "Batterij status"
       },
       "plugwise_notification": {
         "name": "Plugwise melding"
+      },
+      "secondary_boiler_state": {
+        "name": "Status secundaire boiler"
       }
     },
     "climate": {
@@ -100,11 +83,11 @@
       }
     },
     "number": {
-      "maximum_boiler_temperature": {
-        "name": "Maximale cv-ketel temperatuur"
-      },
       "max_dhw_temperature": {
         "name": "Maximale huishoudelijk warmwatertemperatuur"
+      },
+      "maximum_boiler_temperature": {
+        "name": "Maximale cv-ketel temperatuur"
       },
       "temperature_offset": {
         "name": "Temperatuurcompensatie"
@@ -120,6 +103,14 @@
           "off": "Uit"
         }
       },
+      "select_gateway_mode": {
+        "name": "Gateway mode",
+        "state": {
+          "away": "Pauze",
+          "full": "Normaal",
+          "vacation": "Vakantie"
+        }
+      },
       "select_regulation_mode": {
         "name": "Regelmodus",
         "state": {
@@ -128,14 +119,6 @@
           "cooling": "Koelen",
           "heating": "Verwarmen",
           "off": "Uit"
-        }
-      },
-      "select_gateway_mode": {
-        "name": "Gateway mode",
-        "state": {
-          "away": "Pauze",
-          "full": "Normaal",
-          "vacation": "Vakantie"
         }
       },
       "select_schedule": {
@@ -154,134 +137,8 @@
       }
     },
     "sensor": {
-      "setpoint": {
-        "name": "Instelling"
-      },
       "cooling_setpoint": {
         "name": "Instelling koelen"
-      },
-      "heating_setpoint": {
-        "name": " Instelling verwarmen"
-      },
-      "intended_boiler_temperature": {
-        "name": "Doeltemperatuur boiler"
-      },
-      "temperature_difference": {
-        "name": "Temperatuurverschil"
-      },
-      "outdoor_temperature": {
-        "name": "Buitentemperatuur"
-      },
-      "outdoor_air_temperature": {
-        "name": "Temperatuur buitenlucht"
-      },
-      "water_temperature": {
-        "name": "Watertemperatuur"
-      },
-      "return_temperature": {
-        "name": "Terugvoertemperatuur"
-      },
-      "electricity_consumed": {
-        "name": "Verbruikte electriciteit"
-      },
-      "electricity_produced": {
-        "name": "Teruggeleverde electriciteit"
-      },
-      "electricity_consumed_point": {
-        "name": "Electriciteitsgebruik"
-      },
-      "electricity_produced_point": {
-        "name": "Electriciteitsopwek"
-      },
-      "electricity_consumed_interval": {
-        "name": "Electriciteitsgebruik - interval"
-      },
-      "electricity_consumed_peak_interval": {
-        "name": "Electriciteitsgebruik - interval piek"
-      },
-      "electricity_consumed_off_peak_interval": {
-        "name": "Electriciteitsgebruik - interval dal"
-      },
-      "electricity_produced_interval": {
-        "name": "Electriciteitsopwek - interval"
-      },
-      "electricity_produced_peak_interval": {
-        "name": "Electriciteitsopwek - interval piek"
-      },
-      "electricity_produced_off_peak_interval": {
-        "name": "Electriciteitsopwek - interval dal"
-      },
-      "electricity_consumed_off_peak_point": {
-        "name": "Electriciteitsgebruik dal"
-      },
-      "electricity_consumed_peak_point": {
-        "name": "Electriciteitsgebruik piek"
-      },
-      "electricity_consumed_off_peak_cumulative": {
-        "name": "Electriciteitsgebruik - cumulatief dal"
-      },
-      "electricity_consumed_peak_cumulative": {
-        "name": "Electriciteitsgebruik - cumulatief piek"
-      },
-      "electricity_produced_off_peak_point": {
-        "name": "Electriciteitsopwek - dal"
-      },
-      "electricity_produced_peak_point": {
-        "name": "Electriciteitsopwek - piek"
-      },
-      "electricity_produced_off_peak_cumulative": {
-        "name": "Electriciteitsopwek - cumulatief dal"
-      },
-      "electricity_produced_peak_cumulative": {
-        "name": "Electriciteitsopwek - cumulatief piek"
-      },
-      "electricity_phase_one_consumed": {
-        "name": "Electriciteitsgebruik fase een"
-      },
-      "electricity_phase_two_consumed": {
-        "name": "Electriciteitsgebruik fase twee"
-      },
-      "electricity_phase_three_consumed": {
-        "name": "Electriciteitsgebruik fase drie"
-      },
-      "electricity_phase_one_produced": {
-        "name": "Electriciteitsopwek fase een"
-      },
-      "electricity_phase_two_produced": {
-        "name": "Electriciteitsopwek fase twee"
-      },
-      "electricity_phase_three_produced": {
-        "name": "Electriciteitsopwek fase drie"
-      },
-      "voltage_phase_one": {
-        "name": "Netspanning fase een"
-      },
-      "voltage_phase_two": {
-        "name": "Netspanning fase twee"
-      },
-      "voltage_phase_three": {
-        "name": "Netspanning fase drie"
-      },
-      "gas_consumed_interval": {
-        "name": "Gasverbruik - interval"
-      },
-      "gas_consumed_cumulative": {
-        "name": "Cumulatief gasverbruik"
-      },
-      "net_electricity_point": {
-        "name": "Netto electriciteitsgebruik"
-      },
-      "net_electricity_cumulative": {
-        "name": "Netto cumulatief electriciteitsgebruik"
-      },
-      "modulation_level": {
-        "name": "Modulatie"
-      },
-      "valve_position": {
-        "name": "Kleppositie"
-      },
-      "water_pressure": {
-        "name": "Waterdruk"
       },
       "dhw_temperature": {
         "name": "Huishoudelijk warmwatertemperatuur"
@@ -289,8 +146,134 @@
       "domestic_hot_water_setpoint": {
         "name": "Instelling huishoudelijk warmwater"
       },
+      "electricity_consumed": {
+        "name": "Verbruikte electriciteit"
+      },
+      "electricity_consumed_interval": {
+        "name": "Electriciteitsgebruik - interval"
+      },
+      "electricity_consumed_off_peak_cumulative": {
+        "name": "Electriciteitsgebruik - cumulatief dal"
+      },
+      "electricity_consumed_off_peak_interval": {
+        "name": "Electriciteitsgebruik - interval dal"
+      },
+      "electricity_consumed_off_peak_point": {
+        "name": "Electriciteitsgebruik dal"
+      },
+      "electricity_consumed_peak_cumulative": {
+        "name": "Electriciteitsgebruik - cumulatief piek"
+      },
+      "electricity_consumed_peak_interval": {
+        "name": "Electriciteitsgebruik - interval piek"
+      },
+      "electricity_consumed_peak_point": {
+        "name": "Electriciteitsgebruik piek"
+      },
+      "electricity_consumed_point": {
+        "name": "Electriciteitsgebruik"
+      },
+      "electricity_phase_one_consumed": {
+        "name": "Electriciteitsgebruik fase een"
+      },
+      "electricity_phase_one_produced": {
+        "name": "Electriciteitsopwek fase een"
+      },
+      "electricity_phase_three_consumed": {
+        "name": "Electriciteitsgebruik fase drie"
+      },
+      "electricity_phase_three_produced": {
+        "name": "Electriciteitsopwek fase drie"
+      },
+      "electricity_phase_two_consumed": {
+        "name": "Electriciteitsgebruik fase twee"
+      },
+      "electricity_phase_two_produced": {
+        "name": "Electriciteitsopwek fase twee"
+      },
+      "electricity_produced": {
+        "name": "Teruggeleverde electriciteit"
+      },
+      "electricity_produced_interval": {
+        "name": "Electriciteitsopwek - interval"
+      },
+      "electricity_produced_off_peak_cumulative": {
+        "name": "Electriciteitsopwek - cumulatief dal"
+      },
+      "electricity_produced_off_peak_interval": {
+        "name": "Electriciteitsopwek - interval dal"
+      },
+      "electricity_produced_off_peak_point": {
+        "name": "Electriciteitsopwek - dal"
+      },
+      "electricity_produced_peak_cumulative": {
+        "name": "Electriciteitsopwek - cumulatief piek"
+      },
+      "electricity_produced_peak_interval": {
+        "name": "Electriciteitsopwek - interval piek"
+      },
+      "electricity_produced_peak_point": {
+        "name": "Electriciteitsopwek - piek"
+      },
+      "electricity_produced_point": {
+        "name": "Electriciteitsopwek"
+      },
+      "gas_consumed_cumulative": {
+        "name": "Cumulatief gasverbruik"
+      },
+      "gas_consumed_interval": {
+        "name": "Gasverbruik - interval"
+      },
+      "heating_setpoint": {
+        "name": " Instelling verwarmen"
+      },
+      "intended_boiler_temperature": {
+        "name": "Doeltemperatuur boiler"
+      },
       "maximum_boiler_temperature": {
         "name": "Instelling maximale boilertemperatuur"
+      },
+      "modulation_level": {
+        "name": "Modulatie"
+      },
+      "net_electricity_cumulative": {
+        "name": "Netto cumulatief electriciteitsgebruik"
+      },
+      "net_electricity_point": {
+        "name": "Netto electriciteitsgebruik"
+      },
+      "outdoor_air_temperature": {
+        "name": "Temperatuur buitenlucht"
+      },
+      "outdoor_temperature": {
+        "name": "Buitentemperatuur"
+      },
+      "return_temperature": {
+        "name": "Terugvoertemperatuur"
+      },
+      "setpoint": {
+        "name": "Instelling"
+      },
+      "temperature_difference": {
+        "name": "Temperatuurverschil"
+      },
+      "valve_position": {
+        "name": "Kleppositie"
+      },
+      "voltage_phase_one": {
+        "name": "Netspanning fase een"
+      },
+      "voltage_phase_three": {
+        "name": "Netspanning fase drie"
+      },
+      "voltage_phase_two": {
+        "name": "Netspanning fase twee"
+      },
+      "water_pressure": {
+        "name": "Waterdruk"
+      },
+      "water_temperature": {
+        "name": "Watertemperatuur"
       }
     },
     "switch": {
@@ -334,10 +317,27 @@
       "message": "Apparaat met niet-ondersteunde firmware"
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "cooling_on": "Anna: koelmodus is aan",
+          "homekit_emulation": "Homekit emulatie (bij hvac_off => Afwezig) *) optie alleen in beta",
+          "refresh_interval": "Frontend ververs-tijd (1,5 - 5 seconden) *) optie alleen in beta",
+          "scan_interval": "Scan Interval (seconden) *) optie alleen in beta"
+        },
+        "description": "Smile/Stretch Opties aanpassen"
+      },
+      "none": {
+        "description": "Deze Integratie heeft geen Opties",
+        "title": "Geen Opties beschikbaar"
+      }
+    }
+  },
   "services": {
     "delete_notification": {
-      "name": "Verwijder Plugwise notificatie",
-      "description": "Verwijder een Plugwise notificatie"
+      "description": "Verwijder een Plugwise notificatie",
+      "name": "Verwijder Plugwise notificatie"
     }
   }
 }
