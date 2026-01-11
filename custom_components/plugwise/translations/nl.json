@@ -67,6 +67,11 @@
         "name": "Status secundaire boiler"
       }
     },
+    "button": {
+      "reboot": {
+        "name": "Herstart"
+      }
+    },
     "climate": {
       "plugwise": {
         "state_attributes": {
@@ -225,7 +230,7 @@
         "name": "Gasverbruik - interval"
       },
       "heating_setpoint": {
-        "name": " Instelling verwarmen"
+        "name": "Instelling verwarmen"
       },
       "intended_boiler_temperature": {
         "name": "Doeltemperatuur boiler"

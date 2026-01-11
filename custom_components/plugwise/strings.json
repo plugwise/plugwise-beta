@@ -57,6 +57,9 @@
       "heating_state": {
         "name": "Heating"
       },
+      "low_battery": {
+        "name": "Battery status"
+      },
       "plugwise_notification": {
         "name": "Plugwise notification"
       },
