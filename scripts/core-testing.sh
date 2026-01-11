@@ -66,6 +66,7 @@ venv_and_uv() {
 	  echo -e "${CINFO}Ensure uv presence${CWARN}"
 	  python3 -m pip install uv
 	fi
+        script/setup
 	if ! [ -x "$(command -v pytest)" ]; then
 	  uv pip install pytest
 	fi
