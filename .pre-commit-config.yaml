@@ -52,14 +52,14 @@ repos:
       - id: yamllint
         name: "Linting yaml"
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.10.0.1
+    rev: v0.11.0.1
     hooks:
       - id: shellcheck
         name: "Shell checking"
         args:
           - --external-sources
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.6.2
+    rev: v3.7.4
     hooks:
       - id: prettier
         additional_dependencies:
@@ -67,7 +67,7 @@ repos:
           - prettier-plugin-sort-json@4.1.1
         name: "Prettier (JSON sorting)"
   - repo: https://github.com/biomejs/pre-commit
-    rev: v2.3.11
+    rev: v2.3.10
     hooks:
       - id: biome-lint
         additional_dependencies: ["@biomejs/biome@1.8.3"]
