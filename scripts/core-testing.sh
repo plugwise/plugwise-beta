@@ -59,6 +59,15 @@ which jq || ( echo -e "${CFAIL}You should have jq installed, exiting${CNORM}"; e
 
 my_path=$(git rev-parse --show-toplevel)
 
+venv_and_uv() {
+        # shellcheck disable=SC1091
+        source venv/bin/activate
+	if ! [ -x "$(command -v uv)" ]; then
+	  echo -e "${CINFO}Ensure uv presence${CWARN}"
+	  python3 -m pip install uv
+	fi
+}
+
 # Ensure environment is set-up
 
 # 20250613 Copied from HA-core and shell-check adjusted and modified for local use
@@ -163,11 +172,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	# Fake branch
 	git checkout -b fake_branch
 
-	if ! [ -x "$(command -v uv)" ]; then
-	  echo -e "${CINFO}Ensure uv presence${CWARN}"
-	  python3 -m pip install uv
-	fi
-
         if [ ! -d "venv" ]; then
           echo -e "${CINFO}Ensure HA-core venv${CWARN}"
           uv venv --seed venv
@@ -202,8 +206,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	cd "${coredir}" || exit
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
-        # shellcheck disable=SC1091
-        source venv/bin/activate
+        venv_and_uv
 	mkdir -p ./tmp
 	echo ""
 	echo -e "${CINFO}Ensure translations are there${CNORM}"
@@ -222,8 +225,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 	cd "${coredir}" || exit
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
-        # shellcheck disable=SC1091
-        source venv/bin/activate
+        venv_and_uv
 	echo ""
 	echo -e "${CINFO}Test commencing ...${CNORM}"
 	echo ""
@@ -255,8 +257,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	cd "${coredir}" || exit
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
-        # shellcheck disable=SC1091
-        source venv/bin/activate
+        venv_and_uv
 	echo ""
 	set +e
 	echo -e "${CINFO}... ruff-ing component...${CNORM}"
@@ -279,8 +280,7 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	cd "${coredir}" || exit
 	echo ""
 	echo "Ensure HA-core venv${CNORM}"
-        # shellcheck disable=SC1091
-        source venv/bin/activate
+        venv_and_uv
 	echo ""
 	echo -e "${CINFO}Copy back modified files ...${CNORM}"
 	echo ""
