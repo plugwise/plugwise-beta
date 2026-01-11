@@ -163,14 +163,14 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	# Fake branch
 	git checkout -b fake_branch
 
+	if ! [ -x "$(command -v uv)" ]; then
+	  echo -e "${CINFO}Ensure uv presence${CWARN}"
+	  python3 -m pip install uv
+	fi
+
         if [ ! -d "venv" ]; then
           echo -e "${CINFO}Ensure HA-core venv${CWARN}"
-          if [ -x "$(command -v uv)" ]; then
-            uv venv --seed venv
-          else
-            python3 -m venv venv
-            python3 -m pip install uv 
-          fi
+          uv venv --seed venv
         fi
         echo -e "${CINFO}(Re)setup HA-core ${CWARN}"
         script/setup
