@@ -27,6 +27,9 @@ echo -e "${CINFO}Working on HA-core branch ${core_branch}${CNORM}"
 # If you want full pytest output run as
 # DEBUG=1 scripts/core-testing.sh
 
+# Ensure ulimit is setup to match core/astral-uv expectations
+ulimit -n 65536
+
 # If you want to test a single file
 # run as "scripts/core_testing.sh test_config_flow.py" or
 # "scripts/core_testing.sh test_sensor.py"
@@ -36,11 +39,6 @@ echo -e "${CINFO}Working on HA-core branch ${core_branch}${CNORM}"
 #
 # If you want to prepare for Core PR, run as
 # "COMMIT_CHECK=true scripts/core_testing.sh"
-
-# Which packages to install (to prevent installing all test requirements)
-# actual package version ARE verified (i.e. grepped) from requirements_test_all
-# separate packages with |
-pip_packages="fnvhash|lru-dict|voluptuous|aiohasupervisor|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff|ffmpeg|hassil|home-assistant-intents|pylint|pylint-per-file-ignores|cronsim"
 
 echo ""
 echo -e "${CINFO}Checking for necessary tools and preparing setup:${CNORM}"
@@ -165,24 +163,19 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	# Fake branch
 	git checkout -b fake_branch
 
-	echo ""
-	echo -e "${CINFO}Ensure HA-core venv${CWARN}"
-        if [ -x "$(command -v uv)" ]; then
-          uv venv --seed venv
-        else
-          python3 -m venv venv
+        if [ ! -d "venv" ]; then
+          echo -e "${CINFO}Ensure HA-core venv${CWARN}"
+          if [ -x "$(command -v uv)" ]; then
+            uv venv --seed venv
+          else
+            python3 -m venv venv
+            python3 -m pip install uv 
+          fi
         fi
+        echo -e "${CINFO}(Re)setup HA-core ${CWARN}"
+        script/setup
         # shellcheck disable=SC1091
-	source venv/bin/activate
-
-	if ! [ -x "$(command -v uv)" ]; then
-	  echo -e "${CINFO}Ensure uv presence${CWARN}"
-	  python3 -m pip install uv
-	fi
-
-	echo -e "${CINFO}Bootstrap pip parts of HA-core${CWARN}"
-        sh "${coredir}/script/bootstrap"
-	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
+        source venv/bin/activate
 
 	echo ""
 	echo -e "${CINFO}Cleaning existing ${REPO_NAME} from HA core${CNORM}"
@@ -194,6 +187,14 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	cp -r ../custom_components/${REPO_NAME} ./homeassistant/components/
 	cp -r ../tests/components/${REPO_NAME} ./tests/components/
 	echo ""
+
+        echo -e "${CINFO}Validating prettierrc changes${CNORM}"
+        prettierrc=".prettierrc.js"
+        if ! diff -q <(sed 's/homeassistant/custom_components/g' "${prettierrc}") "../${prettierrc}" >/dev/null; then
+            echo -e "${CWARN}Updating prettierrc from core${CNORM}"
+            sed 's/homeassistant/custom_components/g' ${prettierrc} > ../${prettierrc}
+        fi
+
 fi # core_prep
 
 set +u
@@ -208,21 +209,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo -e "${CINFO}Ensure translations are there${CNORM}"
 	echo ""
 	python3 -m script.translations develop --all > /dev/null 2>&1
-	echo ""
-	if ! [ -x "$(command -v uv)" ]; then
-	  echo -e "${CINFO}Ensure uv is there${CNORM}"
-	  python3 -m pip install uv
-	fi
-	echo -e "${CINFO}Installing pip modules (using uv)${CNORM}"
-	echo ""
-	echo -e "${CINFO} - HA requirements (core and test)${CNORM}"
-	uv pip install --upgrade -r requirements.txt -r requirements_test.txt
-	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
-	echo -e "${CINFO} - extra's required for ${REPO_NAME}${CNORM}"
-	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
-	echo -e "${CINFO} - home assistant basics${CNORM}"
-	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
-	echo ""
 	# When using test.py prettier makes multi-line, so use jq
 	module=$(jq '.requirements[]' ../custom_components/${REPO_NAME}/manifest.json | tr -d '"')
 	#module=$(grep require ../custom_components/${REPO_NAME}/manifest.json | cut -f 4 -d '"')
