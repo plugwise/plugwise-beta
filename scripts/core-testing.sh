@@ -66,6 +66,9 @@ venv_and_uv() {
 	  echo -e "${CINFO}Ensure uv presence${CWARN}"
 	  python3 -m pip install uv
 	fi
+	if ! [ -x "$(command -v pytest)" ]; then
+	  uv pip install pytest
+	fi
 }
 
 # Ensure environment is set-up
