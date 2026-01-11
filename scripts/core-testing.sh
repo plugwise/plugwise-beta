@@ -66,7 +66,9 @@ venv_and_uv() {
 	  echo -e "${CINFO}Ensure uv presence${CWARN}"
 	  python3 -m pip install uv
 	fi
-        script/setup
+        if ! uv pip list | grep -q bcrypt; then
+          script/setup
+	fi
 	if ! [ -x "$(command -v pytest)" ]; then
 	  uv pip install pytest
 	fi
@@ -200,7 +202,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
         prettierrc=".prettierrc.js"
         if ! diff -q <(sed 's/homeassistant/custom_components/g' "${prettierrc}") "../${prettierrc}" >/dev/null; then
             echo -e "${CWARN}Updating prettierrc from core${CNORM}"
-            sed 's/homeassistant/custom_components/g' ${prettierrc} > ../${prettierrc}
+            sed 's/homeassistant/custom_components/g' "${prettierrc}" > "../${prettierrc}"
         fi
 
 fi # core_prep
