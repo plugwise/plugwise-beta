@@ -66,6 +66,10 @@ venv_and_uv() {
 	  echo -e "${CINFO}Ensure uv presence${CWARN}"
 	  python3 -m pip install uv
 	fi
+	if ! [ -x "$(command -v prek)" ]; then
+	  echo -e "${CINFO}Ensure prek presence${CWARN}"
+	  uv pip install prek
+	fi
         if ! uv pip list | grep -q bcrypt; then
           script/setup
 	fi

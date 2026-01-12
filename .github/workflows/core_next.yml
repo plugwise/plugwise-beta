@@ -56,7 +56,6 @@ jobs:
           fail-on-miss: false  # First time create cache (if not already exists)
           python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
-          precommit-home: ${{ env.PRE_COMMIT_HOME }}
           clone-core: "true"
       - name: Test against HA-core DEV (for active or upcoming RC/Beta)
         run: |
