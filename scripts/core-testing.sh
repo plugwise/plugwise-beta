@@ -95,10 +95,10 @@ fi
 # /20250613
 
 # Install commit requirements
-uv pip install --upgrade pre-commit
+uv pip install --upgrade prek
 
 # Install pre-commit hook
-pre-commit install
+prek install
 
 # i.e. args used for functions, not directions 
 set +u
@@ -276,8 +276,8 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo -e "${CINFO}... mypy ...${CNORM}"
 	script/run-in-env.sh mypy homeassistant/components/${REPO_NAME}/*.py || exit
 	cd ..
-	echo -e "${CINFO}... markdownlint ...${CNORM}"
-	pre-commit run --all-files --hook-stage manual markdownlint
+	echo -e "${CINFO}... pymarkdownlint ...${CNORM}"
+	prek run --all-files --hook-stage manual pymarkdown
 fi # quality
 
 # Copying back not necessary in actions
