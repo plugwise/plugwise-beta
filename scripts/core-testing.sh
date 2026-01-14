@@ -68,7 +68,7 @@ venv_and_uv() {
 	fi
 	if ! [ -x "$(command -v prek)" ]; then
 	  echo -e "${CINFO}Ensure prek presence${CWARN}"
-	  uv pip install -r requirements_commit.txt
+	  uv pip install -r "${my_path}/requirements_commit.txt"
 	fi
         if ! uv pip list | grep -q bcrypt; then
           script/setup
@@ -99,7 +99,7 @@ fi
 # /20250613
 
 # Install commit requirements
-uv pip install -r requirements_commit.txt
+uv pip install -r "${my_path}/requirements_commit.txt"
 prek install
 
 # i.e. args used for functions, not directions 
