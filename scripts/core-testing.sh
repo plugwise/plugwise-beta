@@ -68,7 +68,7 @@ venv_and_uv() {
 	fi
 	if ! [ -x "$(command -v prek)" ]; then
 	  echo -e "${CINFO}Ensure prek presence${CWARN}"
-	  uv pip install prek
+	  uv pip install -r requirements_commit.txt
 	fi
         if ! uv pip list | grep -q bcrypt; then
           script/setup
@@ -99,9 +99,7 @@ fi
 # /20250613
 
 # Install commit requirements
-uv pip install --upgrade prek
-
-# Install pre-commit hook
+uv pip install -r requirements_commit.txt
 prek install
 
 # i.e. args used for functions, not directions 
@@ -280,7 +278,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo -e "${CINFO}... mypy ...${CNORM}"
 	script/run-in-env.sh mypy homeassistant/components/${REPO_NAME}/*.py || exit
 	cd ..
-	echo -e "${CINFO}... pymarkdownlint ...${CNORM}"
+	echo -e "${CINFO}... pymarkdown ...${CNORM}"
 	prek run --all-files --hook-stage manual pymarkdown
 fi # quality
 
