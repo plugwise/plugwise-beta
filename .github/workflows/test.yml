@@ -4,9 +4,8 @@
 name: Test PR against HA-core
 
 env:
-  CACHE_VERSION: 1
+  CACHE_VERSION: 3
   DEFAULT_PYTHON: "3.13"
-  PRE_COMMIT_HOME: ~/.cache/pre-commit
   VENV: venv
 
 # Do not run on 'push' (as the flow doesn't have access to the labels) - also disabled workflow_dispatch as such
@@ -83,7 +82,7 @@ jobs:
     needs: cache
     name: Prepare
     steps:
-      - name: Prepare code checkout and python/pre-commit setup
+      - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
         uses: plugwise/gh-actions/prepare-python-and-code@v2
         with:
@@ -91,20 +90,19 @@ jobs:
           fail-on-miss: false  # First time create cache (if not already exists)
           python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
-          precommit-home: ${{ env.PRE_COMMIT_HOME }}
           clone-core: "true"
 
   # Prepare default python version environment
   ha-core-release-prepare:
     runs-on: ubuntu-latest
-    name: Prepare and validate pre-commit
+    name: Prepare and validate prek (pre-commit)
     needs:
       - cache
       - prepare
     steps:
       - name: Check out committed code
         uses: actions/checkout@v6
-      - name: Prepare code checkout and python/pre-commit setup
+      - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
         uses: plugwise/gh-actions/prepare-python-and-code@v2
         with:
@@ -112,11 +110,11 @@ jobs:
           fail-on-miss: false  # First time create cache (if not already exists)
           python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
-      - name: Run all-files pre-commit excluding testing
+      - name: Run all-files prek (pre-commit) excluding testing
         run: |
           # shellcheck disable=SC1091 # ingesting virtualenv
           source venv-${{ needs.cache.outputs.python-version }}/bin/activate
-          pre-commit run --all-files --show-diff-on-failure
+          prek run --all-files --show-diff-on-failure
         env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
           SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
 
@@ -135,7 +133,7 @@ jobs:
     steps:
       - name: Check out committed code
         uses: actions/checkout@v6.0.1
-      - name: Prepare code checkout and python/pre-commit setup
+      - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
         uses: plugwise/gh-actions/prepare-python-and-code@v2
         with:
@@ -176,7 +174,7 @@ jobs:
     steps:
       - name: Check out committed code
         uses: actions/checkout@v6.0.1
-      - name: Prepare code checkout and python/pre-commit setup
+      - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
         uses: plugwise/gh-actions/prepare-python-and-code@v2
         with:
