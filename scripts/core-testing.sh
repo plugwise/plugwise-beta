@@ -66,6 +66,10 @@ venv_and_uv() {
 	  echo -e "${CINFO}Ensure uv presence${CWARN}"
 	  python3 -m pip install uv
 	fi
+	if ! [ -x "$(command -v prek)" ]; then
+	  echo -e "${CINFO}Ensure prek presence${CWARN}"
+	  uv pip install -r "${my_path}/requirements_commit.txt"
+	fi
         if ! uv pip list | grep -q bcrypt; then
           script/setup
 	fi
@@ -95,10 +99,8 @@ fi
 # /20250613
 
 # Install commit requirements
-uv pip install --upgrade pre-commit
-
-# Install pre-commit hook
-pre-commit install
+uv pip install -r "${my_path}/requirements_commit.txt"
+prek install
 
 # i.e. args used for functions, not directions 
 set +u
@@ -276,8 +278,8 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo -e "${CINFO}... mypy ...${CNORM}"
 	script/run-in-env.sh mypy homeassistant/components/${REPO_NAME}/*.py || exit
 	cd ..
-	echo -e "${CINFO}... markdownlint ...${CNORM}"
-	pre-commit run --all-files --hook-stage manual markdownlint
+	echo -e "${CINFO}... pymarkdown ...${CNORM}"
+	prek run --all-files --hook-stage manual pymarkdown
 fi # quality
 
 # Copying back not necessary in actions
