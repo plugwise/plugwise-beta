@@ -29,7 +29,7 @@ jobs:
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
 
@@ -132,7 +132,7 @@ jobs:
       release_failed: ${{ steps.ha_core_release_tests.outputs.release_failed }}
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
       - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
         uses: plugwise/gh-actions/prepare-python-and-code@v2
@@ -173,7 +173,7 @@ jobs:
       dev_failed: ${{ steps.ha_core_dev_tests.outputs.dev_failed }}
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
       - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
         uses: plugwise/gh-actions/prepare-python-and-code@v2
