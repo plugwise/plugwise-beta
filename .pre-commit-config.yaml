@@ -117,7 +117,7 @@ repos:
         language: script
         pass_filenames: false
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.34
+    rev: v0.9.35
     hooks:
       - id: pymarkdown
         name: MarkDown Lint
