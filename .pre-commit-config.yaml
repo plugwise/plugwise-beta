@@ -67,7 +67,7 @@ repos:
           - prettier-plugin-sort-json@4.1.1
         name: "Prettier (JSON sorting)"
   - repo: https://github.com/biomejs/pre-commit
-    rev: v2.3.12
+    rev: v2.3.13
     hooks:
       - id: biome-lint
         additional_dependencies: ["@biomejs/biome@1.8.3"]
