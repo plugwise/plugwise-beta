@@ -12,7 +12,6 @@ from plugwise.exceptions import (
 )
 import pytest
 
-from homeassistant.components import zeroconf
 from homeassistant.components.plugwise.const import (
     CONF_HOMEKIT_EMULATION,
     CONF_REFRESH_INTERVAL,
