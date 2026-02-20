@@ -321,8 +321,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         if hvac_mode != HVACMode.OFF:
             current = self.device.get("select_schedule")
-            desired = current
+            if current is None and hvac_mode != HVACMode.AUTO:
+                await self._homekit_translate_or_not(hvac_mode)  # pw-beta
+                return
 
+            desired = current
             # Capture the last valid schedule
             if desired and desired != "off":
                 self._last_active_schedule = desired
