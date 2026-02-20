@@ -46,7 +46,7 @@ TEST_USERNAME = "smile"
 TEST_USERNAME2 = "stretch"
 TEST_SMILE_ID = "smile12345"
 
-TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
+TEST_DISCOVERY = ZeroconfServiceInfo(
     ip_address=TEST_HOST,
     ip_addresses=[TEST_HOST],
     # The added `-2` is to simulate mDNS collision
@@ -60,7 +60,7 @@ TEST_DISCOVERY = zeroconf.ZeroconfServiceInfo(
     },
     type="mock_type",
 )
-TEST_DISCOVERY2 = zeroconf.ZeroconfServiceInfo(
+TEST_DISCOVERY2 = ZeroconfServiceInfo(
     ip_address=TEST_HOST,
     ip_addresses=[TEST_HOST],
     hostname=f"{TEST_HOSTNAME2}.local.",
