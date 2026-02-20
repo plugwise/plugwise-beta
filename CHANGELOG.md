@@ -4,11 +4,12 @@ Versions from 0.40 and up
 
 ## Ongoing
 
+- Fix for Core Issue [#163452](https://github.com/home-assistant/core/issues/163452) via PR [#1021](https://github.com/plugwise/plugwise-beta/pull/1021)
+- Remove zeroconf.ZeroconfServiceInfo use via PR [#1020](https://github.com/plugwise/plugwise-beta/pull/1020)
 - Implement Core PR [#159626](https://github.com/home-assistant/core/pull/159626) via PR [#994](https://github.com/plugwise/plugwise-beta/pull/994)
 - Chores
   - Introduce prek (for pre-commit) & align with v2 gh-actions
   - Replace node-based markdownlint with pythonic library
-- Fix zeroconf.ZeroconfServiceInfo use via PR [#1020](https://github.com/plugwise/plugwise-beta/pull/1020)
 
 ## v0.62.2
 
