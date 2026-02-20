@@ -8,6 +8,7 @@ Versions from 0.40 and up
 - Chores
   - Introduce prek (for pre-commit) & align with v2 gh-actions
   - Replace node-based markdownlint with pythonic library
+- Fix zeroconf.ZeroconfServiceInfo use via PR [#1020](https://github.com/plugwise/plugwise-beta/pull/1020)
 
 ## v0.62.2
 
