@@ -327,7 +327,6 @@
       "init": {
         "data": {
           "cooling_on": "Anna: koelmodus is aan",
-          "homekit_emulation": "Homekit emulatie (bij hvac_off => Afwezig) *) optie alleen in beta",
           "refresh_interval": "Frontend ververs-tijd (1,5 - 5 seconden) *) optie alleen in beta",
           "scan_interval": "Scan Interval (seconden) *) optie alleen in beta"
         },
