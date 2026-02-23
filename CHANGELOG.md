@@ -4,6 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
+- Remove climate home-kit emulation option via PR [#1023](https://github.com/plugwise/plugwise-beta/pull/1023)
 - Implement Core PR [#159626](https://github.com/home-assistant/core/pull/159626) via PR [#994](https://github.com/plugwise/plugwise-beta/pull/994)
 - Chores
   - Introduce prek (for pre-commit) & align with v2 gh-actions
