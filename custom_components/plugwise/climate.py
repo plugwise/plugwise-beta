@@ -327,21 +327,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         # Manual mode: ensure regulation and turn off schedule when needed
         if hvac_mode in (HVACMode.HEAT, HVACMode.COOL, HVACMode.HEAT_COOL):
-            if (
-                regulation := self._regulation_mode_for_hvac(hvac_mode) or (
-                    self._previous_action_mode
-                    if self.hvac_mode in (HVACMode.HEAT_COOL, HVACMode.OFF)
-                    else None
-                )
-            ):
-                await self._api.set_regulation_mode(regulation)
-
-            if (
-                self.hvac_mode == HVACMode.OFF and current_schedule not in (None, "off")
-            ) or (self.hvac_mode == HVACMode.AUTO and current_schedule is not None):
-                await self._api.set_schedule_state(
-                    self._location, STATE_OFF, current_schedule
-                )
+            await self._set_manual_hvac_mode(hvac_mode, current_schedule)
             return
 
         # AUTO: restore schedule and regulation
@@ -357,10 +343,30 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
                 translation_key=ERROR_NO_SCHEDULE,
             )
 
+        await self._set_auto_hvac_mode(desired_schedule)
+
+    async def _set_manual_hvac_mode(self, mode: HVACMode, schedule: str | None) -> None:
+        """Execute relevant api-functions based on the requested manual and present mode."""
+        if (
+            regulation := self._regulation_mode_for_hvac(mode) or (
+                self._previous_action_mode
+                if self.hvac_mode in (HVACMode.HEAT_COOL, HVACMode.OFF)
+                else None
+            )
+        ):
+            await self._api.set_regulation_mode(regulation)
+
+        if (
+            self.hvac_mode == HVACMode.OFF and schedule not in (None, "off")
+        ) or (self.hvac_mode == HVACMode.AUTO and schedule is not None):
+            await self._api.set_schedule_state(self._location, STATE_OFF, schedule)
+
+    async def _set_auto_hvac_mode(self, schedule: str) -> None:
+        """Execute relevant api-functions based on the requested auto and present mode."""
         if self._previous_action_mode:
             if self.hvac_mode == HVACMode.OFF:
                 await self._api.set_regulation_mode(self._previous_action_mode)
-            await self._api.set_schedule_state(self._location, STATE_ON, desired_schedule)
+            await self._api.set_schedule_state(self._location, STATE_ON, schedule)
 
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
