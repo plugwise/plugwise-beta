@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## v0.63.1
+
+- Implement Core PR [#163713](https://github.com/home-assistant/core/pull/163713) via PR [#1024](https://github.com/plugwise/plugwise-beta/pull/1024)
+
 ## v0.63.0
 
 - Remove climate home-kit emulation option via PR [#1023](https://github.com/plugwise/plugwise-beta/pull/1023)
