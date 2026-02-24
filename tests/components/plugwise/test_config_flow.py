@@ -13,7 +13,6 @@ from plugwise.exceptions import (
 import pytest
 
 from homeassistant.components.plugwise.const import (
-    CONF_HOMEKIT_EMULATION,
     CONF_REFRESH_INTERVAL,
     DEFAULT_PORT,
     DOMAIN,
@@ -431,7 +430,6 @@ async def test_options_flow_thermo(
         },
         minor_version=2,
         options={
-            CONF_HOMEKIT_EMULATION: False,
             CONF_REFRESH_INTERVAL: 1.5,
             CONF_SCAN_INTERVAL: 60,
         },
@@ -455,7 +453,6 @@ async def test_options_flow_thermo(
 
         assert result["type"] == FlowResultType.CREATE_ENTRY
         assert result["data"] == {
-            CONF_HOMEKIT_EMULATION: False,
             CONF_REFRESH_INTERVAL: 3.0,
             CONF_SCAN_INTERVAL: 60,
         }

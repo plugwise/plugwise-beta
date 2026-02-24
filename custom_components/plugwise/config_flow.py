@@ -45,7 +45,6 @@ from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 
 from .const import (
     ANNA_WITH_ADAM,
-    CONF_HOMEKIT_EMULATION,  # pw-beta option
     CONF_REFRESH_INTERVAL,  # pw-beta option
     DEFAULT_PORT,
     DEFAULT_UPDATE_INTERVAL,
@@ -308,7 +307,6 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 # pw-beta - change the scan-interval via CONFIGURE
-# pw-beta - add homekit emulation via CONFIGURE
 # pw-beta - change the frontend refresh interval via CONFIGURE
 class PlugwiseOptionsFlowHandler(OptionsFlow):  # pw-beta options
     """Plugwise option flow."""
@@ -330,10 +328,6 @@ class PlugwiseOptionsFlowHandler(OptionsFlow):  # pw-beta options
 
         if coordinator.api.smile.type == THERMOSTAT:
             schema.update({
-                vol.Optional(
-                    CONF_HOMEKIT_EMULATION,
-                    default=self.options.get(CONF_HOMEKIT_EMULATION, False),
-                ): vol.All(cv.boolean),
                 vol.Optional(
                     CONF_REFRESH_INTERVAL,
                     default=self.options.get(CONF_REFRESH_INTERVAL, 1.5),

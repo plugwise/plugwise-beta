@@ -327,7 +327,6 @@
       "init": {
         "data": {
           "cooling_on": "Anna: cooling-mode is on",
-          "homekit_emulation": "Homekit emulation (i.e. on hvac_off => Away) *) beta-only option",
           "refresh_interval": "Frontend refresh-time (1.5 - 5 seconds) *) beta-only option",
           "scan_interval": "Scan Interval (seconds) *) beta-only option"
         },
