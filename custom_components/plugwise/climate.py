@@ -100,15 +100,15 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
 
     def as_dict(self) -> dict[str, Any]:
         """Return a dict representation of the text data."""
-        return {
-            "last_active_schedule": self.last_active_schedule,
-            "previous_action_mode": self.previous_action_mode,
-        }
+        return asdict(self)
 
     @classmethod
     def from_dict(cls, restored: dict[str, Any]) -> PlugwiseClimateExtraStoredData:
         """Initialize a stored data object from a dict."""
-        return asdict(self)
+        return cls(
+            last_active_schedule=restored.get("last_active_schedule"),
+            previous_action_mode=restored.get("previous_action_mode"),
+        )
 
 
 class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
