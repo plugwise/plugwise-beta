@@ -5,7 +5,7 @@ name: Test PR against HA-core
 
 env:
   CACHE_VERSION: 3
-  DEFAULT_PYTHON: "3.13"
+  DEFAULT_PYTHON: "3.14"
   VENV: venv
 
 # Do not run on 'push' (as the flow doesn't have access to the labels) - also disabled workflow_dispatch as such
