@@ -205,3 +205,33 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                         device_entry.model,
                         identifier[1],
                     )
+
+    async def _async_update_devices(self, data: dict[str, GwEntityData]) -> None:
+        """Update device(s) sw_version when applicable."""
+        device_reg = dr.async_get(self.hass)
+        device_list = dr.async_entries_for_config_entry(
+            device_reg, self.config_entry.entry_id
+        )
+
+        # First find the Plugwise via_device
+        gateway_device = device_reg.async_get_device({(DOMAIN, self.api.gateway_id)})
+        if gateway_device is None:
+            return  # pragma: no cover
+
+        via_device_id = gateway_device.id
+        # Then remove the connected orphaned device(s)
+        for device_entry in device_list:
+            for identifier in device_entry.identifiers:
+                if (
+                    identifier[0] == DOMAIN
+                    and device_entry.via_device_id == via_device_id
+                    and identifier[1] in data
+                ):
+                    device_reg.async_update_device(
+                        device_entry.id, sw_version="something")
+                    LOGGER.debug(
+                        "Updated device firmware for %s %s",
+                        DOMAIN,
+                        device_entry.model,
+                        identifier[1],
+                    )
