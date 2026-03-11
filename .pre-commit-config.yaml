@@ -5,7 +5,7 @@ default_language_version:
 repos:
   # Run manually in CI skipping the branch checks
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.4
+    rev: v0.15.1
     hooks:
       - id: ruff
         name: "Ruff-ing code"
@@ -47,7 +47,7 @@ repos:
           - --configfile=tests/bandit.yaml
         files: ^(custom_components|tests)/.+\.py$
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.38.0
+    rev: v1.37.1
     hooks:
       - id: yamllint
         name: "Linting yaml"
@@ -59,12 +59,12 @@ repos:
         args:
           - --external-sources
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.8.1
+    rev: v3.6.2
     hooks:
       - id: prettier
         additional_dependencies:
           - prettier@3.6.2
-          - prettier-plugin-sort-json@4.1.1
+          - prettier-plugin-sort-json@4.2.0
         name: "Prettier (JSON sorting)"
   - repo: https://github.com/biomejs/pre-commit
     rev: v2.4.5
