@@ -3,7 +3,7 @@ name = "plugwise-beta"
 version = "0.63.1"
 description = "Plugwise beta custom-component"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 license = "MIT"
 keywords = ["Plugwise", "Adam", "Anna", "P1", "Stretch", "Smile"]
 authors = [
@@ -23,7 +23,7 @@ classifiers = [
   "Programming Language :: Python",
   "Intended Audience :: Testers",
   "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Home Automation",]
 dependencies = ["homeassistant", "plugwise"]
 
@@ -33,7 +33,7 @@ dependencies = ["homeassistant", "plugwise"]
 "Bug Reports" = "https://github.com/plugwise/plugwise-beta/issues"
 
 [tool.pylint.MAIN]
-py-version = "3.13"
+py-version = "3.14"
 # Use a conservative default here; 2 should speed up most setups and not hurt
 # any too bad. Override on command line as appropriate.
 jobs = 2
