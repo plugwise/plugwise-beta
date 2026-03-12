@@ -116,6 +116,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             for identifier in device_entry.identifiers
             if identifier[0] == DOMAIN
         }
+        LOGGER.debug("HOI stored_devices: %s", self._stored_devices)
 
         self.firmware_list: list[dict[str, str]] = []
         for device_entry in device_entries:
