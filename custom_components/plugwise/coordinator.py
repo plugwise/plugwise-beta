@@ -87,6 +87,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         self._stored_devices = set()
         self.firmware_list: list[dict[str, str | None]] = []
         self.new_devices = set()
+        self.updated_list: list[dict[str, str | None]] = []
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile.
@@ -156,6 +157,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             ) from err
 
         await self._async_add_remove_devices(data)
+        await self._find_devices_with_updated_firmware(data)
         LOGGER.debug("%s data: %s", self.api.smile.name, data)
         return data
 
@@ -176,20 +178,21 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         if (current_devices - set_of_data):  # device(s) to remove
             await self._async_remove_devices(data)
 
-    async _find_devices_with_firmware_update() -> None:
+    async def _find_devices_with_updated_firmware(self, data: dict[str, GwEntityData]) -> None:
         """Add docstring."""
         for device_id, device in data:
             for item in self.firmware_list:
-                for key in item.keys()
+                for key in item:
                     if device_id == key:
                         if (new_firmware := device.get("firmware")) != item[key]:
-                            self.update_list.append({key: new_firmware})
+                            self.updated_list.append({key: new_firmware})
 
-        for item in self.update_list:
+        for item in self.updated_list:
             for key in item.keys:
-                await self._update_device_firmware_in_dr()
+                await self._update_device_firmware_in_dr(key, item[key])
                 self.firmware_list[key] = item[key]
 
+        self.updated_list = []
 
     async def _async_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Clean registries when removed devices found."""
@@ -222,8 +225,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                         identifier[1],
                     )
 
-    async def _async_update_devices(self, data: dict[str, GwEntityData]) -> None:
-        """Update device(s) sw_version when applicable."""
+    async def _update_device_firmware_in_dr(self, device_id: str, firmware: str) -> None:
+        """Update device sw_version in device_registry."""
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
@@ -235,16 +238,16 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             return  # pragma: no cover
 
         via_device_id = gateway_device.id
-        # Then remove the connected orphaned device(s)
+        # Then update the device sw_version
         for device_entry in device_list:
             for identifier in device_entry.identifiers:
                 if (
                     identifier[0] == DOMAIN
                     and device_entry.via_device_id == via_device_id
-                    and identifier[1] in data
+                    and identifier[1] == device_id
                 ):
                     device_reg.async_update_device(
-                        device_entry.id, sw_version="something")
+                        device_entry.id, sw_version=firmware)
                     LOGGER.debug(
                         "Updated device firmware for %s %s",
                         DOMAIN,
