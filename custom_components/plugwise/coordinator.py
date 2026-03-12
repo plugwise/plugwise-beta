@@ -117,8 +117,6 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 if identifier[0] == DOMAIN:
                     self._stored_devices.add(identifier[1])
                     self.firmware_list.append({identifier[1]: firmware})
-        LOGGER.debug("HOI stored_devices: %s", self._stored_devices)
-        LOGGER.debug("HOI firmware: %s", self.firmware_list)
 
     async def _async_update_data(self) -> dict[str, GwEntityData]:
         """Fetch data from Plugwise."""
