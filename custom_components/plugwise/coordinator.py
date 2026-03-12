@@ -176,10 +176,20 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         if (current_devices - set_of_data):  # device(s) to remove
             await self._async_remove_devices(data)
 
-    # async _find_devices_with_firmware_update() -> None:
-    #     """Add docstring."""
-    #     for device_id, device in data:
-    #         if device.get("firmware") != ...
+    async _find_devices_with_firmware_update() -> None:
+        """Add docstring."""
+        for device_id, device in data:
+            for item in self.firmware_list:
+                for key in item.keys()
+                    if device_id == key:
+                        if (new_firmware := device.get("firmware")) != item[key]:
+                            self.update_list.append({key: new_firmware})
+
+        for item in self.update_list:
+            for key in item.keys:
+                await self._update_device_firmware_in_dr()
+                self.firmware_list[key] = item[key]
+
 
     async def _async_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Clean registries when removed devices found."""
