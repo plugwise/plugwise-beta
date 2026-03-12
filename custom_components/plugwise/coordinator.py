@@ -117,6 +117,15 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             if identifier[0] == DOMAIN
         }
 
+        self.firmware_list: list[dict[str, str]] = []
+        for device_entry in device_entries:
+            firmware = device_entry.sw_version
+            for identifier in device_entry.identifiers:
+                if identifier[0] == DOMAIN:
+                    device_id = identifier[1]
+                    self.firmware_list.append({device_id: firmware})
+        LOGGER.debug("HOI firmware: %s", self.firmware_list)
+
     async def _async_update_data(self) -> dict[str, GwEntityData]:
         """Fetch data from Plugwise."""
         try:
@@ -174,6 +183,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         self._current_devices = set_of_data
         if (current_devices - set_of_data):  # device(s) to remove
             await self._async_remove_devices(data)
+
+    # async _find_devices_with_firmware_update() -> None:
+    #     """Add docstring."""
+    #     for device_id, device in data:
+    #         if device.get("firmware") != ...
 
     async def _async_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Clean registries when removed devices found."""
