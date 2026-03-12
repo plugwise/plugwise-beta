@@ -85,6 +85,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         )
         self._current_devices = set()
         self._stored_devices = set()
+        self.firmware_list: list[dict[str, str | None]] = []
         self.new_devices = set()
 
     async def _connect(self) -> None:
@@ -110,21 +111,13 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         device_entries = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
-        self._stored_devices = {
-            identifier[1]
-            for device_entry in device_entries
-            for identifier in device_entry.identifiers
-            if identifier[0] == DOMAIN
-        }
-        LOGGER.debug("HOI stored_devices: %s", self._stored_devices)
-
-        self.firmware_list: list[dict[str, str]] = []
         for device_entry in device_entries:
             firmware = device_entry.sw_version
             for identifier in device_entry.identifiers:
                 if identifier[0] == DOMAIN:
-                    device_id = identifier[1]
-                    self.firmware_list.append({device_id: firmware})
+                    self._stored_devices.add(identifier[1])
+                    self.firmware_list.append({identifier[1]: firmware})
+        LOGGER.debug("HOI stored_devices: %s", self._stored_devices)
         LOGGER.debug("HOI firmware: %s", self.firmware_list)
 
     async def _async_update_data(self) -> dict[str, GwEntityData]:
