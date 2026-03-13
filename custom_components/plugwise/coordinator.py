@@ -169,6 +169,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         # this is required for the initialization of the available platform entities.
         set_of_data = set(data)
         self.new_devices = set_of_data - self._current_devices
+        for device_id in self.new_devices:
+            if not any(device_id in item for item in self.firmware_list):
+                self.firmware_list.append({device_id: data[device_id].get("firmware")})
+
         current_devices = self._stored_devices if not self._current_devices else self._current_devices
         self._current_devices = set_of_data
         if (current_devices - set_of_data):  # device(s) to remove
