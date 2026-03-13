@@ -241,7 +241,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                     device_reg.async_update_device(
                         device_entry.id, sw_version=firmware)
                     LOGGER.debug(
-                        "Updated device firmware for %s %s",
+                        "Updated device firmware for %s %s %s",
                         DOMAIN,
                         device_entry.model,
                         x[1],
