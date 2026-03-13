@@ -44,13 +44,6 @@ type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData]]):
     """Class to manage fetching Plugwise data from single endpoint."""
 
-    _connected: bool = False
-    _current_devices: set[str] = set()
-    _stored_devices: set[str] = set()
-    firmware_list: list[dict[str, str | None]] = []
-    new_devices: set[str] = set()
-    updated_list: list[dict[str, str | None]] = []
-
     config_entry: PlugwiseConfigEntry
 
     def __init__(
@@ -85,6 +78,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
+        self._connected: bool = False
+        self._current_devices: set[str] = set()
+        self._stored_devices: set[str] = set()
+        self.firmware_list: list[dict[str, str | None]] = []
+        self.new_devices: set[str] = set()
+        self.updated_list: list[dict[str, str | None]] = []
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile.
