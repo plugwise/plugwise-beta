@@ -239,6 +239,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                         device_entry.model,
                         identifier[1],
                     )
+                    break
 
     async def _update_device_firmware(self, data: dict[str, GwEntityData]) -> None:
         """Add docstring."""
