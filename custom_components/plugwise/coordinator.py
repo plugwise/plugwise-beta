@@ -242,7 +242,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                     break
 
     async def _update_device_firmware(self, data: dict[str, GwEntityData]) -> None:
-        """Add docstring."""
+        """Sync device_registry sw_version with API firmware changes."""
         for device_id, device in data.items():
             if device_id not in self._firmware_list:
                 continue
