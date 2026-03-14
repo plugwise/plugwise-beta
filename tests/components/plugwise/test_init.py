@@ -407,7 +407,7 @@ async def test_update_device_firmware(
         identifiers={(DOMAIN, "da224107914542988a88561b4452b0f6")}
     )
     assert device_entry is not None
-     ssert str(device_entry.sw_version) == "3.10.13"
+    assert str(device_entry.sw_version) == "3.10.13"
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
