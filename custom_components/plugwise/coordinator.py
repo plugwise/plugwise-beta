@@ -182,7 +182,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         """Clean registries when removed devices found."""
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(
-             device_reg, self.config_entry.entry_id
+            device_reg, self.config_entry.entry_id
         )
         # First find the Plugwise via_device
         gateway_device = device_reg.async_get_device({(DOMAIN, self.api.gateway_id)})
