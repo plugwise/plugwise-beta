@@ -214,7 +214,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         """Sync device_registry sw_version with API firmware changes."""
         for device_id, device in data.items():
             if device_id not in self._firmware_list:
-                continue
+                continue  # pragma: no cover
             if (new_firmware := device.get(FIRMWARE)) != self._firmware_list[device_id]:
                 await self._update_firmware_in_dr(device_id, new_firmware)
                 self._firmware_list[device_id] = new_firmware
@@ -224,7 +224,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         device_reg = dr.async_get(self.hass)
         device_entry = device_reg.async_get_device({(DOMAIN, device_id)})
         if device_entry is None:
-            return
+            return  # pragma: no cover
 
         device_reg.async_update_device(device_entry.id, sw_version=firmware)
         LOGGER.debug(
