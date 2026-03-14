@@ -391,7 +391,11 @@ async def test_update_device_firmware(
     """Test device firmware update via coordinator."""
     data = mock_smile_adam_heat_cool.async_update.return_value
 
-    firmware_list = [str(device_entry.sw_version) for device_entry in device_registry.devices.values() if device_entry.sw_version is not None]
+    firmware_list = [
+        str(device_entry.sw_version)
+        for device_entry in device_registry.devices.values()
+        if device_entry.sw_version is not None
+    ]
     assert "3.9.0" in firmware_list
 
     data["da224107914542988a88561b4452b0f6"]["firmware"] = "3.10.13"
@@ -400,7 +404,11 @@ async def test_update_device_firmware(
         async_fire_time_changed(hass)
         await hass.async_block_till_done()
 
-    firmware_list = [str(device_entry.sw_version) for device_entry in device_registry.devices.values() if device_entry.sw_version is not None]
+    firmware_list = [
+        str(device_entry.sw_version)
+        for device_entry in device_registry.devices.values()
+        if device_entry.sw_version is not None
+    ]
     assert "3.9.0" not in firmware_list
     assert "3.10.13" in firmware_list
 
