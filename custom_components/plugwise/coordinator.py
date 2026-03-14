@@ -251,18 +251,14 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     async def _update_firmware_in_dr(self, device_id: str, firmware: str | None) -> None:
         """Update device sw_version in device_registry."""
         device_reg = dr.async_get(self.hass)
-        device_list = dr.async_entries_for_config_entry(
-            device_reg, self.config_entry.entry_id
-        )
+        device_entry = device_reg.async_get_device({(DOMAIN, device_id)})
+        if device_entry is None:
+            return
 
-        for device_entry in device_list:
-            for x in device_entry.identifiers:
-                if (x[0] == DOMAIN and x[1] == device_id):
-                    device_reg.async_update_device(
-                        device_entry.id, sw_version=firmware)
-                    LOGGER.debug(
-                        "Updated device firmware for %s %s %s",
-                        DOMAIN,
-                        device_entry.model,
-                        x[1],
-                    )
+        device_reg.async_update_device(device_entry.id, sw_version=firmware)
+        LOGGER.debug(
+            "Updated device firmware for %s %s %s",
+            DOMAIN,
+            device_entry.model,
+            device_id,
+        )
