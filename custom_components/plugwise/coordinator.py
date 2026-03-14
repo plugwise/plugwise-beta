@@ -33,6 +33,7 @@ from .const import (
     DEFAULT_UPDATE_INTERVAL,
     DEV_CLASS,
     DOMAIN,
+    FIRMWARE,
     LOGGER,
     P1_UPDATE_INTERVAL,
     SWITCH_GROUPS,
@@ -170,7 +171,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         set_of_data = set(data)
         self.new_devices = set_of_data - self._current_devices
         for device_id in self.new_devices:
-            self._firmware_list.setdefault(device_id, data[device_id].get("firmware"))
+            self._firmware_list.setdefault(device_id, data[device_id].get(FIRMWARE))
 
         current_devices = self._stored_devices if not self._current_devices else self._current_devices
         self._current_devices = set_of_data
@@ -244,7 +245,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         for device_id, device in data.items():
             if device_id not in self._firmware_list:
                 continue
-            if (new_firmware := device.get("firmware")) != self._firmware_list[device_id]:
+            if (new_firmware := device.get(FIRMWARE)) != self._firmware_list[device_id]:
                 await self._update_firmware_in_dr(device_id, new_firmware)
                 self._firmware_list[device_id] = new_firmware
 
