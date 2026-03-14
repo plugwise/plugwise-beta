@@ -44,11 +44,6 @@ type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData]]):
     """Class to manage fetching Plugwise data from single endpoint."""
 
-    _connected: bool = False
-    _current_devices: set[str]
-    _stored_devices: set[str]
-    new_devices: set[str]
-
     config_entry: PlugwiseConfigEntry
 
     def __init__(
@@ -83,9 +78,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        self._current_devices = set()
-        self._stored_devices = set()
-        self.new_devices = set()
+        self._connected: bool = False
+        self._current_devices: set[str] = set()
+        self._firmware_list: dict[str, str | None] = {}
+        self._stored_devices: set[str] = set()
+        self.new_devices: set[str] = set()
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile.
@@ -110,12 +107,13 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         device_entries = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
-        self._stored_devices = {
-            identifier[1]
-            for device_entry in device_entries
-            for identifier in device_entry.identifiers
-            if identifier[0] == DOMAIN
-        }
+        for device_entry in device_entries:
+            firmware = device_entry.sw_version
+            for identifier in device_entry.identifiers:
+                if identifier[0] == DOMAIN:
+                    device_id = identifier[1]
+                    self._firmware_list[device_id] = firmware
+                    self._stored_devices.add(device_id)
 
     async def _async_update_data(self) -> dict[str, GwEntityData]:
         """Fetch data from Plugwise."""
@@ -154,11 +152,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 translation_key="unsupported_firmware",
             ) from err
 
-        await self._async_add_remove_devices(data)
         LOGGER.debug("%s data: %s", self.api.smile.name, data)
+        await self._add_remove_devices(data)
+        await self._update_device_firmware(data)
         return data
 
-    async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
+    async def _add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Block switch-groups, use HA group helper instead to create switch-groups
         for device_id, device in data.copy().items():
@@ -170,12 +169,15 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         # this is required for the initialization of the available platform entities.
         set_of_data = set(data)
         self.new_devices = set_of_data - self._current_devices
+        for device_id in self.new_devices:
+            self._firmware_list.setdefault(device_id, data[device_id].get("firmware"))
+
         current_devices = self._stored_devices if not self._current_devices else self._current_devices
         self._current_devices = set_of_data
         if (current_devices - set_of_data):  # device(s) to remove
-            await self._async_remove_devices(data)
+            await self._remove_devices(data)
 
-    async def _async_remove_devices(self, data: dict[str, GwEntityData]) -> None:
+    async def _remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Clean registries when removed devices found."""
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(
@@ -204,4 +206,32 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                         DOMAIN,
                         device_entry.model,
                         identifier[1],
+                    )
+
+    async def _update_device_firmware(self, data: dict[str, GwEntityData]) -> None:
+        """Add docstring."""
+        for device_id, device in data.items():
+            if device_id not in self._firmware_list:
+                continue
+            if (new_firmware := device.get("firmware")) != self._firmware_list[device_id]:
+                await self._update_firmware_in_dr(device_id, new_firmware)
+                self._firmware_list[device_id] = new_firmware
+
+    async def _update_firmware_in_dr(self, device_id: str, firmware: str | None) -> None:
+        """Update device sw_version in device_registry."""
+        device_reg = dr.async_get(self.hass)
+        device_list = dr.async_entries_for_config_entry(
+            device_reg, self.config_entry.entry_id
+        )
+
+        for device_entry in device_list:
+            for x in device_entry.identifiers:
+                if (x[0] == DOMAIN and x[1] == device_id):
+                    device_reg.async_update_device(
+                        device_entry.id, sw_version=firmware)
+                    LOGGER.debug(
+                        "Updated device firmware for %s %s %s",
+                        DOMAIN,
+                        device_entry.model,
+                        x[1],
                     )
