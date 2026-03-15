@@ -194,7 +194,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 DOMAIN,
                 device_entry.model,
                 device_id,
-            )                
+            )
 
     async def _update_device_firmware(self, data: dict[str, GwEntityData]) -> None:
         """Detect firmware changes and update the device registry."""
