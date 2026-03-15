@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- New feature: show updated device firmware shortly after being updated via PR [#1039](https://github.com/plugwise/plugwise-beta/pull/1039)
+
 ## v0.63.1
 
 - Implement Core PR [#163713](https://github.com/home-assistant/core/pull/163713) via PR [#1024](https://github.com/plugwise/plugwise-beta/pull/1024)

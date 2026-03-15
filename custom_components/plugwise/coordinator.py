@@ -33,6 +33,7 @@ from .const import (
     DEFAULT_UPDATE_INTERVAL,
     DEV_CLASS,
     DOMAIN,
+    FIRMWARE,
     LOGGER,
     P1_UPDATE_INTERVAL,
     SWITCH_GROUPS,
@@ -43,11 +44,6 @@ type PlugwiseConfigEntry = ConfigEntry[PlugwiseDataUpdateCoordinator]
 
 class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData]]):
     """Class to manage fetching Plugwise data from single endpoint."""
-
-    _connected: bool = False
-    _current_devices: set[str]
-    _stored_devices: set[str]
-    new_devices: set[str]
 
     config_entry: PlugwiseConfigEntry
 
@@ -83,9 +79,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             username=self.config_entry.data[CONF_USERNAME],
             websession=async_get_clientsession(hass, verify_ssl=False),
         )
-        self._current_devices = set()
-        self._stored_devices = set()
-        self.new_devices = set()
+        self._connected: bool = False
+        self._current_devices: set[str] = set()
+        self._firmware_list: dict[str, str | None] = {}
+        self._stored_devices: set[str] = set()
+        self.new_devices: set[str] = set()
 
     async def _connect(self) -> None:
         """Connect to the Plugwise Smile.
@@ -154,11 +152,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 translation_key="unsupported_firmware",
             ) from err
 
-        await self._async_add_remove_devices(data)
         LOGGER.debug("%s data: %s", self.api.smile.name, data)
+        await self._add_remove_devices(data)
+        await self._update_device_firmware(data)
         return data
 
-    async def _async_add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
+    async def _add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Block switch-groups, use HA group helper instead to create switch-groups
         for device_id, device in data.copy().items():
@@ -170,18 +169,20 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         # this is required for the initialization of the available platform entities.
         set_of_data = set(data)
         self.new_devices = set_of_data - self._current_devices
+        for device_id in self.new_devices:
+            self._firmware_list.setdefault(device_id, data[device_id].get(FIRMWARE))
+
         current_devices = self._stored_devices if not self._current_devices else self._current_devices
         self._current_devices = set_of_data
-        if (current_devices - set_of_data):  # device(s) to remove
-            await self._async_remove_devices(data)
+        if removed_devices := (current_devices - set_of_data):  # device(s) to remove
+            await self._remove_devices(removed_devices)
 
-    async def _async_remove_devices(self, data: dict[str, GwEntityData]) -> None:
+    async def _remove_devices(self, removed_devices: set[str]) -> None:
         """Clean registries when removed devices found."""
         device_reg = dr.async_get(self.hass)
         device_list = dr.async_entries_for_config_entry(
             device_reg, self.config_entry.entry_id
         )
-
         # First find the Plugwise via_device
         gateway_device = device_reg.async_get_device({(DOMAIN, self.api.gateway_id)})
         if gateway_device is None:
@@ -191,17 +192,44 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         # Then remove the connected orphaned device(s)
         for device_entry in device_list:
             for identifier in device_entry.identifiers:
+                device_id = identifier[1]
                 if (
                     identifier[0] == DOMAIN
                     and device_entry.via_device_id == via_device_id
-                    and identifier[1] not in data
+                    and device_id in removed_devices
                 ):
                     device_reg.async_update_device(
                         device_entry.id, remove_config_entry_id=self.config_entry.entry_id
                     )
+                    self._firmware_list.pop(device_id, None)
                     LOGGER.debug(
                         "Removed %s device/zone %s %s from device_registry",
                         DOMAIN,
                         device_entry.model,
-                        identifier[1],
+                        device_id,
                     )
+                    break
+
+    async def _update_device_firmware(self, data: dict[str, GwEntityData]) -> None:
+        """Detect firmware changes and update the device registry."""
+        for device_id, device in data.items():
+            if device_id not in self._firmware_list:
+                continue  # pragma: no cover
+            if (new_firmware := device.get(FIRMWARE)) != self._firmware_list[device_id]:
+                await self._update_firmware_in_dr(device_id, new_firmware)
+                self._firmware_list[device_id] = new_firmware
+
+    async def _update_firmware_in_dr(self, device_id: str, firmware: str | None) -> None:
+        """Update device sw_version in device_registry."""
+        device_reg = dr.async_get(self.hass)
+        device_entry = device_reg.async_get_device({(DOMAIN, device_id)})
+        if device_entry is None:
+            return  # pragma: no cover
+
+        device_reg.async_update_device(device_entry.id, sw_version=firmware)
+        LOGGER.debug(
+            "Updated device firmware for %s %s %s",
+            DOMAIN,
+            device_entry.model,
+            device_id,
+        )
