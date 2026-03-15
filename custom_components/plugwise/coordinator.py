@@ -183,6 +183,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         for device_id in removed_devices:
             device_entry = device_reg.async_get_device({(DOMAIN, device_id)})
             if device_entry is None:
+                self._firmware_list.pop(device_id, None)
                 LOGGER.warning(
                     "Failed to remove %s device/zone %s, not present in device_registry",
                     DOMAIN,
