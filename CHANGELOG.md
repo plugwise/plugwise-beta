@@ -4,7 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
-- New feature: show updated device firmware shorty after being updated via PR [#1039](https://github.com/plugwise/plugwise-beta/pull/1039)
+- New feature: show updated device firmware shortly after being updated via PR [#1039](https://github.com/plugwise/plugwise-beta/pull/1039)
 
 ## v0.63.1
 
