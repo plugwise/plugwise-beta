@@ -1,6 +1,6 @@
 [project]
 name = "plugwise-beta"
-version = "0.63.1"
+version = "0.64.0"
 description = "Plugwise beta custom-component"
 readme = "README.md"
 requires-python = ">=3.14"

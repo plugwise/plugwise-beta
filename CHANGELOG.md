@@ -2,10 +2,11 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.64.0
 
 - New feature: show updated device firmware shortly after being updated via PR [#1039](https://github.com/plugwise/plugwise-beta/pull/1039)
 - Bump plugwise to [v1.11.3](https://github.com/plugwise/python-plugwise/releases/tag/v1.11.3) via PR [#1041](https://github.com/plugwise/plugwise-beta/pull/1041)
+- Code optimizations via PR [#1042](https://github.com/plugwise/plugwise-beta/pull/1042)
 
 ## v0.63.1
 
