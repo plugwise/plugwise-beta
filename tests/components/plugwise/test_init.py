@@ -317,10 +317,10 @@ async def test_update_device(
             len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
             == 11
         )
-        item_list: list[str] = []
-        for device_entry in device_registry.devices.values():
-            item_list.extend(x[1] for x in device_entry.identifiers)
-        assert "01234567890abcdefghijklmnopqrstu" in item_list
+        device_entry = device_registry.async_get_device(
+            identifiers={(DOMAIN, "01234567890abcdefghijklmnopqrstu")}
+        )
+        assert device_entry is not None
 
     # Remove the existing Tom/Floor
     data["f871b8c4d63549319221e294e4f88074"]["thermostats"].update(
@@ -344,10 +344,10 @@ async def test_update_device(
             len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
             == 10
         )
-        item_list: list[str] = []
-        for device_entry in device_registry.devices.values():
-            item_list.extend(x[1] for x in device_entry.identifiers)
-        assert "1772a4ea304041adb83f357b751341ff" not in item_list
+        device_entry = device_registry.async_get_device(
+            identifiers={(DOMAIN, "1772a4ea304041adb83f357b751341ff")}
+        )
+        assert device_entry is None
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
