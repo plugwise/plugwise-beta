@@ -208,10 +208,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             if device_id not in self._firmware_list:
                 continue  # pragma: no cover
             if (new_firmware := device.get(FIRMWARE)) != self._firmware_list[device_id]:
-                await self._update_firmware_in_dr(device_id, new_firmware)
-                self._firmware_list[device_id] = new_firmware
+                updated = await self._update_firmware_in_dr(device_id, new_firmware)
+                if updated:
+                    self._firmware_list[device_id] = new_firmware
 
-    async def _update_firmware_in_dr(self, device_id: str, firmware: str | None) -> None:
+    async def _update_firmware_in_dr(self, device_id: str, firmware: str | None) -> bool:
         """Update device sw_version in device_registry."""
         device_reg = dr.async_get(self.hass)
         device_entry = device_reg.async_get_device({(DOMAIN, device_id)})
@@ -221,7 +222,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 DOMAIN,
                 device_id,
             )
-            return  # pragma: no cover
+            return False  # pragma: no cover
 
         device_reg.async_update_device(device_entry.id, sw_version=firmware)
         LOGGER.debug(
@@ -230,3 +231,4 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             device_entry.model,
             device_id,
         )
+        return True
