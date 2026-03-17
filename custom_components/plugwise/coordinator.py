@@ -183,12 +183,12 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         for device_id in removed_devices:
             device_entry = device_reg.async_get_device({(DOMAIN, device_id)})
             if device_entry is None:
-                self._firmware_list.pop(device_id, None)
+                self._firmware_list.pop(device_id, None)  # pragma: no cover
                 LOGGER.warning(
                     "Failed to remove %s device/zone %s, not present in device_registry",
                     DOMAIN,
                     device_id,
-                )
+                )  # pragma: no cover
                 continue  # pragma: no cover
 
             device_reg.async_update_device(
@@ -221,7 +221,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
                 "Failed to update firmware in device_registry, %s device %s not found",
                 DOMAIN,
                 device_id,
-            )
+            )  # pragma: no cover
             return False  # pragma: no cover
 
         device_reg.async_update_device(device_entry.id, sw_version=firmware)
