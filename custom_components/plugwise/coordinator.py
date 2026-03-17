@@ -205,9 +205,10 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     def _update_device_firmware(self, data: dict[str, GwEntityData]) -> None:
         """Detect firmware changes and update the device registry."""
         for device_id, device in data.items():
-            if device_id not in self._firmware_list:
-                continue  # pragma: no cover
-            if (new_firmware := device.get(FIRMWARE)) != self._firmware_list[device_id]:
+            if (
+                device_id in self._firmware_list
+                and (new_firmware := device.get(FIRMWARE)) != self._firmware_list[device_id]
+            ):
                 updated = self._update_firmware_in_dr(device_id, new_firmware)
                 if updated:
                     self._firmware_list[device_id] = new_firmware
@@ -215,20 +216,14 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
     def _update_firmware_in_dr(self, device_id: str, firmware: str | None) -> bool:
         """Update device sw_version in device_registry."""
         device_reg = dr.async_get(self.hass)
-        device_entry = device_reg.async_get_device({(DOMAIN, device_id)})
-        if device_entry is None:
-            LOGGER.warning(
-                "Failed to update firmware in device_registry, %s device %s not found",
+        if (device_entry := device_reg.async_get_device({(DOMAIN, device_id)})) is not None:
+            device_reg.async_update_device(device_entry.id, sw_version=firmware)
+            LOGGER.debug(
+                "Firmware in device_registry updated for %s %s %s",
                 DOMAIN,
+                device_entry.model,
                 device_id,
-            )  # pragma: no cover
-            return False  # pragma: no cover
+            )
+            return True
 
-        device_reg.async_update_device(device_entry.id, sw_version=firmware)
-        LOGGER.debug(
-            "Firmware in device_registry updated for %s %s %s",
-            DOMAIN,
-            device_entry.model,
-            device_id,
-        )
-        return True
+        return False  # pragma: no cover
