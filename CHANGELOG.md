@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Line-up coordinator code with Core PR [#165936](https://github.com/home-assistant/core/pull/165936)
+
 ## v0.64.0
 
 - New feature: show updated device firmware shortly after being updated via PR [#1039](https://github.com/plugwise/plugwise-beta/pull/1039)
