@@ -153,11 +153,11 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
             ) from err
 
         LOGGER.debug("%s data: %s", self.api.smile.name, data)
-        await self._add_remove_devices(data)
-        await self._update_device_firmware(data)
+        self._add_remove_devices(data)
+        self._update_device_firmware(data)
         return data
 
-    async def _add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
+    def _add_remove_devices(self, data: dict[str, GwEntityData]) -> None:
         """Add new Plugwise devices, remove non-existing devices."""
         # Block switch-groups, use HA group helper instead to create switch-groups
         for device_id, device in data.copy().items():
@@ -175,60 +175,55 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         current_devices = self._stored_devices if not self._current_devices else self._current_devices
         self._current_devices = set_of_data
         if removed_devices := (current_devices - set_of_data):  # device(s) to remove
-            await self._remove_devices(removed_devices)
+            self._remove_devices(removed_devices)
 
-    async def _remove_devices(self, removed_devices: set[str]) -> None:
+    def _remove_devices(self, removed_devices: set[str]) -> None:
         """Clean registries when removed devices found."""
         device_reg = dr.async_get(self.hass)
         for device_id in removed_devices:
-            device_entry = device_reg.async_get_device({(DOMAIN, device_id)})
-            if device_entry is None:
-                self._firmware_list.pop(device_id, None)
-                LOGGER.warning(
-                    "Failed to remove %s device/zone %s, not present in device_registry",
+            if (device_entry := device_reg.async_get_device({(DOMAIN, device_id)})) is not None:
+                device_reg.async_update_device(
+                    device_entry.id, remove_config_entry_id=self.config_entry.entry_id
+                )
+                LOGGER.debug(
+                    "%s %s %s removed from device_registry",
                     DOMAIN,
+                    device_entry.model,
                     device_id,
                 )
-                continue  # pragma: no cover
 
-            device_reg.async_update_device(
-                device_entry.id, remove_config_entry_id=self.config_entry.entry_id
-            )
             self._firmware_list.pop(device_id, None)
+
+
+    def _update_device_firmware(self, data: dict[str, GwEntityData]) -> None:
+        """Detect firmware changes and update the device registry."""
+        for device_id, device in data.items():
+            # Only update firmware when the key is present and not None, to avoid
+            # wiping stored firmware on partial or transient updates.
+            if FIRMWARE not in device:
+                continue
+            new_firmware = device.get(FIRMWARE)
+            if new_firmware is None:
+                continue
+            if (
+                device_id in self._firmware_list
+                and new_firmware != self._firmware_list[device_id]
+            ):
+                updated = self._update_firmware_in_dr(device_id, new_firmware)
+                if updated:
+                    self._firmware_list[device_id] = new_firmware
+
+    def _update_firmware_in_dr(self, device_id: str, firmware: str | None) -> bool:
+        """Update device sw_version in device_registry."""
+        device_reg = dr.async_get(self.hass)
+        if (device_entry := device_reg.async_get_device({(DOMAIN, device_id)})) is not None:
+            device_reg.async_update_device(device_entry.id, sw_version=firmware)
             LOGGER.debug(
-                "%s %s %s removed from device_registry",
+                "Firmware in device_registry updated for %s %s %s",
                 DOMAIN,
                 device_entry.model,
                 device_id,
             )
+            return True
 
-    async def _update_device_firmware(self, data: dict[str, GwEntityData]) -> None:
-        """Detect firmware changes and update the device registry."""
-        for device_id, device in data.items():
-            if device_id not in self._firmware_list:
-                continue  # pragma: no cover
-            if (new_firmware := device.get(FIRMWARE)) != self._firmware_list[device_id]:
-                updated = await self._update_firmware_in_dr(device_id, new_firmware)
-                if updated:
-                    self._firmware_list[device_id] = new_firmware
-
-    async def _update_firmware_in_dr(self, device_id: str, firmware: str | None) -> bool:
-        """Update device sw_version in device_registry."""
-        device_reg = dr.async_get(self.hass)
-        device_entry = device_reg.async_get_device({(DOMAIN, device_id)})
-        if device_entry is None:
-            LOGGER.warning(
-                "Failed to update firmware in device_registry, %s device %s not found",
-                DOMAIN,
-                device_id,
-            )
-            return False  # pragma: no cover
-
-        device_reg.async_update_device(device_entry.id, sw_version=firmware)
-        LOGGER.debug(
-            "Firmware in device_registry updated for %s %s %s",
-            DOMAIN,
-            device_entry.model,
-            device_id,
-        )
-        return True
+        return False  # pragma: no cover
