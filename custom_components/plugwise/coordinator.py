@@ -200,9 +200,9 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         for device_id, device in data.items():
             # Only update firmware when the key is present and not None, to avoid
             # wiping stored firmware on partial or transient updates.
-            if "firmware" not in device:
+            if FIRMWARE not in device:
                 continue
-            new_firmware = device.get("firmware")
+            new_firmware = device.get(FIRMWARE)
             if new_firmware is None:
                 continue
             if (
