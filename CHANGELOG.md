@@ -2,7 +2,7 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.64.1
 
 - Line-up coordinator code with Core PR [#165936](https://github.com/home-assistant/core/pull/165936)
 
