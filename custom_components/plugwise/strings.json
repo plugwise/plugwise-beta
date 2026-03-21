@@ -22,7 +22,7 @@
         },
         "data_description": {
           "host": "The hostname or IP address of your Smile. You can find it in your router or the Plugwise app.",
-          "port": "By default your Smile uses port 80, normally you should not have to change this.",
+          "port": "By default your Smile uses port 80, normally you should not have to change this."
         },
         "description": "Update configuration for {title}."
       },
