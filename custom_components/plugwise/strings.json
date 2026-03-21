@@ -320,7 +320,7 @@
       "message": "Add your Adam instead of your Anna, see the documentation"
     },
     "response_error": {
-      "message": "Invalid XML-data, or error indication"
+      "message": "Invalid XML data or error indication received."
     },
     "set_schedule_first": {
       "message": "Failed setting HVACMode, set a schedule first."
