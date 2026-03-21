@@ -34,7 +34,7 @@
           "username": "Smile gebruikersnaam"
         },
         "data_description": {
-          "host": "De hostnaam of het IP-adres van je Smile. Deze kun je vinden in je router of in de Plugwise App.",
+          "host": "De hostnaam of het IP adres van je Smile. Deze kun je vinden in je router of in de Plugwise App.",
           "password": "Het Smile ID staat op het label aan de achterkant van de Adam, Smile-T of P1.",
           "port": "Standaard gebruikt je Smile poort 80, normaal gesproken hoef je dit niet te veranderen.",
           "username": "Standaard is `smile`, of `stretch` voor de oudere Stretch."
