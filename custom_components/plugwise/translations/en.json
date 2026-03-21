@@ -335,12 +335,12 @@
         "data": {
           "cooling_on": "Anna: cooling-mode is on",
           "refresh_interval": "Frontend refresh-time (1.5 - 5 seconds) *) beta-only option",
-          "scan_interval": "Scan Interval (seconds) *) beta-only option"
+          "scan_interval": "Scan interval (seconds) *) beta-only option"
         },
-        "description": "Adjust Adam/Smile/Stretch Options"
+        "description": "Adjust Adam/Smile/Stretch options"
       },
       "none": {
-        "description": "This Integration does not provide any Options",
+        "description": "This integration does not provide any options",
         "title": "No options available"
       }
     }

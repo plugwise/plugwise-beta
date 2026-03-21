@@ -335,9 +335,9 @@
         "data": {
           "cooling_on": "Anna: koelmodus is aan",
           "refresh_interval": "Frontend ververs-tijd (1,5 - 5 seconden) *) optie alleen in beta",
-          "scan_interval": "Scan Interval (seconden) *) optie alleen in beta"
+          "scan_interval": "Scan interval (seconden) *) optie alleen in beta"
         },
-        "description": "Adam/Smile/Stretch Opties aanpassen"
+        "description": "Adam/Smile/Stretch opties aanpassen"
       },
       "none": {
         "description": "Deze integratie heeft geen opties",
