@@ -10,7 +10,7 @@
       "cannot_connect": "Kan geen verbinding maken",
       "invalid_auth": "Ongeldige authenticatie",
       "invalid_setup": "Voeg je Adam toe in plaats van je Anna, raadpleeg de documentatie",
-      "response_error": "ongeldige XML-data of foutindicatie ontvange",
+      "response_error": "Ongeldige XML-data of foutindicatie ontvangen",
       "unknown": "Onverwachte fout",
       "unsupported": "Apparaat met niet ondersteunde firmware"
     },
