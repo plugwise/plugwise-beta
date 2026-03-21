@@ -180,7 +180,7 @@
         "name": "Elektriciteitsconsumptie hoogtarief interval"
       },
       "electricity_consumed_peak_point": {
-        "name": "Elektriciteitsconsumptie pihoogtariefek"
+        "name": "Elektriciteitsconsumptie hoogtarief"
       },
       "electricity_consumed_point": {
         "name": "Elektriciteitsconsumptie"
