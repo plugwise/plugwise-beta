@@ -1,38 +1,45 @@
 {
   "config": {
     "abort": {
-      "already_configured": "This device is already configured",
+      "already_configured": "Device is already configured",
       "anna_with_adam": "Both Anna and Adam detected. Add your Adam instead of your Anna",
-      "not_the_same_smile": "The configured Smile ID does not match the Smile ID on the requested IP address.",
-      "reconfigure_successful": "Reconfiguration successful"
+      "not_the_same_smile": "The provided Smile-ID does not match your device",
+      "reconfigure_successful": "Reconfiguration was successful"
     },
     "error": {
       "cannot_connect": "Failed to connect",
-      "invalid_auth": "Authentication failed",
+      "invalid_auth": "Invalid authentication",
       "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
-      "network_down": "Plugwise Zigbee network is down",
-      "network_timeout": "Network communication timeout",
-      "response_error": "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch",
-      "stick_init": "Initialization of Plugwise USB-stick failed",
-      "unknown": "Unknown error!",
+      "response_error": "Invalid XML-data, or error indication received",
+      "unknown": "Unexpected error",
       "unsupported": "Device with unsupported firmware"
     },
     "step": {
       "reconfigure": {
         "data": {
-          "host": "IP-address",
-          "port": "Port number"
+          "host": "IP address",
+          "port": "Port"
+        },
+        "data_description": {
+          "host": "The hostname or IP address of your Smile. You can find it in your router or the Plugwise app.",
+          "port": "By default your Smile uses port 80, normally you should not have to change this."
         },
         "description": "Update configuration for {title}."
       },
       "user": {
         "data": {
-          "host": "IP-address",
-          "password": "ID",
-          "port": "Port number",
-          "username": "Username"
+          "host": "IP address",
+          "password": "Smile-ID",
+          "port": "Port",
+          "username": "Smile username"
         },
-        "description": "Enter your Plugwise device: (setup can take up to 90s)",
+        "data_description": {
+          "host": "The hostname or IP address of your Smile. You can find it in your router or the Plugwise app.",
+          "password": "The Smile-ID printed on the label on the back of your Adam, P1, Smile-T, or Stretch.",
+          "port": "By default your Smile uses port 80, normally you should not have to change this.",
+          "username": "Default is `smile`, or `stretch` for the legacy Stretch."
+        },
+        "description": "Enter your Plugwise device data: (setup can take up to 90s)",
         "title": "Set up Plugwise Adam/Smile/Stretch"
       }
     }
@@ -236,7 +243,7 @@
         "name": "Intended boiler temperature"
       },
       "maximum_boiler_temperature": {
-        "name": "Maximum boiler temperature setpoint"
+        "name": "Maximum boiler temperature"
       },
       "modulation_level": {
         "name": "Modulation level"
@@ -313,7 +320,7 @@
       "message": "Add your Adam instead of your Anna, see the documentation"
     },
     "response_error": {
-      "message": "Invalid XML data, or error indication received from the Plugwise Adam/Smile/Stretch"
+      "message": "Invalid XML-data, or error indication"
     },
     "set_schedule_first": {
       "message": "Failed setting HVACMode, set a schedule first."
@@ -330,17 +337,17 @@
           "refresh_interval": "Frontend refresh-time (1.5 - 5 seconds) *) beta-only option",
           "scan_interval": "Scan Interval (seconds) *) beta-only option"
         },
-        "description": "Adjust Smile/Stretch Options"
+        "description": "Adjust Adam/Smile/Stretch Options"
       },
       "none": {
         "description": "This Integration does not provide any Options",
-        "title": "No Options available"
+        "title": "No options available"
       }
     }
   },
   "services": {
     "delete_notification": {
-      "description": "Deletes a Plugwise Notification",
+      "description": "Deletes a Plugwise notification",
       "name": "Delete Plugwise notification"
     }
   }
