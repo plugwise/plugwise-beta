@@ -174,7 +174,7 @@
         "name": "Elektriciteitsconsumptie laagtarief"
       },
       "electricity_consumed_peak_cumulative": {
-        "name": "Elektriciteitsconsumptie - cumulatief piek"
+        "name": "Elektriciteitsconsumptie hoogtarief cumulatief"
       },
       "electricity_consumed_peak_interval": {
         "name": "Elektriciteitsconsumptie hoogtarief interval"
