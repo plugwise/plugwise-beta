@@ -308,10 +308,10 @@
       "message": "Ongeldige authenticatie"
     },
     "data_incomplete_or_missing": {
-      "message": "Gegevens onvolledig of ontbreken."
+      "message": "Gegevens onvolledig of ontbreken"
     },
     "error_communicating_with_api": {
-      "message": "Communicatiefout met API: {error}."
+      "message": "Communicatiefout met API: {error}"
     },
     "failed_to_connect": {
       "message": "Kan geen verbinding maken"

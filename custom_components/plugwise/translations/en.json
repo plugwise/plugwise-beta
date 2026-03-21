@@ -10,7 +10,7 @@
       "cannot_connect": "Failed to connect",
       "invalid_auth": "Invalid authentication",
       "invalid_setup": "Add your Adam instead of your Anna, see the documentation",
-      "response_error": "Invalid XML-data, or error indication received",
+      "response_error": "Invalid XML-data or error indication received",
       "unknown": "Unexpected error",
       "unsupported": "Device with unsupported firmware"
     },
@@ -308,10 +308,10 @@
       "message": "Invalid authentication"
     },
     "data_incomplete_or_missing": {
-      "message": "Data incomplete or missing."
+      "message": "Data incomplete or missing"
     },
     "error_communicating_with_api": {
-      "message": "Error communicating with API: {error}."
+      "message": "Error communicating with API: {error}"
     },
     "failed_to_connect": {
       "message": "Failed to connect"
@@ -320,10 +320,10 @@
       "message": "Add your Adam instead of your Anna, see the documentation"
     },
     "response_error": {
-      "message": "Invalid XML-data or error indication received."
+      "message": "Invalid XML-data or error indication received"
     },
     "set_schedule_first": {
-      "message": "Failed setting HVACMode, set a schedule first."
+      "message": "Failed setting HVACMode, set a schedule first"
     },
     "unsupported_firmware": {
       "message": "Device with unsupported firmware"
