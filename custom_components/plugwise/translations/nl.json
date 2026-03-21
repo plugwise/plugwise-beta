@@ -21,7 +21,7 @@
           "port": "Poort"
         },
         "data_description": {
-          "host": "De hostnaam of het IP-adres van je Smile. Deze kun je vinden in je router of in de Plugwise App.",
+          "host": "De hostnaam of het IP adres van je Smile. Deze kun je vinden in je router of in de Plugwise App.",
           "port": "Standaard gebruikt je Smile poort 80, normaal gesproken hoef je dit niet te veranderen."
         },
         "description": "Configuratie bijwerken voor {title}."
