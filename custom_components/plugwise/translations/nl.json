@@ -17,7 +17,7 @@
     "step": {
       "reconfigure": {
         "data": {
-          "host": "IP adress",
+          "host": "IP adres",
           "port": "Poort"
         },
         "data_description": {
@@ -28,7 +28,7 @@
       },
       "user": {
         "data": {
-          "host": "IP adress",
+          "host": "IP adres",
           "password": "Smile-ID",
           "port": "Poort",
           "username": "Smile gebruikersnaam"
