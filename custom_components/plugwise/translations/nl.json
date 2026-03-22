@@ -17,12 +17,10 @@
     "step": {
       "reconfigure": {
         "data": {
-          "host": "IP adres",
-          "port": "Poort"
+          "host": "IP adres"
         },
         "data_description": {
-          "host": "De hostnaam of het IP adres van je Smile. Deze kun je vinden in je router of in de Plugwise App.",
-          "port": "Standaard gebruikt je Smile poort 80, normaal gesproken hoef je dit niet te veranderen."
+          "host": "De hostnaam of het IP adres van je Smile. Deze kun je vinden in je router of in de Plugwise App."
         },
         "description": "Configuratie bijwerken voor {title}."
       },
