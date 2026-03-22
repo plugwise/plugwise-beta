@@ -17,12 +17,10 @@
     "step": {
       "reconfigure": {
         "data": {
-          "host": "IP address",
-          "port": "Port"
+          "host": "IP address"
         },
         "data_description": {
-          "host": "The hostname or IP address of your Smile. You can find it in your router or the Plugwise app.",
-          "port": "By default your Smile uses port 80, normally you should not have to change this."
+          "host": "The hostname or IP address of your Smile. You can find it in your router or the Plugwise app."
         },
         "description": "Update configuration for {title}."
       },
@@ -320,7 +318,7 @@
       "message": "Add your Adam instead of your Anna, see the documentation"
     },
     "response_error": {
-      "message": "Invalid XML data or error indication received"
+      "message": "Invalid XML-data or error indication received"
     },
     "set_schedule_first": {
       "message": "Failed setting HVACMode, set a schedule first"
