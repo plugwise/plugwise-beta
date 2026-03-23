@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Lining up strings with Core Plugwise, update translations via PR [#1048](https://github.com/plugwise/plugwise-beta/pull/1048)
+
 ## v0.64.1
 
 - Line-up coordinator code with Core PR [#165936](https://github.com/home-assistant/core/pull/165936)
