@@ -4,6 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
+- Add local beta brand icons via PR [#1050](https://github.com/plugwise/plugwise-beta/pull/1050)
 - Lining up strings with Core Plugwise, update translations via PR [#1048](https://github.com/plugwise/plugwise-beta/pull/1048)
 
 ## v0.64.1
