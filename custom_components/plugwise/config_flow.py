@@ -1,6 +1,6 @@
 """Config flow for Plugwise integration."""
 
-# pylint: disable=W
+# pylint: disable=hass-config-flow-polling-field
 
 from __future__ import annotations
 
