@@ -1,5 +1,7 @@
 """Config flow for Plugwise integration."""
 
+# pylint: disable=W
+
 from __future__ import annotations
 
 from copy import deepcopy
