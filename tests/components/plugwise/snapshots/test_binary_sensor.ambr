@@ -1,8 +1,9 @@
 # serializer version: 1
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.adam_plugwise_notification-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -53,8 +54,9 @@
 # ---
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.bios_cv_thermostatic_radiator_battery-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -103,8 +105,9 @@
 # ---
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.cv_kraan_garage_battery-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -153,8 +156,9 @@
 # ---
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.onoff_heating-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -202,8 +206,9 @@
 # ---
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.thermostatic_radiator_badkamer_1_battery-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -252,8 +257,9 @@
 # ---
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.thermostatic_radiator_badkamer_2_battery-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -302,8 +308,9 @@
 # ---
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.thermostatic_radiator_jessie_battery-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -352,8 +359,9 @@
 # ---
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.zone_lisa_bios_battery-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -402,8 +410,9 @@
 # ---
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.zone_lisa_wk_battery-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -452,8 +461,9 @@
 # ---
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.zone_thermostat_jessie_battery-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -502,8 +512,9 @@
 # ---
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_compressor_state-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -551,8 +562,9 @@
 # ---
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_cooling-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -600,8 +612,9 @@
 # ---
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_cooling_enabled-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -649,8 +662,9 @@
 # ---
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_dhw_state-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -698,8 +712,9 @@
 # ---
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_flame_state-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -747,8 +762,9 @@
 # ---
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_heating-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -796,8 +812,9 @@
 # ---
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_secondary_boiler_state-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -845,8 +862,9 @@
 # ---
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.smile_anna_plugwise_notification-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
@@ -894,8 +912,9 @@
 # ---
 # name: test_p1_v4_binary_sensor_snapshot[platforms0-03e65b16e4b247a29ae0d75a78cb492e-p1v4_442_triple][binary_sensor.smile_p1_plugwise_notification-entry]
   EntityRegistryEntrySnapshot({
-    'aliases': set({
-    }),
+    'aliases': list([
+      None,
+    ]),
     'area_id': None,
     'capabilities': None,
     'config_entry_id': <ANY>,
