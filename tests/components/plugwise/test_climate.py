@@ -527,6 +527,24 @@ async def test_anna_climate_entity_climate_changes(
         "c784ee9fdab44e1395b8dee7d7a497d5", STATE_OFF, "standaard",
     )
 
+    data = mock_smile_anna.async_update.return_value
+    data["3cb70739631c4d17a86b8b12e8a5161b"]["climate_mode"] = "heat"
+    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
+        freezer.tick(timedelta(minutes=1))
+        async_fire_time_changed(hass)
+        await hass.async_block_till_done()    
+        
+        await hass.services.async_call(
+            CLIMATE_DOMAIN,
+            SERVICE_SET_HVAC_MODE,
+            {ATTR_ENTITY_ID: "climate.anna", ATTR_HVAC_MODE: HVACMode.AUTO},
+            blocking=True,
+        )
+        assert mock_smile_anna.set_schedule_state.call_count == 2
+        mock_smile_anna.set_schedule_state.assert_called_with(
+            "c784ee9fdab44e1395b8dee7d7a497d5", STATE_ON, "standaard",
+        )
+
     # Mock user deleting last schedule from app or browser
     data = mock_smile_anna.async_update.return_value
     data["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = []
