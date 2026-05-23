@@ -102,14 +102,6 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
         """Return a dict representation of the text data."""
         return asdict(self)
 
-    @classmethod
-    def from_dict(cls, restored: dict[str, Any]) -> Self | None:
-        """Initialize a stored data object from a dict."""
-        return cls(
-                last_active_schedule=restored.get("last_active_schedule"),
-                previous_action_mode=restored.get("previous_action_mode"),
-            )
-
 
 class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     """Representation of a Plugwise thermostat."""
@@ -123,18 +115,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _last_active_schedule: str | None = None
     _previous_action_mode: str | None = HVACAction.HEATING.value
 
-    async def async_added_to_hass(self) -> None:
-        """Run when entity about to be added."""
-        await super().async_added_to_hass()
-
-        if extra_data := await self.async_get_last_extra_data():
-            plugwise_extra_data = PlugwiseClimateExtraStoredData.from_dict(
-                extra_data.as_dict()
-            )
-            self._last_active_schedule = plugwise_extra_data.last_active_schedule
-            self._previous_action_mode = (
-                plugwise_extra_data.previous_action_mode or HVACAction.HEATING.value
-            )
 
     def __init__(
         self,
@@ -181,12 +161,24 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         """Return the current temperature."""
         return self.device.get(SENSORS, {}).get(ATTR_TEMPERATURE)
 
+    async def async_added_to_hass(self) -> None:
+        """Run when entity about to be added."""
+
+        extra_data = await self.async_get_last_extra_data()
+        if extra_data is not None:
+            self._last_active_schedule = extra_data.as_dict()["last_active_schedule"]
+            self._previous_action_mode = (
+                extra_data.as_dict()["previous_action_mode"] or HVACAction.HEATING.value
+            )
+
+        await super().async_added_to_hass()
+
     @property
     def extra_restore_state_data(self) -> PlugwiseClimateExtraStoredData:
         """Return text specific state data to be restored."""
         return PlugwiseClimateExtraStoredData(
-            last_active_schedule=self._last_active_schedule,
-            previous_action_mode=self._previous_action_mode,
+            self._last_active_schedule,
+            self._previous_action_mode,
         )
 
     @property
