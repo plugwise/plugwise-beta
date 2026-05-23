@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from typing import Any
+from typing import Any, Self
 
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
@@ -103,12 +103,15 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, restored: dict[str, Any]) -> PlugwiseClimateExtraStoredData:
+    def from_dict(cls, restored: dict[str, Any]) -> Self | None:
         """Initialize a stored data object from a dict."""
-        return cls(
-            last_active_schedule=restored.get("last_active_schedule"),
-            previous_action_mode=restored.get("previous_action_mode"),
-        )
+        try:
+            return cls(
+                restored["last_active_schedule"],
+                restored["previous_action_mode"],
+            )
+        except KeyError:
+            return None
 
 
 class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
@@ -185,8 +188,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     def extra_restore_state_data(self) -> PlugwiseClimateExtraStoredData:
         """Return text specific state data to be restored."""
         return PlugwiseClimateExtraStoredData(
-            last_active_schedule=self._last_active_schedule,
-            previous_action_mode=self._previous_action_mode,
+            self._last_active_schedule,
+            self._previous_action_mode,
         )
 
     @property
