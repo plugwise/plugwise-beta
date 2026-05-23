@@ -112,10 +112,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     _attr_translation_key = DOMAIN
     _enable_turn_on_off_backwards_compatibility = False
 
-    _last_active_schedule: str | None = None
-    _previous_action_mode: str | None = HVACAction.HEATING.value
-
-
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
@@ -127,9 +123,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         self._api = coordinator.api
         gateway_id: str = self._api.gateway_id
         self._gateway_data = coordinator.data[gateway_id]
+        self._last_active_schedule: str | None = None
         self._location = device_id
         if (location := self.device.get(LOCATION)) is not None:
             self._location = location
+        self._previous_action_mode = HVACAction.HEATING.value
 
         self._attr_max_temp = min(self.device.get(THERMOSTAT, {}).get(UPPER_BOUND, 35.0), 35.0)
         self._attr_min_temp = self.device.get(THERMOSTAT, {}).get(LOWER_BOUND, 0.0)
