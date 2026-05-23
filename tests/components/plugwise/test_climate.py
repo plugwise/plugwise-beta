@@ -532,8 +532,8 @@ async def test_anna_climate_entity_climate_changes(
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))
         async_fire_time_changed(hass)
-        await hass.async_block_till_done()    
-        
+        await hass.async_block_till_done()
+
         await hass.services.async_call(
             CLIMATE_DOMAIN,
             SERVICE_SET_HVAC_MODE,
