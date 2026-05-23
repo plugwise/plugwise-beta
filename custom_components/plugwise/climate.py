@@ -350,6 +350,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             self.hvac_mode == HVACMode.OFF and schedule not in (None, "off")
         ) or (self.hvac_mode == HVACMode.AUTO and schedule is not None):
             await self._api.set_schedule_state(self._location, STATE_OFF, schedule)
+            self._last_active_schedule = schedule
 
     async def _set_auto_hvac_mode(self, schedule: str) -> None:
         """Execute relevant api-functions based on the requested auto and present mode."""
