@@ -286,10 +286,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     def _regulation_mode_for_hvac(self, hvac_mode: HVACMode) -> str:
         """Return the API regulation value for a manual HVAC mode."""
         if hvac_mode == HVACMode.HEAT:
-            mode = HVACAction.HEATING.value
+            return HVACAction.HEATING.value
         if hvac_mode == HVACMode.COOL:
-            mode = HVACAction.COOLING.value
-        return mode
+            return HVACAction.COOLING.value
+        raise ValueError(f"Unsupported HVAC mode for regulation: {hvac_mode}")
 
     @plugwise_command
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
