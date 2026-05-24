@@ -154,11 +154,6 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
         self._attr_preset_modes = presets
 
-    @property
-    def current_temperature(self) -> float | None:
-        """Return the current temperature."""
-        return self.device.get(SENSORS, {}).get(ATTR_TEMPERATURE)
-
     async def async_added_to_hass(self) -> None:
         """Run when entity about to be added."""
 
@@ -178,6 +173,11 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             self._last_active_schedule,
             self._previous_action_mode,
         )
+
+    @property
+    def current_temperature(self) -> float | None:
+        """Return the current temperature."""
+        return self.device.get(SENSORS, {}).get(ATTR_TEMPERATURE)
 
     @property
     def target_temperature(self) -> float | None:
