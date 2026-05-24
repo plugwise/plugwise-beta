@@ -309,13 +309,12 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         # Adam only: transition from HVACMode.OFF
         if self.hvac_mode == HVACMode.OFF:
             if hvac_mode == HVACMode.AUTO:
-                if not schedule_is_active:
-                    if self._last_active_schedule is None:
-                        raise HomeAssistantError(
-                            translation_domain=DOMAIN,
-                            translation_key=ERROR_NO_SCHEDULE,
-                        )
-                    await self._api.set_schedule_state(self._location, STATE_ON, self._last_active_schedule)
+                if not schedule_is_active and self._last_active_schedule is None:
+                    raise HomeAssistantError(
+                        translation_domain=DOMAIN,
+                        translation_key=ERROR_NO_SCHEDULE,
+                    )
+                await self._api.set_schedule_state(self._location, STATE_ON, self._last_active_schedule)
                 await self._api.set_regulation_mode(self._previous_action_mode)
                 return
 
