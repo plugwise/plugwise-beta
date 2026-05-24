@@ -229,7 +229,7 @@
       "home",
       "away"
     ],
-    "select_schedule": "Weekschema",
+    "select_schedule": "off",
     "select_zone_profile": "active",
     "sensors": {
       "electricity_consumed": 60.8,
