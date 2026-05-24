@@ -159,9 +159,10 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         extra_data = await self.async_get_last_extra_data()
         if extra_data is not None:
-            self._last_active_schedule = extra_data.as_dict()["last_active_schedule"]
+            data = extra_data.as_dict()
+            self._last_active_schedule = data.get("last_active_schedule")
             self._previous_action_mode = (
-                extra_data.as_dict()["previous_action_mode"] or HVACAction.HEATING.value
+                data.get("previous_action_mode") or HVACAction.HEATING.value
             )
 
         await super().async_added_to_hass()
