@@ -269,6 +269,53 @@ async def test_adam_2_climate_snapshot(
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
+@pytest.mark.parametrize("chosen_env", ["m_adam_heating_off_schedule"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [False], indirect=True)
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_adam_off_regulation_mode_change(
+    hass: HomeAssistant,
+    mock_smile_adam_heat_cool: MagicMock,
+    mock_config_entry: MockConfigEntry,
+    freezer: FrozenDateTimeFactory,
+) -> None:
+    """Test changing from regulation off mode."""
+    mock_restore_cache_with_extra_data(
+        hass,
+        [
+            (
+                State("climate.living_room", "heat"),
+                PlugwiseClimateExtraStoredData(
+                    last_active_schedule=None,
+                    previous_action_mode="heating",
+                ).as_dict(),
+            ),
+            (
+                State("climate.bathroom", "heat"),
+                PlugwiseClimateExtraStoredData(
+                    last_active_schedule="Badkamer",
+                    previous_action_mode="heating",
+                ).as_dict(),
+            ),
+        ],
+    )
+
+    mock_config_entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert (state := hass.states.get("climate.living_room"))
+    assert state.state == "off"
+
+    # Verify a HomeAssistantError is raised setting a schedule with last_active_schedule = None
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            CLIMATE_DOMAIN,
+            SERVICE_SET_HVAC_MODE,
+            {ATTR_ENTITY_ID: "climate.living_room", ATTR_HVAC_MODE: HVACMode.AUTO},
+            blocking=True,
+        )
+
+
 @pytest.mark.parametrize("chosen_env", ["m_adam_cooling"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_adam_3_climate_entity_attributes(
