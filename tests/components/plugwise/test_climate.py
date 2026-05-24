@@ -306,7 +306,7 @@ async def test_adam_off_regulation_mode_change(
     assert (state := hass.states.get("climate.living_room"))
     assert state.state == "off"
 
-    # Verify a HomeAssistantError is raised setting a schedule with last_active_schedule = None
+    # Verify a HomeAssistantError is raised setting a schedule from regulation-off-mode with last_active_schedule = None
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
             CLIMATE_DOMAIN,
@@ -314,6 +314,17 @@ async def test_adam_off_regulation_mode_change(
             {ATTR_ENTITY_ID: "climate.living_room", ATTR_HVAC_MODE: HVACMode.AUTO},
             blocking=True,
         )
+
+    # Verify that the active schedule is turned off when transitioning from regulation-off-mode to a manual mode
+    await hass.services.async_call(
+        CLIMATE_DOMAIN,
+        SERVICE_SET_HVAC_MODE,
+        {ATTR_ENTITY_ID: "climate.bathroom", ATTR_HVAC_MODE: HVACMode.HEAT},
+        blocking=True,
+    )
+    mock_smile_adam_heat_cool.set_schedule_state.assert_called_with(
+        "f871b8c4d63549319221e294e4f88074", STATE_OFF, "Badkamer"
+    )
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_cooling"], indirect=True)
