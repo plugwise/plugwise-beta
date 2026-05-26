@@ -4,7 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
-- Downstream improvements from Core PR #127121 via PR []()
+- Downstream improvements from Core PR #127121 via PR [#1074](https://github.com/plugwise/plugwise-beta/pull/1074)
 
 ## v0.64.2
 
