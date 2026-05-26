@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Downstream improvements from Core PR #127121 via PR []()
+
 ## v0.64.2
 
 - Fix for Core Issue [#171955](https://github.com/home-assistant/core/issues/171955) via PR [#1073](https://github.com/plugwise/plugwise-beta/pull/1073)
