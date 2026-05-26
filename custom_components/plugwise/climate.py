@@ -91,6 +91,15 @@ async def async_setup_entry(
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
 
+def _check_for_schedule(active: bool, last_active: str | None) -> None:
+    """Raise a HAError when no thermostat schedule has been set."""
+    if not active and last_active is None:
+        raise HomeAssistantError(
+            translation_domain=DOMAIN,
+            translation_key=ERROR_NO_SCHEDULE,
+        )
+
+
 @dataclass
 class PlugwiseClimateExtraStoredData(ExtraStoredData):
     """Object to hold extra stored data."""
@@ -310,21 +319,24 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         current_schedule = self.device.get("select_schedule")
         schedule_is_active = current_schedule not in (None, "off")
+        desired_schedule = (
+            current_schedule if schedule_is_active else self._last_active_schedule
+        )
         # Adam only: transition from HVACMode.OFF
         if self.hvac_mode == HVACMode.OFF:
             if hvac_mode == HVACMode.AUTO:
-                if not schedule_is_active and self._last_active_schedule is None:
-                    raise HomeAssistantError(
-                        translation_domain=DOMAIN,
-                        translation_key=ERROR_NO_SCHEDULE,
-                    )
-                await self._api.set_schedule_state(self._location, STATE_ON, self._last_active_schedule)
+                _check_for_schedule(schedule_is_active, self._last_active_schedule)
+                await self._api.set_schedule_state(
+                    self._location, STATE_ON, desired_schedule
+                )
                 await self._api.set_regulation_mode(self._previous_action_mode)
                 return
 
             # Transition to manual mode
             if schedule_is_active:
-                await self._api.set_schedule_state(self._location, STATE_OFF, current_schedule)
+                await self._api.set_schedule_state(
+                    self._location, STATE_OFF, current_schedule
+                )
                 self._last_active_schedule = current_schedule
             regulation = self._regulation_mode_for_hvac(hvac_mode)
             await self._api.set_regulation_mode(regulation)
@@ -332,17 +344,15 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
         # Common - transition from auto = schedule off
         if self.hvac_mode == HVACMode.AUTO:
-            await self._api.set_schedule_state(self._location, STATE_OFF, current_schedule)
+            await self._api.set_schedule_state(
+                self._location, STATE_OFF, current_schedule
+            )
             self._last_active_schedule = current_schedule
             return
 
         # Common - transition to auto = schedule on
-        if self._last_active_schedule is None:
-            raise HomeAssistantError(
-                translation_domain=DOMAIN,
-                translation_key=ERROR_NO_SCHEDULE,
-            )
-        await self._api.set_schedule_state(self._location, STATE_ON, self._last_active_schedule)
+        _check_for_schedule(schedule_is_active, self._last_active_schedule)
+        await self._api.set_schedule_state(self._location, STATE_ON, desired_schedule)
 
     @plugwise_command
     async def async_set_preset_mode(self, preset_mode: str) -> None:
