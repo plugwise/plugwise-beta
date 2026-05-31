@@ -58,6 +58,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
+    entry.async_on_unload(entry.add_update_listener(update_listener))  # pw-beta options_flow
+
     return True
 
 async def update_listener(
