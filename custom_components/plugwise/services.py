@@ -5,7 +5,7 @@ import voluptuous as vol
 
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall, callback
-from homeassistant.helpers import service
+from homeassistant.helpers import config_validation as cv, service
 
 from .const import (
     CONF_CONFIG_ENTRY,
@@ -44,8 +44,11 @@ def async_setup_services(hass: HomeAssistant) -> None:
                 coordinator.api.smile.name,
             )
 
-    for component in PLATFORMS:  # pw-beta delete_notification
-        if component == Platform.BINARY_SENSOR:
-            hass.services.async_register(
-                DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
-            )
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_DELETE,
+            delete_notification,
+            schema=vol.Schema(
+                {vol.Required(CONF_CONFIG_ENTRY): cv.string}
+            ),
+        )
