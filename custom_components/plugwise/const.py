@@ -14,6 +14,7 @@ LOGGER = logging.getLogger(__package__)
 
 API: Final = "api"
 COORDINATOR: Final = "coordinator"
+CONF_CONFIG_ENTRY: Final = "config_entry"
 CONF_HOMEKIT_EMULATION: Final = "homekit_emulation"  # pw-beta options
 CONF_REFRESH_INTERVAL: Final = "refresh_interval"  # pw-beta options
 CONF_MANUAL_PATH: Final = "Enter Manually"
