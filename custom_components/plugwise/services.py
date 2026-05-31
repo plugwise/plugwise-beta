@@ -3,7 +3,6 @@
 from plugwise.exceptions import PlugwiseError
 import voluptuous as vol
 
-from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.helpers import config_validation as cv, service
 
@@ -11,7 +10,6 @@ from .const import (
     CONF_CONFIG_ENTRY,
     DOMAIN,
     LOGGER,
-    PLATFORMS,
     SERVICE_DELETE,  # pw-beta delete_notifications
 )
 from .coordinator import PlugwiseConfigEntry
