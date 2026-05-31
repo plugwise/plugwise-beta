@@ -17,7 +17,7 @@ from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .services import async_setup_services
 
 
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+async def async_setup(hass: HomeAssistant, _config: ConfigType) -> bool:
     """Set up my integration."""
 
     async_setup_services(hass)
