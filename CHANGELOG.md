@@ -2,8 +2,9 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.64.3
 
+- Bump plugwise to [v1.11.4](https://github.com/plugwise/python-plugwise/releases/tag/v1.11.4)
 - Downstream improvements from Core PR #127121 via PR [#1074](https://github.com/plugwise/plugwise-beta/pull/1074)
 
 ## v0.64.2
