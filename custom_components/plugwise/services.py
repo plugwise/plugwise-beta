@@ -42,11 +42,11 @@ def async_setup_services(hass: HomeAssistant) -> None:
                 coordinator.api.smile.name,
             )
 
-        hass.services.async_register(
-            DOMAIN,
-            SERVICE_DELETE,
-            delete_notification,
-            schema=vol.Schema(
-                {vol.Required(CONF_CONFIG_ENTRY): cv.string}
-            ),
-        )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_DELETE,
+        delete_notification,
+        schema=vol.Schema(
+            {vol.Required(CONF_CONFIG_ENTRY): cv.string}
+        ),
+    )
