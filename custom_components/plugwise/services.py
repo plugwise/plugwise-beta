@@ -3,16 +3,26 @@
 from plugwise.exceptions import PlugwiseError
 import voluptuous as vol
 
-from homeassistant.const import ATTR_CONFIG_ENTRY_ID
 from homeassistant.core import HomeAssistant, ServiceCall, callback
-from homeassistant.helpers import config_validation as cv, service
+from homeassistant.helpers import selector, service
 
 from .const import (
+    CONFIG_ENTRY,
     DOMAIN,
     LOGGER,
     SERVICE_DELETE,  # pw-beta delete_notifications
 )
 from .coordinator import PlugwiseConfigEntry
+
+SCHEMA_DELETE_NOTIFICATION = vol.Schema(
+    {
+        vol.Required(CONFIG_ENTRY): selector.ConfigEntrySelector(
+            {
+                "integration": DOMAIN,
+            }
+        )
+    }
+)
 
 
 @callback
@@ -25,7 +35,7 @@ def async_setup_services(hass: HomeAssistant) -> None:
         """Service: delete the Plugwise Notification."""
 
         entry: PlugwiseConfigEntry = service.async_get_config_entry(
-            call.hass, DOMAIN, call.data[ATTR_CONFIG_ENTRY_ID]
+            call.hass, DOMAIN, call.data[CONFIG_ENTRY]
         )
         coordinator = entry.runtime_data
 
@@ -46,7 +56,5 @@ def async_setup_services(hass: HomeAssistant) -> None:
         DOMAIN,
         SERVICE_DELETE,
         delete_notification,
-        schema=vol.Schema(
-            {vol.Required(ATTR_CONFIG_ENTRY_ID): cv.string}
-        ),
+        schema=SCHEMA_DELETE_NOTIFICATION
     )
