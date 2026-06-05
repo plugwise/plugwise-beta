@@ -5,7 +5,7 @@ import voluptuous as vol
 
 from homeassistant.const import ATTR_CONFIG_ENTRY_ID
 from homeassistant.core import HomeAssistant, ServiceCall, callback
-from homeassistant.helpers import config_validation as cv, service
+from homeassistant.helpers import selector, service
 
 from .const import (
     DOMAIN,
@@ -13,6 +13,16 @@ from .const import (
     SERVICE_DELETE,  # pw-beta delete_notifications
 )
 from .coordinator import PlugwiseConfigEntry
+
+SCHEMA_DELETE_NOTIFICATION = vol.Schema(
+    {
+        vol.Required(ATTR_CONFIG_ENTRY_ID): selector.ConfigEntrySelector(
+            {
+                "integration": DOMAIN,
+            }
+        )
+    }
+)
 
 
 @callback
@@ -46,7 +56,5 @@ def async_setup_services(hass: HomeAssistant) -> None:
         DOMAIN,
         SERVICE_DELETE,
         delete_notification,
-        schema=vol.Schema(
-            {vol.Required(ATTR_CONFIG_ENTRY_ID): cv.string}
-        ),
+        schema=SCHEMA_DELETE_NOTIFICATION
     )
