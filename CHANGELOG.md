@@ -2,7 +2,7 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.64.4
 
 - Improve compatibility with python 3.14, move service-related to services.py
 
