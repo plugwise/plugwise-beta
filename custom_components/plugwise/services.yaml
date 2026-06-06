@@ -1,2 +1,8 @@
 delete_notification:
   description: Delete the Plugwise Notification(s).
+  fields:
+    config_entry:
+      required: true
+      selector:
+        config_entry:
+          integration: plugwise

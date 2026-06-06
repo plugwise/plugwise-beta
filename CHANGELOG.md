@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## v0.64.4
+
+- Improve compatibility with python 3.14, move service-related to services.py
+
 ## v0.64.3
 
 - Bump plugwise to [v1.11.4](https://github.com/plugwise/python-plugwise/releases/tag/v1.11.4)

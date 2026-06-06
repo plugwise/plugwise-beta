@@ -1,8 +1,6 @@
 """Config flow for Plugwise integration."""
 
-# pylint: disable=hass-config-flow-polling-field
-
-from __future__ import annotations
+# pylint: disable=home-assistant-config-flow-polling-field
 
 from copy import deepcopy
 import logging

@@ -1,28 +1,28 @@
 """Plugwise platform for Home Assistant Core."""
 
-from __future__ import annotations
-
 from typing import Any
 
-from plugwise.exceptions import PlugwiseError
-import voluptuous as vol  # pw-beta delete_notification
-
 from homeassistant.const import CONF_TIMEOUT, Platform
-from homeassistant.core import (
-    HomeAssistant,
-    ServiceCall,  # pw-beta delete_notification
-    callback,
-)
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers.typing import ConfigType
 
 from .const import (
     CONF_REFRESH_INTERVAL,  # pw-beta options
     DOMAIN,
     LOGGER,
     PLATFORMS,
-    SERVICE_DELETE,  # pw-beta delete_notifications
 )
 from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
+from .services import async_setup_services
+
+
+async def async_setup(hass: HomeAssistant, _config: ConfigType) -> bool:
+    """Set up my integration."""
+
+    async_setup_services(hass)
+
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
@@ -56,31 +56,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
         sw_version=str(coordinator.api.smile.version),
     )  # required for adding the entity-less P1 Gateway
 
-    async def delete_notification(
-        call: ServiceCall,
-    ) -> None:  # pragma: no cover  # pw-beta: HA service - delete_notification
-        """Service: delete the Plugwise Notification."""
-        LOGGER.debug(
-            "Service delete PW Notification called for %s",
-            coordinator.api.smile.name,
-        )
-        try:
-            await coordinator.api.delete_notification()
-            LOGGER.debug("PW Notification deleted")
-        except PlugwiseError:
-            LOGGER.debug(
-                "Failed to delete the Plugwise Notification for %s",
-                coordinator.api.smile.name,
-            )
-
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     entry.async_on_unload(entry.add_update_listener(update_listener))  # pw-beta options_flow
-    for component in PLATFORMS:  # pw-beta delete_notification
-        if component == Platform.BINARY_SENSOR:
-            hass.services.async_register(
-                DOMAIN, SERVICE_DELETE, delete_notification, schema=vol.Schema({})
-            )
 
     return True
 
