@@ -180,7 +180,8 @@ async def test_adam_restore_state_climate(
     assert (state := hass.states.get("climate.living_room"))
     assert state.state == "heat"
 
-    # Verify a HomeAssistantError is raised setting a schedule with last_active_schedule = None
+    # Verify a HomeAssistantError is raised setting a schedule
+    # with last_active_schedule = None
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
             CLIMATE_DOMAIN,
@@ -306,7 +307,8 @@ async def test_adam_off_regulation_mode_change(
     assert (state := hass.states.get("climate.living_room"))
     assert state.state == "off"
 
-    # Verify a HomeAssistantError is raised setting a schedule from regulation-off-mode with last_active_schedule = None
+    # Verify a HomeAssistantError is raised setting a schedule
+    # from regulation-off-mode with last_active_schedule = None
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
             CLIMATE_DOMAIN,
@@ -315,7 +317,8 @@ async def test_adam_off_regulation_mode_change(
             blocking=True,
         )
 
-    # Verify that the active schedule is turned off when transitioning from regulation-off-mode to a manual mode
+    # Verify that the active schedule is turned off when transitioning
+    # from regulation-off-mode to a manual mode
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_HVAC_MODE,
@@ -417,7 +420,8 @@ async def test_adam_3_climate_entity_attributes(
         assert state.state == "off"
         assert state.attributes[ATTR_HVAC_ACTION] == HVACAction.OFF
 
-        # Test setting regulation_mode to cooling, from off, ignoring the restored previous_action_mode
+        # Test setting regulation_mode to cooling, from off,
+        # ignoring the restored previous_action_mode
         await hass.services.async_call(
             CLIMATE_DOMAIN,
             SERVICE_SET_HVAC_MODE,
