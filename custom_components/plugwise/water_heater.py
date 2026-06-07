@@ -36,7 +36,7 @@ OPERATION_MODES = [MODE_HEAT, MODE_OFF]
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
+    _hass: HomeAssistant,
     entry: PlugwiseConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
