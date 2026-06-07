@@ -2,9 +2,13 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Downstream Core updates via PR [#1084](https://github.com/plugwise/plugwise-beta/pull/1084)
+
 ## v0.64.4
 
-- Improve compatibility with python 3.14, move service-related to services.py
+- Improve compatibility with python 3.14, move service-related to services.py via PR [@1082](https://github.com/plugwise/plugwise-beta/pull/1082)
 
 ## v0.64.3
 
