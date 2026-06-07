@@ -41,7 +41,7 @@ async def async_setup_entry(
 
         for device_id in coordinator.new_devices:
             device = coordinator.data[device_id]
-            if device[DEV_CLASS] == "heater_central" and device.get("max_dhw_temperature"):
+            if device[DEV_CLASS] == "heater_central" and device.get(BINARY_SENSORS, {}).get("dhw_state"):
                 async_add_entities([PlugwiseWaterHeaterEntity(coordinator, device_id)])
                 LOGGER.debug("Add %s water_heater", device[ATTR_NAME])
 
@@ -68,7 +68,8 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         self._attr_max_temp = self.device.get("max_dhw_temperature", {}).get(UPPER_BOUND, 75.0)
         self._attr_min_temp = self.device.get("max_dhw_temperature", {}).get(LOWER_BOUND, 40.0)
         self._attr_supported_features = WaterHeaterEntityFeature.OPERATION_MODE
-        self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
+        if self.device.get("max_dhw_temperature"):
+            self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
 
     @property
     def current_operation(self) -> str | None:
