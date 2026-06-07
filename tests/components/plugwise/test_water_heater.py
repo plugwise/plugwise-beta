@@ -20,7 +20,7 @@ HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_adam_water_heater_snapshot(
     hass: HomeAssistant,
-    mock_smile_adam: MagicMock,
+    mock_smile_adam_jip: MagicMock,
     snapshot: SnapshotAssertion,
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
