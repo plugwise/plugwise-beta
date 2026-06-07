@@ -9,8 +9,8 @@
       'max_temp': 60.0,
       'min_temp': 40.0,
       'operation_list': list([
-        'heat',
-        'off',
+        'Dhw comfort',
+        'Dhw normal',
       ]),
     }),
     'config_entry_id': <ANY>,
@@ -51,10 +51,10 @@
       'max_temp': 60.0,
       'min_temp': 40.0,
       'operation_list': list([
-        'heat',
-        'off',
+        'Dhw comfort',
+        'Dhw normal',
       ]),
-      'operation_mode': 'off',
+      'operation_mode': 'Dhw normal',
       'supported_features': <WaterHeaterEntityFeature: 3>,
       'target_temp_high': None,
       'target_temp_low': None,
@@ -65,7 +65,7 @@
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
-    'state': 'off',
+    'state': 'Dhw normal',
   })
 # ---
 # name: test_anna_water_heater_snapshot[platforms0-False-anna_v4_dhw][water_heater.opentherm-entry]
@@ -78,8 +78,8 @@
       'max_temp': 60.0,
       'min_temp': 30.0,
       'operation_list': list([
-        'heat',
-        'off',
+        'Dhw comfort',
+        'Dhw normal',
       ]),
     }),
     'config_entry_id': <ANY>,
@@ -120,10 +120,10 @@
       'max_temp': 60.0,
       'min_temp': 30.0,
       'operation_list': list([
-        'heat',
-        'off',
+        'Dhw comfort',
+        'Dhw normal',
       ]),
-      'operation_mode': 'on',
+      'operation_mode': 'Dhw comfort',
       'supported_features': <WaterHeaterEntityFeature: 3>,
       'target_temp_high': None,
       'target_temp_low': None,
@@ -134,6 +134,6 @@
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
-    'state': 'on',
+    'state': 'Dhw comfort',
   })
 # ---
