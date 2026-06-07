@@ -111,9 +111,9 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         )
 
     @plugwise_command
-    async def async_set_operation_mode(self, mode: str) -> None:
+    async def async_set_operation_mode(self, operation_mode: str) -> None:
         """Set the operation mode."""
-        state = STATE_ON if mode == MODE_DHW_COMFORT else STATE_OFF
+        state = STATE_ON if operation_mode == MODE_DHW_COMFORT else STATE_OFF
         await self.coordinator.api.set_switch_state(
             self._dev_id,
             None,
