@@ -4,12 +4,7 @@ from homeassistant.components.water_heater import (
     WaterHeaterEntity,
     WaterHeaterEntityFeature,
 )
-from homeassistant.const import (
-    ATTR_NAME,
-    STATE_OFF,
-    STATE_ON,
-    UnitOfTemperature,
-)
+from homeassistant.const import ATTR_NAME, STATE_OFF, STATE_ON, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
@@ -81,8 +76,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         if (state := self.device.get(BINARY_SENSORS, {}).get("dhw_state")) is not None:
             if state:
                 return STATE_ON
-            else:
-                return STATE_OFF
+            return STATE_OFF
         return None
 
     @property
