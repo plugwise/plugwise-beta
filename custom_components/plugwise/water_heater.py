@@ -69,7 +69,6 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     ) -> None:
         """Initialise the water_heater."""
         super().__init__(coordinator, device_id)
-        self.device_id = device_id
         self._attr_unique_id = f"{device_id}-water_heater"
 
         self._attr_max_temp = self.device.get("max_dhw_temperature", {}).get(UPPER_BOUND, 75.0)
@@ -107,7 +106,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         if not self._supports_temperature_control or temperature is None:
             return
 
-        await self.coordinator.api.set_number(self.device_id, MAX_DHW_TEMP, temperature)
+        await self.coordinator.api.set_number(self._dev_id, MAX_DHW_TEMP, temperature)
         LOGGER.debug(
             "Setting %s to %s was successful", MAX_DHW_TEMP, temperature
         )
