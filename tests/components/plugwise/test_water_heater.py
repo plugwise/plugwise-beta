@@ -4,7 +4,10 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from homeassistant.components.water_heater import DOMAIN as WATER_HEATER_DOMAIN, SERVICE_SET_TEMPERATURE
+from homeassistant.components.water_heater import (
+    DOMAIN as WATER_HEATER_DOMAIN,
+    SERVICE_SET_TEMPERATURE,
+)
 from homeassistant.const import ATTR_ENTITY_ID, ATTR_TEMPERATURE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
