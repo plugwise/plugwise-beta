@@ -9,8 +9,6 @@ from homeassistant.components.water_heater import (
 from homeassistant.const import (
     ATTR_NAME,
     ATTR_TEMPERATURE,
-    STATE_OFF,
-    STATE_ON,
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant, callback
@@ -92,8 +90,8 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         """Return current readable operation mode."""
         if (state := self.device.get(BINARY_SENSORS, {}).get("dhw_state")) is not None:
             if state:
-                return STATE_ON
-            return STATE_OFF
+                return MODE_HEAT
+            return MODE_OFF
         return None
 
     @property
