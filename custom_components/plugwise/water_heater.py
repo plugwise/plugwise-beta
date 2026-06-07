@@ -1,5 +1,7 @@
 """Plugwise water heater component for HomeAssistant."""
 
+from typing import Any
+
 from homeassistant.components.water_heater import (
     WaterHeaterEntity,
     WaterHeaterEntityFeature,
