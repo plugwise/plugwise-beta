@@ -16,7 +16,6 @@ from .const import (
     LOGGER,
     LOWER_BOUND,
     MAX_BOILER_TEMP,
-    MAX_DHW_TEMP,
     RESOLUTION,
     TEMPERATURE_OFFSET,
     UPPER_BOUND,
@@ -43,13 +42,6 @@ NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key=MAX_BOILER_TEMP,
         translation_key=MAX_BOILER_TEMP,
-        device_class=NumberDeviceClass.TEMPERATURE,
-        entity_category=EntityCategory.CONFIG,
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-    ),
-    PlugwiseNumberEntityDescription(
-        key=MAX_DHW_TEMP,
-        translation_key=MAX_DHW_TEMP,
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
