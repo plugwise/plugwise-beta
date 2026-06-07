@@ -6,13 +6,21 @@ from homeassistant.components.water_heater import (
     WaterHeaterEntity,
     WaterHeaterEntityFeature,
 )
-from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, UnitOfTemperature
+from homeassistant.const import (
+    ATTR_NAME,
+    ATTR_TEMPERATURE,
+    STATE_OFF,
+    STATE_ON,
+    UnitOfTemperature,
+)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     BINARY_SENSORS,
     DEV_CLASS,
+    DHW_CM_SWITCH,
+    DHW_SETPOINT,
     LOGGER,
     LOWER_BOUND,
     MAX_DHW_TEMP,
@@ -24,9 +32,9 @@ from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 
-MODE_HEAT = "heat"
-MODE_OFF = "off"
-OPERATION_MODES = [MODE_HEAT, MODE_OFF]
+MODE_DHW_COMFORT = "Dhw comfort"
+MODE_DHW_NORMAL = "Dhw normal"
+OPERATION_MODES = [MODE_DHW_COMFORT, MODE_DHW_NORMAL]
 
 
 async def async_setup_entry(
@@ -85,8 +93,8 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         """Return current readable operation mode."""
         if (state := self.device.get(BINARY_SENSORS, {}).get("dhw_state")) is not None:
             if state:
-                return MODE_HEAT
-            return MODE_OFF
+                return MODE_DHW_COMFORT
+            return MODE_DHW_NORMAL
         return None
 
     @property
@@ -97,7 +105,21 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     @property
     def target_temperature(self) -> float | None:
         """Return the water temperature we try to reach."""
-        return self.device.get("max_dhw_temperature", {}).get(TARGET_TEMP)
+        return (
+            self.device.get("max_dhw_temperature", {}).get(TARGET_TEMP)
+            or self.device.get(SENSORS, {}).get(DHW_SETPOINT)
+        )
+
+    @plugwise_command
+    async def async_set_operation_mode(self, mode: str) -> None:
+        """Set the operation mode."""
+        state = STATE_ON if mode == MODE_DHW_COMFORT else STATE_OFF
+        await self.coordinator.api.set_switch_state(
+            self._dev_id,
+            None,
+            DHW_CM_SWITCH,
+            state,
+        )
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
