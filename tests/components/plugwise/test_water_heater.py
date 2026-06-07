@@ -25,5 +25,20 @@ async def test_adam_water_heater_snapshot(
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
 ) -> None:
-    """Test Adam water_heater snapshot."""
+    """Test Adam water_heater snapshot with dhw_state off."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
+
+
+@pytest.mark.parametrize("chosen_env", ["anna_v4_dhw"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [False], indirect=True)
+@pytest.mark.parametrize("platforms", [(WATER_HEATER_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_anna_water_heater_snapshot(
+    hass: HomeAssistant,
+    mock_smile_anna: MagicMock,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test Anna water_heater snapshot with dhw_state on."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
