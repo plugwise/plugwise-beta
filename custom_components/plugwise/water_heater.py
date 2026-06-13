@@ -54,7 +54,7 @@ async def async_setup_entry(
         entities: list[PlugwiseWaterHeaterEntity] = []
         for device_id in coordinator.new_devices:
             device = coordinator.data[device_id]
-            if device[DEV_CLASS] == "heater_central" and device.get(BINARY_SENSORS, {}).get("dhw_state") is not None:
+            if device.get("max_dhw_temperature") is not None:
                 entities.append(PlugwiseWaterHeaterEntity(coordinator, device_id))
                 LOGGER.debug("Add %s water_heater", device[ATTR_NAME])
         async_add_entities(entities)
