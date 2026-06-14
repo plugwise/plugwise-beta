@@ -300,12 +300,12 @@
     },
     "water_heater": {
       "name": "DHW mode",
-        "state": {
-          "auto": "Auto",
-          "boost": "Boost",
-          "comfort": "Comfort",
-          "off": "Off"
-        }
+      "state": {
+        "auto": "Auto",
+        "boost": "Boost",
+        "comfort": "Comfort",
+        "off": "Off"
+      }
     }
   },
   "exceptions": {

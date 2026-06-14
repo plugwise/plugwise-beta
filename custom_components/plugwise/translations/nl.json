@@ -300,12 +300,12 @@
     },
     "water_heater": {
       "name": "SWW modus",
-        "state": {
-          "auto": "Automatisch",
-          "boost": "Boost",
-          "comfort": "Comfort",
-          "off": "Uit"
-        }
+      "state": {
+        "auto": "Automatisch",
+        "boost": "Boost",
+        "comfort": "Comfort",
+        "off": "Uit"
+      }
     }
   },
   "exceptions": {
