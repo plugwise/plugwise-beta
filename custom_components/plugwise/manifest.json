@@ -7,7 +7,9 @@
   "integration_type": "hub",
   "iot_class": "local_polling",
   "loggers": ["plugwise"],
-  "requirements": ["plugwise@git+https://github.com/plugwise/python-plugwise.git/@dhw_update"],
+  "requirements": [
+    "plugwise@git+https://github.com/plugwise/python-plugwise.git/@dhw_update"
+  ],
   "version": "0.64.4",
   "zeroconf": ["_plugwise._tcp.local."]
 }
