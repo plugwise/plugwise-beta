@@ -299,12 +299,17 @@
       }
     },
     "water_heater": {
-      "name": "SWW modus",
-      "state": {
-        "auto": "Automatisch",
-        "boost": "Boost",
-        "comfort": "Comfort",
-        "off": "Uit"
+      "plugwise": {
+        "state_attributes": {
+          "dhw_mode": {
+            "state": {
+              "auto": "Automatisch",
+              "boost": "Boost",
+              "comfort": "Comfort",
+              "off": "Off"
+            }
+          }
+        }
       }
     }
   },
