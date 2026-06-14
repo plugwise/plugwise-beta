@@ -6,20 +6,12 @@ from homeassistant.components.water_heater import (
     WaterHeaterEntity,
     WaterHeaterEntityFeature,
 )
-from homeassistant.const import (
-    ATTR_NAME,
-    ATTR_TEMPERATURE,
-    STATE_OFF,
-    STATE_ON,
-    UnitOfTemperature,
-)
+from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     BINARY_SENSORS,
-    DEV_CLASS,
-    DHW_CM_SWITCH,
     DHW_SETPOINT,
     LOGGER,
     LOWER_BOUND,
