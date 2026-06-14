@@ -13,6 +13,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from .const import (
     BINARY_SENSORS,
     DHW_SETPOINT,
+    LOGGER,
     LOWER_BOUND,
     MAX_DHW_TEMP,
     SENSORS,
