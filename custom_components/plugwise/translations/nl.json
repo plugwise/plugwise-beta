@@ -107,8 +107,6 @@
       "select_dhw_mode": {
         "name": "SWW modus",
         "state": {
-          "auto": "Automatisch",
-          "boost": "Boost",
           "comfort": "Comfort",
           "off": "Uit"
         }
@@ -299,6 +297,15 @@
       "relay": {
         "name": "Schakelaar"
       }
+    },
+    "water_heater": {
+      "name": "SWW modus",
+        "state": {
+          "auto": "Automatisch",
+          "boost": "Boost",
+          "comfort": "Comfort",
+          "off": "Uit"
+        }
     }
   },
   "exceptions": {
