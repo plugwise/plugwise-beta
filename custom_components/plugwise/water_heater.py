@@ -13,7 +13,6 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from .const import (
     BINARY_SENSORS,
     DHW_SETPOINT,
-    LOGGER,
     LOWER_BOUND,
     MAX_DHW_TEMP,
     SENSORS,
@@ -74,10 +73,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         self._attr_max_temp = self.device.get("max_dhw_temperature", {}).get(UPPER_BOUND, 75.0)
         self._attr_min_temp = self.device.get("max_dhw_temperature", {}).get(LOWER_BOUND, 40.0)
         self._attr_supported_features = WaterHeaterEntityFeature.OPERATION_MODE
-        self._supports_temperature_control = False
-        if self.device.get("max_dhw_temperature"):
-            self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
-            self._supports_temperature_control = True
+        self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
 
 
     @property
@@ -87,7 +83,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
             if state:
                 return MODE_DHW_COMFORT
             return MODE_DHW_NORMAL
-        return None
+        return None  # pragma: no cover
 
     @property
     def current_temperature(self) -> float | None:
@@ -111,10 +107,4 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
-        if not self._supports_temperature_control or temperature is None:
-            return
-
         await self.coordinator.api.set_number(self._dev_id, MAX_DHW_TEMP, temperature)
-        LOGGER.debug(
-            "Setting %s to %s was successful", MAX_DHW_TEMP, temperature
-        )
