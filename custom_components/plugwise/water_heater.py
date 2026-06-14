@@ -24,10 +24,6 @@ from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 
-MODE_DHW_COMFORT = "Dhw comfort"
-MODE_DHW_NORMAL = "Dhw normal"
-OPERATION_MODES = [MODE_DHW_COMFORT, MODE_DHW_NORMAL]
-
 
 async def async_setup_entry(
     _hass: HomeAssistant,
@@ -59,7 +55,6 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     """Representation of a Plugwise water heater."""
 
     _attr_name = None
-    _attr_operation_list = OPERATION_MODES
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
 
     def __init__(
@@ -73,6 +68,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
 
         self._attr_max_temp = self.device.get("max_dhw_temperature", {}).get(UPPER_BOUND, 75.0)
         self._attr_min_temp = self.device.get("max_dhw_temperature", {}).get(LOWER_BOUND, 40.0)
+        self._attr_operation_list = self.device.get("dhw_modes", {})
         self._attr_supported_features = WaterHeaterEntityFeature.OPERATION_MODE
         self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
 
