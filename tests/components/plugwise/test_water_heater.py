@@ -57,9 +57,7 @@ async def test_adam_water_heater_setpoint_change(
         blocking=True,
     )
     assert mock_smile_adam_jip.set_dhw_mode.call_count == 1
-    mock_smile_adam_jip.set_dhw_mode.assert_called_with(
-        "e4684553153b44afbef2200885f379dc", "off",
-    )
+    mock_smile_adam_jip.set_dhw_mode.assert_called_with("off")
 
 
 @pytest.mark.parametrize("chosen_env", ["anna_v4_dhw"], indirect=True)
