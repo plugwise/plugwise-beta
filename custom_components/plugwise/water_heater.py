@@ -80,11 +80,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     @property
     def current_operation(self) -> str | None:
         """Return current readable operation mode."""
-        if (state := self.device.get(BINARY_SENSORS, {}).get("dhw_state")) is not None:
-            if state:
-                return MODE_DHW_COMFORT
-            return MODE_DHW_NORMAL
-        return None  # pragma: no cover
+        return self.device.get("dhw_mode")
 
     @property
     def current_temperature(self) -> float | None:
