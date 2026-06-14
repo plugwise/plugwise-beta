@@ -113,9 +113,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     @plugwise_command
     async def async_set_operation_mode(self, operation_mode: str) -> None:
         """Set the operation mode."""
-        await self.coordinator.api.set_select(
-            "water_heater_mode", "", operation_mode, None
-        )
+        await self.coordinator.api.set_dhw_mode(operation_mode)
 
     @plugwise_command
     async def async_set_temperature(self, **kwargs: Any) -> None:
