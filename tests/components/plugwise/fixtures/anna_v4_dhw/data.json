@@ -67,6 +67,11 @@
       "heating_state": false
     },
     "dev_class": "heater_central",
+    "dhw_mode": "off",
+    "dhw_modes": [
+      "comfort",
+      "off"
+    ],
     "location": "94c107dc6ac84ed98e9f68c0dd06bf71",
     "max_dhw_temperature": {
       "lower_bound": 30.0,
@@ -89,9 +94,6 @@
       "return_temperature": 32.0,
       "water_pressure": 2.2,
       "water_temperature": 45.0
-    },
-    "switches": {
-      "dhw_cm_switch": false
     },
     "vendor": "Bosch Thermotechniek B.V."
   }
