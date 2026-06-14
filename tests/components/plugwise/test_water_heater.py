@@ -5,7 +5,9 @@ from unittest.mock import MagicMock
 import pytest
 
 from homeassistant.components.water_heater import (
+    ATTR_OPERATION_MODE,
     DOMAIN as WATER_HEATER_DOMAIN,
+    SERVICE_SET_OPERATION_MODE,
     SERVICE_SET_TEMPERATURE,
 )
 from homeassistant.const import ATTR_ENTITY_ID, ATTR_TEMPERATURE
@@ -46,6 +48,17 @@ async def test_adam_water_heater_setpoint_change(
     assert mock_smile_adam_jip.set_number.call_count == 1
     mock_smile_adam_jip.set_number.assert_called_with(
         "e4684553153b44afbef2200885f379dc", "max_dhw_temperature", 65.0,
+    )
+
+    await hass.services.async_call(
+        WATER_HEATER_DOMAIN,
+        SERVICE_SET_OPERATION_MODE,
+        {ATTR_ENTITY_ID: "water_heater.opentherm", ATTR_OPERATION_MODE: "off"},
+        blocking=True,
+    )
+    assert mock_smile_adam_jip.set_dhw_mode.call_count == 1
+    mock_smile_adam_jip.set_dhw_mode.assert_called_with(
+        "e4684553153b44afbef2200885f379dc", "off",
     )
 
 
