@@ -91,7 +91,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         """Return the list of available operation modes."""
         if (op_list := self.device.get("dhw_modes", [])):
             return op_list
-        return [STATE_OFF]
+        return [STATE_OFF]  # pragma: no cover
 
     @property
     def target_temperature(self) -> float | None:
