@@ -131,6 +131,7 @@ WATER_PRESSURE: Final = "water_pressure"
 
 # Select constants
 AVAILABLE_SCHEDULES: Final = "available_schedules"
+DHW_MODE: Final = "dhw_mode"
 DHW_MODES: Final = "dhw_modes"
 GATEWAY_MODES: Final = "gateway_modes"
 REGULATION_MODES: Final = "regulation_modes"
