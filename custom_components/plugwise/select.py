@@ -131,7 +131,10 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         self.entity_description = entity_description
 
         self._location = device_id
-        if (location := self.device.get(LOCATION)) is not None:
+        if (
+            self.entity_description.key == SELECT_SCHEDULE
+            and (location := self.device.get(LOCATION)) is not None
+        ):
             self._location = location
 
     @property
