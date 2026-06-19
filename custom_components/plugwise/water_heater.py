@@ -73,7 +73,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         self._attr_unique_id = f"{device_id}-water_heater"
 
         max_dhw_temp_bounds = self.device.get(MAX_DHW_TEMP, {})
-        if max_dhw_temp_bounds is not None:
+        if max_dhw_temp_bounds:
             self._attr_max_temp = max_dhw_temp_bounds.get(UPPER_BOUND, 75.0)
             self._attr_min_temp = max_dhw_temp_bounds.get(LOWER_BOUND, 40.0)
         self._attr_supported_features = WaterHeaterEntityFeature.OPERATION_MODE
