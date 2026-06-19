@@ -132,7 +132,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
 
         self._device_or_location = device_id
         if (
-            self.entity_description.key == SELECT_SCHEDULE
+            self.entity_description.key in (SELECT_SCHEDULE, SELECT_ZONE_PROFILE)
             and (location := self.device.get(LOCATION)) is not None
         ):
             self._device_or_location = location
