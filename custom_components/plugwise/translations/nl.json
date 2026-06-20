@@ -300,16 +300,12 @@
     },
     "water_heater": {
       "plugwise": {
-        "state_attributes": {
-          "dhw_mode": {
-            "state": {
-              "auto": "Auto",
-              "boost": "Boost",
-              "comfort": "Comfort",
-              "eco": "Eco",
-              "off": "Off"
-            }
-          }
+        "state": {
+          "auto": "Auto",
+          "boost": "Boost",
+          "comfort": "Comfort",
+          "eco": "Eco",
+          "off": "Off"
         }
       }
     }
