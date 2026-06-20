@@ -19,12 +19,14 @@ from .const import (
     DHW_MODE,
     DHW_MODES,
     DHW_SETPOINT,
+    DHW_TEMP,
     LOGGER,
     LOWER_BOUND,
     MAX_DHW_TEMP,
     SENSORS,
     TARGET_TEMP,
     UPPER_BOUND,
+    WATER_TEMP,
 )
 from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
@@ -88,7 +90,9 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     @property
     def current_temperature(self) -> float | None:
         """Return the current water temperature."""
-        return self.device.get(SENSORS, {}).get("water_temperature")
+        boiler_temperature = self.device.get(SENSORS, {}).get(WATER_TEMP)
+        dhw_temperature = self.device.get(SENSORS, {}).get(DHW_TEMP)
+        return dhw_temperature or boiler_temperature
 
     @property
     def operation_list(self) -> list[str]:
