@@ -7,7 +7,7 @@
       "off"
     ],
     "climate_mode": "heat",
-    "control_state": "heating",
+    "control_state": "idle",
     "dev_class": "thermostat",
     "firmware": "2018-02-08T11:15:53+01:00",
     "hardware": "6539-1301-5002",
@@ -62,9 +62,9 @@
   "cd0e6156b1f04d5f952349ffbe397481": {
     "available": true,
     "binary_sensors": {
-      "dhw_state": false,
-      "flame_state": false,
-      "heating_state": true
+      "dhw_state": true,
+      "flame_state": true,
+      "heating_state": false
     },
     "dev_class": "heater_central",
     "dhw_mode": "off",

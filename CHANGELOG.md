@@ -2,8 +2,9 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.65.0
 
+- Replace DHW_comfort_mode switch by a select or a water_heater, bump plugwise to [v1.12.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.12.0) via PR [#1085](https://github.com/plugwise/plugwise-beta/pull/1085)
 - Downstream Core updates via PR [#1084](https://github.com/plugwise/plugwise-beta/pull/1084)
 
 ## v0.64.4

@@ -107,8 +107,6 @@
       "select_dhw_mode": {
         "name": "DHW mode",
         "state": {
-          "auto": "Auto",
-          "boost": "Boost",
           "comfort": "Comfort",
           "off": "Off"
         }
@@ -298,6 +296,17 @@
       },
       "relay": {
         "name": "Relay"
+      }
+    },
+    "water_heater": {
+      "plugwise": {
+        "state": {
+          "auto": "Auto",
+          "boost": "Boost",
+          "comfort": "Comfort",
+          "eco": "Eco",
+          "off": "Off"
+        }
       }
     }
   },

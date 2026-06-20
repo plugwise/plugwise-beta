@@ -130,9 +130,12 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         self._attr_unique_id = f"{device_id}-{entity_description.key}"
         self.entity_description = entity_description
 
-        self._location = device_id
-        if (location := self.device.get(LOCATION)) is not None:
-            self._location = location
+        self._device_or_location = device_id
+        if (
+            self.entity_description.key in (SELECT_SCHEDULE, SELECT_ZONE_PROFILE)
+            and (location := self.device.get(LOCATION)) is not None
+        ):
+            self._device_or_location = location
 
     @property
     def current_option(self) -> str | None:
@@ -148,10 +151,12 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option.
 
-        Location ID and STATE_ON are required for the thermostat-schedule select.
+        Appliance ID (= device_id) is required for the dhw_mode select
+        Locattion ID is required for the thermostat-schedule and zone_profile selects.
+        STATE_ON is required for the thermostat-schedule select.
         """
         await self.coordinator.api.set_select(
-            self.entity_description.key, self._location, option, STATE_ON
+            self.entity_description.key, self._device_or_location, option, STATE_ON
         )
         LOGGER.debug(
             "Set %s to %s was successful",
