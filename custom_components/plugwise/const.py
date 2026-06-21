@@ -77,8 +77,7 @@ MODEL_ID: Final = "model_id"
 VENDOR: Final = "vendor"
 
 # Number constants
-MAX_BOILER_TEMP: Final = "maximum_boiler_temperature"
-MAX_DHW_TEMP: Final = "max_dhw_temperature"
+BOILER_TEMP: Final = "boiler_temperature"
 LOWER_BOUND: Final = "lower_bound"
 RESOLUTION: Final = "resolution"
 TEMPERATURE_OFFSET: Final = "temperature_offset"
@@ -188,8 +187,8 @@ ZEROCONF_MAP: Final[dict[str, str]] = {
 }
 
 type NumberType = Literal[
-    "maximum_boiler_temperature",
-    "max_dhw_temperature",
+    "boiler_temperature",
+    "dhw_temperature",
     "temperature_offset",
 ]
 

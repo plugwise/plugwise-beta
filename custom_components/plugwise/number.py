@@ -14,9 +14,9 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
+    BOILER_TEMP,
     LOGGER,
     LOWER_BOUND,
-    MAX_BOILER_TEMP,
     RESOLUTION,
     TEMPERATURE_OFFSET,
     UPPER_BOUND,
@@ -41,8 +41,8 @@ class PlugwiseNumberEntityDescription(NumberEntityDescription):
 # Upstream + is there a reason we didn't rename this one prefixed?
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
-        key=MAX_BOILER_TEMP,
-        translation_key=MAX_BOILER_TEMP,
+        key=BOILER_TEMP,
+        translation_key=BOILER_TEMP,
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
