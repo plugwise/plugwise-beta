@@ -93,11 +93,8 @@
       }
     },
     "number": {
-      "max_dhw_temperature": {
-        "name": "Instelpunt sanitair warm water"
-      },
-      "maximum_boiler_temperature": {
-        "name": "Instelpunt maximale boiler temperatuur"
+      "boiler_temperature": {
+        "name": "Instelpunt boiler temperatuur"
       },
       "temperature_offset": {
         "name": "Temperatuurcompensatie"
