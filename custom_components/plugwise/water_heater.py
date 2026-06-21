@@ -15,18 +15,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .const import (
-    DHW_MODE,
-    DHW_MODES,
-    DHW_SETPOINT,
-    DHW_TEMP,
-    LOGGER,
-    LOWER_BOUND,
-    SENSORS,
-    TARGET_TEMP,
-    UPPER_BOUND,
-    WATER_TEMP,
-)
+from .const import DHW_MODE, DHW_MODES, DHW_TEMP, LOGGER, LOWER_BOUND, UPPER_BOUND
 from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
