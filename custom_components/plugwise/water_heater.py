@@ -50,7 +50,7 @@ async def async_setup_entry(
         entities: list[PlugwiseWaterHeaterEntity] = []
         for device_id in coordinator.new_devices:
             device = coordinator.data[device_id]
-            if device.get(MAX_DHW_TEMP) is not None:
+            if device.get(DHW_TEMP) is not None:
                 entities.append(PlugwiseWaterHeaterEntity(coordinator, device_id))
                 LOGGER.debug("Add %s water_heater", device[ATTR_NAME])
         async_add_entities(entities)
@@ -76,10 +76,10 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         entity_name = f"{self.device[ATTR_NAME]}".lower()
         self._attr_unique_id = f"{device_id}-{entity_name}"
 
-        max_dhw_temp_bounds = self.device.get(MAX_DHW_TEMP, {})
-        if max_dhw_temp_bounds:
-            self._attr_max_temp = max_dhw_temp_bounds.get(UPPER_BOUND, 75.0)
-            self._attr_min_temp = max_dhw_temp_bounds.get(LOWER_BOUND, 40.0)
+        self.dhw_temp = self.device.get(DHW_TEMP, {})
+        if self.dhw_temp:
+            self._attr_max_temp = self.dhw_temp.get(UPPER_BOUND, 75.0)
+            self._attr_min_temp = self.dhw_temp.get(LOWER_BOUND, 40.0)
         self._attr_supported_features = WaterHeaterEntityFeature.OPERATION_MODE
         self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
 
@@ -94,9 +94,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     @override
     def current_temperature(self) -> float | None:
         """Return the current water temperature."""
-        boiler_temperature = self.device.get(SENSORS, {}).get(WATER_TEMP)
-        dhw_temperature = self.device.get(SENSORS, {}).get(DHW_TEMP)
-        return dhw_temperature or boiler_temperature
+        return self.dhw_temp.get("current")
 
     @property
     @override
@@ -110,10 +108,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     @override
     def target_temperature(self) -> float | None:
         """Return the water temperature we try to reach."""
-        return (
-            self.device.get(MAX_DHW_TEMP, {}).get(TARGET_TEMP)
-            or self.device.get(SENSORS, {}).get(DHW_SETPOINT)
-        )
+        return self.dhw_temp.get("setpoint")
 
     @plugwise_command
     @override
@@ -127,4 +122,4 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is not None:
-            await self.coordinator.api.set_number(self._dev_id, MAX_DHW_TEMP, float(temperature))
+            await self.coordinator.api.set_number(self._dev_id, DHW_TEMP, float(temperature))
