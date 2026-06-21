@@ -92,7 +92,7 @@ async def test_anna_max_boiler_temp_change(
         NUMBER_DOMAIN,
         SERVICE_SET_VALUE,
         {
-            ATTR_ENTITY_ID: "number.opentherm_maximum_boiler_temperature_setpoint",
+            ATTR_ENTITY_ID: "number.opentherm_boiler_temperature_setpoint",
             ATTR_VALUE: 65,
         },
         blocking=True,
@@ -100,5 +100,5 @@ async def test_anna_max_boiler_temp_change(
 
     assert mock_smile_anna.set_number.call_count == 1
     mock_smile_anna.set_number.assert_called_with(
-        "1cbf783bb11e4a7c8a6843dee3a86927", "maximum_boiler_temperature", 65.0
+        "1cbf783bb11e4a7c8a6843dee3a86927", "boiler_temperature", 65.0
     )
