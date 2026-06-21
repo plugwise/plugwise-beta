@@ -66,25 +66,27 @@
       "flame_state": false,
       "heating_state": true
     },
+    "boiler_temperature": {
+      "current": 45.0,
+      "lower_bound": 0.0,
+      "resolution": 1.0,
+      "setpoint": 70.0,
+      "upper_bound": 100.0
+    },
     "dev_class": "heater_central",
     "dhw_mode": "off",
     "dhw_modes": [
       "comfort",
       "off"
     ],
-    "location": "94c107dc6ac84ed98e9f68c0dd06bf71",
-    "max_dhw_temperature": {
+    "dhw_temperature": {
+      "current": 45.0,
       "lower_bound": 30.0,
       "resolution": 0.01,
       "setpoint": 60.0,
       "upper_bound": 60.0
     },
-    "maximum_boiler_temperature": {
-      "lower_bound": 0.0,
-      "resolution": 1.0,
-      "setpoint": 70.0,
-      "upper_bound": 100.0
-    },
+    "location": "94c107dc6ac84ed98e9f68c0dd06bf71",
     "model": "Generic heater",
     "model_id": "2.32",
     "name": "OpenTherm",
@@ -92,8 +94,7 @@
       "intended_boiler_temperature": 39.9,
       "modulation_level": 0.0,
       "return_temperature": 32.0,
-      "water_pressure": 2.2,
-      "water_temperature": 45.0
+      "water_pressure": 2.2
     },
     "vendor": "Bosch Thermotechniek B.V."
   }
