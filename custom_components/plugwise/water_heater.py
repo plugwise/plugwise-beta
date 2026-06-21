@@ -4,12 +4,14 @@ from typing import Any, override
 
 from homeassistant.components.water_heater import (
     WaterHeaterEntity,
+    WaterHeaterEntityDescription,
     WaterHeaterEntityFeature,
 )
 from homeassistant.const import (
     ATTR_NAME,
     ATTR_TEMPERATURE,
     STATE_OFF,
+    STATE_ON,
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant, callback
@@ -20,6 +22,32 @@ from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 
+
+@dataclass(frozen=True, kw_only=True)
+class PlugwiseWaterHeaterEntityDescription(WaterHeaterEntityDescription):
+    """Class describing Plugwise WaterHeater entities."""
+
+    key: WaterHeaterType
+    options_key: WaterHeaterOptionsType
+
+# Upstream + is there a reason we didn't rename this one prefixed?
+WATERHEATER_TYPES = (
+    PlugwiseWaterHeaterEntityDescription(
+        key=BOILER_TEMP,
+        translation_key=BOILER_TEMP,
+        device_class=NumberDeviceClass.TEMPERATURE,
+        entity_category=EntityCategory.CONFIG,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    ),
+    PlugwiseWaterHeaterEntityDescription(
+        key=DHW_TEMP,
+        translation_key=DHW_TEMP,
+        device_class=NumberDeviceClass.TEMPERATURE,
+        entity_category=EntityCategory.CONFIG,
+        options_key=DHW_MODES
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    ),
+)
 
 async def async_setup_entry(
     _hass: HomeAssistant,
@@ -87,10 +115,13 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     @property
     @override
     def operation_list(self) -> list[str]:
-        """Return the list of available operation modes."""
-        if (op_list := self.device.get(DHW_MODES, [])):
+        """Return the list of available operation modes.
+
+        When no list is available the water_heater only has an "on" mode.
+        """
+        if (op_list := self.device.get(self.entity_description.options_key, [])):
             return op_list
-        return [STATE_OFF]  # pragma: no cover
+        return [STATE_ON]
 
     @property
     @override
