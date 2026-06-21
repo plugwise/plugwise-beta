@@ -609,7 +609,7 @@
     'state': '-0.5',
   })
 # ---
-# name: test_anna_number_entities[platforms0-True-anna_heatpump_heating][number.opentherm_maximum_boiler_temperature_setpoint-entry]
+# name: test_anna_number_entities[platforms0-True-anna_heatpump_heating][number.opentherm_boiler_temperature_setpoint-entry]
   EntityRegistryEntrySnapshot({
     'aliases': list([
       None,
@@ -628,7 +628,7 @@
     'disabled_by': None,
     'domain': 'number',
     'entity_category': <EntityCategory.CONFIG: 'config'>,
-    'entity_id': 'number.opentherm_maximum_boiler_temperature_setpoint',
+    'entity_id': 'number.opentherm_boiler_temperature_setpoint',
     'has_entity_name': True,
     'hidden_by': None,
     'icon': None,
@@ -636,26 +636,26 @@
     'labels': set({
     }),
     'name': None,
-    'object_id_base': 'Maximum boiler temperature setpoint',
+    'object_id_base': 'Boiler temperature setpoint',
     'options': dict({
     }),
     'original_device_class': <NumberDeviceClass.TEMPERATURE: 'temperature'>,
     'original_icon': None,
-    'original_name': 'Maximum boiler temperature setpoint',
+    'original_name': 'Boiler temperature setpoint',
     'platform': 'plugwise',
     'previous_unique_id': None,
     'suggested_object_id': None,
     'supported_features': 0,
-    'translation_key': 'maximum_boiler_temperature',
-    'unique_id': '1cbf783bb11e4a7c8a6843dee3a86927-maximum_boiler_temperature',
+    'translation_key': 'boiler_temperature',
+    'unique_id': '1cbf783bb11e4a7c8a6843dee3a86927-boiler_temperature',
     'unit_of_measurement': <UnitOfTemperature.CELSIUS: '°C'>,
   })
 # ---
-# name: test_anna_number_entities[platforms0-True-anna_heatpump_heating][number.opentherm_maximum_boiler_temperature_setpoint-state]
+# name: test_anna_number_entities[platforms0-True-anna_heatpump_heating][number.opentherm_boiler_temperature_setpoint-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'device_class': 'temperature',
-      'friendly_name': 'OpenTherm Maximum boiler temperature setpoint',
+      'friendly_name': 'OpenTherm Boiler temperature setpoint',
       'max': 100.0,
       'min': 0.0,
       'mode': <NumberMode.BOX: 'box'>,
@@ -663,7 +663,7 @@
       'unit_of_measurement': <UnitOfTemperature.CELSIUS: '°C'>,
     }),
     'context': <ANY>,
-    'entity_id': 'number.opentherm_maximum_boiler_temperature_setpoint',
+    'entity_id': 'number.opentherm_boiler_temperature_setpoint',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
