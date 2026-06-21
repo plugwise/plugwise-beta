@@ -22,7 +22,6 @@ from .const import (
     DHW_TEMP,
     LOGGER,
     LOWER_BOUND,
-    MAX_DHW_TEMP,
     SENSORS,
     TARGET_TEMP,
     UPPER_BOUND,
