@@ -101,18 +101,18 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
+        description: PlugwiseWaterHeaterEntityDescription,
     ) -> None:
         """Initialise the water_heater."""
         super().__init__(coordinator, device_id)
-        self._attr_unique_id = f"{device_id}-water_heater"
-
+        self.entity_description = description
         self.dhw_temp = self.device.get(DHW_TEMP, {})
         if self.dhw_temp:
             self._attr_max_temp = self.dhw_temp.get(UPPER_BOUND, 75.0)
             self._attr_min_temp = self.dhw_temp.get(LOWER_BOUND, 40.0)
         self._attr_supported_features = WaterHeaterEntityFeature.OPERATION_MODE
         self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
-
+        self._attr_unique_id = f"{device_id}-water_heater"
 
     @property
     @override
