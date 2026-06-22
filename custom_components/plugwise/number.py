@@ -114,8 +114,6 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self._attr_native_min_value = self.ctrl.get(LOWER_BOUND, 0.0)  # Upstream const
 
         native_step = self.ctrl.get(RESOLUTION, 0.5)  # Upstream const
-        if description.key != TEMPERATURE_OFFSET:  # Upstream const
-            native_step = max(native_step, 0.5)
         self._attr_native_step = native_step
 
     @property
