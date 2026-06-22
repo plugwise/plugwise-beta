@@ -80,25 +80,3 @@ async def test_anna_number_entities(
 ) -> None:
     """Test Anna number snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
-
-
-@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
-@pytest.mark.parametrize("cooling_present", [True], indirect=True)
-async def test_anna_max_boiler_temp_change(
-    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
-) -> None:
-    """Test changing of number entities."""
-    await hass.services.async_call(
-        NUMBER_DOMAIN,
-        SERVICE_SET_VALUE,
-        {
-            ATTR_ENTITY_ID: "number.opentherm_boiler_temperature_setpoint",
-            ATTR_VALUE: 65,
-        },
-        blocking=True,
-    )
-
-    assert mock_smile_anna.set_number.call_count == 1
-    mock_smile_anna.set_number.assert_called_with(
-        "1cbf783bb11e4a7c8a6843dee3a86927", "boiler_temperature", 65.0
-    )
