@@ -50,7 +50,7 @@
     "dev_class": "heater_central",
     "dhw_modes": [
       "comfort",
-      "off"
+      "eco"
     ],
     "location": "da7be222ab3b420c927f3e49fade0304",
     "model": "Generic heater",
