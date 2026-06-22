@@ -93,9 +93,6 @@
       }
     },
     "number": {
-      "boiler_temperature": {
-        "name": "Instelpunt boiler temperatuur"
-      },
       "temperature_offset": {
         "name": "Temperatuurcompensatie"
       }
@@ -296,14 +293,18 @@
       }
     },
     "water_heater": {
-      "plugwise": {
-        "state": {
-          "auto": "Auto",
-          "boost": "Boost",
-          "comfort": "Comfort",
-          "eco": "Eco",
-          "off": "Off"
-        }
+      "boiler_temperature": {
+        "name": "Boiler temperatuur"
+      }
+      "dhw_temperature": {
+        "name": "SWW temperatuur"
+      }
+      "state": {
+        "auto": "Auto",
+        "boost": "Boost",
+        "comfort": "Comfort",
+        "eco": "Eco",
+        "off": "Off"
       }
     }
   },

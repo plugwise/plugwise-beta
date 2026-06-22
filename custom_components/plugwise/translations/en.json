@@ -93,9 +93,6 @@
       }
     },
     "number": {
-      "boiler_temperature": {
-        "name": "Boiler temperature setpoint"
-      },
       "temperature_offset": {
         "name": "Temperature offset"
       }
@@ -296,14 +293,18 @@
       }
     },
     "water_heater": {
-      "plugwise": {
-        "state": {
-          "auto": "Auto",
-          "boost": "Boost",
-          "comfort": "Comfort",
-          "eco": "Eco",
-          "off": "Off"
-        }
+      "boiler_temperature": {
+        "name": "Boiler temperature"
+      },
+      "dhw_temperature": {
+        "name": "DHW temperature"
+      },
+      "state": {
+        "auto": "Auto",
+        "boost": "Boost",
+        "comfort": "Comfort",
+        "eco": "Eco",
+        "off": "Off"
       }
     }
   },
