@@ -1,5 +1,6 @@
 """Plugwise water heater component for HomeAssistant."""
 
+from dataclasses import dataclass
 from typing import Any, override
 
 from homeassistant.components.water_heater import (
@@ -10,14 +11,24 @@ from homeassistant.components.water_heater import (
 from homeassistant.const import (
     ATTR_NAME,
     ATTR_TEMPERATURE,
-    STATE_OFF,
     STATE_ON,
+    EntityCategory,
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .const import DHW_MODE, DHW_MODES, DHW_TEMP, LOGGER, LOWER_BOUND, UPPER_BOUND
+from .const import (
+    BOILER_TEMP,
+    DHW_MODE,
+    DHW_MODES,
+    DHW_TEMP,
+    LOGGER,
+    LOWER_BOUND,
+    UPPER_BOUND,
+    WaterHeaterOptionsType,
+    WaterHeaterType,
+)
 from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
@@ -28,24 +39,23 @@ class PlugwiseWaterHeaterEntityDescription(WaterHeaterEntityDescription):
     """Class describing Plugwise WaterHeater entities."""
 
     key: WaterHeaterType
-    options_key: WaterHeaterOptionsType
+    options_key: WaterHeaterOptionsType | None
 
 # Upstream + is there a reason we didn't rename this one prefixed?
 WATERHEATER_TYPES = (
     PlugwiseWaterHeaterEntityDescription(
         key=BOILER_TEMP,
         translation_key=BOILER_TEMP,
-        device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        options_key=None,
+        unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
     PlugwiseWaterHeaterEntityDescription(
         key=DHW_TEMP,
         translation_key=DHW_TEMP,
-        device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        options_key=DHW_MODES
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        options_key=DHW_MODES,
+        unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
 )
 
@@ -66,9 +76,15 @@ async def async_setup_entry(
         entities: list[PlugwiseWaterHeaterEntity] = []
         for device_id in coordinator.new_devices:
             device = coordinator.data[device_id]
-            if device.get(DHW_TEMP) is not None:
-                entities.append(PlugwiseWaterHeaterEntity(coordinator, device_id))
-                LOGGER.debug("Add %s water_heater", device[ATTR_NAME])
+            for description in WATERHEATER_TYPES:
+                if description.key in device:
+                    entities.append(
+                        PlugwiseWaterHeaterEntity(coordinator, device_id, description)
+                    )
+                    LOGGER.debug(
+                        "Add %s %s water_heater", device["name"], description.translation_key
+                    )
+
         async_add_entities(entities)
 
     _add_entities()
