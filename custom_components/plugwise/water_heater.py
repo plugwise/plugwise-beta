@@ -9,7 +9,6 @@ from homeassistant.components.water_heater import (
     WaterHeaterEntityFeature,
 )
 from homeassistant.const import (
-    ATTR_NAME,
     ATTR_TEMPERATURE,
     STATE_ON,
     EntityCategory,
@@ -131,8 +130,11 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
 
         When no list is available the water_heater only has an "on" mode.
         """
-        if (op_list := self.device.get(self.entity_description.options_key, [])):
-            return op_list
+        if self.entity_description.options_key is not None:
+            op_list = self.device.get(self.entity_description.options_key)
+            if op_list is not None:
+                return cast(list[str], op_list)
+
         return [STATE_ON]
 
     @property
