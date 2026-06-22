@@ -74,10 +74,10 @@
       "upper_bound": 100.0
     },
     "dev_class": "heater_central",
-    "dhw_mode": "off",
+    "dhw_mode": "eco",
     "dhw_modes": [
       "comfort",
-      "off"
+      "eco"
     ],
     "dhw_temperature": {
       "current": 45.0,

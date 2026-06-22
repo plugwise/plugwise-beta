@@ -17,12 +17,12 @@
     "dev_class": "heater_central",
     "dhw_modes": [
       "comfort",
-      "off"
+      "eco"
     ],
     "location": "bc93488efab249e5bc54fd7e175a6f91",
     "model": "Generic heater",
     "name": "OpenTherm",
-    "select_dhw_mode": "off",
+    "select_dhw_mode": "eco",
     "sensors": {
       "intended_boiler_temperature": 17.5
     }
