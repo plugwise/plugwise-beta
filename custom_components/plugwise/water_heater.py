@@ -48,14 +48,12 @@ WATERHEATER_TYPES = (
         translation_key=BOILER_TEMP,
         entity_category=EntityCategory.CONFIG,
         options_key=None,
-        unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
     PlugwiseWaterHeaterEntityDescription(
         key=DHW_TEMP,
         translation_key=DHW_TEMP,
         entity_category=EntityCategory.CONFIG,
         options_key=DHW_MODES,
-        unit_of_measurement=UnitOfTemperature.CELSIUS,
     ),
 )
 
@@ -94,8 +92,7 @@ async def async_setup_entry(
 class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     """Representation of a Plugwise water heater."""
 
-    _attr_name = None
-    _attr_temperature_unit = UnitOfTemperature.CELSIUS
+    entity_description: PlugwiseWaterHeaterEntityDescription
 
     def __init__(
         self,
@@ -112,6 +109,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
             self._attr_min_temp = self.dhw_temp.get(LOWER_BOUND, 40.0)
         self._attr_supported_features = WaterHeaterEntityFeature.OPERATION_MODE
         self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
+        self._attr_temperature_unit = UnitOfTemperature.CELSIUS
         self._attr_unique_id = f"{device_id}-{description.key}"
 
     @property
