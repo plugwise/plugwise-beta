@@ -42,7 +42,7 @@ async def test_adam_water_heater_setpoint_change(
     await hass.services.async_call(
         WATER_HEATER_DOMAIN,
         SERVICE_SET_TEMPERATURE,
-        {ATTR_ENTITY_ID: "water_heater.opentherm", ATTR_TEMPERATURE: 65},
+        {ATTR_ENTITY_ID: "water_heater.opentherm_dhw_temperature", ATTR_TEMPERATURE: 65},
         blocking=True,
     )
     assert mock_smile_adam_jip.set_number.call_count == 1
@@ -53,12 +53,12 @@ async def test_adam_water_heater_setpoint_change(
     await hass.services.async_call(
         WATER_HEATER_DOMAIN,
         SERVICE_SET_OPERATION_MODE,
-        {ATTR_ENTITY_ID: "water_heater.opentherm", ATTR_OPERATION_MODE: "off"},
+        {ATTR_ENTITY_ID: "water_heater.opentherm_dhw_temperature", ATTR_OPERATION_MODE: "eco"},
         blocking=True,
     )
     assert mock_smile_adam_jip.set_dhw_mode.call_count == 1
     mock_smile_adam_jip.set_dhw_mode.assert_called_with(
-        "dhw_mode", "e4684553153b44afbef2200885f379dc", 2, "off"
+        "dhw_mode", "e4684553153b44afbef2200885f379dc", 2, "eco"
     )
 
 
