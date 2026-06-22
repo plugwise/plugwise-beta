@@ -116,7 +116,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
             self._attr_min_temp = self.dhw_temp.get(LOWER_BOUND, 40.0)
         self._attr_supported_features = WaterHeaterEntityFeature.OPERATION_MODE
         self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
-        self._attr_unique_id = f"{device_id}-water_heater"
+        self._attr_unique_id = f"{device_id}-{description.key}"
 
     @property
     @override
