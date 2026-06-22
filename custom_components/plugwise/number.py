@@ -40,13 +40,6 @@ class PlugwiseNumberEntityDescription(NumberEntityDescription):
 # Upstream + is there a reason we didn't rename this one prefixed?
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
-        key=BOILER_TEMP,
-        translation_key=BOILER_TEMP,
-        device_class=NumberDeviceClass.TEMPERATURE,
-        entity_category=EntityCategory.CONFIG,
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-    ),
-    PlugwiseNumberEntityDescription(
         key=TEMPERATURE_OFFSET,
         translation_key=TEMPERATURE_OFFSET,
         device_class=NumberDeviceClass.TEMPERATURE,
