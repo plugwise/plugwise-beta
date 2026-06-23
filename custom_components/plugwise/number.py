@@ -13,7 +13,6 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
-    BOILER_TEMP,
     LOGGER,
     LOWER_BOUND,
     RESOLUTION,
