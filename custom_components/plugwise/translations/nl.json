@@ -295,16 +295,9 @@
     "water_heater": {
       "boiler_temperature": {
         "name": "Boiler temperatuur"
-      }
+      },
       "dhw_temperature": {
         "name": "SWW temperatuur"
-      }
-      "state": {
-        "auto": "Auto",
-        "boost": "Boost",
-        "comfort": "Comfort",
-        "eco": "Eco",
-        "off": "Off"
       }
     }
   },
