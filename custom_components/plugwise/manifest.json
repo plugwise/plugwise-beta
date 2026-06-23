@@ -8,7 +8,7 @@
   "iot_class": "local_polling",
   "loggers": ["plugwise"],
   "requirements": [
-    "plugwise@git+https://github.com/plugwise/python-plugwise.git/@water_heater_2"
+    "plugwise@git+https://github.com/plugwise/python-plugwise.git@water_heater_2"
   ],
   "version": "0.65.0",
   "zeroconf": ["_plugwise._tcp.local."]
