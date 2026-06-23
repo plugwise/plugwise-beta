@@ -298,13 +298,6 @@
       },
       "dhw_temperature": {
         "name": "DHW temperature"
-      },
-      "state": {
-        "auto": "Auto",
-        "boost": "Boost",
-        "comfort": "Comfort",
-        "eco": "Eco",
-        "off": "Off"
       }
     }
   },
