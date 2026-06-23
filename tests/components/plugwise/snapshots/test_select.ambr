@@ -386,7 +386,7 @@
     'capabilities': dict({
       'options': list([
         'comfort',
-        'off',
+        'eco',
       ]),
     }),
     'config_entry_id': <ANY>,
@@ -425,7 +425,7 @@
       'friendly_name': 'OpenTherm DHW mode',
       'options': list([
         'comfort',
-        'off',
+        'eco',
       ]),
     }),
     'context': <ANY>,
@@ -433,7 +433,7 @@
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
-    'state': 'off',
+    'state': 'eco',
   })
 # ---
 # name: test_adam_select_entities[platforms0][select.badkamer_thermostat_schedule-entry]

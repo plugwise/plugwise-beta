@@ -1,5 +1,5 @@
 # serializer version: 1
-# name: test_adam_water_heater_snapshot[platforms0][water_heater.opentherm-entry]
+# name: test_adam_water_heater_snapshot[platforms0][water_heater.opentherm_boiler_temperature-entry]
   EntityRegistryEntrySnapshot({
     'aliases': list([
       None,
@@ -9,8 +9,7 @@
       'max_temp': 60.0,
       'min_temp': 40.0,
       'operation_list': list([
-        'comfort',
-        'off',
+        'on',
       ]),
     }),
     'config_entry_id': <ANY>,
@@ -19,8 +18,8 @@
     'device_id': <ANY>,
     'disabled_by': None,
     'domain': 'water_heater',
-    'entity_category': None,
-    'entity_id': 'water_heater.opentherm',
+    'entity_category': <EntityCategory.CONFIG: 'config'>,
+    'entity_id': 'water_heater.opentherm_boiler_temperature',
     'has_entity_name': True,
     'hidden_by': None,
     'icon': None,
@@ -28,47 +27,182 @@
     'labels': set({
     }),
     'name': None,
-    'object_id_base': None,
+    'object_id_base': 'Boiler temperature',
     'options': dict({
     }),
     'original_device_class': None,
     'original_icon': None,
-    'original_name': None,
+    'original_name': 'Boiler temperature',
     'platform': 'plugwise',
     'previous_unique_id': None,
     'suggested_object_id': None,
     'supported_features': <WaterHeaterEntityFeature: 3>,
-    'translation_key': None,
-    'unique_id': 'e4684553153b44afbef2200885f379dc-water_heater',
+    'translation_key': 'boiler_temperature',
+    'unique_id': 'e4684553153b44afbef2200885f379dc-boiler_temperature',
     'unit_of_measurement': None,
   })
 # ---
-# name: test_adam_water_heater_snapshot[platforms0][water_heater.opentherm-state]
+# name: test_adam_water_heater_snapshot[platforms0][water_heater.opentherm_boiler_temperature-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'current_temperature': 37.3,
-      'friendly_name': 'OpenTherm',
+      'friendly_name': 'OpenTherm Boiler temperature',
       'max_temp': 60.0,
       'min_temp': 40.0,
       'operation_list': list([
-        'comfort',
-        'off',
+        'on',
       ]),
-      'operation_mode': 'off',
+      'operation_mode': 'eco',
       'supported_features': <WaterHeaterEntityFeature: 3>,
       'target_temp_high': None,
       'target_temp_low': None,
       'temperature': 60.0,
     }),
     'context': <ANY>,
-    'entity_id': 'water_heater.opentherm',
+    'entity_id': 'water_heater.opentherm_boiler_temperature',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
-    'state': 'off',
+    'state': 'eco',
   })
 # ---
-# name: test_anna_water_heater_snapshot[platforms0-False-anna_v4_dhw][water_heater.opentherm-entry]
+# name: test_adam_water_heater_snapshot[platforms0][water_heater.opentherm_dhw_temperature-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': dict({
+      'max_temp': 60.0,
+      'min_temp': 40.0,
+      'operation_list': list([
+        'comfort',
+        'eco',
+      ]),
+    }),
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'water_heater',
+    'entity_category': <EntityCategory.CONFIG: 'config'>,
+    'entity_id': 'water_heater.opentherm_dhw_temperature',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'DHW temperature',
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'DHW temperature',
+    'platform': 'plugwise',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': <WaterHeaterEntityFeature: 3>,
+    'translation_key': 'dhw_temperature',
+    'unique_id': 'e4684553153b44afbef2200885f379dc-dhw_temperature',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_adam_water_heater_snapshot[platforms0][water_heater.opentherm_dhw_temperature-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'current_temperature': 37.3,
+      'friendly_name': 'OpenTherm DHW temperature',
+      'max_temp': 60.0,
+      'min_temp': 40.0,
+      'operation_list': list([
+        'comfort',
+        'eco',
+      ]),
+      'operation_mode': 'eco',
+      'supported_features': <WaterHeaterEntityFeature: 3>,
+      'target_temp_high': None,
+      'target_temp_low': None,
+      'temperature': 60.0,
+    }),
+    'context': <ANY>,
+    'entity_id': 'water_heater.opentherm_dhw_temperature',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'eco',
+  })
+# ---
+# name: test_anna_water_heater_snapshot[platforms0-False-anna_v4_dhw][water_heater.opentherm_boiler_temperature-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': dict({
+      'max_temp': 60.0,
+      'min_temp': 30.0,
+      'operation_list': list([
+        'on',
+      ]),
+    }),
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'water_heater',
+    'entity_category': <EntityCategory.CONFIG: 'config'>,
+    'entity_id': 'water_heater.opentherm_boiler_temperature',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Boiler temperature',
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'Boiler temperature',
+    'platform': 'plugwise',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': <WaterHeaterEntityFeature: 3>,
+    'translation_key': 'boiler_temperature',
+    'unique_id': 'cd0e6156b1f04d5f952349ffbe397481-boiler_temperature',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_anna_water_heater_snapshot[platforms0-False-anna_v4_dhw][water_heater.opentherm_boiler_temperature-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'current_temperature': 45.0,
+      'friendly_name': 'OpenTherm Boiler temperature',
+      'max_temp': 60.0,
+      'min_temp': 30.0,
+      'operation_list': list([
+        'on',
+      ]),
+      'operation_mode': 'eco',
+      'supported_features': <WaterHeaterEntityFeature: 3>,
+      'target_temp_high': None,
+      'target_temp_low': None,
+      'temperature': 60.0,
+    }),
+    'context': <ANY>,
+    'entity_id': 'water_heater.opentherm_boiler_temperature',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'eco',
+  })
+# ---
+# name: test_anna_water_heater_snapshot[platforms0-False-anna_v4_dhw][water_heater.opentherm_dhw_temperature-entry]
   EntityRegistryEntrySnapshot({
     'aliases': list([
       None,
@@ -79,7 +213,7 @@
       'min_temp': 30.0,
       'operation_list': list([
         'comfort',
-        'off',
+        'eco',
       ]),
     }),
     'config_entry_id': <ANY>,
@@ -88,8 +222,8 @@
     'device_id': <ANY>,
     'disabled_by': None,
     'domain': 'water_heater',
-    'entity_category': None,
-    'entity_id': 'water_heater.opentherm',
+    'entity_category': <EntityCategory.CONFIG: 'config'>,
+    'entity_id': 'water_heater.opentherm_dhw_temperature',
     'has_entity_name': True,
     'hidden_by': None,
     'icon': None,
@@ -97,43 +231,43 @@
     'labels': set({
     }),
     'name': None,
-    'object_id_base': None,
+    'object_id_base': 'DHW temperature',
     'options': dict({
     }),
     'original_device_class': None,
     'original_icon': None,
-    'original_name': None,
+    'original_name': 'DHW temperature',
     'platform': 'plugwise',
     'previous_unique_id': None,
     'suggested_object_id': None,
     'supported_features': <WaterHeaterEntityFeature: 3>,
-    'translation_key': None,
-    'unique_id': 'cd0e6156b1f04d5f952349ffbe397481-water_heater',
+    'translation_key': 'dhw_temperature',
+    'unique_id': 'cd0e6156b1f04d5f952349ffbe397481-dhw_temperature',
     'unit_of_measurement': None,
   })
 # ---
-# name: test_anna_water_heater_snapshot[platforms0-False-anna_v4_dhw][water_heater.opentherm-state]
+# name: test_anna_water_heater_snapshot[platforms0-False-anna_v4_dhw][water_heater.opentherm_dhw_temperature-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'current_temperature': 45.0,
-      'friendly_name': 'OpenTherm',
+      'friendly_name': 'OpenTherm DHW temperature',
       'max_temp': 60.0,
       'min_temp': 30.0,
       'operation_list': list([
         'comfort',
-        'off',
+        'eco',
       ]),
-      'operation_mode': 'off',
+      'operation_mode': 'eco',
       'supported_features': <WaterHeaterEntityFeature: 3>,
       'target_temp_high': None,
       'target_temp_low': None,
       'temperature': 60.0,
     }),
     'context': <ANY>,
-    'entity_id': 'water_heater.opentherm',
+    'entity_id': 'water_heater.opentherm_dhw_temperature',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
-    'state': 'off',
+    'state': 'eco',
   })
 # ---
