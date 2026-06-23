@@ -102,16 +102,15 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         """Initialise the water_heater."""
         super().__init__(coordinator, device_id)
         self.entity_description = description
-
         entity_name = f"{self.device[ATTR_NAME]}".lower()
         self._attr_unique_id = f"{device_id}-{entity_name}"
-
-        self.dhw_temp = self.device.get(DHW_TEMP, {})
-        if self.dhw_temp:
-            self._attr_max_temp = self.dhw_temp.get(UPPER_BOUND, 75.0)
-            self._attr_min_temp = self.dhw_temp.get(LOWER_BOUND, 40.0)
-        self._attr_supported_features = WaterHeaterEntityFeature.OPERATION_MODE
-        self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
+        temp_data = self.device.get(description.key, {})
+        if temp_data:
+            self._attr_max_temp = temp_data.get(UPPER_BOUND, 75.0)
+            self._attr_min_temp = temp_data.get(LOWER_BOUND, 40.0)
+        self._attr_supported_features = WaterHeaterEntityFeature.TARGET_TEMPERATURE
+        if description.options_key is not None:
+            self._attr_supported_features |= WaterHeaterEntityFeature.OPERATION_MODE
         self._attr_temperature_unit = UnitOfTemperature.CELSIUS
         self._attr_unique_id = f"{device_id}-{description.key}"
 
@@ -119,13 +118,15 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     @override
     def current_operation(self) -> str | None:
         """Return current readable operation mode."""
+        if self.entity_description.options_key is None:
+            return STATE_ON
         return self.device.get(DHW_MODE)
 
     @property
     @override
     def current_temperature(self) -> float | None:
         """Return the current water temperature."""
-        return self.dhw_temp.get("current")
+        return self.device.get(self.entity_description.key, {}).get("current")
 
     @property
     @override
@@ -145,12 +146,14 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     @override
     def target_temperature(self) -> float | None:
         """Return the water temperature we try to reach."""
-        return self.dhw_temp.get("setpoint")
+        return self.device.get(self.entity_description.key, {}).get("setpoint")
 
     @plugwise_command
     @override
     async def async_set_operation_mode(self, operation_mode: str) -> None:
         """Set the operation mode."""
+        if self.entity_description.options_key is None:
+            return
         list_type: int = len(self.operation_list)
         await self.coordinator.api.set_dhw_mode(DHW_MODE, self._dev_id, list_type, operation_mode)
 
@@ -159,4 +162,8 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is not None:
-            await self.coordinator.api.set_number(self._dev_id, DHW_TEMP, float(temperature))
+            await self.coordinator.api.set_number(
+                self._dev_id,
+                self.entity_description.key,
+                float(temperature),
+            )
