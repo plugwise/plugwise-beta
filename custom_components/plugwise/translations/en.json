@@ -102,7 +102,7 @@
         "name": "DHW mode",
         "state": {
           "comfort": "Comfort",
-          "off": "Off"
+          "eco": "Eco"
         }
       },
       "select_gateway_mode": {
