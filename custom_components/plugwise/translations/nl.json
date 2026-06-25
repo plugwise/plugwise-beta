@@ -102,7 +102,7 @@
         "name": "SWW modus",
         "state": {
           "comfort": "Comfort",
-          "off": "Uit"
+          "eco": "Eco"
         }
       },
       "select_gateway_mode": {
