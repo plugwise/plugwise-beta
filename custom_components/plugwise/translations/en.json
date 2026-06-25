@@ -298,12 +298,16 @@
       },
       "dhw_temperature": {
         "name": "DHW temperature",
-        "state": {
-          "auto": "Auto",
-          "boost": "Boost",
-          "comfort": "Comfort",
-          "eco": "Eco",
-          "off": "Off"
+        "state_attributes": {
+          "dhw_modes": {
+            "state": {
+              "auto": "Auto",
+              "boost": "Boost",
+              "comfort": "Comfort",
+              "eco": "Eco",
+              "off": "Off"
+            }
+          }
         }
       }
     }
