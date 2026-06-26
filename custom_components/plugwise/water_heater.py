@@ -1,7 +1,7 @@
 """Plugwise water heater component for HomeAssistant."""
 
 from dataclasses import dataclass
-from typing import Any, override
+from typing import Any, cast, override
 
 from homeassistant.components.water_heater import (
     WaterHeaterEntity,
