@@ -1,6 +1,6 @@
 """Plugwise water heater component for HomeAssistant."""
 
-from typing import Any
+from typing import Any, override
 
 from homeassistant.components.water_heater import (
     WaterHeaterEntity,
@@ -83,11 +83,13 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
 
 
     @property
+    @override
     def current_operation(self) -> str | None:
         """Return current readable operation mode."""
         return self.device.get(DHW_MODE)
 
     @property
+    @override
     def current_temperature(self) -> float | None:
         """Return the current water temperature."""
         boiler_temperature = self.device.get(SENSORS, {}).get(WATER_TEMP)
@@ -95,6 +97,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         return dhw_temperature or boiler_temperature
 
     @property
+    @override
     def operation_list(self) -> list[str]:
         """Return the list of available operation modes."""
         if (op_list := self.device.get(DHW_MODES, [])):
@@ -102,6 +105,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         return [STATE_OFF]  # pragma: no cover
 
     @property
+    @override
     def target_temperature(self) -> float | None:
         """Return the water temperature we try to reach."""
         return (
@@ -110,12 +114,14 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         )
 
     @plugwise_command
+    @override
     async def async_set_operation_mode(self, operation_mode: str) -> None:
         """Set the operation mode."""
         list_type: int = len(self.operation_list)
         await self.coordinator.api.set_dhw_mode(DHW_MODE, self._dev_id, list_type, operation_mode)
 
     @plugwise_command
+    @override
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is not None:
