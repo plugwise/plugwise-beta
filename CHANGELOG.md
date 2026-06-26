@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Implement @overload and improved snapshot-formatting as required for the Next HA version, via PR [#1096](https://github.com/plugwise/plugwise-beta/pull/1096)
+
 ## v0.65.0
 
 - Replace DHW_comfort_mode switch by a select or a water_heater, bump plugwise to [v1.12.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.12.0) via PR [#1085](https://github.com/plugwise/plugwise-beta/pull/1085)
