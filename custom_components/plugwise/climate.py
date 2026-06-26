@@ -1,7 +1,7 @@
 """Plugwise Climate component for Home Assistant."""
 
 from dataclasses import asdict, dataclass
-from typing import Any
+from typing import Any, override
 
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
@@ -105,6 +105,7 @@ class PlugwiseClimateExtraStoredData(ExtraStoredData):
     last_active_schedule: str | None
     previous_action_mode: str | None
 
+    @override
     def as_dict(self) -> dict[str, Any]:
         """Return a dict representation of the text data."""
         return asdict(self)
@@ -161,6 +162,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
         self._attr_preset_modes = presets
 
+    @override
     async def async_added_to_hass(self) -> None:
         """Run when entity about to be added."""
 
@@ -175,6 +177,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         await super().async_added_to_hass()
 
     @property
+    @override
     def extra_restore_state_data(self) -> PlugwiseClimateExtraStoredData:
         """Return text specific state data to be restored."""
         return PlugwiseClimateExtraStoredData(
@@ -183,11 +186,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         )
 
     @property
+    @override
     def current_temperature(self) -> float | None:
         """Return the current temperature."""
         return self.device.get(SENSORS, {}).get(ATTR_TEMPERATURE)
 
     @property
+    @override
     def target_temperature(self) -> float | None:
         """Return the temperature we try to reach.
 
@@ -197,6 +202,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         return self.device.get(THERMOSTAT, {}).get(TARGET_TEMP)
 
     @property
+    @override
     def target_temperature_high(self) -> float | None:
         """Return the temperature we try to reach in case of cooling.
 
@@ -205,6 +211,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         return self.device.get(THERMOSTAT, {}).get(TARGET_TEMP_HIGH)
 
     @property
+    @override
     def target_temperature_low(self) -> float | None:
         """Return the heating temperature we try to reach in case of heating.
 
@@ -213,6 +220,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         return self.device.get(THERMOSTAT, {}).get(TARGET_TEMP_LOW)
 
     @property
+    @override
     def hvac_mode(self) -> HVACMode:
         """Return HVAC operation ie. auto, cool, heat, heat_cool, or off mode."""
         mode = self.device.get(CLIMATE_MODE)
@@ -228,6 +236,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         return hvac
 
     @property
+    @override
     def hvac_modes(self) -> list[HVACMode]:
         """Return a list of available HVACModes."""
         hvac_modes: list[HVACMode] = []
@@ -251,6 +260,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         return hvac_modes
 
     @property
+    @override
     def hvac_action(self) -> HVACAction:  # pw-beta add to Core
         """Return the current running hvac operation if supported."""
         # Keep track of the previous hvac_action mode.
@@ -269,11 +279,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         return HVACAction.IDLE
 
     @property
+    @override
     def preset_mode(self) -> str | None:
         """Return the current preset mode."""
         return self.device.get(ACTIVE_PRESET)
 
     @plugwise_command
+    @override
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         data: dict[str, Any] = {}
@@ -303,6 +315,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         return mode
 
     @plugwise_command
+    @override
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set the HVAC mode (off, heat, cool, heat_cool, or auto/schedule)."""
 
@@ -353,6 +366,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         await self._api.set_schedule_state(self._location, STATE_ON, desired_schedule)
 
     @plugwise_command
+    @override
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode."""
         await self._api.set_preset(self._location, preset_mode)

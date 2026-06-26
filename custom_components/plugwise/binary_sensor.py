@@ -2,7 +2,7 @@
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, override
 
 from plugwise.constants import BinarySensorType
 
@@ -163,6 +163,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         self._notification: dict[str, str] = {}  # pw-beta
 
     @property
+    @override
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
         # pw-beta: show Plugwise notifications as HA persistent notifications
@@ -175,6 +176,7 @@ class PlugwiseBinarySensorEntity(PlugwiseEntity, BinarySensorEntity):
         return self.device.get(BINARY_SENSORS, {}).get(self.entity_description.key)
 
     @property
+    @override
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return entity specific state attributes."""
         if self.entity_description.key != PLUGWISE_NOTIFICATION:  # Upstream const

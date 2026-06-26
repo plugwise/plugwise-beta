@@ -4,7 +4,7 @@
 
 from copy import deepcopy
 import logging
-from typing import Any, Self
+from typing import Any, Self, override
 
 from plugwise import Smile
 from plugwise.exceptions import (
@@ -161,6 +161,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
     product: str = "Unknown Smile"
     _username: str = DEFAULT_USERNAME
 
+    @override
     async def async_step_zeroconf(
         self, discovery_info: ZeroconfServiceInfo
     ) -> ConfigFlowResult:
@@ -216,6 +217,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         )
         return await self.async_step_user()
 
+
+    @override
     def is_matching(self, other_flow: Self) -> bool:
         """Return True if other_flow is matching this flow."""
         # This is an Anna, and there is already an Adam flow in progress
@@ -229,6 +232,7 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         return False
 
 
+    @override
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -297,8 +301,9 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
 
-    @staticmethod
     @callback
+    @override
+    @staticmethod
     def async_get_options_flow(
         config_entry: PlugwiseConfigEntry,
     ) -> PlugwiseOptionsFlowHandler:  # pw-beta options
