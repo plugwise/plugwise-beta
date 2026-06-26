@@ -39,8 +39,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.cv_pomp_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'CV Pomp Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'CV Pomp Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.cv_pomp_relay',
@@ -90,8 +90,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.fibaro_hc2_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Fibaro HC2 Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Fibaro HC2 Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.fibaro_hc2_lock',
@@ -141,8 +141,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.fibaro_hc2_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Fibaro HC2 Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Fibaro HC2 Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.fibaro_hc2_relay',
@@ -192,8 +192,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.nas_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'NAS Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'NAS Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.nas_lock',
@@ -243,8 +243,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.nas_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'NAS Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'NAS Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.nas_relay',
@@ -294,8 +294,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.nvr_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'NVR Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'NVR Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.nvr_lock',
@@ -345,8 +345,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.nvr_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'NVR Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'NVR Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.nvr_relay',
@@ -396,8 +396,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.playstation_smart_plug_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Playstation Smart Plug Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Playstation Smart Plug Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.playstation_smart_plug_lock',
@@ -447,8 +447,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.playstation_smart_plug_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Playstation Smart Plug Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Playstation Smart Plug Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.playstation_smart_plug_relay',
@@ -498,8 +498,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.usg_smart_plug_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'USG Smart Plug Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'USG Smart Plug Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.usg_smart_plug_lock',
@@ -549,8 +549,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.usg_smart_plug_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'USG Smart Plug Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'USG Smart Plug Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.usg_smart_plug_relay',
@@ -600,8 +600,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.ziggo_modem_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Ziggo Modem Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Ziggo Modem Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.ziggo_modem_lock',
@@ -651,8 +651,8 @@
 # name: test_adam_switch_snapshot[platforms0][switch.ziggo_modem_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Ziggo Modem Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Ziggo Modem Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.ziggo_modem_relay',
@@ -702,8 +702,8 @@
 # name: test_stretch_switch_snapshot[platforms0][switch.boiler_1eb31_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Boiler (1EB31) Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Boiler (1EB31) Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.boiler_1eb31_lock',
@@ -753,8 +753,8 @@
 # name: test_stretch_switch_snapshot[platforms0][switch.boiler_1eb31_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Boiler (1EB31) Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Boiler (1EB31) Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.boiler_1eb31_relay',
@@ -804,8 +804,8 @@
 # name: test_stretch_switch_snapshot[platforms0][switch.droger_52559_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Droger (52559) Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Droger (52559) Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.droger_52559_lock',
@@ -855,8 +855,8 @@
 # name: test_stretch_switch_snapshot[platforms0][switch.droger_52559_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Droger (52559) Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Droger (52559) Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.droger_52559_relay',
@@ -906,8 +906,8 @@
 # name: test_stretch_switch_snapshot[platforms0][switch.koelkast_92c4a_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Koelkast (92C4A) Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Koelkast (92C4A) Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.koelkast_92c4a_lock',
@@ -957,8 +957,8 @@
 # name: test_stretch_switch_snapshot[platforms0][switch.koelkast_92c4a_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Koelkast (92C4A) Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Koelkast (92C4A) Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.koelkast_92c4a_relay',
@@ -1008,8 +1008,8 @@
 # name: test_stretch_switch_snapshot[platforms0][switch.vaatwasser_2a1ab_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Vaatwasser (2a1ab) Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Vaatwasser (2a1ab) Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.vaatwasser_2a1ab_lock',
@@ -1059,8 +1059,8 @@
 # name: test_stretch_switch_snapshot[platforms0][switch.vaatwasser_2a1ab_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Vaatwasser (2a1ab) Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Vaatwasser (2a1ab) Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.vaatwasser_2a1ab_relay',
@@ -1110,8 +1110,8 @@
 # name: test_stretch_switch_snapshot[platforms0][switch.wasmachine_52ac1_lock-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Wasmachine (52AC1) Lock',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Wasmachine (52AC1) Lock',
     }),
     'context': <ANY>,
     'entity_id': 'switch.wasmachine_52ac1_lock',
@@ -1161,8 +1161,8 @@
 # name: test_stretch_switch_snapshot[platforms0][switch.wasmachine_52ac1_relay-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'switch',
-      'friendly_name': 'Wasmachine (52AC1) Relay',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'switch',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Wasmachine (52AC1) Relay',
     }),
     'context': <ANY>,
     'entity_id': 'switch.wasmachine_52ac1_relay',

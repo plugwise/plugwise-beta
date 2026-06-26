@@ -39,7 +39,7 @@
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.adam_plugwise_notification-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'Adam Plugwise notification',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Adam Plugwise notification',
       'warning_msg': list([
         "Node Plug (with MAC address 000D6F000D13CB01, in room 'n.a.') has been unreachable since 23:03 2020-01-18. Please check the connection and restart the device.",
       ]),
@@ -92,8 +92,8 @@
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.bios_cv_thermostatic_radiator_battery-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'battery',
-      'friendly_name': 'Bios Cv Thermostatic Radiator  Battery',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'battery',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Bios Cv Thermostatic Radiator  Battery',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.bios_cv_thermostatic_radiator_battery',
@@ -143,8 +143,8 @@
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.cv_kraan_garage_battery-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'battery',
-      'friendly_name': 'CV Kraan Garage Battery',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'battery',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'CV Kraan Garage Battery',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.cv_kraan_garage_battery',
@@ -194,7 +194,7 @@
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.onoff_heating-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'OnOff Heating',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'OnOff Heating',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.onoff_heating',
@@ -244,8 +244,8 @@
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.thermostatic_radiator_badkamer_1_battery-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'battery',
-      'friendly_name': 'Thermostatic Radiator Badkamer 1 Battery',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'battery',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Thermostatic Radiator Badkamer 1 Battery',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.thermostatic_radiator_badkamer_1_battery',
@@ -295,8 +295,8 @@
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.thermostatic_radiator_badkamer_2_battery-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'battery',
-      'friendly_name': 'Thermostatic Radiator Badkamer 2 Battery',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'battery',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Thermostatic Radiator Badkamer 2 Battery',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.thermostatic_radiator_badkamer_2_battery',
@@ -346,8 +346,8 @@
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.thermostatic_radiator_jessie_battery-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'battery',
-      'friendly_name': 'Thermostatic Radiator Jessie Battery',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'battery',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Thermostatic Radiator Jessie Battery',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.thermostatic_radiator_jessie_battery',
@@ -397,8 +397,8 @@
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.zone_lisa_bios_battery-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'battery',
-      'friendly_name': 'Zone Lisa Bios Battery',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'battery',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Zone Lisa Bios Battery',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.zone_lisa_bios_battery',
@@ -448,8 +448,8 @@
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.zone_lisa_wk_battery-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'battery',
-      'friendly_name': 'Zone Lisa WK Battery',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'battery',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Zone Lisa WK Battery',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.zone_lisa_wk_battery',
@@ -499,8 +499,8 @@
 # name: test_adam_binary_sensor_snapshot[platforms0][binary_sensor.zone_thermostat_jessie_battery-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'battery',
-      'friendly_name': 'Zone Thermostat Jessie Battery',
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'battery',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Zone Thermostat Jessie Battery',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.zone_thermostat_jessie_battery',
@@ -550,7 +550,7 @@
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_compressor_state-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'OpenTherm Compressor state',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'OpenTherm Compressor state',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.opentherm_compressor_state',
@@ -600,7 +600,7 @@
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_cooling-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'OpenTherm Cooling',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'OpenTherm Cooling',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.opentherm_cooling',
@@ -650,7 +650,7 @@
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_cooling_enabled-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'OpenTherm Cooling enabled',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'OpenTherm Cooling enabled',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.opentherm_cooling_enabled',
@@ -700,7 +700,7 @@
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_dhw_state-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'OpenTherm DHW state',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'OpenTherm DHW state',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.opentherm_dhw_state',
@@ -750,7 +750,7 @@
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_flame_state-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'OpenTherm Flame state',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'OpenTherm Flame state',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.opentherm_flame_state',
@@ -800,7 +800,7 @@
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_heating-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'OpenTherm Heating',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'OpenTherm Heating',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.opentherm_heating',
@@ -850,7 +850,7 @@
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.opentherm_secondary_boiler_state-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'OpenTherm Secondary boiler state',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'OpenTherm Secondary boiler state',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.opentherm_secondary_boiler_state',
@@ -900,7 +900,7 @@
 # name: test_anna_binary_sensor_snapshot[platforms0-True-anna_heatpump_heating][binary_sensor.smile_anna_plugwise_notification-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'Smile Anna Plugwise notification',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Smile Anna Plugwise notification',
     }),
     'context': <ANY>,
     'entity_id': 'binary_sensor.smile_anna_plugwise_notification',
@@ -950,7 +950,7 @@
 # name: test_p1_v4_binary_sensor_snapshot[platforms0-03e65b16e4b247a29ae0d75a78cb492e-p1v4_442_triple][binary_sensor.smile_p1_plugwise_notification-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'Smile P1 Plugwise notification',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Smile P1 Plugwise notification',
       'warning_msg': list([
         'The Smile P1 is not connected to a smart meter.',
       ]),
