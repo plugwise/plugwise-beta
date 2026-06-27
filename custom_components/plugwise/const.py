@@ -209,7 +209,4 @@ type WaterHeaterType = Literal[
     "boiler_temperature",
     "dhw_temperature",
 ]
-type WaterHeaterOptionsType = Literal[
-    "boiler_modes",
-    "dhw_modes",
-]
+type WaterHeaterOptionsType = Literal["dhw_modes"]
