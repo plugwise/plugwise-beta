@@ -12,6 +12,7 @@ from homeassistant.components.water_heater import (
 )
 from homeassistant.const import ATTR_ENTITY_ID, ATTR_TEMPERATURE
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ServiceNotSupported
 from homeassistant.helpers import entity_registry as er
 from syrupy.assertion import SnapshotAssertion
 
@@ -49,6 +50,15 @@ async def test_adam_water_heater_setpoint_change(
     mock_smile_adam_jip.set_number.assert_called_with(
         "e4684553153b44afbef2200885f379dc", "dhw_temperature", 65.0,
     )
+
+    with pytest.raises(ServiceNotSupported):
+        await hass.services.async_call(
+            WATER_HEATER_DOMAIN,
+            SERVICE_SET_OPERATION_MODE,
+            {ATTR_ENTITY_ID: "water_heater.opentherm_boiler_temperature", ATTR_OPERATION_MODE: "eco"},
+            blocking=True,
+        )
+    assert mock_smile_adam_jip.set_dhw_mode.call_count == 0
 
     await hass.services.async_call(
         WATER_HEATER_DOMAIN,
