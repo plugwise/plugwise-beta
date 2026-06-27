@@ -1,7 +1,7 @@
 """Plugwise water heater component for HomeAssistant."""
 
 from dataclasses import dataclass
-from typing import Any, cast, override
+from typing import Any, override
 
 from homeassistant.components.water_heater import (
     WaterHeaterEntity,
@@ -32,6 +32,7 @@ from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 
+PARALLEL_UPDATES = 0
 
 @dataclass(frozen=True, kw_only=True)
 class PlugwiseWaterHeaterEntityDescription(WaterHeaterEntityDescription):
@@ -130,17 +131,12 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
 
     @property
     @override
-    def operation_list(self) -> list[str]:
-        """Return the list of available operation modes.
+    def operation_list(self) -> list[str] | None:
+        """Return the list of available operation modes."""
+        if (key := self.entity_description.options_key) is not None:
+            return self.device.get(key, [])
 
-        When no list is available the water_heater only has an "on" mode.
-        """
-        if self.entity_description.options_key is not None:
-            op_list = self.device.get(self.entity_description.options_key)
-            if op_list is not None:
-                return cast(list[str], op_list)
-
-        return [STATE_ON]
+        return None  # pragma: no cover
 
     @property
     @override
@@ -152,8 +148,9 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     @override
     async def async_set_operation_mode(self, operation_mode: str) -> None:
         """Set the operation mode."""
-        if self.entity_description.options_key is None:
-            return
+        if self.operation_list is None:
+            return  # pragma: no cover
+
         list_type: int = len(self.operation_list)
         await self.coordinator.api.set_dhw_mode(DHW_MODE, self._dev_id, list_type, operation_mode)
 
