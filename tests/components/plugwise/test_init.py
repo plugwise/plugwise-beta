@@ -214,7 +214,7 @@ async def check_migration(
         ),
     ],
 )
-async def test_migrate_unique_id_temperature(
+async def test_migrate_temperature_unique_id(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     entitydata: dict,
@@ -222,7 +222,7 @@ async def test_migrate_unique_id_temperature(
     new_unique_id: str,
     mock_smile_anna: MagicMock,
 ) -> None:
-    """Test migration of unique_id."""
+    """Test migration of sensor unique_id."""
     await check_migration(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
@@ -255,7 +255,7 @@ async def test_migrate_unique_id_temperature(
         ),
     ],
 )
-async def test_migrate_unique_id_relay(
+async def test_migrate_relay_unique_id(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     entitydata: dict,
@@ -263,7 +263,7 @@ async def test_migrate_unique_id_relay(
     new_unique_id: str,
     mock_smile_adam: MagicMock,
 ) -> None:
-    """Test migration of unique_id."""
+    """Test migration of binary_sensor and switch unique_ids."""
     await check_migration(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
@@ -281,11 +281,11 @@ async def test_migrate_unique_id_relay(
                 "disabled_by": None,
             },
             f"{CLIMATE_ID}-climate",
-            f"{CLIMATE_ID}-Slaapkamer",
+            f"{CLIMATE_ID}-slaapkamer",
         )
     ],
 )
-async def test_migrate_unique_id_relay(
+async def test_migrate_climate_unique_id(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     entitydata: dict,
@@ -293,7 +293,7 @@ async def test_migrate_unique_id_relay(
     new_unique_id: str,
     mock_smile_adam_jip: MagicMock,
 ) -> None:
-    """Test migration of unique_id."""
+    """Test migration of climate unique_id."""
     await check_migration(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
