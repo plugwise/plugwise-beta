@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from homeassistant.const import CONF_TIMEOUT, Platform
+from homeassistant.const import ATTR_NAME, CONF_TIMEOUT, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.typing import ConfigType
@@ -41,7 +41,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     )  # pw-beta - cooldown, update_interval as extra
     await coordinator.async_config_entry_first_refresh()
 
-    await async_migrate_sensor_entities(hass, coordinator)
+    await async_migrate_entities(hass, coordinator)
 
     entry.runtime_data = coordinator
 
@@ -98,19 +98,19 @@ def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None
     # No migration needed
     return None
 
-async def async_migrate_sensor_entities(
+async def async_migrate_entities(
     hass: HomeAssistant,
     coordinator: PlugwiseDataUpdateCoordinator,
 ) -> None:
-    """Migrate Sensors if needed."""
+    """Migrate entites if needed."""
     ent_reg = er.async_get(hass)
 
-    # Migrate opentherm_outdoor_temperature
-    # to opentherm_outdoor_air_temperature sensor
     for device_id, device in coordinator.data.items():
-        if device["dev_class"] != "heater_central":
+        if device["dev_class"] not in ("climate", "heater_central") :
             continue
 
+        # Migrate opentherm_outdoor_temperature
+        # to opentherm_outdoor_air_temperature sensor
         old_unique_id = f"{device_id}-outdoor_temperature"
         if entity_id := ent_reg.async_get_entity_id(
             Platform.SENSOR, DOMAIN, old_unique_id
@@ -118,6 +118,16 @@ async def async_migrate_sensor_entities(
             new_unique_id = f"{device_id}-outdoor_air_temperature"
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+
+        # Migrate *id*_climate to *id*_device-name
+        old_unique_id = f"{device_id}-climate"
+        if entity_id := ent_reg.async_get_entity_id(
+            Platform.CLIMATE, DOMAIN, old_unique_id
+        ):
+            new_unique_id = f"{device_id}-{device[ATT_NAME]}"
+            # Upstream remove LOGGER debug
+            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+
 
 # pw-beta only - revert adding CONF_TIMEOUT to config_entry in v0.53.3
 async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
