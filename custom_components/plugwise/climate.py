@@ -143,7 +143,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         self._attr_target_temperature_step = max(
             self.device.get(THERMOSTAT, {}).get(RESOLUTION, 0.5), 0.1
         )
-        self._attr_unique_id = f"{device_id}-{self.device[ATTR_NAME]}"
+        self._attr_unique_id = f"{device_id}-{lower(self.device[ATTR_NAME])}"
 
         # Determine supported features
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
