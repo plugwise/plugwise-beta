@@ -39,7 +39,7 @@
     'suggested_object_id': None,
     'supported_features': <WaterHeaterEntityFeature: 3>,
     'translation_key': None,
-    'unique_id': 'e4684553153b44afbef2200885f379dc-water_heater',
+    'unique_id': 'e4684553153b44afbef2200885f379dc-opentherm',
     'unit_of_measurement': None,
   })
 # ---
@@ -108,7 +108,7 @@
     'suggested_object_id': None,
     'supported_features': <WaterHeaterEntityFeature: 3>,
     'translation_key': None,
-    'unique_id': 'cd0e6156b1f04d5f952349ffbe397481-water_heater',
+    'unique_id': 'cd0e6156b1f04d5f952349ffbe397481-opentherm',
     'unit_of_measurement': None,
   })
 # ---
