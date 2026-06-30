@@ -297,7 +297,7 @@
         "name": "Boiler temperatuur"
       },
       "dhw_temperature": {
-        "name": "SWW temperatuur"
+        "name": "SWW temperatuur",
         "state_attributes": {
           "dhw_modes": {
             "state": {
