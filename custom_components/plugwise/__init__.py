@@ -124,7 +124,7 @@ async def async_migrate_entities(
         if entity_id := ent_reg.async_get_entity_id(
             Platform.CLIMATE, DOMAIN, old_unique_id
         ):
-            new_unique_id = f"{device_id}-{device[ATTR_NAME]}"
+            new_unique_id = f"{device_id}-{device[ATTR_NAME]}".lower()
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
