@@ -72,7 +72,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     ) -> None:
         """Initialise the water_heater."""
         super().__init__(coordinator, device_id)
-        
+
         entity_name = f"{self.device[ATTR_NAME]}".lower()
         self._attr_unique_id = f"{device_id}-{entity_name}"
 
