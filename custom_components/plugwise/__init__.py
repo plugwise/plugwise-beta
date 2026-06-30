@@ -102,11 +102,11 @@ async def async_migrate_entities(
     hass: HomeAssistant,
     coordinator: PlugwiseDataUpdateCoordinator,
 ) -> None:
-    """Migrate entites if needed."""
+    """Migrate entities if needed."""
     ent_reg = er.async_get(hass)
 
     for device_id, device in coordinator.data.items():
-        if device["dev_class"] not in ("climate", "heater_central") :
+        if device["dev_class"] not in ("climate", "heater_central"):
             continue
 
         # Migrate opentherm_outdoor_temperature
@@ -119,7 +119,7 @@ async def async_migrate_entities(
             # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
-        # Migrate *id*_climate to *id*_device-name
+        # Migrate id-climate to id-device-name
         old_unique_id = f"{device_id}-climate"
         if entity_id := ent_reg.async_get_entity_id(
             Platform.CLIMATE, DOMAIN, old_unique_id
