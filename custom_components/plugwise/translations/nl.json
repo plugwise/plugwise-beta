@@ -298,6 +298,17 @@
       },
       "dhw_temperature": {
         "name": "SWW temperatuur"
+        "state_attributes": {
+          "dhw_modes": {
+            "state": {
+              "auto": "Auto",
+              "boost": "Boost",
+              "comfort": "Comfort",
+              "eco": "Eco",
+              "off": "Uit"
+            }
+          }
+        }
       }
     }
   },
