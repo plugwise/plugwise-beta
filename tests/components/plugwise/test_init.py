@@ -37,6 +37,7 @@ from tests.common import MockConfigEntry, async_fire_time_changed
 HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
     "homeassistant.components.plugwise.coordinator.Smile.async_update"
 )
+CLIMATE_ID = "06aecb3d00354375924f50c47af36bd2"  # ThermoZone device_id for migration
 HEATER_ID = "1cbf783bb11e4a7c8a6843dee3a86927"  # Opentherm device_id for migration
 PLUG_ID = "cd0ddb54ef694e11ac18ed1cbce5dbbd"  # VCR device_id for migration
 SECONDARY_ID = (
@@ -261,6 +262,36 @@ async def test_migrate_unique_id_relay(
     old_unique_id: str,
     new_unique_id: str,
     mock_smile_adam: MagicMock,
+) -> None:
+    """Test migration of unique_id."""
+    await check_migration(
+        hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
+    )
+
+
+@pytest.mark.parametrize(
+    ("entitydata", "old_unique_id", "new_unique_id"),
+    [
+        (
+            {
+                "domain": Platform.CLIMATE,
+                "platform": DOMAIN,
+                "unique_id": f"{CLIMATE_ID}-climate",
+                "suggested_object_id": f"{CLIMATE_ID}-climate",
+                "disabled_by": None,
+            },
+            f"{CLIMATE_ID}-climate",
+            f"{CLIMATE_ID}-Slaapkamer",
+        )
+    ],
+)
+async def test_migrate_unique_id_relay(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    entitydata: dict,
+    old_unique_id: str,
+    new_unique_id: str,
+    mock_smile_adam_jip: MagicMock,
 ) -> None:
     """Test migration of unique_id."""
     await check_migration(
