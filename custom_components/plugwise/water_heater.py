@@ -103,8 +103,6 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         """Initialise the water_heater."""
         super().__init__(coordinator, device_id)
         self.entity_description = description
-        entity_name = f"{self.device[ATTR_NAME]}".lower()
-        self._attr_unique_id = f"{device_id}-{entity_name}"
         temp_data = self.device.get(description.key, {})
         if temp_data:
             self._attr_max_temp = temp_data.get(UPPER_BOUND, 75.0)
