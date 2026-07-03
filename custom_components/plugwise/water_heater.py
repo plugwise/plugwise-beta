@@ -10,6 +10,7 @@ from homeassistant.components.water_heater import (
 )
 from homeassistant.const import (
     ATTR_TEMPERATURE,
+    STATE_OFF,
     STATE_ON,
     EntityCategory,
     UnitOfTemperature,
@@ -112,6 +113,9 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
             self._attr_supported_features |= WaterHeaterEntityFeature.OPERATION_MODE
         self._attr_temperature_unit = UnitOfTemperature.CELSIUS
         self._attr_unique_id = f"{device_id}-{description.key}"
+        self._list_type = 0
+        self._mode_off = self.device.get(DHW_MODE) == STATE_OFF
+        self._operation_mode: str | None = None
 
     @property
     @override
@@ -149,8 +153,17 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         if self.operation_list is None:
             return  # pragma: no cover
 
-        list_type: int = len(self.operation_list)
-        await self.coordinator.api.set_dhw_mode(DHW_MODE, self._dev_id, list_type, operation_mode)
+        self._list_type = len(self.operation_list)
+        self._operation_mode = operation_mode
+        if self._operation_mode == STATE_OFF and not self._mode_off:
+            await self.async_turn_off()
+            return
+
+        if self._mode_off and self._operation_mode != STATE_OFF:
+            await self.async_turn_on()
+            return
+
+        await self.coordinator.api.set_dhw_mode(DHW_MODE, self._dev_id, self._list_type, self._operation_mode)
 
     @plugwise_command
     @override
@@ -162,3 +175,21 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
                 self.entity_description.key,
                 float(temperature),
             )
+
+    @plugwise_command
+    @override
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        """Turn the water_heater off."""
+        await self.coordinator.api.set_dhw_mode(
+            DHW_MODE, self._dev_id, self._list_type, STATE_OFF
+        )
+        self._mode_off = True
+
+    @plugwise_command
+    @override
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        """Turn the water_heater on and set the operation mode."""
+        await self.coordinator.api.set_dhw_mode(
+            DHW_MODE, self._dev_id, self._list_type, self._operation_mode
+        )
+        self._mode_off = False
