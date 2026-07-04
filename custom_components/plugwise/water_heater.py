@@ -167,17 +167,6 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
 
     @plugwise_command
     @override
-    async def async_set_temperature(self, **kwargs: Any) -> None:
-        """Set new target temperature."""
-        if (temperature := kwargs.get(ATTR_TEMPERATURE)) is not None:
-            await self.coordinator.api.set_number(
-                self._dev_id,
-                self.entity_description.key,
-                float(temperature),
-            )
-
-    @plugwise_command
-    @override
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the water_heater off."""
         await self.coordinator.api.set_dhw_mode(
@@ -193,3 +182,14 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
             DHW_MODE, self._dev_id, self._list_type, self._operation_mode
         )
         self._mode_off = False
+
+    @plugwise_command
+    @override
+    async def async_set_temperature(self, **kwargs: Any) -> None:
+        """Set new target temperature."""
+        if (temperature := kwargs.get(ATTR_TEMPERATURE)) is not None:
+            await self.coordinator.api.set_number(
+                self._dev_id,
+                self.entity_description.key,
+                float(temperature),
+            )
