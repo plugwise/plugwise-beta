@@ -72,7 +72,7 @@ async def test_adam_water_heater_setpoint_change(
     )
 
 
-@pytest.mark.parametrize("chosen_env", ["anna_v4_dhw"], indirect=True)
+@pytest.mark.parametrize("chosen_env", ["anna_loria_cooling_active"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 @pytest.mark.parametrize("platforms", [(WATER_HEATER_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
