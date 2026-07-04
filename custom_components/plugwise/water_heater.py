@@ -115,7 +115,7 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._list_type = 0
         self._mode_off = self.device.get(DHW_MODE) == STATE_OFF
-        self._operation_mode: str | None = None
+        self._operation_mode: str = STATE_OFF
 
     @property
     @override
