@@ -6,6 +6,7 @@ Versions from 0.40 and up
 
 - Correct climate and water_heater unique_id's via PR [#1098](https://github.com/plugwise/plugwise-beta/pull/1098)
 - Implement @overload and improved snapshot-formatting as required for the Next HA version, via PR [#1096](https://github.com/plugwise/plugwise-beta/pull/1096)
+- Pinned GitHub actions
 
 ## v0.65.0
 

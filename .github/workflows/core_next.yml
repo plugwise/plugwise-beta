@@ -29,10 +29,10 @@ jobs:
       python-version: ${{ steps.python.outputs.python-version }}  # Ensure all runners use THIS minor version
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Fetch HA pyproject
@@ -50,7 +50,7 @@ jobs:
     steps:
       - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
-        uses: plugwise/gh-actions/prepare-python-and-code@v2
+        uses: plugwise/gh-actions/prepare-python-and-code@9054f02b05e53697300c41df27d0307332dc7cd8
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
@@ -62,7 +62,7 @@ jobs:
           GITHUB_ACTIONS="" BRANCH="dev" scripts/core-testing.sh
       - name: Create failure issue as warning
         if: failure()
-        uses: imjohnbo/issue-bot@v3
+        uses: imjohnbo/issue-bot@3188c6ce06249206709d3b1f274d0d4c5a521601
         with:
           # include any handles without @
           # assignees: "plugwise/plugwise-smile"
