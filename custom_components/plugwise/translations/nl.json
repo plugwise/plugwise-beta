@@ -93,12 +93,6 @@
       }
     },
     "number": {
-      "max_dhw_temperature": {
-        "name": "Instelpunt sanitair warm water"
-      },
-      "maximum_boiler_temperature": {
-        "name": "Instelpunt maximale boiler temperatuur"
-      },
       "temperature_offset": {
         "name": "Temperatuurcompensatie"
       }
@@ -108,7 +102,7 @@
         "name": "SWW modus",
         "state": {
           "comfort": "Comfort",
-          "off": "Uit"
+          "eco": "Eco"
         }
       },
       "select_gateway_mode": {
@@ -299,13 +293,21 @@
       }
     },
     "water_heater": {
-      "plugwise": {
-        "state": {
-          "auto": "Auto",
-          "boost": "Boost",
-          "comfort": "Comfort",
-          "eco": "Eco",
-          "off": "Off"
+      "boiler_temperature": {
+        "name": "Boiler temperatuur"
+      },
+      "dhw_temperature": {
+        "name": "SWW temperatuur",
+        "state_attributes": {
+          "dhw_modes": {
+            "state": {
+              "auto": "Auto",
+              "boost": "Boost",
+              "comfort": "Comfort",
+              "eco": "Eco",
+              "off": "Uit"
+            }
+          }
         }
       }
     }
