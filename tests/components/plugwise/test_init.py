@@ -195,7 +195,7 @@ async def check_migration(
     assert entity_migrated
     assert entity_migrated.unique_id == new_unique_id
 
-
+@pytest.mark.usefixtures("mock_smile_anna")
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize(
@@ -220,7 +220,6 @@ async def test_migrate_temperature_unique_id(
     entitydata: dict,
     old_unique_id: str,
     new_unique_id: str,
-    mock_smile_anna: MagicMock,
 ) -> None:
     """Test migration of sensor unique_id."""
     await check_migration(
@@ -228,6 +227,7 @@ async def test_migrate_temperature_unique_id(
     )
 
 
+@pytest.mark.usefixtures("mock_smile_adam")
 @pytest.mark.parametrize(
     ("entitydata", "old_unique_id", "new_unique_id"),
     [
@@ -261,7 +261,6 @@ async def test_migrate_relay_unique_id(
     entitydata: dict,
     old_unique_id: str,
     new_unique_id: str,
-    mock_smile_adam: MagicMock,
 ) -> None:
     """Test migration of binary_sensor and switch unique_ids."""
     await check_migration(
@@ -269,6 +268,7 @@ async def test_migrate_relay_unique_id(
     )
 
 
+@pytest.mark.usefixtures("mock_smile_adam_jip")
 @pytest.mark.parametrize(
     ("entitydata", "old_unique_id", "new_unique_id"),
     [
@@ -291,7 +291,6 @@ async def test_migrate_climate_unique_id(
     entitydata: dict,
     old_unique_id: str,
     new_unique_id: str,
-    mock_smile_adam_jip: MagicMock,
 ) -> None:
     """Test migration of climate unique_id."""
     await check_migration(
@@ -381,11 +380,11 @@ async def test_update_device(
         assert device_entry is None
 
 
+@pytest.mark.usefixtures("mock_config_entry")
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_delete_removed_device(
     hass: HomeAssistant,
-    mock_config_entry: MockConfigEntry,
     mock_smile_adam_heat_cool: MagicMock,
     device_registry: dr.DeviceRegistry,
     init_integration: MockConfigEntry,
@@ -411,11 +410,11 @@ async def test_delete_removed_device(
     assert device_entry is None
 
 
+@pytest.mark.usefixtures("mock_config_entry")
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_update_device_firmware(
     hass: HomeAssistant,
-    mock_config_entry: MockConfigEntry,
     mock_smile_adam_heat_cool: MagicMock,
     device_registry: dr.DeviceRegistry,
     init_integration: MockConfigEntry,
