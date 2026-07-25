@@ -1,7 +1,5 @@
 """Tests for the Plugwise Sensor integration."""
 
-from unittest.mock import MagicMock
-
 import pytest
 
 from homeassistant.components.plugwise.const import DOMAIN
