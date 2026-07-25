@@ -303,6 +303,7 @@ async def test_migrate_climate_unique_id(
 async def test_update_device(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
+    *,
     mock_smile_adam_heat_cool: MagicMock,
     device_registry: dr.DeviceRegistry,
     entity_registry: er.EntityRegistry,

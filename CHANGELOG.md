@@ -4,6 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
+- Correct test-function header with more than 5 arguments via PR [#1118](https://github.com/plugwise/plugwise-beta/pull/1118)
 - Implement @pytest.mark.usefixtures() via PR [#1117](https://github.com/plugwise/plugwise-beta/pull/1117)
 - Correct climate and water_heater unique_id's via PR [#1098](https://github.com/plugwise/plugwise-beta/pull/1098)
 - Implement @overload and improved snapshot-formatting as required for the Next HA version, via PR [#1096](https://github.com/plugwise/plugwise-beta/pull/1096)
