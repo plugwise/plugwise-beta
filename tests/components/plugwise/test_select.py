@@ -18,11 +18,11 @@ from syrupy.assertion import SnapshotAssertion
 from tests.common import MockConfigEntry, snapshot_platform
 
 
+@pytest.mark.usefixtures("mock_smile_adam")
 @pytest.mark.parametrize("platforms", [(SELECT_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_adam_select_entities(
     hass: HomeAssistant,
-    mock_smile_adam: MagicMock,
     snapshot: SnapshotAssertion,
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
@@ -54,13 +54,13 @@ async def test_adam_change_select_entity(
     )
 
 
+@pytest.mark.usefixtures("mock_smile_adam_heat_cool")
 @pytest.mark.parametrize("chosen_env", ["m_adam_cooling"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 @pytest.mark.parametrize("platforms", [(SELECT_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_adam_2_select_entities(
     hass: HomeAssistant,
-    mock_smile_adam_heat_cool: MagicMock,
     snapshot: SnapshotAssertion,
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
@@ -122,19 +122,21 @@ async def test_adam_select_zone_profile(
         "on",
     )
 
+
+@pytest.mark.usefixtures("mock_smile_legacy_anna")
 async def test_legacy_anna_select_entities(
     hass: HomeAssistant,
-    mock_smile_legacy_anna: MagicMock,
     init_integration: MockConfigEntry,
 ) -> None:
     """Test no select-entity for a legacy Anna without schedule."""
     assert not hass.states.get("select.anna_thermostat_schedule")
 
 
+@pytest.mark.usefixtures("mock_smile_anna")
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_anna_select_unavailable_schedule_mode(
-    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
+    hass: HomeAssistant, init_integration: MockConfigEntry
 ) -> None:
     """Fail-test an Anna thermostat_schedule select option."""
 

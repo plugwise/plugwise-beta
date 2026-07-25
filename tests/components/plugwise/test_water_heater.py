@@ -22,11 +22,11 @@ HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
 )
 
 
+@pytest.mark.usefixtures("mock_smile_adam_jip")
 @pytest.mark.parametrize("platforms", [(WATER_HEATER_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_adam_water_heater_snapshot(
     hass: HomeAssistant,
-    mock_smile_adam_jip: MagicMock,
     snapshot: SnapshotAssertion,
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
@@ -61,14 +61,13 @@ async def test_adam_water_heater_setpoint_change(
         "dhw_mode", "e4684553153b44afbef2200885f379dc", 2, "off"
     )
 
-
+@pytest.mark.usefixtures("mock_smile_anna")
 @pytest.mark.parametrize("chosen_env", ["anna_v4_dhw"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 @pytest.mark.parametrize("platforms", [(WATER_HEATER_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_anna_water_heater_snapshot(
     hass: HomeAssistant,
-    mock_smile_anna: MagicMock,
     snapshot: SnapshotAssertion,
     entity_registry: er.EntityRegistry,
     setup_platform: MockConfigEntry,
