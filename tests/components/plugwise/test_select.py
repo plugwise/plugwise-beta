@@ -129,7 +129,8 @@ async def test_legacy_anna_select_entities(
     init_integration: MockConfigEntry,
 ) -> None:
     """Test no select-entity for a legacy Anna without schedule."""
-    assert not hass.states.get("select.anna_thermostat_schedule")
+    assert (state := hass.states.get("select.anna_thermostat_schedule"))
+    assert state.state == "off"
 
 
 @pytest.mark.usefixtures("mock_smile_anna")
