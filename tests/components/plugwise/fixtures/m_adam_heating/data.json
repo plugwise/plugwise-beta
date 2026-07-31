@@ -30,7 +30,11 @@
     "model": "Generic heater",
     "name": "OpenTherm",
     "sensors": {
-      "intended_boiler_temperature": 38.1
+      "intended_boiler_temperature": 38.1,
+      "water_temperature": 37.0
+    },
+    "switches": {
+      "dhw_cm_switch": false
     }
   },
   "14df5c4dc8cb4ba69f9d1ac0eaf7c5c6": {
@@ -214,11 +218,11 @@
   "f2bf9048bef64cc5b6d5110154e33c81": {
     "active_preset": "home",
     "available_schedules": [
+      "off",
       "Badkamer",
       "Vakantie",
       "Weekschema",
-      "Test",
-      "off"
+      "Test"
     ],
     "climate_mode": "heat",
     "control_state": "preheating",
@@ -263,11 +267,11 @@
   "f871b8c4d63549319221e294e4f88074": {
     "active_preset": "vacation",
     "available_schedules": [
+      "off",
       "Badkamer",
       "Vakantie",
       "Weekschema",
-      "Test",
-      "off"
+      "Test"
     ],
     "climate_mode": "auto",
     "control_state": "idle",
