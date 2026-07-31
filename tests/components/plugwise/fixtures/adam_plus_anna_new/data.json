@@ -23,7 +23,11 @@
     "name": "OpenTherm",
     "select_dhw_mode": "eco",
     "sensors": {
-      "intended_boiler_temperature": 22.5
+      "intended_boiler_temperature": 22.5,
+      "water_temperature": 43.0
+    },
+    "switches": {
+      "dhw_cm_switch": false
     }
   },
   "10016900610d4c7481df78c89606ef22": {
@@ -298,11 +302,11 @@
   "f2bf9048bef64cc5b6d5110154e33c81": {
     "active_preset": "home",
     "available_schedules": [
+      "off",
       "Badkamer",
       "Vakantie",
       "Weekschema",
-      "Test",
-      "off"
+      "Test"
     ],
     "climate_mode": "auto",
     "control_state": "heating",
@@ -347,11 +351,11 @@
   "f871b8c4d63549319221e294e4f88074": {
     "active_preset": "vacation",
     "available_schedules": [
+      "off",
       "Badkamer",
       "Vakantie",
       "Weekschema",
-      "Test",
-      "off"
+      "Test"
     ],
     "climate_mode": "heat",
     "control_state": "idle",

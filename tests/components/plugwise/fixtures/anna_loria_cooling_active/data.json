@@ -2,9 +2,9 @@
   "582dfbdace4d4aeb832923ce7d1ddda0": {
     "active_preset": "home",
     "available_schedules": [
+      "off",
       "Winter",
-      "Test ",
-      "off"
+      "Test "
     ],
     "climate_mode": "auto",
     "control_state": "cooling",
@@ -98,13 +98,16 @@
     "model_id": "173",
     "name": "OpenTherm",
     "sensors": {
+      "dhw_temperature": 52.9,
       "intended_boiler_temperature": 0.0,
       "modulation_level": 100,
       "outdoor_air_temperature": 17.2,
-      "return_temperature": 26.3
+      "return_temperature": 26.3,
+      "water_temperature": 25.3
     },
     "switches": {
-      "cooling_ena_switch": true
+      "cooling_ena_switch": true,
+      "dhw_cm_switch": true
     },
     "vendor": "Atlantic"
   }
