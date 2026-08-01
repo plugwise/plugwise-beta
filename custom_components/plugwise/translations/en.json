@@ -294,10 +294,10 @@
     },
     "water_heater": {
       "boiler_temperature": {
-        "name": "Boiler temperature"
+        "name": "Boiler"
       },
       "dhw_temperature": {
-        "name": "DHW temperature",
+        "name": "Domestic hot water",
         "state_attributes": {
           "dhw_modes": {
             "state": {
