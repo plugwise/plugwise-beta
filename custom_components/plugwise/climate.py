@@ -89,9 +89,9 @@ async def async_setup_entry(
     entry.async_on_unload(coordinator.async_add_listener(_add_entities))
 
 
-def _check_for_schedule(active: bool, last_active: str | None) -> None:
+def _check_for_schedule(active: bool, last_active: str) -> None:
     """Raise a HAError when no thermostat schedule has been set."""
-    if not active and last_active is None:
+    if not active and last_active == STATE_OFF:
         raise HomeAssistantError(
             translation_domain=DOMAIN,
             translation_key=ERROR_NO_SCHEDULE,
@@ -131,7 +131,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         self._api = coordinator.api
         gateway_id: str = self._api.gateway_id
         self._gateway_data = coordinator.data[gateway_id]
-        self._last_active_schedule: str | None = None
+        self._last_active_schedule = STATE_OFF
         self._location = device_id
         if (location := self.device.get(LOCATION)) is not None:
             self._location = location
@@ -170,7 +170,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         extra_data = await self.async_get_last_extra_data()
         if extra_data is not None:
             data = extra_data.as_dict()
-            self._last_active_schedule = data.get("last_active_schedule")
+            self._last_active_schedule = data.get("last_active_schedule") or STATE_OFF
             self._previous_action_mode = (
                 data.get("previous_action_mode") or HVACAction.HEATING.value
             )
@@ -244,7 +244,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
         if REGULATION_MODES in self._gateway_data:
             hvac_modes.append(HVACMode.OFF)
 
-        if self.device.get(AVAILABLE_SCHEDULES, []):
+        if self.device[AVAILABLE_SCHEDULES] != [STATE_OFF]:
             hvac_modes.append(HVACMode.AUTO)
 
         if self._api.cooling_present:
@@ -329,8 +329,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
             await self._api.set_regulation_mode(hvac_mode.value)
             return
 
-        current_schedule = self.device.get("select_schedule")
-        schedule_is_active = current_schedule not in (None, "off")
+        current_schedule = self.device["select_schedule"]
+        schedule_is_active = current_schedule != STATE_OFF
         desired_schedule = (
             current_schedule if schedule_is_active else self._last_active_schedule
         )
