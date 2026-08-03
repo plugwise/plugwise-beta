@@ -159,7 +159,7 @@ async def test_adam_restore_state_climate(
             (
                 State("climate.living_room", "heat"),
                 PlugwiseClimateExtraStoredData(
-                    last_active_schedule=None,
+                    last_active_schedule=STATE_OFF,
                     previous_action_mode="heating",
                 ).as_dict(),
             ),
@@ -610,8 +610,8 @@ async def test_anna_climate_entity_climate_changes(
 
     # Mock user deleting last schedule from app or browser
     data = mock_smile_anna.async_update.return_value
-    data["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = []
-    data["3cb70739631c4d17a86b8b12e8a5161b"]["select_schedule"] = None
+    data["3cb70739631c4d17a86b8b12e8a5161b"]["available_schedules"] = [STATE_OFF]
+    data["3cb70739631c4d17a86b8b12e8a5161b"]["select_schedule"] = STATE_OFF
     data["3cb70739631c4d17a86b8b12e8a5161b"]["climate_mode"] = "heat_cool"
     with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
         freezer.tick(timedelta(minutes=1))
