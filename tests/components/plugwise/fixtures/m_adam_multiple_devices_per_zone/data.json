@@ -128,7 +128,7 @@
   },
   "446ac08dd04d4eff8ac57489757b7314": {
     "active_preset": "no_frost",
-    "available_schedules": [],
+    "available_schedules": ["off"],
     "climate_mode": "heat",
     "control_state": "idle",
     "dev_class": "climate",
@@ -141,7 +141,7 @@
       "vacation",
       "no_frost"
     ],
-    "select_schedule": null,
+    "select_schedule": "off",
     "sensors": {
       "temperature": 15.6
     },
