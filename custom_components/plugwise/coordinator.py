@@ -185,7 +185,7 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         device_reg = dr.async_get(self.hass)
         for device_id in removed_devices:
             if (
-                device_entry := device_entry := device_reg.async_get_device_by_identifier(
+                device_entry := device_reg.async_get_device_by_identifier(
                     (DOMAIN, device_id), self.config_entry.entry_id
                 )
             ) is not None:
@@ -223,8 +223,8 @@ class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[dict[str, GwEntityData
         device_reg = dr.async_get(self.hass)
         if (
             device_entry := device_reg.async_get_device_by_identifier(
-                    (DOMAIN, device_id), self.config_entry.entry_id
-                )            
+                (DOMAIN, device_id), self.config_entry.entry_id
+            )
         ) is not None:
             device_reg.async_update_device(device_entry.id, sw_version=firmware)
             LOGGER.debug(
