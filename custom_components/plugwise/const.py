@@ -77,15 +77,12 @@ MODEL_ID: Final = "model_id"
 VENDOR: Final = "vendor"
 
 # Number constants
-MAX_BOILER_TEMP: Final = "maximum_boiler_temperature"
-MAX_DHW_TEMP: Final = "max_dhw_temperature"
 LOWER_BOUND: Final = "lower_bound"
 RESOLUTION: Final = "resolution"
 TEMPERATURE_OFFSET: Final = "temperature_offset"
 UPPER_BOUND: Final = "upper_bound"
 
 # Sensor constants
-DHW_TEMP: Final = "dhw_temperature"
 DHW_SETPOINT: Final = "domestic_hot_water_setpoint"
 EL_CONSUMED: Final = "electricity_consumed"
 EL_CONS_INTERVAL: Final = "electricity_consumed_interval"
@@ -150,6 +147,10 @@ RELAY: Final = "relay"
 COOLING_ENA_SWITCH: Final ="cooling_ena_switch"
 SWITCHES: Final = "switches"
 
+# Water_heater constants
+BOILER_TEMP: Final = "boiler_temperature"
+DHW_TEMP: Final = "dhw_temperature"
+
 # Default directives
 DEFAULT_PORT: Final[int] = 80
 DEFAULT_TIMEOUT: Final[int] = 30
@@ -188,11 +189,8 @@ ZEROCONF_MAP: Final[dict[str, str]] = {
 }
 
 type NumberType = Literal[
-    "maximum_boiler_temperature",
-    "max_dhw_temperature",
     "temperature_offset",
 ]
-
 type SelectType = Literal[
     "select_dhw_mode",
     "select_gateway_mode",
@@ -207,3 +205,8 @@ type SelectOptionsType = Literal[
     "regulation_modes",
     "zone_profiles",
 ]
+type WaterHeaterType = Literal[
+    "boiler_temperature",
+    "dhw_temperature",
+]
+type WaterHeaterOptionsType = Literal["dhw_modes"]

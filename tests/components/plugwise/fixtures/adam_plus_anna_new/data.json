@@ -6,24 +6,28 @@
       "flame_state": true,
       "heating_state": true
     },
-    "dev_class": "heater_central",
-    "dhw_modes": [
-      "comfort",
-      "off"
-    ],
-    "location": "bc93488efab249e5bc54fd7e175a6f91",
-    "maximum_boiler_temperature": {
+    "boiler_temperature": {
+      "current": 43.0,
       "lower_bound": 25.0,
       "resolution": 0.01,
       "setpoint": 50.0,
       "upper_bound": 95.0
     },
+    "dev_class": "heater_central",
+    "dhw_modes": [
+      "comfort",
+      "eco"
+    ],
+    "location": "bc93488efab249e5bc54fd7e175a6f91",
     "model": "Generic heater",
     "name": "OpenTherm",
-    "select_dhw_mode": "off",
+    "select_dhw_mode": "eco",
     "sensors": {
       "intended_boiler_temperature": 22.5,
       "water_temperature": 43.0
+    },
+    "switches": {
+      "dhw_cm_switch": false
     }
   },
   "10016900610d4c7481df78c89606ef22": {
@@ -298,11 +302,11 @@
   "f2bf9048bef64cc5b6d5110154e33c81": {
     "active_preset": "home",
     "available_schedules": [
+      "off",
       "Badkamer",
       "Vakantie",
       "Weekschema",
-      "Test",
-      "off"
+      "Test"
     ],
     "climate_mode": "auto",
     "control_state": "heating",
@@ -347,11 +351,11 @@
   "f871b8c4d63549319221e294e4f88074": {
     "active_preset": "vacation",
     "available_schedules": [
+      "off",
       "Badkamer",
       "Vakantie",
       "Weekschema",
-      "Test",
-      "off"
+      "Test"
     ],
     "climate_mode": "heat",
     "control_state": "idle",
