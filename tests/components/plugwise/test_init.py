@@ -403,11 +403,12 @@ async def test_update_device(
         assert device_entry is None
 
 
-@pytest.mark.usefixtures("mock_config_entry")
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_delete_removed_device(
     hass: HomeAssistant,
+    *,
+    mock_config_entry: MockConfigEntry,
     mock_smile_adam_heat_cool: MagicMock,
     device_registry: dr.DeviceRegistry,
     init_integration: MockConfigEntry,
@@ -433,11 +434,12 @@ async def test_delete_removed_device(
     assert device_entry is None
 
 
-@pytest.mark.usefixtures("mock_config_entry")
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_update_device_firmware(
     hass: HomeAssistant,
+    *,
+    mock_config_entry: MockConfigEntry,
     mock_smile_adam_heat_cool: MagicMock,
     device_registry: dr.DeviceRegistry,
     init_integration: MockConfigEntry,
