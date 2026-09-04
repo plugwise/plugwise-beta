@@ -407,8 +407,8 @@ async def test_update_device(
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_delete_removed_device(
     hass: HomeAssistant,
-    *,
     mock_config_entry: MockConfigEntry,
+    *,
     mock_smile_adam_heat_cool: MagicMock,
     device_registry: dr.DeviceRegistry,
     init_integration: MockConfigEntry,
@@ -438,8 +438,8 @@ async def test_delete_removed_device(
 @pytest.mark.parametrize("cooling_present", [False], indirect=True)
 async def test_update_device_firmware(
     hass: HomeAssistant,
-    *,
     mock_config_entry: MockConfigEntry,
+    *,
     mock_smile_adam_heat_cool: MagicMock,
     device_registry: dr.DeviceRegistry,
     init_integration: MockConfigEntry,
