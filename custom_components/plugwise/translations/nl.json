@@ -323,6 +323,9 @@
     "set_schedule_first": {
       "message": "HVACMode aanpassing mislukt, activeer eerst een thermostaatschema"
     },
+    "temperature_out_of_range": {
+      "message": "Temperatuur moet tussen {min_temp} en {max_temp} {temperature_unit} ingesteld worden."
+    },
     "unsupported_firmware": {
       "message": "Apparaat met niet ondersteunde firmware"
     }

@@ -323,6 +323,9 @@
     "set_schedule_first": {
       "message": "Failed setting HVACMode, set a schedule first"
     },
+    "temperature_out_of_range": {
+      "message": "Temperature must be between {min_temp} and {max_temp} {temperature_unit}."
+    },
     "unsupported_firmware": {
       "message": "Device with unsupported firmware"
     }
