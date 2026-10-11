@@ -148,7 +148,6 @@ COOLING_ENA_SWITCH: Final ="cooling_ena_switch"
 SWITCHES: Final = "switches"
 
 # Water_heater constants
-BOILER_TEMP: Final = "boiler_temperature"
 DHW_TEMP: Final = "dhw_temperature"
 
 # Default directives
