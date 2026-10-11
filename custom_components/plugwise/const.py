@@ -208,4 +208,3 @@ type SelectOptionsType = Literal[
     "zone_profiles",
 ]
 type WaterHeaterType = Literal["dhw_temperature"]
-type WaterHeaterOptionsType = Literal["dhw_modes"]
