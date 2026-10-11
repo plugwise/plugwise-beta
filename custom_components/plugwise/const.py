@@ -193,6 +193,7 @@ type NumberType = Literal[
     "temperature_offset",
 ]
 type SelectType = Literal[
+    "dhw_mode",
     "select_dhw_mode",
     "select_gateway_mode",
     "select_regulation_mode",
@@ -206,8 +207,5 @@ type SelectOptionsType = Literal[
     "regulation_modes",
     "zone_profiles",
 ]
-type WaterHeaterType = Literal[
-    "boiler_temperature",
-    "dhw_temperature",
-]
+type WaterHeaterType = Literal["dhw_temperature"]
 type WaterHeaterOptionsType = Literal["dhw_modes"]
