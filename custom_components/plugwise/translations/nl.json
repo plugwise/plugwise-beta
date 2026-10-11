@@ -3,8 +3,7 @@
     "abort": {
       "already_configured": "Apparaat is al geconfigureerd",
       "anna_with_adam": "Zowel Anna als Adam gedetecteerd. Voeg je Adam toe in plaats van je Anna",
-      "not_the_same_smile": "Het opgegeven Smile-ID komt niet overeen met je apparaat",
-      "reconfigure_successful": "Herconfiguratie was succesvol"
+      "not_the_same_smile": "Het opgegeven Smile-ID komt niet overeen met je apparaat"
     },
     "error": {
       "cannot_connect": "Kan geen verbinding maken",
