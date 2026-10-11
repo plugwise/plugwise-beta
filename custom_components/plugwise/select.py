@@ -155,6 +155,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
         entity_description: PlugwiseSelectEntityDescription,
     ) -> None:
         """Initialise the selector."""
+        super().__init__(coordinator, device_id)
         suffix = entity_description.key
         if entity_description.key == DHW_MODE:
             suffix = SELECT_DHW_MODE
