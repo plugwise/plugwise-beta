@@ -178,7 +178,7 @@ class PlugwiseSelectEntity(PlugwiseEntity, SelectEntity):
     @override
     def options(self) -> list[str]:
         """Return the available select-options."""
-        return self.device.[self.entity_description.options_key]
+        return self.device[self.entity_description.options_key]
 
     @plugwise_command
     @override
