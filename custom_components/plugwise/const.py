@@ -77,6 +77,7 @@ MODEL_ID: Final = "model_id"
 VENDOR: Final = "vendor"
 
 # Number constants
+BOILER_TEMP: Final = "boiler_temperature"
 LOWER_BOUND: Final = "lower_bound"
 RESOLUTION: Final = "resolution"
 TEMPERATURE_OFFSET: Final = "temperature_offset"
