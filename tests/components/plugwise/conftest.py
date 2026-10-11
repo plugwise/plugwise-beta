@@ -320,6 +320,32 @@ def mock_smile_anna_p1() -> Generator[MagicMock]:
 
 
 @pytest.fixture
+def mock_smile_p1(chosen_env: str, gateway_id: str) -> Generator[MagicMock]:
+    """Create a base Mock P1 type for testing."""
+    data = _read_json(chosen_env, "data")
+    with patch(
+        "homeassistant.components.plugwise.coordinator.Smile", autospec=True
+    ) as api_mock:
+        api = api_mock.return_value
+
+        api.async_update.return_value = data
+        api.connect.return_value = Version("4.4.2")
+        api.gateway_id = gateway_id
+        api.heater_id = None
+        api.reboot = True
+        api.smile = build_smile(
+            hostname="smile98765",
+            model="Gateway",
+            model_id="smile",
+            name="Smile P1",
+            type="power",
+            version="4.4.2",
+        )
+
+        yield api
+
+
+@pytest.fixture
 def mock_smile_legacy_anna() -> Generator[MagicMock]:
     """Create a Mock legacy Anna type for testing."""
     chosen_env = "legacy_anna"
