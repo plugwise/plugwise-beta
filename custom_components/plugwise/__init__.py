@@ -5,6 +5,7 @@ from typing import Any
 from homeassistant.const import ATTR_NAME, CONF_TIMEOUT, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 
 from .const import (
@@ -16,6 +17,7 @@ from .const import (
 from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .services import async_setup_services
 
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 async def async_setup(hass: HomeAssistant, _config: ConfigType) -> bool:
     """Set up my integration."""
