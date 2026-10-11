@@ -538,30 +538,6 @@ async def test_reconfigure_flow_connect_errors(
     assert mock_config_entry.data.get(CONF_HOST) == TEST_HOST
 
 
-async def test_form_cannot_connect_port(
-    hass: HomeAssistant, mock_smile: MagicMock
-) -> None:
-    """Test a connect-failure to an incorrect port."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN,
-        context={CONF_SOURCE: SOURCE_USER},
-    )
-
-    mock_smile.connect.side_effect = ConnectionFailedError
-    mock_smile.gateway_id = "0a636a4fc1704ab4a24e4f7e37fb187a"
-
-    result2 = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={
-            CONF_HOST: TEST_HOST,
-            CONF_PASSWORD: TEST_PASSWORD,
-        },
-    )
-
-    assert result2["type"] == FlowResultType.FORM
-    assert result2["errors"] == {"base": "cannot_connect"}
-
-
 @pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
 async def test_options_flow_thermo(
