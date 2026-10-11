@@ -15,7 +15,7 @@ from plugwise.exceptions import (
     ResponseError,
     UnsupportedDeviceError,
 )
-import voluptuous as vol
+import probatio
 
 from homeassistant.config_entries import (
     SOURCE_USER,
@@ -74,34 +74,34 @@ _LOGGER = logging.getLogger(__name__)
 
 # Upstream basically the whole file (excluding the pw-beta options)
 
-SMILE_RECONF_SCHEMA = vol.Schema(
+SMILE_RECONF_SCHEMA = probatio.Schema(
     {
-        vol.Required(CONF_HOST): str,
+        probatio.Required(CONF_HOST): str,
     }
 )
 
 
-def smile_user_schema(cf_input: ZeroconfServiceInfo | dict[str, Any] | None) -> vol.Schema:
+def smile_user_schema(cf_input: ZeroconfServiceInfo | dict[str, Any] | None) -> probatio.Schema:
     """Generate base schema for gateways."""
     if not cf_input:  # no discovery- or user-input available
-        return vol.Schema(
+        return probatio.Schema(
             {
-                vol.Required(CONF_HOST): str,
-                vol.Required(CONF_PASSWORD): str,
-                vol.Required(CONF_USERNAME, default=SMILE): vol.In(
+                probatio.Required(CONF_HOST): str,
+                probatio.Required(CONF_PASSWORD): str,
+                probatio.Required(CONF_USERNAME, default=SMILE): probatio.In(
                     {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
                 ),
             }
         )
 
     if isinstance(cf_input, ZeroconfServiceInfo):
-        return vol.Schema({vol.Required(CONF_PASSWORD): str})
+        return probatio.Schema({probatio.Required(CONF_PASSWORD): str})
 
-    return vol.Schema(
+    return probatio.Schema(
         {
-            vol.Required(CONF_HOST, default=cf_input[CONF_HOST]): str,
-            vol.Required(CONF_PASSWORD, default=cf_input[CONF_PASSWORD]): str,
-            vol.Required(CONF_USERNAME, default=cf_input[CONF_USERNAME]): vol.In(
+            probatio.Required(CONF_HOST, default=cf_input[CONF_HOST]): str,
+            probatio.Required(CONF_PASSWORD, default=cf_input[CONF_PASSWORD]): str,
+            probatio.Required(CONF_USERNAME, default=cf_input[CONF_USERNAME]): probatio.In(
                 {SMILE: FLOW_SMILE, STRETCH: FLOW_STRETCH}
             ),
         }
@@ -320,26 +320,26 @@ class PlugwiseOptionsFlowHandler(OptionsFlow):  # pw-beta options
         """Initialize options flow."""
         self.options = deepcopy(dict(config_entry.options))
 
-    def _create_options_schema(self, coordinator: PlugwiseDataUpdateCoordinator) -> vol.Schema:
+    def _create_options_schema(self, coordinator: PlugwiseDataUpdateCoordinator) -> probatio.Schema:
         interval = DEFAULT_UPDATE_INTERVAL
         if coordinator.api.smile.type == "power":
             interval = P1_UPDATE_INTERVAL
         schema = {
-            vol.Optional(
+            probatio.Optional(
                 CONF_SCAN_INTERVAL,
                 default=self.options.get(CONF_SCAN_INTERVAL, interval.seconds),
-            ): vol.All(cv.positive_int, vol.Clamp(min=10)),
+            ): probatio.All(cv.positive_int, probatio.Clamp(min=10)),
         }  # pw-beta
 
         if coordinator.api.smile.type == THERMOSTAT:
             schema.update({
-                vol.Optional(
+                probatio.Optional(
                     CONF_REFRESH_INTERVAL,
                     default=self.options.get(CONF_REFRESH_INTERVAL, 1.5),
-                ): vol.All(vol.Coerce(float), vol.Range(min=1.5, max=10.0)),
+                ): probatio.All(probatio.Coerce(float), probatio.Range(min=1.5, max=10.0)),
             })  # pw-beta
 
-        return vol.Schema(schema)
+        return probatio.Schema(schema)
 
     async def async_step_none(
         self, user_input: dict[str, Any] | None = None
