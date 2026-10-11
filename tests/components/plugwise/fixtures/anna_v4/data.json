@@ -92,7 +92,7 @@
     "name": "OpenTherm",
     "sensors": {
       "intended_boiler_temperature": 39.9,
-      "modulation_level": 0.0,
+      "modulation_level": 0,
       "return_temperature": 32.0,
       "water_pressure": 2.2,
       "water_temperature": 45.0

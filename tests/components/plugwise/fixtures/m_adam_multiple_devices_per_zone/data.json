@@ -128,7 +128,9 @@
   },
   "446ac08dd04d4eff8ac57489757b7314": {
     "active_preset": "no_frost",
-    "available_schedules": ["off"],
+    "available_schedules": [
+      "off"
+    ],
     "climate_mode": "heat",
     "control_state": "idle",
     "dev_class": "climate",
@@ -218,7 +220,7 @@
       "setpoint": 14.0,
       "temperature": 19.1,
       "temperature_difference": -0.4,
-      "valve_position": 0.0
+      "valve_position": 0
     },
     "temperature_offset": {
       "lower_bound": -2.0,
@@ -369,7 +371,7 @@
       "setpoint": 13.0,
       "temperature": 17.2,
       "temperature_difference": -0.2,
-      "valve_position": 0.0
+      "valve_position": 0
     },
     "temperature_offset": {
       "lower_bound": -2.0,
@@ -512,7 +514,7 @@
       "setpoint": 15.0,
       "temperature": 17.1,
       "temperature_difference": 0.1,
-      "valve_position": 0.0
+      "valve_position": 0
     },
     "temperature_offset": {
       "lower_bound": -2.0,
@@ -580,7 +582,7 @@
       "setpoint": 5.5,
       "temperature": 15.6,
       "temperature_difference": 0.0,
-      "valve_position": 0.0
+      "valve_position": 0
     },
     "temperature_offset": {
       "lower_bound": -2.0,

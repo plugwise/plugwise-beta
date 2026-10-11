@@ -86,7 +86,7 @@
       "setpoint": 20.0,
       "temperature": 19.0,
       "temperature_difference": -0.4,
-      "valve_position": 100.0
+      "valve_position": 100
     },
     "temperature_offset": {
       "lower_bound": -2.0,
@@ -233,6 +233,7 @@
       "outdoor_temperature": 15.1
     },
     "vendor": "Plugwise",
+    "wifi_mac_address": "D40FB201CBA0",
     "zigbee_mac_address": "000D6F000D5ACBA0"
   },
   "da575e9e09b947e281fb6e3ebce3b174": {
