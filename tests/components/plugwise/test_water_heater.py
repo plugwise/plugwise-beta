@@ -3,10 +3,9 @@
 from datetime import timedelta
 from unittest.mock import MagicMock, patch
 
-from freezegun.api import FrozenDateTimeFactory
 import pytest
-from syrupy.assertion import SnapshotAssertion
 
+from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.water_heater import (
     DOMAIN as WATER_HEATER_DOMAIN,
     SERVICE_SET_TEMPERATURE,
@@ -19,6 +18,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
 from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
+from syrupy.assertion import SnapshotAssertion
 
 from tests.common import MockConfigEntry, async_fire_time_changed, snapshot_platform
 

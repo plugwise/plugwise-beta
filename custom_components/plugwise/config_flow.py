@@ -15,7 +15,6 @@ from plugwise.exceptions import (
     ResponseError,
     UnsupportedDeviceError,
 )
-import probatio
 
 from homeassistant.config_entries import (
     SOURCE_USER,
@@ -42,6 +41,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
+import probatio
 
 from .const import (
     ANNA_WITH_ADAM,

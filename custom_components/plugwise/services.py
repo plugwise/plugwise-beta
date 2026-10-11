@@ -1,10 +1,10 @@
 """Services for the Plugwise-beta integration."""
 
 from plugwise.exceptions import PlugwiseError
-import probatio
 
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.helpers import selector, service
+import probatio
 
 from .const import (
     CONFIG_ENTRY,
