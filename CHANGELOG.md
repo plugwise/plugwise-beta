@@ -4,6 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
+- Follow Core 2026.10.0 Plugwise water_heater implementation via PR [#1092](https://github.com/plugwise/plugwise-beta/pull/1092)
 - Fix Issue [#1133](https://github.com/plugwise/plugwise-beta/issues/1133) by upgrading actions/checkout to v6, via PR [#1136](https://github.com/plugwise/plugwise-beta/pull/1136)
 - Various updates: Core PR's [#176905](https://github.com/home-assistant/core/pull/176905), [#177963](https://github.com/home-assistant/core/pull/177963), [#178164](https://github.com/home-assistant/core/pull/178164), [#178334](https://github.com/home-assistant/core/pull/178334), [#180236](https://github.com/home-assistant/core/pull/180236), and fixes
 - Correct test-function header with more than 5 arguments via PR [#1118](https://github.com/plugwise/plugwise-beta/pull/1118)
