@@ -159,7 +159,7 @@ async def test_form(
         (TEST_DISCOVERY2, TEST_USERNAME2),
     ],
 )
-async def test_zeroconf_form(
+async def test_zeroconf_flow(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
     mock_smile_config_flow: MagicMock,
@@ -198,7 +198,7 @@ async def test_zeroconf_form(
     assert result2["result"].unique_id == TEST_SMILE_HOST
 
 
-async def test_zeroconf_stretch_form(
+async def test_zeroconf_flow_stretch(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
     mock_smile_config_flow: MagicMock,
@@ -228,6 +228,7 @@ async def test_zeroconf_stretch_form(
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME2,
     }
+    assert result2["result"].unique_id == TEST_SMILE_HOST
 
     assert len(mock_setup_entry.mock_calls) == 1
     assert len(mock_smile_config_flow.connect.mock_calls) == 1
