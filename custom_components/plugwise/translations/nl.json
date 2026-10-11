@@ -101,8 +101,11 @@
       "select_dhw_mode": {
         "name": "SWW modus",
         "state": {
+          "auto": "Auto",
+          "boost": "Boost",
           "comfort": "Comfort",
-          "eco": "Eco"
+          "eco": "Eco",
+          "off": "Uit"
         }
       },
       "select_gateway_mode": {
@@ -293,22 +296,8 @@
       }
     },
     "water_heater": {
-      "boiler_temperature": {
-        "name": "Boiler"
-      },
       "dhw_temperature": {
-        "name": "Sanitair warm water",
-        "state_attributes": {
-          "dhw_modes": {
-            "state": {
-              "auto": "Auto",
-              "boost": "Boost",
-              "comfort": "Comfort",
-              "eco": "Eco",
-              "off": "Uit"
-            }
-          }
-        }
+        "name": "Sanitair warm water"
       }
     }
   },

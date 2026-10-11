@@ -101,8 +101,11 @@
       "select_dhw_mode": {
         "name": "DHW mode",
         "state": {
+          "auto": "Auto",
+          "boost": "Boost",
           "comfort": "Comfort",
-          "eco": "Eco"
+          "eco": "Eco",
+          "off": "Off"
         }
       },
       "select_gateway_mode": {
@@ -293,22 +296,8 @@
       }
     },
     "water_heater": {
-      "boiler_temperature": {
-        "name": "Boiler"
-      },
       "dhw_temperature": {
-        "name": "Domestic hot water",
-        "state_attributes": {
-          "dhw_modes": {
-            "state": {
-              "auto": "Auto",
-              "boost": "Boost",
-              "comfort": "Comfort",
-              "eco": "Eco",
-              "off": "Off"
-            }
-          }
-        }
+        "name": "Domestic hot water"
       }
     }
   },
