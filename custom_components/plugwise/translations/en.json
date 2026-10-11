@@ -3,8 +3,7 @@
     "abort": {
       "already_configured": "Device is already configured",
       "anna_with_adam": "Both Anna and Adam detected. Add your Adam instead of your Anna",
-      "not_the_same_smile": "The provided Smile-ID does not match your device",
-      "reconfigure_successful": "Reconfiguration was successful"
+      "not_the_same_smile": "The provided Smile-ID does not match your device"
     },
     "error": {
       "cannot_connect": "Failed to connect",
