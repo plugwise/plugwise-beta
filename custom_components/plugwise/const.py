@@ -191,6 +191,8 @@ ZEROCONF_MAP: Final[dict[str, str]] = {
 type BinarySensorType = Literal["dhw_state"]
 
 type NumberType = Literal[
+    "boiler_temperature",
+    "dhw_temperature",
     "temperature_offset",
 ]
 type SelectType = Literal[
