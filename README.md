@@ -1,6 +1,8 @@
-# Plugwise Smile/Stretch custom_component (BETA)
+# Plugwise Beta custom_component
 
-If you are in doubt using this or the formal HA integration (that we also maintain) - feel free to reach out on ![Static Badge](https://img.shields.io/badge/Plugwise_Discord--purple?style=social&logo=discord&link=https%3A%2F%2Fdiscord.gg%2FmFVhF8Ar6A)
+This custom_component is meant for testing of new features before they end up in the official HA Core Plugwise integration.
+Only if you don't mind us breaking your automations and want to help us test these new features then install this custom_component.
+Otherwise we suggest you to install and use the formal HA integration (that we also maintain) - feel free to reach out on ![Static Badge](https://img.shields.io/badge/Plugwise_Discord--purple?style=social&logo=discord&link=https%3A%2F%2Fdiscord.gg%2FmFVhF8Ar6A)
 
 :warning::no_entry::warning: Do **not** use this custom_component for **USB**, this functionality was moved to [plugwise_usb](https://github.com/plugwise/plugwise_usb-beta), see [why](#usb-notes) :warning::no_entry::warning:
 
