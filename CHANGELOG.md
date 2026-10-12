@@ -2,7 +2,7 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.65.1
 
 - Revert native temperature properties updates
 - Follow Core 2026.10.0 Plugwise water_heater implementation via PR [#1092](https://github.com/plugwise/plugwise-beta/pull/1092)
