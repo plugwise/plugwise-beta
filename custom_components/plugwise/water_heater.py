@@ -125,13 +125,13 @@ class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
 
     @property
     @override
-    def native_current_temperature(self) -> float | None:
+    def current_temperature(self) -> float | None:
         """Return the current water temperature."""
         return self.device[self.entity_description.key].get("current")
 
     @property
     @override
-    def native_target_temperature(self) -> float | None:
+    def target_temperature(self) -> float | None:
         """Return the water temperature we try to reach."""
         return self.device[self.entity_description.key].get("setpoint")
 
