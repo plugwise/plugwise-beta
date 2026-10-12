@@ -124,7 +124,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     """Representation of a Plugwise thermostat."""
 
     _attr_name = None
-    _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
+    _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_translation_key = DOMAIN
 
     def __init__(
@@ -195,13 +195,13 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
     @property
     @override
-    def native_current_temperature(self) -> float | None:
+    def current_temperature(self) -> float | None:
         """Return the current temperature."""
         return self.device.get(SENSORS, {}).get(ATTR_TEMPERATURE)
 
     @property
     @override
-    def native_target_temperature(self) -> float | None:
+    def target_temperature(self) -> float | None:
         """Return the temperature we try to reach.
 
         Connected to the HVACMode combination of AUTO-HEAT.
@@ -211,7 +211,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
     @property
     @override
-    def native_target_temperature_high(self) -> float | None:
+    def target_temperature_high(self) -> float | None:
         """Return the temperature we try to reach in case of cooling.
 
         Connected to the HVACMode combination of AUTO-HEAT_COOL.
@@ -220,7 +220,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
 
     @property
     @override
-    def native_target_temperature_low(self) -> float | None:
+    def target_temperature_low(self) -> float | None:
         """Return the heating temperature we try to reach in case of heating.
 
         Connected to the HVACMode combination AUTO-HEAT_COOL.
