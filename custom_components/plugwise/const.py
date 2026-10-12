@@ -27,6 +27,7 @@ STRETCH: Final = "stretch"
 STRETCH_USERNAME: Final = "stretch"
 SWITCH_GROUPS: Final[tuple[str, str]] = ("report", "switching")
 UNIQUE_IDS: Final = "unique_ids"
+WIFI_MAC_ADDRESS: Final = "wifi_mac_address"
 ZIGBEE_MAC_ADDRESS: Final = "zigbee_mac_address"
 
 # Binary Sensor constants
