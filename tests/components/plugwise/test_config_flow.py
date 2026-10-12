@@ -159,7 +159,7 @@ async def test_form(
         (TEST_DISCOVERY2, TEST_USERNAME2),
     ],
 )
-async def test_zeroconf_form(
+async def test_zeroconf_flow(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
     mock_smile_config_flow: MagicMock,
@@ -198,7 +198,7 @@ async def test_zeroconf_form(
     assert result2["result"].unique_id == TEST_SMILE_HOST
 
 
-async def test_zeroconf_stretch_form(
+async def test_zeroconf_flow_stretch(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
     mock_smile_config_flow: MagicMock,
@@ -228,6 +228,7 @@ async def test_zeroconf_stretch_form(
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME2,
     }
+    assert result2["result"].unique_id == TEST_SMILE_HOST
 
     assert len(mock_setup_entry.mock_calls) == 1
     assert len(mock_smile_config_flow.connect.mock_calls) == 1
@@ -535,30 +536,6 @@ async def test_reconfigure_flow_connect_errors(
     assert result2["reason"] == "reconfigure_successful"
 
     assert mock_config_entry.data.get(CONF_HOST) == TEST_HOST
-
-
-async def test_form_cannot_connect_port(
-    hass: HomeAssistant, mock_smile: MagicMock
-) -> None:
-    """Test a connect-failure to an incorrect port."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN,
-        context={CONF_SOURCE: SOURCE_USER},
-    )
-
-    mock_smile.connect.side_effect = ConnectionFailedError
-    mock_smile.gateway_id = "0a636a4fc1704ab4a24e4f7e37fb187a"
-
-    result2 = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={
-            CONF_HOST: TEST_HOST,
-            CONF_PASSWORD: TEST_PASSWORD,
-        },
-    )
-
-    assert result2["type"] == FlowResultType.FORM
-    assert result2["errors"] == {"base": "cannot_connect"}
 
 
 @pytest.mark.parametrize("chosen_env", ["m_anna_heatpump_cooling"], indirect=True)

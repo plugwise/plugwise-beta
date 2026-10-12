@@ -2,8 +2,8 @@
   "1e5e55b958ac445583602f767cb45942": {
     "active_preset": "home",
     "available_schedules": [
-      "Thermostat schedule",
-      "off"
+      "off",
+      "Thermostat schedule"
     ],
     "climate_mode": "heat",
     "control_state": "idle",
@@ -50,7 +50,7 @@
     "dev_class": "heater_central",
     "dhw_modes": [
       "comfort",
-      "off"
+      "eco"
     ],
     "location": "da7be222ab3b420c927f3e49fade0304",
     "model": "Generic heater",
@@ -59,9 +59,12 @@
     "select_dhw_mode": "comfort",
     "sensors": {
       "intended_boiler_temperature": 0.0,
-      "modulation_level": 0.0,
+      "modulation_level": 0,
       "water_pressure": 6.0,
       "water_temperature": 35.0
+    },
+    "switches": {
+      "dhw_cm_switch": true
     },
     "vendor": "Intergas"
   },
@@ -81,7 +84,8 @@
     "sensors": {
       "outdoor_temperature": 11.8
     },
-    "vendor": "Plugwise"
+    "vendor": "Plugwise",
+    "wifi_mac_address": "C4930002ABCE"
   },
   "da7be222ab3b420c927f3e49fade0304": {
     "available": true,

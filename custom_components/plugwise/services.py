@@ -1,10 +1,10 @@
 """Services for the Plugwise-beta integration."""
 
 from plugwise.exceptions import PlugwiseError
-import voluptuous as vol
 
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.helpers import selector, service
+import probatio
 
 from .const import (
     CONFIG_ENTRY,
@@ -14,9 +14,9 @@ from .const import (
 )
 from .coordinator import PlugwiseConfigEntry
 
-SCHEMA_DELETE_NOTIFICATION = vol.Schema(
+SCHEMA_DELETE_NOTIFICATION = probatio.Schema(
     {
-        vol.Required(CONFIG_ENTRY): selector.ConfigEntrySelector(
+        probatio.Required(CONFIG_ENTRY): selector.ConfigEntrySelector(
             {
                 "integration": DOMAIN,
             }

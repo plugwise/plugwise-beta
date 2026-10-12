@@ -22,6 +22,7 @@ from .const import (
     MODEL,
     MODEL_ID,
     VENDOR,
+    WIFI_MAC_ADDRESS,
     ZIGBEE_MAC_ADDRESS,
 )
 
@@ -55,9 +56,14 @@ class PlugwiseEntity(CoordinatorEntity[PlugwiseDataUpdateCoordinator]):
         )
 
         # Build connections set
-        connections = set()
-        if mac := self.device.get(MAC_ADDRESS):
-            connections.add((CONNECTION_NETWORK_MAC, mac))
+        connections = {
+            (CONNECTION_NETWORK_MAC, mac_address)
+            for mac_address in (
+                self.device.get(MAC_ADDRESS),
+                self.device.get(WIFI_MAC_ADDRESS),
+            )
+            if mac_address is not None
+        }
         if zigbee_mac := self.device.get(ZIGBEE_MAC_ADDRESS):
             connections.add((CONNECTION_ZIGBEE, zigbee_mac))
 

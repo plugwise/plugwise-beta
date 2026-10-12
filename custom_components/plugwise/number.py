@@ -14,9 +14,10 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
+    BOILER_TEMP,
+    DHW_TEMP,
     LOGGER,
     LOWER_BOUND,
-    MAX_BOILER_TEMP,
     RESOLUTION,
     TEMPERATURE_OFFSET,
     UPPER_BOUND,
@@ -41,8 +42,15 @@ class PlugwiseNumberEntityDescription(NumberEntityDescription):
 # Upstream + is there a reason we didn't rename this one prefixed?
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
-        key=MAX_BOILER_TEMP,
-        translation_key=MAX_BOILER_TEMP,
+        key=BOILER_TEMP,
+        translation_key="maximum_boiler_temperature",
+        device_class=NumberDeviceClass.TEMPERATURE,
+        entity_category=EntityCategory.CONFIG,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    ),
+    PlugwiseNumberEntityDescription(
+        key=DHW_TEMP,
+        translation_key="max_dhw_temperature",
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
@@ -121,8 +129,6 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self._attr_native_min_value = ctrl.get(LOWER_BOUND, 0.0)  # Upstream const
 
         native_step = ctrl.get(RESOLUTION, 0.5)  # Upstream const
-        if description.key != TEMPERATURE_OFFSET:  # Upstream const
-            native_step = max(native_step, 0.5)
         self._attr_native_step = native_step
 
     @property

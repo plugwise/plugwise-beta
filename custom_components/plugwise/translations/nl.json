@@ -3,8 +3,7 @@
     "abort": {
       "already_configured": "Apparaat is al geconfigureerd",
       "anna_with_adam": "Zowel Anna als Adam gedetecteerd. Voeg je Adam toe in plaats van je Anna",
-      "not_the_same_smile": "Het opgegeven Smile-ID komt niet overeen met je apparaat",
-      "reconfigure_successful": "Herconfiguratie was succesvol"
+      "not_the_same_smile": "Het opgegeven Smile-ID komt niet overeen met je apparaat"
     },
     "error": {
       "cannot_connect": "Kan geen verbinding maken",
@@ -93,12 +92,6 @@
       }
     },
     "number": {
-      "max_dhw_temperature": {
-        "name": "Instelpunt sanitair warm water"
-      },
-      "maximum_boiler_temperature": {
-        "name": "Instelpunt maximale boiler temperatuur"
-      },
       "temperature_offset": {
         "name": "Temperatuurcompensatie"
       }
@@ -107,7 +100,10 @@
       "select_dhw_mode": {
         "name": "SWW modus",
         "state": {
+          "auto": "Auto",
+          "boost": "Boost",
           "comfort": "Comfort",
+          "eco": "Eco",
           "off": "Uit"
         }
       },
@@ -299,14 +295,8 @@
       }
     },
     "water_heater": {
-      "plugwise": {
-        "state": {
-          "auto": "Auto",
-          "boost": "Boost",
-          "comfort": "Comfort",
-          "eco": "Eco",
-          "off": "Off"
-        }
+      "dhw_temperature": {
+        "name": "Sanitair warm water"
       }
     }
   },
@@ -331,6 +321,9 @@
     },
     "set_schedule_first": {
       "message": "HVACMode aanpassing mislukt, activeer eerst een thermostaatschema"
+    },
+    "temperature_out_of_range": {
+      "message": "Temperatuur moet tussen {min_temp} en {max_temp} {temperature_unit} ingesteld worden."
     },
     "unsupported_firmware": {
       "message": "Apparaat met niet ondersteunde firmware"

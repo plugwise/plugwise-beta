@@ -95,7 +95,7 @@ async def test_anna_sensor_snapshot(
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
 
 
-@pytest.mark.usefixtures("mock_smile_anna_2")
+@pytest.mark.usefixtures("mock_smile_anna_p1")
 @pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_anna_p1_sensor_snapshot(

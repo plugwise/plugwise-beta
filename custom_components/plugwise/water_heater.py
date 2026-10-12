@@ -1,37 +1,54 @@
 """Plugwise water heater component for HomeAssistant."""
 
-from typing import Any, override
+from dataclasses import dataclass
+from typing import Any, Final, override
 
 from homeassistant.components.water_heater import (
+    STATE_GAS,
+    STATE_HEAT_PUMP,
     WaterHeaterEntity,
+    WaterHeaterEntityDescription,
     WaterHeaterEntityFeature,
 )
-from homeassistant.const import (
-    ATTR_NAME,
-    ATTR_TEMPERATURE,
-    STATE_OFF,
-    UnitOfTemperature,
-)
+from homeassistant.const import ATTR_TEMPERATURE, STATE_OFF, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.util.unit_conversion import TemperatureConverter
 
 from .const import (
-    DHW_MODE,
-    DHW_MODES,
-    DHW_SETPOINT,
     DHW_TEMP,
+    DOMAIN,
     LOGGER,
     LOWER_BOUND,
-    MAX_DHW_TEMP,
-    SENSORS,
-    TARGET_TEMP,
     UPPER_BOUND,
-    WATER_TEMP,
+    BinarySensorType,
+    WaterHeaterType,
 )
 from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .util import plugwise_command
 
+PARALLEL_UPDATES = 0
+
+FAIL_SET_TEMP: Final = "temperature_out_of_range"
+OPERATION_LIST: Final[list[str]] = [STATE_GAS, STATE_HEAT_PUMP, STATE_OFF]
+
+@dataclass(frozen=True, kw_only=True)
+class PlugwiseWaterHeaterEntityDescription(WaterHeaterEntityDescription):
+    """Class describing Plugwise WaterHeater entities."""
+
+    key: WaterHeaterType
+    state_key: BinarySensorType
+
+
+WATERHEATER_TYPES = (
+    PlugwiseWaterHeaterEntityDescription(
+        key=DHW_TEMP,
+        translation_key=DHW_TEMP,
+        state_key="dhw_state",
+    ),
+)
 
 async def async_setup_entry(
     _hass: HomeAssistant,
@@ -50,9 +67,15 @@ async def async_setup_entry(
         entities: list[PlugwiseWaterHeaterEntity] = []
         for device_id in coordinator.new_devices:
             device = coordinator.data[device_id]
-            if device.get(MAX_DHW_TEMP) is not None:
-                entities.append(PlugwiseWaterHeaterEntity(coordinator, device_id))
-                LOGGER.debug("Add %s water_heater", device[ATTR_NAME])
+            for description in WATERHEATER_TYPES:
+                if description.key in device:
+                    entities.append(
+                        PlugwiseWaterHeaterEntity(coordinator, device_id, description)
+                    )
+                    LOGGER.debug(
+                        "Add %s %s water_heater", device["name"], description.translation_key
+                    )
+
         async_add_entities(entities)
 
     _add_entities()
@@ -62,69 +85,88 @@ async def async_setup_entry(
 class PlugwiseWaterHeaterEntity(PlugwiseEntity, WaterHeaterEntity):
     """Representation of a Plugwise water heater."""
 
-    _attr_name = None
-    _attr_temperature_unit = UnitOfTemperature.CELSIUS
+    entity_description: PlugwiseWaterHeaterEntityDescription
 
     def __init__(
         self,
         coordinator: PlugwiseDataUpdateCoordinator,
         device_id: str,
+        description: PlugwiseWaterHeaterEntityDescription,
     ) -> None:
         """Initialise the water_heater."""
         super().__init__(coordinator, device_id)
-
-        entity_name = f"{self.device[ATTR_NAME]}".lower()
-        self._attr_unique_id = f"{device_id}-{entity_name}"
-
-        max_dhw_temp_bounds = self.device.get(MAX_DHW_TEMP, {})
-        if max_dhw_temp_bounds:
-            self._attr_max_temp = max_dhw_temp_bounds.get(UPPER_BOUND, 75.0)
-            self._attr_min_temp = max_dhw_temp_bounds.get(LOWER_BOUND, 40.0)
-        self._attr_supported_features = WaterHeaterEntityFeature.OPERATION_MODE
-        self._attr_supported_features |= WaterHeaterEntityFeature.TARGET_TEMPERATURE
-
+        self.entity_description = description
+        self._attr_max_temp = self.device[description.key][UPPER_BOUND]
+        self._attr_min_temp = self.device[description.key][LOWER_BOUND]
+        self._attr_operation_list = OPERATION_LIST
+        self._attr_supported_features = WaterHeaterEntityFeature.TARGET_TEMPERATURE
+        self._attr_target_temperature_step = max(
+            self.device[description.key]["resolution"], 1.0
+        )
+        self._attr_temperature_unit = UnitOfTemperature.CELSIUS
+        self._attr_unique_id = f"{device_id}-{description.key}"
 
     @property
     @override
     def current_operation(self) -> str | None:
         """Return current readable operation mode."""
-        return self.device.get(DHW_MODE)
+        if (
+            binary_sensors := self.device.get("binary_sensors", {})
+        ) and binary_sensors.get(self.entity_description.state_key, False):
+            if "outdoor_air_temperature" in self.device["sensors"]:
+                if binary_sensors.get("secondary_boiler_state", False):
+                    return STATE_GAS
+
+                return STATE_HEAT_PUMP
+
+            return STATE_GAS
+
+        return STATE_OFF
 
     @property
     @override
-    def current_temperature(self) -> float | None:
+    def native_current_temperature(self) -> float | None:
         """Return the current water temperature."""
-        boiler_temperature = self.device.get(SENSORS, {}).get(WATER_TEMP)
-        dhw_temperature = self.device.get(SENSORS, {}).get(DHW_TEMP)
-        return dhw_temperature or boiler_temperature
+        return self.device[self.entity_description.key].get("current")
 
     @property
     @override
-    def operation_list(self) -> list[str]:
-        """Return the list of available operation modes."""
-        if (op_list := self.device.get(DHW_MODES, [])):
-            return op_list
-        return [STATE_OFF]  # pragma: no cover
-
-    @property
-    @override
-    def target_temperature(self) -> float | None:
+    def native_target_temperature(self) -> float | None:
         """Return the water temperature we try to reach."""
-        return (
-            self.device.get(MAX_DHW_TEMP, {}).get(TARGET_TEMP)
-            or self.device.get(SENSORS, {}).get(DHW_SETPOINT)
-        )
-
-    @plugwise_command
-    @override
-    async def async_set_operation_mode(self, operation_mode: str) -> None:
-        """Set the operation mode."""
-        list_type: int = len(self.operation_list)
-        await self.coordinator.api.set_dhw_mode(DHW_MODE, self._dev_id, list_type, operation_mode)
+        return self.device[self.entity_description.key].get("setpoint")
 
     @plugwise_command
     @override
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
-        if (temperature := kwargs.get(ATTR_TEMPERATURE)) is not None:
-            await self.coordinator.api.set_number(self._dev_id, MAX_DHW_TEMP, float(temperature))
+        temperature = float(kwargs[ATTR_TEMPERATURE])
+        if temperature < self._attr_min_temp or temperature > self._attr_max_temp:
+            temperature_unit = self.hass.config.units.temperature_unit
+            raise HomeAssistantError(
+                translation_domain=DOMAIN,
+                translation_key=FAIL_SET_TEMP,
+                translation_placeholders={
+                    "temperature": str(temperature),
+                    "max_temp": str(
+                        TemperatureConverter.convert(
+                            self._attr_max_temp,
+                            UnitOfTemperature.CELSIUS,
+                            temperature_unit,
+                        )
+                    ),
+                    "min_temp": str(
+                        TemperatureConverter.convert(
+                            self._attr_min_temp,
+                            UnitOfTemperature.CELSIUS,
+                            temperature_unit,
+                        )
+                    ),
+                    "temperature_unit": temperature_unit,
+                },
+            )
+
+        await self.coordinator.api.set_number(
+            self._dev_id,
+            self.entity_description.key,
+            temperature,
+        )
