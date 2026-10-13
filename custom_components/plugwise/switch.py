@@ -16,7 +16,6 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     COOLING_ENA_SWITCH,
-    DHW_CM_SWITCH,
     LOCK,
     LOGGER,  # pw-beta
     MEMBERS,
@@ -41,12 +40,6 @@ class PlugwiseSwitchEntityDescription(SwitchEntityDescription):
 
 # Upstream consts
 PLUGWISE_SWITCHES: tuple[PlugwiseSwitchEntityDescription, ...] = (
-    PlugwiseSwitchEntityDescription(
-        key=DHW_CM_SWITCH,
-        translation_key=DHW_CM_SWITCH,
-        device_class=SwitchDeviceClass.SWITCH,
-        entity_category=EntityCategory.CONFIG,
-    ),
     PlugwiseSwitchEntityDescription(
         key=LOCK,
         translation_key=LOCK,

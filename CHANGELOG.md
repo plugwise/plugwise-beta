@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## v0.65.2
+
+- Replace DHW comfort mode switch with select, restore number translations via PR [#1160](https://github.com/plugwise/plugwise-beta/pull/1160)
+
 ## v0.65.1
 
 - Revert native temperature properties updates
