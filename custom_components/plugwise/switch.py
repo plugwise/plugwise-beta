@@ -16,7 +16,6 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     COOLING_ENA_SWITCH,
-    DHW_CM_SWITCH,
     LOCK,
     LOGGER,  # pw-beta
     MEMBERS,
