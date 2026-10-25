@@ -68,6 +68,43 @@ async def test_adam_temperature_offset_out_of_bounds_change(
         )
 
 
+async def test_adam_preset_temperature_change(
+    hass: HomeAssistant, mock_smile_adam: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test changing of a preset temperature number."""
+    await hass.services.async_call(
+        NUMBER_DOMAIN,
+        SERVICE_SET_VALUE,
+        {
+            ATTR_ENTITY_ID: "number.badkamer_home_preset_temperature",
+            ATTR_VALUE: 20.5,
+        },
+        blocking=True,
+    )
+
+    assert mock_smile_adam.set_number.call_count == 1
+    mock_smile_adam.set_number.assert_called_with(
+        "08963fec7c53423ca5680aa4cb502c63", "home_preset_temperature", 20.5
+    )
+
+
+@pytest.mark.usefixtures("mock_smile_adam")
+async def test_adam_preset_temperature_out_of_bounds_change(
+    hass: HomeAssistant, init_integration: MockConfigEntry
+) -> None:
+    """Test changing of a preset temperature number beyond limits."""
+    with pytest.raises(ServiceValidationError, match="valid range"):
+        await hass.services.async_call(
+            NUMBER_DOMAIN,
+            SERVICE_SET_VALUE,
+            {
+                ATTR_ENTITY_ID: "number.badkamer_home_preset_temperature",
+                ATTR_VALUE: 31.0,
+            },
+            blocking=True,
+        )
+
+
 @pytest.mark.usefixtures("mock_smile_anna")
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)

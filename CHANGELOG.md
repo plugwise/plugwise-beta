@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Add a number per preset (Home, Night, Away, Vacation, Anti-frost) to each zone that has its own presets, to set that preset's temperature. Changing one resets a manual setpoint on that zone to its active preset.
+
 ## v0.65.2
 
 - Replace DHW comfort mode switch with select, restore number translations via PR [#1160](https://github.com/plugwise/plugwise-beta/pull/1160)

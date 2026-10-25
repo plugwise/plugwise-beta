@@ -18,6 +18,7 @@ from .const import (
     DHW_TEMP,
     LOGGER,
     LOWER_BOUND,
+    PRESET_TEMPERATURE_KEYS,
     RESOLUTION,
     TEMPERATURE_OFFSET,
     UPPER_BOUND,
@@ -61,6 +62,16 @@ NUMBER_TYPES = (
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    ),
+    *(
+        PlugwiseNumberEntityDescription(
+            key=key,
+            translation_key=key,
+            device_class=NumberDeviceClass.TEMPERATURE,
+            entity_category=EntityCategory.CONFIG,
+            native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        )
+        for key in PRESET_TEMPERATURE_KEYS
     ),
 )
 

@@ -92,14 +92,29 @@
       }
     },
     "number": {
+      "asleep_preset_temperature": {
+        "name": "Temperatuur Nacht"
+      },
+      "away_preset_temperature": {
+        "name": "Temperatuur Afwezig"
+      },
+      "home_preset_temperature": {
+        "name": "Temperatuur Thuis"
+      },
       "max_dhw_temperature": {
         "name": "Instelpunt sanitair warm water"
       },
       "maximum_boiler_temperature": {
         "name": "Instelpunt maximale boiler temperatuur"
       },
+      "no_frost_preset_temperature": {
+        "name": "Temperatuur Vorstbescherming"
+      },
       "temperature_offset": {
         "name": "Temperatuurcompensatie"
+      },
+      "vacation_preset_temperature": {
+        "name": "Temperatuur Vakantie"
       }
     },
     "select": {

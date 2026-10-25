@@ -340,7 +340,7 @@ async def test_update_device(
 
     assert (
         len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-        == 54
+        == 64
     )
     assert (
         len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
@@ -364,7 +364,7 @@ async def test_update_device(
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-            == 61
+            == 71
         )
         assert (
             len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))
@@ -391,7 +391,7 @@ async def test_update_device(
 
         assert (
             len(er.async_entries_for_config_entry(entity_registry, mock_config_entry.entry_id))
-            == 54
+            == 64
         )
         assert (
             len(dr.async_entries_for_config_entry(device_registry, mock_config_entry.entry_id))

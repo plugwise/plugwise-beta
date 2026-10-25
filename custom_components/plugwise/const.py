@@ -195,7 +195,19 @@ type NumberType = Literal[
     "boiler_temperature",
     "dhw_temperature",
     "temperature_offset",
+    "home_preset_temperature",
+    "asleep_preset_temperature",
+    "away_preset_temperature",
+    "vacation_preset_temperature",
+    "no_frost_preset_temperature",
 ]
+PRESET_TEMPERATURE_KEYS: Final[tuple[NumberType, ...]] = (
+    "home_preset_temperature",
+    "asleep_preset_temperature",
+    "away_preset_temperature",
+    "vacation_preset_temperature",
+    "no_frost_preset_temperature",
+)
 type SelectType = Literal[
     "dhw_mode",
     "select_dhw_mode",
