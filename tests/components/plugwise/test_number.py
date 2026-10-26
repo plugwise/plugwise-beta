@@ -118,3 +118,25 @@ async def test_anna_number_entities(
 ) -> None:
     """Test Anna number snapshot."""
     await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
+
+
+@pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
+async def test_anna_preset_temperature_change(
+    hass: HomeAssistant, mock_smile_anna: MagicMock, init_integration: MockConfigEntry
+) -> None:
+    """Test changing of an Anna preset temperature number."""
+    await hass.services.async_call(
+        NUMBER_DOMAIN,
+        SERVICE_SET_VALUE,
+        {
+            ATTR_ENTITY_ID: "number.anna_home_preset_temperature",
+            ATTR_VALUE: 20.5,
+        },
+        blocking=True,
+    )
+
+    assert mock_smile_anna.set_number.call_count == 1
+    mock_smile_anna.set_number.assert_called_with(
+        "3cb70739631c4d17a86b8b12e8a5161b", "home_preset_temperature", 20.5
+    )

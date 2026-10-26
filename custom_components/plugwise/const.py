@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 import logging
-from typing import Final, Literal
+from typing import Final, Literal, get_args
 
 from homeassistant.const import Platform
 
@@ -191,22 +191,19 @@ ZEROCONF_MAP: Final[dict[str, str]] = {
 
 type BinarySensorType = Literal["dhw_state"]
 
-type NumberType = Literal[
-    "boiler_temperature",
-    "dhw_temperature",
-    "temperature_offset",
+type PresetTemperatureType = Literal[
     "home_preset_temperature",
     "asleep_preset_temperature",
     "away_preset_temperature",
     "vacation_preset_temperature",
     "no_frost_preset_temperature",
 ]
-PRESET_TEMPERATURE_KEYS: Final[tuple[NumberType, ...]] = (
-    "home_preset_temperature",
-    "asleep_preset_temperature",
-    "away_preset_temperature",
-    "vacation_preset_temperature",
-    "no_frost_preset_temperature",
+PRESET_TEMPERATURE_KEYS: Final[tuple[PresetTemperatureType, ...]] = get_args(
+    PresetTemperatureType.__value__
+)
+type NumberType = (
+    Literal["boiler_temperature", "dhw_temperature", "temperature_offset"]
+    | PresetTemperatureType
 )
 type SelectType = Literal[
     "dhw_mode",
