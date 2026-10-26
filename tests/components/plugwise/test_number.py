@@ -84,7 +84,10 @@ async def test_adam_preset_temperature_change(
 
     assert mock_smile_adam.set_number.call_count == 1
     mock_smile_adam.set_number.assert_called_with(
-        "08963fec7c53423ca5680aa4cb502c63", "home_preset_temperature", 20.5
+        "08963fec7c53423ca5680aa4cb502c63",
+        "home_preset_temperature",
+        20.5,
+        setpoint="setpoint",
     )
 
 
@@ -138,5 +141,33 @@ async def test_anna_preset_temperature_change(
 
     assert mock_smile_anna.set_number.call_count == 1
     mock_smile_anna.set_number.assert_called_with(
-        "3cb70739631c4d17a86b8b12e8a5161b", "home_preset_temperature", 20.5
+        "3cb70739631c4d17a86b8b12e8a5161b",
+        "home_preset_temperature",
+        20.5,
+        setpoint="setpoint_low",
+    )
+
+
+async def test_anna_preset_cooling_temperature_change(
+    hass: HomeAssistant,
+    mock_smile_anna_loria: MagicMock,
+    init_integration: MockConfigEntry,
+) -> None:
+    """Test changing of an Anna preset cooling temperature number."""
+    await hass.services.async_call(
+        NUMBER_DOMAIN,
+        SERVICE_SET_VALUE,
+        {
+            ATTR_ENTITY_ID: "number.anna_away_preset_cooling_temperature",
+            ATTR_VALUE: 26.0,
+        },
+        blocking=True,
+    )
+
+    assert mock_smile_anna_loria.set_number.call_count == 1
+    mock_smile_anna_loria.set_number.assert_called_with(
+        "582dfbdace4d4aeb832923ce7d1ddda0",
+        "away_preset_temperature",
+        26.0,
+        setpoint="setpoint_high",
     )

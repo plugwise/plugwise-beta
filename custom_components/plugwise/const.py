@@ -201,9 +201,20 @@ type PresetTemperatureType = Literal[
 PRESET_TEMPERATURE_KEYS: Final[tuple[PresetTemperatureType, ...]] = get_args(
     PresetTemperatureType.__value__
 )
+type PresetCoolingTemperatureType = Literal[
+    "home_preset_cooling_temperature",
+    "asleep_preset_cooling_temperature",
+    "away_preset_cooling_temperature",
+    "vacation_preset_cooling_temperature",
+    "no_frost_preset_cooling_temperature",
+]
+PRESET_COOLING_TEMPERATURE_KEYS: Final[tuple[PresetCoolingTemperatureType, ...]] = (
+    get_args(PresetCoolingTemperatureType.__value__)
+)
 type NumberType = (
     Literal["boiler_temperature", "dhw_temperature", "temperature_offset"]
     | PresetTemperatureType
+    | PresetCoolingTemperatureType
 )
 type SelectType = Literal[
     "dhw_mode",

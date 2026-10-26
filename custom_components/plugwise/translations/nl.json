@@ -92,11 +92,20 @@
       }
     },
     "number": {
+      "asleep_preset_cooling_temperature": {
+        "name": "Koeltemperatuur Nacht"
+      },
       "asleep_preset_temperature": {
         "name": "Temperatuur Nacht"
       },
+      "away_preset_cooling_temperature": {
+        "name": "Koeltemperatuur Afwezig"
+      },
       "away_preset_temperature": {
         "name": "Temperatuur Afwezig"
+      },
+      "home_preset_cooling_temperature": {
+        "name": "Koeltemperatuur Thuis"
       },
       "home_preset_temperature": {
         "name": "Temperatuur Thuis"
@@ -107,11 +116,17 @@
       "maximum_boiler_temperature": {
         "name": "Instelpunt maximale boiler temperatuur"
       },
+      "no_frost_preset_cooling_temperature": {
+        "name": "Koeltemperatuur Vorstbescherming"
+      },
       "no_frost_preset_temperature": {
         "name": "Temperatuur Vorstbescherming"
       },
       "temperature_offset": {
         "name": "Temperatuurcompensatie"
+      },
+      "vacation_preset_cooling_temperature": {
+        "name": "Koeltemperatuur Vakantie"
       },
       "vacation_preset_temperature": {
         "name": "Temperatuur Vakantie"

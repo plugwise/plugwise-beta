@@ -1,7 +1,8 @@
 """Number platform for Plugwise integration."""
 
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import override
+from typing import Any, override
 
 from homeassistant.components.number import (
     NumberDeviceClass,
@@ -18,6 +19,7 @@ from .const import (
     DHW_TEMP,
     LOGGER,
     LOWER_BOUND,
+    PRESET_COOLING_TEMPERATURE_KEYS,
     PRESET_TEMPERATURE_KEYS,
     RESOLUTION,
     TEMPERATURE_OFFSET,
@@ -38,6 +40,8 @@ class PlugwiseNumberEntityDescription(NumberEntityDescription):
     """Class describing Plugwise Number entities."""
 
     key: NumberType
+    data_key: NumberType | None = None
+    value_keys: tuple[str, ...] = ("setpoint",)
 
 
 # Upstream + is there a reason we didn't rename this one prefixed?
@@ -70,10 +74,33 @@ NUMBER_TYPES = (
             device_class=NumberDeviceClass.TEMPERATURE,
             entity_category=EntityCategory.CONFIG,
             native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+            value_keys=("setpoint", "setpoint_low"),
         )
         for key in PRESET_TEMPERATURE_KEYS
     ),
+    *(
+        PlugwiseNumberEntityDescription(
+            key=key,
+            translation_key=key,
+            device_class=NumberDeviceClass.TEMPERATURE,
+            entity_category=EntityCategory.CONFIG,
+            native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+            data_key=data_key,
+            value_keys=("setpoint_high",),
+        )
+        for key, data_key in zip(
+            PRESET_COOLING_TEMPERATURE_KEYS, PRESET_TEMPERATURE_KEYS, strict=True
+        )
+    ),
 )
+
+
+def _value_key(
+    description: PlugwiseNumberEntityDescription, device: Mapping[str, Any]
+) -> str | None:
+    """Return the first value key of the description present in the device data."""
+    ctrl = device.get(description.data_key or description.key, {})
+    return next((key for key in description.value_keys if key in ctrl), None)
 
 
 async def async_setup_entry(
@@ -104,7 +131,7 @@ async def async_setup_entry(
         for device_id in coordinator.new_devices:
             device = coordinator.data[device_id]
             for description in NUMBER_TYPES:
-                if description.key in device:
+                if _value_key(description, device) is not None:
                     entities.append(
                         PlugwiseNumberEntity(coordinator, device_id, description)
                     )
@@ -135,7 +162,8 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_mode = NumberMode.BOX
-        ctrl = self.device.get(description.key, {})
+        self._data_key = description.data_key or description.key
+        ctrl = self.device.get(self._data_key, {})
         self._attr_native_max_value = ctrl.get(UPPER_BOUND, 100.0)  # Upstream const
         self._attr_native_min_value = ctrl.get(LOWER_BOUND, 0.0)  # Upstream const
 
@@ -146,13 +174,26 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
     @override
     def native_value(self) -> float | None:
         """Return the present setpoint value."""
-        return self.device.get(self.entity_description.key, {}).get("setpoint")
+        ctrl = self.device.get(self._data_key, {})
+        value_keys = self.entity_description.value_keys
+        return next((ctrl[key] for key in value_keys if key in ctrl), None)
 
     @plugwise_command
     @override
     async def async_set_native_value(self, value: float) -> None:
         """Change to the new setpoint value."""
-        await self.coordinator.api.set_number(self.device_id, self.entity_description.key, value)
+        if self._data_key in PRESET_TEMPERATURE_KEYS:
+            await self.coordinator.api.set_number(
+                self.device_id,
+                self._data_key,
+                value,
+                setpoint=_value_key(self.entity_description, self.device)
+                or self.entity_description.value_keys[0],
+            )
+        else:
+            await self.coordinator.api.set_number(
+                self.device_id, self.entity_description.key, value
+            )
         LOGGER.debug(
             "Setting %s to %s was successful", self.entity_description.key, value
         )

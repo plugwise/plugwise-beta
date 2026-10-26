@@ -4,7 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
-- Add a number per preset (Home, Night, Away, Vacation, Anti-frost) to each zone that has its own presets, to set that preset's temperature. Changing one resets a manual setpoint on that zone to its active preset.
+- Add a number per preset (Home, Night, Away, Vacation, Anti-frost) to each zone that has its own presets, to set that preset's temperature. Gateways with cooling also get a number per preset for its cooling temperature. Changing one resets a manual setpoint on that zone to its active preset.
 
 ## v0.65.2
 
