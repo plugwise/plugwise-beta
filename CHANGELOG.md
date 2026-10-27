@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Bump plugwise to [v1.14.8](https://github.com/plugwise/python-plugwise/releases/tag/v1.14.8)
+
 ## v0.65.2
 
 - Replace DHW comfort mode switch with select, restore number translations via PR [#1160](https://github.com/plugwise/plugwise-beta/pull/1160)

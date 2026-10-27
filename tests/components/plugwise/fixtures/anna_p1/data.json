@@ -5,7 +5,7 @@
       "off",
       "Thermostat schedule"
     ],
-    "climate_mode": "heat",
+    "climate_mode": "auto",
     "control_state": "idle",
     "dev_class": "thermostat",
     "firmware": "2018-02-08T11:15:53+01:00",
@@ -20,7 +20,7 @@
       "vacation",
       "no_frost"
     ],
-    "select_schedule": "off",
+    "select_schedule": "Thermostat schedule",
     "sensors": {
       "illuminance": 2.0,
       "setpoint": 19.0,
