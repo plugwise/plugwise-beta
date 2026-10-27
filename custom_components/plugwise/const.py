@@ -211,11 +211,19 @@ type PresetCoolingTemperatureType = Literal[
 PRESET_COOLING_TEMPERATURE_KEYS: Final[tuple[PresetCoolingTemperatureType, ...]] = (
     get_args(PresetCoolingTemperatureType.__value__)
 )
-type NumberType = (
-    Literal["boiler_temperature", "dhw_temperature", "temperature_offset"]
-    | PresetTemperatureType
-    | PresetCoolingTemperatureType
-)
+type SetpointType = Literal["setpoint", "setpoint_low", "setpoint_high"]
+# mypy resolves GwEntityData.get() only when the key type is one flat Literal.
+type NumberDataType = Literal[
+    "boiler_temperature",
+    "dhw_temperature",
+    "temperature_offset",
+    "home_preset_temperature",
+    "asleep_preset_temperature",
+    "away_preset_temperature",
+    "vacation_preset_temperature",
+    "no_frost_preset_temperature",
+]
+type NumberType = NumberDataType | PresetCoolingTemperatureType
 type SelectType = Literal[
     "dhw_mode",
     "select_dhw_mode",

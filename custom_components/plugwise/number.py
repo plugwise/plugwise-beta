@@ -1,8 +1,9 @@
 """Number platform for Plugwise integration."""
 
-from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, override
+from typing import override
+
+from plugwise.constants import GwEntityData
 
 from homeassistant.components.number import (
     NumberDeviceClass,
@@ -24,7 +25,9 @@ from .const import (
     RESOLUTION,
     TEMPERATURE_OFFSET,
     UPPER_BOUND,
+    NumberDataType,
     NumberType,
+    SetpointType,
 )
 
 # Upstream consts
@@ -40,14 +43,15 @@ class PlugwiseNumberEntityDescription(NumberEntityDescription):
     """Class describing Plugwise Number entities."""
 
     key: NumberType
-    data_key: NumberType | None = None
-    value_keys: tuple[str, ...] = ("setpoint",)
+    data_key: NumberDataType
+    value_keys: tuple[SetpointType, ...] = ("setpoint",)
 
 
 # Upstream + is there a reason we didn't rename this one prefixed?
 NUMBER_TYPES = (
     PlugwiseNumberEntityDescription(
         key=BOILER_TEMP,
+        data_key=BOILER_TEMP,
         translation_key="maximum_boiler_temperature",
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
@@ -55,6 +59,7 @@ NUMBER_TYPES = (
     ),
     PlugwiseNumberEntityDescription(
         key=DHW_TEMP,
+        data_key=DHW_TEMP,
         translation_key="max_dhw_temperature",
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
@@ -62,6 +67,7 @@ NUMBER_TYPES = (
     ),
     PlugwiseNumberEntityDescription(
         key=TEMPERATURE_OFFSET,
+        data_key=TEMPERATURE_OFFSET,
         translation_key=TEMPERATURE_OFFSET,
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
@@ -70,6 +76,7 @@ NUMBER_TYPES = (
     *(
         PlugwiseNumberEntityDescription(
             key=key,
+            data_key=key,
             translation_key=key,
             device_class=NumberDeviceClass.TEMPERATURE,
             entity_category=EntityCategory.CONFIG,
@@ -81,11 +88,11 @@ NUMBER_TYPES = (
     *(
         PlugwiseNumberEntityDescription(
             key=key,
+            data_key=data_key,
             translation_key=key,
             device_class=NumberDeviceClass.TEMPERATURE,
             entity_category=EntityCategory.CONFIG,
             native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-            data_key=data_key,
             value_keys=("setpoint_high",),
         )
         for key, data_key in zip(
@@ -96,10 +103,10 @@ NUMBER_TYPES = (
 
 
 def _value_key(
-    description: PlugwiseNumberEntityDescription, device: Mapping[str, Any]
-) -> str | None:
+    description: PlugwiseNumberEntityDescription, device: GwEntityData
+) -> SetpointType | None:
     """Return the first value key of the description present in the device data."""
-    ctrl = device.get(description.data_key or description.key, {})
+    ctrl = device.get(description.data_key, {})
     return next((key for key in description.value_keys if key in ctrl), None)
 
 
@@ -162,7 +169,7 @@ class PlugwiseNumberEntity(PlugwiseEntity, NumberEntity):
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
         self._attr_mode = NumberMode.BOX
-        self._data_key = description.data_key or description.key
+        self._data_key = description.data_key
         ctrl = self.device.get(self._data_key, {})
         self._attr_native_max_value = ctrl.get(UPPER_BOUND, 100.0)  # Upstream const
         self._attr_native_min_value = ctrl.get(LOWER_BOUND, 0.0)  # Upstream const
