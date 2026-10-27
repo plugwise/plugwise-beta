@@ -108,6 +108,48 @@ async def test_adam_preset_temperature_out_of_bounds_change(
         )
 
 
+@pytest.mark.usefixtures("mock_smile_adam_heat_cool")
+@pytest.mark.parametrize("chosen_env", ["m_adam_cooling"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
+@pytest.mark.parametrize("platforms", [(NUMBER_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_adam_cooling_number_entities(
+    hass: HomeAssistant,
+    snapshot: SnapshotAssertion,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test Adam with cooling number snapshot."""
+    await snapshot_platform(hass, entity_registry, snapshot, setup_platform.entry_id)
+
+
+@pytest.mark.parametrize("chosen_env", ["m_adam_cooling"], indirect=True)
+@pytest.mark.parametrize("cooling_present", [True], indirect=True)
+async def test_adam_preset_cooling_temperature_change(
+    hass: HomeAssistant,
+    mock_smile_adam_heat_cool: MagicMock,
+    init_integration: MockConfigEntry,
+) -> None:
+    """Test changing of an Adam preset cooling temperature number."""
+    await hass.services.async_call(
+        NUMBER_DOMAIN,
+        SERVICE_SET_VALUE,
+        {
+            ATTR_ENTITY_ID: "number.living_room_away_preset_cooling_temperature",
+            ATTR_VALUE: 24.0,
+        },
+        blocking=True,
+    )
+
+    assert mock_smile_adam_heat_cool.set_number.call_count == 1
+    mock_smile_adam_heat_cool.set_number.assert_called_with(
+        "f2bf9048bef64cc5b6d5110154e33c81",
+        "away_preset_temperature",
+        24.0,
+        setpoint="setpoint_high",
+    )
+
+
 @pytest.mark.usefixtures("mock_smile_anna")
 @pytest.mark.parametrize("chosen_env", ["anna_heatpump_heating"], indirect=True)
 @pytest.mark.parametrize("cooling_present", [True], indirect=True)
