@@ -2,9 +2,12 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## v0.66.0
 
-- Add a number per preset (Home, Night, Away, Vacation, Anti-frost) to each zone that has its own presets, to set that preset's temperature. Gateways with cooling also get a number per preset for its cooling temperature. Changing one resets a manual setpoint on that zone to its active preset.
+- Contribution PR [#1169](https://github.com/plugwise/plugwise-beta/pull/1169) by @MartvanMale:
+  - Add a number per preset (Home, Night, Away, Vacation, Anti-frost) to each zone that has its own presets, to set that preset's temperature.
+  - Gateways with cooling also get a number per preset for its cooling temperature. Changing one resets a manual setpoint on that zone to its active preset.
+  - Requires plugwise [v1.16.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.16.0)
 
 ## v0.65.2
 
