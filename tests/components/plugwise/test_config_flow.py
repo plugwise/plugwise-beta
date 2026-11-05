@@ -11,7 +11,6 @@ from plugwise.exceptions import (
     UnsupportedDeviceError,
 )
 import pytest
-from pytest_homeassistant.common import MockConfigEntry
 
 from homeassistant.components.plugwise.const import (
     CONF_REFRESH_INTERVAL,
@@ -33,6 +32,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 from packaging.version import Version
+
+from pytest_homeassistant.common import MockConfigEntry
 
 TEST_HOST = "1.1.1.1"
 TEST_HOSTNAME = "smileabcdef"

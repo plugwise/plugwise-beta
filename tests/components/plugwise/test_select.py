@@ -3,7 +3,6 @@
 from unittest.mock import MagicMock
 
 import pytest
-from pytest_homeassistant.common import MockConfigEntry, snapshot_platform
 
 from homeassistant.components.plugwise.const import (
     DHW_MODE,
@@ -22,6 +21,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import entity_registry as er
 from syrupy.assertion import SnapshotAssertion
+
+from pytest_homeassistant.common import MockConfigEntry, snapshot_platform
 
 
 @pytest.mark.usefixtures("mock_smile_adam")

@@ -4,7 +4,6 @@ from datetime import timedelta
 from unittest.mock import patch
 
 import pytest
-from pytest_homeassistant.common import MockConfigEntry, async_fire_time_changed, snapshot_platform
 
 from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
@@ -13,6 +12,12 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_component import async_update_entity
 from syrupy.assertion import SnapshotAssertion
+
+from pytest_homeassistant.common import (
+    MockConfigEntry,
+    async_fire_time_changed,
+    snapshot_platform,
+)
 
 
 @pytest.mark.usefixtures("mock_smile_adam")
