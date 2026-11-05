@@ -4,6 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
+- Replace tests-impports by pytest_homeassistant-imports
 - Implement Core PR's [#162405](https://github.com/home-assistant/core/pull/162405), [#184740](https://github.com/home-assistant/core/pull/184740), [#184745](https://github.com/home-assistant/core/pull/184745)
 - Implement Core PR's [#189910](https://github.com/home-assistant/core/pull/189910), [#190159](https://github.com/home-assistant/core/pull/190159), [#190231](https://github.com/home-assistant/core/pull/190231)
 
