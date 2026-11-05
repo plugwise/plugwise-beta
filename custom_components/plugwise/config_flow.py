@@ -26,10 +26,8 @@ from homeassistant.config_entries import (
 
 # Upstream
 from homeassistant.const import (
-    ATTR_CONFIGURATION_URL,
     CONF_BASE,
     CONF_HOST,
-    CONF_NAME,
     CONF_PASSWORD,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
@@ -60,7 +58,6 @@ from .const import (
     STRETCH,
     STRETCH_USERNAME,
     THERMOSTAT,
-    TITLE_PLACEHOLDERS,
     VERSION,
     ZEROCONF_MAP,
 )
@@ -209,8 +206,8 @@ class PlugwiseConfigFlow(ConfigFlow, domain=DOMAIN):
         _name = f"{ZEROCONF_MAP.get(_product, _product)} v{_version}"
         self.context.update(
             {
-                TITLE_PLACEHOLDERS: {CONF_NAME: _name},
-                ATTR_CONFIGURATION_URL: (
+                "title_placeholders": {"name": _name},
+                "configuration_url": (
                     f"http://{discovery_info.host}:{discovery_info.port}"
                 )
             }

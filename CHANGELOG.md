@@ -2,6 +2,10 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Implement Core PR's [#189910](https://github.com/home-assistant/core/pull/189910), [#190159](https://github.com/home-assistant/core/pull/190159), [#190231](https://github.com/home-assistant/core/pull/190231)
+
 ## v0.66.0
 
 - Contribution PR [#1169](https://github.com/plugwise/plugwise-beta/pull/1169) by @MartvanMale:
