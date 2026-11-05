@@ -373,6 +373,7 @@ runtime-typing = false
 max-line-length-suggestions = 72
 
 [tool.pytest.ini_options]
+addopts = "-p no:respx -p no:pytest_homeassistant"
 testpaths = ["tests"]
 norecursedirs = [".git", "testing_config"]
 log_format = "%(asctime)s.%(msecs)03d %(levelname)-8s %(threadName)s %(name)s:%(filename)s:%(lineno)s %(message)s"
@@ -631,7 +632,7 @@ force-sort-within-sections = true
 section-order = ["future", "standard-library", "first-party", "third-party", "local-folder"]
 known-third-party = [
     "homeassistant",
-    "tests",
+    "pytest_homeassistant",
 ]
 known-first-party = [
     "plugwise",
@@ -639,7 +640,7 @@ known-first-party = [
     "pytest",
 ]
 forced-separate = [
-    "tests",
+    "pytest_homeassistant",
 ]
 combine-as-imports = true
 split-on-trailing-comma = false
