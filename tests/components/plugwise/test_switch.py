@@ -20,7 +20,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
 from syrupy.assertion import SnapshotAssertion
 
-from tests.common import MockConfigEntry, snapshot_platform
+from pytest_homeassistant.common import MockConfigEntry, snapshot_platform
 
 
 @pytest.mark.usefixtures("mock_smile_adam")

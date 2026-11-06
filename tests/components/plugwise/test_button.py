@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 import homeassistant.helpers.entity_registry as er
 from syrupy.assertion import SnapshotAssertion
 
-from tests.common import MockConfigEntry, snapshot_platform
+from pytest_homeassistant.common import MockConfigEntry, snapshot_platform
 
 
 @pytest.mark.usefixtures("mock_smile_adam")

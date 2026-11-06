@@ -33,7 +33,7 @@ from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 from packaging.version import Version
 
-from tests.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 TEST_HOST = "1.1.1.1"
 TEST_HOSTNAME = "smileabcdef"
@@ -562,7 +562,7 @@ async def test_options_flow_thermo(
     entry.runtime_data = MagicMock(api=mock_smile_anna)
     entry.add_to_hass(hass)
     with patch(
-        "homeassistant.components.plugwise.async_setup_entry", return_value=True
+        "homeassistant.components.plugwise.async_setup_entry", return_value=None
     ):
         assert await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()

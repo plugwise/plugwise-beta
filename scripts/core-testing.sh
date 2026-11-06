@@ -184,10 +184,10 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
           echo -e "${CINFO}Ensure HA-core venv${CWARN}"
           uv venv --seed venv
         fi
-        echo -e "${CINFO}(Re)setup HA-core ${CWARN}"
-        script/setup
         # shellcheck disable=SC1091
         source venv/bin/activate
+        echo -e "${CINFO}(Re)setup HA-core ${CWARN}"
+        script/setup
 
 	echo ""
 	echo -e "${CINFO}Cleaning existing ${REPO_NAME} from HA core${CNORM}"
@@ -330,4 +330,3 @@ fi
 if [ -z "${GITHUB_ACTIONS}" ] ; then 
 	deactivate
 fi
-

@@ -4,7 +4,11 @@ Versions from 0.40 and up
 
 ## Ongoing
 
-- Implement Core PR's [#189910](https://github.com/home-assistant/core/pull/189910), [#190159](https://github.com/home-assistant/core/pull/190159), [#190231](https://github.com/home-assistant/core/pull/190231)
+- PR [#1176](https://github.com/plugwise/plugwise-beta/pull/1176):
+  - Implement Core PR's [#162405](https://github.com/home-assistant/core/pull/162405), [#184740](https://github.com/home-assistant/core/pull/184740), [#184745](https://github.com/home-assistant/core/pull/184745)
+  - Replace tests-impports by pytest_homeassistant-imports, fix test-script
+  - Let async_setup_entry(), async_migrate_entry()and async_unload_entry() return None
+- Implement Core PR's [#189910](https://github.com/home-assistant/core/pull/189910), [#190159](https://github.com/home-assistant/core/pull/190159), [#190231](https://github.com/home-assistant/core/pull/190231) via PR[#1174](https://github.com/plugwise/plugwise-beta/pull/1174)
 
 ## v0.66.0
 

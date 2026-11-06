@@ -13,7 +13,11 @@ from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_component import async_update_entity
 from syrupy.assertion import SnapshotAssertion
 
-from tests.common import MockConfigEntry, async_fire_time_changed, snapshot_platform
+from pytest_homeassistant.common import (
+    MockConfigEntry,
+    async_fire_time_changed,
+    snapshot_platform,
+)
 
 
 @pytest.mark.usefixtures("mock_smile_adam")

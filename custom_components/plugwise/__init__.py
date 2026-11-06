@@ -30,7 +30,7 @@ async def async_setup(hass: HomeAssistant, _config: ConfigType) -> bool:
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> None:
     """Set up Plugwise from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
@@ -65,17 +65,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
 
     entry.async_on_unload(entry.add_update_listener(update_listener))  # pw-beta options_flow
 
-    return True
-
 async def update_listener(
     hass: HomeAssistant, entry: PlugwiseConfigEntry
 ) -> None:  # pragma: no cover  # pw-beta
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
 
-async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> None:
     """Unload Plugwise."""
-    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
@@ -135,11 +133,11 @@ async def async_migrate_entities(
 
 
 # pw-beta only - revert adding CONF_TIMEOUT to config_entry in v0.53.3
-async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
+async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> None:
     """Migrate back to v1.1 config entry."""
     if entry.version > 1:
         # This means the user has downgraded from a future version
-        return False  #pragma: no cover
+        return  #pragma: no cover
 
     if entry.version == 1 and entry.minor_version == 2:
         new_data = {**entry.data}
@@ -153,5 +151,3 @@ async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -
         entry.version,
         entry.minor_version,
     )
-
-    return True
