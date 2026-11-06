@@ -71,9 +71,9 @@ async def update_listener(
     """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
 
-async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> None:
     """Unload Plugwise."""
-    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 @callback
 def async_migrate_entity_entry(entry: er.RegistryEntry) -> dict[str, Any] | None:
