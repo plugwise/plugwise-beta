@@ -30,7 +30,7 @@ async def async_setup(hass: HomeAssistant, _config: ConfigType) -> bool:
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> None:
     """Set up Plugwise from a config entry."""
     await er.async_migrate_entries(hass, entry.entry_id, async_migrate_entity_entry)
 
@@ -64,8 +64,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     entry.async_on_unload(entry.add_update_listener(update_listener))  # pw-beta options_flow
-
-    return True
 
 async def update_listener(
     hass: HomeAssistant, entry: PlugwiseConfigEntry
