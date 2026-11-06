@@ -562,7 +562,7 @@ async def test_options_flow_thermo(
     entry.runtime_data = MagicMock(api=mock_smile_anna)
     entry.add_to_hass(hass)
     with patch(
-        "homeassistant.components.plugwise.async_setup_entry", return_value=True
+        "homeassistant.components.plugwise.async_setup_entry", return_value=None
     ):
         assert await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
