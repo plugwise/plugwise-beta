@@ -26,7 +26,6 @@ from pytest_homeassistant.common import (
     snapshot_platform,
 )
 
-
 HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
     "homeassistant.components.plugwise.coordinator.Smile.async_update"
 )
