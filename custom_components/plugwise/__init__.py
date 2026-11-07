@@ -112,7 +112,7 @@ async def async_migrate_entities(
     )
 
     for device_id, device in coordinator.data.items():
-        if device["dev_class"] not in ("climate", "heater_central"):
+        if device["dev_class"] not in ("climate", "heater_central", "thermostat"):
             continue
 
         # Migrate opentherm_outdoor_temperature
