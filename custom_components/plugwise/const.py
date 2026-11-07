@@ -173,14 +173,6 @@ PLATFORMS: Final[list[str]] = [
 SERVICE_DELETE: Final = "delete_notification"
 SEVERITIES: Final[list[str]] = ["other", "info", "message", "warning", "error"]
 
-# Climate const:
-MASTER_THERMOSTATS: Final[list[str]] = [
-    "thermostat",
-    "zone_thermometer",
-    "zone_thermostat",
-    "thermostatic_radiator_valve",
-]
-
 # Config_flow const:
 ZEROCONF_MAP: Final[dict[str, str]] = {
     "smile": "Smile P1",
