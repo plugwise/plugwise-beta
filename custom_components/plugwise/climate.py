@@ -36,7 +36,6 @@ from .const import (
     LOCATION,
     LOGGER,
     LOWER_BOUND,
-    MASTER_THERMOSTATS,
     REGULATION_MODES,
     RESOLUTION,
     SELECT_REGULATION_MODE,
@@ -110,7 +109,7 @@ async def async_setup_entry(
                         PlugwiseClimateEntity(coordinator, device_id)
                     )
                     LOGGER.debug("Add climate %s", device[ATTR_NAME])
-            elif device[DEV_CLASS] in MASTER_THERMOSTATS:
+            elif device[DEV_CLASS] == THERMOSTAT:
                 entities.append(
                     PlugwiseClimateEntity(coordinator, device_id)
                 )
