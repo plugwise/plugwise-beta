@@ -298,12 +298,12 @@ async def test_migrate_relay_unique_id(
             {
                 "domain": Platform.CLIMATE,
                 "platform": DOMAIN,
-                "unique_id": f"{CLIMATE_ID}-climate",
-                "suggested_object_id": f"{CLIMATE_ID}-climate",
+                "unique_id": f"{CLIMATE_ID}-old_device_name",
+                "suggested_object_id": f"{CLIMATE_ID}-old_device_name",
                 "disabled_by": None,
             },
+            f"{CLIMATE_ID}-old_device_name",
             f"{CLIMATE_ID}-climate",
-            f"{CLIMATE_ID}-slaapkamer",
         )
     ],
 )
