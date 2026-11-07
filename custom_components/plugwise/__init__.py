@@ -119,17 +119,17 @@ async def async_migrate_entities(
             Platform.SENSOR, DOMAIN, old_unique_id
         ):
             new_unique_id = f"{device_id}-outdoor_air_temperature"
-            # Upstream remove LOGGER debug
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+            LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
 
-        # Migrate id-climate to id-device-name
-        old_unique_id = f"{device_id}-climate"
+        # Reverse migrate id-device-name back to id-climate - pw-beta only!
+        old_unique_id = f"{device_id}-{device[ATTR_NAME]}".lower()
         if entity_id := ent_reg.async_get_entity_id(
             Platform.CLIMATE, DOMAIN, old_unique_id
         ):
-            new_unique_id = f"{device_id}-{device[ATTR_NAME]}".lower()
-            # Upstream remove LOGGER debug
+            new_unique_id = f"{device_id}-climate"
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+            LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
 
 
 # pw-beta only - revert adding CONF_TIMEOUT to config_entry in v0.53.3
