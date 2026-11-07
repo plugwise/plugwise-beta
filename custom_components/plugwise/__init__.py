@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from homeassistant.const import ATTR_NAME, CONF_TIMEOUT, Platform
+from homeassistant.const import CONF_TIMEOUT, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import (
     config_validation as cv,
@@ -107,6 +107,9 @@ async def async_migrate_entities(
 ) -> None:
     """Migrate entities if needed."""
     ent_reg = er.async_get(hass)
+    climate_entries = er.async_entries_for_config_entry(
+        ent_reg, coordinator.config_entry.entry_id
+    )
 
     for device_id, device in coordinator.data.items():
         if device["dev_class"] not in ("climate", "heater_central"):
@@ -122,14 +125,20 @@ async def async_migrate_entities(
             ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
             LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
 
-        # Reverse migrate id-device-name back to id-climate - pw-beta only!
-        old_unique_id = f"{device_id}-{device[ATTR_NAME]}".lower()
-        if entity_id := ent_reg.async_get_entity_id(
-            Platform.CLIMATE, DOMAIN, old_unique_id
-        ):
-            new_unique_id = f"{device_id}-climate"
-            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
-            LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
+        # Pw-beta only - reverse migrate climate entities using their stable device ID; the device name
+        # in the present unique ID may have changed.
+        new_unique_id = f"{device_id}-climate"
+        for climate_entry in climate_entries:
+            if (
+                climate_entry.domain == Platform.CLIMATE
+                and climate_entry.platform == DOMAIN
+                and climate_entry.unique_id.startswith(f"{device_id}-")
+                and climate_entry.unique_id != new_unique_id
+            ):
+                old_unique_id = climate_entry.unique_id
+                entity_id = climate_entry.entity_id
+                ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+                LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
 
 
 # pw-beta only - revert adding CONF_TIMEOUT to config_entry in v0.53.3
