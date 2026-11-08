@@ -137,6 +137,11 @@ async def async_migrate_entities(
             ):
                 old_unique_id = climate_entry.unique_id
                 entity_id = climate_entry.entity_id
+                existing_entity_id = ent_reg.async_get_entity_id(
+                    Platform.CLIMATE, DOMAIN, new_unique_id
+                )
+                if existing_entity_id:
+                    ent_reg.async_remove(existing_entity_id)
                 ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
                 LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
 
