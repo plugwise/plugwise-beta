@@ -324,10 +324,10 @@ async def test_migrate_climate_unique_id(
 async def test_migrate_climate_unique_id_with_duplicate(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
+    entity_registry: er.EntityRegistry,
 ) -> None:
     """Test migration removes a duplicate canonical climate entity."""
     mock_config_entry.add_to_hass(hass)
-    entity_registry = er.async_get(hass)
     canonical_entity = entity_registry.async_get_or_create(
         domain=Platform.CLIMATE,
         platform=DOMAIN,
