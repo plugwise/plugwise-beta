@@ -107,10 +107,6 @@ async def async_migrate_entities(
 ) -> None:
     """Migrate entities if needed."""
     ent_reg = er.async_get(hass)
-    climate_entries = er.async_entries_for_config_entry(
-        ent_reg, coordinator.config_entry.entry_id
-    )
-
     for device_id, device in coordinator.data.items():
         if device["dev_class"] not in ("climate", "heater_central", "thermostat"):
             continue
@@ -129,24 +125,30 @@ async def async_migrate_entities(
         # in the present unique ID may have changed. When dual entries exist, one with the previously
         # and correct unique_id, remove the newer one.
         new_unique_id = f"{device_id}-climate"
-        for entry in climate_entries:
-            if (
-                entry.domain == Platform.CLIMATE
-                and entry.platform == DOMAIN
-                and entry.unique_id.startswith(f"{device_id}-")
-            ):
-                entity_id = entry.entity_id
-                if entry.unique_id != new_unique_id and entity_id.endswith("_2"):
-                    existing_entity_id = ent_reg.async_get_entity_id(
-                        Platform.CLIMATE, DOMAIN, entry.unique_id
-                    )
-                    if existing_entity_id:
-                        ent_reg.async_remove(existing_entity_id)
-                        return
+        er_entries = er.async_entries_for_config_entry(
+            ent_reg, coordinator.config_entry.entry_id
+        )
+        entry_list = [
+            entry
+            for entry in er_entries
+            if entry.domain == Platform.CLIMATE
+            and entry.platform == DOMAIN
+            and entry.unique_id.startswith(f"{device_id}-")
+        ]
 
-                ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
-                LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
+        if len(entry_list) == 1:
+            entity_id = entry_list[0].entity_id
+            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+            LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
+            return
 
+        # Remove the double entry with the present unique_id, this will leave 
+        # the entry with the original unique_id which ends with `-climate`
+        for item in entry_list:
+            if (old_unique_id := item.unique_id) != new_unique_id:
+                entity_id = ent_reg.async_get_entity_id(Platform.CLIMATE, DOMAIN, old_unique_id)
+                ent_reg.async_remove(entity_id)
+                return
 
 # pw-beta only - revert adding CONF_TIMEOUT to config_entry in v0.53.3
 async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> None:
