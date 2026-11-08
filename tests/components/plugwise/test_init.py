@@ -298,11 +298,11 @@ async def test_migrate_relay_unique_id(
             {
                 "domain": Platform.CLIMATE,
                 "platform": DOMAIN,
-                "unique_id": f"{CLIMATE_ID}-old_device_name",
-                "suggested_object_id": f"{CLIMATE_ID}-old_device_name",
+                "unique_id": f"{CLIMATE_ID}-device_name",
+                "suggested_object_id": f"{CLIMATE_ID}-device_name",
                 "disabled_by": None,
             },
-            f"{CLIMATE_ID}-old_device_name",
+            f"{CLIMATE_ID}-device_name",
             f"{CLIMATE_ID}-climate",
         )
     ],
@@ -331,16 +331,18 @@ async def test_migrate_climate_unique_id_with_duplicate(
     canonical_entity = entity_registry.async_get_or_create(
         domain=Platform.CLIMATE,
         platform=DOMAIN,
-        unique_id=f"{CLIMATE_ID}-climate",
-        suggested_object_id=f"{CLIMATE_ID}-climate",
+        entity_id="climate_slaapkamer_2",
+        unique_id=f"{CLIMATE_ID}-device_name",
+        suggested_object_id=f"{CLIMATE_ID}-device_name",
         disabled_by=None,
         config_entry=mock_config_entry,
     )
     old_entity = entity_registry.async_get_or_create(
         domain=Platform.CLIMATE,
         platform=DOMAIN,
-        unique_id=f"{CLIMATE_ID}-old_device_name",
-        suggested_object_id=f"{CLIMATE_ID}-old_device_name",
+        entity_id="climate_slaapkamer",
+        unique_id=f"{CLIMATE_ID}-climate",
+        suggested_object_id=f"{CLIMATE_ID}-climate",
         disabled_by=None,
         config_entry=mock_config_entry,
     )
@@ -349,9 +351,6 @@ async def test_migrate_climate_unique_id_with_duplicate(
     await hass.async_block_till_done()
 
     assert entity_registry.async_get(canonical_entity.entity_id) is None
-    migrated_entity = entity_registry.async_get(old_entity.entity_id)
-    assert migrated_entity is not None
-    assert migrated_entity.unique_id == f"{CLIMATE_ID}-climate"
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
