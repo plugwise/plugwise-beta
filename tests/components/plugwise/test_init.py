@@ -331,7 +331,6 @@ async def test_migrate_climate_unique_id_with_duplicate(
     canonical_entity = entity_registry.async_get_or_create(
         domain=Platform.CLIMATE,
         platform=DOMAIN,
-        entity_id="climate_slaapkamer_2",
         unique_id=f"{CLIMATE_ID}-device_name",
         suggested_object_id=f"{CLIMATE_ID}-device_name",
         disabled_by=None,
@@ -340,7 +339,6 @@ async def test_migrate_climate_unique_id_with_duplicate(
     old_entity = entity_registry.async_get_or_create(
         domain=Platform.CLIMATE,
         platform=DOMAIN,
-        entity_id="climate_slaapkamer",
         unique_id=f"{CLIMATE_ID}-climate",
         suggested_object_id=f"{CLIMATE_ID}-climate",
         disabled_by=None,
