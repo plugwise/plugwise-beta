@@ -126,22 +126,24 @@ async def async_migrate_entities(
             LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
 
         # Pw-beta only - reverse migrate climate entities using their stable device ID; the device name
-        # in the present unique ID may have changed.
+        # in the present unique ID may have changed. When dual entries exist, one with the previously
+        # and correct unique_id, remove the newer one.
         new_unique_id = f"{device_id}-climate"
-        for climate_entry in climate_entries:
+        for entry in climate_entries:
             if (
-                climate_entry.domain == Platform.CLIMATE
-                and climate_entry.platform == DOMAIN
-                and climate_entry.unique_id.startswith(f"{device_id}-")
-                and climate_entry.unique_id != new_unique_id
+                entry.domain == Platform.CLIMATE
+                and entry.platform == DOMAIN
+                and entry.unique_id.startswith(f"{device_id}-")
             ):
-                old_unique_id = climate_entry.unique_id
-                entity_id = climate_entry.entity_id
-                existing_entity_id = ent_reg.async_get_entity_id(
-                    Platform.CLIMATE, DOMAIN, new_unique_id
-                )
+                entity_id = entry.entity_id
+                if entry.unique_id != new_unique_id and entity_id.endswith("_2"):
+                    existing_entity_id = ent_reg.async_get_entity_id(
+                        Platform.CLIMATE, DOMAIN, entry.unique_id
+                    )
                 if existing_entity_id:
                     ent_reg.async_remove(existing_entity_id)
+                    return
+
                 ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
                 LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
 
