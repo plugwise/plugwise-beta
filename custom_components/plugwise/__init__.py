@@ -142,7 +142,7 @@ async def async_migrate_entities(
             LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
             return
 
-        # Remove the double entry with the present unique_id, this will leave 
+        # Remove the double entry with the present unique_id, this will leave
         # the entry with the original unique_id which ends with `-climate`
         for item in entry_list:
             if (old_unique_id := item.unique_id) != new_unique_id:
