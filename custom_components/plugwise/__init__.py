@@ -138,9 +138,11 @@ async def async_migrate_entities(
 
         if len(entry_list) == 1:
             entity_id = entry_list[0].entity_id
-            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
-            LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
-            return
+            previous_unique_id = entry_list[0].unique_id
+            if previous_unique_id != new_unique_id:
+                ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+                LOGGER.debug("Migrated %s to %s", previous_unique_id, new_unique_id)
+            continue
 
         # Remove the double entry with the present unique_id, this will leave
         # the entry with the original unique_id which ends with `-climate`
