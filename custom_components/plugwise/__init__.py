@@ -145,11 +145,15 @@ async def async_migrate_entities(
         # Remove the double entry with the present unique_id, this will leave
         # the entry with the original unique_id which ends with `-climate`
         for item in entry_list:
-            if (old_unique_id := item.unique_id) != new_unique_id:
-                entity_id = ent_reg.async_get_entity_id(Platform.CLIMATE, DOMAIN, old_unique_id)
-                if entity_id:
-                    ent_reg.async_remove(entity_id)
-                    return
+            if (old_unique_id := item.unique_id) != new_unique_id and (
+                entity_id := ent_reg.async_get_entity_id(
+                    Platform.CLIMATE,
+                    DOMAIN,
+                    old_unique_id,
+                )
+            ):
+                ent_reg.async_remove(entity_id)
+                return
 
 # pw-beta only - revert adding CONF_TIMEOUT to config_entry in v0.53.3
 async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> None:
