@@ -326,9 +326,9 @@ async def test_migrate_climate_unique_id_with_duplicate(
     mock_config_entry: MockConfigEntry,
     entity_registry: er.EntityRegistry,
 ) -> None:
-    """Test migration removes a duplicate canonical climate entity."""
+    """Test migration preserves the existing climate entity and its settings."""
     mock_config_entry.add_to_hass(hass)
-    canonical_entity = entity_registry.async_get_or_create(
+    duplicate_entity = entity_registry.async_get_or_create(
         domain=Platform.CLIMATE,
         platform=DOMAIN,
         unique_id=f"{CLIMATE_ID}-device_name",
@@ -336,7 +336,10 @@ async def test_migrate_climate_unique_id_with_duplicate(
         disabled_by=None,
         config_entry=mock_config_entry,
     )
-    old_entity = entity_registry.async_get_or_create(
+    duplicate_entity = entity_registry.async_update_entity(
+        duplicate_entity.entity_id, new_entity_id="climate.bedroom_2"
+    )
+    canonical_entity = entity_registry.async_get_or_create(
         domain=Platform.CLIMATE,
         platform=DOMAIN,
         unique_id=f"{CLIMATE_ID}-climate",
@@ -344,14 +347,20 @@ async def test_migrate_climate_unique_id_with_duplicate(
         disabled_by=None,
         config_entry=mock_config_entry,
     )
+    canonical_entity = entity_registry.async_update_entity(
+        canonical_entity.entity_id,
+        new_entity_id="climate.bedroom",
+    )
 
     assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
 
-    assert entity_registry.async_get(canonical_entity.entity_id) is None
-    migrated_entity = entity_registry.async_get(old_entity.entity_id)
+    assert entity_registry.async_get(duplicate_entity.entity_id) is None
+    migrated_entity = entity_registry.async_get(canonical_entity.entity_id)
     assert migrated_entity is not None
     assert migrated_entity.unique_id == f"{CLIMATE_ID}-climate"
+    assert migrated_entity.entity_id == "climate.bedroom"
+    assert migrated_entity.disabled_by is None
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)

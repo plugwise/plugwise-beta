@@ -152,18 +152,57 @@ def _migrate_climate_entity(
             LOGGER.debug("Migrated %s to %s", previous_unique_id, new_unique_id)
         return False
 
-    # Keep the existing canonical entry when both old and new IDs are present.
-    for item in entry_list:
-        old_unique_id = item.unique_id
-        if old_unique_id != new_unique_id and (
-            entity_id := ent_reg.async_get_entity_id(
-                Platform.CLIMATE, DOMAIN, old_unique_id
-            )
-        ):
-            ent_reg.async_remove(entity_id)
-            return True
+    # Keep the existing entry to preserve its entity ID, then reconcile settings
+    # from duplicates before removing them and assigning the canonical unique ID.
+    keeper = next(
+        (entry for entry in entry_list if entry.unique_id == new_unique_id),
+        entry_list[0],
+    )
+    for duplicate in entry_list:
+        if duplicate.entity_id == keeper.entity_id:
+            continue
+        keeper = _merge_climate_entry_settings(ent_reg, keeper, duplicate)
+        ent_reg.async_remove(duplicate.entity_id)
 
-    return False
+    if keeper.unique_id != new_unique_id:
+        ent_reg.async_update_entity(keeper.entity_id, new_unique_id=new_unique_id)
+        LOGGER.debug("Migrated %s to %s", keeper.unique_id, new_unique_id)
+
+    return True
+
+
+def _merge_climate_entry_settings(
+    ent_reg: er.EntityRegistry,
+    keeper: er.RegistryEntry,
+    duplicate: er.RegistryEntry,
+) -> er.RegistryEntry:
+    """Preserve user settings from a duplicate climate entity."""
+    updates: dict[str, Any] = {}
+    for setting in ("area_id", "hidden_by", "icon", "name"):
+        if getattr(keeper, setting) is None and (
+            value := getattr(duplicate, setting)
+        ) is not None:
+            updates[setting] = value
+
+    if duplicate.aliases:
+        aliases = list(keeper.aliases)
+        aliases.extend(alias for alias in duplicate.aliases if alias not in aliases)
+        updates["aliases"] = aliases
+    if duplicate.categories:
+        updates["categories"] = {**duplicate.categories, **keeper.categories}
+    if duplicate.labels:
+        updates["labels"] = keeper.labels | duplicate.labels
+    if updates:
+        keeper = ent_reg.async_update_entity(keeper.entity_id, **updates)
+
+    for domain, duplicate_options in duplicate.options.items():
+        keeper_options = keeper.options.get(domain, {})
+        merged_options = {**duplicate_options, **keeper_options}
+        if merged_options != keeper_options:
+            keeper = ent_reg.async_update_entity_options(
+                keeper.entity_id, domain, merged_options
+            )
+    return keeper
 
 # pw-beta only - revert adding CONF_TIMEOUT to config_entry in v0.53.3
 async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> None:
