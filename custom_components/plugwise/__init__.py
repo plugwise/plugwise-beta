@@ -144,6 +144,9 @@ def _migrate_climate_entity(
         and entry.unique_id.startswith(f"{device_id}-")
     ]
 
+    if not entry_list:
+        return False
+
     if len(entry_list) == 1:
         entity_id = entry_list[0].entity_id
         previous_unique_id = entry_list[0].unique_id

@@ -14,6 +14,7 @@ from plugwise.exceptions import (
 import pytest
 
 from freezegun.api import FrozenDateTimeFactory
+from homeassistant.components.plugwise import async_migrate_entities
 from homeassistant.components.plugwise.const import (
     DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
@@ -318,6 +319,20 @@ async def test_migrate_climate_unique_id(
     await check_migration(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
+
+
+async def test_migrate_climate_unique_id_without_existing_entity(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test climate migration when the entity registry has no matching entry."""
+    mock_config_entry.add_to_hass(hass)
+    coordinator = MagicMock(
+        config_entry=mock_config_entry,
+        data={CLIMATE_ID: {"dev_class": "climate"}},
+    )
+
+    await async_migrate_entities(hass, coordinator)
 
 
 @pytest.mark.usefixtures("mock_smile_adam_jip")
