@@ -115,7 +115,7 @@ async def async_migrate_entities(
         if _migrate_climate_entity(
             ent_reg, coordinator.config_entry.entry_id, device_id
         ):
-            return
+            continue
 
 
 def _migrate_outdoor_temperature_entity(
