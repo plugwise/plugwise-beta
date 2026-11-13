@@ -1,5 +1,7 @@
 """Plugwise Climate component for Home Assistant."""
 
+# pylint: disable=home-assistant-entity-unique-id-redundant-platform
+
 from dataclasses import asdict, dataclass
 from typing import Any, override
 
@@ -34,7 +36,6 @@ from .const import (
     LOCATION,
     LOGGER,
     LOWER_BOUND,
-    MASTER_THERMOSTATS,
     REGULATION_MODES,
     RESOLUTION,
     SELECT_REGULATION_MODE,
@@ -108,7 +109,7 @@ async def async_setup_entry(
                         PlugwiseClimateEntity(coordinator, device_id)
                     )
                     LOGGER.debug("Add climate %s", device[ATTR_NAME])
-            elif device[DEV_CLASS] in MASTER_THERMOSTATS:
+            elif device[DEV_CLASS] == THERMOSTAT:
                 entities.append(
                     PlugwiseClimateEntity(coordinator, device_id)
                 )
@@ -134,10 +135,8 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     ) -> None:
         """Set up the Plugwise API."""
         super().__init__(coordinator, device_id)
-
-        entity_name = f"{self.device[ATTR_NAME]}".lower()
-        self._attr_unique_id = f"{device_id}-{entity_name}"
-
+        # Legacy format, kept as migrating existing unique IDs is not worth the risk
+        self._attr_unique_id = f"{device_id}-climate"
         self._api = coordinator.api
         gateway_id: str = self._api.gateway_id
         self._gateway_data = coordinator.data[gateway_id]

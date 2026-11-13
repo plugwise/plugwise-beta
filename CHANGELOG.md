@@ -4,6 +4,7 @@ Versions from 0.40 and up
 
 ## Ongoing
 
+- Reverse-migrate climate unique_ids via PR [#1179](https://github.com/plugwise/plugwise-beta/pull/1179)
 - PR [#1176](https://github.com/plugwise/plugwise-beta/pull/1176):
   - Implement Core PR's [#162405](https://github.com/home-assistant/core/pull/162405), [#184740](https://github.com/home-assistant/core/pull/184740), [#184745](https://github.com/home-assistant/core/pull/184745)
   - Replace tests-impports by pytest_homeassistant-imports, fix test-script

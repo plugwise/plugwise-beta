@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from homeassistant.const import ATTR_NAME, CONF_TIMEOUT, Platform
+from homeassistant.const import CONF_TIMEOUT, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import (
     config_validation as cv,
@@ -107,30 +107,109 @@ async def async_migrate_entities(
 ) -> None:
     """Migrate entities if needed."""
     ent_reg = er.async_get(hass)
-
     for device_id, device in coordinator.data.items():
-        if device["dev_class"] not in ("climate", "heater_central"):
+        if device["dev_class"] not in ("climate", "heater_central", "thermostat"):
             continue
 
-        # Migrate opentherm_outdoor_temperature
-        # to opentherm_outdoor_air_temperature sensor
-        old_unique_id = f"{device_id}-outdoor_temperature"
-        if entity_id := ent_reg.async_get_entity_id(
-            Platform.SENSOR, DOMAIN, old_unique_id
+        _migrate_outdoor_temperature_entity(ent_reg, device_id)
+        if _migrate_climate_entity(
+            ent_reg, coordinator.config_entry.entry_id, device_id
         ):
-            new_unique_id = f"{device_id}-outdoor_air_temperature"
-            # Upstream remove LOGGER debug
-            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+            continue
 
-        # Migrate id-climate to id-device-name
-        old_unique_id = f"{device_id}-climate"
-        if entity_id := ent_reg.async_get_entity_id(
-            Platform.CLIMATE, DOMAIN, old_unique_id
-        ):
-            new_unique_id = f"{device_id}-{device[ATTR_NAME]}".lower()
-            # Upstream remove LOGGER debug
-            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
 
+def _migrate_outdoor_temperature_entity(
+    ent_reg: er.EntityRegistry, device_id: str
+) -> None:
+    """Migrate the outdoor temperature sensor unique ID."""
+    old_unique_id = f"{device_id}-outdoor_temperature"
+    if entity_id := ent_reg.async_get_entity_id(Platform.SENSOR, DOMAIN, old_unique_id):
+        new_unique_id = f"{device_id}-outdoor_air_temperature"
+        ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+        LOGGER.debug("Migrated %s to %s", old_unique_id, new_unique_id)
+
+
+def _migrate_climate_entity(
+    ent_reg: er.EntityRegistry, config_entry_id: str, device_id: str
+) -> bool:
+    """Migrate climate entity unique IDs, returning whether a duplicate was removed."""
+    # The current unique ID may include a device name that has changed.
+    new_unique_id = f"{device_id}-climate"
+    er_entries = er.async_entries_for_config_entry(ent_reg, config_entry_id)
+    entry_list = [
+        entry
+        for entry in er_entries
+        if entry.domain == Platform.CLIMATE
+        and entry.platform == DOMAIN
+        and entry.unique_id.startswith(f"{device_id}-")
+    ]
+
+    if not entry_list:
+        return False
+
+    if len(entry_list) == 1:
+        entity_id = entry_list[0].entity_id
+        previous_unique_id = entry_list[0].unique_id
+        if previous_unique_id != new_unique_id:
+            ent_reg.async_update_entity(entity_id, new_unique_id=new_unique_id)
+            LOGGER.debug("Migrated %s to %s", previous_unique_id, new_unique_id)
+        return False
+
+    # Keep the existing entry with the wanted unique_id, then reconcile settings
+    # from the duplicate before removing it.
+    keeper = next(
+        (entry for entry in entry_list if entry.unique_id == new_unique_id),
+        entry_list[0],
+    )
+    entry_list.remove(keeper)
+    duplicate = entry_list[0]
+    keeper = _merge_climate_entry_settings(ent_reg, keeper, duplicate)
+    ent_reg.async_remove(duplicate.entity_id)
+
+    return True
+
+def _merge_climate_entry_settings(
+    ent_reg: er.EntityRegistry,
+    keeper: er.RegistryEntry,
+    duplicate: er.RegistryEntry,
+) -> er.RegistryEntry:
+    """Preserve user settings from a duplicate climate entity."""
+    updates: dict[str, Any] = {}
+    updateable_fields = {
+        "aliases",
+        "area_id",
+        "capabilities",
+        "categories",
+        "device_class",
+        "disabled_by",
+        "entity_category",
+        "has_entity_name",
+        "hidden_by",
+        "icon",
+        "labels",
+        "name",
+        "options",
+        "original_device_class",
+        "original_icon",
+        "original_name",
+        "supported_features",
+        "translation_key",
+        "unit_of_measurement",
+    }
+
+    for key in duplicate.__slots__:
+        if key not in updateable_fields:
+            continue
+
+        dup_value = getattr(duplicate, key)
+        keep_value = getattr(keeper, key)
+        if dup_value != keep_value:
+            updates[key] = dup_value
+
+    if updates:
+        keeper = ent_reg.async_update_entity(keeper.entity_id, **updates)
+
+    return keeper
 
 # pw-beta only - revert adding CONF_TIMEOUT to config_entry in v0.53.3
 async def async_migrate_entry(hass: HomeAssistant, entry: PlugwiseConfigEntry) -> None:

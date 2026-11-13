@@ -14,6 +14,7 @@ from plugwise.exceptions import (
 import pytest
 
 from freezegun.api import FrozenDateTimeFactory
+from homeassistant.components.plugwise import async_migrate_entities
 from homeassistant.components.plugwise.const import (
     DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
@@ -298,12 +299,12 @@ async def test_migrate_relay_unique_id(
             {
                 "domain": Platform.CLIMATE,
                 "platform": DOMAIN,
-                "unique_id": f"{CLIMATE_ID}-climate",
-                "suggested_object_id": f"{CLIMATE_ID}-climate",
+                "unique_id": f"{CLIMATE_ID}-device_name",
+                "suggested_object_id": f"{CLIMATE_ID}-device_name",
                 "disabled_by": None,
             },
+            f"{CLIMATE_ID}-device_name",
             f"{CLIMATE_ID}-climate",
-            f"{CLIMATE_ID}-slaapkamer",
         )
     ],
 )
@@ -318,6 +319,65 @@ async def test_migrate_climate_unique_id(
     await check_migration(
         hass, mock_config_entry, entitydata, old_unique_id, new_unique_id
     )
+
+
+async def test_migrate_climate_unique_id_without_existing_entity(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test climate migration when the entity registry has no matching entry."""
+    mock_config_entry.add_to_hass(hass)
+    coordinator = MagicMock(
+        config_entry=mock_config_entry,
+        data={CLIMATE_ID: {"dev_class": "climate"}},
+    )
+
+    await async_migrate_entities(hass, coordinator)
+
+
+@pytest.mark.usefixtures("mock_smile_adam_jip")
+async def test_migrate_climate_unique_id_with_duplicate(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    entity_registry: er.EntityRegistry,
+) -> None:
+    """Test migration preserves the existing climate entity and its settings."""
+    mock_config_entry.add_to_hass(hass)
+    duplicate_entity = entity_registry.async_get_or_create(
+        domain=Platform.CLIMATE,
+        platform=DOMAIN,
+        unique_id=f"{CLIMATE_ID}-device_name",
+        original_icon="icon_2",
+        suggested_object_id=f"{CLIMATE_ID}-device_name",
+        disabled_by=None,
+        config_entry=mock_config_entry,
+    )
+    duplicate_entity = entity_registry.async_update_entity(
+        duplicate_entity.entity_id, new_entity_id="climate.bedroom_2"
+    )
+    canonical_entity = entity_registry.async_get_or_create(
+        domain=Platform.CLIMATE,
+        platform=DOMAIN,
+        unique_id=f"{CLIMATE_ID}-climate",
+        original_icon="icon_1",
+        suggested_object_id=f"{CLIMATE_ID}-climate",
+        disabled_by=None,
+        config_entry=mock_config_entry,
+    )
+    canonical_entity = entity_registry.async_update_entity(
+        canonical_entity.entity_id,
+        new_entity_id="climate.bedroom",
+    )
+
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert entity_registry.async_get(duplicate_entity.entity_id) is None
+    migrated_entity = entity_registry.async_get(canonical_entity.entity_id)
+    assert migrated_entity is not None
+    assert migrated_entity.unique_id == f"{CLIMATE_ID}-climate"
+    assert migrated_entity.entity_id == "climate.bedroom"
+    assert migrated_entity.disabled_by is None
 
 
 @pytest.mark.parametrize("chosen_env", ["m_adam_heating"], indirect=True)
