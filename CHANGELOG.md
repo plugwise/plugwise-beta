@@ -2,7 +2,7 @@
 
 Versions from 0.40 and up
 
-## Ongoing
+## 0.66.1
 
 - Reverse-migrate climate unique_ids via PR [#1179](https://github.com/plugwise/plugwise-beta/pull/1179)
 - PR [#1176](https://github.com/plugwise/plugwise-beta/pull/1176):
