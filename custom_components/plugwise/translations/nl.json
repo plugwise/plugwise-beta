@@ -177,8 +177,29 @@
       }
     },
     "sensor": {
+      "burner_operation_time": {
+        "name": "Brander bedrijfsduur"
+      },
+      "burner_starts": {
+        "name": "Brander startteller"
+      },
       "cooling_setpoint": {
         "name": "Instelpunt koelen"
+      },
+      "dhw_burner_operation_time": {
+        "name": "SWW brander bedrijfsduur"
+      },
+      "dhw_burner_starts": {
+        "name": "SWW brander startteller"
+      },
+      "dhw_flow": {
+        "name": "SWW debiet"
+      },
+      "dhw_pump_operation_time": {
+        "name": "SWW pomp bedrijfsduur"
+      },
+      "dhw_pump_starts": {
+        "name": "SWW pomp startteller"
       },
       "dhw_temperature": {
         "name": "SWW temperatuur"
@@ -258,11 +279,26 @@
       "electricity_produced_point": {
         "name": "Elektriciteitsproductie"
       },
+      "failed_burner_flame_ignitions": {
+        "name": "Mislukte branderontstekingen"
+      },
+      "failed_burner_starts": {
+        "name": "Mislukte branderstarts"
+      },
+      "fault_flags": {
+        "name": "Applicatie-specifieke foutcode"
+      },
       "gas_consumed_cumulative": {
         "name": "Gasverbruik cumulatief"
       },
       "gas_consumed_interval": {
         "name": "Gasverbruik interval"
+      },
+      "heating_pump_operation_time": {
+        "name": "Centraleverwarmingspomp bedrijfsduur"
+      },
+      "heating_pump_starts": {
+        "name": "Centraleverwarmingspomp startteller"
       },
       "heating_setpoint": {
         "name": "Instelpunt verwarming"
@@ -273,6 +309,9 @@
       "maximum_boiler_temperature": {
         "name": "Maximale keteltemperatuur"
       },
+      "maximum_modulation_level": {
+        "name": "Maximaal modulationniveau"
+      },
       "modulation_level": {
         "name": "Modulatieniveau"
       },
@@ -281,6 +320,12 @@
       },
       "net_electricity_point": {
         "name": "Netto elektriciteitsconsumptie-productie"
+      },
+      "oem_diagnostic_code": {
+        "name": "OEM diagnosecode"
+      },
+      "oem_fault_code": {
+        "name": "OEM foutcode"
       },
       "outdoor_air_temperature": {
         "name": "Buitenluchttemperatuur"
