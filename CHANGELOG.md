@@ -2,7 +2,12 @@
 
 Versions from 0.40 and up
 
-## 0.66.1
+## v0.67.0a0
+
+- Implement Core PR [#192351](https://github.com/home-assistant/core/pull/192351), adding extra sensors, contributed by @bilhert
+- Link to plugwise [v1.17.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.17.0) as minimum version
+
+## v0.66.1
 
 - Link to plugwise [v1.16.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.16.0) as minimum version
 - Reverse-migrate climate unique_ids via PR [#1179](https://github.com/plugwise/plugwise-beta/pull/1179)
