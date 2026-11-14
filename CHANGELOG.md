@@ -4,6 +4,7 @@ Versions from 0.40 and up
 
 ## 0.66.1
 
+- Link to plugwise [v1.16.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.16.0) as minimum version
 - Reverse-migrate climate unique_ids via PR [#1179](https://github.com/plugwise/plugwise-beta/pull/1179)
 - PR [#1176](https://github.com/plugwise/plugwise-beta/pull/1176):
   - Implement Core PR's [#162405](https://github.com/home-assistant/core/pull/162405), [#184740](https://github.com/home-assistant/core/pull/184740), [#184745](https://github.com/home-assistant/core/pull/184745)
