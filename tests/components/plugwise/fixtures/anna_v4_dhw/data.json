@@ -121,8 +121,16 @@
     "model_id": "2.32",
     "name": "OpenTherm",
     "sensors": {
+      "burner_operation_time": 927,
+      "burner_starts": 11459,
+      "dhw_burner_operation_time": 105,
+      "dhw_burner_starts": 4348,
+      "dhw_flow": 0.0,
+      "fault_flags": 0,
       "intended_boiler_temperature": 39.9,
       "modulation_level": 0,
+      "oem_diagnostic_code": 204,
+      "oem_fault_code": 0,
       "return_temperature": 32.0,
       "water_pressure": 2.2,
       "water_temperature": 45.0

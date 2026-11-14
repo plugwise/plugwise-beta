@@ -17,7 +17,7 @@
       "setpoint": 15.0,
       "upper_bound": 30.0
     },
-    "climate_mode": "heat",
+    "climate_mode": "auto",
     "control_state": "idle",
     "dev_class": "thermostat",
     "firmware": "2018-02-08T11:15:53+01:00",
@@ -44,7 +44,7 @@
       "vacation",
       "no_frost"
     ],
-    "select_schedule": "off",
+    "select_schedule": "Thermostat schedule",
     "sensors": {
       "illuminance": 2.0,
       "setpoint": 19.0,
@@ -88,8 +88,15 @@
     "name": "OpenTherm",
     "select_dhw_mode": "comfort",
     "sensors": {
+      "burner_operation_time": 11595,
+      "burner_starts": 50341,
+      "dhw_burner_operation_time": 914,
+      "failed_burner_flame_ignitions": 34,
+      "failed_burner_starts": 6,
+      "fault_flags": 0,
       "intended_boiler_temperature": 0.0,
       "modulation_level": 0,
+      "oem_fault_code": 255,
       "water_pressure": 6.0,
       "water_temperature": 35.0
     },
