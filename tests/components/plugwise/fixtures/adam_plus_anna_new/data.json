@@ -357,10 +357,10 @@
     "select_zone_profile": "active",
     "sensors": {
       "electricity_consumed": 60.8,
-      "electricity_produced": 0.0,
-      "temperature": 19.7
+      "electricity_produced": 0.0
     },
     "thermostat": {
+      "current": 19.7,
       "lower_bound": 1.0,
       "resolution": 0.01,
       "setpoint": 20.5,
@@ -436,10 +436,10 @@
     "select_zone_profile": "passive",
     "sensors": {
       "electricity_consumed": 0.0,
-      "electricity_produced": 0.0,
-      "temperature": 18.7
+      "electricity_produced": 0.0
     },
     "thermostat": {
+      "current": 18.7,
       "lower_bound": 0.0,
       "resolution": 0.01,
       "setpoint": 20.0,
