@@ -5,7 +5,7 @@ import pytest
 from homeassistant.components.plugwise.const import DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from syrupy.assertion import SnapshotAssertion
 
 from pytest_homeassistant.common import MockConfigEntry, snapshot_platform
