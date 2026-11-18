@@ -295,10 +295,10 @@
         "name": "Gasverbruik interval"
       },
       "heating_pump_operation_time": {
-        "name": "Centraleverwarmingspomp bedrijfsduur"
+        "name": "Verwarmingspomp bedrijfsduur"
       },
       "heating_pump_starts": {
-        "name": "Centraleverwarmingspomp startteller"
+        "name": "Verwarmingspomp startteller"
       },
       "heating_setpoint": {
         "name": "Instelpunt verwarming"
