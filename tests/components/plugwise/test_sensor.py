@@ -27,6 +27,32 @@ async def test_adam_sensor_snapshot(
 
 
 @pytest.mark.usefixtures("mock_smile_adam_jip")
+@pytest.mark.parametrize("platforms", [(SENSOR_DOMAIN,)])
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_adam_jip_heater_sensor_snapshot(
+    hass: HomeAssistant,
+    snapshot: SnapshotAssertion,
+    device_registry: dr.DeviceRegistry,
+    entity_registry: er.EntityRegistry,
+    setup_platform: MockConfigEntry,
+) -> None:
+    """Test Adam Jip OpenTherm heater sensor snapshot."""
+    # Only the heater: zones and thermostats share names, so their entity_ids
+    # depend on the order in which the devices are added.
+    device = device_registry.async_get_device_by_identifier(
+        (DOMAIN, "e4684553153b44afbef2200885f379dc"), setup_platform.entry_id
+    )
+    assert device
+    entries = er.async_entries_for_device(entity_registry, device.id)
+    assert entries
+    for entry in sorted(entries, key=lambda entry: entry.entity_id):
+        assert entry == snapshot(name=f"{entry.entity_id}-entry")
+        assert hass.states.get(entry.entity_id) == snapshot(
+            name=f"{entry.entity_id}-state"
+        )
+
+
+@pytest.mark.usefixtures("mock_smile_adam_jip")
 async def test_adam_climate_sensor_humidity(
     hass: HomeAssistant,
     init_integration: MockConfigEntry,
