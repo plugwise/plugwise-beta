@@ -2,7 +2,7 @@
 
 Versions from 0.40 and up
 
-## v0.67.0a0
+## v0.67.0
 
 - Implement Core PR [#192351](https://github.com/home-assistant/core/pull/192351), adding extra sensors, contributed by @bilhert
 - Link to plugwise [v1.17.0](https://github.com/plugwise/python-plugwise/releases/tag/v1.17.0) as minimum version
