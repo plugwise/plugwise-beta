@@ -23,7 +23,14 @@
     "name": "OpenTherm",
     "select_dhw_mode": "eco",
     "sensors": {
+      "burner_operation_time": 11576,
+      "burner_starts": 50221,
+      "dhw_burner_operation_time": 913,
+      "failed_burner_flame_ignitions": 34,
+      "failed_burner_starts": 6,
+      "fault_flags": 0,
       "intended_boiler_temperature": 22.5,
+      "oem_fault_code": 255,
       "water_temperature": 43.0
     },
     "switches": {
@@ -183,6 +190,7 @@
     "model_id": "143.1",
     "name": "Anna",
     "sensors": {
+      "maximum_modulation_level": 100,
       "setpoint": 20.5,
       "temperature": 20.1
     },
