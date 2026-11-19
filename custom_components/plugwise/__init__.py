@@ -107,7 +107,11 @@ async def async_migrate_entities(
 ) -> None:
     """Migrate entities if needed."""
     ent_reg = er.async_get(hass)
+    is_adam = coordinator.api.smile.name == "Adam"
     for device_id, device in coordinator.data.items():
+        if is_adam and device["dev_class"] == "climate":
+            _remove_adam_thermozone_temperature_sensor(ent_reg, device_id)
+
         if device["dev_class"] not in ("climate", "heater_central", "thermostat"):
             continue
 
@@ -116,6 +120,16 @@ async def async_migrate_entities(
             ent_reg, coordinator.config_entry.entry_id, device_id
         ):
             continue
+
+
+def _remove_adam_thermozone_temperature_sensor(
+    ent_reg: er.EntityRegistry, device_id: str
+) -> None:
+    """Remove the obsolete Adam ThermoZone temperature sensor."""
+    unique_id = f"{device_id}-temperature"
+    if entity_id := ent_reg.async_get_entity_id(Platform.SENSOR, DOMAIN, unique_id):
+        ent_reg.async_remove(entity_id)
+        LOGGER.debug("Removed obsolete entity %s", unique_id)
 
 
 def _migrate_outdoor_temperature_entity(

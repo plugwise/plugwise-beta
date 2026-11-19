@@ -335,6 +335,58 @@ async def test_migrate_climate_unique_id_without_existing_entity(
     await async_migrate_entities(hass, coordinator)
 
 
+@pytest.mark.parametrize(
+    ("gateway_name", "should_remove"),
+    [("Adam", True), ("Anna", False)],
+)
+async def test_remove_thermozone_temperature_sensor(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    entity_registry: er.EntityRegistry,
+    gateway_name: str,
+    should_remove: bool,
+) -> None:
+    """Test removal of the obsolete ThermoZone temperature sensor."""
+    mock_config_entry.add_to_hass(hass)
+    thermozone_temperature = entity_registry.async_get_or_create(
+        domain=Platform.SENSOR,
+        platform=DOMAIN,
+        unique_id=f"{CLIMATE_ID}-temperature",
+        suggested_object_id=f"{CLIMATE_ID}-temperature",
+        config_entry=mock_config_entry,
+    )
+    thermozone_setpoint = entity_registry.async_get_or_create(
+        domain=Platform.SENSOR,
+        platform=DOMAIN,
+        unique_id=f"{CLIMATE_ID}-setpoint",
+        suggested_object_id=f"{CLIMATE_ID}-setpoint",
+        config_entry=mock_config_entry,
+    )
+    thermostat_temperature = entity_registry.async_get_or_create(
+        domain=Platform.SENSOR,
+        platform=DOMAIN,
+        unique_id=f"{HEATER_ID}-temperature",
+        suggested_object_id=f"{HEATER_ID}-temperature",
+        config_entry=mock_config_entry,
+    )
+    coordinator = MagicMock(
+        config_entry=mock_config_entry,
+        data={
+            CLIMATE_ID: {"dev_class": "climate"},
+            HEATER_ID: {"dev_class": "thermostat"},
+        },
+    )
+    coordinator.api.smile.name = gateway_name
+
+    await async_migrate_entities(hass, coordinator)
+
+    assert (
+        entity_registry.async_get(thermozone_temperature.entity_id) is None
+    ) is should_remove
+    assert entity_registry.async_get(thermozone_setpoint.entity_id) is not None
+    assert entity_registry.async_get(thermostat_temperature.entity_id) is not None
+
+
 @pytest.mark.usefixtures("mock_smile_adam_jip")
 async def test_migrate_climate_unique_id_with_duplicate(
     hass: HomeAssistant,
