@@ -336,25 +336,33 @@ async def test_migrate_climate_unique_id_without_existing_entity(
 
 
 @pytest.mark.parametrize(
-    ("gateway_name", "should_remove"),
-    [("Adam", True), ("Anna", False)],
+    ("gateway_name", "has_temperature_sensor", "temperature_should_remain"),
+    [("Adam", True, False), ("Adam", False, False), ("Anna", True, True)],
 )
 async def test_remove_thermozone_temperature_sensor(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
+    *,
     entity_registry: er.EntityRegistry,
     gateway_name: str,
-    should_remove: bool,
+    has_temperature_sensor: bool,
+    temperature_should_remain: bool,
 ) -> None:
     """Test removal of the obsolete ThermoZone temperature sensor."""
     mock_config_entry.add_to_hass(hass)
-    thermozone_temperature = entity_registry.async_get_or_create(
-        domain=Platform.SENSOR,
-        platform=DOMAIN,
-        unique_id=f"{CLIMATE_ID}-temperature",
-        suggested_object_id=f"{CLIMATE_ID}-temperature",
-        config_entry=mock_config_entry,
+    temperature_unique_id = f"{CLIMATE_ID}-temperature"
+    thermozone_temperature = (
+        entity_registry.async_get_or_create(
+            domain=Platform.SENSOR,
+            platform=DOMAIN,
+            unique_id=temperature_unique_id,
+            suggested_object_id=temperature_unique_id,
+            config_entry=mock_config_entry,
+        )
+        if has_temperature_sensor
+        else None
     )
+    assert (thermozone_temperature is not None) is has_temperature_sensor
     thermozone_setpoint = entity_registry.async_get_or_create(
         domain=Platform.SENSOR,
         platform=DOMAIN,
@@ -381,8 +389,11 @@ async def test_remove_thermozone_temperature_sensor(
     await async_migrate_entities(hass, coordinator)
 
     assert (
-        entity_registry.async_get(thermozone_temperature.entity_id) is None
-    ) is should_remove
+        entity_registry.async_get_entity_id(
+            Platform.SENSOR, DOMAIN, temperature_unique_id
+        )
+        is not None
+    ) is temperature_should_remain
     assert entity_registry.async_get(thermozone_setpoint.entity_id) is not None
     assert entity_registry.async_get(thermostat_temperature.entity_id) is not None
 
