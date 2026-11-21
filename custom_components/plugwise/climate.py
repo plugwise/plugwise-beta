@@ -39,7 +39,6 @@ from .const import (
     REGULATION_MODES,
     RESOLUTION,
     SELECT_REGULATION_MODE,
-    SENSORS,
     TARGET_TEMP,
     TARGET_TEMP_HIGH,
     TARGET_TEMP_LOW,
@@ -196,7 +195,7 @@ class PlugwiseClimateEntity(PlugwiseEntity, ClimateEntity, RestoreEntity):
     @override
     def native_current_temperature(self) -> float | None:
         """Return the current temperature."""
-        return self.device.get(SENSORS, {}).get(ATTR_TEMPERATURE)
+        return self.device.get(THERMOSTAT, {}).get("current")
 
     @property
     @override

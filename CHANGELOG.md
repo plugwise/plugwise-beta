@@ -2,6 +2,11 @@
 
 Versions from 0.40 and up
 
+## v0.67.1
+
+- Bugfix for Core issue #192756 via plugwise [v1.17.1](https://github.com/plugwise/python-plugwise/releases/tag/v1.17.1)
+- This update removes the (double) thermozone temperature-sensors, these are still available as the climate's current temperature.
+
 ## v0.67.0
 
 - Implement Core PR [#192351](https://github.com/home-assistant/core/pull/192351), adding extra sensors, contributed by @bilhert

@@ -41,10 +41,9 @@
     ],
     "select_schedule": "off",
     "select_zone_profile": "active",
-    "sensors": {
-      "temperature": 24.2
-    },
+    "sensors": {},
     "thermostat": {
+      "current": 24.2,
       "lower_bound": 0.0,
       "resolution": 0.01,
       "setpoint": 13.0,
@@ -114,10 +113,9 @@
     ],
     "select_schedule": "off",
     "select_zone_profile": "active",
-    "sensors": {
-      "temperature": 27.4
-    },
+    "sensors": {},
     "thermostat": {
+      "current": 27.4,
       "lower_bound": 4.0,
       "resolution": 0.01,
       "setpoint": 9.0,
@@ -386,10 +384,9 @@
     ],
     "select_schedule": "off",
     "select_zone_profile": "active",
-    "sensors": {
-      "temperature": 30.0
-    },
+    "sensors": {},
     "thermostat": {
+      "current": 30.0,
       "lower_bound": 0.0,
       "resolution": 0.01,
       "setpoint": 13.0,
@@ -483,10 +480,9 @@
     ],
     "select_schedule": "off",
     "select_zone_profile": "active",
-    "sensors": {
-      "temperature": 30.0
-    },
+    "sensors": {},
     "thermostat": {
+      "current": 30.0,
       "lower_bound": 0.0,
       "resolution": 0.01,
       "setpoint": 13.0,
