@@ -202,7 +202,9 @@
     "create_schedule": {
       "service": "mdi:calendar-plus"
     },
-    "delete_notification": "mdi:trash-can",
+    "delete_notification": {
+      "service": "mdi:trash-can"
+    },
     "delete_schedule": {
       "service": "mdi:calendar-remove"
     },
@@ -212,4 +214,5 @@
     "set_schedule": {
       "service": "mdi:calendar-edit"
     }
+  }
 }
