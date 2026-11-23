@@ -800,6 +800,524 @@
         "warning": "Node Plug (with MAC address 000D6F000D13CB01, in room 'n.a.') has been unreachable since 23:03 2020-01-18. Please check the connection and restart the device."
       }
     },
+    "schedules": {
+      "2b5f3132692d444293854d9e0c61095f": {
+        "active": false,
+        "name": "Bios Schema met Film Avond",
+        "slots": [
+          {
+            "end": "mo 22:15",
+            "preset": "away",
+            "start": "mo 07:30"
+          },
+          {
+            "end": "tu 07:30",
+            "preset": "asleep",
+            "start": "mo 22:15"
+          },
+          {
+            "end": "tu 22:15",
+            "preset": "away",
+            "start": "tu 07:30"
+          },
+          {
+            "end": "we 07:30",
+            "preset": "asleep",
+            "start": "tu 22:15"
+          },
+          {
+            "end": "we 22:15",
+            "preset": "away",
+            "start": "we 07:30"
+          },
+          {
+            "end": "th 07:30",
+            "preset": "asleep",
+            "start": "we 22:15"
+          },
+          {
+            "end": "th 22:15",
+            "preset": "away",
+            "start": "th 07:30"
+          },
+          {
+            "end": "fr 07:30",
+            "preset": "asleep",
+            "start": "th 22:15"
+          },
+          {
+            "end": "fr 22:15",
+            "preset": "away",
+            "start": "fr 07:30"
+          },
+          {
+            "end": "sa 08:30",
+            "preset": "asleep",
+            "start": "fr 22:15"
+          },
+          {
+            "end": "sa 19:00",
+            "preset": "away",
+            "start": "sa 08:30"
+          },
+          {
+            "end": "sa 22:15",
+            "preset": "home",
+            "start": "sa 19:00"
+          },
+          {
+            "end": "su 08:30",
+            "preset": "asleep",
+            "start": "sa 22:15"
+          },
+          {
+            "end": "su 22:15",
+            "preset": "away",
+            "start": "su 08:30"
+          },
+          {
+            "end": "mo 07:30",
+            "preset": "asleep",
+            "start": "su 22:15"
+          }
+        ],
+        "zones": []
+      },
+      "3466ac8e063a454bb6be9481e8df92d4": {
+        "active": true,
+        "name": "CV Jessie",
+        "slots": [
+          {
+            "end": "mo 21:30",
+            "setpoint": 15.0,
+            "start": "mo 07:15"
+          },
+          {
+            "end": "tu 07:15",
+            "setpoint": 16.5,
+            "start": "mo 21:30"
+          },
+          {
+            "end": "tu 21:30",
+            "setpoint": 15.0,
+            "start": "tu 07:15"
+          },
+          {
+            "end": "we 07:15",
+            "setpoint": 16.5,
+            "start": "tu 21:30"
+          },
+          {
+            "end": "we 21:30",
+            "setpoint": 15.0,
+            "start": "we 07:15"
+          },
+          {
+            "end": "th 07:15",
+            "setpoint": 16.5,
+            "start": "we 21:30"
+          },
+          {
+            "end": "th 21:30",
+            "setpoint": 15.0,
+            "start": "th 07:15"
+          },
+          {
+            "end": "fr 07:15",
+            "setpoint": 16.5,
+            "start": "th 21:30"
+          },
+          {
+            "end": "fr 22:30",
+            "setpoint": 15.0,
+            "start": "fr 07:15"
+          },
+          {
+            "end": "sa 08:00",
+            "setpoint": 16.5,
+            "start": "fr 22:30"
+          },
+          {
+            "end": "sa 22:30",
+            "setpoint": 15.0,
+            "start": "sa 08:00"
+          },
+          {
+            "end": "su 08:00",
+            "setpoint": 16.5,
+            "start": "sa 22:30"
+          },
+          {
+            "end": "su 21:30",
+            "setpoint": 15.0,
+            "start": "su 08:00"
+          },
+          {
+            "end": "mo 07:15",
+            "setpoint": 16.5,
+            "start": "su 21:30"
+          }
+        ],
+        "zones": [
+          "82fa13f017d240daa0d0ea1775420f24"
+        ]
+      },
+      "3e4b5a775f8143de961eaa3f5f7d9d1a": {
+        "active": true,
+        "name": "Badkamer Schema",
+        "slots": [
+          {
+            "end": "mo 08:00",
+            "preset": "home",
+            "start": "mo 06:45"
+          },
+          {
+            "end": "mo 20:15",
+            "preset": "away",
+            "start": "mo 08:00"
+          },
+          {
+            "end": "mo 21:30",
+            "preset": "home",
+            "start": "mo 20:15"
+          },
+          {
+            "end": "tu 06:45",
+            "preset": "away",
+            "start": "mo 21:30"
+          },
+          {
+            "end": "tu 08:00",
+            "preset": "home",
+            "start": "tu 06:45"
+          },
+          {
+            "end": "tu 20:15",
+            "preset": "away",
+            "start": "tu 08:00"
+          },
+          {
+            "end": "tu 21:30",
+            "preset": "home",
+            "start": "tu 20:15"
+          },
+          {
+            "end": "we 06:45",
+            "preset": "away",
+            "start": "tu 21:30"
+          },
+          {
+            "end": "we 08:00",
+            "preset": "home",
+            "start": "we 06:45"
+          },
+          {
+            "end": "we 20:15",
+            "preset": "away",
+            "start": "we 08:00"
+          },
+          {
+            "end": "we 21:30",
+            "preset": "home",
+            "start": "we 20:15"
+          },
+          {
+            "end": "th 06:45",
+            "preset": "away",
+            "start": "we 21:30"
+          },
+          {
+            "end": "th 08:00",
+            "preset": "home",
+            "start": "th 06:45"
+          },
+          {
+            "end": "th 20:15",
+            "preset": "away",
+            "start": "th 08:00"
+          },
+          {
+            "end": "th 21:30",
+            "preset": "home",
+            "start": "th 20:15"
+          },
+          {
+            "end": "fr 06:45",
+            "preset": "away",
+            "start": "th 21:30"
+          },
+          {
+            "end": "fr 08:00",
+            "preset": "home",
+            "start": "fr 06:45"
+          },
+          {
+            "end": "fr 20:30",
+            "preset": "away",
+            "start": "fr 08:00"
+          },
+          {
+            "end": "fr 22:00",
+            "preset": "home",
+            "start": "fr 20:30"
+          },
+          {
+            "end": "sa 09:00",
+            "preset": "away",
+            "start": "fr 22:00"
+          },
+          {
+            "end": "sa 10:15",
+            "preset": "home",
+            "start": "sa 09:00"
+          },
+          {
+            "end": "sa 20:30",
+            "preset": "away",
+            "start": "sa 10:15"
+          },
+          {
+            "end": "sa 22:00",
+            "preset": "asleep",
+            "start": "sa 20:30"
+          },
+          {
+            "end": "su 09:00",
+            "preset": "away",
+            "start": "sa 22:00"
+          },
+          {
+            "end": "su 10:15",
+            "preset": "home",
+            "start": "su 09:00"
+          },
+          {
+            "end": "su 20:15",
+            "preset": "away",
+            "start": "su 10:15"
+          },
+          {
+            "end": "su 21:30",
+            "preset": "home",
+            "start": "su 20:15"
+          },
+          {
+            "end": "mo 06:45",
+            "preset": "away",
+            "start": "su 21:30"
+          }
+        ],
+        "zones": [
+          "08963fec7c53423ca5680aa4cb502c63"
+        ]
+      },
+      "d31c0fb5b9814815a5fe4090fd8ec1e2": {
+        "active": true,
+        "name": "CV Roan",
+        "slots": [
+          {
+            "end": "mo 19:30",
+            "preset": "away",
+            "start": "mo 07:00"
+          },
+          {
+            "end": "tu 07:00",
+            "preset": "asleep",
+            "start": "mo 19:30"
+          },
+          {
+            "end": "tu 19:30",
+            "preset": "away",
+            "start": "tu 07:00"
+          },
+          {
+            "end": "we 07:00",
+            "preset": "asleep",
+            "start": "tu 19:30"
+          },
+          {
+            "end": "we 19:30",
+            "preset": "away",
+            "start": "we 07:00"
+          },
+          {
+            "end": "th 07:00",
+            "preset": "asleep",
+            "start": "we 19:30"
+          },
+          {
+            "end": "th 19:30",
+            "preset": "away",
+            "start": "th 07:00"
+          },
+          {
+            "end": "fr 07:00",
+            "preset": "asleep",
+            "start": "th 19:30"
+          },
+          {
+            "end": "fr 20:15",
+            "preset": "away",
+            "start": "fr 07:00"
+          },
+          {
+            "end": "sa 07:30",
+            "preset": "asleep",
+            "start": "fr 20:15"
+          },
+          {
+            "end": "sa 20:15",
+            "preset": "away",
+            "start": "sa 07:30"
+          },
+          {
+            "end": "su 07:30",
+            "preset": "asleep",
+            "start": "sa 20:15"
+          },
+          {
+            "end": "su 19:30",
+            "preset": "away",
+            "start": "su 07:30"
+          },
+          {
+            "end": "mo 07:00",
+            "preset": "asleep",
+            "start": "su 19:30"
+          }
+        ],
+        "zones": []
+      },
+      "ee003247871e4e16882771ab715ddfa1": {
+        "active": true,
+        "name": "GF7  Woonkamer",
+        "slots": [
+          {
+            "end": "mo 08:00",
+            "preset": "home",
+            "start": "mo 06:30"
+          },
+          {
+            "end": "mo 15:00",
+            "preset": "away",
+            "start": "mo 08:00"
+          },
+          {
+            "end": "mo 22:30",
+            "preset": "home",
+            "start": "mo 15:00"
+          },
+          {
+            "end": "tu 06:30",
+            "preset": "asleep",
+            "start": "mo 22:30"
+          },
+          {
+            "end": "tu 08:00",
+            "preset": "home",
+            "start": "tu 06:30"
+          },
+          {
+            "end": "tu 14:00",
+            "preset": "away",
+            "start": "tu 08:00"
+          },
+          {
+            "end": "tu 22:30",
+            "preset": "home",
+            "start": "tu 14:00"
+          },
+          {
+            "end": "we 06:30",
+            "preset": "asleep",
+            "start": "tu 22:30"
+          },
+          {
+            "end": "we 08:00",
+            "preset": "home",
+            "start": "we 06:30"
+          },
+          {
+            "end": "we 11:30",
+            "preset": "away",
+            "start": "we 08:00"
+          },
+          {
+            "end": "we 22:30",
+            "preset": "home",
+            "start": "we 11:30"
+          },
+          {
+            "end": "th 06:30",
+            "preset": "asleep",
+            "start": "we 22:30"
+          },
+          {
+            "end": "th 08:00",
+            "preset": "home",
+            "start": "th 06:30"
+          },
+          {
+            "end": "th 15:00",
+            "preset": "away",
+            "start": "th 08:00"
+          },
+          {
+            "end": "th 22:30",
+            "preset": "home",
+            "start": "th 15:00"
+          },
+          {
+            "end": "fr 06:30",
+            "preset": "asleep",
+            "start": "th 22:30"
+          },
+          {
+            "end": "fr 08:00",
+            "preset": "home",
+            "start": "fr 06:30"
+          },
+          {
+            "end": "fr 11:30",
+            "preset": "away",
+            "start": "fr 08:00"
+          },
+          {
+            "end": "fr 23:15",
+            "preset": "home",
+            "start": "fr 11:30"
+          },
+          {
+            "end": "sa 08:00",
+            "preset": "asleep",
+            "start": "fr 23:15"
+          },
+          {
+            "end": "sa 23:15",
+            "preset": "home",
+            "start": "sa 08:00"
+          },
+          {
+            "end": "su 08:00",
+            "preset": "asleep",
+            "start": "sa 23:15"
+          },
+          {
+            "end": "su 22:30",
+            "preset": "home",
+            "start": "su 08:00"
+          },
+          {
+            "end": "mo 06:30",
+            "preset": "asleep",
+            "start": "su 22:30"
+          }
+        ],
+        "zones": [
+          "c50f167537524366a5af7aa3942feb1e"
+        ]
+      }
+    },
     "sensors": {
       "outdoor_temperature": 7.81
     },
