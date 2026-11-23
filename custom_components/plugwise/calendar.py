@@ -127,7 +127,7 @@ class PlugwiseScheduleCalendar(PlugwiseEntity, CalendarEntity):
         """Return the current or next switch point's event."""
         if not self.available:
             return None
-        now = dt_util.now()
+        now = dt_util.as_utc(dt_util.now())
         events = self._events(now, now + timedelta(days=8))
         return next((event for event in events if event.end > now), None)
 
