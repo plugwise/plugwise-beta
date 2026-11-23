@@ -1,0 +1,299 @@
+# serializer version: 1
+# name: test_adam_calendar_entities[platforms0][calendar.adam_badkamer_schema-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': None,
+    'device_class': None,
+    'device_id': <DeviceEntry identifiers=[('plugwise', 'fe799307f1624099878210aa0b9f1475')]>,
+    'disabled_by': None,
+    'domain': 'calendar',
+    'entity_category': None,
+    'entity_id': 'calendar.adam_badkamer_schema',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Badkamer Schema',
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'Badkamer Schema',
+    'platform': 'plugwise',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': 'fe799307f1624099878210aa0b9f1475-schedule-3e4b5a775f8143de961eaa3f5f7d9d1a',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_adam_calendar_entities[platforms0][calendar.adam_badkamer_schema-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'active': True,
+      <CalendarEntityStateAttribute.ALL_DAY: 'all_day'>: False,
+      <CalendarEntityStateAttribute.DESCRIPTION: 'description'>: '',
+      <CalendarEntityStateAttribute.END_TIME: 'end_time'>: '2026-10-26 08:00:00',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Adam Badkamer Schema',
+      <CalendarEntityStateAttribute.LOCATION: 'location'>: '',
+      <CalendarEntityStateAttribute.MESSAGE: 'message'>: 'Home',
+      <CalendarEntityStateAttribute.START_TIME: 'start_time'>: '2026-10-26 06:45:00',
+      'zones': list([
+        'Badkamer',
+      ]),
+    }),
+    'context': <ANY>,
+    'entity_id': 'calendar.adam_badkamer_schema',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'on',
+  })
+# ---
+# name: test_adam_calendar_entities[platforms0][calendar.adam_bios_schema_met_film_avond-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': None,
+    'device_class': None,
+    'device_id': <DeviceEntry identifiers=[('plugwise', 'fe799307f1624099878210aa0b9f1475')]>,
+    'disabled_by': None,
+    'domain': 'calendar',
+    'entity_category': None,
+    'entity_id': 'calendar.adam_bios_schema_met_film_avond',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Bios Schema met Film Avond',
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'Bios Schema met Film Avond',
+    'platform': 'plugwise',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': 'fe799307f1624099878210aa0b9f1475-schedule-2b5f3132692d444293854d9e0c61095f',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_adam_calendar_entities[platforms0][calendar.adam_bios_schema_met_film_avond-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'active': False,
+      <CalendarEntityStateAttribute.ALL_DAY: 'all_day'>: False,
+      <CalendarEntityStateAttribute.DESCRIPTION: 'description'>: '',
+      <CalendarEntityStateAttribute.END_TIME: 'end_time'>: '2026-10-26 07:30:00',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Adam Bios Schema met Film Avond',
+      <CalendarEntityStateAttribute.LOCATION: 'location'>: '',
+      <CalendarEntityStateAttribute.MESSAGE: 'message'>: 'Night',
+      <CalendarEntityStateAttribute.START_TIME: 'start_time'>: '2026-10-25 22:15:00',
+      'zones': list([
+      ]),
+    }),
+    'context': <ANY>,
+    'entity_id': 'calendar.adam_bios_schema_met_film_avond',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'on',
+  })
+# ---
+# name: test_adam_calendar_entities[platforms0][calendar.adam_cv_jessie-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': None,
+    'device_class': None,
+    'device_id': <DeviceEntry identifiers=[('plugwise', 'fe799307f1624099878210aa0b9f1475')]>,
+    'disabled_by': None,
+    'domain': 'calendar',
+    'entity_category': None,
+    'entity_id': 'calendar.adam_cv_jessie',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'CV Jessie',
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'CV Jessie',
+    'platform': 'plugwise',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': 'fe799307f1624099878210aa0b9f1475-schedule-3466ac8e063a454bb6be9481e8df92d4',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_adam_calendar_entities[platforms0][calendar.adam_cv_jessie-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'active': True,
+      <CalendarEntityStateAttribute.ALL_DAY: 'all_day'>: False,
+      <CalendarEntityStateAttribute.DESCRIPTION: 'description'>: '',
+      <CalendarEntityStateAttribute.END_TIME: 'end_time'>: '2026-10-26 07:15:00',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Adam CV Jessie',
+      <CalendarEntityStateAttribute.LOCATION: 'location'>: '',
+      <CalendarEntityStateAttribute.MESSAGE: 'message'>: '16.5 °C',
+      <CalendarEntityStateAttribute.START_TIME: 'start_time'>: '2026-10-25 21:30:00',
+      'zones': list([
+        'Jessie',
+      ]),
+    }),
+    'context': <ANY>,
+    'entity_id': 'calendar.adam_cv_jessie',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'on',
+  })
+# ---
+# name: test_adam_calendar_entities[platforms0][calendar.adam_cv_roan-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': None,
+    'device_class': None,
+    'device_id': <DeviceEntry identifiers=[('plugwise', 'fe799307f1624099878210aa0b9f1475')]>,
+    'disabled_by': None,
+    'domain': 'calendar',
+    'entity_category': None,
+    'entity_id': 'calendar.adam_cv_roan',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'CV Roan',
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'CV Roan',
+    'platform': 'plugwise',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': 'fe799307f1624099878210aa0b9f1475-schedule-d31c0fb5b9814815a5fe4090fd8ec1e2',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_adam_calendar_entities[platforms0][calendar.adam_cv_roan-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'active': True,
+      <CalendarEntityStateAttribute.ALL_DAY: 'all_day'>: False,
+      <CalendarEntityStateAttribute.DESCRIPTION: 'description'>: '',
+      <CalendarEntityStateAttribute.END_TIME: 'end_time'>: '2026-10-26 19:30:00',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Adam CV Roan',
+      <CalendarEntityStateAttribute.LOCATION: 'location'>: '',
+      <CalendarEntityStateAttribute.MESSAGE: 'message'>: 'Away',
+      <CalendarEntityStateAttribute.START_TIME: 'start_time'>: '2026-10-26 07:00:00',
+      'zones': list([
+      ]),
+    }),
+    'context': <ANY>,
+    'entity_id': 'calendar.adam_cv_roan',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'on',
+  })
+# ---
+# name: test_adam_calendar_entities[platforms0][calendar.adam_gf7_woonkamer-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': None,
+    'device_class': None,
+    'device_id': <DeviceEntry identifiers=[('plugwise', 'fe799307f1624099878210aa0b9f1475')]>,
+    'disabled_by': None,
+    'domain': 'calendar',
+    'entity_category': None,
+    'entity_id': 'calendar.adam_gf7_woonkamer',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'GF7  Woonkamer',
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'GF7  Woonkamer',
+    'platform': 'plugwise',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': 'fe799307f1624099878210aa0b9f1475-schedule-ee003247871e4e16882771ab715ddfa1',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_adam_calendar_entities[platforms0][calendar.adam_gf7_woonkamer-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'active': True,
+      <CalendarEntityStateAttribute.ALL_DAY: 'all_day'>: False,
+      <CalendarEntityStateAttribute.DESCRIPTION: 'description'>: '',
+      <CalendarEntityStateAttribute.END_TIME: 'end_time'>: '2026-10-26 08:00:00',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Adam GF7  Woonkamer',
+      <CalendarEntityStateAttribute.LOCATION: 'location'>: '',
+      <CalendarEntityStateAttribute.MESSAGE: 'message'>: 'Home',
+      <CalendarEntityStateAttribute.START_TIME: 'start_time'>: '2026-10-26 06:30:00',
+      'zones': list([
+        'Woonkamer',
+      ]),
+    }),
+    'context': <ANY>,
+    'entity_id': 'calendar.adam_gf7_woonkamer',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'on',
+  })
+# ---
