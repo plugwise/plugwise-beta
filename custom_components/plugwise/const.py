@@ -163,6 +163,7 @@ P1_UPDATE_INTERVAL: Final = timedelta(seconds=10)
 PLATFORMS: Final[list[str]] = [
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
+    Platform.CALENDAR,
     Platform.CLIMATE,
     Platform.NUMBER,
     Platform.SELECT,
