@@ -2,6 +2,11 @@
 
 Versions from 0.40 and up
 
+## Ongoing
+
+- Add a read-only calendar for each schedule on the gateway, showing its switch points as events.
+- Add Get schedule, Set schedule, Create schedule and Delete schedule actions to read, change, add and remove schedules.
+
 ## v0.67.1
 
 - Bugfix for Core issue #192756 via plugwise [v1.17.1](https://github.com/plugwise/python-plugwise/releases/tag/v1.17.1)
