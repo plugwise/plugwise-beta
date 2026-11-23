@@ -790,6 +790,526 @@
           'warning': "Node Plug (with MAC address 000D6F000D13CB01, in room 'n.a.') has been unreachable since 23:03 2020-01-18. Please check the connection and restart the device.",
         }),
       }),
+      'schedules': dict({
+        '2b5f3132692d444293854d9e0c61095f': dict({
+          'active': False,
+          'name': 'Bios Schema met Film Avond',
+          'slots': list([
+            dict({
+              'end': 'mo 22:15',
+              'preset': 'away',
+              'start': 'mo 07:30',
+            }),
+            dict({
+              'end': 'tu 07:30',
+              'preset': 'asleep',
+              'start': 'mo 22:15',
+            }),
+            dict({
+              'end': 'tu 22:15',
+              'preset': 'away',
+              'start': 'tu 07:30',
+            }),
+            dict({
+              'end': 'we 07:30',
+              'preset': 'asleep',
+              'start': 'tu 22:15',
+            }),
+            dict({
+              'end': 'we 22:15',
+              'preset': 'away',
+              'start': 'we 07:30',
+            }),
+            dict({
+              'end': 'th 07:30',
+              'preset': 'asleep',
+              'start': 'we 22:15',
+            }),
+            dict({
+              'end': 'th 22:15',
+              'preset': 'away',
+              'start': 'th 07:30',
+            }),
+            dict({
+              'end': 'fr 07:30',
+              'preset': 'asleep',
+              'start': 'th 22:15',
+            }),
+            dict({
+              'end': 'fr 22:15',
+              'preset': 'away',
+              'start': 'fr 07:30',
+            }),
+            dict({
+              'end': 'sa 08:30',
+              'preset': 'asleep',
+              'start': 'fr 22:15',
+            }),
+            dict({
+              'end': 'sa 19:00',
+              'preset': 'away',
+              'start': 'sa 08:30',
+            }),
+            dict({
+              'end': 'sa 22:15',
+              'preset': 'home',
+              'start': 'sa 19:00',
+            }),
+            dict({
+              'end': 'su 08:30',
+              'preset': 'asleep',
+              'start': 'sa 22:15',
+            }),
+            dict({
+              'end': 'su 22:15',
+              'preset': 'away',
+              'start': 'su 08:30',
+            }),
+            dict({
+              'end': 'mo 07:30',
+              'preset': 'asleep',
+              'start': 'su 22:15',
+            }),
+          ]),
+          'zones': list([
+          ]),
+        }),
+        '3466ac8e063a454bb6be9481e8df92d4': dict({
+          'active': True,
+          'name': 'CV Jessie',
+          'slots': list([
+            dict({
+              'end': 'mo 21:30',
+              'setpoint': 15.0,
+              'start': 'mo 07:15',
+            }),
+            dict({
+              'end': 'tu 07:15',
+              'setpoint': 16.5,
+              'start': 'mo 21:30',
+            }),
+            dict({
+              'end': 'tu 21:30',
+              'setpoint': 15.0,
+              'start': 'tu 07:15',
+            }),
+            dict({
+              'end': 'we 07:15',
+              'setpoint': 16.5,
+              'start': 'tu 21:30',
+            }),
+            dict({
+              'end': 'we 21:30',
+              'setpoint': 15.0,
+              'start': 'we 07:15',
+            }),
+            dict({
+              'end': 'th 07:15',
+              'setpoint': 16.5,
+              'start': 'we 21:30',
+            }),
+            dict({
+              'end': 'th 21:30',
+              'setpoint': 15.0,
+              'start': 'th 07:15',
+            }),
+            dict({
+              'end': 'fr 07:15',
+              'setpoint': 16.5,
+              'start': 'th 21:30',
+            }),
+            dict({
+              'end': 'fr 22:30',
+              'setpoint': 15.0,
+              'start': 'fr 07:15',
+            }),
+            dict({
+              'end': 'sa 08:00',
+              'setpoint': 16.5,
+              'start': 'fr 22:30',
+            }),
+            dict({
+              'end': 'sa 22:30',
+              'setpoint': 15.0,
+              'start': 'sa 08:00',
+            }),
+            dict({
+              'end': 'su 08:00',
+              'setpoint': 16.5,
+              'start': 'sa 22:30',
+            }),
+            dict({
+              'end': 'su 21:30',
+              'setpoint': 15.0,
+              'start': 'su 08:00',
+            }),
+            dict({
+              'end': 'mo 07:15',
+              'setpoint': 16.5,
+              'start': 'su 21:30',
+            }),
+          ]),
+          'zones': list([
+            '82fa13f017d240daa0d0ea1775420f24',
+          ]),
+        }),
+        '3e4b5a775f8143de961eaa3f5f7d9d1a': dict({
+          'active': True,
+          'name': 'Badkamer Schema',
+          'slots': list([
+            dict({
+              'end': 'mo 08:00',
+              'preset': 'home',
+              'start': 'mo 06:45',
+            }),
+            dict({
+              'end': 'mo 20:15',
+              'preset': 'away',
+              'start': 'mo 08:00',
+            }),
+            dict({
+              'end': 'mo 21:30',
+              'preset': 'home',
+              'start': 'mo 20:15',
+            }),
+            dict({
+              'end': 'tu 06:45',
+              'preset': 'away',
+              'start': 'mo 21:30',
+            }),
+            dict({
+              'end': 'tu 08:00',
+              'preset': 'home',
+              'start': 'tu 06:45',
+            }),
+            dict({
+              'end': 'tu 20:15',
+              'preset': 'away',
+              'start': 'tu 08:00',
+            }),
+            dict({
+              'end': 'tu 21:30',
+              'preset': 'home',
+              'start': 'tu 20:15',
+            }),
+            dict({
+              'end': 'we 06:45',
+              'preset': 'away',
+              'start': 'tu 21:30',
+            }),
+            dict({
+              'end': 'we 08:00',
+              'preset': 'home',
+              'start': 'we 06:45',
+            }),
+            dict({
+              'end': 'we 20:15',
+              'preset': 'away',
+              'start': 'we 08:00',
+            }),
+            dict({
+              'end': 'we 21:30',
+              'preset': 'home',
+              'start': 'we 20:15',
+            }),
+            dict({
+              'end': 'th 06:45',
+              'preset': 'away',
+              'start': 'we 21:30',
+            }),
+            dict({
+              'end': 'th 08:00',
+              'preset': 'home',
+              'start': 'th 06:45',
+            }),
+            dict({
+              'end': 'th 20:15',
+              'preset': 'away',
+              'start': 'th 08:00',
+            }),
+            dict({
+              'end': 'th 21:30',
+              'preset': 'home',
+              'start': 'th 20:15',
+            }),
+            dict({
+              'end': 'fr 06:45',
+              'preset': 'away',
+              'start': 'th 21:30',
+            }),
+            dict({
+              'end': 'fr 08:00',
+              'preset': 'home',
+              'start': 'fr 06:45',
+            }),
+            dict({
+              'end': 'fr 20:30',
+              'preset': 'away',
+              'start': 'fr 08:00',
+            }),
+            dict({
+              'end': 'fr 22:00',
+              'preset': 'home',
+              'start': 'fr 20:30',
+            }),
+            dict({
+              'end': 'sa 09:00',
+              'preset': 'away',
+              'start': 'fr 22:00',
+            }),
+            dict({
+              'end': 'sa 10:15',
+              'preset': 'home',
+              'start': 'sa 09:00',
+            }),
+            dict({
+              'end': 'sa 20:30',
+              'preset': 'away',
+              'start': 'sa 10:15',
+            }),
+            dict({
+              'end': 'sa 22:00',
+              'preset': 'asleep',
+              'start': 'sa 20:30',
+            }),
+            dict({
+              'end': 'su 09:00',
+              'preset': 'away',
+              'start': 'sa 22:00',
+            }),
+            dict({
+              'end': 'su 10:15',
+              'preset': 'home',
+              'start': 'su 09:00',
+            }),
+            dict({
+              'end': 'su 20:15',
+              'preset': 'away',
+              'start': 'su 10:15',
+            }),
+            dict({
+              'end': 'su 21:30',
+              'preset': 'home',
+              'start': 'su 20:15',
+            }),
+            dict({
+              'end': 'mo 06:45',
+              'preset': 'away',
+              'start': 'su 21:30',
+            }),
+          ]),
+          'zones': list([
+            '08963fec7c53423ca5680aa4cb502c63',
+          ]),
+        }),
+        'd31c0fb5b9814815a5fe4090fd8ec1e2': dict({
+          'active': True,
+          'name': 'CV Roan',
+          'slots': list([
+            dict({
+              'end': 'mo 19:30',
+              'preset': 'away',
+              'start': 'mo 07:00',
+            }),
+            dict({
+              'end': 'tu 07:00',
+              'preset': 'asleep',
+              'start': 'mo 19:30',
+            }),
+            dict({
+              'end': 'tu 19:30',
+              'preset': 'away',
+              'start': 'tu 07:00',
+            }),
+            dict({
+              'end': 'we 07:00',
+              'preset': 'asleep',
+              'start': 'tu 19:30',
+            }),
+            dict({
+              'end': 'we 19:30',
+              'preset': 'away',
+              'start': 'we 07:00',
+            }),
+            dict({
+              'end': 'th 07:00',
+              'preset': 'asleep',
+              'start': 'we 19:30',
+            }),
+            dict({
+              'end': 'th 19:30',
+              'preset': 'away',
+              'start': 'th 07:00',
+            }),
+            dict({
+              'end': 'fr 07:00',
+              'preset': 'asleep',
+              'start': 'th 19:30',
+            }),
+            dict({
+              'end': 'fr 20:15',
+              'preset': 'away',
+              'start': 'fr 07:00',
+            }),
+            dict({
+              'end': 'sa 07:30',
+              'preset': 'asleep',
+              'start': 'fr 20:15',
+            }),
+            dict({
+              'end': 'sa 20:15',
+              'preset': 'away',
+              'start': 'sa 07:30',
+            }),
+            dict({
+              'end': 'su 07:30',
+              'preset': 'asleep',
+              'start': 'sa 20:15',
+            }),
+            dict({
+              'end': 'su 19:30',
+              'preset': 'away',
+              'start': 'su 07:30',
+            }),
+            dict({
+              'end': 'mo 07:00',
+              'preset': 'asleep',
+              'start': 'su 19:30',
+            }),
+          ]),
+          'zones': list([
+          ]),
+        }),
+        'ee003247871e4e16882771ab715ddfa1': dict({
+          'active': True,
+          'name': 'GF7  Woonkamer',
+          'slots': list([
+            dict({
+              'end': 'mo 08:00',
+              'preset': 'home',
+              'start': 'mo 06:30',
+            }),
+            dict({
+              'end': 'mo 15:00',
+              'preset': 'away',
+              'start': 'mo 08:00',
+            }),
+            dict({
+              'end': 'mo 22:30',
+              'preset': 'home',
+              'start': 'mo 15:00',
+            }),
+            dict({
+              'end': 'tu 06:30',
+              'preset': 'asleep',
+              'start': 'mo 22:30',
+            }),
+            dict({
+              'end': 'tu 08:00',
+              'preset': 'home',
+              'start': 'tu 06:30',
+            }),
+            dict({
+              'end': 'tu 14:00',
+              'preset': 'away',
+              'start': 'tu 08:00',
+            }),
+            dict({
+              'end': 'tu 22:30',
+              'preset': 'home',
+              'start': 'tu 14:00',
+            }),
+            dict({
+              'end': 'we 06:30',
+              'preset': 'asleep',
+              'start': 'tu 22:30',
+            }),
+            dict({
+              'end': 'we 08:00',
+              'preset': 'home',
+              'start': 'we 06:30',
+            }),
+            dict({
+              'end': 'we 11:30',
+              'preset': 'away',
+              'start': 'we 08:00',
+            }),
+            dict({
+              'end': 'we 22:30',
+              'preset': 'home',
+              'start': 'we 11:30',
+            }),
+            dict({
+              'end': 'th 06:30',
+              'preset': 'asleep',
+              'start': 'we 22:30',
+            }),
+            dict({
+              'end': 'th 08:00',
+              'preset': 'home',
+              'start': 'th 06:30',
+            }),
+            dict({
+              'end': 'th 15:00',
+              'preset': 'away',
+              'start': 'th 08:00',
+            }),
+            dict({
+              'end': 'th 22:30',
+              'preset': 'home',
+              'start': 'th 15:00',
+            }),
+            dict({
+              'end': 'fr 06:30',
+              'preset': 'asleep',
+              'start': 'th 22:30',
+            }),
+            dict({
+              'end': 'fr 08:00',
+              'preset': 'home',
+              'start': 'fr 06:30',
+            }),
+            dict({
+              'end': 'fr 11:30',
+              'preset': 'away',
+              'start': 'fr 08:00',
+            }),
+            dict({
+              'end': 'fr 23:15',
+              'preset': 'home',
+              'start': 'fr 11:30',
+            }),
+            dict({
+              'end': 'sa 08:00',
+              'preset': 'asleep',
+              'start': 'fr 23:15',
+            }),
+            dict({
+              'end': 'sa 23:15',
+              'preset': 'home',
+              'start': 'sa 08:00',
+            }),
+            dict({
+              'end': 'su 08:00',
+              'preset': 'asleep',
+              'start': 'sa 23:15',
+            }),
+            dict({
+              'end': 'su 22:30',
+              'preset': 'home',
+              'start': 'su 08:00',
+            }),
+            dict({
+              'end': 'mo 06:30',
+              'preset': 'asleep',
+              'start': 'su 22:30',
+            }),
+          ]),
+          'zones': list([
+            'c50f167537524366a5af7aa3942feb1e',
+          ]),
+        }),
+      }),
       'sensors': dict({
         'outdoor_temperature': 7.81,
       }),
