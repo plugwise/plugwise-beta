@@ -400,6 +400,21 @@
     "response_error": {
       "message": "Invalid XML-data or error indication received"
     },
+    "schedule_duplicate_time": {
+      "message": "Two switch points on the same day share a time. Give each switch point its own time."
+    },
+    "schedule_not_found": {
+      "message": "This schedule no longer exists on the gateway."
+    },
+    "schedule_other_settings": {
+      "message": "This schedule has settings that Home Assistant cannot change. Change it in the Plugwise app."
+    },
+    "schedule_preset_or_setpoint": {
+      "message": "Each switch point needs a preset or a temperature. Choose one of the two."
+    },
+    "schedule_too_few_points": {
+      "message": "A schedule needs at least two switch points in the week. Add another switch point."
+    },
     "set_schedule_first": {
       "message": "Failed setting HVACMode, set a schedule first"
     },
@@ -426,10 +441,122 @@
       }
     }
   },
+  "selector": {
+    "preset": {
+      "options": {
+        "asleep": "Night",
+        "away": "Away",
+        "home": "Home",
+        "no_frost": "Anti-frost",
+        "vacation": "Vacation"
+      }
+    },
+    "switch_point": {
+      "fields": {
+        "at": {
+          "name": "Time"
+        },
+        "preset": {
+          "name": "Preset"
+        },
+        "setpoint": {
+          "name": "Temperature"
+        }
+      }
+    }
+  },
   "services": {
+    "create_schedule": {
+      "description": "Adds a schedule to the gateway. The new schedule is not linked to any zone yet. To use it, choose it as a zone's thermostat schedule.",
+      "fields": {
+        "config_entry": {
+          "description": "The Plugwise gateway to add the schedule to.",
+          "name": "Gateway"
+        },
+        "friday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Friday"
+        },
+        "monday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Monday"
+        },
+        "name": {
+          "description": "Name of the new schedule.",
+          "name": "Name"
+        },
+        "saturday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Saturday"
+        },
+        "sunday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Sunday"
+        },
+        "thursday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Thursday"
+        },
+        "tuesday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Tuesday"
+        },
+        "wednesday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Wednesday"
+        }
+      },
+      "name": "Create schedule"
+    },
     "delete_notification": {
       "description": "Deletes a Plugwise notification",
       "name": "Delete Plugwise notification"
+    },
+    "delete_schedule": {
+      "description": "Deletes a schedule from the gateway. This cannot be undone. A zone that uses the schedule keeps its last temperature until you change it.",
+      "name": "Delete schedule"
+    },
+    "get_schedule": {
+      "description": "Returns the name, the zones and the switch points per day of a Plugwise schedule.",
+      "name": "Get schedule"
+    },
+    "set_schedule": {
+      "description": "Changes the switch points of a Plugwise schedule and can rename it. Days you leave out keep their switch points. The change applies to every zone that uses the schedule.",
+      "fields": {
+        "friday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Friday"
+        },
+        "monday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Monday"
+        },
+        "name": {
+          "description": "New name for the schedule.",
+          "name": "Name"
+        },
+        "saturday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Saturday"
+        },
+        "sunday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Sunday"
+        },
+        "thursday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Thursday"
+        },
+        "tuesday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Tuesday"
+        },
+        "wednesday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Wednesday"
+        }
+      },
+      "name": "Set schedule"
     }
   }
 }

@@ -33,6 +33,7 @@ HA_PLUGWISE_SMILE_ASYNC_UPDATE = (
 
 @pytest.mark.usefixtures("mock_smile_adam", "entity_registry_enabled_by_default")
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
+@pytest.mark.freeze_time("2026-10-26 07:00:00-07:00")
 async def test_adam_calendar_entities(
     hass: HomeAssistant,
     snapshot: SnapshotAssertion,
