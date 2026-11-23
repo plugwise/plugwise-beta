@@ -119,6 +119,16 @@
     "model_id": "smile_thermo",
     "name": "Smile Anna P1",
     "notifications": {},
+    "schedules": {
+      "898e6eaa068b44019ff9dc5c578881b2": {
+        "active": false,
+        "name": "Thermostat schedule",
+        "slots": [],
+        "zones": [
+          "5b13651d79c4454684fd268850b1bff8"
+        ]
+      }
+    },
     "sensors": {
       "outdoor_temperature": 11.8
     },

@@ -146,6 +146,318 @@
       "bleeding_hot",
       "cooling"
     ],
+    "schedules": {
+      "24df4dace79a4c42a0f4750ce65d84cb": {
+        "active": true,
+        "name": "Weekschema",
+        "slots": [
+          {
+            "end": "mo 16:30",
+            "setpoint": 18.5,
+            "start": "mo 07:15"
+          },
+          {
+            "end": "mo 21:00",
+            "preset": "home",
+            "start": "mo 16:30"
+          },
+          {
+            "end": "tu 07:15",
+            "preset": "asleep",
+            "start": "mo 21:00"
+          },
+          {
+            "end": "tu 16:30",
+            "setpoint": 18.5,
+            "start": "tu 07:15"
+          },
+          {
+            "end": "tu 21:30",
+            "preset": "home",
+            "start": "tu 16:30"
+          },
+          {
+            "end": "we 07:15",
+            "preset": "asleep",
+            "start": "tu 21:30"
+          },
+          {
+            "end": "we 16:30",
+            "setpoint": 18.5,
+            "start": "we 07:15"
+          },
+          {
+            "end": "we 21:30",
+            "preset": "home",
+            "start": "we 16:30"
+          },
+          {
+            "end": "th 07:15",
+            "preset": "asleep",
+            "start": "we 21:30"
+          },
+          {
+            "end": "th 16:30",
+            "setpoint": 18.5,
+            "start": "th 07:15"
+          },
+          {
+            "end": "th 21:30",
+            "preset": "home",
+            "start": "th 16:30"
+          },
+          {
+            "end": "fr 07:15",
+            "preset": "asleep",
+            "start": "th 21:30"
+          },
+          {
+            "end": "fr 16:30",
+            "setpoint": 18.5,
+            "start": "fr 07:15"
+          },
+          {
+            "end": "fr 22:00",
+            "preset": "home",
+            "start": "fr 16:30"
+          },
+          {
+            "end": "sa 07:45",
+            "preset": "asleep",
+            "start": "fr 22:00"
+          },
+          {
+            "end": "sa 16:00",
+            "setpoint": 18.5,
+            "start": "sa 07:45"
+          },
+          {
+            "end": "sa 22:00",
+            "preset": "home",
+            "start": "sa 16:00"
+          },
+          {
+            "end": "su 07:45",
+            "preset": "asleep",
+            "start": "sa 22:00"
+          },
+          {
+            "end": "su 16:00",
+            "setpoint": 18.5,
+            "start": "su 07:45"
+          },
+          {
+            "end": "su 21:30",
+            "preset": "home",
+            "start": "su 16:00"
+          },
+          {
+            "end": "mo 07:15",
+            "preset": "asleep",
+            "start": "su 21:30"
+          }
+        ],
+        "zones": [
+          "f2bf9048bef64cc5b6d5110154e33c81"
+        ]
+      },
+      "6b309e6df44c4e9a9f0014437843fa9a": {
+        "active": true,
+        "name": "Test",
+        "slots": [
+          {
+            "end": "tu 10:00",
+            "preset": "asleep",
+            "start": "mo 10:00"
+          },
+          {
+            "end": "tu 16:15",
+            "preset": "home",
+            "start": "mo 16:15"
+          },
+          {
+            "end": "we 10:00",
+            "preset": "asleep",
+            "start": "tu 10:00"
+          },
+          {
+            "end": "we 16:15",
+            "preset": "home",
+            "start": "tu 16:15"
+          },
+          {
+            "end": "th 10:00",
+            "preset": "asleep",
+            "start": "we 10:00"
+          },
+          {
+            "end": "th 16:15",
+            "preset": "home",
+            "start": "we 16:15"
+          },
+          {
+            "end": "fr 10:00",
+            "preset": "asleep",
+            "start": "th 10:00"
+          },
+          {
+            "end": "fr 16:15",
+            "preset": "home",
+            "start": "th 16:15"
+          },
+          {
+            "end": "su 10:00",
+            "preset": "asleep",
+            "start": "fr 10:00"
+          },
+          {
+            "end": "su 16:15",
+            "preset": "home",
+            "start": "fr 16:15"
+          },
+          {
+            "end": "sa 16:15",
+            "preset": "asleep",
+            "start": "sa 10:00"
+          },
+          {
+            "end": "mo 10:00",
+            "preset": "home",
+            "start": "sa 16:15"
+          },
+          {
+            "end": "mo 16:15",
+            "preset": "asleep",
+            "start": "su 10:00"
+          },
+          {
+            "end": "sa 10:00",
+            "preset": "home",
+            "start": "su 16:15"
+          }
+        ],
+        "zones": []
+      },
+      "e497d6c3572540008daa9d3ec9d500cd": {
+        "active": true,
+        "name": "Vakantie",
+        "slots": [
+          {
+            "end": "tu 10:00",
+            "setpoint": 15.0,
+            "start": "mo 10:00"
+          },
+          {
+            "end": "we 10:00",
+            "setpoint": 15.0,
+            "start": "tu 10:00"
+          },
+          {
+            "end": "th 10:00",
+            "setpoint": 15.0,
+            "start": "we 10:00"
+          },
+          {
+            "end": "fr 10:00",
+            "setpoint": 15.0,
+            "start": "th 10:00"
+          },
+          {
+            "end": "su 10:00",
+            "setpoint": 15.0,
+            "start": "fr 10:00"
+          },
+          {
+            "end": "mo 10:00",
+            "setpoint": 15.0,
+            "start": "sa 10:00"
+          },
+          {
+            "end": "sa 10:00",
+            "setpoint": 15.0,
+            "start": "su 10:00"
+          }
+        ],
+        "zones": []
+      },
+      "ebe3e57ec41d4d8faa927ca85c95b747": {
+        "active": true,
+        "name": "Badkamer",
+        "slots": [
+          {
+            "end": "mo 22:00",
+            "preset": "home",
+            "start": "mo 07:00"
+          },
+          {
+            "end": "tu 07:00",
+            "preset": "asleep",
+            "start": "mo 22:00"
+          },
+          {
+            "end": "tu 22:00",
+            "preset": "home",
+            "start": "tu 07:00"
+          },
+          {
+            "end": "we 07:00",
+            "preset": "asleep",
+            "start": "tu 22:00"
+          },
+          {
+            "end": "we 22:00",
+            "preset": "home",
+            "start": "we 07:00"
+          },
+          {
+            "end": "th 07:00",
+            "preset": "asleep",
+            "start": "we 22:00"
+          },
+          {
+            "end": "th 22:00",
+            "preset": "home",
+            "start": "th 07:00"
+          },
+          {
+            "end": "fr 07:00",
+            "preset": "asleep",
+            "start": "th 22:00"
+          },
+          {
+            "end": "fr 22:30",
+            "preset": "home",
+            "start": "fr 07:00"
+          },
+          {
+            "end": "sa 07:30",
+            "preset": "asleep",
+            "start": "fr 22:30"
+          },
+          {
+            "end": "sa 22:30",
+            "preset": "home",
+            "start": "sa 07:30"
+          },
+          {
+            "end": "su 07:30",
+            "preset": "asleep",
+            "start": "sa 22:30"
+          },
+          {
+            "end": "su 22:00",
+            "preset": "home",
+            "start": "su 07:30"
+          },
+          {
+            "end": "mo 07:00",
+            "preset": "asleep",
+            "start": "su 22:00"
+          }
+        ],
+        "zones": []
+      }
+    },
     "select_gateway_mode": "full",
     "select_regulation_mode": "cooling",
     "sensors": {

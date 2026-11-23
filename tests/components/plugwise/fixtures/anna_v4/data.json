@@ -85,6 +85,167 @@
     "model_id": "smile_thermo",
     "name": "Smile Anna",
     "notifications": {},
+    "schedules": {
+      "51a1ee93578f426e9077933150816c9c": {
+        "active": true,
+        "name": "Standaard",
+        "slots": [
+          {
+            "end": "mo 07:30",
+            "preset": "home",
+            "start": "mo 06:15"
+          },
+          {
+            "end": "mo 18:15",
+            "preset": "away",
+            "start": "mo 07:30"
+          },
+          {
+            "end": "mo 22:30",
+            "preset": "home",
+            "start": "mo 18:15"
+          },
+          {
+            "end": "tu 06:15",
+            "preset": "asleep",
+            "start": "mo 22:30"
+          },
+          {
+            "end": "tu 07:30",
+            "preset": "home",
+            "start": "tu 06:15"
+          },
+          {
+            "end": "tu 18:15",
+            "preset": "away",
+            "start": "tu 07:30"
+          },
+          {
+            "end": "tu 22:30",
+            "preset": "home",
+            "start": "tu 18:15"
+          },
+          {
+            "end": "we 06:15",
+            "preset": "asleep",
+            "start": "tu 22:30"
+          },
+          {
+            "end": "we 07:30",
+            "preset": "home",
+            "start": "we 06:15"
+          },
+          {
+            "end": "we 18:15",
+            "preset": "away",
+            "start": "we 07:30"
+          },
+          {
+            "end": "we 22:30",
+            "preset": "home",
+            "start": "we 18:15"
+          },
+          {
+            "end": "th 06:15",
+            "preset": "asleep",
+            "start": "we 22:30"
+          },
+          {
+            "end": "th 07:30",
+            "preset": "home",
+            "start": "th 06:15"
+          },
+          {
+            "end": "th 18:15",
+            "preset": "away",
+            "start": "th 07:30"
+          },
+          {
+            "end": "th 22:30",
+            "preset": "home",
+            "start": "th 18:15"
+          },
+          {
+            "end": "fr 06:15",
+            "preset": "asleep",
+            "start": "th 22:30"
+          },
+          {
+            "end": "fr 07:30",
+            "preset": "home",
+            "start": "fr 06:15"
+          },
+          {
+            "end": "fr 18:15",
+            "preset": "away",
+            "start": "fr 07:30"
+          },
+          {
+            "end": "fr 23:00",
+            "preset": "home",
+            "start": "fr 18:15"
+          },
+          {
+            "end": "sa 07:45",
+            "preset": "asleep",
+            "start": "fr 23:00"
+          },
+          {
+            "end": "sa 23:00",
+            "preset": "home",
+            "start": "sa 07:45"
+          },
+          {
+            "end": "su 10:00",
+            "preset": "asleep",
+            "start": "sa 23:00"
+          },
+          {
+            "end": "su 23:00",
+            "preset": "home",
+            "start": "su 10:00"
+          },
+          {
+            "end": "mo 06:15",
+            "preset": "asleep",
+            "start": "su 23:00"
+          }
+        ],
+        "zones": []
+      },
+      "971128b62a0b4bd0880162ccdc4eb2c7": {
+        "active": true,
+        "name": "Thuiswerken",
+        "slots": [
+          {
+            "end": "we 07:00",
+            "preset": "home",
+            "start": "mo 07:00"
+          },
+          {
+            "end": "fr 07:00",
+            "preset": "home",
+            "start": "tu 07:00"
+          },
+          {
+            "end": "tu 07:00",
+            "preset": "home",
+            "start": "we 07:00"
+          },
+          {
+            "end": "mo 07:00",
+            "preset": "home",
+            "start": "th 07:00"
+          },
+          {
+            "end": "th 07:00",
+            "preset": "home",
+            "start": "fr 07:00"
+          }
+        ],
+        "zones": []
+      }
+    },
     "sensors": {
       "outdoor_temperature": 7.44
     },
