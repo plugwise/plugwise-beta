@@ -20,6 +20,7 @@ from .const import DOMAIN, LOCATION, LOGGER
 from .coordinator import PlugwiseConfigEntry, PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .schedule import PRESETS, expand, switch_points
+from .util import plugwise_command
 
 PARALLEL_UPDATES = 0
 
@@ -150,6 +151,18 @@ class PlugwiseScheduleCalendar(PlugwiseEntity, CalendarEntity):
             self._labels,
             dt_util.get_default_time_zone(),
         )
+
+    @plugwise_command
+    async def async_set_schedule(
+        self, slots: list[dict[str, str | float]], name: str | None
+    ) -> None:
+        """Replace the schedule's switch points, and rename it when a name is given."""
+        await self.coordinator.api.set_schedule(self.rule_id, slots, name=name)
+
+    @plugwise_command
+    async def async_delete_schedule(self) -> None:
+        """Delete the schedule from the gateway."""
+        await self.coordinator.api.delete_schedule(self.rule_id)
 
     def zone_names(self, schedule: ScheduleData) -> list[str]:
         """Return the names of the zones, also when a thermostat stands for its zone."""

@@ -1,11 +1,40 @@
 """Tests for the Plugwise schedule helpers."""
 
 from datetime import datetime, timedelta
+import json
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from homeassistant.components.plugwise.schedule import expand, summary, switch_points
+import pytest
+
+from homeassistant.components.plugwise.schedule import (
+    expand,
+    from_days,
+    summary,
+    switch_points,
+    to_days,
+)
 
 AMSTERDAM = ZoneInfo("Europe/Amsterdam")
+FIXTURES = Path(__file__).parent / "fixtures"
+
+
+def _fixture_schedules() -> list[dict]:
+    """Return every schedule in the test fixtures."""
+    schedules = []
+    for path in sorted(FIXTURES.glob("*/data.json")):
+        for device in json.loads(path.read_text()).values():
+            schedules.extend(device.get("schedules", {}).values())
+    return schedules
+
+
+def test_round_trip_all_fixture_schedules() -> None:
+    """Test that every fixture schedule survives per-day lists unchanged."""
+    schedules = [s for s in _fixture_schedules() if len(switch_points(s["slots"])) > 1]
+    assert schedules
+    for schedule in schedules:
+        points = switch_points(schedule["slots"])
+        assert switch_points(from_days(to_days(points), [])) == points
 
 
 def test_overlapping_slots_are_switch_points() -> None:
@@ -96,3 +125,25 @@ def test_slot_with_unknown_day_is_skipped() -> None:
 def test_summary_of_unreadable_setpoint() -> None:
     """Test that a setpoint the library kept as text is shown as text."""
     assert summary({"setpoint": "abc"}, {}) == "setpoint: abc"
+
+
+def test_from_days_replaces_given_days_only() -> None:
+    """Test that only the given days change and the week is closed again."""
+    points = switch_points(
+        [
+            {"start": "mo 07:00", "preset": "home"},
+            {"start": "mo 22:00", "preset": "asleep"},
+            {"start": "tu 07:00", "preset": "home"},
+        ]
+    )
+    slots = from_days({"monday": [{"at": "08:00", "preset": "away"}]}, points)
+    assert slots == [
+        {"start": "mo 08:00", "end": "tu 07:00", "preset": "away"},
+        {"start": "tu 07:00", "end": "mo 08:00", "preset": "home"},
+    ]
+
+
+def test_from_days_needs_two_switch_points() -> None:
+    """Test that a week with one switch point is refused."""
+    with pytest.raises(ValueError):
+        from_days({"monday": [{"at": "07:00", "preset": "home"}]}, [])
