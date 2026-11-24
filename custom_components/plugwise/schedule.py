@@ -5,7 +5,7 @@ only the start of another slot. A slot applies from its start until the next
 start, and with overlapping slots the latest start wins.
 """
 
-from datetime import date, datetime, time, timedelta, timezone, tzinfo
+from datetime import UTC, date, datetime, time, timedelta, tzinfo
 from typing import Any
 
 from plugwise.constants import SCHEDULE_DAYS, SCHEDULE_POINT, ScheduleSlot
@@ -161,5 +161,5 @@ def _at(monday: date, minute: int, zone: tzinfo) -> datetime:
 def _is_valid_local_time(monday: date, minute: int, zone: tzinfo) -> bool:
     """Return whether a local schedule time exists in this week's timezone."""
     local = _at(monday, minute, zone)
-    round_trip = local.astimezone(timezone.utc).astimezone(zone)
+    round_trip = local.astimezone(UTC).astimezone(zone)
     return round_trip.replace(tzinfo=None) == local.replace(tzinfo=None)
