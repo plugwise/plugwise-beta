@@ -1,9 +1,11 @@
 """Tests for the Plugwise schedule calendars."""
 
+from copy import deepcopy
 from datetime import timedelta
 from itertools import pairwise
 from unittest.mock import MagicMock, patch
 
+from plugwise.exceptions import ConnectionFailedError
 import pytest
 
 from freezegun.api import FrozenDateTimeFactory
@@ -102,33 +104,54 @@ async def test_adam_calendar_added_and_removed(
 
 
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
-async def test_adam_calendars_kept_without_schedules_data(
+async def test_adam_calendars_removed_when_schedules_are_absent(
     hass: HomeAssistant,
     mock_smile_adam: MagicMock,
     setup_platform: MockConfigEntry,
     entity_registry: er.EntityRegistry,
     freezer: FrozenDateTimeFactory,
 ) -> None:
-    """Test that an update without schedules data removes no calendars."""
-    data = mock_smile_adam.async_update.return_value
+    """Test that a successful update without schedules data removes calendars."""
+    data = deepcopy(mock_smile_adam.async_update.return_value)
     del data[GATEWAY]["schedules"]
-    with patch(HA_PLUGWISE_SMILE_ASYNC_UPDATE, return_value=data):
-        freezer.tick(timedelta(minutes=1))
-        async_fire_time_changed(hass)
-        await hass.async_block_till_done()
+    mock_smile_adam.async_update.return_value = data
+    freezer.tick(timedelta(minutes=1))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done()
 
+    assert entity_registry.async_get("calendar.adam_badkamer_schema") is None
+
+
+@pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
+async def test_adam_calendars_kept_when_update_is_incomplete(
+    hass: HomeAssistant,
+    mock_smile_adam: MagicMock,
+    setup_platform: MockConfigEntry,
+    entity_registry: er.EntityRegistry,
+    freezer: FrozenDateTimeFactory,
+) -> None:
+    """Test that an incomplete update cannot remove calendars."""
+    coordinator = setup_platform.runtime_data
+    coordinator.data[GATEWAY].pop("schedules")
+    mock_smile_adam.async_update.side_effect = ConnectionFailedError
+    freezer.tick(timedelta(minutes=1))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done()
+
+    assert not coordinator.last_update_success
     assert entity_registry.async_get("calendar.adam_badkamer_schema") is not None
 
 
-@pytest.mark.usefixtures("mock_smile_adam")
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
 async def test_adam_calendar_of_deleted_schedule_removed_at_setup(
     hass: HomeAssistant,
+    mock_smile_adam: MagicMock,
     mock_config_entry: MockConfigEntry,
     entity_registry: er.EntityRegistry,
     platforms: tuple[str, ...],
 ) -> None:
-    """Test that a calendar left from a schedule deleted while offline is removed."""
+    """Test that stale calendars are removed when no schedules remain after downtime."""
+    mock_smile_adam.async_update.return_value[GATEWAY].pop("schedules")
     mock_config_entry.add_to_hass(hass)
     stale = entity_registry.async_get_or_create(
         CALENDAR_DOMAIN,
@@ -141,7 +164,7 @@ async def test_adam_calendar_of_deleted_schedule_removed_at_setup(
         await hass.async_block_till_done()
 
     assert entity_registry.async_get(stale.entity_id) is None
-    assert entity_registry.async_get("calendar.adam_badkamer_schema") is not None
+    assert entity_registry.async_get("calendar.adam_badkamer_schema") is None
 
 
 @pytest.mark.usefixtures("mock_smile_p1")
