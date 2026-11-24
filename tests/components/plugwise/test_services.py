@@ -1,15 +1,21 @@
 """Tests for the Plugwise schedule actions."""
 
+import asyncio
 from copy import deepcopy
-from unittest.mock import MagicMock
+from datetime import time
+from types import SimpleNamespace
+from typing import cast
+from unittest.mock import AsyncMock, MagicMock
 
 from plugwise.exceptions import ConnectionFailedError
 import pytest
 
 from homeassistant.components.calendar import DOMAIN as CALENDAR_DOMAIN
+from homeassistant.components.plugwise.calendar import PlugwiseScheduleCalendar
 from homeassistant.components.plugwise.const import DOMAIN
+from homeassistant.components.plugwise.services import set_schedule
 from homeassistant.const import ATTR_ENTITY_ID
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from syrupy.assertion import SnapshotAssertion
 
@@ -86,6 +92,97 @@ async def test_set_schedule_reads_the_gateway_first(
     )
     _, slots = mock_smile_adam.set_schedule.call_args.args
     assert any(slot["start"] == "tu 12:34" for slot in slots)
+
+
+async def test_set_schedule_serializes_same_schedule() -> None:
+    """Test overlapping updates to one schedule wait through the write."""
+    refresh_calls = 0
+    write_started = asyncio.Event()
+    release_write = asyncio.Event()
+
+    async def async_refresh() -> None:
+        nonlocal refresh_calls
+        refresh_calls += 1
+
+    async def async_set_schedule(
+        _slots: list[dict[str, str | float]], _name: str | None
+    ) -> None:
+        write_started.set()
+        await release_write.wait()
+
+    entity = SimpleNamespace(
+        schedule_lock=asyncio.Lock(),
+        coordinator=SimpleNamespace(
+            async_refresh=async_refresh,
+            last_update_success=True,
+        ),
+        schedule={
+            "slots": [
+                {"start": "mo 07:00", "end": "mo 22:00", "preset": "home"},
+                {"start": "mo 22:00", "end": "mo 07:00", "preset": "asleep"},
+            ]
+        },
+        async_set_schedule=async_set_schedule,
+    )
+    call = SimpleNamespace(data={"monday": [{"at": time(8, 0), "preset": "away"}]})
+    schedule_call = cast(ServiceCall, call)
+
+    first = asyncio.create_task(
+        set_schedule(cast(PlugwiseScheduleCalendar, entity), schedule_call)
+    )
+    await write_started.wait()
+    second = asyncio.create_task(
+        set_schedule(cast(PlugwiseScheduleCalendar, entity), schedule_call)
+    )
+    await asyncio.sleep(0)
+    refreshes_serialized = refresh_calls == 1
+    release_write.set()
+    await asyncio.gather(first, second)
+
+    assert refreshes_serialized
+    assert refresh_calls == 2
+
+
+async def test_set_schedule_locks_are_independent() -> None:
+    """Test updates to separate schedules can refresh at the same time."""
+    refresh_calls = 0
+    release_refresh = asyncio.Event()
+
+    async def async_refresh() -> None:
+        nonlocal refresh_calls
+        refresh_calls += 1
+        await release_refresh.wait()
+
+    def make_entity() -> SimpleNamespace:
+        return SimpleNamespace(
+            schedule_lock=asyncio.Lock(),
+            coordinator=SimpleNamespace(
+                async_refresh=async_refresh,
+                last_update_success=True,
+            ),
+            schedule={
+                "slots": [
+                    {"start": "mo 07:00", "end": "mo 22:00", "preset": "home"},
+                    {"start": "mo 22:00", "end": "mo 07:00", "preset": "asleep"},
+                ]
+            },
+            async_set_schedule=AsyncMock(),
+        )
+
+    call = SimpleNamespace(data={"monday": [{"at": time(8, 0), "preset": "away"}]})
+    schedule_call = cast(ServiceCall, call)
+    first = asyncio.create_task(
+        set_schedule(cast(PlugwiseScheduleCalendar, make_entity()), schedule_call)
+    )
+    second = asyncio.create_task(
+        set_schedule(cast(PlugwiseScheduleCalendar, make_entity()), schedule_call)
+    )
+    await asyncio.sleep(0)
+    refreshed_concurrently = refresh_calls == 2
+    release_refresh.set()
+    await asyncio.gather(first, second)
+
+    assert refreshed_concurrently
 
 
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])

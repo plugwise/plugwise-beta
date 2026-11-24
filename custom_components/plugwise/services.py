@@ -107,32 +107,33 @@ async def get_schedule(
 async def set_schedule(entity: PlugwiseScheduleCalendar, call: ServiceCall) -> None:
     """Replace the switch points of the given days, and rename when asked."""
     days = _days(call)
-    # Days left out are written back, so read them fresh from the gateway
-    coordinator = entity.coordinator
-    await coordinator.async_refresh()
-    if not coordinator.last_update_success:
-        raise HomeAssistantError(
-            translation_domain=DOMAIN,
-            translation_key="error_communicating_with_api",
-            translation_placeholders={"error": str(coordinator.last_exception)},
-        )
-    if (schedule := entity.schedule) is None:
-        raise ServiceValidationError(
-            translation_domain=DOMAIN, translation_key="schedule_not_found"
-        )
-    current = switch_points(schedule["slots"])
-    # Slots with other settings, or a setpoint that is not a number, cannot be
-    # written back unchanged
-    if any(
-        set(value) - {"preset", "setpoint"}
-        or not isinstance(value.get("setpoint", 0.0), float)
-        for _, value in current
-    ):
-        raise ServiceValidationError(
-            translation_domain=DOMAIN, translation_key="schedule_other_settings"
-        )
-    slots = _slots(days, current)
-    await entity.async_set_schedule(slots, call.data.get("name"))
+    async with entity.schedule_lock:
+        # Days left out are written back, so read them fresh from the gateway
+        coordinator = entity.coordinator
+        await coordinator.async_refresh()
+        if not coordinator.last_update_success:
+            raise HomeAssistantError(
+                translation_domain=DOMAIN,
+                translation_key="error_communicating_with_api",
+                translation_placeholders={"error": str(coordinator.last_exception)},
+            )
+        if (schedule := entity.schedule) is None:
+            raise ServiceValidationError(
+                translation_domain=DOMAIN, translation_key="schedule_not_found"
+            )
+        current = switch_points(schedule["slots"])
+        # Slots with other settings, or a setpoint that is not a number, cannot be
+        # written back unchanged
+        if any(
+            set(value) - {"preset", "setpoint"}
+            or not isinstance(value.get("setpoint", 0.0), float)
+            for _, value in current
+        ):
+            raise ServiceValidationError(
+                translation_domain=DOMAIN, translation_key="schedule_other_settings"
+            )
+        slots = _slots(days, current)
+        await entity.async_set_schedule(slots, call.data.get("name"))
 
 
 async def delete_schedule(entity: PlugwiseScheduleCalendar, call: ServiceCall) -> None:
