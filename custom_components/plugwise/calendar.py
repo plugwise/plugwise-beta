@@ -1,5 +1,6 @@
 """Calendar platform for Plugwise, with one read-only calendar per schedule."""
 
+import asyncio
 from datetime import datetime, timedelta
 from typing import Any, override
 
@@ -81,6 +82,7 @@ class PlugwiseScheduleCalendar(PlugwiseEntity, CalendarEntity):
         """Initialise the calendar."""
         super().__init__(coordinator, coordinator.api.gateway_id)
         self.rule_id = rule_id
+        self.schedule_lock: asyncio.Lock = asyncio.Lock()
         self._attr_unique_id = f"{coordinator.api.gateway_id}-schedule-{rule_id}"
         self._labels: dict[str, str] = {}
 
