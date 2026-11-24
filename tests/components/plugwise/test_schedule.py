@@ -95,6 +95,18 @@ def test_daylight_saving_hour_is_skipped() -> None:
     assert next(e for e in events if e.summary == "Home").start.hour == 2
 
 
+def test_previous_valid_point_survives_week_with_skipped_time() -> None:
+    """Test that the latest valid point remains active across the skipped week."""
+    points = switch_points([{"start": "su 02:45", "preset": "home"}])
+    start = datetime(2027, 3, 29, tzinfo=AMSTERDAM)
+
+    events = expand(points, start, start + timedelta(days=1), {}, AMSTERDAM)
+
+    assert len(events) == 1
+    assert events[0].start == datetime(2027, 3, 21, 2, 45, tzinfo=AMSTERDAM)
+    assert events[0].end == datetime(2027, 4, 4, 2, 45, tzinfo=AMSTERDAM)
+
+
 def test_fall_back_fold_range_boundaries() -> None:
     """Test that event filtering compares ambiguous local times as instants."""
     points = switch_points(
