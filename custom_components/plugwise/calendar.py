@@ -50,10 +50,12 @@ async def async_setup_entry(
     @callback
     def _update_entities() -> None:
         """Add calendars for new schedules and remove those of deleted ones."""
-        gateway = coordinator.data.get(coordinator.api.gateway_id, {})
-        if "schedules" not in gateway:
+        if not coordinator.last_update_success:
             return
-        current = set(gateway["schedules"])
+        if (gateway := coordinator.data.get(coordinator.api.gateway_id)) is None:
+            return
+        # A full successful update omits schedules when the gateway has none.
+        current = set(gateway.get("schedules", {}))
         if new := current - known:
             known.update(new)
             async_add_entities(
