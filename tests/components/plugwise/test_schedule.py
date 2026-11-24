@@ -95,6 +95,38 @@ def test_daylight_saving_hour_is_skipped() -> None:
     assert next(e for e in events if e.summary == "Home").start.hour == 2
 
 
+def test_fall_back_fold_range_boundaries() -> None:
+    """Test that event filtering compares ambiguous local times as instants."""
+    points = switch_points(
+        [
+            {"start": "mo 00:00", "preset": "week"},
+            {"start": "su 02:30", "preset": "before"},
+            {"start": "su 02:45", "preset": "middle"},
+            {"start": "su 03:00", "preset": "after"},
+        ]
+    )
+    first_fold = datetime(2027, 10, 31, 2, 15, tzinfo=AMSTERDAM)
+    second_fold = datetime(2027, 10, 31, 2, 30, tzinfo=AMSTERDAM, fold=1)
+
+    events = expand(
+        points,
+        second_fold,
+        datetime(2027, 10, 31, 2, 50, tzinfo=AMSTERDAM, fold=1),
+        {},
+        AMSTERDAM,
+    )
+    assert [event.summary for event in events] == ["middle"]
+
+    events = expand(
+        points,
+        first_fold,
+        second_fold,
+        {},
+        AMSTERDAM,
+    )
+    assert [event.summary for event in events] == ["week", "before", "middle"]
+
+
 def test_no_switch_points_no_events() -> None:
     """Test that a schedule without slots has no events."""
     start = datetime(2026, 10, 26, tzinfo=AMSTERDAM)
