@@ -67,8 +67,8 @@ def expand(
             # Same-zone datetimes compare wall clocks; timestamps compare instants.
             if (
                 finish.timestamp() <= begin.timestamp()
-                or finish <= start
-                or begin >= end
+                or finish.timestamp() <= start.timestamp()
+                or begin.timestamp() >= end.timestamp()
             ):
                 continue
             events.append(
