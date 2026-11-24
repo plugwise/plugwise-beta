@@ -5,7 +5,7 @@ only the start of another slot. A slot applies from its start until the next
 start, and with overlapping slots the latest start wins.
 """
 
-from datetime import date, datetime, time, timedelta, tzinfo
+from datetime import date, datetime, time, timedelta, timezone, tzinfo
 from typing import Any
 
 from plugwise.constants import SCHEDULE_DAYS, SCHEDULE_POINT, ScheduleSlot
@@ -52,15 +52,19 @@ def expand(
     # Begin a week early: the last point of the previous week runs into this one
     monday = first_day - timedelta(days=first_day.weekday() + 7)
     while _at(monday, 0, zone) < end:
-        for index, (minute, value) in enumerate(points):
-            if index + 1 < len(points):
-                next_minute = points[index + 1][0]
+        week_points = [
+            (minute, value)
+            for minute, value in points
+            if _is_valid_local_time(monday, minute, zone)
+        ]
+        for index, (minute, value) in enumerate(week_points):
+            if index + 1 < len(week_points):
+                next_minute = week_points[index + 1][0]
             else:
-                next_minute = points[0][0] + MINUTES_PER_WEEK
+                next_minute = week_points[0][0] + MINUTES_PER_WEEK
             begin = _at(monday, minute, zone)
             finish = _at(monday, next_minute, zone)
-            # A point in the hour that daylight saving time skips has no length.
-            # Timestamps compare instants, but same-zone datetimes compare wall clocks.
+            # Same-zone datetimes compare wall clocks; timestamps compare instants.
             if (
                 finish.timestamp() <= begin.timestamp()
                 or finish <= start
@@ -152,3 +156,10 @@ def _at(monday: date, minute: int, zone: tzinfo) -> datetime:
     return datetime.combine(
         monday + timedelta(days=day), time(rest // 60, rest % 60), tzinfo=zone
     )
+
+
+def _is_valid_local_time(monday: date, minute: int, zone: tzinfo) -> bool:
+    """Return whether a local schedule time exists in this week's timezone."""
+    local = _at(monday, minute, zone)
+    round_trip = local.astimezone(timezone.utc).astimezone(zone)
+    return round_trip.replace(tzinfo=None) == local.replace(tzinfo=None)
