@@ -1,11 +1,12 @@
 """Tests for the Plugwise schedule actions."""
 
 import asyncio
+from collections.abc import Awaitable, Callable
 from copy import deepcopy
 from datetime import time
 from types import SimpleNamespace
 from typing import cast
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
 from plugwise.exceptions import ConnectionFailedError
 import pytest
@@ -145,22 +146,40 @@ async def test_set_schedule_serializes_same_schedule() -> None:
 
 
 async def test_set_schedule_locks_are_independent() -> None:
-    """Test updates to separate schedules can refresh at the same time."""
+    """Test one schedule can refresh while another schedule is being written."""
     refresh_calls = 0
-    release_refresh = asyncio.Event()
+    first_write_started = asyncio.Event()
+    release_first_write = asyncio.Event()
+    second_write_started = asyncio.Event()
 
     async def async_refresh() -> None:
         nonlocal refresh_calls
         refresh_calls += 1
-        await release_refresh.wait()
 
-    def make_entity() -> SimpleNamespace:
+    async def write_first_schedule(
+        _slots: list[dict[str, str | float]], _name: str | None
+    ) -> None:
+        first_write_started.set()
+        await release_first_write.wait()
+
+    async def write_second_schedule(
+        _slots: list[dict[str, str | float]], _name: str | None
+    ) -> None:
+        second_write_started.set()
+
+    coordinator = SimpleNamespace(
+        async_refresh=async_refresh,
+        last_update_success=True,
+    )
+
+    def make_entity(
+        async_set_schedule: Callable[
+            [list[dict[str, str | float]], str | None], Awaitable[None]
+        ],
+    ) -> SimpleNamespace:
         return SimpleNamespace(
             schedule_lock=asyncio.Lock(),
-            coordinator=SimpleNamespace(
-                async_refresh=async_refresh,
-                last_update_success=True,
-            ),
+            coordinator=coordinator,
             schedule={
                 "slots": [
                     {"start": "mo 07:00", "end": "mo 22:00", "preset": "home"},
@@ -168,23 +187,32 @@ async def test_set_schedule_locks_are_independent() -> None:
                     {"start": "tu 07:00", "end": "mo 07:00", "preset": "away"},
                 ]
             },
-            async_set_schedule=AsyncMock(),
+            async_set_schedule=async_set_schedule,
         )
 
     call = SimpleNamespace(data={"monday": [{"at": time(8, 0), "preset": "away"}]})
     schedule_call = cast(ServiceCall, call)
     first = asyncio.create_task(
-        set_schedule(cast(PlugwiseScheduleCalendar, make_entity()), schedule_call)
+        set_schedule(
+            cast(PlugwiseScheduleCalendar, make_entity(write_first_schedule)),
+            schedule_call,
+        )
     )
+    await asyncio.wait_for(first_write_started.wait(), timeout=5)
     second = asyncio.create_task(
-        set_schedule(cast(PlugwiseScheduleCalendar, make_entity()), schedule_call)
+        set_schedule(
+            cast(PlugwiseScheduleCalendar, make_entity(write_second_schedule)),
+            schedule_call,
+        )
     )
-    await asyncio.sleep(0)
-    refreshed_concurrently = refresh_calls == 2
-    release_refresh.set()
+    try:
+        await asyncio.wait_for(second_write_started.wait(), timeout=5)
+        second_refreshed_before_release = refresh_calls == 2
+    finally:
+        release_first_write.set()
     await asyncio.gather(first, second)
 
-    assert refreshed_concurrently
+    assert second_refreshed_before_release
 
 
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
