@@ -119,7 +119,8 @@ async def test_set_schedule_serializes_same_schedule() -> None:
         schedule={
             "slots": [
                 {"start": "mo 07:00", "end": "mo 22:00", "preset": "home"},
-                {"start": "mo 22:00", "end": "mo 07:00", "preset": "asleep"},
+                {"start": "mo 22:00", "end": "tu 07:00", "preset": "asleep"},
+                {"start": "tu 07:00", "end": "mo 07:00", "preset": "away"},
             ]
         },
         async_set_schedule=async_set_schedule,
@@ -130,7 +131,7 @@ async def test_set_schedule_serializes_same_schedule() -> None:
     first = asyncio.create_task(
         set_schedule(cast(PlugwiseScheduleCalendar, entity), schedule_call)
     )
-    await write_started.wait()
+    await asyncio.wait_for(write_started.wait(), timeout=5)
     second = asyncio.create_task(
         set_schedule(cast(PlugwiseScheduleCalendar, entity), schedule_call)
     )
@@ -163,7 +164,8 @@ async def test_set_schedule_locks_are_independent() -> None:
             schedule={
                 "slots": [
                     {"start": "mo 07:00", "end": "mo 22:00", "preset": "home"},
-                    {"start": "mo 22:00", "end": "mo 07:00", "preset": "asleep"},
+                    {"start": "mo 22:00", "end": "tu 07:00", "preset": "asleep"},
+                    {"start": "tu 07:00", "end": "mo 07:00", "preset": "away"},
                 ]
             },
             async_set_schedule=AsyncMock(),
