@@ -49,33 +49,40 @@ def expand(
 
     events: list[CalendarEvent] = []
     first_day = start.astimezone(zone).date()
-    # Begin a week early: the last point of the previous week runs into this one
-    monday = first_day - timedelta(days=first_day.weekday() + 7)
-    while _at(monday, 0, zone) < end:
-        week_points = [
-            (minute, value)
-            for minute, value in points
-            if _is_valid_local_time(monday, minute, zone)
-        ]
-        for index, (minute, value) in enumerate(week_points):
-            if index + 1 < len(week_points):
-                next_minute = week_points[index + 1][0]
-            else:
-                next_minute = week_points[0][0] + MINUTES_PER_WEEK
-            begin = _at(monday, minute, zone)
-            finish = _at(monday, next_minute, zone)
-            # Same-zone datetimes compare wall clocks; timestamps compare instants.
-            if (
-                finish.timestamp() <= begin.timestamp()
-                or finish.timestamp() <= start.timestamp()
-                or begin.timestamp() >= end.timestamp()
-            ):
-                continue
-            events.append(
-                CalendarEvent(start=begin, end=finish, summary=summary(value, labels))
-            )
+    monday = first_day - timedelta(days=first_day.weekday())
+    start_timestamp = start.timestamp()
+    end_timestamp = end.timestamp()
+    week_points = _week_occurrences(points, monday, zone)
+    while not any(begin.timestamp() <= start_timestamp for begin, _ in week_points):
+        monday -= timedelta(days=7)
+        week_points = _week_occurrences(points, monday, zone)
+
+    previous: tuple[datetime, SlotValue] | None = None
+    while True:
+        for begin, value in week_points:
+            begin_timestamp = begin.timestamp()
+            if previous is not None:
+                previous_begin, previous_value = previous
+                finish_timestamp = begin_timestamp
+                previous_timestamp = previous_begin.timestamp()
+                # Same-zone datetimes compare wall clocks; timestamps compare instants.
+                if (
+                    finish_timestamp > previous_timestamp
+                    and finish_timestamp > start_timestamp
+                    and previous_timestamp < end_timestamp
+                ):
+                    events.append(
+                        CalendarEvent(
+                            start=previous_begin,
+                            end=begin,
+                            summary=summary(previous_value, labels),
+                        )
+                    )
+            previous = (begin, value)
+            if begin_timestamp >= end_timestamp:
+                return events
         monday += timedelta(days=7)
-    return events
+        week_points = _week_occurrences(points, monday, zone)
 
 
 def summary(value: SlotValue, labels: dict[str, str]) -> str:
@@ -156,6 +163,17 @@ def _at(monday: date, minute: int, zone: tzinfo) -> datetime:
     return datetime.combine(
         monday + timedelta(days=day), time(rest // 60, rest % 60), tzinfo=zone
     )
+
+
+def _week_occurrences(
+    points: list[SwitchPoint], monday: date, zone: tzinfo
+) -> list[tuple[datetime, SlotValue]]:
+    """Return the switch points whose local times exist in this week."""
+    return [
+        (_at(monday, minute, zone), value)
+        for minute, value in points
+        if _is_valid_local_time(monday, minute, zone)
+    ]
 
 
 def _is_valid_local_time(monday: date, minute: int, zone: tzinfo) -> bool:
