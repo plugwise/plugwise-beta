@@ -84,6 +84,7 @@ def test_daylight_saving_hour_is_skipped() -> None:
     dst_sunday = datetime(2027, 3, 28, tzinfo=AMSTERDAM)
     events = expand(points, dst_sunday, dst_sunday + timedelta(days=1), {}, AMSTERDAM)
     assert [e.summary for e in events] == ["asleep", "away"]
+    assert next(e for e in events if e.summary == "asleep").end.hour == 3
 
     next_sunday = dst_sunday + timedelta(days=7)
     labels = {"home": "Home"}
@@ -91,6 +92,7 @@ def test_daylight_saving_hour_is_skipped() -> None:
         points, next_sunday, next_sunday + timedelta(days=1), labels, AMSTERDAM
     )
     assert [e.summary for e in events] == ["asleep", "Home", "away"]
+    assert next(e for e in events if e.summary == "Home").start.hour == 2
 
 
 def test_no_switch_points_no_events() -> None:
