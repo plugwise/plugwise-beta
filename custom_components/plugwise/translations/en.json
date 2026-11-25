@@ -520,7 +520,7 @@
       "description": "Returns the name, the zones and the switch points per day of a Plugwise schedule.",
       "name": "Get schedule"
     },
-    "set_schedule": {
+    "change_schedule": {
       "description": "Changes the switch points of a Plugwise schedule and can rename it. Days you leave out keep their switch points. The change applies to every zone that uses the schedule.",
       "fields": {
         "friday": {

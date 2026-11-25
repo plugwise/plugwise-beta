@@ -520,7 +520,7 @@
       "description": "Geeft de naam, de zones en de schakelmomenten per dag van een Plugwise-schema terug.",
       "name": "Schema ophalen"
     },
-    "set_schedule": {
+    "change_schedule": {
       "description": "Wijzigt de schakelmomenten van een Plugwise-schema en kan het hernoemen. Dagen die je weglaat, behouden hun schakelmomenten. De wijziging geldt voor elke zone die het schema gebruikt.",
       "fields": {
         "friday": {

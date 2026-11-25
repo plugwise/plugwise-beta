@@ -47,7 +47,7 @@ SWITCH_POINT_SCHEMA = probatio.Schema(
     }
 )
 DAY_FIELDS = {probatio.Optional(day): [SWITCH_POINT_SCHEMA] for day in DAYS}
-SCHEMA_SET_SCHEDULE = {probatio.Optional("name"): cv.string, **DAY_FIELDS}
+SCHEMA_CHANGE_SCHEDULE = {probatio.Optional("name"): cv.string, **DAY_FIELDS}
 SCHEMA_CREATE_SCHEDULE = probatio.Schema(
     {
         probatio.Required(CONFIG_ENTRY): selector.ConfigEntrySelector(
@@ -104,8 +104,8 @@ async def get_schedule(
     return cast(ServiceResponse, response)
 
 
-async def set_schedule(entity: PlugwiseScheduleCalendar, call: ServiceCall) -> None:
-    """Replace the switch points of the given days, and rename when asked."""
+async def change_schedule(entity: PlugwiseScheduleCalendar, call: ServiceCall) -> None:
+    """Update/replace the switch points of the given days, and rename when asked."""
     days = _days(call)
     async with entity.schedule_lock:
         # Days left out are written back, so read them fresh from the gateway
@@ -133,7 +133,7 @@ async def set_schedule(entity: PlugwiseScheduleCalendar, call: ServiceCall) -> N
                 translation_domain=DOMAIN, translation_key="schedule_other_settings"
             )
         slots = _slots(days, current)
-        await entity.async_set_schedule(slots, call.data.get("name"))
+        await entity.async_update_schedule(slots, call.data.get("name"))
 
 
 async def delete_schedule(entity: PlugwiseScheduleCalendar, call: ServiceCall) -> None:
@@ -207,11 +207,11 @@ def async_setup_services(hass: HomeAssistant) -> None:
     service.async_register_platform_entity_service(
         hass,
         DOMAIN,
-        "set_schedule",
+        "change_schedule",
         entity_domain=CALENDAR_DOMAIN,
-        schema=cv.make_entity_service_schema(SCHEMA_SET_SCHEDULE),
+        schema=cv.make_entity_service_schema(SCHEMA_CHANGE_SCHEDULE),
         supports_response=SupportsResponse.NONE,
-        func=set_schedule,
+        func=change_schedule,
     )
     service.async_register_platform_entity_service(
         hass,

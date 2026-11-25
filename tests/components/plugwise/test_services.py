@@ -14,7 +14,7 @@ import pytest
 from homeassistant.components.calendar import DOMAIN as CALENDAR_DOMAIN
 from homeassistant.components.plugwise.calendar import PlugwiseScheduleCalendar
 from homeassistant.components.plugwise.const import DOMAIN
-from homeassistant.components.plugwise.services import set_schedule
+from homeassistant.components.plugwise.services import change_schedule
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
@@ -46,13 +46,13 @@ async def test_get_schedule(
 
 
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
-async def test_set_schedule(
+async def test_change_schedule(
     hass: HomeAssistant, mock_smile_adam: MagicMock, setup_platform: MockConfigEntry
 ) -> None:
     """Test replacing one day's switch points and renaming."""
     await hass.services.async_call(
         DOMAIN,
-        "set_schedule",
+        "change_schedule",
         {
             ATTR_ENTITY_ID: BATHROOM,
             "name": "Badkamer",
@@ -76,7 +76,7 @@ async def test_set_schedule(
 
 
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
-async def test_set_schedule_reads_the_gateway_first(
+async def test_change_schedule_reads_the_gateway_first(
     hass: HomeAssistant, mock_smile_adam: MagicMock, setup_platform: MockConfigEntry
 ) -> None:
     """Test that a day changed on the gateway since the last update is kept."""
@@ -87,7 +87,7 @@ async def test_set_schedule_reads_the_gateway_first(
     mock_smile_adam.async_update.return_value = data
     await hass.services.async_call(
         DOMAIN,
-        "set_schedule",
+        "change_schedule",
         {ATTR_ENTITY_ID: BATHROOM, "monday": [{"at": "07:00", "preset": "home"}]},
         blocking=True,
     )
@@ -95,7 +95,7 @@ async def test_set_schedule_reads_the_gateway_first(
     assert any(slot["start"] == "tu 12:34" for slot in slots)
 
 
-async def test_set_schedule_serializes_same_schedule() -> None:
+async def test_change_schedule_serializes_same_schedule() -> None:
     """Test overlapping updates to one schedule wait through the write."""
     refresh_calls = 0
     write_started = asyncio.Event()
@@ -124,17 +124,17 @@ async def test_set_schedule_serializes_same_schedule() -> None:
                 {"start": "tu 07:00", "end": "mo 07:00", "preset": "away"},
             ]
         },
-        async_set_schedule=async_set_schedule,
+        async_update_schedule=async_set_schedule,
     )
     call = SimpleNamespace(data={"monday": [{"at": time(8, 0), "preset": "away"}]})
     schedule_call = cast(ServiceCall, call)
 
     first = asyncio.create_task(
-        set_schedule(cast(PlugwiseScheduleCalendar, entity), schedule_call)
+        change_schedule(cast(PlugwiseScheduleCalendar, entity), schedule_call)
     )
     await asyncio.wait_for(write_started.wait(), timeout=5)
     second = asyncio.create_task(
-        set_schedule(cast(PlugwiseScheduleCalendar, entity), schedule_call)
+        change_schedule(cast(PlugwiseScheduleCalendar, entity), schedule_call)
     )
     await asyncio.sleep(0)
     refreshes_serialized = refresh_calls == 1
@@ -145,7 +145,7 @@ async def test_set_schedule_serializes_same_schedule() -> None:
     assert refresh_calls == 2
 
 
-async def test_set_schedule_locks_are_independent() -> None:
+async def test_change_schedule_locks_are_independent() -> None:
     """Test one schedule can refresh while another schedule is being written."""
     refresh_calls = 0
     first_write_started = asyncio.Event()
@@ -187,20 +187,20 @@ async def test_set_schedule_locks_are_independent() -> None:
                     {"start": "tu 07:00", "end": "mo 07:00", "preset": "away"},
                 ]
             },
-            async_set_schedule=async_set_schedule,
+            async_update_schedule=async_set_schedule,
         )
 
     call = SimpleNamespace(data={"monday": [{"at": time(8, 0), "preset": "away"}]})
     schedule_call = cast(ServiceCall, call)
     first = asyncio.create_task(
-        set_schedule(
+        change_schedule(
             cast(PlugwiseScheduleCalendar, make_entity(write_first_schedule)),
             schedule_call,
         )
     )
     await asyncio.wait_for(first_write_started.wait(), timeout=5)
     second = asyncio.create_task(
-        set_schedule(
+        change_schedule(
             cast(PlugwiseScheduleCalendar, make_entity(write_second_schedule)),
             schedule_call,
         )
@@ -216,7 +216,7 @@ async def test_set_schedule_locks_are_independent() -> None:
 
 
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
-async def test_set_schedule_deleted_on_the_gateway(
+async def test_change_schedule_deleted_on_the_gateway(
     hass: HomeAssistant, mock_smile_adam: MagicMock, setup_platform: MockConfigEntry
 ) -> None:
     """Test that a schedule deleted since the last update is not written back."""
@@ -226,7 +226,7 @@ async def test_set_schedule_deleted_on_the_gateway(
     with pytest.raises(ServiceValidationError) as err:
         await hass.services.async_call(
             DOMAIN,
-            "set_schedule",
+            "change_schedule",
             {ATTR_ENTITY_ID: BATHROOM, "name": "Other"},
             blocking=True,
         )
@@ -235,7 +235,7 @@ async def test_set_schedule_deleted_on_the_gateway(
 
 
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
-async def test_set_schedule_invalid_input_skips_the_gateway(
+async def test_change_schedule_invalid_input_skips_the_gateway(
     hass: HomeAssistant, mock_smile_adam: MagicMock, setup_platform: MockConfigEntry
 ) -> None:
     """Test that invalid switch points are refused without reading the gateway."""
@@ -243,7 +243,7 @@ async def test_set_schedule_invalid_input_skips_the_gateway(
     with pytest.raises(ServiceValidationError):
         await hass.services.async_call(
             DOMAIN,
-            "set_schedule",
+            "change_schedule",
             {ATTR_ENTITY_ID: BATHROOM, "monday": [{"at": "07:00"}]},
             blocking=True,
         )
@@ -251,7 +251,7 @@ async def test_set_schedule_invalid_input_skips_the_gateway(
 
 
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
-async def test_set_schedule_gateway_unreachable(
+async def test_change_schedule_gateway_unreachable(
     hass: HomeAssistant, mock_smile_adam: MagicMock, setup_platform: MockConfigEntry
 ) -> None:
     """Test that nothing is written when the gateway cannot be read first."""
@@ -259,7 +259,7 @@ async def test_set_schedule_gateway_unreachable(
     with pytest.raises(HomeAssistantError) as err:
         await hass.services.async_call(
             DOMAIN,
-            "set_schedule",
+            "change_schedule",
             {ATTR_ENTITY_ID: BATHROOM, "name": "Other"},
             blocking=True,
         )
@@ -290,7 +290,7 @@ async def test_set_schedule_gateway_unreachable(
         ),
     ],
 )
-async def test_set_schedule_invalid(
+async def test_change_schedule_invalid(
     hass: HomeAssistant,
     setup_platform: MockConfigEntry,
     monday: list,
@@ -300,7 +300,7 @@ async def test_set_schedule_invalid(
     with pytest.raises(ServiceValidationError) as err:
         await hass.services.async_call(
             DOMAIN,
-            "set_schedule",
+            "change_schedule",
             {ATTR_ENTITY_ID: BATHROOM, "monday": monday},
             blocking=True,
         )
@@ -308,7 +308,7 @@ async def test_set_schedule_invalid(
 
 
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
-async def test_set_schedule_too_few_switch_points(
+async def test_change_schedule_too_few_switch_points(
     hass: HomeAssistant, mock_smile_adam: MagicMock, setup_platform: MockConfigEntry
 ) -> None:
     """Test that emptying the week down to one switch point is refused."""
@@ -319,7 +319,7 @@ async def test_set_schedule_too_few_switch_points(
     with pytest.raises(ServiceValidationError) as err:
         await hass.services.async_call(
             DOMAIN,
-            "set_schedule",
+            "change_schedule",
             {
                 ATTR_ENTITY_ID: BATHROOM,
                 "monday": [{"at": "07:00", "preset": "home"}],
@@ -339,7 +339,7 @@ async def test_set_schedule_too_few_switch_points(
         pytest.param({"setpoint": "nan"}, id="unreadable_setpoint"),
     ],
 )
-async def test_set_schedule_other_settings(
+async def test_change_schedule_other_settings(
     hass: HomeAssistant,
     mock_smile_adam: MagicMock,
     setup_platform: MockConfigEntry,
@@ -353,7 +353,7 @@ async def test_set_schedule_other_settings(
     with pytest.raises(ServiceValidationError) as err:
         await hass.services.async_call(
             DOMAIN,
-            "set_schedule",
+            "change_schedule",
             {ATTR_ENTITY_ID: BATHROOM, "name": "Other"},
             blocking=True,
         )
