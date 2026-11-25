@@ -90,7 +90,7 @@ def _slots(
         ) from err
 
 
-async def get_schedule(
+def get_schedule(
     entity: PlugwiseScheduleCalendar, call: ServiceCall
 ) -> ServiceResponse:
     """Return a schedule's switch points per day."""
