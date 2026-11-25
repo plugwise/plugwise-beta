@@ -160,7 +160,7 @@ class PlugwiseScheduleCalendar(PlugwiseEntity, CalendarEntity):
     async def async_update_schedule(
         self, slots: list[dict[str, str | float]], name: str | None
     ) -> None:
-        """Updates the schedule's switch points, and rename it when a name is given."""
+        """Update the schedule's switch points, and rename it when a name is given."""
         await self.coordinator.api.set_schedule(self.rule_id, slots, name=name)
 
     @plugwise_command
