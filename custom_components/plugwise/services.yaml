@@ -7,13 +7,7 @@ delete_notification:
         config_entry:
           integration: plugwise
 
-get_schedule:
-  target:
-    entity:
-      domain: calendar
-      integration: plugwise
-
-set_schedule:
+change_schedule:
   target:
     entity:
       domain: calendar
@@ -84,6 +78,12 @@ create_schedule:
     sunday: *switch_points
 
 delete_schedule:
+  target:
+    entity:
+      domain: calendar
+      integration: plugwise
+
+get_schedule:
   target:
     entity:
       domain: calendar
