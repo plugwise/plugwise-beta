@@ -466,6 +466,44 @@
     }
   },
   "services": {
+    "change_schedule": {
+      "description": "Changes the switch points of a Plugwise schedule and can rename it. Days you leave out keep their switch points. The change applies to every zone that uses the schedule.",
+      "fields": {
+        "friday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Friday"
+        },
+        "monday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Monday"
+        },
+        "name": {
+          "description": "New name for the schedule.",
+          "name": "Name"
+        },
+        "saturday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Saturday"
+        },
+        "sunday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Sunday"
+        },
+        "thursday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Thursday"
+        },
+        "tuesday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Tuesday"
+        },
+        "wednesday": {
+          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
+          "name": "Wednesday"
+        }
+      },
+      "name": "Change schedule"
+    },
     "create_schedule": {
       "description": "Adds a schedule to the gateway. The new schedule is not linked to any zone yet. To use it, choose it as a zone's thermostat schedule.",
       "fields": {
@@ -519,44 +557,6 @@
     "get_schedule": {
       "description": "Returns the name, the zones and the switch points per day of a Plugwise schedule.",
       "name": "Get schedule"
-    },
-    "change_schedule": {
-      "description": "Changes the switch points of a Plugwise schedule and can rename it. Days you leave out keep their switch points. The change applies to every zone that uses the schedule.",
-      "fields": {
-        "friday": {
-          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
-          "name": "Friday"
-        },
-        "monday": {
-          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
-          "name": "Monday"
-        },
-        "name": {
-          "description": "New name for the schedule.",
-          "name": "Name"
-        },
-        "saturday": {
-          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
-          "name": "Saturday"
-        },
-        "sunday": {
-          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
-          "name": "Sunday"
-        },
-        "thursday": {
-          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
-          "name": "Thursday"
-        },
-        "tuesday": {
-          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
-          "name": "Tuesday"
-        },
-        "wednesday": {
-          "description": "Switch points for this day. Each one holds until the next switch point, even past midnight.",
-          "name": "Wednesday"
-        }
-      },
-      "name": "Set schedule"
     }
   }
 }
