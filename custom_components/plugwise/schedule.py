@@ -60,29 +60,44 @@ def expand(
     previous: tuple[datetime, SlotValue] | None = None
     while True:
         for begin, value in week_points:
-            begin_timestamp = begin.timestamp()
-            if previous is not None:
-                previous_begin, previous_value = previous
-                finish_timestamp = begin_timestamp
-                previous_timestamp = previous_begin.timestamp()
-                # Same-zone datetimes compare wall clocks; timestamps compare instants.
-                if (
-                    finish_timestamp > previous_timestamp
-                    and finish_timestamp > start_timestamp
-                    and previous_timestamp < end_timestamp
-                ):
-                    events.append(
-                        CalendarEvent(
-                            start=previous_begin,
-                            end=begin,
-                            summary=summary(previous_value, labels),
-                        )
-                    )
+            _append_event(
+                events, previous, begin, start_timestamp, end_timestamp, labels
+            )
             previous = (begin, value)
-            if begin_timestamp >= end_timestamp:
+            if begin.timestamp() >= end_timestamp:
                 return events
         monday += timedelta(days=7)
         week_points = _week_occurrences(points, monday, zone)
+
+
+def _append_event(
+    events: list[CalendarEvent],
+    previous: tuple[datetime, SlotValue] | None,
+    begin: datetime,
+    start_timestamp: float,
+    end_timestamp: float,
+    labels: dict[str, str],
+) -> None:
+    """Append the previous switch point's event when it overlaps the requested range."""
+    if previous is None:
+        return
+
+    previous_begin, previous_value = previous
+    finish_timestamp = begin.timestamp()
+    previous_timestamp = previous_begin.timestamp()
+    # Same-zone datetimes compare wall clocks; timestamps compare instants.
+    if (
+        finish_timestamp > previous_timestamp
+        and finish_timestamp > start_timestamp
+        and previous_timestamp < end_timestamp
+    ):
+        events.append(
+            CalendarEvent(
+                start=previous_begin,
+                end=begin,
+                summary=summary(previous_value, labels),
+            )
+        )
 
 
 def summary(value: SlotValue, labels: dict[str, str]) -> str:
