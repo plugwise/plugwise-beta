@@ -4,7 +4,6 @@ from typing import Any, cast
 
 from plugwise.constants import SCHEDULE_POINT, ScheduleData
 from plugwise.exceptions import PlugwiseError, PlugwiseException
-import probatio
 
 from homeassistant.components.calendar import DOMAIN as CALENDAR_DOMAIN
 from homeassistant.core import (
@@ -16,6 +15,7 @@ from homeassistant.core import (
 )
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import config_validation as cv, selector, service
+import probatio
 
 from .calendar import PlugwiseScheduleCalendar
 from .const import (
