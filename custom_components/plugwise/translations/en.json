@@ -415,6 +415,9 @@
     "schedule_too_few_points": {
       "message": "A schedule needs at least two switch points in the week. Add another switch point."
     },
+    "schedule_unreadable_slots": {
+      "message": "This schedule has switch points Home Assistant cannot read or preserve. Change it in the Plugwise app."
+    },
     "set_schedule_first": {
       "message": "Failed setting HVACMode, set a schedule first"
     },

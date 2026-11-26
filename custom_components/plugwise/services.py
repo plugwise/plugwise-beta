@@ -2,8 +2,9 @@
 
 from typing import Any, cast
 
-from plugwise.constants import ScheduleData
+from plugwise.constants import SCHEDULE_POINT, ScheduleData
 from plugwise.exceptions import PlugwiseError, PlugwiseException
+import probatio
 
 from homeassistant.components.calendar import DOMAIN as CALENDAR_DOMAIN
 from homeassistant.core import (
@@ -15,7 +16,6 @@ from homeassistant.core import (
 )
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import config_validation as cv, selector, service
-import probatio
 
 from .calendar import PlugwiseScheduleCalendar
 from .const import (
@@ -121,7 +121,16 @@ async def change_schedule(entity: PlugwiseScheduleCalendar, call: ServiceCall) -
             raise ServiceValidationError(
                 translation_domain=DOMAIN, translation_key="schedule_not_found"
             )
-        current = switch_points(schedule["slots"])
+        raw_slots = schedule["slots"]
+        starts = [slot.get("start") for slot in raw_slots]
+        if any(
+            not isinstance(start, str) or not SCHEDULE_POINT.fullmatch(start)
+            for start in starts
+        ) or len(set(starts)) != len(starts):
+            raise ServiceValidationError(
+                translation_domain=DOMAIN, translation_key="schedule_unreadable_slots"
+            )
+        current = switch_points(raw_slots)
         # Slots with other settings, or a setpoint that is not a number, cannot be
         # written back unchanged
         if any(

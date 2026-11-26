@@ -415,6 +415,9 @@
     "schedule_too_few_points": {
       "message": "Een schema heeft minstens twee schakelmomenten per week nodig. Voeg een schakelmoment toe."
     },
+    "schedule_unreadable_slots": {
+      "message": "Dit schema heeft schakelmomenten die Home Assistant niet kan lezen of behouden. Wijzig het in de Plugwise-app."
+    },
     "set_schedule_first": {
       "message": "HVACMode aanpassing mislukt, activeer eerst een thermostaatschema"
     },

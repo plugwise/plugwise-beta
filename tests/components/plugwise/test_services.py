@@ -361,6 +361,40 @@ async def test_change_schedule_other_settings(
     mock_smile_adam.set_schedule.assert_not_called()
 
 
+@pytest.mark.parametrize(
+    "duplicate_start",
+    [
+        False,
+        True,
+    ],
+    ids=["invalid_start", "duplicate_start"],
+)
+@pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
+async def test_change_schedule_unreadable_slots(
+    hass: HomeAssistant,
+    mock_smile_adam: MagicMock,
+    setup_platform: MockConfigEntry,
+    duplicate_start: bool,
+) -> None:
+    """Test that unreadable or collapsed slots prevent replacing a schedule."""
+    schedule = mock_smile_adam.async_update.return_value[GATEWAY]["schedules"][
+        BATHROOM_SCHEDULE
+    ]
+    start = schedule["slots"][0]["start"] if duplicate_start else "not a schedule point"
+    schedule["slots"].append(
+        {"end": "mo 08:00", "preset": "away", "start": start}
+    )
+    with pytest.raises(ServiceValidationError) as err:
+        await hass.services.async_call(
+            DOMAIN,
+            "change_schedule",
+            {ATTR_ENTITY_ID: BATHROOM, "name": "Other"},
+            blocking=True,
+        )
+    assert err.value.translation_key == "schedule_unreadable_slots"
+    mock_smile_adam.set_schedule.assert_not_called()
+
+
 @pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
 async def test_create_and_delete_schedule(
     hass: HomeAssistant, mock_smile_adam: MagicMock, setup_platform: MockConfigEntry
