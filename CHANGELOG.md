@@ -2,7 +2,7 @@
 
 Versions from 0.40 and up
 
-## v0.68.0b2
+## v0.68.0b3
 
 - Add a read-only calendar for each schedule on the gateway, showing its switch points as events.
 - Add get-schedule, change-schedule, create-schedule and delete-schedule Actions to read, change, add and remove schedules.
