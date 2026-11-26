@@ -400,6 +400,24 @@
     "response_error": {
       "message": "Ongeldige XML-data of foutmelding ontvangen"
     },
+    "schedule_duplicate_time": {
+      "message": "Twee schakelmomenten op dezelfde dag hebben dezelfde tijd. Geef elk schakelmoment een eigen tijd."
+    },
+    "schedule_not_found": {
+      "message": "Dit schema bestaat niet meer op de gateway."
+    },
+    "schedule_other_settings": {
+      "message": "Dit schema heeft instellingen die Home Assistant niet kan wijzigen. Wijzig het in de Plugwise-app."
+    },
+    "schedule_preset_or_setpoint": {
+      "message": "Elk schakelmoment heeft een voorinstelling of een temperatuur nodig. Kies een van de twee."
+    },
+    "schedule_too_few_points": {
+      "message": "Een schema heeft minstens twee schakelmomenten per week nodig. Voeg een schakelmoment toe."
+    },
+    "schedule_unreadable_slots": {
+      "message": "Dit schema heeft schakelmomenten die Home Assistant niet kan lezen of behouden. Wijzig het in de Plugwise-app."
+    },
     "set_schedule_first": {
       "message": "HVACMode aanpassing mislukt, activeer eerst een thermostaatschema"
     },
@@ -426,10 +444,122 @@
       }
     }
   },
+  "selector": {
+    "preset": {
+      "options": {
+        "asleep": "Nacht",
+        "away": "Afwezig",
+        "home": "Thuis",
+        "no_frost": "Vorstbescherming",
+        "vacation": "Vakantie"
+      }
+    },
+    "switch_point": {
+      "fields": {
+        "at": {
+          "name": "Tijd"
+        },
+        "preset": {
+          "name": "Voorinstelling"
+        },
+        "setpoint": {
+          "name": "Temperatuur"
+        }
+      }
+    }
+  },
   "services": {
+    "change_schedule": {
+      "description": "Wijzigt de schakelmomenten van een Plugwise-schema en kan het hernoemen. Dagen die je weglaat, behouden hun schakelmomenten. De wijziging geldt voor elke zone die het schema gebruikt.",
+      "fields": {
+        "friday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Vrijdag"
+        },
+        "monday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Maandag"
+        },
+        "name": {
+          "description": "Nieuwe naam voor het schema.",
+          "name": "Naam"
+        },
+        "saturday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Zaterdag"
+        },
+        "sunday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Zondag"
+        },
+        "thursday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Donderdag"
+        },
+        "tuesday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Dinsdag"
+        },
+        "wednesday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Woensdag"
+        }
+      },
+      "name": "Schema aanpassen"
+    },
+    "create_schedule": {
+      "description": "Voegt een schema toe aan de gateway. Het nieuwe schema is nog aan geen enkele zone gekoppeld. Kies het als thermostaatschema van een zone om het te gebruiken.",
+      "fields": {
+        "config_entry": {
+          "description": "De Plugwise-gateway waaraan het schema wordt toegevoegd.",
+          "name": "Gateway"
+        },
+        "friday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Vrijdag"
+        },
+        "monday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Maandag"
+        },
+        "name": {
+          "description": "Naam van het nieuwe schema.",
+          "name": "Naam"
+        },
+        "saturday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Zaterdag"
+        },
+        "sunday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Zondag"
+        },
+        "thursday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Donderdag"
+        },
+        "tuesday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Dinsdag"
+        },
+        "wednesday": {
+          "description": "Schakelmomenten voor deze dag. Elk schakelmoment geldt tot het volgende, ook over middernacht heen.",
+          "name": "Woensdag"
+        }
+      },
+      "name": "Schema aanmaken"
+    },
     "delete_notification": {
       "description": "Verwijder een Plugwise notificatie",
       "name": "Verwijder Plugwise notificatie"
+    },
+    "delete_schedule": {
+      "description": "Verwijdert een schema van de gateway. Dit kan niet ongedaan worden gemaakt. Een zone die het schema gebruikt, behoudt zijn laatste temperatuur tot je die wijzigt.",
+      "name": "Schema verwijderen"
+    },
+    "get_schedule": {
+      "description": "Geeft de naam, de zones en de schakelmomenten per dag van een Plugwise-schema terug.",
+      "name": "Schema ophalen"
     }
   }
 }

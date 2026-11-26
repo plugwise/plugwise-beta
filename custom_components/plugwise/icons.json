@@ -199,6 +199,20 @@
     }
   },
   "services": {
-    "delete_notification": "mdi:trash-can"
+    "create_schedule": {
+      "service": "mdi:calendar-plus"
+    },
+    "delete_notification": {
+      "service": "mdi:trash-can"
+    },
+    "delete_schedule": {
+      "service": "mdi:calendar-remove"
+    },
+    "get_schedule": {
+      "service": "mdi:calendar-search"
+    },
+    "set_schedule": {
+      "service": "mdi:calendar-edit"
+    }
   }
 }

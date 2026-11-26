@@ -6,3 +6,85 @@ delete_notification:
       selector:
         config_entry:
           integration: plugwise
+
+change_schedule:
+  target:
+    entity:
+      domain: calendar
+      integration: plugwise
+  fields:
+    name:
+      required: false
+      selector:
+        text:
+    monday: &switch_points
+      required: false
+      example: >-
+        [{"at": "07:00", "preset": "home"}, {"at": "22:00", "preset": "asleep"}]
+      selector:
+        object:
+          translation_key: switch_point
+          label_field: at
+          description_field: preset
+          multiple: true
+          fields:
+            at:
+              required: true
+              selector:
+                time:
+            preset:
+              required: false
+              selector:
+                select:
+                  translation_key: preset
+                  options:
+                    - home
+                    - asleep
+                    - away
+                    - vacation
+                    - no_frost
+            setpoint:
+              required: false
+              selector:
+                number:
+                  min: 4
+                  max: 30
+                  step: 0.5
+                  unit_of_measurement: °C
+    tuesday: *switch_points
+    wednesday: *switch_points
+    thursday: *switch_points
+    friday: *switch_points
+    saturday: *switch_points
+    sunday: *switch_points
+
+create_schedule:
+  fields:
+    config_entry:
+      required: true
+      selector:
+        config_entry:
+          integration: plugwise
+    name:
+      required: true
+      selector:
+        text:
+    monday: *switch_points
+    tuesday: *switch_points
+    wednesday: *switch_points
+    thursday: *switch_points
+    friday: *switch_points
+    saturday: *switch_points
+    sunday: *switch_points
+
+delete_schedule:
+  target:
+    entity:
+      domain: calendar
+      integration: plugwise
+
+get_schedule:
+  target:
+    entity:
+      domain: calendar
+      integration: plugwise

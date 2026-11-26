@@ -1,0 +1,137 @@
+# serializer version: 1
+# name: test_get_schedule[platforms0]
+  dict({
+    'calendar.adam_badkamer_schema': dict({
+      'friday': list([
+        dict({
+          'at': '06:45',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '08:00',
+          'preset': 'away',
+        }),
+        dict({
+          'at': '20:30',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '22:00',
+          'preset': 'away',
+        }),
+      ]),
+      'monday': list([
+        dict({
+          'at': '06:45',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '08:00',
+          'preset': 'away',
+        }),
+        dict({
+          'at': '20:15',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '21:30',
+          'preset': 'away',
+        }),
+      ]),
+      'name': 'Badkamer Schema',
+      'saturday': list([
+        dict({
+          'at': '09:00',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '10:15',
+          'preset': 'away',
+        }),
+        dict({
+          'at': '20:30',
+          'preset': 'asleep',
+        }),
+        dict({
+          'at': '22:00',
+          'preset': 'away',
+        }),
+      ]),
+      'sunday': list([
+        dict({
+          'at': '09:00',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '10:15',
+          'preset': 'away',
+        }),
+        dict({
+          'at': '20:15',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '21:30',
+          'preset': 'away',
+        }),
+      ]),
+      'thursday': list([
+        dict({
+          'at': '06:45',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '08:00',
+          'preset': 'away',
+        }),
+        dict({
+          'at': '20:15',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '21:30',
+          'preset': 'away',
+        }),
+      ]),
+      'tuesday': list([
+        dict({
+          'at': '06:45',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '08:00',
+          'preset': 'away',
+        }),
+        dict({
+          'at': '20:15',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '21:30',
+          'preset': 'away',
+        }),
+      ]),
+      'wednesday': list([
+        dict({
+          'at': '06:45',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '08:00',
+          'preset': 'away',
+        }),
+        dict({
+          'at': '20:15',
+          'preset': 'home',
+        }),
+        dict({
+          'at': '21:30',
+          'preset': 'away',
+        }),
+      ]),
+      'zones': list([
+        'Badkamer',
+      ]),
+    }),
+  })
+# ---
