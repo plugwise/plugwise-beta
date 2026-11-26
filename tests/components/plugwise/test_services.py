@@ -361,6 +361,29 @@ async def test_change_schedule_other_settings(
     mock_smile_adam.set_schedule.assert_not_called()
 
 
+@pytest.mark.parametrize("platforms", [(CALENDAR_DOMAIN,)])
+async def test_change_schedule_other_settings_in_replaced_slot(
+    hass: HomeAssistant, mock_smile_adam: MagicMock, setup_platform: MockConfigEntry
+) -> None:
+    """Test that settings in a slot replaced by a duplicate are still checked."""
+    schedule = mock_smile_adam.async_update.return_value[GATEWAY]["schedules"][
+        BATHROOM_SCHEDULE
+    ]
+    first_slot = schedule["slots"][0]
+    schedule["slots"][0] = {**first_slot, "heating_setpoint": 20.0}
+    schedule["slots"].append(first_slot.copy())
+
+    with pytest.raises(ServiceValidationError) as err:
+        await hass.services.async_call(
+            DOMAIN,
+            "change_schedule",
+            {ATTR_ENTITY_ID: BATHROOM, "name": "Other"},
+            blocking=True,
+        )
+    assert err.value.translation_key == "schedule_other_settings"
+    mock_smile_adam.set_schedule.assert_not_called()
+
+
 @pytest.mark.parametrize(
     "duplicate_start",
     [

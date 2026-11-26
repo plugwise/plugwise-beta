@@ -122,6 +122,15 @@ async def change_schedule(entity: PlugwiseScheduleCalendar, call: ServiceCall) -
                 translation_domain=DOMAIN, translation_key="schedule_not_found"
             )
         raw_slots = schedule["slots"]
+        # Check every raw slot before switch_points can skip or replace one.
+        if any(
+            set(slot) - {"start", "end", "preset", "setpoint"}
+            or not isinstance(slot.get("setpoint", 0.0), float)
+            for slot in raw_slots
+        ):
+            raise ServiceValidationError(
+                translation_domain=DOMAIN, translation_key="schedule_other_settings"
+            )
         starts = [slot.get("start") for slot in raw_slots]
         if any(
             not isinstance(start, str) or not SCHEDULE_POINT.fullmatch(start)
@@ -131,16 +140,6 @@ async def change_schedule(entity: PlugwiseScheduleCalendar, call: ServiceCall) -
                 translation_domain=DOMAIN, translation_key="schedule_unreadable_slots"
             )
         current = switch_points(raw_slots)
-        # Slots with other settings, or a setpoint that is not a number, cannot be
-        # written back unchanged
-        if any(
-            set(value) - {"preset", "setpoint"}
-            or not isinstance(value.get("setpoint", 0.0), float)
-            for _, value in current
-        ):
-            raise ServiceValidationError(
-                translation_domain=DOMAIN, translation_key="schedule_other_settings"
-            )
         slots = _slots(days, current)
         await entity.async_update_schedule(slots, call.data.get("name"))
 
