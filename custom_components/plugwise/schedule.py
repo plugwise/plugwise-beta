@@ -61,7 +61,12 @@ def expand(
     while True:
         for begin, value in week_points:
             _append_event(
-                events, previous, begin, start_timestamp, end_timestamp, labels
+                events=events,
+                previous=previous,
+                begin=begin,
+                start_timestamp=start_timestamp,
+                end_timestamp=end_timestamp,
+                labels=labels,
             )
             previous = (begin, value)
             if begin.timestamp() >= end_timestamp:
@@ -71,6 +76,7 @@ def expand(
 
 
 def _append_event(
+    *,
     events: list[CalendarEvent],
     previous: tuple[datetime, SlotValue] | None,
     begin: datetime,
